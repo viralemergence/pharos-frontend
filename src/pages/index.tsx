@@ -11,21 +11,14 @@ const IndexPage = (): JSX.Element => {
   const data = useIndexPageData()
 
   return (
-    // all pages should be wrapped in the Providers component
-    // all pages should start with CMS.SEO to set metadata.
     <Providers>
       <CMS.SEO />
       <Main>
-        <CMS.Image name="Talus Logo" data={data} />
+        <CMS.Image name="Site logo" data={data} />
         <h1>
           <CMS.Text name="H1" data={data} />
         </h1>
-        <p>
-          <CMS.Text name="Example Text" data={data} />
-          <a href={CMS.getText(data, 'Airtable URL')}>
-            <CMS.Text name="Airtable Link Text" data={data} />
-          </a>
-        </p>
+        <CMS.RichText name="Intro paragraph" data={data} />
       </Main>
     </Providers>
   )
