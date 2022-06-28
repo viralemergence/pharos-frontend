@@ -14,8 +14,8 @@ workflows:
           # Examples:
           # bucket: 's3://dev-projectname'
           # distribution: 'E31RXXXXXXXXXX'
-          bucket: ''
-          distribution: ''
+          bucket: 's3://dev-pharos-frontend'
+          distribution: 'EWN5TGLCXWM1V'
           context: *credentials
           filters:
             branches:
@@ -23,8 +23,8 @@ workflows:
                 - dev
       # review site
       - deploy:
-          bucket: ''
-          distribution: ''
+          bucket: 's3://review-pharos-frontend'
+          distribution: 'E2TXCAC010VLUK'
           context: *credentials
           filters:
             branches:
@@ -32,8 +32,8 @@ workflows:
                 - review
       # staging site
       - deploy:
-          bucket: ''
-          distribution: ''
+          bucket: 's3://staging-pharos-frontend'
+          distribution: 'E1MZX90GFW3KQ6'
           context: *credentials
           filters:
             branches:
@@ -41,8 +41,8 @@ workflows:
                 - staging
       # prod site
       - deploy:
-          bucket: ''
-          distribution: ''
+          bucket: 'prod-pharos-frontend'
+          distribution: 'EG631FGRI2307'
           context: *credentials
           filters:
             branches:
