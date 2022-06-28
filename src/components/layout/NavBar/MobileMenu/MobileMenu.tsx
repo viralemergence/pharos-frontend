@@ -23,6 +23,7 @@ const MobileMenu = ({ children }: MobileMenuProps) => {
           width: '100vw',
           background: 'none',
           right: 0,
+          marginTop: 15,
         }}
         renderButton={open => <HamburgerButton open={open} />}
       >
