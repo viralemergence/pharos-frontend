@@ -16,7 +16,6 @@ const IndexPage = (): JSX.Element => {
       <CMS.SEO />
       <NavBar />
       <Main>
-        <CMS.Image name="Site logo" data={data} />
         <h1>
           <CMS.Text name="H1" data={data} />
         </h1>
