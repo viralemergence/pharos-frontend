@@ -1,0 +1,15 @@
+{
+  "name": "talus-gatsby-transformer-svg",
+  "version": "1.0.0",
+  "description": "Talus Analytics Gatsby SVG transformer",
+  "main": "index.js",
+  "author": "Ryan Zimmerman",
+  "license": "MIT",
+  "dependencies": {
+    "typescript": "^4.4.2"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "develop": "tsc -w"
+  }
+}

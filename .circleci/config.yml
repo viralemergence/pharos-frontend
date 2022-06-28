@@ -1,0 +1,111 @@
+version: 2.1
+
+credentials: &credentials
+  - AWS Credentials
+  - Airtable Credentials
+  - Bit Credentials
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      # dev site
+      - deploy:
+          # Examples:
+          # bucket: 's3://dev-projectname'
+          # distribution: 'E31RXXXXXXXXXX'
+          bucket: ''
+          distribution: ''
+          context: *credentials
+          filters:
+            branches:
+              only:
+                - dev
+      # review site
+      - deploy:
+          bucket: ''
+          distribution: ''
+          context: *credentials
+          filters:
+            branches:
+              only:
+                - review
+      # staging site
+      - deploy:
+          bucket: ''
+          distribution: ''
+          context: *credentials
+          filters:
+            branches:
+              only:
+                - staging
+      # prod site
+      - deploy:
+          bucket: ''
+          distribution: ''
+          context: *credentials
+          filters:
+            branches:
+              only:
+                - prod
+
+orbs:
+  aws-cli: circleci/aws-cli@2.0.3
+
+jobs:
+  deploy:
+    working_directory: ~/repo
+
+    docker:
+      - image: cimg/node:lts
+
+    resource_class: xlarge
+
+    parameters:
+      bucket:
+        type: string
+      distribution:
+        type: string
+
+    steps:
+      - checkout
+      - aws-cli/install
+
+      - run:
+          name: Adding bit.dev to NPM Registry
+          command: |
+            echo "always-auth=true" >> ~/.npmrc;
+            echo "@talus-analytics:registry=https://node.bit.dev" >> ~/.npmrc;
+            echo "@teambit:registry=https://node.bit.dev" >> ~/.npmrc;
+            echo "//node.bit.dev/:_authToken={$BIT_TOKEN}" >> ~/.npmrc;
+
+      - restore_cache:
+          keys:
+            - yarn-deps-{{ checksum "yarn.lock" }}
+            - yarn-deps-
+
+      - run:
+          name: Yarn Install
+          command: yarn install --network-timeout 1000000
+
+      - run:
+          name: Gatsby build
+          command: yarn build;
+
+      - run:
+          name: AWS S3 Sync to <<parameters.bucket>>
+          command: aws s3 sync public/ <<parameters.bucket>> --delete
+
+      - run:
+          name: Run cloudfront invalidation
+          command: |
+            aws cloudfront create-invalidation \
+            --distribution-id <<parameters.distribution>> \
+            --paths "/*"
+
+      - save_cache:
+          key: yarn-deps-{{ checksum "yarn.lock" }}
+          paths:
+            - 'node_modules'
+            - '.cache'
+            - 'public'
