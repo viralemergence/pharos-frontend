@@ -62,7 +62,6 @@ const NavBar = () => {
 
   const links = (
     <>
-      <NavLink to="/">Map</NavLink>
       <NavLink to="/about/">About</NavLink>
       <NavLink to="/guide/">User guide</NavLink>
       <NavLink to="/login/">Sign in</NavLink>
