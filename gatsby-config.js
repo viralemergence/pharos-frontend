@@ -29,6 +29,12 @@ module.exports = {
           },
           {
             baseId: `app09hICSniDr45hj`,
+            tableName: `Sign In`,
+            tableView: `CMS`,
+            mapping: { Image: `fileNode` },
+          },
+          {
+            baseId: `app09hICSniDr45hj`,
             tableName: `Site metadata`,
             tableView: `CMS`,
             mapping: { Image: `fileNode` },
