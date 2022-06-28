@@ -41,7 +41,7 @@ workflows:
                 - staging
       # prod site
       - deploy:
-          bucket: 'prod-pharos-frontend'
+          bucket: 's3://prod-pharos-frontend'
           distribution: 'EG631FGRI2307'
           context: *credentials
           filters:
