@@ -6,6 +6,7 @@ import Providers from '../components/layout/Providers'
 import Main from '../components/layout/Main'
 
 import useIndexPageData from '../cmsHooks/useIndexPageData'
+import NavBar from 'components/layout/NavBar/NavBar'
 
 const IndexPage = (): JSX.Element => {
   const data = useIndexPageData()
@@ -13,6 +14,7 @@ const IndexPage = (): JSX.Element => {
   return (
     <Providers>
       <CMS.SEO />
+      <NavBar />
       <Main>
         <CMS.Image name="Site logo" data={data} />
         <h1>
