@@ -12,12 +12,11 @@ const StyledLink = styled(Link)`
   text-decoration: none;
   transition: 500ms ease;
   font-weight: 400;
-  font-family: 'Open sans', Arial, Helvetica, sans-serif;
 
   &:hover {
     transition: 150ms ease;
     text-decoration: none !important;
-    color: ${({ theme }) => theme.colorLightPurple} !important;
+    color: ${({ theme }) => theme.lightPurple} !important;
   }
 `
 const defaultActiveStyle = {

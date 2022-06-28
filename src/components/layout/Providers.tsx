@@ -19,8 +19,8 @@ const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
     padding: 0;
-    font-family: "Open Sans", Arial, Helvetica, sans-serif;
-    color: ${({ theme }) => theme.grayscaleBlack};
+    font-family: "Poppins", Arial, Helvetica, sans-serif;
+    color: ${({ theme }) => theme.black};
   }
   * {
     box-sizing: border-box;

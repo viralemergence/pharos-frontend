@@ -9,7 +9,7 @@ import MobileMenu from './MobileMenu/MobileMenu'
 import useIndexPageData from 'cmsHooks/useIndexPageData'
 
 const Nav = styled.nav`
-  background-color: ${({ theme }) => theme.colorDarkPurple};
+  background-color: ${({ theme }) => theme.darkPurple};
   position: sticky;
   top: 0px;
   width: 100%;
@@ -48,7 +48,7 @@ const DesktopNav = styled(LinkList)`
 `
 const MobileLinkList = styled(LinkList)`
   flex-direction: column;
-  background-color: ${({ theme }) => theme.colorDarkPurple};
+  background-color: ${({ theme }) => theme.darkPurple};
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
 `
