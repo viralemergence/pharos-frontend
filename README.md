@@ -1,6 +1,8 @@
 <h1 align="center">
-  Talus-Gatsby-Starter
+  Pharos Frontend
 </h1>
+
+This is the frontend repo for the PHAROS project. 
 
 ## 🚀 Quick start
 
