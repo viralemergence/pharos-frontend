@@ -17,12 +17,29 @@ const Container = styled.div`
 `
 const Input = styled.input`
   width: 100%;
+  padding: 10px 20px;
   background: ${({ theme }) => theme.veryLightGray};
   color: ${({ theme }) => theme.darkPurpleWhiter};
+  border-radius: 3px;
+  font-size: 20px;
+  margin-top: 40px;
 `
 const SubmitButton = styled.button`
   border: none;
   background: none;
+  padding: 10px 20px;
+  background-color: ${({ theme }) => theme.mint};
+  margin-top: 60px;
+`
+const HelpText = styled(CMS.RichText)`
+  margin-top: 32px;
+  > p {
+    font-size: 18px;
+  }
+
+  a {
+    color: ${({ theme }) => theme.black};
+  }
 `
 
 const LoginPage = (): JSX.Element => {
@@ -41,9 +58,14 @@ const LoginPage = (): JSX.Element => {
             type="text"
             placeholder={CMS.getText(data, 'Input placeholder')}
           />
-          <SubmitButton>
+          <SubmitButton
+            onClick={() => {
+              alert('login stuff happens!')
+            }}
+          >
             <CMS.Text name="Button text" data={data} />
           </SubmitButton>
+          <HelpText name="Help text" data={data} />
         </Container>
       </Main>
     </Providers>
