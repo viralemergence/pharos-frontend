@@ -45,6 +45,24 @@ const HelpText = styled(CMS.RichText)`
 const LoginPage = (): JSX.Element => {
   const data = useSignInPageData()
 
+  const handleSubmit = () => {
+    const getUserInfo = async () => {
+      const response = await fetch('http://localhost:3000/auth', {
+        method: 'POST',
+        body: '{ "id": "1234" }',
+      })
+
+      if (!response.ok) throw new Error(response.statusText)
+
+      const data = await response.json()
+
+      console.log(data)
+      alert(JSON.stringify(data))
+    }
+
+    getUserInfo()
+  }
+
   return (
     <Providers>
       <CMS.SEO />
@@ -58,11 +76,7 @@ const LoginPage = (): JSX.Element => {
             type="text"
             placeholder={CMS.getText(data, 'Input placeholder')}
           />
-          <SubmitButton
-            onClick={() => {
-              alert('login stuff happens!')
-            }}
-          >
+          <SubmitButton onClick={handleSubmit}>
             <CMS.Text name="Button text" data={data} />
           </SubmitButton>
           <HelpText name="Help text" data={data} />
