@@ -2,12 +2,14 @@
 
 reset=0;
 clean=0;
+api='http://localhost:3000'
 
 # parse params
 while [[ "$#" > 0 ]];
   do case $1 in
     -r|--reset) reset=1; shift;;
     -c|--clean) clean=1; shift;;
+    -a|--api) api=$2; shift;;
     *) echo "Unknown parameter passed: $1"; exit 1 ;;
   esac
   shift
@@ -28,6 +30,11 @@ fi
 if [ "$clean" == "1" ]; then 
   gatsby clean
 fi
+
+export API_URL=$api
+
+echo 'API_URL: '
+echo $API_URL
 
 gatsby develop;
 
