@@ -57,7 +57,6 @@ const LoginPage = (): JSX.Element => {
       const data = await response.json()
 
       console.log(data)
-      alert(JSON.stringify(data))
     }
 
     getUserInfo()
