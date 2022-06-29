@@ -31,10 +31,10 @@ if [ "$clean" == "1" ]; then
   gatsby clean
 fi
 
-export API_URL=$api
+export GATSBY_API_URL=$api
 
-echo 'API_URL: '
-echo $API_URL
+echo 'GATSBY_API_URL: '
+echo $GATSBY_API_URL
 
 gatsby develop;
 

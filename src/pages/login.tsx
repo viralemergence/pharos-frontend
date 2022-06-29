@@ -47,7 +47,7 @@ const LoginPage = (): JSX.Element => {
 
   const handleSubmit = () => {
     const getUserInfo = async () => {
-      const response = await fetch('http://localhost:3000/auth', {
+      const response = await fetch(`${process.env.GATSBY_API_URL}/auth`, {
         method: 'POST',
         body: '{ "id": "1234" }',
       })
