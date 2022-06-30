@@ -26,7 +26,7 @@ interface CMSIconProviderProps {
   children: React.ReactNode
 }
 
-const defaultUserState = {
+export const defaultUserState = {
   status: UserStatus.loggedOut,
   statusMessage: 'Logged out',
 }
