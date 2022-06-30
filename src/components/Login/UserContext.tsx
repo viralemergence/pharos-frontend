@@ -1,4 +1,4 @@
-import React, { createContext } from 'react'
+import React, { createContext, useState } from 'react'
 
 export enum UserStatus {
   'loggedOut',
@@ -10,6 +10,7 @@ export enum UserStatus {
 
 export interface User {
   status: UserStatus
+  statusMessage: string
   data?: {
     researcherID: string
     organization: string
@@ -21,17 +22,23 @@ export interface User {
 type UserContext = [User, React.Dispatch<React.SetStateAction<User>>]
 
 export const UserContext = createContext<UserContext | null>(null)
-
-export interface CMSIconProviderProps {
+interface CMSIconProviderProps {
   children: React.ReactNode
-  data: UserContext
 }
 
 const UserContextProvider = ({
   children,
-  data,
-}: CMSIconProviderProps): JSX.Element => (
-  <UserContext.Provider value={data}>{children}</UserContext.Provider>
-)
+}: CMSIconProviderProps): JSX.Element => {
+  const [user, setUser] = useState<User>({
+    status: UserStatus.loggedOut,
+    statusMessage: 'Logged out',
+  })
+
+  return (
+    <UserContext.Provider value={[user, setUser]}>
+      {children}
+    </UserContext.Provider>
+  )
+}
 
 export default UserContextProvider
