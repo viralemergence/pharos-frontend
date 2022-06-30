@@ -7,6 +7,8 @@ import NavLink from './NavLink'
 import MobileMenu from './MobileMenu/MobileMenu'
 
 import useIndexPageData from 'cmsHooks/useIndexPageData'
+import useUser from 'hooks/useUser'
+import { UserStatus } from '../../Login/UserContext'
 
 const Nav = styled.nav`
   background-color: ${({ theme }) => theme.darkPurple};
@@ -60,13 +62,17 @@ const NavLogo = styled(CMS.Image)`
 const NavBar = () => {
   const data = useIndexPageData()
 
-  const links = (
-    <>
-      <NavLink to="/about/">About</NavLink>
-      <NavLink to="/guide/">User guide</NavLink>
-      <NavLink to="/signup/">Sign in</NavLink>
-    </>
-  )
+  const [user] = useUser()
+
+  const links = [
+    <NavLink to="/about/">About</NavLink>,
+    <NavLink to="/guide/">User guide</NavLink>,
+  ]
+
+  if (user.status === UserStatus.loggedIn)
+    links.push(<NavLink to="/">{user.data?.name}</NavLink>)
+  else links.push(<NavLink to="/signin/">Sign in</NavLink>)
+
   return (
     <Nav>
       <Container>
