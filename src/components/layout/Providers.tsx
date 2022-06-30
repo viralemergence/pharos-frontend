@@ -1,11 +1,10 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import { createGlobalStyle, ThemeProvider } from 'styled-components'
 
 import CMS from '@talus-analytics/library.airtable-cms'
 
 import useSiteMetadataQuery from 'cmsHooks/useSiteMetadataQuery'
-import UserContextProvider, { User, UserStatus } from './UserContext'
 import useIconsQuery from 'cmsHooks/useIconsQuery'
 import getTrackingId from 'utilities/trackingId'
 
@@ -33,19 +32,13 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
   // get GA tracking ID
   const trackingId = getTrackingId()
 
-  const [user, setUser] = useState<User>({
-    status: UserStatus.loggedOut,
-  })
-
   return (
     <CMS.IconProvider data={icons}>
       <CMS.SiteMetadataProvider data={siteMetadata} trackingId={trackingId}>
-        <UserContextProvider data={[user, setUser]}>
-          <ThemeProvider theme={{ ...textStyles, ...colorPalette }}>
-            <GlobalStyle />
-            {children}
-          </ThemeProvider>
-        </UserContextProvider>
+        <ThemeProvider theme={{ ...textStyles, ...colorPalette }}>
+          <GlobalStyle />
+          {children}
+        </ThemeProvider>
       </CMS.SiteMetadataProvider>
     </CMS.IconProvider>
   )

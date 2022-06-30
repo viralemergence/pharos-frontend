@@ -6,7 +6,8 @@ import useSignInPageData from 'cmsHooks/useSignInPageData'
 import useUser from 'hooks/useUser'
 
 import authenticate from 'components/Login/authenticate'
-import { UserStatus } from 'components/layout/UserContext'
+import { UserStatus } from 'components/Login/UserContext'
+import { navigate } from 'gatsby'
 
 const Container = styled.div`
   max-width: 500px;
@@ -49,27 +50,7 @@ const Login = () => {
     e.preventDefault()
     const user = await authenticate(researcherID)
     setUser(user)
-  }
-
-  let statusMessage = ''
-  switch (user.status) {
-    case UserStatus.loggedOut:
-      statusMessage = 'Logged Out'
-      break
-    case UserStatus.loggedIn:
-      statusMessage = 'Logged In'
-      break
-    case UserStatus.invalidUser:
-      statusMessage = 'User not found'
-      break
-    case UserStatus.sessionExpired:
-      statusMessage = 'Session Expired'
-      break
-    case UserStatus.authError:
-      statusMessage = 'Authentication Error'
-      break
-    default:
-      statusMessage = ''
+    if (user.status === UserStatus.loggedIn) navigate('/')
   }
 
   return (
@@ -84,7 +65,7 @@ const Login = () => {
           onChange={e => setResearcherID(e.target.value)}
           value={researcherID}
         />
-        <p>{statusMessage}</p>
+        <p>{user.statusMessage}</p>
         <SubmitButton type="submit">
           <CMS.Text name="Button text" data={data} />
         </SubmitButton>

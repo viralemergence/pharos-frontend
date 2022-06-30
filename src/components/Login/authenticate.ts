@@ -1,4 +1,4 @@
-import { User, UserStatus } from 'components/layout/UserContext'
+import { User, UserStatus } from 'components/Login/UserContext'
 
 const authenticate = async (researcherID: string) => {
   const response = await fetch(`${process.env.GATSBY_API_URL}/auth`, {
@@ -7,16 +7,26 @@ const authenticate = async (researcherID: string) => {
   }).catch(error => console.log(error))
 
   console.log(response)
-  if (!response) return { status: UserStatus.authError }
+  if (!response)
+    return {
+      status: UserStatus.authError,
+      statusMessage: 'Authentication Error',
+    }
 
-  if (response.status == 403) return { status: UserStatus.invalidUser }
+  if (response.status == 403)
+    return { status: UserStatus.invalidUser, statusMessage: 'User not found' }
 
-  if (!response.ok) return { status: UserStatus.authError }
+  if (!response.ok)
+    return {
+      status: UserStatus.authError,
+      statusMessage: 'Authentication Error',
+    }
 
   const data = await response.json()
 
   const user = {
     status: UserStatus.loggedIn,
+    statusMessage: 'Logged In',
     data: data,
   }
 
