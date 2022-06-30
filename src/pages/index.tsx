@@ -1,28 +1,17 @@
 import React from 'react'
 
 import CMS from '@talus-analytics/library.airtable-cms'
-import Providers from '../components/layout/Providers'
+import Providers from 'components/layout/Providers'
 
-import Main from '../components/layout/Main'
-
-import useIndexPageData from '../cmsHooks/useIndexPageData'
 import NavBar from 'components/layout/NavBar/NavBar'
+import ClientRouter from 'components/ClientRouter/ClientRouter'
 
-const IndexPage = (): JSX.Element => {
-  const data = useIndexPageData()
-
-  return (
-    <Providers>
-      <CMS.SEO />
-      <NavBar />
-      <Main>
-        <h1>
-          <CMS.Text name="H1" data={data} />
-        </h1>
-        <CMS.RichText name="Intro paragraph" data={data} />
-      </Main>
-    </Providers>
-  )
-}
+const IndexPage = (): JSX.Element => (
+  <Providers>
+    <CMS.SEO />
+    <NavBar />
+    <ClientRouter />
+  </Providers>
+)
 
 export default IndexPage
