@@ -1,4 +1,4 @@
-import { User, UserStatus } from 'components/Login/UserContext'
+import { User, UserStatus } from 'components/Login/UserContextProvider'
 
 const authenticate = async (researcherID: string) => {
   const response = await fetch(`${process.env.GATSBY_API_URL}/auth`, {

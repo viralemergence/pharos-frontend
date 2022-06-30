@@ -8,7 +8,7 @@ import * as React from 'react'
 
 import type { GatsbyBrowser } from 'gatsby'
 
-import UserContextProvider from './src/components/Login/UserContext'
+import UserContextProvider from './src/components/Login/UserContextProvider'
 
 export const wrapRootElement: GatsbyBrowser['wrapRootElement'] = ({
   element,

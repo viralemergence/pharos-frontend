@@ -6,7 +6,7 @@ import useSignInPageData from 'cmsHooks/useSignInPageData'
 import useUser from 'hooks/useUser'
 
 import authenticate from 'components/Login/authenticate'
-import { UserStatus } from 'components/Login/UserContext'
+import { UserStatus } from 'components/Login/UserContextProvider'
 import { navigate } from 'gatsby'
 
 const Container = styled.div`

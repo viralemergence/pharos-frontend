@@ -19,20 +19,22 @@ export interface User {
   }
 }
 
-type UserContext = [User, React.Dispatch<React.SetStateAction<User>>]
+export type UserContext = [User, React.Dispatch<React.SetStateAction<User>>]
 
 export const UserContext = createContext<UserContext | null>(null)
 interface CMSIconProviderProps {
   children: React.ReactNode
 }
 
+const defaultUserState = {
+  status: UserStatus.loggedOut,
+  statusMessage: 'Logged out',
+}
+
 const UserContextProvider = ({
   children,
 }: CMSIconProviderProps): JSX.Element => {
-  const [user, setUser] = useState<User>({
-    status: UserStatus.loggedOut,
-    statusMessage: 'Logged out',
-  })
+  const [user, setUser] = useState<User>(defaultUserState)
 
   return (
     <UserContext.Provider value={[user, setUser]}>

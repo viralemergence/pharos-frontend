@@ -8,7 +8,7 @@ import MobileMenu from './MobileMenu/MobileMenu'
 
 import useIndexPageData from 'cmsHooks/useIndexPageData'
 import useUser from 'hooks/useUser'
-import { UserStatus } from '../../Login/UserContext'
+import { UserStatus } from '../../Login/UserContextProvider'
 
 const Nav = styled.nav`
   background-color: ${({ theme }) => theme.darkPurple};
