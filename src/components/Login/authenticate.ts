@@ -9,7 +9,7 @@ const authenticate = async (researcherID: string) => {
   console.log(response)
   if (!response) return { status: UserStatus.authError }
 
-  if (response.status == 500) return { status: UserStatus.invalidUser }
+  if (response.status == 403) return { status: UserStatus.invalidUser }
 
   if (!response.ok) return { status: UserStatus.authError }
 
