@@ -65,7 +65,7 @@ const Login = () => {
           onChange={e => setResearcherID(e.target.value)}
           value={researcherID}
         />
-        <p>{user.statusMessage}</p>
+        {user.status !== UserStatus.loggedOut && <p>{user.statusMessage}</p>}
         <SubmitButton type="submit">
           <CMS.Text name="Button text" data={data} />
         </SubmitButton>
