@@ -16,6 +16,7 @@ workflows:
           # distribution: 'E31RXXXXXXXXXX'
           bucket: 's3://dev-pharos-frontend'
           distribution: 'EWN5TGLCXWM1V'
+          api: https://8hxet5nlie.execute-api.us-east-2.amazonaws.com/Prod
           context: *credentials
           filters:
             branches:
@@ -43,6 +44,7 @@ workflows:
       - deploy:
           bucket: 's3://prod-pharos-frontend'
           distribution: 'EG631FGRI2307'
+          api: https://z2t5g5l1id.execute-api.us-east-2.amazonaws.com/Prod
           context: *credentials
           filters:
             branches:
@@ -65,6 +67,8 @@ jobs:
       bucket:
         type: string
       distribution:
+        type: string
+      api:
         type: string
 
     steps:
@@ -90,7 +94,7 @@ jobs:
 
       - run:
           name: Gatsby build
-          command: yarn build;
+          command: yarn build --api <<parameters.api>>
 
       - run:
           name: AWS S3 Sync to <<parameters.bucket>>
