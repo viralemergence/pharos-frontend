@@ -33,7 +33,6 @@ const Organization = styled.div`
   margin-top: 15px;
   font-size: 20px;
   line-height: 30px;
-  color: ${({ theme }) => theme.medGray};
   border-bottom: 1px solid white;
   padding-bottom: 15px;
 `
