@@ -8,9 +8,15 @@ export enum UserStatus {
   'authError',
 }
 
+export enum View {
+  'home',
+  'datagrid',
+}
+
 export interface User {
   status: UserStatus
   statusMessage: string
+  view?: View
   data?: {
     researcherID: string
     organization: string
@@ -29,6 +35,7 @@ interface CMSIconProviderProps {
 export const defaultUserState = {
   status: UserStatus.loggedOut,
   statusMessage: 'Logged out',
+  view: View.home,
 }
 
 const UserContextProvider = ({

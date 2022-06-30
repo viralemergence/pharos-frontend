@@ -1,4 +1,4 @@
-import { User, UserStatus } from 'components/Login/UserContextProvider'
+import { User, UserStatus, View } from 'components/Login/UserContextProvider'
 
 const authenticate = async (researcherID: string) => {
   const response = await fetch(`${process.env.GATSBY_API_URL}/auth`, {
@@ -27,6 +27,7 @@ const authenticate = async (researcherID: string) => {
   const user = {
     status: UserStatus.loggedIn,
     statusMessage: 'Logged In',
+    view: View.home,
     data: data,
   }
 
