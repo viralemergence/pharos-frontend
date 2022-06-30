@@ -10,7 +10,7 @@
   "scripts": {
     "develop": "scripts/start.sh",
     "start": "scripts/start.sh",
-    "build": "gatsby build",
+    "build": "scripts/build.sh",
     "serve": "gatsby serve",
     "postinstall": "scripts/postinstall.sh"
   },
