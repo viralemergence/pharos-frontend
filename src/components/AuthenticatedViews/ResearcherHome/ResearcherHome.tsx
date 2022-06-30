@@ -1,16 +1,25 @@
 import React from 'react'
+import styled from 'styled-components'
 
-import Main from 'components/layout/Main'
 import useUser from 'hooks/useUser'
+import Sidebar from 'components/Sidebar/Sidebar'
+import MainGrid from 'components/layout/MainGrid'
+
+const Content = styled.div`
+  overflow-y: scroll;
+  padding: 15px;
+`
 
 const ResearcherHome = () => {
   const [user] = useUser()
 
   return (
-    <Main>
-      <h1>Researcher Home</h1>
-      <h2>Logged in as {user.data?.name}</h2>
-    </Main>
+    <MainGrid>
+      <Sidebar />
+      <Content>
+        <h1>Researcher Home</h1>
+      </Content>
+    </MainGrid>
   )
 }
 
