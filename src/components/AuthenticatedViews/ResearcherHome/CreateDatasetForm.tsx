@@ -5,9 +5,8 @@ import Input from 'components/ui/Input'
 import MintButton from 'components/ui/MintButton'
 
 const Form = styled.form`
-  width: 100%;
-  max-width: 500px;
-  min-height: 300px;
+  width: 500px;
+  max-width: 100%;
 `
 const H1 = styled.h1`
   ${({ theme }) => theme.h3}
