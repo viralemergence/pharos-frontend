@@ -1,23 +1,40 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import useUser from 'hooks/useUser'
 import Sidebar from 'components/Sidebar/Sidebar'
 import MainGrid from 'components/layout/MainGrid'
 
 const Content = styled.div`
   overflow-y: scroll;
-  padding: 15px;
+  padding: 40px;
+`
+const TopBar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`
+const H1 = styled.h1`
+  ${({ theme }) => theme.h3}
+  margin: 0;
+`
+const NewDatasetButton = styled.button`
+  ${({ theme }) => theme.smallParagraph}
+  border: none;
+  background: none;
+  margin: 0;
+  padding: 10px 20px;
+  background-color: ${({ theme }) => theme.mint};
 `
 
 const ResearcherHome = () => {
-  const [user] = useUser()
-
   return (
     <MainGrid>
       <Sidebar />
       <Content>
-        <h1>Researcher Home</h1>
+        <TopBar>
+          <H1>My Datasets</H1>
+          <NewDatasetButton>+ New Dataset</NewDatasetButton>
+        </TopBar>
       </Content>
     </MainGrid>
   )
