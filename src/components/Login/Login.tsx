@@ -25,6 +25,7 @@ const Input = styled.input`
   margin-top: 40px;
 `
 const SubmitButton = styled.button`
+  ${({ theme }) => theme.smallParagraph}
   border: none;
   background: none;
   padding: 10px 20px;
