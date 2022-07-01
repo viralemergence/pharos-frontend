@@ -3,6 +3,7 @@ import styled from 'styled-components'
 
 import Input from 'components/ui/Input'
 import MintButton from 'components/ui/MintButton'
+import Label from 'components/ui/InputLabel'
 
 const Form = styled.form`
   width: 500px;
@@ -10,12 +11,6 @@ const Form = styled.form`
 `
 const H1 = styled.h1`
   ${({ theme }) => theme.h3}
-`
-
-const Label = styled.label`
-  ${({ theme }) => theme.smallParagraph}
-  display: block;
-  margin-bottom: 15px;
 `
 const CreateDatasetForm = () => {
   return (
