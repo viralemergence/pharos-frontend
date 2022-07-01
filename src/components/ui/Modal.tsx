@@ -34,7 +34,7 @@ const ModalBackground = styled.div`
   background-color: #fff;
   max-height: 80vh;
   max-width: 90vw;
-  border-radius: 15px;
+  border-radius: 0px;
   box-shadow: 3px 3px 20px rgba(0, 0, 0, 0.25);
   overflow: scroll;
   z-index: 10;
