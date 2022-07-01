@@ -62,10 +62,12 @@ const Login = () => {
         <Label>
           <CMS.Text data={data} name="Input placeholder" />
           <Input
-            ref={firstInputRef}
             type="text"
+            spellCheck="false"
+            ref={firstInputRef}
             onChange={e => setResearcherID(e.target.value)}
             value={researcherID}
+            style={{ textTransform: 'uppercase' }}
           />
         </Label>
         {user.status !== UserStatus.loggedOut && <p>{user.statusMessage}</p>}
