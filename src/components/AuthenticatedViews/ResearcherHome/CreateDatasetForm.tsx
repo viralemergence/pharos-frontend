@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
 import Input from 'components/ui/Input'
@@ -17,12 +17,18 @@ const H1 = styled.h1`
   ${({ theme }) => theme.h3}
 `
 const CreateDatasetForm = () => {
+  const firstInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    firstInputRef.current?.focus()
+  }, [])
+
   return (
     <Form>
       <H1>Create Dataset</H1>
       <Label>
         Dataset Name
-        <Input type="text" />
+        <Input type="text" ref={firstInputRef} />
       </Label>
       <Label>
         Collection Date
