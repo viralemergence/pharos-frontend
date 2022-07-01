@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import Sidebar from 'components/Sidebar/Sidebar'
 import MainGrid from 'components/layout/MainGrid'
+import Modal from 'components/ui/Modal'
+import CreateDatasetForm from './CreateDatasetForm'
 
 const Content = styled.div`
   overflow-y: scroll;
@@ -27,13 +29,20 @@ const NewDatasetButton = styled.button`
 `
 
 const ResearcherHome = () => {
+  const [createModalOpen, setCreateModalOpen] = useState(false)
+
   return (
     <MainGrid>
       <Sidebar />
       <Content>
         <TopBar>
           <H1>My Datasets</H1>
-          <NewDatasetButton>+ New Dataset</NewDatasetButton>
+          <NewDatasetButton onClick={() => setCreateModalOpen(true)}>
+            + New Dataset
+          </NewDatasetButton>
+          <Modal closeable open={createModalOpen} setOpen={setCreateModalOpen}>
+            <CreateDatasetForm />
+          </Modal>
         </TopBar>
       </Content>
     </MainGrid>
