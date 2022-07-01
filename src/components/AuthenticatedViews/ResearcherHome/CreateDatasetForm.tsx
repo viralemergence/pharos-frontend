@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 
 import Input from 'components/ui/Input'
-import SubmitButton from 'components/ui/SubmitButtton'
+import MintButton from 'components/ui/MintButton'
 
 const Form = styled.form`
   width: 100%;
@@ -30,9 +30,9 @@ const CreateDatasetForm = () => {
         Collection Date
         <Input type="date" />
       </Label>
-      <SubmitButton onClick={e => e.preventDefault()} type="submit">
+      <MintButton onClick={e => e.preventDefault()} type="submit">
         Create
-      </SubmitButton>
+      </MintButton>
     </Form>
   )
 }

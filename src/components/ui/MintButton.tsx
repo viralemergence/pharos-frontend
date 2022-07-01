@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { lighten } from 'polished'
 
-const SubmitButton = styled.button`
+const MintButton = styled.button`
   border: none;
   background: none;
   margin: 0;
@@ -16,4 +16,4 @@ const SubmitButton = styled.button`
   }
 `
 
-export default SubmitButton
+export default MintButton

@@ -11,7 +11,7 @@ import useSignInPageData from 'cmsHooks/useSignInPageData'
 import useUser from 'hooks/useUser'
 
 import authenticate from 'components/Login/authenticate'
-import SubmitButton from 'components/ui/SubmitButtton'
+import MintButton from 'components/ui/MintButton'
 
 const Container = styled.div`
   max-width: 500px;
@@ -55,9 +55,9 @@ const Login = () => {
           value={researcherID}
         />
         {user.status !== UserStatus.loggedOut && <p>{user.statusMessage}</p>}
-        <SubmitButton type="submit" style={{ marginTop: 60 }}>
+        <MintButton type="submit" style={{ marginTop: 60 }}>
           <CMS.Text name="Button text" data={data} />
-        </SubmitButton>
+        </MintButton>
         <HelpText name="Help text" data={data} />
       </form>
     </Container>

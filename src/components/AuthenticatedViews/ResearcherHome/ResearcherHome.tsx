@@ -5,7 +5,7 @@ import Sidebar from 'components/Sidebar/Sidebar'
 import MainGrid from 'components/layout/MainGrid'
 import Modal from 'components/ui/Modal'
 import CreateDatasetForm from './CreateDatasetForm'
-import SubmitButton from 'components/ui/SubmitButtton'
+import MintButton from 'components/ui/MintButton'
 
 const Content = styled.div`
   overflow-y: scroll;
@@ -30,9 +30,9 @@ const ResearcherHome = () => {
       <Content>
         <TopBar>
           <H1>My Datasets</H1>
-          <SubmitButton onClick={() => setCreateModalOpen(true)}>
+          <MintButton onClick={() => setCreateModalOpen(true)}>
             + New Dataset
-          </SubmitButton>
+          </MintButton>
           <Modal closeable open={createModalOpen} setOpen={setCreateModalOpen}>
             <CreateDatasetForm />
           </Modal>
