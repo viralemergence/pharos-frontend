@@ -8,6 +8,10 @@ import Label from 'components/ui/InputLabel'
 const Form = styled.form`
   width: 500px;
   max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 0 15px 15px 15px;
 `
 const H1 = styled.h1`
   ${({ theme }) => theme.h3}
@@ -24,7 +28,11 @@ const CreateDatasetForm = () => {
         Collection Date
         <Input type="date" />
       </Label>
-      <MintButton onClick={e => e.preventDefault()} type="submit">
+      <MintButton
+        onClick={e => e.preventDefault()}
+        type="submit"
+        style={{ marginLeft: 'auto' }}
+      >
         Create
       </MintButton>
     </Form>
