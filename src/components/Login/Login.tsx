@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { navigate } from 'gatsby'
 
@@ -40,6 +40,12 @@ const Login = () => {
   const [researcherID, setResearcherID] = useState('')
   const [user, setUser] = useUser()
 
+  const firstInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    firstInputRef.current?.focus()
+  }, [])
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const user = await authenticate(researcherID)
@@ -56,6 +62,7 @@ const Login = () => {
         <Label>
           <CMS.Text data={data} name="Input placeholder" />
           <Input
+            ref={firstInputRef}
             type="text"
             onChange={e => setResearcherID(e.target.value)}
             value={researcherID}
