@@ -5,6 +5,7 @@ import Sidebar from 'components/Sidebar/Sidebar'
 import MainGrid from 'components/layout/MainGrid'
 import Modal from 'components/ui/Modal'
 import CreateDatasetForm from './CreateDatasetForm'
+import SubmitButton from 'components/ui/SubmitButtton'
 
 const Content = styled.div`
   overflow-y: scroll;
@@ -19,14 +20,6 @@ const H1 = styled.h1`
   ${({ theme }) => theme.h3}
   margin: 0;
 `
-const NewDatasetButton = styled.button`
-  ${({ theme }) => theme.smallParagraph}
-  border: none;
-  background: none;
-  margin: 0;
-  padding: 10px 20px;
-  background-color: ${({ theme }) => theme.mint};
-`
 
 const ResearcherHome = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false)
@@ -37,9 +30,9 @@ const ResearcherHome = () => {
       <Content>
         <TopBar>
           <H1>My Datasets</H1>
-          <NewDatasetButton onClick={() => setCreateModalOpen(true)}>
+          <SubmitButton onClick={() => setCreateModalOpen(true)}>
             + New Dataset
-          </NewDatasetButton>
+          </SubmitButton>
           <Modal closeable open={createModalOpen} setOpen={setCreateModalOpen}>
             <CreateDatasetForm />
           </Modal>

@@ -1,43 +1,34 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 
+import Input from 'components/ui/Input'
+import SubmitButton from 'components/ui/SubmitButtton'
+
 const Form = styled.form`
-  width: 500px;
-  max-width: 90%;
+  width: 100%;
+  max-width: 500px;
   min-height: 300px;
 `
-const Input = styled.input`
-  width: 100%;
-  padding: 10px 20px;
-  background: ${({ theme }) => theme.veryLightGray};
-  color: ${({ theme }) => theme.darkPurpleWhiter};
-  border-radius: 3px;
-  font-size: 20px;
-  margin: 0;
-  margin-bottom: 20px;
+const H1 = styled.h1`
+  ${({ theme }) => theme.h3}
 `
+
 const Label = styled.label`
   ${({ theme }) => theme.smallParagraph}
-`
-const SubmitButton = styled.button`
-  ${({ theme }) => theme.smallParagraph}
-  border: none;
-  background: none;
-  padding: 10px 20px;
-  background-color: ${({ theme }) => theme.mint};
-  margin-top: 60px;
+  display: block;
+  margin-bottom: 15px;
 `
 const CreateDatasetForm = () => {
   return (
     <Form>
-      <h1>Create Dataset</h1>
+      <H1>Create Dataset</H1>
       <Label>
         Dataset Name
         <Input type="text" />
       </Label>
       <Label>
         Collection Date
-        <Input type="text" />
+        <Input type="date" />
       </Label>
       <SubmitButton onClick={e => e.preventDefault()} type="submit">
         Create

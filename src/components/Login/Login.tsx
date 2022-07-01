@@ -1,36 +1,23 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
+import { navigate } from 'gatsby'
+
 import CMS from '@talus-analytics/library.airtable-cms'
 
+import Input from 'components/ui/Input'
+
+import { UserStatus } from 'components/Login/UserContextProvider'
 import useSignInPageData from 'cmsHooks/useSignInPageData'
 import useUser from 'hooks/useUser'
 
 import authenticate from 'components/Login/authenticate'
-import { UserStatus } from 'components/Login/UserContextProvider'
-import { navigate } from 'gatsby'
+import SubmitButton from 'components/ui/SubmitButtton'
 
 const Container = styled.div`
   max-width: 500px;
   width: 90%;
   margin-left: auto;
   margin-right: auto;
-`
-const Input = styled.input`
-  width: 100%;
-  padding: 10px 20px;
-  background: ${({ theme }) => theme.veryLightGray};
-  color: ${({ theme }) => theme.darkPurpleWhiter};
-  border-radius: 3px;
-  font-size: 20px;
-  margin-top: 40px;
-`
-const SubmitButton = styled.button`
-  ${({ theme }) => theme.smallParagraph}
-  border: none;
-  background: none;
-  padding: 10px 20px;
-  background-color: ${({ theme }) => theme.mint};
-  margin-top: 60px;
 `
 const HelpText = styled(CMS.RichText)`
   margin-top: 32px;
@@ -62,12 +49,13 @@ const Login = () => {
       <form onSubmit={e => handleSubmit(e)}>
         <Input
           type="text"
+          style={{ marginTop: 40 }}
           placeholder={CMS.getText(data, 'Input placeholder')}
           onChange={e => setResearcherID(e.target.value)}
           value={researcherID}
         />
         {user.status !== UserStatus.loggedOut && <p>{user.statusMessage}</p>}
-        <SubmitButton type="submit">
+        <SubmitButton type="submit" style={{ marginTop: 60 }}>
           <CMS.Text name="Button text" data={data} />
         </SubmitButton>
         <HelpText name="Help text" data={data} />
