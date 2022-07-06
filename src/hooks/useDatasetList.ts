@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react'
 import useUser from './useUser'
 
-export interface DatasetList {
-  [key: string]: {
-    name: string
-    samples_taken: boolean
-    detection_run: boolean
-    versions: {
-      uri: string
-      date: string
-    }[]
-  }
+export interface Dataset {
+  datasetID: string
+  researcherID: string
+  name: string
+  samples_taken: string
+  detection_run: string
+  versions: {
+    date: string
+    uri: string
+  }[]
 }
 
 const useDatasetList = () => {
@@ -18,7 +18,7 @@ const useDatasetList = () => {
 
   const researcherID = user.data?.researcherID
 
-  const [datasetList, setDatasetList] = useState<DatasetList | null>(null)
+  const [datasetList, setDatasetList] = useState<Dataset[] | null>(null)
 
   useEffect(() => {
     const getDatasetList = async (researcherID: string) => {
@@ -35,9 +35,9 @@ const useDatasetList = () => {
         return undefined
       }
 
-      const data = await response.json()
+      const { datasets } = await response.json()
 
-      setDatasetList(data)
+      setDatasetList(datasets as Dataset[])
     }
 
     if (researcherID) getDatasetList(researcherID)
