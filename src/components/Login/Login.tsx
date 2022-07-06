@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { navigate } from 'gatsby'
 
 import CMS from '@talus-analytics/library.airtable-cms'
 
@@ -12,8 +12,9 @@ import authenticate from 'components/Login/authenticate'
 import MintButton from 'components/ui/MintButton'
 import Label from 'components/ui/InputLabel'
 import Input from 'components/ui/Input'
+import Main from 'components/layout/Main'
 
-const Container = styled.div`
+const Container = styled(Main)`
   max-width: 500px;
   width: 90%;
   margin-left: auto;
@@ -46,11 +47,21 @@ const Login = () => {
     firstInputRef.current?.focus()
   }, [])
 
+  const navigate = useNavigate()
+  const [search] = useSearchParams()
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    // authenticate details
     const user = await authenticate(researcherID)
+
+    // store in global user context
     setUser(user)
-    if (user.status === UserStatus.loggedIn) navigate('/')
+
+    // if successful, navigate to 'next' from search params
+    if (user.status === UserStatus.loggedIn) {
+      navigate(search.get('next') || '/')
+    }
   }
 
   return (
