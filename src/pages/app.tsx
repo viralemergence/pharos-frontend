@@ -23,7 +23,7 @@ const App = (): JSX.Element => {
         <Routes>
           <Route path={'/login'} element={<Login />} />
           <Route
-            path={'/dataset'}
+            path={'/dataset/:id'}
             element={
               <RequireAuth>
                 <DatasetEditor />
