@@ -6,7 +6,7 @@ import Providers from 'components/layout/Providers'
 
 import Login from 'components/Login/Login'
 import NavBar from 'components/layout/NavBar/NavBar'
-import RequireAuth from 'components/ClientRouter/RequireAuth'
+import RequireAuth from 'components/AuthenticatedViews/RequireAuth'
 
 import DatasetEditor from 'components/AuthenticatedViews/DatasetEditor/DatasetEditor'
 import ResearcherHome from 'components/AuthenticatedViews/ResearcherHome/ResearcherHome'
