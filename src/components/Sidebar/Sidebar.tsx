@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 import useUser from 'hooks/useUser'
+import useDatasets from 'hooks/useDatasetList'
 // import useDatasetList from 'hooks/useDatasetList'
 
 const Container = styled.div`
@@ -35,8 +36,7 @@ const Organization = styled.div`
 
 const Sidebar = () => {
   const [user] = useUser()
-
-  // const datasetList = useDatasetList()
+  const [datasets] = useDatasets()
 
   return (
     <Container>
@@ -44,8 +44,8 @@ const Sidebar = () => {
       <ResearcherID>Researcher ID: {user.data?.researcherID}</ResearcherID>
       <Organization>{user.data?.organization}</Organization>
       <ul>
-        {/* {datasetList &&
-          Object.values(datasetList).map(dataset => <li>{dataset.name}</li>)} */}
+        {datasets &&
+          Object.values(datasets).map(dataset => <li>{dataset.name}</li>)}
       </ul>
     </Container>
   )

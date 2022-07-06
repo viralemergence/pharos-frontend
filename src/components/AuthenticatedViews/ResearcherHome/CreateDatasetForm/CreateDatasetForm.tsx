@@ -8,6 +8,7 @@ import Input from 'components/ui/Input'
 import { useNavigate } from 'react-router-dom'
 import createDataset from './createDataset'
 import useUser from 'hooks/useUser'
+import useDatasets from 'hooks/useDatasetList'
 
 const Form = styled.form`
   width: 500px;
@@ -29,6 +30,8 @@ const CreateDatasetForm = () => {
 
   const [user] = useUser()
   const navigate = useNavigate()
+  const [_, setDatasets] = useDatasets()
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
@@ -36,8 +39,6 @@ const CreateDatasetForm = () => {
       dataset_name: { value: string }
       date_collected: { value: string }
     }
-
-    console.log(target.dataset_name.value)
 
     if (!user.data) return false
 
@@ -49,8 +50,13 @@ const CreateDatasetForm = () => {
       0
     )
 
-    if (created) navigate('/dataset')
-    else throw new Error('dataset creation failed')
+    console.log(created)
+
+    if (created) {
+      setDatasets(prev => [...prev, created])
+      navigate(`/dataset/${created.datasetID}`)
+    }
+    // else throw new Error('dataset creation failed')
   }
 
   return (

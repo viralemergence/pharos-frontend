@@ -22,6 +22,7 @@ export interface User {
 export type UserContext = [User, React.Dispatch<React.SetStateAction<User>>]
 
 export const UserContext = createContext<UserContext | null>(null)
+
 interface CMSIconProviderProps {
   children: React.ReactNode
 }

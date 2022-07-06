@@ -1,3 +1,5 @@
+import { Dataset } from 'hooks/useDatasetList'
+
 const createDataset = async (
   researcherID: string,
   dataset_name: string,
@@ -16,8 +18,8 @@ const createDataset = async (
     }),
   }).catch(error => console.log(error))
 
-  if (!response || !response.ok) return false
-  return true
+  if (!response || !response.ok) return null
+  return (await response.json()) as Dataset
 }
 
 export default createDataset
