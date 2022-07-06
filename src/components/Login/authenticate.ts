@@ -1,11 +1,10 @@
-import { User, UserStatus, View } from 'components/Login/UserContextProvider'
+import { User, UserStatus } from 'components/Login/UserContextProvider'
 
 const authenticate = async (researcherID: string) => {
   // offline debugging
   // return {
   //   status: UserStatus.loggedIn,
   //   statusMessage: 'Logged in',
-  //   view: View.home,
   //   data: {
   //     name: 'Ryan Zimmerman',
   //     organization: 'Talus Analytics',
@@ -40,7 +39,6 @@ const authenticate = async (researcherID: string) => {
   const user = {
     status: UserStatus.loggedIn,
     statusMessage: 'Logged In',
-    view: View.home,
     data: data,
   }
 
