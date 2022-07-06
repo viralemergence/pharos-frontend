@@ -11,32 +11,37 @@ import RequireAuth from 'components/ClientRouter/RequireAuth'
 import DatasetEditor from 'components/AuthenticatedViews/DatasetEditor/DatasetEditor'
 import ResearcherHome from 'components/AuthenticatedViews/ResearcherHome/ResearcherHome'
 
-const App = (): JSX.Element => (
-  <Providers>
-    <CMS.SEO />
-    <HashRouter>
-      <NavBar />
-      <Routes>
-        <Route path={'/login'} element={<Login />} />
-        <Route
-          path={'/dataset'}
-          element={
-            <RequireAuth>
-              <DatasetEditor />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path={'/'}
-          element={
-            <RequireAuth>
-              <ResearcherHome />
-            </RequireAuth>
-          }
-        />
-      </Routes>
-    </HashRouter>
-  </Providers>
-)
+const App = (): JSX.Element => {
+  // on the buidl server, don't try to render the app
+  if (typeof window === 'undefined') return <></>
+
+  return (
+    <Providers>
+      <CMS.SEO />
+      <HashRouter>
+        <NavBar />
+        <Routes>
+          <Route path={'/login'} element={<Login />} />
+          <Route
+            path={'/dataset'}
+            element={
+              <RequireAuth>
+                <DatasetEditor />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path={'/'}
+            element={
+              <RequireAuth>
+                <ResearcherHome />
+              </RequireAuth>
+            }
+          />
+        </Routes>
+      </HashRouter>
+    </Providers>
+  )
+}
 
 export default App
