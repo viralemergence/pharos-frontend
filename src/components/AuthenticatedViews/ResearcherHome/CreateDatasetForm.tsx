@@ -1,9 +1,12 @@
 import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
-import Input from 'components/ui/Input'
+import { View } from 'components/Login/UserContextProvider'
 import MintButton from 'components/ui/MintButton'
 import Label from 'components/ui/InputLabel'
+import Input from 'components/ui/Input'
+
+import useUser from 'hooks/useUser'
 
 const Form = styled.form`
   width: 500px;
@@ -18,13 +21,19 @@ const H1 = styled.h1`
 `
 const CreateDatasetForm = () => {
   const firstInputRef = useRef<HTMLInputElement>(null)
+  const [_, setUser] = useUser()
 
   useEffect(() => {
     firstInputRef.current?.focus()
   }, [])
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setUser(prev => ({ ...prev, view: View.datagrid }))
+  }
+
   return (
-    <Form>
+    <Form onSubmit={e => handleSubmit(e)}>
       <H1>Create Dataset</H1>
       <Label>
         Dataset Name
@@ -34,11 +43,7 @@ const CreateDatasetForm = () => {
         Collection Date
         <Input type="date" />
       </Label>
-      <MintButton
-        onClick={e => e.preventDefault()}
-        type="submit"
-        style={{ marginLeft: 'auto' }}
-      >
+      <MintButton type="submit" style={{ marginLeft: 'auto' }}>
         Create
       </MintButton>
     </Form>
