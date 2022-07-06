@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import useDatasets from 'hooks/useDatasetList'
+import useDatasets from 'hooks/useDatasets'
 import { Link } from 'react-router-dom'
 
 const Container = styled.div``
@@ -13,9 +13,9 @@ const DatasetsTable = () => {
   return (
     <Container>
       <ul>
-        {datasets.map(dataset => (
+        {Object.entries(datasets).map(([id, dataset]) => (
           <li>
-            <Link to={`/dataset/${dataset.datasetID}`}>{dataset.name}</Link>
+            <Link to={`/dataset/${id}`}>{dataset.name}</Link>
           </li>
         ))}
       </ul>

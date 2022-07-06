@@ -10,7 +10,7 @@ import RequireAuth from 'components/AuthenticatedViews/RequireAuth'
 
 import DatasetEditor from 'components/AuthenticatedViews/DatasetEditor/DatasetEditor'
 import ResearcherHome from 'components/AuthenticatedViews/ResearcherHome/ResearcherHome'
-import { DatasetContextProvider } from 'hooks/useDatasetList'
+import { DatasetContextProvider } from 'hooks/useDatasets'
 
 const App = (): JSX.Element => {
   // on the buidl server, don't try to render the app

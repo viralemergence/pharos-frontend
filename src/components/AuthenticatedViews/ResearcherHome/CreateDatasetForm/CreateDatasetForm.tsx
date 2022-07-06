@@ -8,7 +8,7 @@ import Input from 'components/ui/Input'
 import { useNavigate } from 'react-router-dom'
 import createDataset from './createDataset'
 import useUser from 'hooks/useUser'
-import useDatasets from 'hooks/useDatasetList'
+import useDatasets from 'hooks/useDatasets'
 
 const Form = styled.form`
   width: 500px;
@@ -55,7 +55,7 @@ const CreateDatasetForm = () => {
     )
 
     if (created) {
-      setDatasets(prev => [...prev, created])
+      setDatasets(prev => ({ ...prev, [created.datasetID]: created }))
       setLoading(false)
       navigate(`/dataset/${created.datasetID}`)
     } else throw new Error('dataset creation failed')

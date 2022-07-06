@@ -1,9 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
 
+import { Link } from 'react-router-dom'
+
 import useUser from 'hooks/useUser'
-import useDatasets from 'hooks/useDatasetList'
-// import useDatasetList from 'hooks/useDatasetList'
+import useDatasets from 'hooks/useDatasets'
 
 const Container = styled.div`
   background-color: ${({ theme }) => theme.darkPurpleWhiter};
@@ -15,9 +16,14 @@ const Container = styled.div`
   color: white;
   padding: 20px;
 `
-const Name = styled.div`
+const Name = styled(Link)`
   font-size: 30px;
   line-height: 45px;
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  color: white;
+  text-decoration: none;
 `
 const ResearcherID = styled.div`
   margin-top: 15px;
@@ -40,12 +46,17 @@ const Sidebar = () => {
 
   return (
     <Container>
-      <Name>{user.data?.name}</Name>
+      <Name to={'/'}>{user.data?.name}</Name>
       <ResearcherID>Researcher ID: {user.data?.researcherID}</ResearcherID>
       <Organization>{user.data?.organization}</Organization>
       <ul>
-        {datasets &&
-          Object.values(datasets).map(dataset => <li>{dataset.name}</li>)}
+        {Object.entries(datasets).map(([id, dataset]) => (
+          <li>
+            <Link style={{ color: 'white' }} to={`/dataset/${id}`}>
+              {dataset.name}
+            </Link>
+          </li>
+        ))}
       </ul>
     </Container>
   )

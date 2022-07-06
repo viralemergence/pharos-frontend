@@ -13,9 +13,13 @@ export interface Dataset {
   }[]
 }
 
+export interface Datasets {
+  [key: string]: Dataset
+}
+
 type DatasetContextValue = [
-  Dataset[],
-  React.Dispatch<React.SetStateAction<Dataset[]>>
+  Datasets,
+  React.Dispatch<React.SetStateAction<Datasets>>
 ]
 
 interface DatasetContextProviderProps {
@@ -27,7 +31,7 @@ const DatasetContext = createContext<DatasetContextValue | null>(null)
 export const DatasetContextProvider = ({
   children,
 }: DatasetContextProviderProps) => {
-  const [datasets, setDatasets] = useState<Dataset[]>([])
+  const [datasets, setDatasets] = useState<Datasets>({})
 
   return (
     <DatasetContext.Provider value={[datasets, setDatasets]}>
@@ -62,9 +66,15 @@ const useDatasets = () => {
         return undefined
       }
 
-      const { datasets } = await response.json()
+      const { datasets: datasetList } = await response.json()
 
-      setDatasets(datasets as Dataset[])
+      const datasets: Datasets = {}
+
+      datasetList.forEach(
+        (dataset: Dataset) => (datasets[dataset.datasetID] = dataset)
+      )
+
+      setDatasets(datasets)
     }
 
     if (researcherID) getDatasetList(researcherID)

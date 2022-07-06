@@ -1,4 +1,4 @@
-import { Dataset } from 'hooks/useDatasetList'
+import { Dataset } from 'hooks/useDatasets'
 
 const createDataset = async (
   researcherID: string,
