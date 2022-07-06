@@ -6,6 +6,8 @@ import Label from 'components/ui/InputLabel'
 import Input from 'components/ui/Input'
 
 import { useNavigate } from 'react-router-dom'
+import createDataset from './createDataset'
+import useUser from 'hooks/useUser'
 
 const Form = styled.form`
   width: 500px;
@@ -25,10 +27,30 @@ const CreateDatasetForm = () => {
     firstInputRef.current?.focus()
   }, [])
 
+  const [user] = useUser()
   const navigate = useNavigate()
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    navigate('/dataset')
+
+    const target = e.target as typeof e.target & {
+      dataset_name: { value: string }
+      date_collected: { value: string }
+    }
+
+    console.log(target.dataset_name.value)
+
+    if (!user.data) return false
+
+    const created = await createDataset(
+      user.data.researcherID,
+      target.dataset_name.value,
+      target.date_collected.value,
+      0,
+      0
+    )
+
+    if (created) navigate('/dataset')
+    else throw new Error('dataset creation failed')
   }
 
   return (
@@ -36,11 +58,11 @@ const CreateDatasetForm = () => {
       <H1>Create Dataset</H1>
       <Label>
         Dataset Name
-        <Input type="text" ref={firstInputRef} />
+        <Input type="text" name="dataset_name" ref={firstInputRef} />
       </Label>
       <Label>
         Collection Date
-        <Input type="date" />
+        <Input type="date" name="date_collected" />
       </Label>
       <MintButton type="submit" style={{ marginLeft: 'auto' }}>
         Create
