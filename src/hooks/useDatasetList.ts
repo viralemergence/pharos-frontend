@@ -22,45 +22,20 @@ const useDatasetList = () => {
 
   useEffect(() => {
     const getDatasetList = async (researcherID: string) => {
-      // const response = await fetch(`${process.env.GATSBY_API_URL}/auth`, {
-      //   method: 'POST',
-      //   body: `{"researcherID":"${researcherID}"}`,
-      // }).catch(error => console.log(error))
+      const response = await fetch(
+        `${process.env.GATSBY_API_URL}/list-datasets`,
+        {
+          method: 'POST',
+          body: `{"researcherID":"${researcherID}"}`,
+        }
+      ).catch(error => console.log(error))
 
-      const fakeAPIResponse = {
-        fa8c04b6af154da9ada72f1057d11b7f: {
-          name: 'dataset 1',
-          samples_taken: true,
-          detection_run: false,
-          versions: [
-            {
-              uri: 's3://someplace',
-              date: '2022-06-28T21:23:54.606650',
-            },
-            {
-              uri: 's3://someplace',
-              date: '2022-06-30T21:23:54.606650',
-            },
-          ],
-        },
-        '8743ee229ed44c70aad4eeb0ae0f63fe': {
-          name: 'dataset 2',
-          samples_taken: true,
-          detection_run: true,
-          versions: [
-            {
-              uri: 's3://someplace',
-              date: '2022-05-10T21:23:54.606650',
-            },
-            {
-              uri: 's3://someplace',
-              date: '2022-05-30T21:23:54.606650',
-            },
-          ],
-        },
+      if (!response) {
+        console.log('network error')
+        return undefined
       }
 
-      const data = fakeAPIResponse
+      const data = await response.json()
 
       setDatasetList(data)
     }

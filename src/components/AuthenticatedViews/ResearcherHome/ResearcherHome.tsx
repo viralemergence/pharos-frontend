@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import Sidebar from 'components/Sidebar/Sidebar'
 import MainGrid from 'components/layout/MainGrid'
 import Modal from 'components/ui/Modal'
-import CreateDatasetForm from './CreateDatasetForm'
+import CreateDatasetForm from './CreateDatasetForm/CreateDatasetForm'
 import MintButton from 'components/ui/MintButton'
 
 const Content = styled.div`
