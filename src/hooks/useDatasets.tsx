@@ -7,6 +7,7 @@ export interface Dataset {
   name: string
   samples_taken: string
   detection_run: string
+  collected_date: string
   versions: {
     date: string
     uri: string

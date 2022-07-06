@@ -5,10 +5,17 @@ import MainGrid from 'components/layout/MainGrid'
 import Sidebar from 'components/Sidebar/Sidebar'
 import useDatasets from 'hooks/useDatasets'
 import { useParams } from 'react-router-dom'
+import { Content, TopBar } from '../ViewComponents'
+import MintButton from 'components/ui/MintButton'
 
-const Content = styled.div`
-  overflow-y: scroll;
-  padding: 40px;
+const H1 = styled.h1`
+  ${({ theme }) => theme.h3};
+  text-transform: uppercase;
+  margin: 0;
+`
+const H2 = styled.h2`
+  ${({ theme }) => theme.extraSmallParagraph};
+  text-transform: uppercase;
 `
 
 const DatasetEditor = () => {
@@ -17,12 +24,17 @@ const DatasetEditor = () => {
 
   if (!id) throw new Error('Missing dataset ID url parameter')
 
+  const dataset = datasets[id]
+
   return (
     <MainGrid>
       <Sidebar />
       <Content>
-        <h1>Dataset editor</h1>
-        <p>{datasets[id].name}</p>
+        <TopBar>
+          <H1>{dataset.name}</H1>
+          <MintButton>Update Dataset</MintButton>
+        </TopBar>
+        <H2>Collected Date: {dataset.collected_date}</H2>
       </Content>
     </MainGrid>
   )

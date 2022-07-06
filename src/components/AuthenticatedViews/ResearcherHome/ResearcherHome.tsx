@@ -7,16 +7,8 @@ import Modal from 'components/ui/Modal'
 import CreateDatasetForm from './CreateDatasetForm/CreateDatasetForm'
 import MintButton from 'components/ui/MintButton'
 import DatasetsTable from './DatasetsTable/DatasetsTable'
+import { Content, TopBar } from '../ViewComponents'
 
-const Content = styled.div`
-  overflow-y: scroll;
-  padding: 40px;
-`
-const TopBar = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`
 const H1 = styled.h1`
   ${({ theme }) => theme.h3}
   margin: 0;
