@@ -6,6 +6,7 @@ import MainGrid from 'components/layout/MainGrid'
 import Modal from 'components/ui/Modal'
 import CreateDatasetForm from './CreateDatasetForm/CreateDatasetForm'
 import MintButton from 'components/ui/MintButton'
+import DatasetsTable from './DatasetsTable/DatasetsTable'
 
 const Content = styled.div`
   overflow-y: scroll;
@@ -37,6 +38,7 @@ const ResearcherHome = () => {
             <CreateDatasetForm />
           </Modal>
         </TopBar>
+        <DatasetsTable />
       </Content>
     </MainGrid>
   )
