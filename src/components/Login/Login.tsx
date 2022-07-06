@@ -15,7 +15,7 @@ import Input from 'components/ui/Input'
 import Main from 'components/layout/Main'
 
 const Container = styled(Main)`
-  max-width: 500px;
+  max-width: 505px;
   width: 90%;
   margin-left: auto;
   margin-right: auto;
