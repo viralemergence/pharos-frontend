@@ -1,12 +1,11 @@
 import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
-import { View } from 'components/Login/UserContextProvider'
 import MintButton from 'components/ui/MintButton'
 import Label from 'components/ui/InputLabel'
 import Input from 'components/ui/Input'
 
-import useUser from 'hooks/useUser'
+import { useNavigate } from 'react-router-dom'
 
 const Form = styled.form`
   width: 500px;
@@ -21,15 +20,15 @@ const H1 = styled.h1`
 `
 const CreateDatasetForm = () => {
   const firstInputRef = useRef<HTMLInputElement>(null)
-  const [_, setUser] = useUser()
 
   useEffect(() => {
     firstInputRef.current?.focus()
   }, [])
 
+  const navigate = useNavigate()
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setUser(prev => ({ ...prev, view: View.datagrid }))
+    navigate('/dataset')
   }
 
   return (
