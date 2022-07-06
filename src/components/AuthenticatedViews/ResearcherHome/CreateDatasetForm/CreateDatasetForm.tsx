@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
 import MintButton from 'components/ui/MintButton'
@@ -32,8 +32,12 @@ const CreateDatasetForm = () => {
   const navigate = useNavigate()
   const [_, setDatasets] = useDatasets()
 
+  const [loading, setLoading] = useState(false)
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+
+    setLoading(true)
 
     const target = e.target as typeof e.target & {
       dataset_name: { value: string }
@@ -50,13 +54,11 @@ const CreateDatasetForm = () => {
       0
     )
 
-    console.log(created)
-
     if (created) {
       setDatasets(prev => [...prev, created])
+      setLoading(false)
       navigate(`/dataset/${created.datasetID}`)
-    }
-    // else throw new Error('dataset creation failed')
+    } else throw new Error('dataset creation failed')
   }
 
   return (
@@ -71,7 +73,7 @@ const CreateDatasetForm = () => {
         <Input type="date" name="date_collected" />
       </Label>
       <MintButton type="submit" style={{ marginLeft: 'auto' }}>
-        Create
+        {loading ? 'Submitting...' : 'Create'}
       </MintButton>
     </Form>
   )
