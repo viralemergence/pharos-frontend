@@ -64,26 +64,38 @@ const NavBar = () => {
   const [user] = useUser()
 
   const links = [
-    <NavLink to="/about/">About</NavLink>,
-    <NavLink to="/guide/">User guide</NavLink>,
+    { to: '/about/', label: 'About' },
+    { to: '/guide/', label: 'User guide' },
   ]
 
   if (user.status === UserStatus.loggedIn)
-    links.push(<NavLink to="/">{user.data?.name}</NavLink>)
-  else links.push(<NavLink to="/signin/">Sign in</NavLink>)
+    links.push({ to: '/app/', label: user.data?.name || '' })
+  else links.push({ to: '/app/#/login', label: 'Sign in' })
 
   return (
     <Nav>
       <Container>
         <LinkList>
-          <HomeLink to="/">
+          <HomeLink to={user.status === UserStatus.loggedIn ? '/app/' : '/'}>
             <NavLogo name="Site logo" data={data} />
             <CMS.Text name="Navbar title" data={data} />
           </HomeLink>
         </LinkList>
-        <DesktopNav>{links}</DesktopNav>
+        <DesktopNav>
+          {links.map(link => (
+            <NavLink key={link.label} to={link.to}>
+              {link.label}
+            </NavLink>
+          ))}
+        </DesktopNav>
         <MobileMenu>
-          <MobileLinkList>{links}</MobileLinkList>
+          <MobileLinkList>
+            {links.map(link => (
+              <NavLink key={link.label} to={link.to}>
+                {link.label}
+              </NavLink>
+            ))}
+          </MobileLinkList>
         </MobileMenu>
       </Container>
     </Nav>
