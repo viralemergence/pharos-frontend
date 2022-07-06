@@ -1,6 +1,7 @@
 const createDataset = async (
   researcherID: string,
   dataset_name: string,
+  date_collected: string,
   samples_taken: number,
   detection_run: number
 ) => {
@@ -9,6 +10,7 @@ const createDataset = async (
     body: JSON.stringify({
       researcherID,
       dataset_name,
+      date_collected,
       samples_taken,
       detection_run,
     }),
