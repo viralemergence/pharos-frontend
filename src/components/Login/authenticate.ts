@@ -1,6 +1,19 @@
 import { User, UserStatus, View } from 'components/Login/UserContextProvider'
 
 const authenticate = async (researcherID: string) => {
+  // offline debugging
+  // return {
+  //   status: UserStatus.loggedIn,
+  //   statusMessage: 'Logged in',
+  //   view: View.home,
+  //   data: {
+  //     name: 'Ryan Zimmerman',
+  //     organization: 'Talus Analytics',
+  //     researcherID: 'eb0c3f170f9649ef9cc6bfe656c5aa15',
+  //     email: 'rzimmerman@talusanalytics.com',
+  //   },
+  // }
+
   const response = await fetch(`${process.env.GATSBY_API_URL}/auth`, {
     method: 'POST',
     body: `{"researcherID":"${researcherID}"}`,
