@@ -1,11 +1,9 @@
 import React from 'react'
-import styled, { theme } from 'styled-components'
+import styled from 'styled-components'
 // import DataGrid from 'react-data-grid'
 
 import useDatasets from 'hooks/useDatasets'
 import { GridRow, HeaderRow } from './DatasetsTableRow'
-import { Link } from 'react-router-dom'
-import { lighten } from 'polished'
 
 const Container = styled.div`
   max-width: 100%;
