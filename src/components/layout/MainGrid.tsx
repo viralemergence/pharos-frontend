@@ -5,7 +5,7 @@ const MainGrid = styled.div`
   display: grid;
   grid-template-columns: 350px 1fr;
   width: 100vw;
-  height: 100vh;
+  height: calc(100vh - 87px);
 `
 
 export default MainGrid
