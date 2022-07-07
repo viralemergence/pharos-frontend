@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-// import DataGrid from 'react-data-grid'
 
 import useDatasets from 'hooks/useDatasets'
 import { GridRow, HeaderRow } from './DatasetsTableRow'
@@ -25,7 +24,6 @@ const DatasetsTable = () => {
 
   return (
     <Container>
-      {/* <DataGrid columns={columns} rows={Object.values(datasets)} /> */}
       <DatasetsGrid>
         <HeaderRow>
           <div>Dataset ID</div>
