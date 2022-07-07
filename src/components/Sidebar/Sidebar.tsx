@@ -39,6 +39,32 @@ const Organization = styled.div`
   border-bottom: 1px solid white;
   padding-bottom: 15px;
 `
+const DatasetsHeader = styled.div`
+  margin-top: 15px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 36px;
+  text-transform: uppercase;
+`
+const List = styled.ul`
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-left: 20px;
+`
+const Dataset = styled.li`
+  ${({ theme }) => theme.gridText};
+
+  > a {
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+`
 
 const Sidebar = () => {
   const [user] = useUser()
@@ -49,15 +75,16 @@ const Sidebar = () => {
       <Name to={'/'}>{user.data?.name}</Name>
       <ResearcherID>Researcher ID: {user.data?.researcherID}</ResearcherID>
       <Organization>{user.data?.organization}</Organization>
-      <ul>
+      <DatasetsHeader>Datasets</DatasetsHeader>
+      <List>
         {Object.entries(datasets).map(([id, dataset]) => (
-          <li>
+          <Dataset>
             <Link style={{ color: 'white' }} to={`/dataset/${id}`}>
               {dataset.name}
             </Link>
-          </li>
+          </Dataset>
         ))}
-      </ul>
+      </List>
     </Container>
   )
 }
