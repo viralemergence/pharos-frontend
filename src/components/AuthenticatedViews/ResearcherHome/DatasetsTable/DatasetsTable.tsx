@@ -28,6 +28,8 @@ const DatasetsTable = () => {
       new Date(a.versions.slice(-1)[0].date).getTime()
   )
 
+  console.log(datasets)
+
   return (
     <Container>
       <DatasetsGrid>

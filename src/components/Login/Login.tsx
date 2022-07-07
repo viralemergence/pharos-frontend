@@ -92,11 +92,7 @@ const Login = () => {
           style={{ marginTop: 40 }}
           disabled={submitting}
         >
-          {submitting ? (
-            'loading...'
-          ) : (
-            <CMS.Text name="Button text" data={data} />
-          )}
+          {submitting ? 'loading...' : <CMS.Text name="CTA" data={data} />}
         </MintButton>
         <HelpText name="Help text" data={data} />
       </Form>
