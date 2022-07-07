@@ -1,9 +1,24 @@
 import React from 'react'
-import styled from 'styled-components'
-import useDatasets from 'hooks/useDatasets'
-import { Link } from 'react-router-dom'
+import styled, { theme } from 'styled-components'
+// import DataGrid from 'react-data-grid'
 
-const Container = styled.div``
+import useDatasets from 'hooks/useDatasets'
+import { GridRow, HeaderRow } from './DatasetsTableRow'
+import { Link } from 'react-router-dom'
+import { lighten } from 'polished'
+
+const Container = styled.div`
+  max-width: 100%;
+  overflow-x: scroll;
+  margin-top: 20px;
+`
+
+const DatasetsGrid = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-width: 800px;
+  border: 1px solid ${({ theme }) => theme.veryLightGray};
+`
 
 const DatasetsTable = () => {
   const [datasets] = useDatasets()
@@ -12,13 +27,20 @@ const DatasetsTable = () => {
 
   return (
     <Container>
-      <ul>
-        {Object.entries(datasets).map(([id, dataset]) => (
-          <li>
-            <Link to={`/dataset/${id}`}>{dataset.name}</Link>
-          </li>
+      {/* <DataGrid columns={columns} rows={Object.values(datasets)} /> */}
+      <DatasetsGrid>
+        <HeaderRow>
+          <div>Dataset ID</div>
+          <div>Name</div>
+          <div>Collected Date</div>
+          <div>Last Updated</div>
+          <div>Samples Taken</div>
+          <div>Detection Run</div>
+        </HeaderRow>
+        {Object.values(datasets).map(dataset => (
+          <GridRow key={dataset.datasetID} dataset={dataset} />
         ))}
-      </ul>
+      </DatasetsGrid>
     </Container>
   )
 }
