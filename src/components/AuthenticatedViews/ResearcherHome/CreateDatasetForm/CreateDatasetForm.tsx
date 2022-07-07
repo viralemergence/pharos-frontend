@@ -40,7 +40,7 @@ const CreateDatasetForm = () => {
     setLoading(true)
 
     const target = e.target as typeof e.target & {
-      dataset_name: { value: string }
+      name: { value: string }
       date_collected: { value: string }
     }
 
@@ -48,7 +48,7 @@ const CreateDatasetForm = () => {
 
     const created = await createDataset(
       user.data.researcherID,
-      target.dataset_name.value,
+      target.name.value,
       target.date_collected.value,
       0,
       0
@@ -66,7 +66,7 @@ const CreateDatasetForm = () => {
       <H1>Create Dataset</H1>
       <Label>
         Dataset Name
-        <Input type="text" name="dataset_name" ref={firstInputRef} />
+        <Input type="text" name="name" ref={firstInputRef} />
       </Label>
       <Label>
         Collection Date

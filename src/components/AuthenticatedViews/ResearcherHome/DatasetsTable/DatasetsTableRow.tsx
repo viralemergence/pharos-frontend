@@ -48,7 +48,7 @@ export const GridRow = ({ dataset }: { dataset: Dataset }) => {
   console.log(lastUpdatedDate)
   const lastUpdatedString = lastUpdatedDate ? formatDate(lastUpdatedDate) : '—'
 
-  const collectedDate = dataset.collected_date
+  const collectedDate = dataset.date_collected
   const collectedDateString = collectedDate ? formatDate(collectedDate) : '—'
 
   return (

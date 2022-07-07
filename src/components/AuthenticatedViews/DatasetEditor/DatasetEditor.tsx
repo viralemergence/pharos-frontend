@@ -31,10 +31,10 @@ const DatasetEditor = () => {
       <Sidebar />
       <Content>
         <TopBar>
-          <H1>{dataset.name}</H1>
+          <H1>{dataset ? dataset.name : 'Loading dataset'}</H1>
           <MintButton>Update Dataset</MintButton>
         </TopBar>
-        <H2>Collected Date: {dataset.collected_date}</H2>
+        <H2>Collected Date: {dataset && dataset.date_collected}</H2>
       </Content>
     </MainGrid>
   )
