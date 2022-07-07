@@ -41,7 +41,7 @@ export default {
 	`,
   extraSmallParagraph: `
 	font-size:14px;
-	font-family:"Open Sans";
+	font-family:"Poppins";
 	font-weight:400;
 	font-style:normal;
 	text-decoration:none;
