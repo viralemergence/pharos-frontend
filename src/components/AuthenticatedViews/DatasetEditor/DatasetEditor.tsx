@@ -1,15 +1,17 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 
 import MainGrid from 'components/layout/MainGrid'
 import Sidebar from 'components/Sidebar/Sidebar'
-import useDatasets, { DatasetRow } from 'hooks/useDatasets'
+import useDatasets from 'hooks/useDatasets'
 import { useParams } from 'react-router-dom'
 import { Content, TopBar } from '../ViewComponents'
 import MintButton from 'components/ui/MintButton'
 import Uploader from './Uploader/Uploader'
 import DatasetGrid from './DataGrid/DataGrid'
 import useUser from 'hooks/useUser'
+
+import { DatasetRow, DatasetsStatus } from 'reducers/datasetsReducer/types'
 
 const H1 = styled.h1`
   ${({ theme }) => theme.h3};
@@ -25,24 +27,23 @@ enum VersionStatus {
   'unsaved',
   'saving',
   'saved',
+  'error',
 }
 
 const DatasetEditor = () => {
   const [user] = useUser()
-  const [datasets, setDatasets] = useDatasets()
+  const [datasets, datasetsDispatch] = useDatasets()
   const { id } = useParams()
-
-  const [versionStatus, setVersionStatus] = useState(VersionStatus.unsaved)
 
   if (!id) throw new Error('Missing dataset ID url parameter')
 
-  const dataset = datasets[id]
+  const dataset = datasets.datasets[id]
 
-  if (!dataset) return <p>Loading dataset</p>
+  if (datasets.status === DatasetsStatus.Loading) return <p>Loading dataset</p>
 
-  const file = dataset.versions.slice(-1)[0].raw
+  const versionStatus = dataset.versions.slice(-1)[0].status
 
-  // const [file, setFile] = useState<DatasetRow[]>([])
+  const file = dataset.versions.slice(-1)[0]?.raw
 
   const setFile = (file: DatasetRow[]) => {
     setDatasets(prev => ({
@@ -51,34 +52,91 @@ const DatasetEditor = () => {
         ...prev[id],
         versions: [
           ...prev[id].versions,
-          { date: new Date().toISOString(), uri: '', raw: file },
+          {
+            date: '',
+            uri: '',
+            raw: file,
+            status: VersionStatus.unsaved,
+          },
         ],
       },
     }))
   }
 
-  console.log(file)
+  console.log(dataset)
 
   const saveVersion = async () => {
-    setVersionStatus(VersionStatus.saving)
+    setDatasets(prev => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        versions: [
+          ...prev[id].versions,
+          {
+            ...prev[id].versions.slice(-1)[0],
+            status: VersionStatus.saving,
+          },
+        ],
+      },
+    }))
+
     const response = await fetch(
       `${process.env.GATSBY_API_URL}/upload-version`,
       {
         method: 'POST',
-        body: `{
-          "researcherID": "${user.data?.researcherID}",
-          "datasetID": "${id},
-          "raw": ${file}
-        }`,
+        body: JSON.stringify({
+          researcherID: user.data?.researcherID,
+          datasetID: id,
+          raw: file,
+        }),
       }
-    ).catch(error => console.log(error))
+    ).catch(error => {
+      setDatasets(prev => ({
+        ...prev,
+        [id]: {
+          ...prev[id],
+          versions: [
+            ...prev[id].versions,
+            {
+              ...prev[id].versions.slice(-1)[0],
+              status: VersionStatus.error,
+            },
+          ],
+        },
+      }))
+      console.log(error)
+    })
 
     if (!response) {
-      console.log('network error')
+      setDatasets(prev => ({
+        ...prev,
+        [id]: {
+          ...prev[id],
+          versions: [
+            ...prev[id].versions,
+            {
+              ...prev[id].versions.slice(-1)[0],
+              status: VersionStatus.error,
+            },
+          ],
+        },
+      }))
       return undefined
     }
 
-    setVersionStatus(VersionStatus.saved)
+    setDatasets(prev => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        versions: [
+          ...prev[id].versions,
+          {
+            ...prev[id].versions.slice(-1)[0],
+            status: VersionStatus.saved,
+          },
+        ],
+      },
+    }))
   }
 
   let buttonMessage = 'Update dataset'
@@ -92,6 +150,8 @@ const DatasetEditor = () => {
     case VersionStatus.unsaved:
       buttonMessage = 'Update dataset'
       break
+    case VersionStatus.error:
+      buttonMessage = 'Error'
   }
 
   return (
