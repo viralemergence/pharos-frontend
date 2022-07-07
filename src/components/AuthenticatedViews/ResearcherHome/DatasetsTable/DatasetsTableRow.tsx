@@ -44,7 +44,11 @@ export const HeaderRow = styled.div`
 `
 
 export const GridRow = ({ dataset }: { dataset: Dataset }) => {
-  const lastUpdatedDate = dataset.versions.slice(-1)[0]?.date
+  const lastUpdatedDate =
+    dataset.versions.length > 0
+      ? dataset.versions.slice(-1)[0].date
+      : new Date().toISOString()
+
   const lastUpdatedString = lastUpdatedDate ? formatDate(lastUpdatedDate) : '—'
 
   const collectedDate = dataset.date_collected
