@@ -22,6 +22,12 @@ const DatasetsTable = () => {
 
   if (!datasets) return <p>Loading datasets</p>
 
+  const sorted = Object.values(datasets).sort(
+    (a, b) =>
+      new Date(b.versions.slice(-1)[0].date).getTime() -
+      new Date(a.versions.slice(-1)[0].date).getTime()
+  )
+
   return (
     <Container>
       <DatasetsGrid>
@@ -33,7 +39,7 @@ const DatasetsTable = () => {
           <div>Samples Taken</div>
           <div>Detection Run</div>
         </HeaderRow>
-        {Object.values(datasets).map(dataset => (
+        {sorted.map(dataset => (
           <GridRow key={dataset.datasetID} dataset={dataset} />
         ))}
       </DatasetsGrid>
