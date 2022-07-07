@@ -9,7 +9,7 @@ import { lighten } from 'polished'
 
 const Row = styled(Link)`
   display: grid;
-  grid-template-columns: 1fr 3fr repeat(4, 1fr);
+  grid-template-columns: 1.5fr 2.5fr repeat(4, 1.5fr);
   align-items: center;
   transition: 150ms ease;
 
@@ -36,7 +36,7 @@ const Row = styled(Link)`
 
 export const HeaderRow = styled.div`
   display: grid;
-  grid-template-columns: 1fr 3fr repeat(4, 1fr);
+  grid-template-columns: 1.5fr 2.5fr repeat(4, 1.5fr);
   align-items: center;
   > div {
     padding: 15px;
