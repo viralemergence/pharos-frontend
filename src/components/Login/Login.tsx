@@ -61,6 +61,8 @@ const Login = () => {
     // store in global user context
     setUser(user)
 
+    setSubmitting(false)
+
     // if successful, navigate to 'next' from search params
     if (user.status === UserStatus.loggedIn) {
       navigate(search.get('next') || '/')
