@@ -39,13 +39,20 @@ const Organization = styled.div`
   border-bottom: 1px solid white;
   padding-bottom: 15px;
 `
-const DatasetsHeader = styled.div`
+const DatasetsHeader = styled(Link)`
   margin-top: 15px;
   font-style: normal;
   font-weight: 400;
   font-size: 24px;
   line-height: 36px;
   text-transform: uppercase;
+  font-family: 'Poppins';
+  color: white;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
 `
 const List = styled.ul`
   list-style: none;
@@ -70,12 +77,15 @@ const Sidebar = () => {
   const [user] = useUser()
   const [datasets] = useDatasets()
 
+  console.log(datasets)
+
   return (
     <Container>
       <Name to={'/'}>{user.data?.name}</Name>
       <ResearcherID>Researcher ID: {user.data?.researcherID}</ResearcherID>
       <Organization>{user.data?.organization}</Organization>
-      <DatasetsHeader>Datasets</DatasetsHeader>
+      <DatasetsHeader to={'/'}>Datasets</DatasetsHeader>
+      {/* <DatasetsHeader>Datasets</DatasetsHeader> */}
       <List>
         {Object.entries(datasets).map(([id, dataset]) => (
           <Dataset>
