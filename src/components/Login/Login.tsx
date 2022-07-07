@@ -50,8 +50,11 @@ const Login = () => {
   const navigate = useNavigate()
   const [search] = useSearchParams()
 
+  const [submitting, setSubmitting] = useState(false)
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setSubmitting(true)
     // authenticate details
     const user = await authenticate(researcherID)
 
@@ -82,8 +85,16 @@ const Login = () => {
           />
         </Label>
         {user.status !== UserStatus.loggedOut && <p>{user.statusMessage}</p>}
-        <MintButton type="submit" style={{ marginTop: 40 }}>
-          <CMS.Text name="Button text" data={data} />
+        <MintButton
+          type="submit"
+          style={{ marginTop: 40 }}
+          disabled={submitting}
+        >
+          {submitting ? (
+            'loading...'
+          ) : (
+            <CMS.Text name="Button text" data={data} />
+          )}
         </MintButton>
         <HelpText name="Help text" data={data} />
       </Form>

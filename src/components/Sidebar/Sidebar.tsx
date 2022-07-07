@@ -77,15 +77,12 @@ const Sidebar = () => {
   const [user] = useUser()
   const [datasets] = useDatasets()
 
-  console.log(datasets)
-
   return (
     <Container>
       <Name to={'/'}>{user.data?.name}</Name>
       <ResearcherID>Researcher ID: {user.data?.researcherID}</ResearcherID>
       <Organization>{user.data?.organization}</Organization>
       <DatasetsHeader to={'/'}>Datasets</DatasetsHeader>
-      {/* <DatasetsHeader>Datasets</DatasetsHeader> */}
       <List>
         {Object.entries(datasets).map(([id, dataset]) => (
           <Dataset>

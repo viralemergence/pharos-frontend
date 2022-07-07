@@ -32,12 +32,12 @@ const CreateDatasetForm = () => {
   const navigate = useNavigate()
   const [_, setDatasets] = useDatasets()
 
-  const [loading, setLoading] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    setLoading(true)
+    setSubmitting(true)
 
     const target = e.target as typeof e.target & {
       name: { value: string }
@@ -56,7 +56,7 @@ const CreateDatasetForm = () => {
 
     if (created) {
       setDatasets(prev => ({ ...prev, [created.datasetID]: created }))
-      setLoading(false)
+      setSubmitting(false)
       navigate(`/dataset/${created.datasetID}`)
     } else throw new Error('dataset creation failed')
   }
@@ -72,8 +72,12 @@ const CreateDatasetForm = () => {
         Collection Date
         <Input type="date" name="date_collected" />
       </Label>
-      <MintButton type="submit" style={{ marginLeft: 'auto' }}>
-        {loading ? 'Submitting...' : 'Create'}
+      <MintButton
+        type="submit"
+        style={{ marginLeft: 'auto' }}
+        disabled={submitting}
+      >
+        {submitting ? 'Submitting...' : 'Create'}
       </MintButton>
     </Form>
   )
