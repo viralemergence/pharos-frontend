@@ -1,8 +1,8 @@
 import { Dataset } from 'hooks/useDatasets'
 
 const createDataset = async (
-  name: string,
   researcherID: string,
+  name: string,
   date_collected: string,
   samples_taken: number,
   detection_run: number
