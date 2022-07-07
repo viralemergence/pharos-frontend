@@ -11,7 +11,12 @@ export interface Dataset {
   versions: {
     date: string
     uri: string
+    raw?: DatasetRow[]
   }[]
+}
+
+export interface DatasetRow {
+  [key: string]: string
 }
 
 export interface Datasets {
