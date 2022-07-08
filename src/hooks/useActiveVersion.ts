@@ -21,17 +21,15 @@ const useActiveVersion = (datasetID: string | undefined) => {
 
   const researcherID = user.data?.researcherID
 
-  // this whole thing needs to be moved to a useVersion() hook
-  // which will return a version either locally or from the server
   useEffect(() => {
     const loadVersionContent = async () => {
-      if (!versionKey) return null
-      if (!researcherID) return null
+      // condition where we can't or don't need to load a version
+      if (!versionKey || !researcherID || !datasetID || localData) return null
 
       projectDispatch({
         type: ProjectActions.SetVersionStatus,
         payload: {
-          datasetID: datasetID,
+          datasetID,
           status: VersionStatus.Loading,
         },
       })
@@ -60,7 +58,7 @@ const useActiveVersion = (datasetID: string | undefined) => {
       }
     }
 
-    if (versionKey && !localData) loadVersionContent()
+    loadVersionContent()
   }, [researcherID, datasetID, versionKey, localData, projectDispatch])
 }
 
