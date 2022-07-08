@@ -1,6 +1,6 @@
 import { Dataset } from 'reducers/datasetsReducer/types'
 
-export interface CreateDatasetPayload {
+export interface SaveDatasetProps {
   datasetID: string
   researcherID: string
   name: string
@@ -9,7 +9,7 @@ export interface CreateDatasetPayload {
   detection_run: string
 }
 
-const saveDataset = async (payload: CreateDatasetPayload) => {
+const saveDataset = async (payload: SaveDatasetProps) => {
   const convertedID = { ...payload, datasetID: Number(payload.datasetID) }
 
   const response = await fetch(`${process.env.GATSBY_API_URL}/create-dataset`, {
