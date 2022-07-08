@@ -1,6 +1,6 @@
 // the status states of the overall
 // datasets object
-export enum DatasetsStatus {
+export enum ProjectStatus {
   Initial,
   Loading,
   Loaded,
@@ -25,10 +25,10 @@ export enum VersionStatus {
   Error,
 }
 
-// a single row of a dataset;
+// a single row of a version of a dataset;
 // the column from the csv becomes the key
 // and the cell content becomes the value
-export interface DatasetRow {
+export interface Record {
   [key: string]: string
 }
 
@@ -37,19 +37,20 @@ export interface DatasetRow {
 // and tracks the object storing it in s3
 export interface Version {
   // the creation date of the version
-  date?: string
+  date: string
   // status of the version
-  status: VersionStatus
+  status: VersionStatus // don't save in api
   // version key for the API to fetch raw object
-  uri?: string
+  key?: string // comes from the API
   // raw dataset object from the user view
-  raw?: DatasetRow[]
+  rows?: Record[] // comes from the user or the api
 }
 
 // a single dataset
 export interface Dataset {
-  status?: DatasetStatus
-  datasetID?: string
+  // frontend sets the id now
+  datasetID: string
+  status?: DatasetStatus // don't save in api
   researcherID: string
   name: string
   samples_taken?: string
@@ -62,9 +63,18 @@ export interface Dataset {
 // the overall Datasets object
 // representing everything the frontend
 // currently knows about every dataset
-export interface Datasets {
-  status: DatasetsStatus
+export interface Project {
+  projectID: 0
+  status: ProjectStatus // don't save in api
   datasets: {
     [key: string]: Dataset
   }
 }
+
+// portfolio coming soon
+// export interface Portfolio {
+//   status: PortfolioStatus // don't save in api
+//   projects: {
+//     [key: string]: Project
+//   }
+// }
