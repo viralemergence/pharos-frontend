@@ -98,7 +98,7 @@ const UpdateButton = () => {
       disabled={
         versionStatus === VersionStatus.Saved ||
         versionStatus === VersionStatus.Saving ||
-        !dataset.versions[dataset.activeVersion].raw
+        !dataset.versions[dataset.activeVersion]?.raw
       }
     >
       {buttonMessage}
