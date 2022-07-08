@@ -82,7 +82,7 @@ const Uploader = () => {
         handleChange={handleChange}
         name="file"
         types={fileTypes}
-        label="Upload or drop file"
+        label="Upload or drop new version"
       />
     </div>
   )
