@@ -1,4 +1,4 @@
-import { Dataset } from 'reducers/projectReducer/types'
+import { Dataset, Version } from 'reducers/projectReducer/types'
 
 export interface SaveDatasetProps {
   datasetID: string
@@ -7,8 +7,10 @@ export interface SaveDatasetProps {
   date_collected: string
   samples_taken: string
   detection_run: string
+  versions: Version[]
 }
 
+// calling this Save Dataset becasue the dataset has already been created on the frontend
 const saveDataset = async (payload: SaveDatasetProps) => {
   const convertedID = { ...payload, datasetID: Number(payload.datasetID) }
 

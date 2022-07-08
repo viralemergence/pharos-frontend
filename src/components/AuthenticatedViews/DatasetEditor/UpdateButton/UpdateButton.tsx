@@ -9,7 +9,7 @@ import MintButton from 'components/ui/MintButton'
 import useProject from 'hooks/useProject'
 import useUser from 'hooks/useUser'
 
-import saveVersion from 'api/saveVersion'
+import saveVersion from 'api/uploadVersion'
 
 const UpdateButton = () => {
   const [user] = useUser()

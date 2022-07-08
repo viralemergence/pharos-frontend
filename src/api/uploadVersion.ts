@@ -16,10 +16,7 @@ const saveVersion = async (
 
   if (!response || !response.ok) return null
 
-  const body = (await response.json()) as {
-    key: string
-    date: string
-  }
+  const body = (await response.json()) as { key: string }
 
   return body
 }

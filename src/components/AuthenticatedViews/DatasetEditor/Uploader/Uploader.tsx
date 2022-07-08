@@ -11,7 +11,7 @@ import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 import useProject from 'hooks/useProject'
 import useUser from 'hooks/useUser'
 
-import saveVersion from 'api/saveVersion'
+import saveVersion from 'api/uploadVersion'
 
 const fileTypes = ['CSV']
 
