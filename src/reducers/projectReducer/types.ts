@@ -42,7 +42,7 @@ export interface Version {
   status: VersionStatus // don't save in api
   // version key for the API to fetch raw object
   key?: string // comes from the API
-  // raw dataset object from the user view
+  // list of record rows
   rows?: Record[] // comes from the user or the api
 }
 
@@ -60,11 +60,11 @@ export interface Dataset {
   activeVersion: number
 }
 
-// the overall Datasets object
+// the overall Project object
 // representing everything the frontend
 // currently knows about every dataset
 export interface Project {
-  projectID: 0
+  projectID: string
   status: ProjectStatus // don't save in api
   datasets: {
     [key: string]: Dataset

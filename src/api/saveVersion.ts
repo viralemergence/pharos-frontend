@@ -1,7 +1,7 @@
-import { DatasetRow } from 'reducers/datasetsReducer/types'
+import { Record } from 'reducers/projectReducer/types'
 
 const saveVersion = async (
-  raw: DatasetRow[],
+  rows: Record[],
   datasetID: string,
   researcherID: string
 ) => {
@@ -10,17 +10,18 @@ const saveVersion = async (
     body: JSON.stringify({
       researcherID,
       datasetID: Number(datasetID),
-      raw,
+      rows,
     }),
   })
 
   if (!response || !response.ok) return null
 
   const body = (await response.json()) as {
-    dataset: { uri: string; date: string }
+    key: string
+    date: string
   }
 
-  return body.dataset
+  return body
 }
 
 export default saveVersion

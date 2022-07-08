@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 import formatDate from 'utilities/formatDate'
 import { lighten } from 'polished'
-import { Dataset } from 'reducers/datasetsReducer/types'
+import { Dataset } from 'reducers/projectReducer/types'
 
 const Row = styled(Link)`
   display: grid;

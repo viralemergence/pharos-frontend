@@ -1,9 +1,9 @@
-import { Datasets, DatasetsStatus } from './types'
+import { Project, ProjectStatus } from './types'
 
 import setActiveVersion, {
   SetActiveVersionAction,
 } from './actions/setActiveVersion'
-import setDatasets, { SetDatasetsAction } from './actions/setDatasets'
+import setProject, { SetProjectAction } from './actions/setProject'
 import setStatus, { SetStatusAction } from './actions/setStatus'
 import createDataset, { CreateDatasetAction } from './actions/createDataset'
 import setDatasetStatus, {
@@ -16,10 +16,10 @@ import setVersionStatus, {
 import updateVersion, { UpdateVersionAction } from './actions/updateVersion'
 
 // reducer actions
-export enum DatasetsActions {
+export enum ProjectActions {
   // datasets
   SetStatus,
-  SetDatasets,
+  SetProject,
   CreateDataset,
   SetDatasetStatus,
   // versions
@@ -29,15 +29,16 @@ export enum DatasetsActions {
   SetVersionStatus,
 }
 
-export const datasetsInitialValue = {
+export const projectInitialValue = {
+  projectID: '0',
+  status: ProjectStatus.Initial,
   datasets: {},
-  status: DatasetsStatus.Initial,
 }
 
-export type DatasetsAction =
+export type ProjectAction =
   // datsets
   | SetStatusAction
-  | SetDatasetsAction
+  | SetProjectAction
   | CreateDatasetAction
   | SetDatasetStatusAction
   // versions
@@ -46,29 +47,29 @@ export type DatasetsAction =
   | SetActiveVersionAction
   | SetVersionStatusAction
 
-export type ActionFunction<T = void> = (state: Datasets, payload: T) => Datasets
+export type ActionFunction<T = void> = (state: Project, payload: T) => Project
 
-const datasetsReducer = (state: Datasets, action: DatasetsAction) => {
+const projectReducer = (state: Project, action: ProjectAction) => {
   switch (action.type) {
     // datsets
-    case DatasetsActions.SetStatus:
+    case ProjectActions.SetStatus:
       return setStatus(state, action.payload)
-    case DatasetsActions.SetDatasets:
-      return setDatasets(state, action.payload)
-    case DatasetsActions.CreateDataset:
+    case ProjectActions.SetProject:
+      return setProject(state, action.payload)
+    case ProjectActions.CreateDataset:
       return createDataset(state, action.payload)
-    case DatasetsActions.SetDatasetStatus:
+    case ProjectActions.SetDatasetStatus:
       return setDatasetStatus(state, action.payload)
     // versions
-    case DatasetsActions.UpdateVersion:
+    case ProjectActions.UpdateVersion:
       return updateVersion(state, action.payload)
-    case DatasetsActions.CreateVersion:
+    case ProjectActions.CreateVersion:
       return createVersion(state, action.payload)
-    case DatasetsActions.SetActiveVersion:
+    case ProjectActions.SetActiveVersion:
       return setActiveVersion(state, action.payload)
-    case DatasetsActions.SetVersionStatus:
+    case ProjectActions.SetVersionStatus:
       return setVersionStatus(state, action.payload)
   }
 }
 
-export default datasetsReducer
+export default projectReducer

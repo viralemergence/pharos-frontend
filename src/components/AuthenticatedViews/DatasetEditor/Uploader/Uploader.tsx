@@ -4,11 +4,11 @@ import { useParams } from 'react-router-dom'
 import Papa from 'papaparse'
 import { FileUploader } from 'react-drag-drop-files'
 
-import { DatasetRow, VersionStatus } from 'reducers/datasetsReducer/types'
+import { Record, VersionStatus } from 'reducers/projectReducer/types'
 
-import { DatasetsActions } from 'reducers/datasetsReducer/datasetsReducer'
+import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 
-import useDatasets from 'hooks/useDatasets'
+import useProject from 'hooks/useProject'
 import useUser from 'hooks/useUser'
 
 import saveVersion from 'api/saveVersion'
@@ -18,7 +18,7 @@ const fileTypes = ['CSV']
 const Uploader = () => {
   const { id } = useParams()
   const [user] = useUser()
-  const [, datasetsDispatch] = useDatasets()
+  const [, projectDispatch] = useProject()
 
   if (!id) throw new Error('datasetID not found in url')
 
@@ -26,17 +26,17 @@ const Uploader = () => {
     Papa.parse(file, {
       header: true,
       complete: async results => {
-        const rows = results.data as unknown as DatasetRow[]
+        const rows = results.data as unknown as Record[]
 
-        datasetsDispatch({
-          type: DatasetsActions.CreateVersion,
+        projectDispatch({
+          type: ProjectActions.CreateVersion,
           payload: {
             datasetID: id,
             raw: rows,
           },
         })
-        datasetsDispatch({
-          type: DatasetsActions.SetVersionStatus,
+        projectDispatch({
+          type: ProjectActions.SetVersionStatus,
           payload: {
             datasetID: id,
             status: VersionStatus.Saving,
@@ -52,8 +52,8 @@ const Uploader = () => {
         )
 
         if (newVersionInfo) {
-          datasetsDispatch({
-            type: DatasetsActions.UpdateVersion,
+          projectDispatch({
+            type: ProjectActions.UpdateVersion,
             payload: {
               datasetID: id,
               version: {
@@ -63,8 +63,8 @@ const Uploader = () => {
             },
           })
         } else {
-          datasetsDispatch({
-            type: DatasetsActions.SetVersionStatus,
+          projectDispatch({
+            type: ProjectActions.SetVersionStatus,
             payload: {
               datasetID: id,
               status: VersionStatus.Error,

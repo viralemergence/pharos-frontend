@@ -11,7 +11,7 @@ import RequireAuth from 'components/AuthenticatedViews/RequireAuth'
 import DatasetEditor from 'components/AuthenticatedViews/DatasetEditor/DatasetEditor'
 import ResearcherHome from 'components/AuthenticatedViews/ResearcherHome/ResearcherHome'
 
-import DatasetsContextProvider from 'reducers/datasetsReducer/datasetsContext'
+import ProjectContextProvider from 'reducers/projectReducer/projectContext'
 
 const App = (): JSX.Element => {
   // on the buidl server, don't try to render the app
@@ -20,7 +20,7 @@ const App = (): JSX.Element => {
   return (
     <Providers>
       <CMS.SEO />
-      <DatasetsContextProvider>
+      <ProjectContextProvider>
         <HashRouter>
           <NavBar />
           <Routes>
@@ -43,7 +43,7 @@ const App = (): JSX.Element => {
             />
           </Routes>
         </HashRouter>
-      </DatasetsContextProvider>
+      </ProjectContextProvider>
     </Providers>
   )
 }

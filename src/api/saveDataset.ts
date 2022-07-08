@@ -1,4 +1,4 @@
-import { Dataset } from 'reducers/datasetsReducer/types'
+import { Dataset } from 'reducers/projectReducer/types'
 
 export interface SaveDatasetProps {
   datasetID: string

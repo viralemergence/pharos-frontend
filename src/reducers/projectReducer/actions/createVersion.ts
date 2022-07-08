@@ -1,14 +1,14 @@
-import { ActionFunction, DatasetsActions } from '../datasetsReducer'
-import { DatasetRow, VersionStatus } from '../types'
+import { ActionFunction, ProjectActions } from '../projectReducer'
+import { Record, VersionStatus } from '../types'
 
 export interface CreateVersionAction {
-  type: DatasetsActions.CreateVersion
+  type: ProjectActions.CreateVersion
   payload: CreateVersionPayload
 }
 
 export interface CreateVersionPayload {
   datasetID: string
-  raw: DatasetRow[]
+  raw: Record[]
 }
 
 const createVersion: ActionFunction<CreateVersionPayload> = (
@@ -26,7 +26,7 @@ const createVersion: ActionFunction<CreateVersionPayload> = (
         {
           date: new Date().toUTCString(),
           status: VersionStatus.Unsaved,
-          raw: payload.raw,
+          rows: payload.raw,
         },
       ],
       // set the new version to be active

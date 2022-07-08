@@ -3,10 +3,10 @@ import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
 
 import {
-  DatasetRow,
+  Record,
   DatasetStatus,
   VersionStatus,
-} from 'reducers/datasetsReducer/types'
+} from 'reducers/projectReducer/types'
 
 import MainGrid from 'components/layout/MainGrid'
 import Sidebar from 'components/Sidebar/Sidebar'
@@ -15,12 +15,12 @@ import Uploader from './Uploader/Uploader'
 import DatasetGrid from './DataGrid/DataGrid'
 import { Content, TopBar } from '../ViewComponents'
 
-import useDatasets from 'hooks/useDatasets'
+import useProject from 'hooks/useProject'
 import UpdateButton from './UpdateButton/UpdateButton'
 
 import loadVersionRaw from 'api/loadVersionRaw'
 
-import { DatasetsActions } from 'reducers/datasetsReducer/datasetsReducer'
+import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 
 const H1 = styled.h1`
   ${({ theme }) => theme.h3};
@@ -34,12 +34,12 @@ const H2 = styled.h2`
 
 const DatasetEditor = () => {
   const { id } = useParams()
-  const [datasets, datasetsDispatch] = useDatasets()
+  const [project, projectDispatch] = useProject()
 
   if (!id) throw new Error('Missing dataset ID url parameter')
-  const dataset = datasets.datasets[id]
+  const dataset = project.datasets[id]
 
-  console.log({ datasets })
+  console.log({ project })
 
   const datasetStatus = dataset?.status ? dataset.status : DatasetStatus.Unsaved
 
@@ -58,29 +58,28 @@ const DatasetEditor = () => {
       datasetStatusMessage = 'Error'
   }
 
-  const versionKey = dataset?.versions?.[dataset.activeVersion].uri
+  const versionKey = dataset?.versions?.[dataset.activeVersion].key
 
   useEffect(() => {
     const loadVersionContent = async () => {
       console.log(versionKey)
       if (!versionKey) return null
 
-      const raw = await loadVersionRaw(id, versionKey)
+      const rows = await loadVersionRaw(id, versionKey)
 
-      if (raw) {
-        const rows = raw as DatasetRow[]
-        datasetsDispatch({
-          type: DatasetsActions.UpdateVersion,
+      if (rows) {
+        projectDispatch({
+          type: ProjectActions.UpdateVersion,
           payload: {
             datasetID: id,
             version: {
-              raw: rows,
+              rows: rows as Record[],
             },
           },
         })
       } else {
-        datasetsDispatch({
-          type: DatasetsActions.SetVersionStatus,
+        projectDispatch({
+          type: ProjectActions.SetVersionStatus,
           payload: {
             datasetID: id,
             status: VersionStatus.Error,
@@ -90,7 +89,7 @@ const DatasetEditor = () => {
     }
 
     if (versionKey) loadVersionContent()
-  }, [id, versionKey, datasetsDispatch])
+  }, [id, versionKey, projectDispatch])
 
   return (
     <MainGrid>

@@ -1,8 +1,8 @@
-import { ActionFunction, DatasetsActions } from '../datasetsReducer'
+import { ActionFunction, ProjectActions } from '../projectReducer'
 import { DatasetStatus, Version } from '../types'
 
 export interface CreateDatasetAction {
-  type: DatasetsActions.CreateDataset
+  type: ProjectActions.CreateDataset
   payload: CreateDatasetPayload
 }
 

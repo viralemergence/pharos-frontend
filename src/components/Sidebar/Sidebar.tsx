@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
 import useUser from 'hooks/useUser'
-import useDatasets from 'hooks/useDatasets'
+import useProject from 'hooks/useProject'
 
 const Container = styled.div`
   background-color: ${({ theme }) => theme.darkPurpleWhiter};
@@ -75,7 +75,7 @@ const Dataset = styled.li`
 
 const Sidebar = () => {
   const [user] = useUser()
-  const [datasets] = useDatasets()
+  const [project] = useProject()
 
   return (
     <Container>
@@ -84,7 +84,7 @@ const Sidebar = () => {
       <Organization>{user.data?.organization}</Organization>
       <DatasetsHeader to={'/'}>Datasets</DatasetsHeader>
       <List>
-        {Object.entries(datasets.datasets).map(([id, dataset]) => (
+        {Object.entries(project.datasets).map(([id, dataset]) => (
           <Dataset key={dataset.name}>
             <Link style={{ color: 'white' }} to={`/dataset/${id}`}>
               {dataset.name}

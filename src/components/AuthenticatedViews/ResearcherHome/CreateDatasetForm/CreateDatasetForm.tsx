@@ -2,15 +2,15 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 
-import { DatasetsActions } from 'reducers/datasetsReducer/datasetsReducer'
-import { DatasetStatus } from 'reducers/datasetsReducer/types'
+import { ProjectActions } from 'reducers/projectReducer/projectReducer'
+import { DatasetStatus } from 'reducers/projectReducer/types'
 
 import MintButton from 'components/ui/MintButton'
 import Label from 'components/ui/InputLabel'
 import Input from 'components/ui/Input'
 
 import useUser from 'hooks/useUser'
-import useDatasets from 'hooks/useDatasets'
+import useProject from 'hooks/useProject'
 
 import saveDataset from 'api/saveDataset'
 
@@ -28,14 +28,14 @@ const H1 = styled.h1`
 
 const CreateDatasetForm = () => {
   const [user] = useUser()
-  const [datasets, datasetsDispatch] = useDatasets()
+  const [project, projectDispatch] = useProject()
 
   // generate a new datesetID to use
   const [newDatasetID] = useState(String(new Date().getTime()))
 
   const navigate = useNavigate()
 
-  const newDatasetStatus = datasets.datasets[newDatasetID]?.status
+  const newDatasetStatus = project.datasets[newDatasetID]?.status
 
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>,
@@ -60,8 +60,8 @@ const CreateDatasetForm = () => {
       detection_run: '0',
     }
 
-    datasetsDispatch({
-      type: DatasetsActions.CreateDataset,
+    projectDispatch({
+      type: ProjectActions.CreateDataset,
       payload,
     })
 
@@ -72,16 +72,16 @@ const CreateDatasetForm = () => {
     const saved = await saveDataset(payload)
 
     if (saved) {
-      datasetsDispatch({
-        type: DatasetsActions.SetDatasetStatus,
+      projectDispatch({
+        type: ProjectActions.SetDatasetStatus,
         payload: {
           datasetID,
           status: DatasetStatus.Saved,
         },
       })
     } else {
-      datasetsDispatch({
-        type: DatasetsActions.SetDatasetStatus,
+      projectDispatch({
+        type: ProjectActions.SetDatasetStatus,
         payload: {
           datasetID,
           status: DatasetStatus.Error,

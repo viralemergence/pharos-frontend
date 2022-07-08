@@ -1,7 +1,7 @@
-import { ActionFunction, DatasetsActions } from '../datasetsReducer'
+import { ActionFunction, ProjectActions } from '../projectReducer'
 
 export interface SetActiveVersionAction {
-  type: DatasetsActions.SetActiveVersion
+  type: ProjectActions.SetActiveVersion
   payload: SetActiveVersionPayload
 }
 

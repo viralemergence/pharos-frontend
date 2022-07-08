@@ -1,9 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import useDatasets from 'hooks/useDatasets'
+import useProject from 'hooks/useProject'
 import { GridRow, HeaderRow } from './DatasetsTableRow'
-import { DatasetsStatus } from 'reducers/datasetsReducer/types'
+import { ProjectStatus } from 'reducers/projectReducer/types'
 
 const Container = styled.div`
   max-width: 100%;
@@ -18,17 +18,17 @@ const DatasetsGrid = styled.div`
 `
 
 const DatasetsTable = () => {
-  const [datasets] = useDatasets()
+  const [project] = useProject()
 
   if (
-    datasets.status === DatasetsStatus.Initial ||
-    datasets.status === DatasetsStatus.Loading
+    project.status === ProjectStatus.Initial ||
+    project.status === ProjectStatus.Loading
   )
-    return <p>Loading datasets</p>
+    return <p>Loading project</p>
 
-  const sorted = Object.values(datasets.datasets)
+  const sorted = Object.values(project.datasets)
 
-  Object.values(datasets.datasets).sort((a, b) => {
+  Object.values(project.datasets).sort((a, b) => {
     if (!a.versions || !b.versions) return 0
     if (a.versions.length !== 0 || b.versions.length !== 0) return 0
     if (!a.versions.slice(-1)[0]?.date) return 0

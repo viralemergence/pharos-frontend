@@ -4,9 +4,9 @@ import { useParams } from 'react-router-dom'
 
 import DataGrid from 'react-data-grid'
 
-import { DatasetsStatus } from 'reducers/datasetsReducer/types'
+import { ProjectStatus } from 'reducers/projectReducer/types'
 
-import useDatasets from 'hooks/useDatasets'
+import useProject from 'hooks/useProject'
 
 const Container = styled.div`
   margin-top: 30px;
@@ -19,23 +19,23 @@ const FillDatasetGrid = styled(DataGrid)`
 
 const DatasetGrid = () => {
   const { id } = useParams()
-  const [datasets] = useDatasets()
+  const [project] = useProject()
 
   if (!id) throw new Error('Missing dataset ID url parameter')
-  const dataset = datasets.datasets[id]
+  const dataset = project.datasets[id]
 
-  if (datasets.status === DatasetsStatus.Loading) return <p>Loading dataset</p>
+  if (project.status === ProjectStatus.Loading) return <p>Loading dataset</p>
 
   // const versionStatus = dataset.versions.slice(-1)[0].status
 
-  const raw = dataset.versions?.slice(-1)[0]?.raw
-  if (!raw || raw.length === 0) return <></>
+  const rows = dataset.versions?.slice(-1)[0]?.rows
+  if (!rows || rows.length === 0) return <></>
 
-  const columns = Object.keys(raw[0]).map(key => ({ key, name: key }))
+  const columns = Object.keys(rows[0]).map(key => ({ key, name: key }))
 
   return (
     <Container>
-      <FillDatasetGrid className={'rdg-light'} columns={columns} rows={raw} />
+      <FillDatasetGrid className={'rdg-light'} columns={columns} rows={rows} />
     </Container>
   )
 }

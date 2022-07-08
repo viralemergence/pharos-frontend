@@ -1,4 +1,4 @@
-import { ActionFunction, DatasetsActions } from '../datasetsReducer'
+import { ActionFunction, ProjectActions } from '../projectReducer'
 import { Version, VersionStatus } from '../types'
 
 export interface UpdateVersionPayload {
@@ -7,7 +7,7 @@ export interface UpdateVersionPayload {
 }
 
 export interface UpdateVersionAction {
-  type: DatasetsActions.UpdateVersion
+  type: ProjectActions.UpdateVersion
   payload: UpdateVersionPayload
 }
 
@@ -21,6 +21,7 @@ const updateVersion: ActionFunction<UpdateVersionPayload> = (
 
   nextVersions[activeVersion] = {
     ...(state.datasets[payload.datasetID].versions?.[activeVersion] ?? {
+      date: new Date().toUTCString(),
       status: VersionStatus.Unsaved,
     }),
     ...payload.version,

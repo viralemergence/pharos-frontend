@@ -1,12 +1,12 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
 
-import { DatasetsActions } from 'reducers/datasetsReducer/datasetsReducer'
-import { DatasetsStatus, VersionStatus } from 'reducers/datasetsReducer/types'
+import { ProjectActions } from 'reducers/projectReducer/projectReducer'
+import { ProjectStatus, VersionStatus } from 'reducers/projectReducer/types'
 
 import MintButton from 'components/ui/MintButton'
 
-import useDatasets from 'hooks/useDatasets'
+import useProject from 'hooks/useProject'
 import useUser from 'hooks/useUser'
 
 import saveVersion from 'api/saveVersion'
@@ -14,12 +14,12 @@ import saveVersion from 'api/saveVersion'
 const UpdateButton = () => {
   const [user] = useUser()
   const { id } = useParams()
-  const [datasets, datasetsDispatch] = useDatasets()
+  const [project, projectDispatch] = useProject()
 
   if (!id) throw new Error('Missing dataset ID url parameter')
-  const dataset = datasets.datasets[id]
+  const dataset = project.datasets[id]
 
-  if (datasets.status === DatasetsStatus.Loading) return <></>
+  if (project.status === ProjectStatus.Loading) return <></>
 
   const versionStatus =
     !dataset.versions || dataset.versions.length === 0
@@ -45,8 +45,8 @@ const UpdateButton = () => {
     e.preventDefault()
 
     // set version status to saving
-    datasetsDispatch({
-      type: DatasetsActions.SetVersionStatus,
+    projectDispatch({
+      type: ProjectActions.SetVersionStatus,
       payload: {
         datasetID: id,
         status: VersionStatus.Saving,
@@ -55,22 +55,22 @@ const UpdateButton = () => {
 
     if (!user.data?.researcherID) throw new Error('User data not found')
 
-    const versionID = datasets.datasets[id].activeVersion
+    const versionID = project.datasets[id].activeVersion
 
-    const raw = datasets.datasets[id].versions?.[versionID].raw
+    const rows = project.datasets[id].versions?.[versionID].rows
 
-    if (!raw)
+    if (!rows)
       throw new Error(
         `Raw version object not found at datasetID: ${id} and versionID: ${versionID}`
       )
 
     // save version to the server and get back the server info like the key and date
-    const newVersionInfo = await saveVersion(raw, id, user.data?.researcherID)
+    const newVersionInfo = await saveVersion(rows, id, user.data?.researcherID)
 
     // if it saved correctly, merge in the new info
     if (newVersionInfo) {
-      datasetsDispatch({
-        type: DatasetsActions.UpdateVersion,
+      projectDispatch({
+        type: ProjectActions.UpdateVersion,
         payload: {
           datasetID: id,
           version: {
@@ -81,8 +81,8 @@ const UpdateButton = () => {
       })
     } else {
       // else set the status to error
-      datasetsDispatch({
-        type: DatasetsActions.SetVersionStatus,
+      projectDispatch({
+        type: ProjectActions.SetVersionStatus,
         payload: {
           datasetID: id,
           status: VersionStatus.Error,
@@ -97,7 +97,7 @@ const UpdateButton = () => {
       disabled={
         versionStatus === VersionStatus.Saved ||
         versionStatus === VersionStatus.Saving ||
-        !dataset.versions?.[dataset.activeVersion]?.raw
+        !dataset.versions?.[dataset.activeVersion]?.rows
       }
     >
       {buttonMessage}
