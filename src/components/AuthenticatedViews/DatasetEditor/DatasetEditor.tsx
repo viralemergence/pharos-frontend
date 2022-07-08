@@ -106,7 +106,7 @@ const DatasetEditor = () => {
 
   useEffect(() => {
     if (project.status === ProjectStatus.Loaded && !dataset) navigate('/')
-  }, [project.status, dataset])
+  }, [project.status, dataset, navigate])
 
   return (
     <MainGrid>
