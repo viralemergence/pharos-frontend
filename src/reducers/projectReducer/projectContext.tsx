@@ -9,6 +9,7 @@ import projectReducer, {
 } from './projectReducer'
 
 import useUser from 'hooks/useUser'
+import listDatasets from 'api/listDatasets'
 
 type ProjectContextValue = [Project, React.Dispatch<ProjectAction>]
 
@@ -37,29 +38,24 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
       })
 
       // api request
-      const response = await fetch(
-        `${process.env.GATSBY_API_URL}/list-datasets`,
-        {
-          method: 'POST',
-          body: `{"researcherID":"${researcherID}"}`,
-        }
-      ).catch(() => {
-        projectDispatch({
-          type: ProjectActions.SetStatus,
-          payload: ProjectStatus.NetworkError,
-        })
-      })
+      const datasetList = await listDatasets(researcherID)
 
-      if (!response) {
+      if (!datasetList) {
         projectDispatch({
           type: ProjectActions.SetStatus,
           payload: ProjectStatus.NetworkError,
         })
-        return undefined
+        return null
       }
 
-      // get list of datasets from json
-      const { datasets: datasetList } = await response.json()
+      if (datasetList.length === 0) {
+        projectDispatch({
+          type: ProjectActions.SetProject,
+          payload: { ...projectInitialValue, status: ProjectStatus.Loaded },
+        })
+
+        return null
+      }
 
       // object to contain the datasets
       const projectObj: Project = { ...projectInitialValue }
@@ -77,13 +73,13 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
 
       projectDispatch({
         type: ProjectActions.SetProject,
-        payload: projectObj,
+        payload: { ...projectObj, status: ProjectStatus.Loaded },
       })
 
-      projectDispatch({
-        type: ProjectActions.SetStatus,
-        payload: ProjectStatus.Loaded,
-      })
+      // projectDispatch({
+      //   type: ProjectActions.SetStatus,
+      //   payload: ProjectStatus.Loaded,
+      // })
     }
 
     if (researcherID) getDatasetList(researcherID)
