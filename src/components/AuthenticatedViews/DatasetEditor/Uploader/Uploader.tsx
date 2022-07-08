@@ -51,8 +51,6 @@ const Uploader = () => {
           user.data?.researcherID
         )
 
-        console.log({ newVersionInfo })
-
         if (newVersionInfo) {
           datasetsDispatch({
             type: DatasetsActions.UpdateVersion,
