@@ -41,7 +41,7 @@ export interface Version {
   // status of the version
   status: VersionStatus
   // version key for the API to fetch raw object
-  key?: string
+  uri?: string
   // raw dataset object from the user view
   raw?: DatasetRow[]
 }

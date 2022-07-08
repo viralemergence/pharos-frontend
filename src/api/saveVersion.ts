@@ -17,10 +17,10 @@ const saveVersion = async (
   if (!response || !response.ok) return null
 
   const body = (await response.json()) as {
-    version: { key: string; date: string }
+    dataset: { uri: string; date: string }
   }
 
-  return body.version
+  return body.dataset
 }
 
 export default saveVersion

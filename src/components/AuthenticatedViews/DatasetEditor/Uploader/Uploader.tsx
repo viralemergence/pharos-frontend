@@ -18,7 +18,7 @@ const fileTypes = ['CSV']
 const Uploader = () => {
   const { id } = useParams()
   const [user] = useUser()
-  const [datasets, datasetsDispatch] = useDatasets()
+  const [, datasetsDispatch] = useDatasets()
 
   if (!id) throw new Error('datasetID not found in url')
 
@@ -27,8 +27,6 @@ const Uploader = () => {
       header: true,
       complete: async results => {
         const rows = results.data as unknown as DatasetRow[]
-
-        console.log(rows)
 
         datasetsDispatch({
           type: DatasetsActions.CreateVersion,
@@ -46,12 +44,9 @@ const Uploader = () => {
           user.data?.researcherID
         )
 
-        const versionID = datasets.datasets[id].activeVersion
+        console.log({ newVersionInfo })
 
         if (newVersionInfo) {
-          console.log(datasets.datasets[id].versions[versionID])
-          console.log(newVersionInfo)
-
           datasetsDispatch({
             type: DatasetsActions.UpdateVersion,
             payload: {
