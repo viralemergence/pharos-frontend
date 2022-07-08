@@ -59,13 +59,13 @@ const DatasetEditor = () => {
   }
 
   const versionKey = dataset?.versions?.[dataset.activeVersion]?.key
+  const localData = Boolean(
+    dataset?.versions?.[dataset.activeVersion]?.rows?.length
+  )
 
   useEffect(() => {
     const loadVersionContent = async () => {
       if (!versionKey) return null
-
-      // don't reload the version if we already have the data
-      if (dataset?.versions?.[dataset.activeVersion]?.rows) return null
 
       projectDispatch({
         type: ProjectActions.SetVersionStatus,
@@ -99,8 +99,12 @@ const DatasetEditor = () => {
       }
     }
 
-    if (versionKey) loadVersionContent()
-  }, [id, versionKey, projectDispatch])
+    if (versionKey && !localData) loadVersionContent()
+  }, [id, versionKey, localData, projectDispatch])
+
+  useEffect(() => {
+    if (project.status === ProjectStatus.Loaded && !dataset) navigate('/')
+  }, [project.status, dataset])
 
   return (
     <MainGrid>
