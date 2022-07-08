@@ -58,7 +58,7 @@ const DatasetEditor = () => {
       datasetStatusMessage = 'Error'
   }
 
-  const versionKey = dataset?.versions?.[dataset.activeVersion].key
+  const versionKey = dataset?.versions?.[dataset.activeVersion]?.key
 
   useEffect(() => {
     const loadVersionContent = async () => {

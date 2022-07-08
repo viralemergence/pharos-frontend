@@ -8,9 +8,7 @@ const listDatasets = async (researcherID: string) => {
 
   if (!response || !response.ok) return null
 
-  const body = await response.json()
-
-  const datasetList = body.datasets as Dataset[]
+  const datasetList = (await response.json()) as Dataset[]
 
   return datasetList
 }
