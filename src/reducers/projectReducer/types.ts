@@ -23,6 +23,7 @@ export enum VersionStatus {
   Saving,
   Saved,
   Error,
+  Loading,
 }
 
 // a single row of a version of a dataset;

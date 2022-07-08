@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, version } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
 
@@ -39,8 +39,6 @@ const DatasetEditor = () => {
   if (!id) throw new Error('Missing dataset ID url parameter')
   const dataset = project.datasets[id]
 
-  console.log({ dataset })
-
   console.log({ project })
 
   const datasetStatus = dataset?.status ? dataset.status : DatasetStatus.Unsaved
@@ -62,13 +60,20 @@ const DatasetEditor = () => {
 
   const versionKey = dataset?.versions?.[dataset.activeVersion]?.key
 
-  console.log(dataset?.versions)
-  console.log(dataset.activeVersion)
-
   useEffect(() => {
     const loadVersionContent = async () => {
-      console.log(versionKey)
       if (!versionKey) return null
+
+      // don't reload the version if we already have the data
+      if (dataset?.versions?.[dataset.activeVersion]?.rows) return null
+
+      projectDispatch({
+        type: ProjectActions.SetVersionStatus,
+        payload: {
+          datasetID: id,
+          status: VersionStatus.Loading,
+        },
+      })
 
       const rows = await loadVersionRaw(id, versionKey)
 
@@ -79,6 +84,7 @@ const DatasetEditor = () => {
             datasetID: id,
             version: {
               rows: rows as Record[],
+              status: VersionStatus.Saved,
             },
           },
         })

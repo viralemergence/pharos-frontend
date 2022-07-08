@@ -105,11 +105,7 @@ const UpdateButton = () => {
   return (
     <MintButton
       onClick={e => onClickUpdate(e)}
-      disabled={
-        versionStatus === VersionStatus.Saved ||
-        versionStatus === VersionStatus.Saving ||
-        !dataset.versions?.[dataset.activeVersion]?.rows
-      }
+      disabled={versionStatus !== VersionStatus.Unsaved}
     >
       {buttonMessage}
     </MintButton>
