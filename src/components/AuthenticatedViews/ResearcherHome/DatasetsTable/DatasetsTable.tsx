@@ -3,13 +3,13 @@ import styled from 'styled-components'
 
 import useDatasets from 'hooks/useDatasets'
 import { GridRow, HeaderRow } from './DatasetsTableRow'
+import { DatasetsStatus } from 'reducers/datasetsReducer/types'
 
 const Container = styled.div`
   max-width: 100%;
   overflow-x: scroll;
   margin-top: 20px;
 `
-
 const DatasetsGrid = styled.div`
   display: flex;
   flex-direction: column;
@@ -20,13 +20,20 @@ const DatasetsGrid = styled.div`
 const DatasetsTable = () => {
   const [datasets] = useDatasets()
 
-  if (!datasets) return <p>Loading datasets</p>
-
-  const sorted = Object.values(datasets).sort(
-    (a, b) =>
-      new Date(b.versions.slice(-1)[0].date).getTime() -
-      new Date(a.versions.slice(-1)[0].date).getTime()
+  if (
+    datasets.status === DatasetsStatus.Initial ||
+    datasets.status === DatasetsStatus.Loading
   )
+    return <p>Loading datasets</p>
+
+  const sorted = Object.values(datasets.datasets)
+
+  // Object.values(datasets.datasets).sort((a, b) =>
+  //   a.versions.length !== 0 || b.versions.length !== 0
+  //     ? new Date(b.versions.slice(-1)[0].date).getTime() -
+  //       new Date(a.versions.slice(-1)[0].date).getTime()
+  //     : -1
+  // )
 
   console.log(datasets)
 

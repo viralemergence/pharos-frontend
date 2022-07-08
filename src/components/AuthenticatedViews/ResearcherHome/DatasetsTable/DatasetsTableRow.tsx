@@ -2,10 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
-import { Dataset } from 'hooks/useDatasets'
-
 import formatDate from 'utilities/formatDate'
 import { lighten } from 'polished'
+import { Dataset } from 'reducers/datasetsReducer/types'
 
 const Row = styled(Link)`
   display: grid;
@@ -17,6 +16,7 @@ const Row = styled(Link)`
   text-decoration: none;
 
   ${({ theme }) => theme.gridText};
+
   > div {
     padding: 15px;
   }

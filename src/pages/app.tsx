@@ -10,7 +10,8 @@ import RequireAuth from 'components/AuthenticatedViews/RequireAuth'
 
 import DatasetEditor from 'components/AuthenticatedViews/DatasetEditor/DatasetEditor'
 import ResearcherHome from 'components/AuthenticatedViews/ResearcherHome/ResearcherHome'
-import { DatasetContextProvider } from 'hooks/useDatasets'
+
+import DatasetsContextProvider from 'reducers/datasetsReducer/datasetsContext'
 
 const App = (): JSX.Element => {
   // on the buidl server, don't try to render the app
@@ -19,7 +20,7 @@ const App = (): JSX.Element => {
   return (
     <Providers>
       <CMS.SEO />
-      <DatasetContextProvider>
+      <DatasetsContextProvider>
         <HashRouter>
           <NavBar />
           <Routes>
@@ -42,7 +43,7 @@ const App = (): JSX.Element => {
             />
           </Routes>
         </HashRouter>
-      </DatasetContextProvider>
+      </DatasetsContextProvider>
     </Providers>
   )
 }

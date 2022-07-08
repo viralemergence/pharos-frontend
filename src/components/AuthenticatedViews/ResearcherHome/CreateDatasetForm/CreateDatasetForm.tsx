@@ -1,14 +1,18 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
+import { useNavigate } from 'react-router-dom'
+
+import { DatasetsActions } from 'reducers/datasetsReducer/datasetsReducer'
+import { DatasetStatus } from 'reducers/datasetsReducer/types'
 
 import MintButton from 'components/ui/MintButton'
 import Label from 'components/ui/InputLabel'
 import Input from 'components/ui/Input'
 
-import { useNavigate } from 'react-router-dom'
-import createDataset from './createDataset'
 import useUser from 'hooks/useUser'
 import useDatasets from 'hooks/useDatasets'
+
+import saveDataset from 'api/saveDataset'
 
 const Form = styled.form`
   width: 500px;
@@ -21,52 +25,75 @@ const Form = styled.form`
 const H1 = styled.h1`
   ${({ theme }) => theme.h3}
 `
+
 const CreateDatasetForm = () => {
-  const firstInputRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    firstInputRef.current?.focus()
-  }, [])
-
   const [user] = useUser()
+  const [datasets, datasetsDispatch] = useDatasets()
+
+  // generate a new datesetID to use
+  const [newDatasetID] = useState(String(new Date().getTime()))
+
   const navigate = useNavigate()
-  const [_, setDatasets] = useDatasets()
 
-  const [submitting, setSubmitting] = useState(false)
+  const newDatasetStatus = datasets.datasets[newDatasetID]?.status
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>,
+    datasetID: string
+  ) => {
     e.preventDefault()
-
-    setSubmitting(true)
 
     const target = e.target as typeof e.target & {
       name: { value: string }
       date_collected: { value: string }
     }
 
-    if (!user.data) return false
+    if (!user.data) throw new Error('User not logged in')
 
-    const created = await createDataset(
-      user.data.researcherID,
-      target.name.value,
-      target.date_collected.value,
-      0,
-      0
-    )
+    const payload = {
+      datasetID,
+      researcherID: user.data.researcherID,
+      name: target.name.value,
+      date_collected: target.date_collected.value,
+      samples_taken: '0',
+      detection_run: '0',
+      activeVersion: 0,
+    }
 
-    if (created) {
-      setDatasets(prev => ({ ...prev, [created.datasetID]: created }))
-      setSubmitting(false)
-      navigate(`/dataset/${created.datasetID}`)
-    } else throw new Error('dataset creation failed')
+    datasetsDispatch({
+      type: DatasetsActions.CreateDataset,
+      payload,
+    })
+
+    const saved = await saveDataset(payload)
+
+    if (saved) {
+      datasetsDispatch({
+        type: DatasetsActions.SetDatasetStatus,
+        payload: {
+          datasetID,
+          status: DatasetStatus.Saved,
+        },
+      })
+
+      navigate(`/dataset/${saved.datasetID}`)
+    } else {
+      datasetsDispatch({
+        type: DatasetsActions.SetDatasetStatus,
+        payload: {
+          datasetID,
+          status: DatasetStatus.Error,
+        },
+      })
+    }
   }
 
   return (
-    <Form onSubmit={e => handleSubmit(e)}>
+    <Form onSubmit={e => handleSubmit(e, newDatasetID)}>
       <H1>Create Dataset</H1>
       <Label>
         Dataset Name
-        <Input type="text" name="name" ref={firstInputRef} />
+        <Input type="text" name="name" autoFocus />
       </Label>
       <Label>
         Collection Date
@@ -75,10 +102,16 @@ const CreateDatasetForm = () => {
       <MintButton
         type="submit"
         style={{ marginLeft: 'auto' }}
-        disabled={submitting}
+        disabled={
+          newDatasetStatus === DatasetStatus.Saving ||
+          newDatasetStatus === DatasetStatus.Error
+        }
       >
-        {submitting ? 'Submitting...' : 'Create'}
+        {newDatasetStatus === DatasetStatus.Saving ? 'Submitting...' : 'Create'}
       </MintButton>
+      {newDatasetStatus === DatasetStatus.Error && (
+        <p>There was an error creating the dataset</p>
+      )}
     </Form>
   )
 }
