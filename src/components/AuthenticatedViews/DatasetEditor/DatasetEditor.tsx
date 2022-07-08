@@ -106,9 +106,19 @@ const DatasetEditor = () => {
     if (versionKey && !localData) loadVersionContent()
   }, [id, versionKey, localData, projectDispatch])
 
+  // handle case where the page loads on a dataset that doesn't exist
   useEffect(() => {
     if (project.status === ProjectStatus.Loaded && !dataset) navigate('/')
   }, [project.status, dataset, navigate])
+
+  const onSelectVersion = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const nextVersion = e.target.value
+
+    projectDispatch({
+      type: ProjectActions.SetActiveVersion,
+      payload: { datasetID: id, version: Number(nextVersion) },
+    })
+  }
 
   return (
     <MainGrid>
@@ -116,6 +126,15 @@ const DatasetEditor = () => {
       <Content>
         <TopBar>
           <H1>{dataset ? dataset.name : 'Loading dataset'}</H1>
+          <select
+            onChange={onSelectVersion}
+            value={dataset.activeVersion}
+            style={{ marginLeft: 'auto', marginRight: '15px', fontSize: 18 }}
+          >
+            {dataset.versions.map((version, index) => (
+              <option value={index}>{version.date}</option>
+            ))}
+          </select>
           <UpdateButton />
         </TopBar>
         <H2>Collected Date: {dataset && dataset.date_collected}</H2>
