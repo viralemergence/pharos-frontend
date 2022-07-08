@@ -1,4 +1,4 @@
-import React, { useEffect, version } from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
 
