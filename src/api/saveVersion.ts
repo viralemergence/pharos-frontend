@@ -1,4 +1,4 @@
-import { DatasetRow, Version } from 'reducers/datasetsReducer/types'
+import { DatasetRow } from 'reducers/datasetsReducer/types'
 
 const saveVersion = async (
   raw: DatasetRow[],
