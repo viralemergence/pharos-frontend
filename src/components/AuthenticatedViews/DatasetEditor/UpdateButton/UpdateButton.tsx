@@ -43,7 +43,6 @@ const UpdateButton = () => {
 
   const onClickUpdate = async (e: React.SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    console.log('start updating')
 
     datasetsDispatch({
       type: DatasetsActions.SetVersionStatus,
@@ -59,16 +58,12 @@ const UpdateButton = () => {
 
     const raw = datasets.datasets[id].versions[versionID].raw
 
-    console.log(raw)
-
     if (!raw)
       throw new Error(
         `Raw version object not found at datasetID: ${id} and versionID: ${versionID}`
       )
 
     const newVersionInfo = await saveVersion(raw, id, user.data?.researcherID)
-
-    console.log('after saving')
 
     if (newVersionInfo) {
       datasetsDispatch({

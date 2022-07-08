@@ -22,7 +22,6 @@ const setVersionStatus: ActionFunction<SetVersionStatusPayload> = (
     ...nextVersions[activeVersion],
     status: payload.status,
   }
-  console.log({ nextVersions })
 
   return {
     ...state,

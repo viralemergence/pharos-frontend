@@ -37,7 +37,7 @@ const DatasetEditor = () => {
 
   const raw = dataset.versions.slice(-1)[0]?.raw
 
-  console.log(datasets)
+  console.log({ datasets })
 
   return (
     <MainGrid>

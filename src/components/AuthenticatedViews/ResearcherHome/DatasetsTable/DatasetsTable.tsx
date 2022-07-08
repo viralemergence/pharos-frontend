@@ -35,8 +35,6 @@ const DatasetsTable = () => {
   //     : -1
   // )
 
-  console.log(datasets)
-
   return (
     <Container>
       <DatasetsGrid>

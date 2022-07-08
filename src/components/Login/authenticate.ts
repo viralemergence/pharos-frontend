@@ -18,7 +18,6 @@ const authenticate = async (researcherID: string) => {
     body: `{"researcherID":"${researcherID}"}`,
   }).catch(error => console.log(error))
 
-  console.log(response)
   if (!response)
     return {
       status: UserStatus.authError,
