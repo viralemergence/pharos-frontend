@@ -19,7 +19,7 @@ const UpdateButton = () => {
   if (!id) throw new Error('Missing dataset ID url parameter')
   const dataset = project.datasets[id]
 
-  if (project.status === ProjectStatus.Loading) return <></>
+  if (!dataset || project.status === ProjectStatus.Loading) return <></>
 
   const versionStatus =
     !dataset.versions || dataset.versions.length === 0

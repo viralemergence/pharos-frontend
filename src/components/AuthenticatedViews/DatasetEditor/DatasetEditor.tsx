@@ -1,11 +1,12 @@
-import React, { useEffect, version } from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import {
   Record,
   DatasetStatus,
   VersionStatus,
+  ProjectStatus,
 } from 'reducers/projectReducer/types'
 
 import MainGrid from 'components/layout/MainGrid'
@@ -34,6 +35,7 @@ const H2 = styled.h2`
 
 const DatasetEditor = () => {
   const { id } = useParams()
+  const navigate = useNavigate()
   const [project, projectDispatch] = useProject()
 
   if (!id) throw new Error('Missing dataset ID url parameter')

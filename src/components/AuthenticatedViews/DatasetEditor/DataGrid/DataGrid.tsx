@@ -21,8 +21,12 @@ const DatasetGrid = () => {
   const { id } = useParams()
   const [project] = useProject()
 
+  if (project.status !== ProjectStatus.Loaded) return <></>
+
   if (!id) throw new Error('Missing dataset ID url parameter')
   const dataset = project.datasets[id]
+  if (!dataset) return <></>
+
   const version = dataset.versions?.[dataset.activeVersion]
 
   if (!version) return <p>No active version</p>
