@@ -17,7 +17,7 @@ const updateVersion: ActionFunction<UpdateVersionPayload> = (
   payload
 ) => {
   const activeVersion = state.datasets[payload.datasetID].activeVersion
-  const nextVersions = [...(state.datasets[payload.datasetID].versions ?? [])]
+  const nextVersions = [...state.datasets[payload.datasetID].versions]
 
   nextVersions[activeVersion] = {
     ...(state.datasets[payload.datasetID].versions?.[activeVersion] ?? {

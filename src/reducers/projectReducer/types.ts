@@ -57,7 +57,7 @@ export interface Dataset {
   samples_taken?: string
   detection_run?: string
   date_collected?: string
-  versions?: Version[]
+  versions: Version[]
   activeVersion: number
 }
 

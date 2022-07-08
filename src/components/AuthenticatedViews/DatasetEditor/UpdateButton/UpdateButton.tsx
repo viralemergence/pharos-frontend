@@ -26,7 +26,7 @@ const UpdateButton = () => {
       ? VersionStatus.Unsaved
       : dataset.versions.slice(-1)[0].status
 
-  let buttonMessage = 'Update version'
+  let buttonMessage = 'Save version'
   switch (versionStatus) {
     case VersionStatus.Saved:
       buttonMessage = 'Version saved'
@@ -35,7 +35,7 @@ const UpdateButton = () => {
       buttonMessage = 'Saving...'
       break
     case VersionStatus.Unsaved:
-      buttonMessage = 'Update Version'
+      buttonMessage = 'Save Version'
       break
     case VersionStatus.Error:
       buttonMessage = 'Error'

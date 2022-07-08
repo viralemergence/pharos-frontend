@@ -2,11 +2,16 @@ import React from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
 
-import DataGrid from 'react-data-grid'
+import DataGrid, { TextEditor } from 'react-data-grid'
 
-import { ProjectStatus, VersionStatus } from 'reducers/projectReducer/types'
+import {
+  ProjectStatus,
+  Record,
+  VersionStatus,
+} from 'reducers/projectReducer/types'
 
 import useProject from 'hooks/useProject'
+import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 
 const Container = styled.div`
   margin-top: 30px;
@@ -19,7 +24,7 @@ const FillDatasetGrid = styled(DataGrid)`
 
 const DatasetGrid = () => {
   const { id } = useParams()
-  const [project] = useProject()
+  const [project, projectDispatch] = useProject()
 
   if (project.status !== ProjectStatus.Loaded) return <></>
 
@@ -35,7 +40,32 @@ const DatasetGrid = () => {
 
   if (!version.rows || version.rows.length === 0) return <></>
 
-  const columns = Object.keys(version.rows[0]).map(key => ({ key, name: key }))
+  const columns = Object.keys(version.rows[0]).map(key => ({
+    key,
+    name: key,
+    editor: TextEditor,
+  }))
+
+  const handleChange = (rows: Record[]) => {
+    console.log('handleChange called')
+    // check if this version is not saved
+    if (version.status === VersionStatus.Unsaved)
+      projectDispatch({
+        type: ProjectActions.UpdateVersion,
+        payload: { datasetID: id, version: { rows: rows } },
+      })
+    else
+      projectDispatch({
+        type: ProjectActions.CreateVersion,
+        payload: {
+          date: new Date().toUTCString(),
+          datasetID: id,
+          rows,
+        },
+      })
+  }
+
+  const rowKeyGetter = (row: Record) => Object.values(row)[0] as string
 
   return (
     <Container>
@@ -43,6 +73,8 @@ const DatasetGrid = () => {
         className={'rdg-light'}
         columns={columns}
         rows={version.rows}
+        rowKeyGetter={row => rowKeyGetter(row as Record)}
+        onRowsChange={rows => handleChange(rows as Record[])}
       />
     </Container>
   )

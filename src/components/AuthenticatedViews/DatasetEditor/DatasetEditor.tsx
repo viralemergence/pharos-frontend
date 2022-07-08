@@ -65,6 +65,8 @@ const DatasetEditor = () => {
     dataset?.versions?.[dataset.activeVersion]?.rows?.length
   )
 
+  // this whole thing needs to be moved to a useVersion() hook
+  // which will return a version either locally or from the server
   useEffect(() => {
     const loadVersionContent = async () => {
       if (!versionKey) return null

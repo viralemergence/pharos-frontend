@@ -67,7 +67,10 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
         // server than it must be saved on the server by definition
         projectObj.datasets[dataset.datasetID] = {
           ...dataset,
-          activeVersion: Number(dataset.activeVersion),
+          // we don't have a way to save the
+          // activeVersion to the server yet
+          // activeVersion: Number(dataset.activeVersion),
+          activeVersion: dataset.versions.length - 1,
           status: DatasetStatus.Saved,
         }
       })
