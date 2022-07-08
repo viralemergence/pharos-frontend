@@ -28,12 +28,16 @@ const DatasetsTable = () => {
 
   const sorted = Object.values(datasets.datasets)
 
-  // Object.values(datasets.datasets).sort((a, b) =>
-  //   a.versions.length !== 0 || b.versions.length !== 0
-  //     ? new Date(b.versions.slice(-1)[0].date).getTime() -
-  //       new Date(a.versions.slice(-1)[0].date).getTime()
-  //     : -1
-  // )
+  Object.values(datasets.datasets).sort((a, b) => {
+    if (a.versions.length !== 0 || b.versions.length !== 0) return 0
+    if (!a.versions.slice(-1)[0]?.date) return 0
+    if (!b.versions.slice(-1)[0]?.date) return 0
+
+    return (
+      new Date(b.versions.slice(-1)[0].date!).getTime() -
+      new Date(a.versions.slice(-1)[0].date!).getTime()
+    )
+  })
 
   return (
     <Container>
