@@ -1,17 +1,7 @@
-import { Dataset, Version } from 'reducers/projectReducer/types'
-
-export interface SaveDatasetProps {
-  datasetID: string
-  researcherID: string
-  name: string
-  date_collected: string
-  samples_taken: string
-  detection_run: string
-  versions: Version[]
-}
+import { Dataset } from 'reducers/projectReducer/types'
 
 // calling this Save Dataset becasue the dataset has already been created on the frontend
-const saveDataset = async (payload: SaveDatasetProps) => {
+const saveDataset = async (payload: Dataset) => {
   const convertedID = { ...payload, datasetID: payload.datasetID }
 
   const response = await fetch(`${process.env.GATSBY_API_URL}/create-dataset`, {

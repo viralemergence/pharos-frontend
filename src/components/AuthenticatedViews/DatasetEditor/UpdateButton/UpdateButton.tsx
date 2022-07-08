@@ -58,14 +58,25 @@ const UpdateButton = () => {
     const versionID = project.datasets[id].activeVersion
 
     const rows = project.datasets[id].versions?.[versionID].rows
+    const date = project.datasets[id].versions?.[versionID].date
 
     if (!rows)
       throw new Error(
-        `Raw version object not found at datasetID: ${id} and versionID: ${versionID}`
+        `Version object rows not found at datasetID: ${id} and versionID: ${versionID}`
+      )
+
+    if (!date)
+      throw new Error(
+        `Version object date not found at datasetID: ${id} and versionID: ${versionID}`
       )
 
     // save version to the server and get back the server info like the key and date
-    const newVersionInfo = await saveVersion(rows, id, user.data?.researcherID)
+    const newVersionInfo = await saveVersion(
+      rows,
+      id,
+      user.data?.researcherID,
+      date
+    )
 
     // if it saved correctly, merge in the new info
     if (newVersionInfo) {

@@ -18,7 +18,7 @@ const fileTypes = ['CSV']
 const Uploader = () => {
   const { id } = useParams()
   const [user] = useUser()
-  const [, projectDispatch] = useProject()
+  const [project, projectDispatch] = useProject()
 
   if (!id) throw new Error('datasetID not found in url')
 
@@ -27,14 +27,17 @@ const Uploader = () => {
       header: true,
       complete: async results => {
         const rows = results.data as unknown as Record[]
+        const date = new Date().toUTCString()
 
         projectDispatch({
           type: ProjectActions.CreateVersion,
           payload: {
+            date,
             datasetID: id,
-            raw: rows,
+            rows,
           },
         })
+
         projectDispatch({
           type: ProjectActions.SetVersionStatus,
           payload: {
@@ -45,10 +48,16 @@ const Uploader = () => {
 
         if (!user.data?.researcherID) throw new Error('User data not found')
 
+        if (!date)
+          throw new Error(
+            `Version object date not found at datasetID: ${id} and versionID: ${project.datasets[id].activeVersion}`
+          )
+
         const newVersionInfo = await saveVersion(
           rows,
           id,
-          user.data?.researcherID
+          user.data?.researcherID,
+          date
         )
 
         if (newVersionInfo) {

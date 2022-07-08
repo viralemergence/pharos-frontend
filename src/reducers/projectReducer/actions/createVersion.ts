@@ -8,7 +8,8 @@ export interface CreateVersionAction {
 
 export interface CreateVersionPayload {
   datasetID: string
-  raw: Record[]
+  date: string
+  rows: Record[]
 }
 
 const createVersion: ActionFunction<CreateVersionPayload> = (
@@ -24,9 +25,9 @@ const createVersion: ActionFunction<CreateVersionPayload> = (
         ...(state.datasets[payload.datasetID].versions ?? []),
         // add new version
         {
-          date: new Date().toUTCString(),
+          date: payload.date,
           status: VersionStatus.Unsaved,
-          rows: payload.raw,
+          rows: payload.rows,
         },
       ],
       // set the new version to be active
