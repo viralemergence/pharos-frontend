@@ -16,47 +16,38 @@ import saveVersion from 'api/uploadVersion'
 const fileTypes = ['CSV']
 
 const Uploader = () => {
-  const { id } = useParams()
+  const { id: datasetID } = useParams()
   const [user] = useUser()
-  const [project, projectDispatch] = useProject()
+  const [, projectDispatch] = useProject()
 
-  if (!id) throw new Error('datasetID not found in url')
+  if (!datasetID) throw new Error('datasetID not found in url')
 
   const handleChange = (file: File) => {
     Papa.parse(file, {
       header: true,
       complete: async results => {
         const rows = results.data as unknown as Record[]
+
+        // create timestamp for the version
         const date = new Date().toUTCString()
 
         projectDispatch({
           type: ProjectActions.CreateVersion,
           payload: {
+            datasetID: datasetID,
+            status: VersionStatus.Saving,
             date,
-            datasetID: id,
             rows,
           },
         })
 
-        projectDispatch({
-          type: ProjectActions.SetVersionStatus,
-          payload: {
-            datasetID: id,
-            status: VersionStatus.Saving,
-          },
-        })
-
-        if (!user.data?.researcherID) throw new Error('User data not found')
-
-        if (!date)
-          throw new Error(
-            `Version object date not found at datasetID: ${id} and versionID: ${project.datasets[id].activeVersion}`
-          )
+        const researcherID = user.data?.researcherID
+        if (!researcherID) throw new Error('User data not found')
 
         const newVersionInfo = await saveVersion(
           rows,
-          id,
-          user.data?.researcherID,
+          datasetID,
+          researcherID,
           date
         )
 
@@ -64,7 +55,7 @@ const Uploader = () => {
           projectDispatch({
             type: ProjectActions.UpdateVersion,
             payload: {
-              datasetID: id,
+              datasetID: datasetID,
               version: {
                 ...newVersionInfo,
                 status: VersionStatus.Saved,
@@ -75,7 +66,7 @@ const Uploader = () => {
           projectDispatch({
             type: ProjectActions.SetVersionStatus,
             payload: {
-              datasetID: id,
+              datasetID: datasetID,
               status: VersionStatus.Error,
             },
           })

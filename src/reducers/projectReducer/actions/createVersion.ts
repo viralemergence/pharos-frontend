@@ -1,15 +1,13 @@
 import { ActionFunction, ProjectActions } from '../projectReducer'
-import { Record, VersionStatus } from '../types'
+import { Version, VersionStatus } from '../types'
+
+export interface CreateVersionPayload extends Version {
+  datasetID: string
+}
 
 export interface CreateVersionAction {
   type: ProjectActions.CreateVersion
   payload: CreateVersionPayload
-}
-
-export interface CreateVersionPayload {
-  datasetID: string
-  date: string
-  rows: Record[]
 }
 
 const createVersion: ActionFunction<CreateVersionPayload> = (

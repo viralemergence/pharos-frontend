@@ -33,14 +33,13 @@ const DatasetEditor = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const [project] = useProject()
+  console.log({ project })
 
   const dataset = useDataset(id)
 
   // load the active version from the
   // server into state if necessary
   useActiveVersion(id)
-
-  console.log({ project })
 
   const datasetStatusMessage = useDatasetStatusMessage(id)
 
