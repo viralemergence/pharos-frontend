@@ -55,10 +55,9 @@ const CreateDatasetForm = () => {
       researcherID: user.data.researcherID,
       name: target.name.value,
       date_collected: target.date_collected.value,
+      status: DatasetStatus.Saving,
       samples_taken: '0',
       detection_run: '0',
-      activeVersion: 0,
-      status: DatasetStatus.Saving,
     }
 
     datasetsDispatch({

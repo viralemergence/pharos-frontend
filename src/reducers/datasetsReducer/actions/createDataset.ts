@@ -1,5 +1,5 @@
 import { ActionFunction, DatasetsActions } from '../datasetsReducer'
-import { DatasetStatus } from '../types'
+import { DatasetStatus, Version } from '../types'
 
 export interface CreateDatasetAction {
   type: DatasetsActions.CreateDataset
@@ -11,9 +11,11 @@ export interface CreateDatasetPayload {
   researcherID: string
   name: string
   date_collected: string
-  samples_taken: string
-  detection_run: string
-  activeVersion: number
+  samples_taken?: string
+  detection_run?: string
+  status?: DatasetStatus
+  versions?: Version[]
+  activeVersion?: number
 }
 
 const createDataset: ActionFunction<CreateDatasetPayload> = (
@@ -21,10 +23,13 @@ const createDataset: ActionFunction<CreateDatasetPayload> = (
   payload
 ) => {
   const newDataset = {
+    // setting basic defaults
     status: DatasetStatus.Unsaved,
-    ...payload,
     versions: [],
     activeVersion: 0,
+    samples_taken: '0',
+    detection_run: '0',
+    ...payload,
   }
 
   return {
