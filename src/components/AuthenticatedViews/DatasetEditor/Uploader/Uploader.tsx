@@ -35,6 +35,13 @@ const Uploader = () => {
             raw: rows,
           },
         })
+        datasetsDispatch({
+          type: DatasetsActions.SetVersionStatus,
+          payload: {
+            datasetID: id,
+            status: VersionStatus.Saving,
+          },
+        })
 
         if (!user.data?.researcherID) throw new Error('User data not found')
 
