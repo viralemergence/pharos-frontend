@@ -126,15 +126,17 @@ const DatasetEditor = () => {
       <Content>
         <TopBar>
           <H1>{dataset ? dataset.name : 'Loading dataset'}</H1>
-          <select
-            onChange={onSelectVersion}
-            value={dataset.activeVersion}
-            style={{ marginLeft: 'auto', marginRight: '15px', fontSize: 18 }}
-          >
-            {dataset.versions.map((version, index) => (
-              <option value={index}>{version.date}</option>
-            ))}
-          </select>
+          {dataset?.versions && (
+            <select
+              onChange={onSelectVersion}
+              value={dataset.activeVersion}
+              style={{ marginLeft: 'auto', marginRight: '15px', fontSize: 18 }}
+            >
+              {dataset.versions.map((version, index) => (
+                <option value={index}>{version.date}</option>
+              ))}
+            </select>
+          )}
           <UpdateButton />
         </TopBar>
         <H2>Collected Date: {dataset && dataset.date_collected}</H2>
