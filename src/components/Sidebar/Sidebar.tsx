@@ -85,7 +85,7 @@ const Sidebar = () => {
       <DatasetsHeader to={'/'}>Datasets</DatasetsHeader>
       <List>
         {Object.entries(datasets.datasets).map(([id, dataset]) => (
-          <Dataset>
+          <Dataset key={dataset.name}>
             <Link style={{ color: 'white' }} to={`/dataset/${id}`}>
               {dataset.name}
             </Link>
