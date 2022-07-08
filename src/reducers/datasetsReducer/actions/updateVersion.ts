@@ -1,9 +1,9 @@
 import { ActionFunction, DatasetsActions } from '../datasetsReducer'
-import { Version } from '../types'
+import { Version, VersionStatus } from '../types'
 
 export interface UpdateVersionPayload {
   datasetID: string
-  version: Version
+  version: Partial<Version>
 }
 
 export interface UpdateVersionAction {
@@ -17,10 +17,12 @@ const updateVersion: ActionFunction<UpdateVersionPayload> = (
   payload
 ) => {
   const activeVersion = state.datasets[payload.datasetID].activeVersion
-  const nextVersions = [...state.datasets[payload.datasetID].versions]
+  const nextVersions = [...(state.datasets[payload.datasetID].versions ?? [])]
 
   nextVersions[activeVersion] = {
-    ...state.datasets[payload.datasetID].versions[activeVersion],
+    ...(state.datasets[payload.datasetID].versions?.[activeVersion] ?? {
+      status: VersionStatus.Unsaved,
+    }),
     ...payload.version,
   }
 

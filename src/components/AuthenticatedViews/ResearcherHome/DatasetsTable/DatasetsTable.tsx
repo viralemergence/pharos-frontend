@@ -29,6 +29,7 @@ const DatasetsTable = () => {
   const sorted = Object.values(datasets.datasets)
 
   Object.values(datasets.datasets).sort((a, b) => {
+    if (!a.versions || !b.versions) return 0
     if (a.versions.length !== 0 || b.versions.length !== 0) return 0
     if (!a.versions.slice(-1)[0]?.date) return 0
     if (!b.versions.slice(-1)[0]?.date) return 0

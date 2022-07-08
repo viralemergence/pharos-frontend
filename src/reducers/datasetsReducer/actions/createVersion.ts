@@ -21,7 +21,7 @@ const createVersion: ActionFunction<CreateVersionPayload> = (
     [payload.datasetID]: {
       ...state.datasets[payload.datasetID],
       versions: [
-        ...state.datasets[payload.datasetID].versions,
+        ...(state.datasets[payload.datasetID].versions ?? []),
         // add new version
         {
           date: new Date().toUTCString(),
@@ -30,7 +30,7 @@ const createVersion: ActionFunction<CreateVersionPayload> = (
         },
       ],
       // set the new version to be active
-      activeVersion: state.datasets[payload.datasetID].versions.length,
+      activeVersion: state.datasets[payload.datasetID].versions?.length ?? 0,
     },
   },
 })

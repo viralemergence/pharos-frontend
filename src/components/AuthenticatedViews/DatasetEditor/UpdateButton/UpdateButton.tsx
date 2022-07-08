@@ -22,7 +22,7 @@ const UpdateButton = () => {
   if (datasets.status === DatasetsStatus.Loading) return <></>
 
   const versionStatus =
-    dataset.versions.length === 0
+    !dataset.versions || dataset.versions.length === 0
       ? VersionStatus.Unsaved
       : dataset.versions.slice(-1)[0].status
 
@@ -57,7 +57,7 @@ const UpdateButton = () => {
 
     const versionID = datasets.datasets[id].activeVersion
 
-    const raw = datasets.datasets[id].versions[versionID].raw
+    const raw = datasets.datasets[id].versions?.[versionID].raw
 
     if (!raw)
       throw new Error(
@@ -97,7 +97,7 @@ const UpdateButton = () => {
       disabled={
         versionStatus === VersionStatus.Saved ||
         versionStatus === VersionStatus.Saving ||
-        !dataset.versions[dataset.activeVersion]?.raw
+        !dataset.versions?.[dataset.activeVersion]?.raw
       }
     >
       {buttonMessage}

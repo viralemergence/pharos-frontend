@@ -28,7 +28,7 @@ const DatasetGrid = () => {
 
   // const versionStatus = dataset.versions.slice(-1)[0].status
 
-  const raw = dataset.versions.slice(-1)[0]?.raw
+  const raw = dataset.versions?.slice(-1)[0]?.raw
   if (!raw || raw.length === 0) return <></>
 
   const columns = Object.keys(raw[0]).map(key => ({ key, name: key }))
