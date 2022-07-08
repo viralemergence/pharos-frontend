@@ -26,16 +26,16 @@ const UpdateButton = () => {
       ? VersionStatus.Unsaved
       : dataset.versions.slice(-1)[0].status
 
-  let buttonMessage = 'Update dataset'
+  let buttonMessage = 'Update version'
   switch (versionStatus) {
     case VersionStatus.Saved:
-      buttonMessage = 'Dataset saved'
+      buttonMessage = 'Version saved'
       break
     case VersionStatus.Saving:
       buttonMessage = 'Saving...'
       break
     case VersionStatus.Unsaved:
-      buttonMessage = 'Update dataset'
+      buttonMessage = 'Update Version'
       break
     case VersionStatus.Error:
       buttonMessage = 'Error'
@@ -44,6 +44,7 @@ const UpdateButton = () => {
   const onClickUpdate = async (e: React.SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault()
 
+    // set version status to saving
     datasetsDispatch({
       type: DatasetsActions.SetVersionStatus,
       payload: {
@@ -63,8 +64,10 @@ const UpdateButton = () => {
         `Raw version object not found at datasetID: ${id} and versionID: ${versionID}`
       )
 
+    // save version to the server and get back the server info like the key and date
     const newVersionInfo = await saveVersion(raw, id, user.data?.researcherID)
 
+    // if it saved correctly, merge in the new info
     if (newVersionInfo) {
       datasetsDispatch({
         type: DatasetsActions.UpdateVersion,
@@ -77,6 +80,7 @@ const UpdateButton = () => {
         },
       })
     } else {
+      // else set the status to error
       datasetsDispatch({
         type: DatasetsActions.SetVersionStatus,
         payload: {

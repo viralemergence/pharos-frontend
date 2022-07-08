@@ -48,7 +48,7 @@ export interface Version {
 
 // a single dataset
 export interface Dataset {
-  status: DatasetStatus
+  status?: DatasetStatus
   datasetID?: string
   researcherID: string
   name: string

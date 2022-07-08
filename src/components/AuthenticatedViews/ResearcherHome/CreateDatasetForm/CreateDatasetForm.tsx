@@ -58,12 +58,17 @@ const CreateDatasetForm = () => {
       samples_taken: '0',
       detection_run: '0',
       activeVersion: 0,
+      status: DatasetStatus.Saving,
     }
 
     datasetsDispatch({
       type: DatasetsActions.CreateDataset,
       payload,
     })
+
+    // now that we can handle this, just navigate
+    // straight to the dataset directly
+    navigate(`/dataset/${datasetID}`)
 
     const saved = await saveDataset(payload)
 
@@ -75,8 +80,6 @@ const CreateDatasetForm = () => {
           status: DatasetStatus.Saved,
         },
       })
-
-      navigate(`/dataset/${saved.datasetID}`)
     } else {
       datasetsDispatch({
         type: DatasetsActions.SetDatasetStatus,

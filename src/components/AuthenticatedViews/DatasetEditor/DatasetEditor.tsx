@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
 
-import { DatasetsStatus } from 'reducers/datasetsReducer/types'
+import { DatasetStatus } from 'reducers/datasetsReducer/types'
 
 import MainGrid from 'components/layout/MainGrid'
 import Sidebar from 'components/Sidebar/Sidebar'
@@ -31,13 +31,24 @@ const DatasetEditor = () => {
   if (!id) throw new Error('Missing dataset ID url parameter')
   const dataset = datasets.datasets[id]
 
-  if (datasets.status === DatasetsStatus.Loading) return <p>Loading dataset</p>
-
-  // const versionStatus = dataset.versions.slice(-1)[0].status
-
-  const raw = dataset.versions.slice(-1)[0]?.raw
-
   console.log({ datasets })
+
+  const datasetStatus = dataset?.status ? dataset.status : DatasetStatus.Unsaved
+
+  let datasetStatusMessage = 'Error'
+  switch (datasetStatus) {
+    case DatasetStatus.Saved:
+      datasetStatusMessage = 'Dataset saved'
+      break
+    case DatasetStatus.Saving:
+      datasetStatusMessage = 'Saving...'
+      break
+    case DatasetStatus.Unsaved:
+      datasetStatusMessage = 'Dataset not saved'
+      break
+    case DatasetStatus.Error:
+      datasetStatusMessage = 'Error'
+  }
 
   return (
     <MainGrid>
@@ -48,8 +59,9 @@ const DatasetEditor = () => {
           <UpdateButton />
         </TopBar>
         <H2>Collected Date: {dataset && dataset.date_collected}</H2>
-        {(!raw || raw?.length === 0) && <Uploader />}
-        <DatasetGrid {...{ raw }} />
+        <H2>{datasetStatusMessage}</H2>
+        <Uploader />
+        <DatasetGrid />
       </Content>
     </MainGrid>
   )
