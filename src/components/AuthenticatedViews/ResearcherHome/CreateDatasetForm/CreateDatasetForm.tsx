@@ -30,6 +30,8 @@ const CreateDatasetForm = () => {
   const [user] = useUser()
   const [project, projectDispatch] = useProject()
 
+  const [formMessage, setFormMessage] = useState('')
+
   // generate a new datesetID to use
   const [newDatasetID] = useState(String(new Date().getTime()))
 
@@ -46,6 +48,11 @@ const CreateDatasetForm = () => {
     const target = e.target as typeof e.target & {
       name: { value: string }
       date_collected: { value: string }
+    }
+
+    if (!target.name.value) {
+      setFormMessage('Please enter dataset name')
+      return null
     }
 
     if (!user.data) throw new Error('User not logged in')
@@ -101,8 +108,13 @@ const CreateDatasetForm = () => {
       </Label>
       <Label>
         Collection Date
-        <Input type="date" name="date_collected" />
+        <Input
+          type="date"
+          name="date_collected"
+          defaultValue={new Date().toISOString().split('T')[0]}
+        />
       </Label>
+      <p style={{ margin: 0, padding: 0 }}>{formMessage}</p>
       <MintButton
         type="submit"
         style={{ marginLeft: 'auto' }}

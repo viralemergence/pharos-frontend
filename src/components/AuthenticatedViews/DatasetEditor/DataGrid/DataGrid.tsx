@@ -49,11 +49,16 @@ const DatasetGrid = () => {
   const handleChange = (rows: Record[]) => {
     console.log('handleChange called')
     // check if this version is not saved
+    // if it's not saved, we just replace the
+    // current rows with the new rows
     if (version.status === VersionStatus.Unsaved)
       projectDispatch({
         type: ProjectActions.UpdateVersion,
         payload: { datasetID: id, version: { rows: rows } },
       })
+    // if the project was in saved state, we
+    // need to create a new version with a
+    // new timestamp and use these rows
     else
       projectDispatch({
         type: ProjectActions.CreateVersion,
