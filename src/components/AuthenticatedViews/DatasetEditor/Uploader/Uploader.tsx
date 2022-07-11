@@ -31,13 +31,16 @@ const Uploader = () => {
         // create timestamp for the version
         const date = new Date().toUTCString()
 
+        console.log('version status should be saving')
         projectDispatch({
           type: ProjectActions.CreateVersion,
           payload: {
             datasetID: datasetID,
-            status: VersionStatus.Saving,
-            date,
-            rows,
+            version: {
+              status: VersionStatus.Saving,
+              date,
+              rows,
+            },
           },
         })
 

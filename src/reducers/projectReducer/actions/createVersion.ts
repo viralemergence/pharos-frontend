@@ -1,8 +1,9 @@
 import { ActionFunction, ProjectActions } from '../projectReducer'
-import { Version, VersionStatus } from '../types'
+import { Version } from '../types'
 
-export interface CreateVersionPayload extends Version {
+export interface CreateVersionPayload {
   datasetID: string
+  version: Version
 }
 
 export interface CreateVersionAction {
@@ -22,11 +23,7 @@ const createVersion: ActionFunction<CreateVersionPayload> = (
       versions: [
         ...(state.datasets[payload.datasetID].versions ?? []),
         // add new version
-        {
-          date: payload.date,
-          status: VersionStatus.Unsaved,
-          rows: payload.rows,
-        },
+        { ...payload.version },
       ],
       // set the new version to be active
       activeVersion: state.datasets[payload.datasetID].versions?.length ?? 0,

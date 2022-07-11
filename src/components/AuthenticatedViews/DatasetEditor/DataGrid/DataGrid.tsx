@@ -64,9 +64,11 @@ const DatasetGrid = () => {
         type: ProjectActions.CreateVersion,
         payload: {
           datasetID: id,
-          date: new Date().toUTCString(),
-          status: VersionStatus.Unsaved,
-          rows,
+          version: {
+            date: new Date().toUTCString(),
+            status: VersionStatus.Unsaved,
+            rows,
+          },
         },
       })
   }
