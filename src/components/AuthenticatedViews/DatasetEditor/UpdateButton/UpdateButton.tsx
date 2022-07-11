@@ -114,6 +114,7 @@ const UpdateButton = () => {
     <MintButton
       onClick={e => onClickUpdate(e)}
       disabled={versionStatus !== VersionStatus.Unsaved}
+      style={{ marginLeft: 'auto' }}
     >
       {buttonMessage}
     </MintButton>

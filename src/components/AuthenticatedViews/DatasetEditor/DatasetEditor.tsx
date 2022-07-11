@@ -18,6 +18,7 @@ import useDataset from 'hooks/useDatset'
 import useDatasetStatusMessage from 'hooks/useDatasetStatusMessage'
 import useActiveVersion from 'hooks/useActiveVersion'
 import VersionSwitcher from './VersionSwitcher/VersionSwitcher'
+import DownloadButton from './DownloadButton/DownloadButton'
 
 const H1 = styled.h1`
   ${({ theme }) => theme.h3};
@@ -54,7 +55,8 @@ const DatasetEditor = () => {
       <Content>
         <TopBar>
           <H1>{dataset ? dataset.name : 'Loading dataset'}</H1>
-          <UpdateButton />
+          <UpdateButton style={{ marginLeft: 'auto' }} />
+          <DownloadButton />
         </TopBar>
         <H2>Collected Date: {dataset && dataset.date_collected}</H2>
         <H2>{datasetStatusMessage}</H2>

@@ -1,12 +1,15 @@
 import styled from 'styled-components'
 import { lighten } from 'polished'
 
-const MintButton = styled.button`
+const MintButton = styled.button<{ secondary?: boolean }>`
   border: none;
   background: none;
   margin: 0;
   ${({ theme }) => theme.smallParagraph}
-  background-color: ${({ theme }) => theme.mint};
+  border: 1px solid;
+  background-color: ${({ theme, secondary }) =>
+    secondary ? 'white' : theme.mint};
+  border-color: ${({ theme }) => theme.mint};
   padding: 10px 20px;
 
   transition: 150ms ease;
