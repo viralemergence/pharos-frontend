@@ -29,7 +29,7 @@ const DownloadButton = () => {
 
     const content = unparse(version.rows)
     downloadFile(
-      `${dataset?.name} + ${version.date}.csv`,
+      `${dataset?.name} ${version.date}.csv`,
       new Blob([content], { type: 'text/csv;charset=utf-8;' })
     )
   }

@@ -55,7 +55,7 @@ const DatasetEditor = () => {
       <Content>
         <TopBar>
           <H1>{dataset ? dataset.name : 'Loading dataset'}</H1>
-          <UpdateButton style={{ marginLeft: 'auto' }} />
+          <UpdateButton />
           <DownloadButton />
         </TopBar>
         <H2>Collected Date: {dataset && dataset.date_collected}</H2>
