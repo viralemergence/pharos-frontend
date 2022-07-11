@@ -1,4 +1,4 @@
-import loadVersionRaw from 'api/loadVersionRaw'
+import loadVersionRows from 'api/loadVersionRows'
 import { useEffect } from 'react'
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 import { Record, VersionStatus } from 'reducers/projectReducer/types'
@@ -67,7 +67,7 @@ const useActiveVersion = (datasetID: string | undefined) => {
         },
       })
 
-      const rows = await loadVersionRaw(researcherID, versionKey)
+      const rows = await loadVersionRows(researcherID, versionKey)
 
       if (rows) {
         projectDispatch({
