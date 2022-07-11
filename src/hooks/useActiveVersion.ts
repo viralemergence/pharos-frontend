@@ -25,18 +25,18 @@ const useActiveVersion = (datasetID: string | undefined) => {
     dataset.versions &&
     dataset.versions.length === 0
   ) {
-    const sampleRows = [
+    const sampleRows: Record[] = [
       {
-        DetectionID: '',
-        SampleID: '',
-        DetectionMethod: '',
-        DetectionOutcome: '',
-        DetectionComments: '',
-        PathogenTaxID: '',
-        GenbankAccession: '',
-        SRAAccession: '',
-        GISAIDAccession: '',
-        GBIFIdentifier: '',
+        DetectionID: { value: '' },
+        SampleID: { value: '' },
+        DetectionMethod: { value: '' },
+        DetectionOutcome: { value: '' },
+        DetectionComments: { value: '' },
+        PathogenTaxID: { value: '' },
+        GenbankAccession: { value: '' },
+        SRAAccession: { value: '' },
+        GISAIDAccession: { value: '' },
+        GBIFIdentifier: { value: '' },
       },
     ]
     projectDispatch({

@@ -26,7 +26,17 @@ const Uploader = () => {
     Papa.parse(file, {
       header: true,
       complete: async results => {
-        const rows = results.data as unknown as Record[]
+        const plainRows = results.data as { [key: string]: string }[]
+
+        const rows = plainRows.map(row =>
+          Object.entries(row).reduce(
+            (acc, [key, val]) => ({
+              ...acc,
+              [key]: { value: val },
+            }),
+            {}
+          )
+        )
 
         // create timestamp for the version
         const date = new Date().toUTCString()

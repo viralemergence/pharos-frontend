@@ -18,6 +18,18 @@ const setVersionStatus: ActionFunction<SetVersionStatusPayload> = (
   const activeVersion = state.datasets[payload.datasetID].activeVersion
   const nextVersions = [...(state.datasets[payload.datasetID].versions ?? [])]
 
+  if (payload.status === VersionStatus.Saved) {
+    console.log('changing to saved status, resetting modified')
+    nextVersions[activeVersion].rows = nextVersions[activeVersion].rows?.map(
+      row => {
+        for (const key in row) {
+          row[key] = { ...row[key], modified: false }
+        }
+        return row
+      }
+    )
+  }
+
   nextVersions[activeVersion] = {
     ...nextVersions[activeVersion],
     status: payload.status,

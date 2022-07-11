@@ -30,7 +30,11 @@ export enum VersionStatus {
 // the column from the csv becomes the key
 // and the cell content becomes the value
 export interface Record {
-  [key: string]: string
+  [key: string]: {
+    value: string | number
+    report?: { pass: boolean; message: string }
+    modified?: boolean
+  }
 }
 
 // a version; this corresponds to the

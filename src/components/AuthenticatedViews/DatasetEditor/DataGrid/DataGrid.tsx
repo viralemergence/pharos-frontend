@@ -2,7 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
 
-import DataGrid, { TextEditor } from 'react-data-grid'
+import DataGrid from 'react-data-grid'
+
+import TextEditor from './TextEditor/TextEditor'
 
 import {
   ProjectStatus,
@@ -44,6 +46,18 @@ const DatasetGrid = () => {
     key,
     name: key,
     editor: TextEditor,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    formatter({ column, row }: { row: any; column: any }) {
+      return (
+        <span
+          style={{
+            backgroundColor: row[column.key]?.modified ? 'orange' : 'white',
+          }}
+        >
+          {row[column.key]?.value}
+        </span>
+      )
+    },
   }))
 
   const handleChange = (rows: Record[]) => {
@@ -53,12 +67,15 @@ const DatasetGrid = () => {
 
     // if the edit uses up the last row, create a new row
     // check if there are any cells in the last row which are not empty
-    if (!Object.values(rows.slice(-1)[0]).every(cell => cell === ''))
+    if (!Object.values(rows.slice(-1)[0]).every(cell => cell.value == ''))
       // use the keys from the first row to create a new row where all
       // cells are empty and add it to the end of a copy of the rows array
       rows = [
         ...rows,
-        Object.keys(rows[0]).reduce((acc, key) => ({ ...acc, [key]: '' }), {}),
+        Object.keys(rows[0]).reduce(
+          (acc, key) => ({ ...acc, [key]: { value: '' } }),
+          {}
+        ),
       ]
 
     if (version.status === VersionStatus.Unsaved)
@@ -83,15 +100,12 @@ const DatasetGrid = () => {
       })
   }
 
-  const rowKeyGetter = (row: Record) => Object.values(row)[0] as string
-
   return (
     <Container>
       <FillDatasetGrid
         className={'rdg-light'}
         columns={columns}
         rows={version.rows}
-        rowKeyGetter={row => rowKeyGetter(row as Record)}
         onRowsChange={rows => handleChange(rows as Record[])}
       />
     </Container>
