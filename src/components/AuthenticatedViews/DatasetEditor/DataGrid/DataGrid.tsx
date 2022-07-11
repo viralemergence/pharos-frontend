@@ -47,10 +47,19 @@ const DatasetGrid = () => {
   }))
 
   const handleChange = (rows: Record[]) => {
-    console.log('handleChange called')
     // check if this version is not saved
     // if it's not saved, we just replace the
     // current rows with the new rows
+
+    // if the edit uses up the last row, create a new row
+    if (!Object.values(rows.slice(-1)[0]).every(cell => cell === '')) {
+      const newRow: Record = {}
+      for (const key in rows[0]) {
+        newRow[key] = ''
+      }
+      rows.push(newRow)
+    }
+
     if (version.status === VersionStatus.Unsaved)
       projectDispatch({
         type: ProjectActions.UpdateVersion,

@@ -19,6 +19,39 @@ const useActiveVersion = (datasetID: string | undefined) => {
     dataset?.versions?.[dataset.activeVersion]?.rows?.length
   )
 
+  if (
+    datasetID &&
+    dataset &&
+    dataset.versions &&
+    dataset.versions.length === 0
+  ) {
+    const sampleRows = [
+      {
+        DetectionID: '',
+        SampleID: '',
+        DetectionMethod: '',
+        DetectionOutcome: '',
+        DetectionComments: '',
+        PathogenTaxID: '',
+        GenbankAccession: '',
+        SRAAccession: '',
+        GISAIDAccession: '',
+        GBIFIdentifier: '',
+      },
+    ]
+    projectDispatch({
+      type: ProjectActions.CreateVersion,
+      payload: {
+        datasetID: datasetID,
+        version: {
+          status: VersionStatus.Unsaved,
+          date: new Date().toUTCString(),
+          rows: sampleRows,
+        },
+      },
+    })
+  }
+
   const researcherID = user.data?.researcherID
 
   useEffect(() => {
