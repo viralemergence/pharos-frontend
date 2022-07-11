@@ -32,7 +32,7 @@ const UpdateButton = () => {
   const versionStatus =
     !dataset.versions || dataset.versions.length === 0
       ? VersionStatus.Unsaved
-      : dataset.versions.slice(-1)[0].status
+      : dataset.versions[dataset.activeVersion].status
 
   let buttonMessage = 'Save version'
   switch (versionStatus) {
