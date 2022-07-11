@@ -10,7 +10,8 @@ const VersionSwitcher = () => {
   const [, projectDispatch] = useProject()
   const dataset = useDataset(id)
 
-  if (!id || !dataset || !dataset.versions) return <></>
+  if (!id || !dataset || !dataset.versions || dataset.versions.length === 0)
+    return <></>
 
   const onSelectVersion = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const nextVersion = e.target.value
