@@ -52,13 +52,14 @@ const DatasetGrid = () => {
     // current rows with the new rows
 
     // if the edit uses up the last row, create a new row
-    if (!Object.values(rows.slice(-1)[0]).every(cell => cell === '')) {
-      const newRow: Record = {}
-      for (const key in rows[0]) {
-        newRow[key] = ''
-      }
-      rows.push(newRow)
-    }
+    // check if there are any cells in the last row which are not empty
+    if (!Object.values(rows.slice(-1)[0]).every(cell => cell === ''))
+      // use the keys from the first row to create a new row where all
+      // cells are empty and add it to the end of a copy of the rows array
+      rows = [
+        ...rows,
+        Object.keys(rows[0]).reduce((acc, key) => ({ ...acc, [key]: '' }), {}),
+      ]
 
     if (version.status === VersionStatus.Unsaved)
       projectDispatch({
