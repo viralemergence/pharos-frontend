@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
-import { DatasetStatus, VersionStatus } from 'reducers/projectReducer/types'
+import { DatasetStatus } from 'reducers/projectReducer/types'
 
 import MintButton from 'components/ui/MintButton'
 import Label from 'components/ui/InputLabel'
@@ -72,32 +72,6 @@ const CreateDatasetForm = () => {
     projectDispatch({
       type: ProjectActions.CreateDataset,
       payload,
-    })
-
-    const sampleRows = [
-      {
-        DetectionID: '',
-        SampleID: '',
-        DetectionMethod: '',
-        DetectionOutcome: '',
-        DetectionComments: '',
-        PathogenTaxID: '',
-        GenbankAccession: '',
-        SRAAccession: '',
-        GISAIDAccession: '',
-        GBIFIdentifier: '',
-      },
-    ]
-    projectDispatch({
-      type: ProjectActions.CreateVersion,
-      payload: {
-        datasetID: datasetID,
-        version: {
-          status: VersionStatus.Unsaved,
-          date: new Date().toUTCString(),
-          rows: sampleRows,
-        },
-      },
     })
 
     // now that we can handle this, just navigate
