@@ -1,6 +1,6 @@
 import React from 'react'
 import { EditorProps } from 'react-data-grid'
-import { Record } from 'reducers/projectReducer/types'
+import { Datapoint, Record } from 'reducers/projectReducer/types'
 import styled from 'styled-components'
 
 const TextInput = styled.input`
@@ -41,14 +41,15 @@ export default function TextEditor<TRow, TSummaryRow>({
     <TextInput
       ref={autoFocusAndSelect}
       value={
-        (row[column.key as keyof TRow] as unknown as { value: string }).value
+        (row[column.key as keyof TRow] as unknown as Datapoint).displayValue
       }
       onChange={event =>
         onRowChange({
           ...row,
           [column.key]: {
             ...(row as unknown as Record)[column.key as keyof Record],
-            value: event.target.value,
+            displayValue: event.target.value,
+            dataValue: event.target.value,
             modified: true,
           },
         })

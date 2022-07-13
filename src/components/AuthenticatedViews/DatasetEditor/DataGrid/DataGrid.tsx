@@ -54,7 +54,7 @@ const DatasetGrid = () => {
             backgroundColor: row[column.key]?.modified ? 'orange' : 'white',
           }}
         >
-          {row[column.key]?.value}
+          {row[column.key]?.displayValue}
         </span>
       )
     },
@@ -67,13 +67,18 @@ const DatasetGrid = () => {
 
     // if the edit uses up the last row, create a new row
     // check if there are any cells in the last row which are not empty
-    if (!Object.values(rows.slice(-1)[0]).every(cell => cell.value == ''))
+    if (
+      !Object.values(rows.slice(-1)[0]).every(cell => cell.displayValue == '')
+    )
       // use the keys from the first row to create a new row where all
       // cells are empty and add it to the end of a copy of the rows array
       rows = [
         ...rows,
         Object.keys(rows[0]).reduce(
-          (acc, key) => ({ ...acc, [key]: { value: '' } }),
+          (acc, key) => ({
+            ...acc,
+            [key]: { displayValue: '', dataValue: '' },
+          }),
           {}
         ),
       ]

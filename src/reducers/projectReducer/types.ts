@@ -32,19 +32,24 @@ export enum ReportScore {
   warning,
 }
 
-// a single row of a version of a dataset;
-// the column from the csv becomes the key
-// and the cell content becomes the value
-export interface Record {
-  [key: string]: {
-    value: string | number
-    report?: {
-      pass: ReportScore
-      message: string
-    }
-    unsaved?: boolean
-    modifiedBy?: string // userID
+// a single component of a record; the user
+// sees this as a cell in the dataset table
+export interface Datapoint {
+  displayValue: string | number // human readable label
+  dataValue: string | number // data label (eg. ID of link to another table)
+  report?: {
+    pass: ReportScore
+    message: string
   }
+  unsaved?: boolean
+  modifiedBy?: string // userID
+}
+
+// a single record of data, a collection
+// of datapoints which the user sees
+// as a row in a table
+export interface Record {
+  [key: string]: Datapoint
 }
 
 // a version; this corresponds to the
