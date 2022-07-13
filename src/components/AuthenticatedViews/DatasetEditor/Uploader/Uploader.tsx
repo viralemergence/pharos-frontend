@@ -28,17 +28,15 @@ const Uploader = () => {
       complete: async results => {
         const plainRows = results.data as { [key: string]: string }[]
 
-        const version = parseVersion(plainRows)
-
-        // const rows = plainRows.map(row =>
-        //   Object.entries(row).reduce(
-        //     (acc, [key, val]) => ({
-        //       ...acc,
-        //       [key]: { value: val },
-        //     }),
-        //     {}
-        //   )
-        // )
+        const rows = plainRows.map(row =>
+          Object.entries(row).reduce(
+            (acc, [key, val]) => ({
+              ...acc,
+              [key]: { value: val },
+            }),
+            {}
+          )
+        )
 
         // create timestamp for the version
         const date = new Date().toUTCString()

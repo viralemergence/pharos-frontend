@@ -107,6 +107,7 @@ const DatasetGrid = () => {
         columns={columns}
         rows={version.rows}
         onRowsChange={rows => handleChange(rows as Record[])}
+        // rowKeyGetter={}
       />
     </Container>
   )
