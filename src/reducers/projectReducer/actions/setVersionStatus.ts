@@ -23,7 +23,7 @@ const setVersionStatus: ActionFunction<SetVersionStatusPayload> = (
     nextVersions[activeVersion].rows = nextVersions[activeVersion].rows?.map(
       row => {
         for (const key in row) {
-          row[key] = { ...row[key], modified: false }
+          row[key] = { ...row[key], unsaved: false }
         }
         return row
       }

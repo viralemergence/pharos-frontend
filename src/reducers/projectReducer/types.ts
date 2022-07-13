@@ -42,7 +42,8 @@ export interface Record {
       pass: ReportScore
       message: string
     }
-    modified?: boolean
+    unsaved?: boolean
+    modifiedBy?: string // userID
   }
 }
 
