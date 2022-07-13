@@ -26,13 +26,22 @@ export enum VersionStatus {
   Loading,
 }
 
+export enum ReportScore {
+  fail,
+  pass,
+  warning,
+}
+
 // a single row of a version of a dataset;
 // the column from the csv becomes the key
 // and the cell content becomes the value
 export interface Record {
   [key: string]: {
     value: string | number
-    report?: { pass: boolean; message: string }
+    report?: {
+      pass: ReportScore
+      message: string
+    }
     modified?: boolean
   }
 }

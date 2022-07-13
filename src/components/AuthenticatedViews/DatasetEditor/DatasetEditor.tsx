@@ -33,7 +33,9 @@ const H2 = styled.h2`
 const DatasetEditor = () => {
   const { id } = useParams()
   const navigate = useNavigate()
+
   const [project] = useProject()
+
   console.log({ project })
 
   const dataset = useDataset(id)

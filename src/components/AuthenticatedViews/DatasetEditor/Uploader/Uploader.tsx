@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import Papa from 'papaparse'
 import { FileUploader } from 'react-drag-drop-files'
 
-import { Record, VersionStatus } from 'reducers/projectReducer/types'
+import { VersionStatus } from 'reducers/projectReducer/types'
 
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 
@@ -28,15 +28,17 @@ const Uploader = () => {
       complete: async results => {
         const plainRows = results.data as { [key: string]: string }[]
 
-        const rows = plainRows.map(row =>
-          Object.entries(row).reduce(
-            (acc, [key, val]) => ({
-              ...acc,
-              [key]: { value: val },
-            }),
-            {}
-          )
-        )
+        const version = parseVersion(plainRows)
+
+        // const rows = plainRows.map(row =>
+        //   Object.entries(row).reduce(
+        //     (acc, [key, val]) => ({
+        //       ...acc,
+        //       [key]: { value: val },
+        //     }),
+        //     {}
+        //   )
+        // )
 
         // create timestamp for the version
         const date = new Date().toUTCString()
