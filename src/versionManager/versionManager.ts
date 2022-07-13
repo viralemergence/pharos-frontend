@@ -24,9 +24,32 @@ import { Record, VersionStatus } from 'reducers/projectReducer/types'
 // }
 
 
-interface VersionObject {
+interface DataObject {
+  // Object that will be stored in S3
+  versionIndex : {};
+  records : VersionObject;
+}
+
+
+// Node 
+class RowObject{
+  row_key : string = 'somethingrandomthatIdontknowhowtogenerateyet'; // TODO
+  row_data : {}; // json with rowdata
+  previousVersion ?: any; // pointer to previous row version
+  nextRow ?: any = null; // pointer to next row
+  status ?: any = null; // Optional at this point
+  modified_by : string; // researcherid
+
+  constructor(row_data : {}, modified_by : string){
+    this.row_data = row_data;
+    this.modified_by = modified_by;
+  }
+}
+
+class VersionObject{
   // linked list definition
 }
+
 
 interface NewVersion {
   date: string
