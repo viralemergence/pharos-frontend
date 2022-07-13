@@ -43,6 +43,9 @@ export interface Datapoint {
   }
   unsaved?: boolean
   modifiedBy?: string // userID
+  version: number
+  previous: Datapoint
+  // next: Datapoint
 }
 
 // a single record of data, a collection
@@ -50,6 +53,10 @@ export interface Datapoint {
 // as a row in a table
 export interface Record {
   [key: string]: Datapoint
+}
+
+export interface Register {
+  [key: string]: Record
 }
 
 // a version; this corresponds to the
@@ -61,9 +68,10 @@ export interface Version {
   // status of the version
   status: VersionStatus // don't save in api
   // version key for the API to fetch raw object
-  key?: string // comes from the API
+  // key?: string // comes from the API
   // list of record rows
-  rows?: Record[] // comes from the user or the api
+  // rows?: Record[] // comes from the user or the api
+  // rows?: Rows
 }
 
 // a single dataset
@@ -78,6 +86,8 @@ export interface Dataset {
   date_collected?: string
   versions: Version[]
   activeVersion: number
+  registerKey: string // comes from API
+  register: Register
 }
 
 // the overall Project object
