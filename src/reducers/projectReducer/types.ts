@@ -53,7 +53,7 @@ export interface Dataset {
   activeVersion: number
   // the register as represented
   // in global state on the frontend
-  register?: Register
+  register: Register
   // register key describes the
   // location of the saved
   // register on the server
