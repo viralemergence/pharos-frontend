@@ -4,15 +4,15 @@ import setActiveVersion, {
   SetActiveVersionAction,
 } from './actions/setActiveVersion'
 import setProject, { SetProjectAction } from './actions/setProject'
-import setStatus, { SetStatusAction } from './actions/setProjectStatus'
+import setProjectStatus, { SetStatusAction } from './actions/setProjectStatus'
 import createDataset, { CreateDatasetAction } from './actions/createDataset'
 import setDatasetStatus, {
   SetDatasetStatusAction,
 } from './actions/setDatasetStatus'
 import createVersion, { CreateVersionAction } from './actions/createVersion'
-import setVersionStatus, {
-  SetVersionStatusAction,
-} from './actions/setVersionStatus'
+import setRegisterStatus, {
+  SetRegisterStatusAction,
+} from './actions/setRegisterStatus'
 import updateVersion, { UpdateVersionAction } from './actions/updateVersion'
 
 // reducer actions
@@ -99,7 +99,7 @@ const projectReducer = (state: Project, action: ProjectAction) => {
   switch (action.type) {
     // datsets
     case ProjectActions.SetProjectStatus:
-      return setStatus(state, action.payload)
+      return setProjectStatus(state, action.payload)
     case ProjectActions.SetProject:
       return setProject(state, action.payload)
     case ProjectActions.CreateDataset:
@@ -111,8 +111,8 @@ const projectReducer = (state: Project, action: ProjectAction) => {
     // return updateVersion(state, action.payload)
     // case ProjectActions.CreateVersion:
     // return createVersion(state, action.payload)
-    // case ProjectActions.SetVersionStatus:
-    //   return setVersionStatus(state, action.payload)
+    case ProjectActions.SetRegisterStatus:
+      return setRegisterStatus(state, action.payload)
     case ProjectActions.SetActiveVersion:
       return setActiveVersion(state, action.payload)
     default:

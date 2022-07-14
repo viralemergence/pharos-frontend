@@ -6,9 +6,9 @@ export interface SetStatusAction {
   payload: ProjectStatus
 }
 
-const SetProjectStatus: ActionFunction<ProjectStatus> = (state, payload) => ({
+const setProjectStatus: ActionFunction<ProjectStatus> = (state, payload) => ({
   ...state,
   status: payload,
 })
 
-export default SetProjectStatus
+export default setProjectStatus

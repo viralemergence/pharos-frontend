@@ -1,17 +1,17 @@
 import { ActionFunction, ProjectActions } from '../projectReducer'
-import { VersionStatus } from '../types'
+import { RegisterStatus } from '../types'
 
-export interface SetVersionStatusPayload {
+export interface SetRegisterStatusPayload {
   datasetID: string
-  status: VersionStatus
+  status: RegisterStatus
 }
 
-export interface SetVersionStatusAction {
-  type: ProjectActions.SetVersionStatus
-  payload: SetVersionStatusPayload
+export interface SetRegisterStatusAction {
+  type: ProjectActions.SetRegisterStatus
+  payload: SetRegisterStatusPayload
 }
 
-const setVersionStatus: ActionFunction<SetVersionStatusPayload> = (
+const setRegisterStatus: ActionFunction<SetRegisterStatusPayload> = (
   state,
   payload
 ) => {
@@ -35,16 +35,18 @@ const setVersionStatus: ActionFunction<SetVersionStatusPayload> = (
   //   status: payload.status,
   // }
 
+
   return {
     ...state,
     datasets: {
       ...state.datasets,
       [payload.datasetID]: {
         ...state.datasets[payload.datasetID],
-        registerStatus: payload,
+        // have to unpack the "status" value from payload
+        registerStatus: payload.status,
       },
     },
   }
 }
 
-export default setVersionStatus
+export default setRegisterStatus

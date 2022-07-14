@@ -33,7 +33,7 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
     const getDatasetList = async (researcherID: string) => {
       // set status to loading
       projectDispatch({
-        type: ProjectActions.SetStatus,
+        type: ProjectActions.SetProjectStatus,
         payload: ProjectStatus.Loading,
       })
 
@@ -42,7 +42,7 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
 
       if (!datasetList) {
         projectDispatch({
-          type: ProjectActions.SetStatus,
+          type: ProjectActions.SetProjectStatus,
           payload: ProjectStatus.NetworkError,
         })
         return null
