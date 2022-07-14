@@ -73,7 +73,7 @@ const UpdateButton = () => {
       projectDispatch({
         type: ProjectActions.SetRegisterStatus,
         payload: {
-          datasetID: datasetID,
+          datasetID,
           status: RegisterStatus.Saved,
         },
       })
@@ -82,7 +82,7 @@ const UpdateButton = () => {
       projectDispatch({
         type: ProjectActions.SetRegisterStatus,
         payload: {
-          datasetID: datasetID,
+          datasetID,
           status: RegisterStatus.Error,
         },
       })
