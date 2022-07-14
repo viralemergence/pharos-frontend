@@ -13,7 +13,6 @@ import createVersion, { CreateVersionAction } from './actions/createVersion'
 import setRegisterStatus, {
   SetRegisterStatusAction,
 } from './actions/setRegisterStatus'
-import updateVersion, { UpdateVersionAction } from './actions/updateVersion'
 
 // reducer actions
 export enum ProjectActions {
@@ -21,41 +20,30 @@ export enum ProjectActions {
   SetProject,
   SetDatasetStatus,
   // versions
-  // UpdateVersion,
-  // CreateVersion,
-  // SetVersionStatus,
 
   // allows the user to select past versions
-  // this one still makes sense
   SetActiveVersion,
 
-  // create new dataset
-  // this is where we set up
-  // the register and prepare
-  // it for records
+  // create new dataset this is where we set up
+  // the register and prepare it for records
   CreateDataset,
 
-  // rename everything about this to be
-  // setProjectStatus
+  // set the status of the project
+  // relative to the server
   SetProjectStatus,
 
   // add a new project to the portfolio
-  // skip for now
+  // skip for now, we need to decide if
+  // that is within the scope of this reducer
   // CreateProject,
 
   // set status of the register
-  // this is called in the process
-  // of handling the network
-  // request to the server
+  // this is called in the process of handling
+  // the network request to the server
   SetRegisterStatus,
 
   // create new version
-
-  // called when the user
-  // presses the save button
-
-  // create the object in the
-  // versions array with metadata
+  // called when the user presses the save button
   CreateVersion,
 
   // actions to implement
@@ -79,19 +67,17 @@ export const projectInitialValue = {
 }
 
 export type ProjectAction =
+  | SetProjectAction
   // state relative to server:
   | SetStatusAction
   // datsets
-  | SetProjectAction
   | CreateDatasetAction
   | SetDatasetStatusAction
   // register
   | SetRegisterStatusAction
   // versions
-  | SetActiveVersionAction
-  // | UpdateVersionAction
   | CreateVersionAction
-// | SetVersionStatusAction
+  | SetActiveVersionAction
 
 export type ActionFunction<T = void> = (state: Project, payload: T) => Project
 
@@ -106,9 +92,6 @@ const projectReducer = (state: Project, action: ProjectAction) => {
       return createDataset(state, action.payload)
     case ProjectActions.SetDatasetStatus:
       return setDatasetStatus(state, action.payload)
-    // versions
-    // case ProjectActions.UpdateVersion:
-    // return updateVersion(state, action.payload)
     case ProjectActions.CreateVersion:
       return createVersion(state, action.payload)
     case ProjectActions.SetRegisterStatus:
