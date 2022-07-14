@@ -1,12 +1,12 @@
 import { ActionFunction, ProjectActions } from '../projectReducer'
-import { ProjectStatus } from '../types'
+import { SetProjectStatus } from '../types'
 
 export interface SetStatusAction {
   type: ProjectActions.SetStatus
-  payload: ProjectStatus
+  payload: SetProjectStatus
 }
 
-const setStatus: ActionFunction<ProjectStatus> = (state, payload) => ({
+const setStatus: ActionFunction<SetProjectStatus> = (state, payload) => ({
   ...state,
   status: payload,
 })

@@ -1,4 +1,4 @@
-import { Project, ProjectStatus } from './types'
+import { Project, SetProjectStatus } from './types'
 
 import setActiveVersion, {
   SetActiveVersionAction,
@@ -73,7 +73,7 @@ export enum ProjectActions {
 
 export const projectInitialValue = {
   projectID: '0',
-  status: ProjectStatus.Initial,
+  status: SetProjectStatus.Initial,
   datasets: {},
 }
 

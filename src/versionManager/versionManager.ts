@@ -17,6 +17,7 @@
 
 
 
+import { ParentSpanPluginArgs } from 'gatsby';
 import { Record, VersionStatus } from 'reducers/projectReducer/types'
 
 // export interface PlainRow {
@@ -26,29 +27,44 @@ import { Record, VersionStatus } from 'reducers/projectReducer/types'
 
 interface DataObject {
   // Object that will be stored in S3
-  versionIndex : {};
+  versions : number;
   records : VersionObject;
 }
 
 
+
 // Node 
 class RowObject{
-  row_key : string = 'somethingrandomthatIdontknowhowtogenerateyet'; // TODO
-  row_data : {}; // json with rowdata
-  previousVersion ?: any; // pointer to previous row version
-  nextRow ?: any = null; // pointer to next row
-  status ?: any = null; // Optional at this point
-  modified_by : string; // researcherid
+  record: Record; // json with rowdata
+  previousVersion?: RowObject; // pointer to previous row version
+  children : number; // previous no of versions
 
-  constructor(row_data : {}, modified_by : string){
-    this.row_data = row_data;
-    this.modified_by = modified_by;
+  constructor(record : Record, children = 0){
+    this.record = record;
+    this.children = children;
   }
 }
 
 class VersionObject{
   // linked list definition
+  linkedlist : {[key : string] : RowObject};
+
+  constructor() {
+
+  }
+
+  set createlinkedList(file : File) : Record[] {
+    this.linkedlist = records.reduce
+    
+  }
+
+  getRecordRows(newRows: Record[], versionObject: VersionObject, versionNumber: number): Record[] {
+    
+  }
+
 }
+
+const version = new VersionObject()
 
 
 interface NewVersion {
@@ -58,8 +74,12 @@ interface NewVersion {
   versionObject: VersionObject
 }
 
-// handle file input
-export const parseVersionFile = (file: File): Record[] => {}
+export const createlinkedList = (file : File) : Record => {
+  file.map(file => RowObject(file))
+}
+
+// // handle file input
+// export const parseVersionFile = (file: File): Record[] => {}
 
 // get the rows in the format for the table interface 
 export const getRecordRows = (
@@ -92,3 +112,20 @@ export const updateVersionWithRows = (
 
 //   const something = response.key
 // }
+
+
+
+
+
+
+{ 
+  lksdflkjsdfj: {
+    record:  {}
+    version: 10
+    previous: {}
+  }
+}
+
+
+VersionObject.update(id: lksdflksdf, newRecord: {}, version: 12)
+

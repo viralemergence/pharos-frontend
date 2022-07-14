@@ -18,7 +18,7 @@ export interface Portfolio {
 // but not in the API yet.
 export interface Project {
   projectID: string
-  status: ProjectStatus // don't save in api
+  status: SetProjectStatus // don't save in api
   datasets: {
     // dataset keys are the datasetID
     // to allow O(1) access to update
@@ -143,7 +143,7 @@ export enum PortfolioStatus {
 
 // the status states of the overall
 // datasets object
-export enum ProjectStatus {
+export enum SetProjectStatus {
   Initial,
   Loading,
   Loaded,
