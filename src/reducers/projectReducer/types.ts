@@ -143,7 +143,7 @@ export enum PortfolioStatus {
 
 // the status states of the overall
 // datasets object
-export enum SetProjectStatus {
+export enum ProjectStatus {
   Initial,
   Loading,
   Loaded,
