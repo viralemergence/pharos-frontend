@@ -30,7 +30,7 @@ const DatasetGrid = () => {
   if (registerStatus === RegisterStatus.Loading) return <p>Loading version</p>
   if (!versionRows) return <p>No active version</p>
 
-  const columns = Object.keys(versionRows).map(key => ({
+  const columns = Object.keys(versionRows[0]).map(key => ({
     key,
     name: key,
     editor: TextEditor,
