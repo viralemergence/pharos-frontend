@@ -4,14 +4,14 @@ import { useParams } from 'react-router-dom'
 import Papa from 'papaparse'
 import { FileUploader } from 'react-drag-drop-files'
 
-import { VersionStatus } from 'reducers/projectReducer/types'
+import { RegisterStatus } from 'reducers/projectReducer/types'
 
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 
 import useProject from 'hooks/useProject'
 import useUser from 'hooks/useUser'
 
-import saveVersion from 'api/uploadVersion'
+// import saveVersion from 'api/uploadVersion'
 
 const fileTypes = ['CSV']
 
@@ -28,28 +28,37 @@ const Uploader = () => {
       complete: async results => {
         const plainRows = results.data as { [key: string]: string }[]
 
-        const rows = plainRows.map(row =>
-          Object.entries(row).reduce(
-            (acc, [key, val]) => ({
-              ...acc,
-              [key]: { value: val },
-            }),
-            {}
-          )
+        console.log(
+          'do some parsing with plainRows to integrate into the register'
         )
 
-        // create timestamp for the version
-        const date = new Date().toUTCString()
+        // const rows = plainRows.map(row =>
+        //   Object.entries(row).reduce(
+        //     (acc, [key, val]) => ({
+        //       ...acc,
+        //       [key]: { value: val },
+        //     }),
+        //     {}
+        //   )
+        // )
 
         console.log('version status should be saving')
         projectDispatch({
+          type: ProjectActions.SetRegisterStatus,
+          payload: {
+            datasetID,
+            status: RegisterStatus.Saving,
+          },
+        })
+
+        // create a version
+        projectDispatch({
           type: ProjectActions.CreateVersion,
           payload: {
-            datasetID: datasetID,
+            datasetID,
             version: {
-              status: VersionStatus.Saving,
-              date,
-              rows,
+              date: String(new Date().toUTCString()),
+              name: String(new Date().toUTCString()),
             },
           },
         })
@@ -57,30 +66,30 @@ const Uploader = () => {
         const researcherID = user.data?.researcherID
         if (!researcherID) throw new Error('User data not found')
 
-        const newVersionInfo = await saveVersion(
-          rows,
-          datasetID,
-          researcherID,
-          date
-        )
+        // const newVersionInfo = await saveVersion(
+        //   rows,
+        //   datasetID,
+        //   researcherID,
+        //   date
+        // )
 
-        if (newVersionInfo) {
+        console.log('save register to the server here')
+        const saved = true
+
+        if (saved) {
           projectDispatch({
-            type: ProjectActions.UpdateVersion,
+            type: ProjectActions.SetRegisterStatus,
             payload: {
-              datasetID: datasetID,
-              version: {
-                ...newVersionInfo,
-                status: VersionStatus.Saved,
-              },
+              datasetID,
+              status: RegisterStatus.Saved,
             },
           })
         } else {
           projectDispatch({
-            type: ProjectActions.SetVersionStatus,
+            type: ProjectActions.SetRegisterStatus,
             payload: {
-              datasetID: datasetID,
-              status: VersionStatus.Error,
+              datasetID,
+              status: RegisterStatus.Error,
             },
           })
         }
