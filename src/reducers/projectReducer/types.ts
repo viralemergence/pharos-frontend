@@ -118,6 +118,10 @@ export interface Project {
   projectID: string
   status: ProjectStatus // don't save in api
   datasets: {
+    // dataset keys are the datasetID
+    // to allow O(1) access to update
+    // individual datasets in reducer
+    // functions.
     [key: string]: Dataset
   }
   // adding this as a note
