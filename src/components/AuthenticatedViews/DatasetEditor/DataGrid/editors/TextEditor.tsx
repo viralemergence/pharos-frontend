@@ -1,7 +1,8 @@
 import React from 'react'
-import { EditorProps } from 'react-data-grid'
-import { Datapoint, Record } from 'reducers/projectReducer/types'
 import styled from 'styled-components'
+import { EditorProps } from 'react-data-grid'
+
+import { Record } from 'reducers/projectReducer/types'
 
 const TextInput = styled.input`
   appearance: none;
@@ -26,35 +27,21 @@ const TextInput = styled.input`
   }
 `
 
-function autoFocusAndSelect(input: HTMLInputElement | null) {
+const autoFocusAndSelect = (input: HTMLInputElement | null) => {
   input?.focus()
   input?.select()
 }
 
-export default function TextEditor<TRow, TSummaryRow>({
-  row,
-  column,
-  onRowChange,
-  onClose,
-}: EditorProps<TRow, TSummaryRow>) {
-  return (
-    <TextInput
-      ref={autoFocusAndSelect}
-      value={
-        (row[column.key as keyof TRow] as unknown as Datapoint).displayValue
-      }
-      onChange={event =>
-        onRowChange({
-          ...row,
-          [column.key]: {
-            ...(row as unknown as Record)[column.key as keyof Record],
-            displayValue: event.target.value,
-            dataValue: event.target.value,
-            modified: true,
-          },
-        })
-      }
-      onBlur={() => onClose(true)}
-    />
-  )
-}
+const TextEditor = ({ row, column, onClose }: EditorProps<Record, Record>) => (
+  <TextInput
+    ref={autoFocusAndSelect}
+    value={row[column.key].displayValue}
+    onChange={event => {
+      console.log('Dispatch edit event here')
+      console.log(event)
+    }}
+    onBlur={() => onClose(true)}
+  />
+)
+
+export default TextEditor
