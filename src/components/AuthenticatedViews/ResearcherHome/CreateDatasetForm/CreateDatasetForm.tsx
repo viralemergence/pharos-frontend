@@ -65,8 +65,6 @@ const CreateDatasetForm = () => {
       status: DatasetStatus.Saving,
       samples_taken: '0',
       detection_run: '0',
-      activeVersion: 0,
-      versions: [],
     }
 
     projectDispatch({
