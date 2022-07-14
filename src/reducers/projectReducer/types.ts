@@ -34,18 +34,34 @@ export enum ReportScore {
 
 // a single component of a record; the user
 // sees this as a cell in the dataset table
+// or in a form-like interface
 export interface Datapoint {
-  displayValue: string | number // human readable label
-  dataValue: string | number // data label (eg. ID of link to another table)
+  // human readable label
+  displayValue: string | number
+  // value of the datapoint inside our system,
+  // where that needs to be different; for
+  // example to implement links to other data
+  // such as organisms or locations
+  dataValue: string
+  // validation report response
   report?: {
     pass: ReportScore
     message: string
   }
-  unsaved?: boolean
-  modifiedBy?: string // userID
+  // if this datapoint was modified
+  // in the active version
+  modified?: boolean
+  // userID
+  modifiedBy?: string
+  // version number where this
+  // datapoint was last modified.
+  // it is valid for any version
+  // higher than this number
   version: number
-  previous: Datapoint
-  // next: Datapoint
+  // to access versions before
+  // the version number, traverse
+  // the linked list.
+  previous?: Datapoint
 }
 
 // a single record of data, a collection
