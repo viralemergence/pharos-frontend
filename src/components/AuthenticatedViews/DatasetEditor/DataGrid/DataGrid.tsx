@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import DataGrid from 'react-data-grid'
+import DataGrid, { Column } from 'react-data-grid'
 import { useParams } from 'react-router-dom'
 
 import { RegisterStatus } from 'reducers/projectReducer/types'
@@ -41,7 +41,9 @@ const DatasetGrid = () => {
     <Container>
       <FillDatasetGrid
         className={'rdg-light'}
-        columns={columns}
+        // todo: figure out the typescript for making this
+        // work with the data grid library
+        columns={columns as Column<unknown, unknown>[]}
         rows={versionRows}
         // rowKeyGetter={}
       />
