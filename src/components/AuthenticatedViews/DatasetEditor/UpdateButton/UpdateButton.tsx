@@ -2,34 +2,27 @@ import React from 'react'
 import { useParams } from 'react-router-dom'
 
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
-import { ProjectStatus, RegisterStatus } from 'reducers/projectReducer/types'
+import { DatasetStatus, RegisterStatus } from 'reducers/projectReducer/types'
 
 import MintButton from 'components/ui/MintButton'
 
 import useProject from 'hooks/useProject'
 import useUser from 'hooks/useUser'
 
-import saveVersion from 'api/uploadVersion'
+import useDataset from 'hooks/useDatset'
+import useRegisterStatus from 'hooks/useRegisterStatus'
 
 const UpdateButton = () => {
   const [user] = useUser()
   const { id } = useParams()
-  const [project, projectDispatch] = useProject()
+  const [, projectDispatch] = useProject()
 
-  if (!id) throw new Error('Missing dataset ID url parameter')
-  const dataset = project.datasets[id]
+  const dataset = useDataset(id)
+  const registerStatus = useRegisterStatus(id)
 
   // don't render the update button if there are no datasets loaded,
   // the project is loading, or there are no versions in the dataset
-  if (
-    !dataset ||
-    project.status === ProjectStatus.Loading ||
-    !dataset.versions ||
-    dataset.versions.length === 0
-  )
-    return <></>
-
-  const registerStatus = dataset.registerStatus ?? RegisterStatus.Unsaved
+  if (!dataset || dataset.status === DatasetStatus.Error) return <></>
 
   let buttonMessage = 'Save version'
   switch (registerStatus) {
@@ -60,15 +53,8 @@ const UpdateButton = () => {
 
     if (!user.data?.researcherID) throw new Error('User data not found')
 
-    const versionID = project.datasets[id].activeVersion
-
-    const rows = project.datasets[id].versions?.[versionID].rows
-    const date = project.datasets[id].versions?.[versionID].date
-
-    if (!rows)
-      throw new Error(
-        `Version object rows not found at datasetID: ${id} and versionID: ${versionID}`
-      )
+    const versionID = dataset.activeVersion
+    const date = dataset.versions?.[versionID]?.date
 
     if (!date)
       throw new Error(
@@ -76,29 +62,29 @@ const UpdateButton = () => {
       )
 
     // save version to the server and get back the server info like the key and date
-    const newVersionInfo = await saveVersion(
-      rows,
-      id,
-      user.data?.researcherID,
-      date
-    )
+    // const newVersionInfo = await saveVersion(
+    //   rows,
+    //   id,
+    //   user.data?.researcherID,
+    //   date
+    // )
+
+    console.log('save register to the server here')
+    const saved = true
 
     // if it saved correctly, merge in the new info
-    if (newVersionInfo) {
+    if (saved) {
       projectDispatch({
-        type: ProjectActions.UpdateVersion,
+        type: ProjectActions.SetRegisterStatus,
         payload: {
           datasetID: id,
-          version: {
-            ...newVersionInfo,
-            status: RegisterStatus.Saved,
-          },
+          status: RegisterStatus.Saved,
         },
       })
     } else {
       // else set the status to error
       projectDispatch({
-        type: ProjectActions.SetVersionStatus,
+        type: ProjectActions.SetRegisterStatus,
         payload: {
           datasetID: id,
           status: RegisterStatus.Error,
