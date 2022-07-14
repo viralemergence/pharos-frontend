@@ -18,7 +18,7 @@ export enum DatasetStatus {
 
 // all possible statuses for a version
 // of a dataset in the frontend
-export enum VersionStatus {
+export enum RegisterStatus {
   Unsaved,
   Saving,
   Saved,
@@ -117,6 +117,9 @@ export interface Dataset {
   // location of the saved
   // register on the server
   registerKey?: string
+  // the status of the register
+  // relative to the server
+  registerStatus?: RegisterStatus
   // name of the dataset
   name: string
   // general metadata, these are
