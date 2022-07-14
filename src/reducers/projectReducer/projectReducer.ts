@@ -1,10 +1,10 @@
-import { Project, SetProjectStatus } from './types'
+import { Project, ProjectStatus } from './types'
 
 import setActiveVersion, {
   SetActiveVersionAction,
 } from './actions/setActiveVersion'
 import setProject, { SetProjectAction } from './actions/setProject'
-import setStatus, { SetStatusAction } from './actions/setStatus'
+import setStatus, { SetStatusAction } from './actions/setProjectStatus'
 import createDataset, { CreateDatasetAction } from './actions/createDataset'
 import setDatasetStatus, {
   SetDatasetStatusAction,
@@ -39,7 +39,7 @@ export enum ProjectActions {
 
   // rename everything about this to be
   // setProjectStatus
-  SetStatus,
+  SetProjectStatus,
 
   // add a new project to the portfolio
   CreateProject,
@@ -73,7 +73,7 @@ export enum ProjectActions {
 
 export const projectInitialValue = {
   projectID: '0',
-  status: SetProjectStatus.Initial,
+  status: ProjectStatus.Initial,
   datasets: {},
 }
 
@@ -97,7 +97,7 @@ export type ActionFunction<T = void> = (state: Project, payload: T) => Project
 const projectReducer = (state: Project, action: ProjectAction) => {
   switch (action.type) {
     // datsets
-    case ProjectActions.SetStatus:
+    case ProjectActions.SetProjectStatus:
       return setStatus(state, action.payload)
     case ProjectActions.SetProject:
       return setProject(state, action.payload)

@@ -18,7 +18,7 @@ export interface Portfolio {
 // but not in the API yet.
 export interface Project {
   projectID: string
-  status: SetProjectStatus // don't save in api
+  status: ProjectStatus // don't save in api
   datasets: {
     // dataset keys are the datasetID
     // to allow O(1) access to update
