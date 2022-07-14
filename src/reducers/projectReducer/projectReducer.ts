@@ -35,8 +35,6 @@ export enum ProjectActions {
   // it for records
   CreateDataset,
 
-  // actions to implement
-
   // rename everything about this to be
   // setProjectStatus
   SetProjectStatus,
@@ -51,6 +49,17 @@ export enum ProjectActions {
   // request to the server
   SetRegisterStatus,
 
+  // create new version
+
+  // called when the user
+  // presses the save button
+
+  // create the object in the
+  // versions array with metadata
+  CreateVersion,
+
+  // actions to implement
+
   // if the datapoint doesn't exist, create it
 
   // if the datapoint exists, and the
@@ -61,15 +70,6 @@ export enum ProjectActions {
   // update the value as one version
   // number higher
   SetDatapoint,
-
-  // create new version
-
-  // called when the user
-  // presses the save button
-
-  // create the object in the
-  // versions array with metadata
-  CreateVersion,
 }
 
 export const projectInitialValue = {
