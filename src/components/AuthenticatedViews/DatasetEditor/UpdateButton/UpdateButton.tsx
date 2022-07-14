@@ -15,6 +15,7 @@ import useRegisterStatus from 'hooks/useRegisterStatus'
 const UpdateButton = () => {
   const [user] = useUser()
   const { id } = useParams()
+  if (!id) throw new Error('Dataset ID not found in url params')
   const [, projectDispatch] = useProject()
 
   const dataset = useDataset(id)
@@ -42,7 +43,7 @@ const UpdateButton = () => {
   const onClickUpdate = async (e: React.SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault()
 
-    // set version status to saving
+    // set register status to saving
     projectDispatch({
       type: ProjectActions.SetRegisterStatus,
       payload: {
