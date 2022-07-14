@@ -15,25 +15,25 @@ const setVersionStatus: ActionFunction<SetVersionStatusPayload> = (
   state,
   payload
 ) => {
-  const activeVersion = state.datasets[payload.datasetID].activeVersion
-  const nextVersions = [...(state.datasets[payload.datasetID].versions ?? [])]
+  // const activeVersion = state.datasets[payload.datasetID].activeVersion
+  // const nextVersions = [...(state.datasets[payload.datasetID].versions ?? [])]
 
-  if (payload.status === VersionStatus.Saved) {
-    console.log('changing to saved status, resetting modified')
-    nextVersions[activeVersion].rows = nextVersions[activeVersion].rows?.map(
-      row => {
-        for (const key in row) {
-          row[key] = { ...row[key], unsaved: false }
-        }
-        return row
-      }
-    )
-  }
+  // if (payload.status === VersionStatus.Saved) {
+  //   console.log('changing to saved status, resetting modified')
+  //   nextVersions[activeVersion].rows = nextVersions[activeVersion].rows?.map(
+  //     row => {
+  //       for (const key in row) {
+  //         row[key] = { ...row[key], unsaved: false }
+  //       }
+  //       return row
+  //     }
+  //   )
+  // }
 
-  nextVersions[activeVersion] = {
-    ...nextVersions[activeVersion],
-    status: payload.status,
-  }
+  // nextVersions[activeVersion] = {
+  //   ...nextVersions[activeVersion],
+  //   status: payload.status,
+  // }
 
   return {
     ...state,
@@ -41,7 +41,7 @@ const setVersionStatus: ActionFunction<SetVersionStatusPayload> = (
       ...state.datasets,
       [payload.datasetID]: {
         ...state.datasets[payload.datasetID],
-        versions: nextVersions,
+        registerStatus: payload,
       },
     },
   }
