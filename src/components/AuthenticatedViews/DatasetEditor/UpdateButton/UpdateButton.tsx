@@ -66,7 +66,7 @@ const UpdateButton = () => {
 
     if (!user.data?.researcherID) throw new Error('User data not found')
 
-    const versionID = dataset.activeVersion
+    const versionID = dataset.versions.length - 1
     const date = dataset.versions?.[versionID]?.date
 
     if (!date)
