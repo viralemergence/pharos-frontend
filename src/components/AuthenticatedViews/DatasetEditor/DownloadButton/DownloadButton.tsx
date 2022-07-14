@@ -1,7 +1,7 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
 
-import { unparse } from 'papaparse'
+import Papa from 'papaparse'
 import MintButton from 'components/ui/MintButton'
 import useVersionRows from 'hooks/useVersionRows'
 import useDataset from 'hooks/useDatset'
@@ -30,7 +30,15 @@ const DownloadButton = () => {
 
     if (!versionRows) return null
 
-    const content = unparse(versionRows)
+    const content = Papa.unparse(
+      versionRows.map(row =>
+        Object.entries(row).reduce(
+          (obj, [key, value]) => ({ ...obj, [key]: value.displayValue }),
+          {}
+        )
+      )
+    )
+
     downloadFile(
       `${dataset?.name} ${versionDate}.csv`,
       new Blob([content], { type: 'text/csv;charset=utf-8;' })
