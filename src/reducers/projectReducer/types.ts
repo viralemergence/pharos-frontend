@@ -55,39 +55,60 @@ export interface Record {
   [key: string]: Datapoint
 }
 
+// each Record in the register
+// is a collection of datapoints
+// which the user will see as a
+// row, or as an input form
 export interface Register {
   [key: string]: Record
 }
 
-// a version; this corresponds to the
-// actual table the user sees
-// and tracks the object storing it in s3
+// this is the container for information
+// that globally applies to an entire version,
+// the index in the array is the corresponding
+// version number, and the length of the array
+// is the number of versions which should be
+// in the register.
 export interface Version {
   // the creation date of the version
   date: string
-  // status of the version
-  status: VersionStatus // don't save in api
-  // version key for the API to fetch raw object
-  // key?: string // comes from the API
-  // list of record rows
-  // rows?: Record[] // comes from the user or the api
-  // rows?: Rows
+  // name of version; adding this as an
+  // example of future metadata we might need
+  name: string
 }
 
 // a single dataset
 export interface Dataset {
   // frontend sets the id now
   datasetID: string
-  status?: DatasetStatus // don't save in api
+  // This might need to be re-thought
+  // for a collaborative context, but
+  // that's fine now that we're storing
+  // researcherID in the datapoint
   researcherID: string
+  // frontend status of the dataset, this
+  // will be overwritten on page load
+  status?: DatasetStatus
+  // the array of version metadata
+  versions: Version[]
+  // the version number which the user
+  // is looking at in the table interface
+  activeVersion: number
+  // the register as represented
+  // in global state on the frontend
+  register?: Register
+  // register key describes the
+  // location of the saved
+  // register on the server
+  registerKey?: string
+  // name of the dataset
   name: string
+  // general metadata, these are
+  // placeholder example values
+  // and subject to change
   samples_taken?: string
   detection_run?: string
   date_collected?: string
-  versions: Version[]
-  activeVersion: number
-  registerKey: string // comes from API
-  register: Register
 }
 
 // the overall Project object
