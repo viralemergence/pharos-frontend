@@ -16,7 +16,6 @@ import UpdateButton from './UpdateButton/UpdateButton'
 
 import useDataset from 'hooks/useDatset'
 import useDatasetStatusMessage from 'hooks/useDatasetStatusMessage'
-import useActiveVersion from 'hooks/useActiveVersion'
 import VersionSwitcher from './VersionSwitcher/VersionSwitcher'
 import DownloadButton from './DownloadButton/DownloadButton'
 
@@ -39,10 +38,6 @@ const DatasetEditor = () => {
   console.log({ project })
 
   const dataset = useDataset(id)
-
-  // load the active version from the
-  // server into state if necessary
-  useActiveVersion(id)
 
   const datasetStatusMessage = useDatasetStatusMessage(id)
 
