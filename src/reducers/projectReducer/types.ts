@@ -16,8 +16,8 @@ export enum DatasetStatus {
   Error,
 }
 
-// all possible statuses for a version
-// of a dataset in the frontend
+// all possible statuses for a register
+// relative to the server
 export enum RegisterStatus {
   Unsaved,
   Saving,
