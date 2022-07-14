@@ -15,6 +15,7 @@ import {
 import useProject from 'hooks/useProject'
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 import useVersionRows from 'hooks/useVersionRows'
+import SimpleFormatter from './formatters/SimpleFormatter'
 
 const Container = styled.div`
   margin-top: 30px;
@@ -47,18 +48,7 @@ const DatasetGrid = () => {
     key,
     name: key,
     editor: TextEditor,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    formatter({ column, row }: { row: any; column: any }) {
-      return (
-        <span
-          style={{
-            backgroundColor: row[column.key]?.modified ? 'orange' : 'white',
-          }}
-        >
-          {row[column.key]?.displayValue}
-        </span>
-      )
-    },
+    formatter: SimpleFormatter,
   }))
 
   // const handleChange = (rows: Record[]) => {
