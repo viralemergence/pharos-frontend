@@ -2,7 +2,10 @@ import React from 'react'
 import styled from 'styled-components'
 import { EditorProps } from 'react-data-grid'
 
-import { Record } from 'reducers/projectReducer/types'
+import { Record, RegisterStatus } from 'reducers/projectReducer/types'
+import useProject from 'hooks/useProject'
+import { ProjectActions } from 'reducers/projectReducer/projectReducer'
+import { useParams } from 'react-router-dom'
 
 const TextInput = styled.input`
   appearance: none;
@@ -32,16 +35,28 @@ const autoFocusAndSelect = (input: HTMLInputElement | null) => {
   input?.select()
 }
 
-const TextEditor = ({ row, column, onClose }: EditorProps<Record, Record>) => (
-  <TextInput
-    ref={autoFocusAndSelect}
-    value={row[column.key].displayValue}
-    onChange={event => {
-      console.log('Dispatch edit event here')
-      console.log(event)
-    }}
-    onBlur={() => onClose(true)}
-  />
-)
+const TextEditor = ({ row, column, onClose }: EditorProps<Record, Record>) => {
+  const { id: datasetID } = useParams()
+  const [, projectDispatch] = useProject()
+
+  return (
+    <TextInput
+      ref={autoFocusAndSelect}
+      value={row[column.key].displayValue}
+      onChange={event => {
+        console.log('Dispatch edit event here')
+        console.log(event)
+        projectDispatch({
+          type: ProjectActions.SetRegisterStatus,
+          payload: {
+            datasetID,
+            status: RegisterStatus.Unsaved,
+          },
+        })
+      }}
+      onBlur={() => onClose(true)}
+    />
+  )
+}
 
 export default TextEditor
