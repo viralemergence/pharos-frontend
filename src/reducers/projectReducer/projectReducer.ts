@@ -89,8 +89,8 @@ export type ProjectAction =
   | SetRegisterStatusAction
   // versions
   | SetActiveVersionAction
-// | UpdateVersionAction
-// | CreateVersionAction
+  // | UpdateVersionAction
+  | CreateVersionAction
 // | SetVersionStatusAction
 
 export type ActionFunction<T = void> = (state: Project, payload: T) => Project
@@ -109,8 +109,8 @@ const projectReducer = (state: Project, action: ProjectAction) => {
     // versions
     // case ProjectActions.UpdateVersion:
     // return updateVersion(state, action.payload)
-    // case ProjectActions.CreateVersion:
-    // return createVersion(state, action.payload)
+    case ProjectActions.CreateVersion:
+      return createVersion(state, action.payload)
     case ProjectActions.SetRegisterStatus:
       return setRegisterStatus(state, action.payload)
     case ProjectActions.SetActiveVersion:

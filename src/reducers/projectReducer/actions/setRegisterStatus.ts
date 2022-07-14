@@ -35,7 +35,6 @@ const setRegisterStatus: ActionFunction<SetRegisterStatusPayload> = (
   //   status: payload.status,
   // }
 
-
   return {
     ...state,
     datasets: {

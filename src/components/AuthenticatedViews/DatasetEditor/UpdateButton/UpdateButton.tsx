@@ -52,6 +52,18 @@ const UpdateButton = () => {
       },
     })
 
+    // create a version
+    projectDispatch({
+      type: ProjectActions.CreateVersion,
+      payload: {
+        datasetID: id,
+        version: {
+          date: String(new Date().toUTCString()),
+          name: String(new Date().toUTCString()),
+        },
+      },
+    })
+
     if (!user.data?.researcherID) throw new Error('User data not found')
 
     const versionID = dataset.activeVersion
