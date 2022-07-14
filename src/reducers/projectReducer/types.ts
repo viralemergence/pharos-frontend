@@ -105,12 +105,12 @@ export interface Record {
 // or in a form-like interface
 export interface Datapoint {
   // human readable label
-  displayValue: string | number
+  displayValue: string
   // value of the datapoint inside our system,
   // where that needs to be different; for
   // example to implement links to other data
   // such as organisms or locations
-  dataValue: string
+  dataValue: { [key: string]: string | number }
   // validation report response
   report?: {
     pass: ReportScore
