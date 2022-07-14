@@ -37,6 +37,7 @@ const autoFocusAndSelect = (input: HTMLInputElement | null) => {
 
 const TextEditor = ({ row, column, onClose }: EditorProps<Record, Record>) => {
   const { id: datasetID } = useParams()
+  if (!datasetID) throw new Error('Dataset ID not found in url params')
   const [, projectDispatch] = useProject()
 
   return (
