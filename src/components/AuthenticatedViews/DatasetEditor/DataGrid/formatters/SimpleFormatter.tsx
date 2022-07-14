@@ -1,13 +1,14 @@
 import React from 'react'
+import { FormatterProps } from 'react-data-grid'
+import { Record } from 'reducers/projectReducer/types'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const SimpleFormatter = ({ column, row }: { row: any; column: any }) => (
+const SimpleFormatter = ({ column, row }: FormatterProps<Record, Record>) => (
   <span
     style={{
-      backgroundColor: row[column.key]?.modified ? 'orange' : 'white',
+      backgroundColor: row[column.key].modified ? 'orange' : 'white',
     }}
   >
-    {row[column.key]?.displayValue}
+    {row[column.key].displayValue}
   </span>
 )
 
