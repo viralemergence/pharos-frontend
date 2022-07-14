@@ -1,21 +1,15 @@
 import { ActionFunction, ProjectActions } from '../projectReducer'
-import { DatasetStatus, Version } from '../types'
+import { Dataset } from '../types'
 
 export interface CreateDatasetAction {
   type: ProjectActions.CreateDataset
   payload: CreateDatasetPayload
 }
 
-export interface CreateDatasetPayload {
-  datasetID: string
-  researcherID: string
-  name: string
-  date_collected: string
-  samples_taken?: string
-  detection_run?: string
-  status?: DatasetStatus
-  versions?: Version[]
-  activeVersion?: number
+export interface CreateDatasetPayload extends Partial<Dataset> {
+  name: Dataset['name']
+  datasetID: Dataset['datasetID']
+  researcherID: Dataset['researcherID']
 }
 
 const createDataset: ActionFunction<CreateDatasetPayload> = (
@@ -23,12 +17,9 @@ const createDataset: ActionFunction<CreateDatasetPayload> = (
   payload
 ) => {
   const newDataset = {
-    // setting basic defaults
-    status: DatasetStatus.Unsaved,
+    register: {},
     versions: [],
     activeVersion: 0,
-    samples_taken: '0',
-    detection_run: '0',
     ...payload,
   }
 
