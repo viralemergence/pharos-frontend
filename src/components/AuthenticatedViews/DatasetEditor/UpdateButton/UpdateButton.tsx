@@ -14,12 +14,12 @@ import useRegisterStatus from 'hooks/useRegisterStatus'
 
 const UpdateButton = () => {
   const [user] = useUser()
-  const { id } = useParams()
-  if (!id) throw new Error('Dataset ID not found in url params')
+  const { id: datasetID } = useParams()
+  if (!datasetID) throw new Error('Dataset ID not found in url params')
   const [, projectDispatch] = useProject()
 
-  const dataset = useDataset(id)
-  const registerStatus = useRegisterStatus(id)
+  const dataset = useDataset(datasetID)
+  const registerStatus = useRegisterStatus(datasetID)
 
   // don't render the update button if there are no datasets loaded,
   // the project is loading, or there are no versions in the dataset
@@ -42,12 +42,13 @@ const UpdateButton = () => {
 
   const onClickUpdate = async (e: React.SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault()
+    if (!user.data?.researcherID) throw new Error('User data not found')
 
     // set register status to saving
     projectDispatch({
       type: ProjectActions.SetRegisterStatus,
       payload: {
-        datasetID: id,
+        datasetID,
         status: RegisterStatus.Saving,
       },
     })
@@ -56,31 +57,13 @@ const UpdateButton = () => {
     projectDispatch({
       type: ProjectActions.CreateVersion,
       payload: {
-        datasetID: id,
+        datasetID,
         version: {
           date: String(new Date().toUTCString()),
           name: String(new Date().toUTCString()),
         },
       },
     })
-
-    if (!user.data?.researcherID) throw new Error('User data not found')
-
-    const versionID = dataset.versions.length - 1
-    const date = dataset.versions?.[versionID]?.date
-
-    if (!date)
-      throw new Error(
-        `Version object date not found at datasetID: ${id} and versionID: ${versionID}`
-      )
-
-    // save version to the server and get back the server info like the key and date
-    // const newVersionInfo = await saveVersion(
-    //   rows,
-    //   id,
-    //   user.data?.researcherID,
-    //   date
-    // )
 
     console.log('save register to the server here')
     const saved = true
@@ -90,7 +73,7 @@ const UpdateButton = () => {
       projectDispatch({
         type: ProjectActions.SetRegisterStatus,
         payload: {
-          datasetID: id,
+          datasetID: datasetID,
           status: RegisterStatus.Saved,
         },
       })
@@ -99,7 +82,7 @@ const UpdateButton = () => {
       projectDispatch({
         type: ProjectActions.SetRegisterStatus,
         payload: {
-          datasetID: id,
+          datasetID: datasetID,
           status: RegisterStatus.Error,
         },
       })
