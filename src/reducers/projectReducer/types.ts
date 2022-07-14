@@ -110,7 +110,7 @@ export interface Datapoint {
   // where that needs to be different; for
   // example to implement links to other data
   // such as organisms or locations
-  dataValue: { [key: string]: string | number }
+  dataValue: string | { [key: string]: string }
   // validation report response
   report?: {
     pass: ReportScore
