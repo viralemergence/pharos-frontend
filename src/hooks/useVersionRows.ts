@@ -1,9 +1,9 @@
 import { Record } from 'reducers/projectReducer/types'
 
-// placeholder for function to provide memoized access to the
+// placeholder for hook to provide memoized access to the
 // rows of an arbitrary version for displaying in the table
-const useVersionRows = (version: number) => {
-  const rows: Record[] = [
+const useVersionRows = (datasetID: string, version: number | undefined) => {
+  const rows = [
     {
       DetectionID: { displayValue: '', dataValue: '', version: 0 },
       SampleID: { displayValue: '', dataValue: '', version: 0 },
@@ -18,7 +18,8 @@ const useVersionRows = (version: number) => {
     },
   ]
 
-  return rows
+  // this will be the return type of the finished hook
+  return rows as Record[] | undefined
 }
 
 export default useVersionRows

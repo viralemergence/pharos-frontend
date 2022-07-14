@@ -42,7 +42,8 @@ export enum ProjectActions {
   SetProjectStatus,
 
   // add a new project to the portfolio
-  CreateProject,
+  // skip for now
+  // CreateProject,
 
   // set status of the register
   // this is called in the process
@@ -85,7 +86,7 @@ export type ProjectAction =
   | CreateDatasetAction
   | SetDatasetStatusAction
   // register
-  // | SetRegisterStatusAction
+  | SetRegisterStatusAction
   // versions
   | SetActiveVersionAction
 // | UpdateVersionAction

@@ -2,7 +2,7 @@ import React from 'react'
 import { useParams } from 'react-router-dom'
 
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
-import { ProjectStatus, VersionStatus } from 'reducers/projectReducer/types'
+import { ProjectStatus, RegisterStatus } from 'reducers/projectReducer/types'
 
 import MintButton from 'components/ui/MintButton'
 
@@ -29,23 +29,20 @@ const UpdateButton = () => {
   )
     return <></>
 
-  const versionStatus =
-    !dataset.versions || dataset.versions.length === 0
-      ? VersionStatus.Unsaved
-      : dataset.versions[dataset.activeVersion].status
+  const registerStatus = dataset.registerStatus ?? RegisterStatus.Unsaved
 
   let buttonMessage = 'Save version'
-  switch (versionStatus) {
-    case VersionStatus.Saved:
+  switch (registerStatus) {
+    case RegisterStatus.Saved:
       buttonMessage = 'Version saved'
       break
-    case VersionStatus.Saving:
+    case RegisterStatus.Saving:
       buttonMessage = 'Saving...'
       break
-    case VersionStatus.Unsaved:
+    case RegisterStatus.Unsaved:
       buttonMessage = 'Save Version'
       break
-    case VersionStatus.Error:
+    case RegisterStatus.Error:
       buttonMessage = 'Error'
   }
 
@@ -54,10 +51,10 @@ const UpdateButton = () => {
 
     // set version status to saving
     projectDispatch({
-      type: ProjectActions.SetVersionStatus,
+      type: ProjectActions.SetRegisterStatus,
       payload: {
         datasetID: id,
-        status: VersionStatus.Saving,
+        status: RegisterStatus.Saving,
       },
     })
 
@@ -94,7 +91,7 @@ const UpdateButton = () => {
           datasetID: id,
           version: {
             ...newVersionInfo,
-            status: VersionStatus.Saved,
+            status: RegisterStatus.Saved,
           },
         },
       })
@@ -104,7 +101,7 @@ const UpdateButton = () => {
         type: ProjectActions.SetVersionStatus,
         payload: {
           datasetID: id,
-          status: VersionStatus.Error,
+          status: RegisterStatus.Error,
         },
       })
     }
@@ -113,7 +110,7 @@ const UpdateButton = () => {
   return (
     <MintButton
       onClick={e => onClickUpdate(e)}
-      disabled={versionStatus !== VersionStatus.Unsaved}
+      disabled={registerStatus !== RegisterStatus.Unsaved}
       style={{ marginLeft: 'auto' }}
     >
       {buttonMessage}

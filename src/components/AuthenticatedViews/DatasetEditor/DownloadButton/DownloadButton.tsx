@@ -1,9 +1,10 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
 
-import useDataset from 'hooks/useDatset'
 import { unparse } from 'papaparse'
 import MintButton from 'components/ui/MintButton'
+import useVersionRows from 'hooks/useVersionRows'
+import useDataset from 'hooks/useDatset'
 
 const downloadFile = (fileName: string, data: Blob) => {
   const downloadLink = document.createElement('a')
@@ -16,20 +17,22 @@ const downloadFile = (fileName: string, data: Blob) => {
 
 const DownloadButton = () => {
   const { id: datasetID } = useParams()
+
   const dataset = useDataset(datasetID)
 
-  const version = dataset?.versions?.[dataset.activeVersion]
+  const versionRows = useVersionRows(datasetID, 0)
+  const versionDate = dataset?.versions[dataset.activeVersion]?.date ?? ''
 
-  const disable = !version || !version.rows || version.rows.length === 0
+  const disable = !versionRows || versionRows.length === 0
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
 
-    if (!version?.rows) return null
+    if (!versionRows) return null
 
-    const content = unparse(version.rows)
+    const content = unparse(versionRows)
     downloadFile(
-      `${dataset?.name} ${version.date}.csv`,
+      `${dataset?.name} ${versionDate}.csv`,
       new Blob([content], { type: 'text/csv;charset=utf-8;' })
     )
   }
