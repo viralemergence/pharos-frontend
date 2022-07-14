@@ -120,6 +120,12 @@ export interface Project {
   datasets: {
     [key: string]: Dataset
   }
+  // adding this as a note
+  // organisms should be implemented
+  // as a special case of a dataset
+  // organisms: {
+  //   [key: string]: Dataset
+  // }
 }
 
 // portfolio coming soon
