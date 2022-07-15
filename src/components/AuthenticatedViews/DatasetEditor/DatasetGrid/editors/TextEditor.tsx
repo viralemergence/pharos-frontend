@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { EditorProps } from 'react-data-grid'
 
 import { Record, RegisterStatus } from 'reducers/projectReducer/types'
-import useProject from 'hooks/useProject'
+import useProject from 'hooks/project/useProject'
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 import { useParams } from 'react-router-dom'
 

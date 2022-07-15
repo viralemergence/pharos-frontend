@@ -10,7 +10,7 @@ import Label from 'components/ui/InputLabel'
 import Input from 'components/ui/Input'
 
 import useUser from 'hooks/useUser'
-import useProject from 'hooks/useProject'
+import useProject from 'hooks/project/useProject'
 
 import saveDataset from 'api/saveDataset'
 

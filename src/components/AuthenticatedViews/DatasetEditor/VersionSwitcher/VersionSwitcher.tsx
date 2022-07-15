@@ -1,7 +1,7 @@
 import React from 'react'
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 
-import useProject from 'hooks/useProject'
+import useProject from 'hooks/project/useProject'
 import useDataset from 'hooks/useDataset'
 import useDatasetID from 'hooks/useDatasetID'
 

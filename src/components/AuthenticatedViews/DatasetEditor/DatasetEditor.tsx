@@ -11,7 +11,7 @@ import Uploader from './Uploader/Uploader'
 import DatasetGrid from './DatasetGrid/DatasetsGrid'
 import { Content, TopBar } from '../ViewComponents'
 
-import useProject from 'hooks/useProject'
+import useProject from 'hooks/project/useProject'
 import UpdateButton from './UpdateButton/UpdateButton'
 
 import useDataset from 'hooks/useDataset'

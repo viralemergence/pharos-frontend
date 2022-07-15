@@ -8,7 +8,7 @@ import { RegisterStatus } from 'reducers/projectReducer/types'
 
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 
-import useProject from 'hooks/useProject'
+import useProject from 'hooks/project/useProject'
 import useUser from 'hooks/useUser'
 
 // import saveVersion from 'api/uploadVersion'

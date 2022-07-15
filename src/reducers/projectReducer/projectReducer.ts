@@ -68,7 +68,7 @@ export const projectInitialValue = {
 
 export type ProjectAction =
   | SetProjectAction
-  // state relative to server:
+  // state relative to server
   | SetStatusAction
   // datsets
   | CreateDatasetAction
