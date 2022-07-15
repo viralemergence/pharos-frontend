@@ -1,5 +1,5 @@
 import useDataset from 'hooks/dataset/useDataset'
-import { Datapoint, Record } from 'reducers/projectReducer/types'
+import { Datapoint } from 'reducers/projectReducer/types'
 
 const getDatapointAtVersion = (
   datapoint: Datapoint,
@@ -25,9 +25,9 @@ const useVersionedRows = () => {
   // else return datapoints that are valid for the target version
   return Object.values(dataset.register).map(record =>
     Object.entries(record).reduce(
-      (rec, [key, val]) => ({
+      (rec, [key, datapoint]) => ({
         ...rec,
-        [key]: getDatapointAtVersion(val, dataset.activeVersion),
+        [key]: getDatapointAtVersion(datapoint, dataset.activeVersion),
       }),
       {}
     )
