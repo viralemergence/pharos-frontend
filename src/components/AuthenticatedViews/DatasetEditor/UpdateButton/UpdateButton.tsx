@@ -6,15 +6,15 @@ import { DatasetStatus, RegisterStatus } from 'reducers/projectReducer/types'
 import MintButton from 'components/ui/MintButton'
 
 import useUser from 'hooks/useUser'
-import useProject from 'hooks/project/useProject'
 import useDatasetID from 'hooks/useDatasetID'
 import useDataset from 'hooks/useDataset'
 import useRegisterStatus from 'hooks/useRegisterStatus'
+import useProjectDispatch from 'hooks/project/useProjectDispatch'
 
 const UpdateButton = () => {
   const user = useUser()
   const datasetID = useDatasetID()
-  const [, projectDispatch] = useProject()
+  const projectDispatch = useProjectDispatch()
 
   const dataset = useDataset()
   const registerStatus = useRegisterStatus()

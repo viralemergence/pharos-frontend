@@ -8,8 +8,8 @@ import { RegisterStatus } from 'reducers/projectReducer/types'
 
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 
-import useProject from 'hooks/project/useProject'
 import useUser from 'hooks/useUser'
+import useProjectDispatch from 'hooks/project/useProjectDispatch'
 
 // import saveVersion from 'api/uploadVersion'
 
@@ -18,7 +18,7 @@ const fileTypes = ['CSV']
 const Uploader = () => {
   const { id: datasetID } = useParams()
   const user = useUser()
-  const [, projectDispatch] = useProject()
+  const projectDispatch = useProjectDispatch()
 
   if (!datasetID) throw new Error('datasetID not found in url')
 

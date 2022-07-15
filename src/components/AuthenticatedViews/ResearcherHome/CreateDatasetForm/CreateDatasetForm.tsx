@@ -13,6 +13,7 @@ import useUser from 'hooks/useUser'
 import useProject from 'hooks/project/useProject'
 
 import saveDataset from 'api/saveDataset'
+import useProjectDispatch from 'hooks/project/useProjectDispatch'
 
 const Form = styled.form`
   width: 500px;
@@ -28,7 +29,8 @@ const H1 = styled.h1`
 
 const CreateDatasetForm = () => {
   const user = useUser()
-  const [project, projectDispatch] = useProject()
+  const project = useProject()
+  const projectDispatch = useProjectDispatch()
 
   const [formMessage, setFormMessage] = useState('')
 

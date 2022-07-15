@@ -18,7 +18,7 @@ const DatasetsGrid = styled.div`
 `
 
 const DatasetsTable = () => {
-  const [project] = useProject()
+  const project = useProject()
 
   if (
     project.status === ProjectStatus.Initial ||

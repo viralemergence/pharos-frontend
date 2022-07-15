@@ -1,22 +1,16 @@
 import React from 'react'
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 
-import useProject from 'hooks/project/useProject'
 import useDataset from 'hooks/useDataset'
 import useDatasetID from 'hooks/useDatasetID'
+import useProjectDispatch from 'hooks/project/useProjectDispatch'
 
 const VersionSwitcher = () => {
-  const [, projectDispatch] = useProject()
-  const datasetID = useDatasetID()
   const dataset = useDataset()
+  const datasetID = useDatasetID()
+  const projectDispatch = useProjectDispatch()
 
-  if (
-    !datasetID ||
-    !dataset ||
-    !dataset.versions ||
-    dataset.versions.length < 2
-  )
-    return <></>
+  if (!dataset || !dataset.versions || dataset.versions.length < 2) return <></>
 
   const onSelectVersion = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const nextVersion = e.target.value

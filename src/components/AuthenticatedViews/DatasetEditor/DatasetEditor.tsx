@@ -31,7 +31,7 @@ const H2 = styled.h2`
 
 const DatasetEditor = () => {
   const navigate = useNavigate()
-  const [project] = useProject()
+  const project = useProject()
 
   console.log({ project })
 
