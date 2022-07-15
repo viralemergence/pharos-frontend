@@ -54,7 +54,6 @@ const TextEditor = ({ row, column, onClose }: EditorProps<Record, Record>) => {
               displayValue: event.target.value,
               dataValue: event.target.value,
               modifiedBy: user.data?.researcherID,
-              modified: true,
             },
           },
         })

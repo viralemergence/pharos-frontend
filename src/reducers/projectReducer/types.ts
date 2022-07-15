@@ -116,9 +116,6 @@ export interface Datapoint {
     pass: ReportScore
     message: string
   }
-  // if this datapoint was modified
-  // in the active version
-  modified?: boolean
   // userID
   modifiedBy?: string
   // version number where this
