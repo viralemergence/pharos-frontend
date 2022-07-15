@@ -8,7 +8,7 @@ import MainGrid from 'components/layout/MainGrid'
 import Sidebar from 'components/Sidebar/Sidebar'
 
 import Uploader from './Uploader/Uploader'
-import DatasetGrid from './DataGrid/DataGrid'
+import DatasetGrid from './DatasetGrid/DatasetsGrid'
 import { Content, TopBar } from '../ViewComponents'
 
 import useProject from 'hooks/useProject'
