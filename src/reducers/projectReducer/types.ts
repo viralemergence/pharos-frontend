@@ -150,6 +150,7 @@ export enum ProjectStatus {
 // all possible statuses for a
 // dataset in the frontend
 export enum DatasetStatus {
+  Loading,
   Unsaved,
   Saving,
   Saved,

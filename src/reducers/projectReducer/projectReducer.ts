@@ -1,4 +1,4 @@
-import { Project, ProjectStatus } from './types'
+import { Dataset, DatasetStatus, Project, ProjectStatus } from './types'
 
 import setActiveVersion, {
   SetActiveVersionAction,
@@ -65,10 +65,20 @@ export enum ProjectActions {
   SetRegisterKey,
 }
 
-export const projectInitialValue = {
+export const projectInitialValue: Project = {
   projectID: '0',
   status: ProjectStatus.Initial,
   datasets: {},
+}
+
+export const datasetInitialValue: Dataset = {
+  name: 'Loading dataset',
+  datasetID: '',
+  researcherID: '',
+  status: DatasetStatus.Loading,
+  activeVersion: 0,
+  versions: [],
+  register: {},
 }
 
 export type ProjectAction =
