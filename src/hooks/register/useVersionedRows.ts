@@ -1,6 +1,8 @@
 import useDataset from 'hooks/dataset/useDataset'
 import { Datapoint } from 'reducers/projectReducer/types'
 
+// recursively traverse the linked list until the
+// version number is satisfied for a given datapoint
 const getDatapointAtVersion = (
   datapoint: Datapoint,
   version: number
