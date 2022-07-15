@@ -3,7 +3,7 @@ import { Datapoint } from '../types'
 
 export interface SetDatapointPayload {
   datasetID: string
-  datapoint: Datapoint
+  datapoint: Partial<Datapoint>
 }
 
 export interface SetDatapointAction {
