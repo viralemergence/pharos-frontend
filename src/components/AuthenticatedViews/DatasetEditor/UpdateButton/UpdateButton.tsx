@@ -6,8 +6,8 @@ import { DatasetStatus, RegisterStatus } from 'reducers/projectReducer/types'
 import MintButton from 'components/ui/MintButton'
 
 import useUser from 'hooks/useUser'
-import useDatasetID from 'hooks/useDatasetID'
-import useDataset from 'hooks/useDataset'
+import useDatasetID from 'hooks/dataset/useDatasetID'
+import useDataset from 'hooks/dataset/useDataset'
 import useRegisterStatus from 'hooks/useRegisterStatus'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
 

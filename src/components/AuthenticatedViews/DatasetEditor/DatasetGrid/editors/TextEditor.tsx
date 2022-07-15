@@ -5,7 +5,7 @@ import { EditorProps } from 'react-data-grid'
 import { Record, RegisterStatus } from 'reducers/projectReducer/types'
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
-import useDatasetID from 'hooks/useDatasetID'
+import useDatasetID from 'hooks/dataset/useDatasetID'
 
 const TextInput = styled.input`
   appearance: none;

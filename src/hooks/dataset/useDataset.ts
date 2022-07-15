@@ -1,4 +1,4 @@
-import useProject from './project/useProject'
+import useProject from '../project/useProject'
 import useDatasetID from './useDatasetID'
 
 const useDataset = () => {

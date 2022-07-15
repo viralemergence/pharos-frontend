@@ -1,8 +1,8 @@
 import React from 'react'
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 
-import useDataset from 'hooks/useDataset'
-import useDatasetID from 'hooks/useDatasetID'
+import useDataset from 'hooks/dataset/useDataset'
+import useDatasetID from 'hooks/dataset/useDatasetID'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
 
 const VersionSwitcher = () => {

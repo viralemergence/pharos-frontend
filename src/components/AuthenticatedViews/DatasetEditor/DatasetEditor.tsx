@@ -14,8 +14,8 @@ import { Content, TopBar } from '../ViewComponents'
 import useProject from 'hooks/project/useProject'
 import UpdateButton from './UpdateButton/UpdateButton'
 
-import useDataset from 'hooks/useDataset'
-import useDatasetStatusMessage from 'hooks/useDatasetStatusMessage'
+import useDataset from 'hooks/dataset/useDataset'
+import useDatasetStatusMessage from 'hooks/dataset/useDatasetStatusMessage'
 import VersionSwitcher from './VersionSwitcher/VersionSwitcher'
 import DownloadButton from './DownloadButton/DownloadButton'
 

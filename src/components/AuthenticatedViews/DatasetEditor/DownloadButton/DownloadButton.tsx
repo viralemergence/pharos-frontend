@@ -4,7 +4,7 @@ import Papa from 'papaparse'
 import MintButton from 'components/ui/MintButton'
 
 import useVersionRows from 'hooks/useVersionRows'
-import useDataset from 'hooks/useDataset'
+import useDataset from 'hooks/dataset/useDataset'
 
 const downloadFile = (fileName: string, data: Blob) => {
   const downloadLink = document.createElement('a')
