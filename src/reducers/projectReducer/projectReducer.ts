@@ -4,7 +4,9 @@ import setActiveVersion, {
   SetActiveVersionAction,
 } from './actions/setActiveVersion'
 import setProject, { SetProjectAction } from './actions/setProject'
-import setProjectStatus, { SetStatusAction } from './actions/setProjectStatus'
+import setProjectStatus, {
+  SetProjectStatusAction,
+} from './actions/setProjectStatus'
 import createDataset, { CreateDatasetAction } from './actions/createDataset'
 import setDatasetStatus, {
   SetDatasetStatusAction,
@@ -69,7 +71,7 @@ export const projectInitialValue = {
 export type ProjectAction =
   | SetProjectAction
   // state relative to server
-  | SetStatusAction
+  | SetProjectStatusAction
   // datsets
   | CreateDatasetAction
   | SetDatasetStatusAction

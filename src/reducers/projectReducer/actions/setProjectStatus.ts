@@ -1,7 +1,7 @@
 import { ActionFunction, ProjectActions } from '../projectReducer'
 import { ProjectStatus } from '../types'
 
-export interface SetStatusAction {
+export interface SetProjectStatusAction {
   type: ProjectActions.SetProjectStatus
   payload: ProjectStatus
 }
