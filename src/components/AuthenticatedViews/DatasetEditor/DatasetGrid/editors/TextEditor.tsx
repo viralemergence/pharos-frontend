@@ -54,6 +54,8 @@ const TextEditor = ({
           type: ProjectActions.SetDatapoint,
           payload: {
             datasetID,
+            row,
+            column,
             datapoint: {
               displayValue: event.target.value,
               dataValue: event.target.value,
