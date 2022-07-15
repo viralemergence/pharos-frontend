@@ -10,6 +10,7 @@ import useDatasetID from 'hooks/dataset/useDatasetID'
 import useDataset from 'hooks/dataset/useDataset'
 import useRegisterStatus from 'hooks/register/useRegisterStatus'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
+import uploadVersion from 'api/uploadVersion'
 
 const UpdateButton = () => {
   const user = useUser()
@@ -40,49 +41,57 @@ const UpdateButton = () => {
 
   const onClickUpdate = async (e: React.SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault()
+
     if (!user.data?.researcherID) throw new Error('User data not found')
+
+    const {
+      data: { researcherID },
+    } = user
+
+    const version = {
+      date: String(new Date().toUTCString()),
+      name: String(new Date().toUTCString()),
+    }
 
     // set register status to saving
     projectDispatch({
       type: ProjectActions.SetRegisterStatus,
-      payload: {
-        datasetID,
-        status: RegisterStatus.Saving,
-      },
+      payload: { datasetID, status: RegisterStatus.Saving },
     })
 
     // create a version
     projectDispatch({
       type: ProjectActions.CreateVersion,
-      payload: {
-        datasetID,
-        version: {
-          date: String(new Date().toUTCString()),
-          name: String(new Date().toUTCString()),
-        },
+      payload: { datasetID, version },
+    })
+
+    // save the register to the server
+    const key = await uploadVersion({
+      datasetID,
+      researcherID,
+      rows: {
+        register: dataset.register,
+        versions: [...dataset.versions, version],
       },
     })
 
-    console.log('save register to the server here')
-    const saved = true
-
     // if it saved correctly, merge in the new info
-    if (saved) {
+    if (key) {
+      // set register key to the new one
+      projectDispatch({
+        type: ProjectActions.SetRegisterKey,
+        payload: { datasetID, key },
+      })
+      // set the register status to saved
       projectDispatch({
         type: ProjectActions.SetRegisterStatus,
-        payload: {
-          datasetID,
-          status: RegisterStatus.Saved,
-        },
+        payload: { datasetID, status: RegisterStatus.Saved },
       })
     } else {
       // else set the status to error
       projectDispatch({
         type: ProjectActions.SetRegisterStatus,
-        payload: {
-          datasetID,
-          status: RegisterStatus.Error,
-        },
+        payload: { datasetID, status: RegisterStatus.Error },
       })
     }
   }

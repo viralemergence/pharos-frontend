@@ -1,21 +1,36 @@
-import { Record } from 'reducers/projectReducer/types'
+import { Register, Version } from 'reducers/projectReducer/types'
 
-const saveVersion = async (
-  rows: Record[],
-  datasetID: string,
-  researcherID: string,
-  date: string
-) => {
+interface UploadVersion {
+  datasetID: string
+  researcherID: string
+  rows: {
+    register: Register
+    versions: Version[]
+  }
+}
+
+const uploadVersion = async ({
+  researcherID,
+  datasetID,
+  rows,
+}: UploadVersion) => {
   const response = await fetch(`${process.env.GATSBY_API_URL}/upload-version`, {
     method: 'POST',
-    body: JSON.stringify({ researcherID, datasetID, date, rows }),
+    body: JSON.stringify({
+      researcherID,
+      datasetID,
+      // rows needs to be renamed
+      rows,
+      // date is no longer necessary
+      date: '',
+    }),
   })
 
   if (!response || !response.ok) return null
 
   const body = (await response.json()) as { key: string }
 
-  return body
+  return body.key
 }
 
-export default saveVersion
+export default uploadVersion
