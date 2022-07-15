@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 
 import useProject from 'hooks/useProject'
-import useDataset from 'hooks/useDatset'
+import useDataset from 'hooks/useDataset'
 
 const VersionSwitcher = () => {
   const { id } = useParams()

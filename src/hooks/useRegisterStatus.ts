@@ -1,4 +1,4 @@
-import useDataset from './useDatset'
+import useDataset from './useDataset'
 
 const useRegisterStatus = (datasetID: string | undefined) => {
   const dataset = useDataset(datasetID)

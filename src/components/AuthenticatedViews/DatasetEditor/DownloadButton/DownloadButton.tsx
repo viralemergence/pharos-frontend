@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import Papa from 'papaparse'
 import MintButton from 'components/ui/MintButton'
 import useVersionRows from 'hooks/useVersionRows'
-import useDataset from 'hooks/useDatset'
+import useDataset from 'hooks/useDataset'
 
 const downloadFile = (fileName: string, data: Blob) => {
   const downloadLink = document.createElement('a')

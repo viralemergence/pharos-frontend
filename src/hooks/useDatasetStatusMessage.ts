@@ -1,5 +1,5 @@
 import { DatasetStatus } from 'reducers/projectReducer/types'
-import useDataset from './useDatset'
+import useDataset from './useDataset'
 
 const useDatasetStatusMessage = (datasetID: string | undefined) => {
   const dataset = useDataset(datasetID)
