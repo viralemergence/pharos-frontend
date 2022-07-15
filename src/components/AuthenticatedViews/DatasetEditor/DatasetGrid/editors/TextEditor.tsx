@@ -36,7 +36,11 @@ const autoFocusAndSelect = (input: HTMLInputElement | null) => {
   input?.select()
 }
 
-const TextEditor = ({ row, column, onClose }: EditorProps<Record, Record>) => {
+const TextEditor = ({
+  column,
+  onClose,
+  row: { [column.key]: datapoint },
+}: EditorProps<Record>) => {
   const user = useUser()
   const datasetID = useDatasetID()
   const projectDispatch = useProjectDispatch()
@@ -44,7 +48,7 @@ const TextEditor = ({ row, column, onClose }: EditorProps<Record, Record>) => {
   return (
     <TextInput
       ref={autoFocusAndSelect}
-      value={row[column.key].displayValue}
+      value={datapoint.displayValue}
       onChange={event => {
         projectDispatch({
           type: ProjectActions.SetDatapoint,

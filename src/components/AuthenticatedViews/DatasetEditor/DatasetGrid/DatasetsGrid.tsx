@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import DataGrid, { Column } from 'react-data-grid'
+import DataGrid, { CalculatedColumn, Column } from 'react-data-grid'
 
-import { RegisterStatus } from 'reducers/projectReducer/types'
+import { Record, RegisterStatus } from 'reducers/projectReducer/types'
 
 import TextEditor from './editors/TextEditor'
 
@@ -27,12 +27,14 @@ const DatasetGrid = () => {
   if (registerStatus === RegisterStatus.Loading) return <p>Loading version</p>
   if (!versionedRows || !versionedRows[0]) return <p>No active version</p>
 
-  const columns = Object.keys(versionedRows[0]).map(key => ({
-    key,
-    name: key,
-    editor: TextEditor,
-    formatter: SimpleFormatter,
-  }))
+  const columns: readonly Column<Record>[] = Object.keys(versionedRows[0]).map(
+    key => ({
+      key,
+      name: key,
+      editor: TextEditor,
+      formatter: SimpleFormatter,
+    })
+  )
 
   return (
     <Container>
@@ -40,7 +42,7 @@ const DatasetGrid = () => {
         className={'rdg-light'}
         // todo: figure out the typescript for making this
         // work with the data grid library
-        columns={columns as Column<unknown, unknown>[]}
+        columns={columns as Column<unknown>[]}
         rows={versionedRows}
         // rowKeyGetter={}
       />
