@@ -8,7 +8,7 @@ import MintButton from 'components/ui/MintButton'
 import useUser from 'hooks/useUser'
 import useDatasetID from 'hooks/dataset/useDatasetID'
 import useDataset from 'hooks/dataset/useDataset'
-import useRegisterStatus from 'hooks/useRegisterStatus'
+import useRegisterStatus from 'hooks/register/useRegisterStatus'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
 
 const UpdateButton = () => {

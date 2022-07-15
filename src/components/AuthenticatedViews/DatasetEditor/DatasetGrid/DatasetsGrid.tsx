@@ -8,8 +8,8 @@ import TextEditor from './editors/TextEditor'
 
 import SimpleFormatter from './formatters/SimpleFormatter'
 
-import useVersionRows from 'hooks/useVersionRows'
-import useRegisterStatus from 'hooks/useRegisterStatus'
+import useVersionRows from 'hooks/register/useVersionedRows'
+import useRegisterStatus from 'hooks/register/useRegisterStatus'
 
 const Container = styled.div`
   margin-top: 30px;

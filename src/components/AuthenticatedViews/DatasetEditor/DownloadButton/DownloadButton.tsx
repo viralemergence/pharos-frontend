@@ -3,7 +3,7 @@ import React from 'react'
 import Papa from 'papaparse'
 import MintButton from 'components/ui/MintButton'
 
-import useVersionRows from 'hooks/useVersionRows'
+import useVersionRows from 'hooks/register/useVersionedRows'
 import useDataset from 'hooks/dataset/useDataset'
 
 const downloadFile = (fileName: string, data: Blob) => {
