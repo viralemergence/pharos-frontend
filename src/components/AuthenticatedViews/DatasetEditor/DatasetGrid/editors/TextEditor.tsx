@@ -6,6 +6,7 @@ import { Record, RegisterStatus } from 'reducers/projectReducer/types'
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
 import useDatasetID from 'hooks/dataset/useDatasetID'
+import useUser from 'hooks/useUser'
 
 const TextInput = styled.input`
   appearance: none;
@@ -36,6 +37,7 @@ const autoFocusAndSelect = (input: HTMLInputElement | null) => {
 }
 
 const TextEditor = ({ row, column, onClose }: EditorProps<Record, Record>) => {
+  const user = useUser()
   const datasetID = useDatasetID()
   const projectDispatch = useProjectDispatch()
 
@@ -44,8 +46,18 @@ const TextEditor = ({ row, column, onClose }: EditorProps<Record, Record>) => {
       ref={autoFocusAndSelect}
       value={row[column.key].displayValue}
       onChange={event => {
-        console.log('Dispatch edit event here')
-        console.log(event)
+        projectDispatch({
+          type: ProjectActions.SetDatapoint,
+          payload: {
+            datasetID,
+            datapoint: {
+              displayValue: event.target.value,
+              dataValue: event.target.value,
+              modifiedBy: user.data?.researcherID,
+              modified: true,
+            },
+          },
+        })
         projectDispatch({
           type: ProjectActions.SetRegisterStatus,
           payload: {
