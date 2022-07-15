@@ -3,7 +3,7 @@ import React from 'react'
 import Papa from 'papaparse'
 import MintButton from 'components/ui/MintButton'
 
-import useVersionRows from 'hooks/register/useVersionedRows'
+import useVersionedRows from 'hooks/register/useVersionedRows'
 import useDataset from 'hooks/dataset/useDataset'
 
 const downloadFile = (fileName: string, data: Blob) => {
@@ -20,7 +20,7 @@ const downloadFile = (fileName: string, data: Blob) => {
 const DownloadButton = () => {
   const dataset = useDataset()
 
-  const versionRows = useVersionRows(0)
+  const versionRows = useVersionedRows()
   const versionDate = dataset?.versions[dataset.activeVersion]?.date ?? ''
 
   const disable = !versionRows || versionRows.length === 0

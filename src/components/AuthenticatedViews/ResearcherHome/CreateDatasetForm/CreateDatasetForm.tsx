@@ -67,7 +67,20 @@ const CreateDatasetForm = () => {
       status: DatasetStatus.Saving,
       samples_taken: '0',
       detection_run: '0',
-      register: {},
+      register: {
+        exampleRow: {
+          DetectionID: { displayValue: '', dataValue: '', version: 0 },
+          SampleID: { displayValue: '', dataValue: '', version: 0 },
+          DetectionMethod: { displayValue: '', dataValue: '', version: 0 },
+          DetectionOutcome: { displayValue: '', dataValue: '', version: 0 },
+          DetectionComments: { displayValue: '', dataValue: '', version: 0 },
+          PathogenTaxID: { displayValue: '', dataValue: '', version: 0 },
+          GenbankAccession: { displayValue: '', dataValue: '', version: 0 },
+          SRAAccession: { displayValue: '', dataValue: '', version: 0 },
+          GISAIDAccession: { displayValue: '', dataValue: '', version: 0 },
+          GBIFIdentifier: { displayValue: '', dataValue: '', version: 0 },
+        },
+      },
       versions: [],
       activeVersion: 0,
     }

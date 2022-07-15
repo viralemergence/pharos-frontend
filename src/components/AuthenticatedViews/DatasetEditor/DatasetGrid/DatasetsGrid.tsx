@@ -8,7 +8,7 @@ import TextEditor from './editors/TextEditor'
 
 import SimpleFormatter from './formatters/SimpleFormatter'
 
-import useVersionRows from 'hooks/register/useVersionedRows'
+import useVersionedRows from 'hooks/register/useVersionedRows'
 import useRegisterStatus from 'hooks/register/useRegisterStatus'
 
 const Container = styled.div`
@@ -21,13 +21,13 @@ const FillDatasetGrid = styled(DataGrid)`
 `
 
 const DatasetGrid = () => {
-  const versionRows = useVersionRows(0)
+  const versionedRows = useVersionedRows()
   const registerStatus = useRegisterStatus()
 
   if (registerStatus === RegisterStatus.Loading) return <p>Loading version</p>
-  if (!versionRows) return <p>No active version</p>
+  if (!versionedRows || !versionedRows[0]) return <p>No active version</p>
 
-  const columns = Object.keys(versionRows[0]).map(key => ({
+  const columns = Object.keys(versionedRows[0]).map(key => ({
     key,
     name: key,
     editor: TextEditor,
@@ -41,7 +41,7 @@ const DatasetGrid = () => {
         // todo: figure out the typescript for making this
         // work with the data grid library
         columns={columns as Column<unknown, unknown>[]}
-        rows={versionRows}
+        rows={versionedRows}
         // rowKeyGetter={}
       />
     </Container>
