@@ -11,7 +11,10 @@ import projectReducer, {
 import useUser from 'hooks/useUser'
 import listDatasets from 'api/listDatasets'
 
-type ProjectContextValue = [Project, React.Dispatch<ProjectAction>]
+type ProjectContextValue = {
+  project: Project
+  projectDispatch: React.Dispatch<ProjectAction>
+}
 
 interface ProjectContextProviderProps {
   children: React.ReactNode
@@ -90,7 +93,7 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
   }, [researcherID])
 
   return (
-    <ProjectContext.Provider value={[project, projectDispatch]}>
+    <ProjectContext.Provider value={{ project, projectDispatch }}>
       {children}
     </ProjectContext.Provider>
   )
