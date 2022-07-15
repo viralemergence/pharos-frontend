@@ -15,7 +15,7 @@ import useDatasetID from 'hooks/dataset/useDatasetID'
 
 const fileTypes = ['CSV']
 
-const Uploader = () => {
+const CSVParser = () => {
   const user = useUser()
   const datasetID = useDatasetID()
   const projectDispatch = useProjectDispatch()
@@ -43,10 +43,7 @@ const Uploader = () => {
         console.log('version status should be saving')
         projectDispatch({
           type: ProjectActions.SetRegisterStatus,
-          payload: {
-            datasetID,
-            status: RegisterStatus.Saving,
-          },
+          payload: { datasetID, status: RegisterStatus.Saving },
         })
 
         // create a version
@@ -77,18 +74,12 @@ const Uploader = () => {
         if (saved) {
           projectDispatch({
             type: ProjectActions.SetRegisterStatus,
-            payload: {
-              datasetID,
-              status: RegisterStatus.Saved,
-            },
+            payload: { datasetID, status: RegisterStatus.Saved },
           })
         } else {
           projectDispatch({
             type: ProjectActions.SetRegisterStatus,
-            payload: {
-              datasetID,
-              status: RegisterStatus.Error,
-            },
+            payload: { datasetID, status: RegisterStatus.Error },
           })
         }
       },
@@ -108,4 +99,4 @@ const Uploader = () => {
   )
 }
 
-export default Uploader
+export default CSVParser

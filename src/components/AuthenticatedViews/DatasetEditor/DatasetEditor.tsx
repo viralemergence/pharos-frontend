@@ -7,7 +7,7 @@ import { ProjectStatus } from 'reducers/projectReducer/types'
 import MainGrid from 'components/layout/MainGrid'
 import Sidebar from 'components/Sidebar/Sidebar'
 
-import Uploader from './Uploader/Uploader'
+import CSVParser from './CSVParser/CSVParser'
 import DatasetGrid from './DatasetGrid/DatasetsGrid'
 import { Content, TopBar } from '../ViewComponents'
 
@@ -55,7 +55,7 @@ const DatasetEditor = () => {
         <H2>Collected Date: {dataset && dataset.date_collected}</H2>
         <H2>{datasetStatusMessage}</H2>
         <TopBar>
-          <Uploader />
+          <CSVParser />
           <VersionSwitcher />
         </TopBar>
         <DatasetGrid />
