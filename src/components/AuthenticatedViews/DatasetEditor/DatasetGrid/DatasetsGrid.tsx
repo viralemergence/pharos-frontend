@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import DataGrid, { CalculatedColumn, Column } from 'react-data-grid'
+import DataGrid, { Column } from 'react-data-grid'
 
 import { Record, RegisterStatus } from 'reducers/projectReducer/types'
 
