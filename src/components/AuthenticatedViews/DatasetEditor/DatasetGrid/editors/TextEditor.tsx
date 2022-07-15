@@ -5,7 +5,7 @@ import { EditorProps } from 'react-data-grid'
 import { Record, RegisterStatus } from 'reducers/projectReducer/types'
 import useProject from 'hooks/project/useProject'
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
-import { useParams } from 'react-router-dom'
+import useDatasetID from 'hooks/useDatasetID'
 
 const TextInput = styled.input`
   appearance: none;
@@ -39,6 +39,7 @@ const TextEditor = ({ row, column, onClose }: EditorProps<Record, Record>) => {
   const { id: datasetID } = useParams()
   if (!datasetID) throw new Error('Dataset ID not found in url params')
   const [, projectDispatch] = useProject()
+  const datasetID = useDatasetID()
 
   return (
     <TextInput
