@@ -18,6 +18,7 @@ import useDataset from 'hooks/dataset/useDataset'
 import useDatasetStatusMessage from 'hooks/dataset/useDatasetStatusMessage'
 import VersionSwitcher from './VersionSwitcher/VersionSwitcher'
 import DownloadButton from './DownloadButton/DownloadButton'
+import useLoadRegister from 'hooks/register/useLoadRegister'
 
 const H1 = styled.h1`
   ${({ theme }) => theme.h3};
@@ -37,6 +38,10 @@ const DatasetEditor = () => {
 
   const dataset = useDataset()
   const datasetStatusMessage = useDatasetStatusMessage()
+
+  // load the register as soon as the dataset is loaded
+  // and as long as the dataset has a registerKey
+  useLoadRegister()
 
   // handle case where the page loads on a dataset that doesn't exist
   useEffect(() => {
