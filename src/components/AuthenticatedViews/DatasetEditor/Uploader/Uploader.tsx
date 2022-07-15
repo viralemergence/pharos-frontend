@@ -1,5 +1,4 @@
 import React from 'react'
-import { useParams } from 'react-router-dom'
 
 import Papa from 'papaparse'
 import { FileUploader } from 'react-drag-drop-files'
@@ -10,17 +9,16 @@ import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 
 import useUser from 'hooks/useUser'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
+import useDatasetID from 'hooks/dataset/useDatasetID'
 
 // import saveVersion from 'api/uploadVersion'
 
 const fileTypes = ['CSV']
 
 const Uploader = () => {
-  const { id: datasetID } = useParams()
   const user = useUser()
+  const datasetID = useDatasetID()
   const projectDispatch = useProjectDispatch()
-
-  if (!datasetID) throw new Error('datasetID not found in url')
 
   const handleChange = (file: File) => {
     Papa.parse(file, {
