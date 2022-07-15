@@ -2,10 +2,7 @@ import { Record } from 'reducers/projectReducer/types'
 
 // placeholder for hook to provide memoized access to the
 // rows of an arbitrary version for displaying in the table
-const useVersionRows = (
-  datasetID: string | undefined,
-  version: number | undefined
-) => {
+const useVersionRows = (version: number | undefined) => {
   const rows = [
     {
       DetectionID: { displayValue: '', dataValue: '', version: 0 },

@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import DataGrid, { Column } from 'react-data-grid'
-import { useParams } from 'react-router-dom'
 
 import { RegisterStatus } from 'reducers/projectReducer/types'
 
@@ -22,10 +21,8 @@ const FillDatasetGrid = styled(DataGrid)`
 `
 
 const DatasetGrid = () => {
-  const { id: datasetID } = useParams()
-
-  const versionRows = useVersionRows(datasetID, 0)
-  const registerStatus = useRegisterStatus(datasetID)
+  const versionRows = useVersionRows(0)
+  const registerStatus = useRegisterStatus()
 
   if (registerStatus === RegisterStatus.Loading) return <p>Loading version</p>
   if (!versionRows) return <p>No active version</p>

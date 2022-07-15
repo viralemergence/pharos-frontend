@@ -1,5 +1,4 @@
 import React from 'react'
-import { useParams } from 'react-router-dom'
 
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 import { DatasetStatus, RegisterStatus } from 'reducers/projectReducer/types'
@@ -7,19 +6,18 @@ import { DatasetStatus, RegisterStatus } from 'reducers/projectReducer/types'
 import MintButton from 'components/ui/MintButton'
 
 import useUser from 'hooks/useUser'
-
 import useProject from 'hooks/useProject'
+import useDatasetID from 'hooks/useDatasetID'
 import useDataset from 'hooks/useDataset'
 import useRegisterStatus from 'hooks/useRegisterStatus'
 
 const UpdateButton = () => {
   const [user] = useUser()
-  const { id: datasetID } = useParams()
-  if (!datasetID) throw new Error('Dataset ID not found in url params')
+  const datasetID = useDatasetID()
   const [, projectDispatch] = useProject()
 
-  const dataset = useDataset(datasetID)
-  const registerStatus = useRegisterStatus(datasetID)
+  const dataset = useDataset()
+  const registerStatus = useRegisterStatus()
 
   // don't render the update button if there are no datasets loaded,
   // the project is loading, or there are no versions in the dataset

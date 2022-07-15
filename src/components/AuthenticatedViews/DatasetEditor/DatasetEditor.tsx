@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { ProjectStatus } from 'reducers/projectReducer/types'
 
@@ -30,16 +30,13 @@ const H2 = styled.h2`
 `
 
 const DatasetEditor = () => {
-  const { id } = useParams()
   const navigate = useNavigate()
-
   const [project] = useProject()
 
   console.log({ project })
 
-  const dataset = useDataset(id)
-
-  const datasetStatusMessage = useDatasetStatusMessage(id)
+  const dataset = useDataset()
+  const datasetStatusMessage = useDatasetStatusMessage()
 
   // handle case where the page loads on a dataset that doesn't exist
   useEffect(() => {

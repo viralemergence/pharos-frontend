@@ -1,16 +1,21 @@
 import React from 'react'
-import { useParams } from 'react-router-dom'
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 
 import useProject from 'hooks/useProject'
 import useDataset from 'hooks/useDataset'
+import useDatasetID from 'hooks/useDatasetID'
 
 const VersionSwitcher = () => {
-  const { id } = useParams()
   const [, projectDispatch] = useProject()
-  const dataset = useDataset(id)
+  const datasetID = useDatasetID()
+  const dataset = useDataset()
 
-  if (!id || !dataset || !dataset.versions || dataset.versions.length < 2)
+  if (
+    !datasetID ||
+    !dataset ||
+    !dataset.versions ||
+    dataset.versions.length < 2
+  )
     return <></>
 
   const onSelectVersion = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -18,7 +23,7 @@ const VersionSwitcher = () => {
 
     projectDispatch({
       type: ProjectActions.SetActiveVersion,
-      payload: { datasetID: id, version: Number(nextVersion) },
+      payload: { datasetID: datasetID, version: Number(nextVersion) },
     })
   }
 

@@ -1,11 +1,11 @@
 import useProject from './useProject'
+import useDatasetID from './useDatasetID'
 
-const useDataset = (datasetID: string | undefined) => {
-	const [project] = useProject()
+const useDataset = () => {
+  const [project] = useProject()
+  const datasetID = useDatasetID()
 
-	if (!datasetID) return undefined
-
-	return project.datasets[datasetID]
+  return project.datasets[datasetID]
 }
 
 export default useDataset
