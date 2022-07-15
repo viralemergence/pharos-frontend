@@ -1,4 +1,4 @@
-const loadVersionRows = async (researcherID: string, key: string) => {
+const loadRegister = async (researcherID: string, key: string) => {
   const response = await fetch(`${process.env.GATSBY_API_URL}/read-version`, {
     method: 'POST',
     body: JSON.stringify({ researcherID, key }),
@@ -11,4 +11,4 @@ const loadVersionRows = async (researcherID: string, key: string) => {
   return JSON.parse(body.response)
 }
 
-export default loadVersionRows
+export default loadRegister
