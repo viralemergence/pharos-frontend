@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ChangeEvent } from 'react'
 import styled from 'styled-components'
 import { EditorProps } from 'react-data-grid'
 
@@ -36,41 +36,42 @@ const autoFocusAndSelect = (input: HTMLInputElement | null) => {
   input?.select()
 }
 
-const TextEditor = ({
-  column,
-  onClose,
-  row: { [column.key]: datapoint },
-}: EditorProps<Record>) => {
+const TextEditor = ({ column, onClose, row }: EditorProps<Record>) => {
   const user = useUser()
   const datasetID = useDatasetID()
   const projectDispatch = useProjectDispatch()
+
+  const datapoint = row[column.key]
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    console.log(row.DetectionID.dataValue as string)
+    projectDispatch({
+      type: ProjectActions.SetDatapoint,
+      payload: {
+        datasetID,
+        recordKey: row.DetectionID.dataValue as string,
+        datapointKey: column.key,
+        datapoint: {
+          displayValue: event.target.value,
+          dataValue: event.target.value,
+          modifiedBy: user.data?.researcherID,
+        },
+      },
+    })
+    projectDispatch({
+      type: ProjectActions.SetRegisterStatus,
+      payload: {
+        datasetID,
+        status: RegisterStatus.Unsaved,
+      },
+    })
+  }
 
   return (
     <TextInput
       ref={autoFocusAndSelect}
       value={datapoint.displayValue}
-      onChange={event => {
-        projectDispatch({
-          type: ProjectActions.SetDatapoint,
-          payload: {
-            datasetID,
-            row,
-            column,
-            datapoint: {
-              displayValue: event.target.value,
-              dataValue: event.target.value,
-              modifiedBy: user.data?.researcherID,
-            },
-          },
-        })
-        projectDispatch({
-          type: ProjectActions.SetRegisterStatus,
-          payload: {
-            datasetID,
-            status: RegisterStatus.Unsaved,
-          },
-        })
-      }}
+      onChange={event => handleChange(event)}
       onBlur={() => onClose(true)}
     />
   )

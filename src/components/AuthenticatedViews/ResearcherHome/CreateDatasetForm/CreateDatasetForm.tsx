@@ -68,8 +68,8 @@ const CreateDatasetForm = () => {
       samples_taken: '0',
       detection_run: '0',
       register: {
-        exampleRow: {
-          DetectionID: { displayValue: '', dataValue: '', version: 0 },
+        1: {
+          DetectionID: { displayValue: '', dataValue: '1', version: 0 },
           SampleID: { displayValue: '', dataValue: '', version: 0 },
           DetectionMethod: { displayValue: '', dataValue: '', version: 0 },
           DetectionOutcome: { displayValue: '', dataValue: '', version: 0 },
