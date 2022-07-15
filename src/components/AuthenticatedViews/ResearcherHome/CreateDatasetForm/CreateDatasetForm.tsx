@@ -27,7 +27,7 @@ const H1 = styled.h1`
 `
 
 const CreateDatasetForm = () => {
-  const [user] = useUser()
+  const user = useUser()
   const [project, projectDispatch] = useProject()
 
   const [formMessage, setFormMessage] = useState('')

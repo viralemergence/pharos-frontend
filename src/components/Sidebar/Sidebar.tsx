@@ -74,7 +74,7 @@ const Dataset = styled.li`
 `
 
 const Sidebar = () => {
-  const [user] = useUser()
+  const user = useUser()
   const [project] = useProject()
 
   return (

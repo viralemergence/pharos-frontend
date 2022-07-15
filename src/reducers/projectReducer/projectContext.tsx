@@ -20,7 +20,7 @@ interface ProjectContextProviderProps {
 export const ProjectContext = createContext<ProjectContextValue | null>(null)
 
 const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
-  const [user] = useUser()
+  const user = useUser()
   const researcherID = user.data?.researcherID
 
   const [project, projectDispatch] = useReducer(

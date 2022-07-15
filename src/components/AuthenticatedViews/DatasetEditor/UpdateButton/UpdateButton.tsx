@@ -12,7 +12,7 @@ import useDataset from 'hooks/useDataset'
 import useRegisterStatus from 'hooks/useRegisterStatus'
 
 const UpdateButton = () => {
-  const [user] = useUser()
+  const user = useUser()
   const datasetID = useDatasetID()
   const [, projectDispatch] = useProject()
 

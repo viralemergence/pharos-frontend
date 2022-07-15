@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import CMS from '@talus-analytics/library.airtable-cms'
 
 import useSignInPageData from 'cmsHooks/useSignInPageData'
-import useUser from 'hooks/useUser'
+import useUser, { useSetUser } from 'hooks/useUser'
 
 import { UserStatus } from 'components/Login/UserContextProvider'
 import authenticate from 'components/Login/authenticate'
@@ -39,7 +39,8 @@ const Form = styled.form`
 const Login = () => {
   const data = useSignInPageData()
   const [researcherID, setResearcherID] = useState('')
-  const [user, setUser] = useUser()
+  const user = useUser()
+  const setUser = useSetUser()
 
   const firstInputRef = useRef<HTMLInputElement>(null)
 

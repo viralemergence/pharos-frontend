@@ -17,7 +17,7 @@ const fileTypes = ['CSV']
 
 const Uploader = () => {
   const { id: datasetID } = useParams()
-  const [user] = useUser()
+  const user = useUser()
   const [, projectDispatch] = useProject()
 
   if (!datasetID) throw new Error('datasetID not found in url')

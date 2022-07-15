@@ -7,7 +7,7 @@
 // import useUser from './useUser'
 
 // const useActiveVersion = (datasetID: string | undefined) => {
-//   const [user] = useUser()
+//   const user = useUser()
 //   const [, projectDispatch] = useProject()
 //   const dataset = useDataset(datasetID)
 
