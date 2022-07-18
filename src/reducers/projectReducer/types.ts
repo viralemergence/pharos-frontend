@@ -96,9 +96,25 @@ export interface Register {
 // a single record of data, a collection
 // of datapoints which the user sees
 // as a row in a table
+
+// interface RecordObj<T> {
+//   [key: string]: T
+// }
+
+// type RecordIntersection<T> = RecordObj<T> & {
+//   recordID: string
+// }
+
 export interface Record {
   [key: string]: Datapoint
 }
+
+export interface RecordWithID {
+  datapointID: string
+  [key: string]: Datapoint | string
+}
+
+// export type RecordWithID = RecordIntersection<Datapoint>
 
 // a single component of a record; the user
 // sees this as a cell in the dataset table

@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import DataGrid, { Column } from 'react-data-grid'
 
-import { Record, RegisterStatus } from 'reducers/projectReducer/types'
+import { RecordWithID, RegisterStatus } from 'reducers/projectReducer/types'
 
 import TextEditor from './editors/TextEditor'
 
@@ -27,14 +27,14 @@ const DatasetGrid = () => {
   if (registerStatus === RegisterStatus.Loading) return <p>Loading version</p>
   if (!versionedRows || !versionedRows[0]) return <p>No active version</p>
 
-  const columns: readonly Column<Record>[] = Object.keys(versionedRows[0]).map(
-    key => ({
+  const columns: readonly Column<RecordWithID>[] = Object.keys(versionedRows[0])
+    .filter(key => key !== 'datasetID')
+    .map(key => ({
       key,
       name: key,
       editor: TextEditor,
       formatter: SimpleFormatter,
-    })
-  )
+    }))
 
   return (
     <Container>

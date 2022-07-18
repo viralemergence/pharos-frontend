@@ -2,7 +2,11 @@ import React, { ChangeEvent } from 'react'
 import styled from 'styled-components'
 import { EditorProps } from 'react-data-grid'
 
-import { Record, RegisterStatus } from 'reducers/projectReducer/types'
+import {
+  Datapoint,
+  RecordWithID,
+  RegisterStatus,
+} from 'reducers/projectReducer/types'
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
 import useDatasetID from 'hooks/dataset/useDatasetID'
@@ -36,7 +40,7 @@ const autoFocusAndSelect = (input: HTMLInputElement | null) => {
   input?.select()
 }
 
-const TextEditor = ({ column, onClose, row }: EditorProps<Record>) => {
+const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
   const user = useUser()
   const datasetID = useDatasetID()
   const projectDispatch = useProjectDispatch()
@@ -44,13 +48,12 @@ const TextEditor = ({ column, onClose, row }: EditorProps<Record>) => {
   const datapoint = row[column.key]
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    console.log(row.DetectionID.dataValue as string)
     projectDispatch({
       type: ProjectActions.SetDatapoint,
       payload: {
         datasetID,
-        recordKey: row.DetectionID.dataValue as string,
-        datapointKey: column.key,
+        recordKey: row.recordID as string,
+        datapointID: column.key,
         datapoint: {
           displayValue: event.target.value,
           dataValue: event.target.value,
@@ -70,7 +73,7 @@ const TextEditor = ({ column, onClose, row }: EditorProps<Record>) => {
   return (
     <TextInput
       ref={autoFocusAndSelect}
-      value={datapoint.displayValue}
+      value={(datapoint as Datapoint).displayValue}
       onChange={event => handleChange(event)}
       onBlur={() => onClose(true)}
     />

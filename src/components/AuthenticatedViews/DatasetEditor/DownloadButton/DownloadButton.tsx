@@ -5,6 +5,7 @@ import MintButton from 'components/ui/MintButton'
 
 import useVersionedRows from 'hooks/register/useVersionedRows'
 import useDataset from 'hooks/dataset/useDataset'
+import { Datapoint } from 'reducers/projectReducer/types'
 
 const downloadFile = (fileName: string, data: Blob) => {
   const downloadLink = document.createElement('a')
@@ -32,10 +33,15 @@ const DownloadButton = () => {
 
     const content = Papa.unparse(
       versionRows.map(row =>
-        Object.entries(row).reduce(
-          (obj, [key, value]) => ({ ...obj, [key]: value.displayValue }),
-          {}
-        )
+        Object.entries(row)
+          .filter(([key]) => key !== 'recordID')
+          .reduce(
+            (obj, [key, value]) => ({
+              ...obj,
+              [key]: (value as unknown as Datapoint).displayValue,
+            }),
+            {}
+          )
       )
     )
 
