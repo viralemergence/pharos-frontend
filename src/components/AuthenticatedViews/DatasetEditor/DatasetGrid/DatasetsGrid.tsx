@@ -44,7 +44,11 @@ const DatasetGrid = () => {
         // work with the data grid library
         columns={columns as Column<unknown>[]}
         rows={versionedRows}
-        // rowKeyGetter={}
+        rowKeyGetter={row => {
+          const record = row as unknown as RecordWithID
+          console.log(record._meta.recordID)
+          return record._meta.recordID
+        }}
       />
     </Container>
   )
