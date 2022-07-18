@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { EditorProps } from 'react-data-grid'
 
@@ -48,7 +48,11 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
 
   const datapoint = row[column.key]
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const [editValue, setEditValue] = useState(
+    (datapoint as Datapoint).displayValue
+  )
+
+  const onBlur = () => {
     projectDispatch({
       type: ProjectActions.SetDatapoint,
       payload: {
@@ -56,8 +60,8 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
         recordID: (row._meta as RecordMeta).recordID,
         datapointID: column.key,
         datapoint: {
-          displayValue: event.target.value,
-          dataValue: event.target.value,
+          displayValue: editValue,
+          dataValue: editValue,
           modifiedBy: user.data?.researcherID,
         },
       },
@@ -71,12 +75,20 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
     })
   }
 
+  console.log('EDITOR Renders')
+
   return (
     <TextInput
+      key={(row._meta as RecordMeta).recordID}
       ref={autoFocusAndSelect}
-      value={(datapoint as Datapoint).displayValue}
-      onChange={event => handleChange(event)}
-      onBlur={() => onClose(true)}
+      value={editValue}
+      onChange={event => {
+        setEditValue(event.target.value)
+      }}
+      onBlur={() => {
+        onBlur()
+        onClose(true)
+      }}
     />
   )
 }
