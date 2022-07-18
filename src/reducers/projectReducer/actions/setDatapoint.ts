@@ -3,7 +3,11 @@ import { Datapoint, Project } from '../types'
 
 export interface SetDatapointPayload {
   datasetID: string
-  datapoint: Partial<Datapoint>
+  datapoint: {
+    displayValue: Datapoint['displayValue']
+    dataValue: Datapoint['dataValue']
+    modifiedBy: Datapoint['modifiedBy']
+  }
   recordID: string // ideally strings
   datapointID: string // ideally strings
 }
@@ -29,15 +33,13 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
 
   const dataset = state.datasets[payload.datasetID]
 
-  let nextDatapoint: Partial<Datapoint>
+  let nextDatapoint: Datapoint
 
   switch (true) {
     case prevDatapoint === undefined:
       nextDatapoint = {
-        displayValue: '',
-        dataValue: '',
-        version: 0,
         ...payload.datapoint,
+        version: 0,
       }
       break
 
