@@ -4,6 +4,7 @@ import { EditorProps } from 'react-data-grid'
 
 import {
   Datapoint,
+  RecordMeta,
   RecordWithID,
   RegisterStatus,
 } from 'reducers/projectReducer/types'
@@ -47,12 +48,14 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
 
   const datapoint = row[column.key]
 
+  console.log(row)
+
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     projectDispatch({
       type: ProjectActions.SetDatapoint,
       payload: {
         datasetID,
-        recordID: row.recordID as string,
+        recordID: (row._meta as RecordMeta).recordID,
         datapointID: column.key,
         datapoint: {
           displayValue: event.target.value,

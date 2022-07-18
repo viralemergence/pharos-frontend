@@ -28,7 +28,7 @@ const DatasetGrid = () => {
   if (!versionedRows || !versionedRows[0]) return <p>No active version</p>
 
   const columns: readonly Column<RecordWithID>[] = Object.keys(versionedRows[0])
-    .filter(key => key !== 'recordID')
+    .filter(key => key !== '_meta')
     .map(key => ({
       key,
       name: key,

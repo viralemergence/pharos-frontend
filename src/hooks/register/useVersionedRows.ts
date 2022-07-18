@@ -26,7 +26,7 @@ const useVersionedRows = () => {
       ([recordID, record]) =>
         ({
           ...record,
-          recordID,
+          _meta: { recordID },
         } as RecordWithID)
     )
 
@@ -41,7 +41,7 @@ const useVersionedRows = () => {
           }),
           {}
         ),
-        recordID,
+        _meta: { recordID },
       } as RecordWithID)
   )
 }

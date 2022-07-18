@@ -34,7 +34,7 @@ const DownloadButton = () => {
     const content = Papa.unparse(
       versionRows.map(row =>
         Object.entries(row)
-          .filter(([key]) => key !== 'recordID')
+          .filter(([key]) => key !== '_meta')
           .reduce(
             (obj, [key, value]) => ({
               ...obj,

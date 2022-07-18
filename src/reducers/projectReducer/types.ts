@@ -109,9 +109,14 @@ export interface Record {
   [key: string]: Datapoint
 }
 
-export interface RecordWithID {
+export interface RecordMeta {
   recordID: string
-  [key: string]: Datapoint | string
+  // ingested: boolean
+}
+
+export interface RecordWithID {
+  _meta: RecordMeta
+  [key: string]: Datapoint | RecordMeta
 }
 
 // export type RecordWithID = RecordIntersection<Datapoint>
