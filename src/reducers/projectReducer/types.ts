@@ -110,7 +110,7 @@ export interface Record {
 }
 
 export interface RecordWithID {
-  datapointID: string
+  recordID: string
   [key: string]: Datapoint | string
 }
 

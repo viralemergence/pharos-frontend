@@ -1,5 +1,5 @@
 import useDataset from 'hooks/dataset/useDataset'
-import { Datapoint } from 'reducers/projectReducer/types'
+import { Datapoint, RecordWithID } from 'reducers/projectReducer/types'
 
 // recursively traverse the linked list until the
 // version number is satisfied for a given datapoint
@@ -22,22 +22,28 @@ const useVersionedRows = () => {
   // can directly return the array of DataPoints in
   // the register without performing version checks
   if (dataset.activeVersion >= dataset.versions.length)
-    return Object.entries(dataset.register).map(([recordID, record]) => ({
-      ...record,
-      recordID,
-    }))
+    return Object.entries(dataset.register).map(
+      ([recordID, record]) =>
+        ({
+          ...record,
+          recordID,
+        } as RecordWithID)
+    )
 
   // else return datapoints that are valid for the target version
-  return Object.entries(dataset.register).map(([recordID, record]) => ({
-    ...Object.entries(record).reduce(
-      (rec, [key, datapoint]) => ({
-        ...rec,
-        [key]: getDatapointAtVersion(datapoint, dataset.activeVersion),
-      }),
-      {}
-    ),
-    recordID,
-  }))
+  return Object.entries(dataset.register).map(
+    ([recordID, record]) =>
+      ({
+        ...Object.entries(record).reduce(
+          (rec, [key, datapoint]) => ({
+            ...rec,
+            [key]: getDatapointAtVersion(datapoint, dataset.activeVersion),
+          }),
+          {}
+        ),
+        recordID,
+      } as RecordWithID)
+  )
 }
 
 export default useVersionedRows
