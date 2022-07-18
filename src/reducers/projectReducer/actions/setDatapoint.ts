@@ -22,6 +22,57 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
   console.log(payload.recordID)
   console.log(payload.datapointID)
 
+  const prevDatapoint =
+    state.datasets[payload.datasetID].register[payload.recordID][
+      payload.datapointID
+    ]
+
+  const dataset = state.datasets[payload.datasetID]
+
+  let nextDatapoint: Partial<Datapoint>
+
+  switch (true) {
+    case prevDatapoint === undefined:
+      nextDatapoint = {
+        displayValue: '',
+        dataValue: '',
+        version: 0,
+        ...payload.datapoint,
+      }
+      break;
+
+    case dataset.versions.length >= prevDatapoint.version:
+      nextDatapoint = {
+        ...prevDatapoint,
+        ...payload.datapoint,
+        previous: prevDatapoint,
+      }
+      break;
+  }
+
+  if (prevDatapoint) {
+
+    nextDatapoint = {
+      displayValue: '',
+      dataValue: '',
+      version: 0,
+      ...payload.datapoint,
+    }
+
+  if (dataset.versions.length >= prevDatapoint.version)
+    nextDatapoint = {
+      ...prevDatapoint,
+      ...payload.datapoint,
+      previous: prevDatapoint,
+    }
+
+  if (dataset.versions.length >= prevDatapoint.version)
+    nextDatapoint = {
+      ...prevDatapoint,
+      ...payload.datapoint,
+      previous: prevDatapoint,
+    }
+
   // Datapoint does not exist -> create datapoint
   if (payload.datapoint.version === undefined)
     return {
