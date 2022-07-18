@@ -97,14 +97,6 @@ export interface Register {
 // of datapoints which the user sees
 // as a row in a table
 
-// interface RecordObj<T> {
-//   [key: string]: T
-// }
-
-// type RecordIntersection<T> = RecordObj<T> & {
-//   recordID: string
-// }
-
 export interface Record {
   [key: string]: Datapoint
 }
@@ -118,8 +110,6 @@ export interface RecordWithID {
   _meta: RecordMeta
   [key: string]: Datapoint | RecordMeta
 }
-
-// export type RecordWithID = RecordIntersection<Datapoint>
 
 // a single component of a record; the user
 // sees this as a cell in the dataset table
