@@ -4,7 +4,7 @@ import { Datapoint, Project } from '../types'
 export interface SetDatapointPayload {
   datasetID: string
   datapoint: Partial<Datapoint>
-  recordKey: string // ideally strings
+  recordID: string // ideally strings
   datapointID: string // ideally strings
 }
 
@@ -19,7 +19,7 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
   // I'm specifying a return type here to get
   // errors if the return types aren't Projects
 ): Project => {
-  console.log(payload.recordKey)
+  console.log(payload.recordID)
   console.log(payload.datapointID)
 
   // Datapoint does not exist -> create datapoint
@@ -33,8 +33,8 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
           // need to go in to the register
           register: {
             ...state.datasets[payload.datasetID].register,
-            [payload.recordKey]: {
-              ...state.datasets[payload.datasetID].register[payload.recordKey],
+            [payload.recordID]: {
+              ...state.datasets[payload.datasetID].register[payload.recordID],
               [payload.datapointID]: {
                 // we have to give all required keys
                 // default values so it's impossible
@@ -61,16 +61,16 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
         ...state.datasets,
         [payload.datasetID]: {
           ...state.datasets[payload.datasetID],
-          [payload.recordKey]: {
-            ...state.datasets[payload.datasetID].register[payload.recordKey],
+          [payload.recordID]: {
+            ...state.datasets[payload.datasetID].register[payload.recordID],
             [payload.datapointID]: {
-              ...state.datasets[payload.datasetID].register[payload.recordKey][
+              ...state.datasets[payload.datasetID].register[payload.recordID][
                 payload.datapointID
               ],
               dataValue: payload.datapoint,
               version: state.datasets[payload.datasetID].activeVersion,
               previous:
-                state.datasets[payload.datasetID].register[payload.recordKey][
+                state.datasets[payload.datasetID].register[payload.recordID][
                   payload.datapointID
                 ],
             },
@@ -86,8 +86,8 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
         ...state.datasets,
         [payload.datasetID]: {
           ...state.datasets[payload.datasetID],
-          [payload.recordKey]: {
-            ...state.datasets[payload.datasetID].register[payload.recordKey],
+          [payload.recordID]: {
+            ...state.datasets[payload.datasetID].register[payload.recordID],
             [payload.datapointID]: {
               dataValue: payload.datapoint,
             },

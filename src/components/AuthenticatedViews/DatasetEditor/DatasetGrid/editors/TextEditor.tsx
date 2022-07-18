@@ -52,7 +52,7 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
       type: ProjectActions.SetDatapoint,
       payload: {
         datasetID,
-        recordKey: row.recordID as string,
+        recordID: row.recordID as string,
         datapointID: column.key,
         datapoint: {
           displayValue: event.target.value,
