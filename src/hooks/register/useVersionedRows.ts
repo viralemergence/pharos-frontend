@@ -17,6 +17,9 @@ const getDatapointAtVersion = (
 const useVersionedRows = () => {
   const dataset = useDataset()
 
+  // if the register is not available, return empty []
+  if (!dataset.register) return []
+
   // check if version number requested is higher than
   // the length of the versions array; this means we
   // can directly return the array of DataPoints in
