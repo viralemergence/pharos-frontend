@@ -69,7 +69,8 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
         // set status to saved, because if it's coming from the
         // server than it must be saved on the server by definition
         console.log('Dataset loaded from server')
-        console.log(dataset)
+        console.log({ dataset })
+        console.log({ register: dataset.register })
         projectObj.datasets[dataset.datasetID] = {
           ...dataset,
           // we don't have a way to save the
