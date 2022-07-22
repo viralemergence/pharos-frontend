@@ -52,7 +52,7 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
     (datapoint as Datapoint).displayValue
   )
 
-  const onBlur = () => {
+  const dispatchValue = () => {
     console.log('dispatching setDatapoint')
     projectDispatch({
       type: ProjectActions.SetDatapoint,
@@ -76,6 +76,14 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
     })
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      console.log('enter key')
+      dispatchValue()
+    }
+  }
+
   console.log('EDITOR Renders')
 
   return (
@@ -86,8 +94,9 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
       onChange={event => {
         setEditValue(event.target.value)
       }}
+      onKeyDown={e => handleKeyDown(e)}
       onBlur={() => {
-        onBlur()
+        dispatchValue()
         onClose(true)
       }}
     />
