@@ -21,7 +21,7 @@ const useVersionedRows = () => {
   // the length of the versions array; this means we
   // can directly return the array of DataPoints in
   // the register without performing version checks
-  if (dataset.activeVersion >= dataset.versions.length)
+  if (dataset.activeVersion >= dataset.versions.length - 1)
     return Object.entries(dataset.register).map(
       ([recordID, record]) =>
         ({
