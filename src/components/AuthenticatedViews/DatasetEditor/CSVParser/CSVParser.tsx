@@ -10,6 +10,8 @@ import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 import useUser from 'hooks/useUser'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
 import useDatasetID from 'hooks/dataset/useDatasetID'
+import parseFile from './parse'
+import useProject from 'hooks/project/useProject'
 
 // import saveVersion from 'api/uploadVersion'
 
@@ -17,73 +19,12 @@ const fileTypes = ['CSV']
 
 const CSVParser = () => {
   const user = useUser()
+  const project = useProject()
   const datasetID = useDatasetID()
   const projectDispatch = useProjectDispatch()
 
   const handleChange = (file: File) => {
-    Papa.parse(file, {
-      header: true,
-      complete: async results => {
-        const plainRows = results.data as { [key: string]: string }[]
-
-        console.log(
-          'do some parsing with plainRows to integrate into the register'
-        )
-
-        // const rows = plainRows.map(row =>
-        //   Object.entries(row).reduce(
-        //     (acc, [key, val]) => ({
-        //       ...acc,
-        //       [key]: { value: val },
-        //     }),
-        //     {}
-        //   )
-        // )
-
-        console.log('version status should be saving')
-        projectDispatch({
-          type: ProjectActions.SetRegisterStatus,
-          payload: { datasetID, status: RegisterStatus.Saving },
-        })
-
-        // create a version
-        projectDispatch({
-          type: ProjectActions.CreateVersion,
-          payload: {
-            datasetID,
-            version: {
-              date: String(new Date().toUTCString()),
-              name: String(new Date().toUTCString()),
-            },
-          },
-        })
-
-        const researcherID = user.data?.researcherID
-        if (!researcherID) throw new Error('User data not found')
-
-        // const newVersionInfo = await saveVersion(
-        //   rows,
-        //   datasetID,
-        //   researcherID,
-        //   date
-        // )
-
-        console.log('save register to the server here')
-        const saved = true
-
-        if (saved) {
-          projectDispatch({
-            type: ProjectActions.SetRegisterStatus,
-            payload: { datasetID, status: RegisterStatus.Saved },
-          })
-        } else {
-          projectDispatch({
-            type: ProjectActions.SetRegisterStatus,
-            payload: { datasetID, status: RegisterStatus.Error },
-          })
-        }
-      },
-    })
+    parseFile({ file, project, datasetID, projectDispatch, user })
   }
 
   return (
