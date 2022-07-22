@@ -30,7 +30,7 @@ const VersionSwitcher = () => {
         style={{ marginLeft: '1ex' }}
       >
         {dataset.versions.map((version, index) => (
-          <option key={version.date} value={index}>
+          <option key={index + version.date} value={index}>
             {version.date}
           </option>
         ))}
