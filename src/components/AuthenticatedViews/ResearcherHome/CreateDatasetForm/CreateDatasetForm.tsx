@@ -67,7 +67,6 @@ const CreateDatasetForm = () => {
       samples_taken: '0',
       detection_run: '0',
       versions: [],
-      registerID: crypto.randomUUID(),
     }
 
     const datasetClientData = {

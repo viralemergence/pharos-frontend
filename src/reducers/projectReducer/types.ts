@@ -54,10 +54,6 @@ export interface Dataset {
   // the register as represented
   // in global state on the frontend
   register?: Register
-  // register key describes the
-  // location of the saved
-  // register on the server
-  registerID: string
   // the status of the register
   // relative to the server
   registerStatus?: RegisterStatus

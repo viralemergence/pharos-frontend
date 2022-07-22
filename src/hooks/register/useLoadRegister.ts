@@ -29,7 +29,7 @@ const useLoadRegister = () => {
 
       const registerData = await loadRegister({
         researcherID: user.data.researcherID,
-        registerID: dataset.registerID,
+        datasetID: dataset.datasetID,
       })
 
       console.log('LOAD REGISTER')
@@ -39,7 +39,7 @@ const useLoadRegister = () => {
     requestRegister()
   }, [
     dataset.status,
-    dataset.registerID,
+    dataset.datasetID,
     dataset.register,
     user.data?.researcherID,
   ])

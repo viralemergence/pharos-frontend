@@ -66,8 +66,8 @@ const UpdateButton = () => {
     })
 
     // save the register to the server
-    const key = await saveRegister({
-      registerID: dataset.registerID,
+    const saved = await saveRegister({
+      datasetID: dataset.datasetID,
       researcherID,
       data: {
         register: dataset.register!,
@@ -76,12 +76,7 @@ const UpdateButton = () => {
     })
 
     // if it saved correctly, merge in the new info
-    if (key) {
-      // set register key to the new one
-      projectDispatch({
-        type: ProjectActions.SetRegisterKey,
-        payload: { datasetID, key },
-      })
+    if (saved) {
       // set the register status to saved
       projectDispatch({
         type: ProjectActions.SetRegisterStatus,

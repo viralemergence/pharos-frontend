@@ -16,7 +16,6 @@ import setRegisterStatus, {
   SetRegisterStatusAction,
 } from './actions/setRegisterStatus'
 import setDatapoint, { SetDatapointAction } from './actions/setDatapoint'
-import setRegisterKey, { SetRegisterKeyAction } from './actions/setRegisterKey'
 
 // reducer actions
 export enum ProjectActions {
@@ -95,7 +94,6 @@ export type ProjectAction =
   | SetActiveVersionAction
   // datapoint
   | SetDatapointAction
-  | SetRegisterKeyAction
 
 export type ActionFunction<T = void> = (state: Project, payload: T) => Project
 
@@ -118,8 +116,6 @@ const projectReducer = (state: Project, action: ProjectAction) => {
       return setActiveVersion(state, action.payload)
     case ProjectActions.SetDatapoint:
       return setDatapoint(state, action.payload)
-    case ProjectActions.SetRegisterKey:
-      return setRegisterKey(state, action.payload)
     default:
       return state
   }
