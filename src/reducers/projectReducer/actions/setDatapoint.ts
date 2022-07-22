@@ -75,7 +75,7 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
         register: {
           ...dataset.register,
           [payload.recordID]: {
-            ...dataset.register[payload.recordID],
+            ...dataset.register?.[payload.recordID],
             [payload.datapointID]: {
               // we have to give all required keys
               // default values so it's impossible
