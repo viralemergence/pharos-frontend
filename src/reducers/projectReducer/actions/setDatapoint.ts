@@ -52,7 +52,8 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
         ...prevDatapoint,
         ...payload.datapoint,
         // need to remember to increment version
-        version: String(Number(prevDatapoint.version) + 1),
+        // version: String(Number(prevDatapoint.version) + 1),
+        version: String(dataset.versions.length + 1),
         previous: prevDatapoint,
       }
       break
