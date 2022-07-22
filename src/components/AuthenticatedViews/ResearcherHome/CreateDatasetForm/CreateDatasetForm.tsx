@@ -59,17 +59,22 @@ const CreateDatasetForm = () => {
 
     if (!user.data) throw new Error('User not logged in')
 
-    const payload = {
+    const datasetSaveData = {
       datasetID,
       researcherID: user.data.researcherID,
       name: target.name.value,
       date_collected: target.date_collected.value,
-      status: DatasetStatus.Saving,
       samples_taken: '0',
       detection_run: '0',
+      versions: [],
+    }
+
+    const datasetClientData = {
+      status: DatasetStatus.Saving,
+      activeVersion: 0,
       register: {
         exampleRecordID: {
-          DetectionID: { displayValue: '', dataValue: '1', version: '0' },
+          DetectionID: { displayValue: 'test', dataValue: '1', version: '0' },
           SampleID: { displayValue: '', dataValue: '', version: '0' },
           DetectionMethod: { displayValue: '', dataValue: '', version: '0' },
           DetectionOutcome: { displayValue: '', dataValue: '', version: '0' },
@@ -81,20 +86,21 @@ const CreateDatasetForm = () => {
           GBIFIdentifier: { displayValue: '', dataValue: '', version: '0' },
         },
       },
-      versions: [],
-      activeVersion: 0,
     }
 
     projectDispatch({
       type: ProjectActions.CreateDataset,
-      payload,
+      payload: {
+        ...datasetSaveData,
+        ...datasetClientData,
+      },
     })
 
     // now that we can handle this, just navigate
     // straight to the dataset directly
     navigate(`/dataset/${datasetID}`)
 
-    const saved = await saveDataset(payload)
+    const saved = await saveDataset(datasetSaveData)
 
     if (saved) {
       projectDispatch({
