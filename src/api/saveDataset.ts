@@ -6,7 +6,6 @@ export interface SaveDatasetPayload {
   researcherID: Dataset['researcherID']
   date_collected: Dataset['date_collected']
   versions: Dataset['versions']
-  register: Dataset['register']
 }
 
 // calling this Save Dataset becasue the dataset has already been created on the frontend
