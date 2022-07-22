@@ -126,6 +126,7 @@ export interface Datapoint {
   report?: {
     pass: ReportScore
     message: string
+    data: { [key: string]: string }
   }
   // userID
   modifiedBy?: string
