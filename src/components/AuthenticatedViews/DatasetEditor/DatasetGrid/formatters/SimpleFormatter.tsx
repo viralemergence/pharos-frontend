@@ -15,7 +15,7 @@ const SimpleFormatter = ({
     <span
       style={{
         backgroundColor:
-          datapoint.version > versions.length ? 'orange' : 'white',
+          Number(datapoint.version) > versions.length ? 'orange' : 'white',
       }}
     >
       {datapoint.displayValue}

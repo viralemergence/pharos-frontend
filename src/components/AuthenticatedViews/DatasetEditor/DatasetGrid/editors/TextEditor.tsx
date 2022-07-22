@@ -53,6 +53,7 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
   )
 
   const onBlur = () => {
+    console.log('dispatching setDatapoint')
     projectDispatch({
       type: ProjectActions.SetDatapoint,
       payload: {

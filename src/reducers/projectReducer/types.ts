@@ -133,7 +133,11 @@ export interface Datapoint {
   // datapoint was last modified.
   // it is valid for any version
   // higher than this number
-  version: number
+  //
+  // Changing this to a string,
+  // since it will come back from
+  // the API as a string
+  version: string
   // to access versions before
   // the version number, traverse
   // the linked list.

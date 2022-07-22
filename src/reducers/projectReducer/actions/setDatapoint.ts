@@ -37,21 +37,28 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
 
   switch (true) {
     case prevDatapoint === undefined:
+      console.log('CREATING DATAPOINT')
       nextDatapoint = {
         ...payload.datapoint,
-        version: 0,
+        version: '0',
       }
       break
 
     case dataset.versions.length > Number(prevDatapoint.version):
+      console.log(
+        `versions: ${dataset.versions.length}, prevDatapoint version: ${prevDatapoint.version}`
+      )
       nextDatapoint = {
         ...prevDatapoint,
         ...payload.datapoint,
+        // need to remember to increment version
+        version: String(Number(prevDatapoint.version) + 1),
         previous: prevDatapoint,
       }
       break
 
     default:
+      console.log('DEFAULT: update datapoint in place')
       nextDatapoint = {
         ...prevDatapoint,
         ...payload.datapoint,

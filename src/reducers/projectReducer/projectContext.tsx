@@ -68,6 +68,8 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
         if (!dataset.datasetID) throw new Error('Dataset missing datasetID')
         // set status to saved, because if it's coming from the
         // server than it must be saved on the server by definition
+        console.log('Dataset loaded from server')
+        console.log(dataset)
         projectObj.datasets[dataset.datasetID] = {
           ...dataset,
           // we don't have a way to save the

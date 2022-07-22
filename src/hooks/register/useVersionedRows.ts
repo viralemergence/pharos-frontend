@@ -7,7 +7,7 @@ const getDatapointAtVersion = (
   datapoint: Datapoint,
   version: number
 ): Datapoint => {
-  if (datapoint.version > version && datapoint.previous)
+  if (Number(datapoint.version) > version && datapoint.previous)
     return getDatapointAtVersion(datapoint.previous, version)
   return datapoint
 }
