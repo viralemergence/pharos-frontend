@@ -43,7 +43,7 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
       }
       break
 
-    case dataset.versions.length >= prevDatapoint.version:
+    case dataset.versions.length > Number(prevDatapoint.version):
       nextDatapoint = {
         ...prevDatapoint,
         ...payload.datapoint,
