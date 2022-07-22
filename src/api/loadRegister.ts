@@ -1,5 +1,5 @@
 const loadRegister = async (researcherID: string, key: string) => {
-  const response = await fetch(`${process.env.GATSBY_API_URL}/read-version`, {
+  const response = await fetch(`${process.env.GATSBY_API_URL}/load-register`, {
     method: 'POST',
     body: JSON.stringify({ researcherID, key }),
   })

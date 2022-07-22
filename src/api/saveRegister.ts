@@ -9,12 +9,12 @@ interface UploadVersion {
   }
 }
 
-const uploadVersion = async ({
+const saveRegister = async ({
   researcherID,
   datasetID,
   rows,
 }: UploadVersion) => {
-  const response = await fetch(`${process.env.GATSBY_API_URL}/upload-version`, {
+  const response = await fetch(`${process.env.GATSBY_API_URL}/save-register`, {
     method: 'POST',
     body: JSON.stringify({
       researcherID,
@@ -33,4 +33,4 @@ const uploadVersion = async ({
   return body.key
 }
 
-export default uploadVersion
+export default saveRegister

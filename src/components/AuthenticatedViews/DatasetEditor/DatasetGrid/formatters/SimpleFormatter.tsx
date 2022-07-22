@@ -11,16 +11,16 @@ const SimpleFormatter = ({
 
   datapoint = datapoint as Datapoint
 
-  return (
-    <span
-      style={{
-        backgroundColor:
-          Number(datapoint.version) > versions.length ? 'orange' : 'white',
-      }}
-    >
-      {datapoint.displayValue}
-    </span>
-  )
+  let backgroundColor: string
+  switch (true) {
+    case Number(datapoint.version) > versions.length:
+      backgroundColor = 'orange'
+      break
+    default:
+      backgroundColor = 'rgba(0,0,0,0)'
+  }
+
+  return <span style={{ backgroundColor }}>{datapoint.displayValue}</span>
 }
 
 export default SimpleFormatter

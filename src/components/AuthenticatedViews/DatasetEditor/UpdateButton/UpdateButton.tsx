@@ -10,7 +10,7 @@ import useDatasetID from 'hooks/dataset/useDatasetID'
 import useDataset from 'hooks/dataset/useDataset'
 import useRegisterStatus from 'hooks/register/useRegisterStatus'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
-import uploadVersion from 'api/uploadVersion'
+import saveRegister from 'api/saveRegister'
 
 const UpdateButton = () => {
   const user = useUser()
@@ -66,7 +66,7 @@ const UpdateButton = () => {
     })
 
     // save the register to the server
-    const key = await uploadVersion({
+    const key = await saveRegister({
       datasetID,
       researcherID,
       rows: {
