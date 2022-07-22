@@ -57,7 +57,7 @@ export interface Dataset {
   // register key describes the
   // location of the saved
   // register on the server
-  registerKey?: string
+  registerID: string
   // the status of the register
   // relative to the server
   registerStatus?: RegisterStatus

@@ -67,10 +67,10 @@ const UpdateButton = () => {
 
     // save the register to the server
     const key = await saveRegister({
-      datasetID,
+      registerID: dataset.registerID,
       researcherID,
-      rows: {
-        register: dataset.register,
+      data: {
+        register: dataset.register!,
         versions: [...dataset.versions, version],
       },
     })

@@ -1,7 +1,12 @@
-const loadRegister = async (researcherID: string, key: string) => {
+interface LoadRegister {
+  researcherID: string
+  registerID: string
+}
+
+const loadRegister = async ({ researcherID, registerID }: LoadRegister) => {
   const response = await fetch(`${process.env.GATSBY_API_URL}/load-register`, {
     method: 'POST',
-    body: JSON.stringify({ researcherID, key }),
+    body: JSON.stringify({ researcherID, registerID }),
   })
 
   if (!response || !response.ok) return null

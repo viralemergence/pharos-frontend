@@ -16,7 +16,6 @@ const useLoadRegister = () => {
     const requestRegister = async () => {
       if (
         dataset.status === DatasetStatus.Loading ||
-        !dataset.registerKey ||
         !user.data?.researcherID
       ) {
         console.log('short circuit')
@@ -25,21 +24,22 @@ const useLoadRegister = () => {
 
       // if the register contains rows, we don't need to check
       // this might need to change in a multi-user context
-      if (!dataset.register || Object.keys(dataset.register).length !== 0)
+      if (dataset.register && Object.keys(dataset.register).length !== 0)
         return null
 
-      const register = await loadRegister(
-        user.data.researcherID,
-        dataset.registerKey
-      )
+      const registerData = await loadRegister({
+        researcherID: user.data.researcherID,
+        registerID: dataset.registerID,
+      })
+
       console.log('LOAD REGISTER')
-      console.log(register)
+      console.log(registerData)
     }
 
     requestRegister()
   }, [
     dataset.status,
-    dataset.registerKey,
+    dataset.registerID,
     dataset.register,
     user.data?.researcherID,
   ])
