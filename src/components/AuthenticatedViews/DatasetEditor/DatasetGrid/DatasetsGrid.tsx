@@ -46,7 +46,6 @@ const DatasetGrid = () => {
         rows={versionedRows}
         rowKeyGetter={row => {
           const record = row as unknown as RecordWithID
-          console.log(record._meta.recordID)
           return record._meta.recordID
         }}
       />
