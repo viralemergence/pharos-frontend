@@ -3,13 +3,13 @@ import { Datapoint, Project } from '../types'
 
 export interface SetDatapointPayload {
   datasetID: string
+  recordID: string
+  datapointID: string
   datapoint: {
     displayValue: Datapoint['displayValue']
     dataValue: Datapoint['dataValue']
     modifiedBy: Datapoint['modifiedBy']
   }
-  recordID: string // ideally strings
-  datapointID: string // ideally strings
 }
 
 export interface SetDatapointAction {
