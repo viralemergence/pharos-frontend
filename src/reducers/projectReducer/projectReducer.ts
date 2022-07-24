@@ -16,6 +16,9 @@ import setRegisterStatus, {
   SetRegisterStatusAction,
 } from './actions/setRegisterStatus'
 import setDatapoint, { SetDatapointAction } from './actions/setDatapoint'
+import replaceRegister, {
+  ReplaceRegisterAction,
+} from './actions/replaceRegister'
 
 // reducer actions
 export enum ProjectActions {
@@ -62,6 +65,7 @@ export enum ProjectActions {
   // number higher
   SetDatapoint,
   SetRegisterKey,
+  ReplaceRegister,
 }
 
 export const projectInitialValue: Project = {
@@ -89,6 +93,7 @@ export type ProjectAction =
   | SetDatasetStatusAction
   // register
   | SetRegisterStatusAction
+  | ReplaceRegisterAction
   // versions
   | CreateVersionAction
   | SetActiveVersionAction
@@ -112,6 +117,8 @@ const projectReducer = (state: Project, action: ProjectAction) => {
       return createVersion(state, action.payload)
     case ProjectActions.SetRegisterStatus:
       return setRegisterStatus(state, action.payload)
+    case ProjectActions.ReplaceRegister:
+      return replaceRegister(state, action.payload)
     case ProjectActions.SetActiveVersion:
       return setActiveVersion(state, action.payload)
     case ProjectActions.SetDatapoint:
