@@ -60,11 +60,17 @@ const parseFile = ({
         register,
         versions: [...project.datasets[datasetID].versions, version],
       }
-      const saved = await saveRegister({ data, datasetID, researcherID })
 
-      console.log('save register to the server here')
+      const nextRegister = await saveRegister({ data, datasetID, researcherID })
 
-      if (saved) {
+      if (nextRegister) {
+        projectDispatch({
+          type: ProjectActions.ReplaceRegister,
+          payload: {
+            datasetID,
+            register: nextRegister,
+          },
+        })
         projectDispatch({
           type: ProjectActions.SetRegisterStatus,
           payload: { datasetID, status: RegisterStatus.Saved },

@@ -25,7 +25,9 @@ const saveRegister = async ({
 
   if (!response || !response.ok) return null
 
-  return true
+  const register = (await response.json()) as Register
+
+  return register
 }
 
 export default saveRegister
