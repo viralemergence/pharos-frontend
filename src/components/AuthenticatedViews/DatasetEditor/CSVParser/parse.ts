@@ -33,12 +33,12 @@ const parseFile = ({
         payload: { datasetID, status: RegisterStatus.Saving },
       })
 
+      // create a version
       const version = {
         date: String(new Date().toUTCString()),
         name: String(new Date().toUTCString()),
       }
 
-      // create a version
       projectDispatch({
         type: ProjectActions.CreateVersion,
         payload: {
@@ -50,9 +50,29 @@ const parseFile = ({
       // need to parse the rows into the reigster
       const rows = results.data as Rows
 
-      // used for saving the register
+      // used for saving to the register
       const researcherID = user.data?.researcherID
       if (!researcherID) throw new Error('User data not found')
+
+      for (const row in rows) {
+        const recordID = row['sampleID']
+
+        for (const [datapointID, value] of row) {
+          projectDispatch({
+            type: ProjectActions.SetDatapoint,
+            payload: {
+              datasetID,
+              recordID,
+              datapointID,
+              datapoint: {
+                displayValue: value,
+                dataValue: value,
+                modifiedBy: researcherID,
+              },
+            },
+          })
+        }
+      }
 
       const register = {}
 
