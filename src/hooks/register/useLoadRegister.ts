@@ -6,6 +6,7 @@ import useDataset from 'hooks/dataset/useDataset'
 import loadRegister from 'api/loadRegister'
 import { RegisterStatus } from 'reducers/projectReducer/types'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
+import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 
 const useLoadRegister = () => {
   console.log('useLoadRegister')
@@ -34,32 +35,40 @@ const useLoadRegister = () => {
       // this might need to change in a multi-user context
       if (register && Object.keys(register).length !== 0) return null
 
-      const registerData = await loadRegister({
+      const nextRegisterData = await loadRegister({
         researcherID: user.data.researcherID,
         datasetID,
       })
 
       console.log('LOAD REGISTER')
-      console.log(registerData)
+      console.log(nextRegisterData)
 
       // once this is working, this is
       // how we'll load it in to state
 
-      // if (registerData) {
-      //   projectDispatch({
-      //     type: ProjectActions.ReplaceRegister,
-      //     payload: { datasetID, register: registerData },
-      //   })
-      //   projectDispatch({
-      //     type: ProjectActions.SetRegisterStatus,
-      //     payload: { datasetID, status: RegisterStatus.Loaded },
-      //   })
-      // } else {
-      //   projectDispatch({
-      //     type: ProjectActions.SetRegisterStatus,
-      //     payload: { datasetID, status: RegisterStatus.Error },
-      //   })
-      // }
+      if (nextRegisterData) {
+        const { register, versions } = nextRegisterData
+
+        projectDispatch({
+          type: ProjectActions.ReplaceRegister,
+          payload: { datasetID, register },
+        })
+
+        projectDispatch({
+          type: ProjectActions.SetVersions,
+          payload: { datasetID, versions },
+        })
+
+        projectDispatch({
+          type: ProjectActions.SetRegisterStatus,
+          payload: { datasetID, status: RegisterStatus.Loaded },
+        })
+      } else {
+        projectDispatch({
+          type: ProjectActions.SetRegisterStatus,
+          payload: { datasetID, status: RegisterStatus.Error },
+        })
+      }
     }
 
     requestRegister()
