@@ -20,69 +20,39 @@ export interface SetDatapointAction {
 const setDatapoint: ActionFunction<SetDatapointPayload> = (
   state,
   payload
-  // I'm specifying a return type here to get
-  // errors if the return types aren't Projects
 ): Project => {
-  console.log(payload.recordID)
-  console.log(payload.datapointID)
-
   const emptyDatapoint = { displayValue: '', dataValue: '', version: '0' }
 
-  const dataset = state.datasets[payload.datasetID]
-  const prevRecord = dataset.register?.[payload.recordID] ?? {}
+  const prevDataset = state.datasets[payload.datasetID]
+
+  // get the previous record, if it's undefined make a new record
+  const prevRecord = prevDataset.register?.[payload.recordID] ?? {}
+
+  // get the previous datapoint, if it's undefined return an empty datapoint
   const prevDatapoint = prevRecord[payload.datapointID] ?? emptyDatapoint
 
-  let nextDatapoint: Datapoint
+  // next datapoint is all the previous, overwritten with the values from the payload
+  const nextDatapoint = { ...prevDatapoint, ...payload.datapoint }
 
-  switch (true) {
-    case prevDatapoint === undefined:
-      console.log('CREATING DATAPOINT')
-      nextDatapoint = {
-        ...payload.datapoint,
-        version: '0',
-      }
-      break
-
-    case dataset.versions.length > Number(prevDatapoint.version):
-      console.log(
-        `versions: ${dataset.versions.length}, prevDatapoint version: ${prevDatapoint.version}`
-      )
-      nextDatapoint = {
-        ...prevDatapoint,
-        ...payload.datapoint,
-        // need to remember to increment version
-        // version: String(Number(prevDatapoint.version) + 1),
-        version: String(dataset.versions.length + 1),
-        previous: prevDatapoint,
-      }
-      break
-
-    default:
-      console.log('DEFAULT: update datapoint in place')
-      nextDatapoint = {
-        ...prevDatapoint,
-        ...payload.datapoint,
-      }
-      break
+  // if the previous datapoint is in a saved version
+  if (prevDataset.versions.length > Number(prevDatapoint.version)) {
+    // set next datapoint to one version after the current highest
+    nextDatapoint.version = String(prevDataset.versions.length + 1)
+    // set the previous version into the linked list
+    nextDatapoint.previous = prevDatapoint
   }
+
   return {
     ...state,
     datasets: {
       ...state.datasets,
       [payload.datasetID]: {
-        ...state.datasets[payload.datasetID],
-        // need to go in to the register
+        ...prevDataset,
         register: {
-          ...dataset.register,
+          ...prevDataset.register,
           [payload.recordID]: {
-            ...dataset.register?.[payload.recordID],
+            ...prevRecord,
             [payload.datapointID]: {
-              // we have to give all required keys
-              // default values so it's impossible
-              // to create datapoints without them
-              //displayValue: '',
-              // dataValue: '',
-              //version: dataset.activeVersion,
               ...nextDatapoint,
             },
           },
@@ -91,90 +61,5 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
     },
   }
 }
-
-// if (prevDatapoint) {
-
-//   nextDatapoint = {
-//     displayValue: '',
-//     dataValue: '',
-//     version: 0,
-//     ...payload.datapoint,
-//   }
-
-// if (dataset.versions.length >= prevDatapoint.version)
-//   nextDatapoint = {
-//     ...prevDatapoint,
-//     ...payload.datapoint,
-//     previous: prevDatapoint,
-//   }
-
-// if (dataset.versions.length >= prevDatapoint.version)
-//   nextDatapoint = {
-//     ...prevDatapoint,
-//     ...payload.datapoint,
-//     previous: prevDatapoint,
-//   }
-
-// Datapoint does not exist -> create datapoint
-// if (payload.datapoint.version === undefined)
-//   return {
-//     ...state,
-//     datasets: {
-//       ...state.datasets,
-//       [payload.datasetID]: {
-//         ...state.datasets[payload.datasetID],
-//         // need to go in to the register
-//         register: {
-//           ...state.datasets[payload.datasetID].register,
-//           [payload.recordID]: {
-//             ...state.datasets[payload.datasetID].register[payload.recordID],
-//             [payload.datapointID]: {
-//               // we have to give all required keys
-//               // default values so it's impossible
-//               // to create datapoints without them
-//               displayValue: '',
-//               dataValue: '',
-//               version: state.datasets[payload.datasetID].activeVersion,
-//               ...payload.datapoint,
-//             },
-//           },
-//         },
-//       },
-//     },
-//   }
-
-// if (
-//   // Datapoint exists and has not been edited
-//   state.datasets[payload.datasetID].versions.length >=
-//   payload.datapoint.version
-// ) {
-//   return {
-//     ...state,
-//     datasets: {
-//       ...state.datasets,
-//       [payload.datasetID]: {
-//         ...state.datasets[payload.datasetID],
-//         [payload.recordID]: {
-//           ...state.datasets[payload.datasetID].register[payload.recordID],
-//           [payload.datapointID]: {
-//             ...state.datasets[payload.datasetID].register[payload.recordID][
-//               payload.datapointID
-//             ],
-//             dataValue: payload.datapoint,
-//             version: state.datasets[payload.datasetID].activeVersion,
-//             previous:
-//               state.datasets[payload.datasetID].register[payload.recordID][
-//                 payload.datapointID
-//               ],
-//           },
-//         },
-//       },
-//     },
-//   }
-// } else {
-// Datapoint exists and has been edited but not saves
-
-//   }
-// }
 
 export default setDatapoint
