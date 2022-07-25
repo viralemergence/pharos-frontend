@@ -6,7 +6,6 @@ import useDataset from 'hooks/dataset/useDataset'
 import loadRegister from 'api/loadRegister'
 import { RegisterStatus } from 'reducers/projectReducer/types'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
-import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 
 const useLoadRegister = () => {
   console.log('useLoadRegister')
@@ -22,6 +21,8 @@ const useLoadRegister = () => {
       if (
         // if user data is undefined we can't check
         !user.data?.researcherID ||
+        // can't check if datasetID is empty
+        datasetID === '' ||
         // if register is loaded we don't need to check
         registerStatus === RegisterStatus.Loaded
       ) {
