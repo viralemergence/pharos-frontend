@@ -11,6 +11,8 @@ const SimpleFormatter = ({
 
   datapoint = datapoint as Datapoint
 
+  if (!datapoint) return <></>
+
   let backgroundColor: string
   switch (true) {
     case Number(datapoint.version) > versions.length:
