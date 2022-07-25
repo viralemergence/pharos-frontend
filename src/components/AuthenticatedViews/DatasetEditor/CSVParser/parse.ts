@@ -1,29 +1,23 @@
-import saveRegister from 'api/saveRegister'
-import { User } from 'components/Login/UserContextProvider'
 import Papa from 'papaparse'
+
 import {
   ProjectAction,
   ProjectActions,
 } from 'reducers/projectReducer/projectReducer'
-import { Project, RegisterStatus } from 'reducers/projectReducer/types'
+
+import { User } from 'components/Login/UserContextProvider'
+import { RegisterStatus } from 'reducers/projectReducer/types'
 
 export type Rows = { [key: string]: string }[]
 
 interface ParseFile {
   file: File
   user: User
-  project: Project
   datasetID: string
   projectDispatch: React.Dispatch<ProjectAction>
 }
 
-const parseFile = ({
-  file,
-  user,
-  project,
-  datasetID,
-  projectDispatch,
-}: ParseFile) => {
+const parseFile = ({ file, user, datasetID, projectDispatch }: ParseFile) => {
   Papa.parse(file, {
     header: true,
     complete: async results => {
