@@ -26,11 +26,11 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
   console.log(payload.recordID)
   console.log(payload.datapointID)
 
-  const prevDatapoint = state.datasets[payload.datasetID].register?.[
-    payload.recordID
-  ][payload.datapointID] ?? { displayValue: '', dataValue: '', version: '0' }
+  const emptyDatapoint = { displayValue: '', dataValue: '', version: '0' }
 
   const dataset = state.datasets[payload.datasetID]
+  const prevRecord = dataset.register?.[payload.recordID] ?? {}
+  const prevDatapoint = prevRecord[payload.datapointID] ?? emptyDatapoint
 
   let nextDatapoint: Datapoint
 
