@@ -19,6 +19,7 @@ import setDatapoint, { SetDatapointAction } from './actions/setDatapoint'
 import replaceRegister, {
   ReplaceRegisterAction,
 } from './actions/replaceRegister'
+import setVersions, { SetVersionsAction } from './actions/SetVersions'
 
 // reducer actions
 export enum ProjectActions {
@@ -29,6 +30,7 @@ export enum ProjectActions {
 
   // allows the user to select past versions
   SetActiveVersion,
+  SetVersions,
 
   // create new dataset this is where we set up
   // the register and prepare it for records
@@ -97,6 +99,7 @@ export type ProjectAction =
   // versions
   | CreateVersionAction
   | SetActiveVersionAction
+  | SetVersionsAction
   // datapoint
   | SetDatapointAction
 
@@ -115,6 +118,8 @@ const projectReducer = (state: Project, action: ProjectAction) => {
       return setDatasetStatus(state, action.payload)
     case ProjectActions.CreateVersion:
       return createVersion(state, action.payload)
+    case ProjectActions.SetVersions:
+      return setVersions(state, action.payload)
     case ProjectActions.SetRegisterStatus:
       return setRegisterStatus(state, action.payload)
     case ProjectActions.ReplaceRegister:
