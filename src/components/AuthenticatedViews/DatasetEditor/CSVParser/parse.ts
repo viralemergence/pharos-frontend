@@ -30,7 +30,7 @@ const parseFile = ({
       // set the register status to saving
       projectDispatch({
         type: ProjectActions.SetRegisterStatus,
-        payload: { datasetID, status: RegisterStatus.Saving },
+        payload: { datasetID, status: RegisterStatus.Unsaved },
       })
 
       // create a version
@@ -54,10 +54,17 @@ const parseFile = ({
       const researcherID = user.data?.researcherID
       if (!researcherID) throw new Error('User data not found')
 
+      // iterate over all the rows returned from Papa.parse
       for (const row of rows) {
+        // we'll just decide that the samepleID is the
+        // ID column for the dataset for now, this will
+        // need to be more flexible later but we just
+        // need to get it working at the moment
         const recordID = row['sampleID']
 
+        // iterate over every column in the row
         for (const [datapointID, value] of Object.entries(row)) {
+          // dispatch SetDatapoint for each cell in the row
           projectDispatch({
             type: ProjectActions.SetDatapoint,
             payload: {
@@ -74,42 +81,46 @@ const parseFile = ({
         }
       }
 
-      const register = {}
+      // doing this here will cause async issues...
+      // For now it might just be fine to requrie the user
+      // to hit the save button themselves
 
-      const data = {
-        register,
-        versions: [...project.datasets[datasetID].versions, version],
-      }
+      // const register = {}
 
-      const nextRegisterData = await saveRegister({
-        data,
-        datasetID,
-        researcherID,
-      })
+      // const data = {
+      //   register,
+      //   versions: [...project.datasets[datasetID].versions, version],
+      // }
 
-      if (nextRegisterData) {
-        const { register, versions } = nextRegisterData
+      // const nextRegisterData = await saveRegister({
+      //   data,
+      //   datasetID,
+      //   researcherID,
+      // })
 
-        projectDispatch({
-          type: ProjectActions.ReplaceRegister,
-          payload: { datasetID, register },
-        })
+      // if (nextRegisterData) {
+      //   const { register, versions } = nextRegisterData
 
-        projectDispatch({
-          type: ProjectActions.SetVersions,
-          payload: { datasetID, versions },
-        })
+      //   projectDispatch({
+      //     type: ProjectActions.ReplaceRegister,
+      //     payload: { datasetID, register },
+      //   })
 
-        projectDispatch({
-          type: ProjectActions.SetRegisterStatus,
-          payload: { datasetID, status: RegisterStatus.Loaded },
-        })
-      } else {
-        projectDispatch({
-          type: ProjectActions.SetRegisterStatus,
-          payload: { datasetID, status: RegisterStatus.Error },
-        })
-      }
+      //   projectDispatch({
+      //     type: ProjectActions.SetVersions,
+      //     payload: { datasetID, versions },
+      //   })
+
+      //   projectDispatch({
+      //     type: ProjectActions.SetRegisterStatus,
+      //     payload: { datasetID, status: RegisterStatus.Loaded },
+      //   })
+      // } else {
+      //   projectDispatch({
+      //     type: ProjectActions.SetRegisterStatus,
+      //     payload: { datasetID, status: RegisterStatus.Error },
+      //   })
+      // }
     },
   })
 }
