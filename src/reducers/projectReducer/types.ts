@@ -177,6 +177,7 @@ export enum RegisterStatus {
   Saved,
   Error,
   Loading,
+  Loaded,
 }
 
 export enum ReportScore {
