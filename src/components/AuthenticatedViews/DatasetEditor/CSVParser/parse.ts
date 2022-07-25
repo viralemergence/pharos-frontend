@@ -60,7 +60,7 @@ const parseFile = ({
         // ID column for the dataset for now, this will
         // need to be more flexible later but we just
         // need to get it working at the moment
-        const recordID = row['sampleID']
+        const recordID = row['SampleID']
 
         // iterate over every column in the row
         for (const [datapointID, value] of Object.entries(row)) {
