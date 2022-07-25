@@ -88,14 +88,21 @@ const parseFile = ({
       })
 
       if (nextRegisterData) {
-        const { versions, register } = nextRegisterData
+        const { register, versions } = nextRegisterData
+
         projectDispatch({
           type: ProjectActions.ReplaceRegister,
           payload: { datasetID, register },
         })
+
+        projectDispatch({
+          type: ProjectActions.SetVersions,
+          payload: { datasetID, versions },
+        })
+
         projectDispatch({
           type: ProjectActions.SetRegisterStatus,
-          payload: { datasetID, status: RegisterStatus.Saved },
+          payload: { datasetID, status: RegisterStatus.Loaded },
         })
       } else {
         projectDispatch({
