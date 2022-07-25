@@ -1,12 +1,14 @@
 import { Register, Version } from 'reducers/projectReducer/types'
 
+interface RegisterData {
+  register: Register
+  versions: Version[]
+}
+
 interface SaveRegisterPayload {
   datasetID: string
   researcherID: string
-  data: {
-    register: Register
-    versions: Version[]
-  }
+  data: RegisterData
 }
 
 const saveRegister = async ({
@@ -25,9 +27,9 @@ const saveRegister = async ({
 
   if (!response || !response.ok) return null
 
-  const register = (await response.json()) as Register
+  const registerData = (await response.json()) as RegisterData
 
-  return register
+  return registerData
 }
 
 export default saveRegister
