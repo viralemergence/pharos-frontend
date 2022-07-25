@@ -54,10 +54,10 @@ const parseFile = ({
       const researcherID = user.data?.researcherID
       if (!researcherID) throw new Error('User data not found')
 
-      for (const row in rows) {
+      for (const row of rows) {
         const recordID = row['sampleID']
 
-        for (const [datapointID, value] of row) {
+        for (const [datapointID, value] of Object.entries(row)) {
           projectDispatch({
             type: ProjectActions.SetDatapoint,
             payload: {
