@@ -19,40 +19,33 @@ export interface SetDatapointAction {
 
 const setDatapoint: ActionFunction<SetDatapointPayload> = (
   state,
-  payload
+  { datasetID, recordID, datapointID, datapoint: newData }
 ): Project => {
-  const emptyDatapoint = { displayValue: '', dataValue: '', version: '0' }
-
-  const prevDataset = state.datasets[payload.datasetID]
+  const prevDataset = state.datasets[datasetID]
 
   // get the previous record, if it's undefined make a new record
-  const prevRecord = prevDataset.register?.[payload.recordID] ?? {}
+  const prevRecord = prevDataset.register?.[recordID] ?? {}
 
-  // get the previous datapoint, if it's undefined return an empty datapoint
-  const prevDatapoint = prevRecord[payload.datapointID] ?? emptyDatapoint
+  // version for the new datapoint
+  const version = String(prevDataset.versions.length)
+  const previous = prevRecord[datapointID]
 
-  // next datapoint is all the previous, overwritten with the values from the payload
-  const nextDatapoint = { ...prevDatapoint, ...payload.datapoint }
-
-  // if the previous datapoint is in a saved version
-  if (prevDataset.versions.length > Number(prevDatapoint.version)) {
-    // set next datapoint to one version after the current highest
-    nextDatapoint.version = String(prevDataset.versions.length + 1)
-    // set the previous version into the linked list
-    nextDatapoint.previous = prevDatapoint
-  }
+  // next datapoint is all the previous data, overwritten with
+  // the values from the payload, with the next version number
+  // and the previous datapoint in the previous property
+  const nextDatapoint = { ...previous, ...newData, version, previous }
 
   return {
     ...state,
     datasets: {
       ...state.datasets,
-      [payload.datasetID]: {
+      [datasetID]: {
         ...prevDataset,
         register: {
           ...prevDataset.register,
-          [payload.recordID]: {
+          [recordID]: {
             ...prevRecord,
-            [payload.datapointID]: {
+            [datapointID]: {
               ...nextDatapoint,
             },
           },
