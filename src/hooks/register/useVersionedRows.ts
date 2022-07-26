@@ -21,11 +21,13 @@ const useVersionedRows = () => {
   // if the register is not available, return empty []
   if (!dataset.register) return []
 
+  const version = dataset.activeVersion
+
   // check if version number requested is higher than
   // the length of the versions array; this means we
   // can directly return the array of DataPoints in
   // the register without performing version checks
-  if (dataset.activeVersion >= dataset.versions.length - 1)
+  if (version >= dataset.versions.length - 1) {
     return Object.entries(dataset.register).map(
       ([recordID, record]) =>
         ({
@@ -33,21 +35,23 @@ const useVersionedRows = () => {
           _meta: { recordID },
         } as RecordWithID)
     )
+  }
 
   // else return datapoints that are valid for the target version
-  return Object.entries(dataset.register).map(
-    ([recordID, record]) =>
-      ({
-        ...Object.entries(record).reduce(
-          (rec, [key, datapoint]) => ({
-            ...rec,
-            [key]: getDatapointAtVersion(datapoint, dataset.activeVersion),
-          }),
-          {}
-        ),
-        _meta: { recordID },
-      } as RecordWithID)
-  )
+  return Object.entries(dataset.register).reduce((row, [recordID, record]) => {
+    const datapoints = Object.entries(record).reduce(
+      (rec, [key, datapoint]) => {
+        const versioned = getDatapointAtVersion(datapoint, version)
+        // only set the key if the datapoint exists in that version
+        return { ...rec, ...(versioned && { [key]: versioned }) }
+      },
+      {}
+    )
+    // only create the row if it has datapoints in the given version
+    if (Object.keys(datapoints).length > 0)
+      row.push({ ...datapoints, _meta: { recordID } })
+    return row
+  }, [] as RecordWithID[])
 }
 
 export default useVersionedRows
