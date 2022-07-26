@@ -66,17 +66,11 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
       // insert the datasets by key
       datasetList.forEach((dataset: Dataset) => {
         if (!dataset.datasetID) throw new Error('Dataset missing datasetID')
+
         // set status to saved, because if it's coming from the
         // server than it must be saved on the server by definition
-        console.log('Dataset loaded from server')
-        console.log({ dataset })
-        console.log({ register: dataset.register })
         projectObj.datasets[dataset.datasetID] = {
           ...dataset,
-          // we don't have a way to save the
-          // activeVersion to the server yet
-          // activeVersion: Number(dataset.activeVersion),
-          activeVersion: dataset.versions.length - 1,
           status: DatasetStatus.Saved,
         }
       })
@@ -85,11 +79,6 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
         type: ProjectActions.SetProject,
         payload: { ...projectObj, status: ProjectStatus.Loaded },
       })
-
-      // projectDispatch({
-      //   type: ProjectActions.SetStatus,
-      //   payload: ProjectStatus.Loaded,
-      // })
     }
 
     if (researcherID) getDatasetList(researcherID)

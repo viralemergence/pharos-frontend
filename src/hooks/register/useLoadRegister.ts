@@ -40,12 +40,6 @@ const useLoadRegister = () => {
         datasetID,
       })
 
-      console.log('LOAD REGISTER')
-      console.log(nextRegisterData)
-
-      // once this is working, this is
-      // how we'll load it in to state
-
       if (nextRegisterData) {
         const { register, versions } = nextRegisterData
 
