@@ -97,9 +97,7 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
   if (!editable)
     return (
       <Modal {...{ open, setOpen }}>
-        <h3 style={{ padding: 20 }}>
-          Only the most recent version can be edited
-        </h3>
+        <h3 style={{}}>Only the most recent version can be edited</h3>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <MintButton onClick={() => setOpen(false)}>ok</MintButton>
           <MintButton
