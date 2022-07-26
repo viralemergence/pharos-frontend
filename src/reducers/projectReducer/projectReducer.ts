@@ -20,6 +20,9 @@ import replaceRegister, {
   ReplaceRegisterAction,
 } from './actions/replaceRegister'
 import setVersions, { SetVersionsAction } from './actions/setVersions'
+import batchSetDatapoint, {
+  BatchSetDatapointAction,
+} from './actions/batchSetDatapoint'
 
 // reducer actions
 export enum ProjectActions {
@@ -68,6 +71,7 @@ export enum ProjectActions {
   SetDatapoint,
   SetRegisterKey,
   ReplaceRegister,
+  BatchSetDatapoint,
 }
 
 export const projectInitialValue: Project = {
@@ -102,6 +106,7 @@ export type ProjectAction =
   | SetVersionsAction
   // datapoint
   | SetDatapointAction
+  | BatchSetDatapointAction
 
 export type ActionFunction<T = void> = (state: Project, payload: T) => Project
 
@@ -128,6 +133,8 @@ const projectReducer = (state: Project, action: ProjectAction) => {
       return setActiveVersion(state, action.payload)
     case ProjectActions.SetDatapoint:
       return setDatapoint(state, action.payload)
+    case ProjectActions.BatchSetDatapoint:
+      return batchSetDatapoint(state, action.payload)
     default:
       return state
   }
