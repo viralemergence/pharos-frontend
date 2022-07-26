@@ -21,7 +21,10 @@ const FillDatasetGrid = styled(DataGrid)`
 `
 
 const DatasetGrid = () => {
+  console.time('useVersionedRows')
   const versionedRows = useVersionedRows()
+  console.timeEnd('useVersionedRows')
+
   const registerStatus = useRegisterStatus()
 
   if (registerStatus === RegisterStatus.Loading) return <p>Loading version</p>
