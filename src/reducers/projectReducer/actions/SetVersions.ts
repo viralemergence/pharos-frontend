@@ -18,7 +18,7 @@ const setVersions: ActionFunction<SetVersionsPayload> = (state, payload) => ({
     [payload.datasetID]: {
       ...state.datasets[payload.datasetID],
       versions: payload.versions,
-      activeVersion: payload.versions.length,
+      activeVersion: payload.versions.length - 1,
     },
   },
 })
