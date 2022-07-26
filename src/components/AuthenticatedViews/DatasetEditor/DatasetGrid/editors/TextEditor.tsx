@@ -12,6 +12,9 @@ import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
 import useDatasetID from 'hooks/dataset/useDatasetID'
 import useUser from 'hooks/useUser'
+import useDataset from 'hooks/dataset/useDataset'
+import Modal from 'components/ui/Modal'
+import MintButton from 'components/ui/MintButton'
 
 const TextInput = styled.input`
   appearance: none;
@@ -45,6 +48,7 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
   const user = useUser()
   const datasetID = useDatasetID()
   const projectDispatch = useProjectDispatch()
+  const dataset = useDataset()
 
   const datapoint = row[column.key]
 
@@ -85,6 +89,34 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
   }
 
   console.log('EDITOR Renders')
+
+  const [editable] = useState(
+    dataset.activeVersion === dataset.versions.length - 1
+  )
+  const [open, setOpen] = useState(true)
+  if (!editable)
+    return (
+      <Modal {...{ open, setOpen }}>
+        <h3 style={{ padding: 20 }}>
+          Only the most recent version can be edited
+        </h3>
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <MintButton onClick={() => setOpen(false)}>ok</MintButton>
+          <MintButton
+            style={{ marginLeft: 15 }}
+            secondary
+            onClick={() =>
+              projectDispatch({
+                type: ProjectActions.SetActiveVersion,
+                payload: { datasetID, version: dataset.versions.length - 1 },
+              })
+            }
+          >
+            Go to most recent
+          </MintButton>
+        </div>
+      </Modal>
+    )
 
   return (
     <TextInput
