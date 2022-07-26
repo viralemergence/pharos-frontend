@@ -7,8 +7,7 @@ import {
 
 import { User } from 'components/Login/UserContextProvider'
 import { RegisterStatus } from 'reducers/projectReducer/types'
-
-export type Rows = { [key: string]: string }[]
+import { Rows } from 'reducers/projectReducer/actions/batchSetDatapoint'
 
 interface ParseFile {
   file: File
@@ -41,39 +40,42 @@ const parseFile = ({ file, user, datasetID, projectDispatch }: ParseFile) => {
         },
       })
 
-      // need to parse the rows into the reigster
       const rows = results.data as Rows
 
-      // used for saving to the register
       const researcherID = user.data?.researcherID
       if (!researcherID) throw new Error('User data not found')
 
-      // iterate over all the rows returned from Papa.parse
-      for (const row of rows) {
-        // we'll just decide that the samepleID is the
-        // ID column for the dataset for now, this will
-        // need to be more flexible later but we just
-        // need to get it working at the moment
-        const recordID = row['SampleID']
+      projectDispatch({
+        type: ProjectActions.BatchSetDatapoint,
+        payload: { researcherID, datasetID, recordIDColumn: 'SampleID', rows },
+      })
 
-        // iterate over every column in the row
-        for (const [datapointID, value] of Object.entries(row)) {
-          // dispatch SetDatapoint for each cell in the row
-          projectDispatch({
-            type: ProjectActions.SetDatapoint,
-            payload: {
-              datasetID,
-              recordID,
-              datapointID,
-              datapoint: {
-                displayValue: value,
-                dataValue: value,
-                modifiedBy: researcherID,
-              },
-            },
-          })
-        }
-      }
+      // // iterate over all the rows returned from Papa.parse
+      // for (const row of rows) {
+      //   // we'll just decide that the samepleID is the
+      //   // ID column for the dataset for now, this will
+      //   // need to be more flexible later but we just
+      //   // need to get it working at the moment
+      //   const recordID = row['SampleID']
+
+      //   // iterate over every column in the row
+      //   for (const [datapointID, value] of Object.entries(row)) {
+      //     // dispatch SetDatapoint for each cell in the row
+      //     projectDispatch({
+      //       type: ProjectActions.SetDatapoint,
+      //       payload: {
+      //         datasetID,
+      //         recordID,
+      //         datapointID,
+      //         datapoint: {
+      //           displayValue: value,
+      //           dataValue: value,
+      //           modifiedBy: researcherID,
+      //         },
+      //       },
+      //     })
+      //   }
+      // }
 
       // doing this here will cause async issues...
       // For now it might just be fine to requrie the user
