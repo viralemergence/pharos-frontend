@@ -4,10 +4,11 @@ import { Datapoint, RecordWithID } from 'reducers/projectReducer/types'
 // recursively traverse the linked list until the
 // version number is satisfied for a given datapoint
 const getDatapointAtVersion = (
-  datapoint: Datapoint,
+  datapoint: Datapoint | undefined,
   version: number
-): Datapoint => {
-  if (Number(datapoint.version) > version && datapoint.previous)
+): Datapoint | undefined => {
+  if (!datapoint) return undefined
+  if (Number(datapoint.version) > version)
     return getDatapointAtVersion(datapoint.previous, version)
   return datapoint
 }
