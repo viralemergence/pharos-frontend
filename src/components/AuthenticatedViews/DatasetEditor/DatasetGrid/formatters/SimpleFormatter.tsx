@@ -15,7 +15,7 @@ const SimpleFormatter = ({
 
   let backgroundColor: string
   switch (true) {
-    case Number(datapoint.version) > versions.length:
+    case Number(datapoint.version) >= versions.length:
       backgroundColor = 'orange'
       break
     default:
