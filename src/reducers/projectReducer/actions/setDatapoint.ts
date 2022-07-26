@@ -30,7 +30,7 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
   const version = String(prevDataset.versions.length)
   const previous = prevRecord[datapointID]
 
-  if (previous.displayValue === newData.displayValue) return state
+  if (previous?.displayValue === newData.displayValue) return state
 
   // next datapoint is all the previous data, overwritten with
   // the values from the payload, with the next version number
