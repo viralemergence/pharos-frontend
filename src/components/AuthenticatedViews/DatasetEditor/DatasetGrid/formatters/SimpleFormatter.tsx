@@ -55,7 +55,9 @@ const SimpleFormatter = ({
     <CellContainer style={{ backgroundColor }}>
       <span>{datapoint.displayValue}</span>
       <ExpandButton onClick={() => setOpen(true)}>+</ExpandButton>
-      <SimpleCellModal {...{ datapoint, open, setOpen }} />
+      <SimpleCellModal
+        {...{ datapointID: column.key, datapoint, open, setOpen }}
+      />
     </CellContainer>
   )
 }

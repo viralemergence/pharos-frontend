@@ -4,6 +4,7 @@ import { Datapoint } from 'reducers/projectReducer/types'
 import styled from 'styled-components'
 
 interface SimpleCellModalProps {
+  datapointID: string
   datapoint: Datapoint
   open: boolean
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -22,17 +23,32 @@ const SectionHeader = styled.h2`
 `
 const Data = styled.div`
   flex-basis: 50%;
-  padding: 10px;
+  padding: 0 10px;
 `
 const History = styled.div`
   flex-basis: 50%;
   border-left: 1px solid ${({ theme }) => theme.medGray};
   padding: 0px 10px;
+  padding-left: 30px;
 `
 const Instructions = styled.div`
   margin-top: 15px;
   border-top: 1px solid ${({ theme }) => theme.medGray};
   padding-top: 15px;
+`
+const HistoryName = styled.div`
+  ${({ theme }) => theme.smallParagraph};
+  color: ${({ theme }) => theme.black};
+`
+const HistoryModified = styled.div`
+  ${({ theme }) => theme.extraSmallParagraph};
+  color: ${({ theme }) => theme.darkGray};
+`
+const HistoryBlock = styled.div`
+  margin-left: 15px;
+  border-left: 1px solid ${({ theme }) => theme.medGray};
+  padding-left: 10px;
+  margin-bottom: 15px;
 `
 
 const getDatapointHistory = (
@@ -45,6 +61,7 @@ const getDatapointHistory = (
 }
 
 const SimpleCellModal = ({
+  datapointID,
   datapoint,
   open,
   setOpen,
@@ -57,7 +74,7 @@ const SimpleCellModal = ({
     <Modal closeable {...{ open, setOpen }}>
       <Container>
         <Data>
-          <SectionHeader>Value</SectionHeader>
+          <SectionHeader>{datapointID}</SectionHeader>
           <label>{datapoint.displayValue}</label>
           <Instructions>
             <SectionHeader>Directions</SectionHeader>
@@ -67,13 +84,13 @@ const SimpleCellModal = ({
           <SectionHeader>History</SectionHeader>
           {history &&
             history.map(datapoint => (
-              <div
-                key={datapoint.version}
-                style={{ border: '1px solid', padding: 5, margin: 5 }}
-              >
-                <div>Value: {datapoint.displayValue}</div>
-                <div>Version: {datapoint.version}</div>
-                <div>Last Updated by: {datapoint.modifiedBy}</div>
+              <div key={datapoint.version}>
+                <HistoryName>{datapoint.modifiedBy}</HistoryName>
+                <HistoryModified>version {datapoint.version}</HistoryModified>
+                <HistoryBlock>
+                  <HistoryModified>{datapointID}</HistoryModified>
+                  <HistoryName>{datapoint.displayValue}</HistoryName>
+                </HistoryBlock>
               </div>
             ))}
         </History>
