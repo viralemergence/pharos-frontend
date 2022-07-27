@@ -40,7 +40,9 @@ const useLoadRegister = () => {
         // can't check if datasetID is empty
         datasetID === '' ||
         // if register is loaded we don't need to check
-        registerStatus === RegisterStatus.Loaded
+        registerStatus === RegisterStatus.Loaded ||
+        // if register is in an error state, don't retry
+        dataset.registerStatus === RegisterStatus.Error
       ) {
         console.log('short circuit')
         return null
