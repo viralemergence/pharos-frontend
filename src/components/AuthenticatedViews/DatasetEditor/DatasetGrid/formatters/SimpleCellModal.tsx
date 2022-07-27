@@ -11,14 +11,28 @@ interface SimpleCellModalProps {
 
 const Container = styled.div`
   display: flex;
-  min-width: 400px;
+  min-width: 650px;
   min-height: 300px;
+  padding: 15px;
+`
+const SectionHeader = styled.h2`
+  ${({ theme }) => theme.extraSmallParagraph};
+  color: ${({ theme }) => theme.darkGray};
+  margin: 0;
 `
 const Data = styled.div`
   flex-basis: 50%;
+  padding: 10px;
 `
 const History = styled.div`
   flex-basis: 50%;
+  border-left: 1px solid ${({ theme }) => theme.medGray};
+  padding: 0px 10px;
+`
+const Instructions = styled.div`
+  margin-top: 15px;
+  border-top: 1px solid ${({ theme }) => theme.medGray};
+  padding-top: 15px;
 `
 
 const getDatapointHistory = (
@@ -43,11 +57,14 @@ const SimpleCellModal = ({
     <Modal closeable {...{ open, setOpen }}>
       <Container>
         <Data>
-          <h5>Value</h5>
+          <SectionHeader>Value</SectionHeader>
           <label>{datapoint.displayValue}</label>
+          <Instructions>
+            <SectionHeader>Directions</SectionHeader>
+          </Instructions>
         </Data>
         <History>
-          <h5>History</h5>
+          <SectionHeader>History</SectionHeader>
           {history &&
             history.map(datapoint => (
               <div
