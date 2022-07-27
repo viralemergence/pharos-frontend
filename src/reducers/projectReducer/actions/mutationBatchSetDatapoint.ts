@@ -1,5 +1,5 @@
 import { ActionFunction, ProjectActions } from '../projectReducer'
-import { Project, Register } from '../types'
+import { Project } from '../types'
 
 export type Rows = { [key: string]: string }[]
 
