@@ -35,7 +35,12 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
   // next datapoint is all the previous data, overwritten with
   // the values from the payload, with the next version number
   // and the previous datapoint in the previous property
-  const nextDatapoint = { ...previous, ...newData, version, previous }
+  const nextDatapoint = {
+    ...previous,
+    ...newData,
+    version,
+    ...(version !== previous.version && { previous }),
+  }
 
   return {
     ...state,
