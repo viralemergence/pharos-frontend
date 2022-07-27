@@ -83,7 +83,6 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault()
-      console.log('enter key')
       dispatchValue()
     }
   }
@@ -91,7 +90,8 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
   console.log('EDITOR Renders')
 
   const [editable] = useState(
-    dataset.activeVersion === dataset.versions.length - 1
+    dataset.activeVersion === dataset.versions.length - 1 ||
+      dataset.versions.length === 0
   )
   const [open, setOpen] = useState(true)
   if (!editable)
