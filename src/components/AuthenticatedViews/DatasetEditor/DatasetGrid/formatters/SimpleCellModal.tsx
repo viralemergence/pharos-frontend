@@ -26,9 +26,7 @@ const getDatapointHistory = (
   history: Datapoint[] = []
 ): Datapoint[] => {
   history = [...history, datapoint]
-  if (!datapoint.previous)
-    // || Object.keys(datapoint.previous).length > 0)
-    return history
+  if (!datapoint.previous) return history
   return getDatapointHistory(datapoint.previous, history)
 }
 
