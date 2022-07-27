@@ -1,8 +1,5 @@
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import { useNavigate } from 'react-router-dom'
-
-import { ProjectStatus } from 'reducers/projectReducer/types'
 
 import MainGrid from 'components/layout/MainGrid'
 import Sidebar from 'components/Sidebar/Sidebar'
@@ -11,7 +8,6 @@ import CSVParser from './CSVParser/CSVParser'
 import DatasetGrid from './DatasetGrid/DatasetsGrid'
 import { Content, TopBar } from '../ViewComponents'
 
-import useProject from 'hooks/project/useProject'
 import UpdateButton from './UpdateButton/UpdateButton'
 
 import useDataset from 'hooks/dataset/useDataset'
@@ -31,11 +27,6 @@ const H2 = styled.h2`
 `
 
 const DatasetEditor = () => {
-  const navigate = useNavigate()
-  const project = useProject()
-
-  console.log({ project })
-
   const dataset = useDataset()
   const datasetStatusMessage = useDatasetStatusMessage()
 
@@ -43,10 +34,7 @@ const DatasetEditor = () => {
   // and as long as the dataset has a registerKey
   useLoadRegister()
 
-  // handle case where the page loads on a dataset that doesn't exist
-  useEffect(() => {
-    if (project.status === ProjectStatus.Loaded && !dataset) navigate('/')
-  }, [project.status, dataset, navigate])
+  console.log({ dataset })
 
   return (
     <MainGrid>

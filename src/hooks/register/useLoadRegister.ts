@@ -1,23 +1,38 @@
 import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import useUser from 'hooks/useUser'
 import useDataset from 'hooks/dataset/useDataset'
+import useProject from 'hooks/project/useProject'
+import useProjectDispatch from 'hooks/project/useProjectDispatch'
+
+import {
+  DatasetStatus,
+  ProjectStatus,
+  RegisterStatus,
+} from 'reducers/projectReducer/types'
+import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 
 import loadRegister from 'api/loadRegister'
-import { RegisterStatus } from 'reducers/projectReducer/types'
-import useProjectDispatch from 'hooks/project/useProjectDispatch'
-import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 
 const useLoadRegister = () => {
   console.log('useLoadRegister')
   const user = useUser()
   const dataset = useDataset()
+  const navigate = useNavigate()
+  const project = useProject()
   const projectDispatch = useProjectDispatch()
 
   const { datasetID, register, registerStatus } = dataset
 
   useEffect(() => {
-    console.log('useLoadRegister useEffect')
+    // handle case where the page loads on a dataset that doesn't exist
+    if (
+      project.status === ProjectStatus.Loaded &&
+      dataset.status === DatasetStatus.Loading
+    )
+      navigate('/')
+
     const requestRegister = async () => {
       if (
         // if user data is undefined we can't check
@@ -67,10 +82,13 @@ const useLoadRegister = () => {
 
     requestRegister()
   }, [
-    projectDispatch,
-    datasetID,
+    dataset,
+    navigate,
     register,
+    datasetID,
     registerStatus,
+    project.status,
+    projectDispatch,
     user.data?.researcherID,
   ])
 }
