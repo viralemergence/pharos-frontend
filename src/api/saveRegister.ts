@@ -23,7 +23,7 @@ const saveRegister = async ({
       datasetID,
       data,
     }),
-  })
+  }).catch(e => console.log(e))
 
   if (!response || !response.ok) return null
 
