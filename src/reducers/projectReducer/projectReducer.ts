@@ -19,7 +19,7 @@ import setDatapoint, { SetDatapointAction } from './actions/setDatapoint'
 import replaceRegister, {
   ReplaceRegisterAction,
 } from './actions/replaceRegister'
-import setVersions, { SetVersionsAction } from './actions/setVersions'
+import setVersions, { SetVersionsAction } from './actions/ssetVersions'
 import batchSetDatapoint, {
   BatchSetDatapointAction,
 } from './actions/mutationBatchSetDatapoint'
