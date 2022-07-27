@@ -39,7 +39,7 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
     ...previous,
     ...newData,
     version,
-    ...(version !== previous.version && { previous }),
+    ...(version !== previous?.version && { previous }),
   }
 
   return {

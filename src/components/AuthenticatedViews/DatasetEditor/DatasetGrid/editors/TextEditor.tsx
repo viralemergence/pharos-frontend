@@ -53,7 +53,7 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
   const datapoint = row[column.key]
 
   const [editValue, setEditValue] = useState(
-    (datapoint as Datapoint).displayValue
+    (datapoint as Datapoint)?.displayValue ?? ''
   )
 
   const dispatchValue = () => {
