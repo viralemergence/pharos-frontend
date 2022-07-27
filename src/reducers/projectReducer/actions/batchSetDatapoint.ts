@@ -21,6 +21,7 @@ const batchSetDatapoint: ActionFunction<BatchSetDatapointPayload> = (
   { datasetID, researcherID, recordIDColumn, rows }
 ): Project => {
   let nextState = state
+  console.time('batchSetDatapoint')
 
   for (const row of rows) {
     const recordID = row[recordIDColumn]
@@ -39,6 +40,7 @@ const batchSetDatapoint: ActionFunction<BatchSetDatapointPayload> = (
     }
   }
 
+  console.timeEnd('batchSetDatapoint')
   return nextState
 }
 
