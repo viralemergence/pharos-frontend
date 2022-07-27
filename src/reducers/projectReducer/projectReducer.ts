@@ -22,7 +22,7 @@ import replaceRegister, {
 import setVersions, { SetVersionsAction } from './actions/setVersions'
 import batchSetDatapoint, {
   BatchSetDatapointAction,
-} from './actions/batchSetDatapoint'
+} from './actions/mutationBatchSetDatapoint'
 
 // reducer actions
 export enum ProjectActions {
