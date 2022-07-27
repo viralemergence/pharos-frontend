@@ -74,16 +74,25 @@ const CreateDatasetForm = () => {
       activeVersion: 0,
       register: {
         exampleRecordID: {
-          DetectionID: { displayValue: 'test', dataValue: '1', version: '0' },
           SampleID: { displayValue: '', dataValue: '', version: '0' },
-          DetectionMethod: { displayValue: '', dataValue: '', version: '0' },
-          DetectionOutcome: { displayValue: '', dataValue: '', version: '0' },
-          DetectionComments: { displayValue: '', dataValue: '', version: '0' },
-          PathogenTaxID: { displayValue: '', dataValue: '', version: '0' },
-          GenbankAccession: { displayValue: '', dataValue: '', version: '0' },
-          SRAAccession: { displayValue: '', dataValue: '', version: '0' },
-          GISAIDAccession: { displayValue: '', dataValue: '', version: '0' },
-          GBIFIdentifier: { displayValue: '', dataValue: '', version: '0' },
+          'Detection ID': { displayValue: '', dataValue: '', version: '0' },
+          'Organism Nickname': {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+          },
+          'Detection Method': { displayValue: '', dataValue: '', version: '0' },
+          'Detection Outcome': {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+          },
+          'Pathogen TaxID': { displayValue: '', dataValue: '', version: '0' },
+          'Detection Comments': {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+          },
         },
       },
     }
