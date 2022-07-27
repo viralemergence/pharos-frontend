@@ -11,7 +11,10 @@ import projectReducer, {
 import useUser from 'hooks/useUser'
 import listDatasets from 'api/listDatasets'
 
-type ProjectContextValue = [Project, React.Dispatch<ProjectAction>]
+type ProjectContextValue = {
+  project: Project
+  projectDispatch: React.Dispatch<ProjectAction>
+}
 
 interface ProjectContextProviderProps {
   children: React.ReactNode
@@ -20,7 +23,7 @@ interface ProjectContextProviderProps {
 export const ProjectContext = createContext<ProjectContextValue | null>(null)
 
 const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
-  const [user] = useUser()
+  const user = useUser()
   const researcherID = user.data?.researcherID
 
   const [project, projectDispatch] = useReducer(
@@ -33,7 +36,7 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
     const getDatasetList = async (researcherID: string) => {
       // set status to loading
       projectDispatch({
-        type: ProjectActions.SetStatus,
+        type: ProjectActions.SetProjectStatus,
         payload: ProjectStatus.Loading,
       })
 
@@ -42,7 +45,7 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
 
       if (!datasetList) {
         projectDispatch({
-          type: ProjectActions.SetStatus,
+          type: ProjectActions.SetProjectStatus,
           payload: ProjectStatus.NetworkError,
         })
         return null
@@ -63,14 +66,11 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
       // insert the datasets by key
       datasetList.forEach((dataset: Dataset) => {
         if (!dataset.datasetID) throw new Error('Dataset missing datasetID')
+
         // set status to saved, because if it's coming from the
         // server than it must be saved on the server by definition
         projectObj.datasets[dataset.datasetID] = {
           ...dataset,
-          // we don't have a way to save the
-          // activeVersion to the server yet
-          // activeVersion: Number(dataset.activeVersion),
-          activeVersion: dataset.versions.length - 1,
           status: DatasetStatus.Saved,
         }
       })
@@ -79,18 +79,13 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
         type: ProjectActions.SetProject,
         payload: { ...projectObj, status: ProjectStatus.Loaded },
       })
-
-      // projectDispatch({
-      //   type: ProjectActions.SetStatus,
-      //   payload: ProjectStatus.Loaded,
-      // })
     }
 
     if (researcherID) getDatasetList(researcherID)
   }, [researcherID])
 
   return (
-    <ProjectContext.Provider value={[project, projectDispatch]}>
+    <ProjectContext.Provider value={{ project, projectDispatch }}>
       {children}
     </ProjectContext.Provider>
   )

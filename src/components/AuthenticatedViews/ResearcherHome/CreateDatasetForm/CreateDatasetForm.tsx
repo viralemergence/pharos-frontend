@@ -10,9 +10,10 @@ import Label from 'components/ui/InputLabel'
 import Input from 'components/ui/Input'
 
 import useUser from 'hooks/useUser'
-import useProject from 'hooks/useProject'
+import useProject from 'hooks/project/useProject'
 
 import saveDataset from 'api/saveDataset'
+import useProjectDispatch from 'hooks/project/useProjectDispatch'
 
 const Form = styled.form`
   width: 500px;
@@ -27,8 +28,9 @@ const H1 = styled.h1`
 `
 
 const CreateDatasetForm = () => {
-  const [user] = useUser()
-  const [project, projectDispatch] = useProject()
+  const user = useUser()
+  const project = useProject()
+  const projectDispatch = useProjectDispatch()
 
   const [formMessage, setFormMessage] = useState('')
 
@@ -57,28 +59,48 @@ const CreateDatasetForm = () => {
 
     if (!user.data) throw new Error('User not logged in')
 
-    const payload = {
+    const datasetSaveData = {
       datasetID,
       researcherID: user.data.researcherID,
       name: target.name.value,
       date_collected: target.date_collected.value,
-      status: DatasetStatus.Saving,
       samples_taken: '0',
       detection_run: '0',
-      activeVersion: 0,
       versions: [],
+    }
+
+    const datasetClientData = {
+      status: DatasetStatus.Saving,
+      activeVersion: 0,
+      register: {
+        exampleRecordID: {
+          DetectionID: { displayValue: 'test', dataValue: '1', version: '0' },
+          SampleID: { displayValue: '', dataValue: '', version: '0' },
+          DetectionMethod: { displayValue: '', dataValue: '', version: '0' },
+          DetectionOutcome: { displayValue: '', dataValue: '', version: '0' },
+          DetectionComments: { displayValue: '', dataValue: '', version: '0' },
+          PathogenTaxID: { displayValue: '', dataValue: '', version: '0' },
+          GenbankAccession: { displayValue: '', dataValue: '', version: '0' },
+          SRAAccession: { displayValue: '', dataValue: '', version: '0' },
+          GISAIDAccession: { displayValue: '', dataValue: '', version: '0' },
+          GBIFIdentifier: { displayValue: '', dataValue: '', version: '0' },
+        },
+      },
     }
 
     projectDispatch({
       type: ProjectActions.CreateDataset,
-      payload,
+      payload: {
+        ...datasetSaveData,
+        ...datasetClientData,
+      },
     })
 
     // now that we can handle this, just navigate
     // straight to the dataset directly
     navigate(`/dataset/${datasetID}`)
 
-    const saved = await saveDataset(payload)
+    const saved = await saveDataset(datasetSaveData)
 
     if (saved) {
       projectDispatch({

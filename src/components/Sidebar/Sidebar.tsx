@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
 import useUser from 'hooks/useUser'
-import useProject from 'hooks/useProject'
+import useProject from 'hooks/project/useProject'
 
 const Container = styled.div`
   background-color: ${({ theme }) => theme.darkPurpleWhiter};
@@ -74,8 +74,8 @@ const Dataset = styled.li`
 `
 
 const Sidebar = () => {
-  const [user] = useUser()
-  const [project] = useProject()
+  const user = useUser()
+  const project = useProject()
 
   return (
     <Container>

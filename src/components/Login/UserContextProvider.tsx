@@ -19,7 +19,10 @@ export interface User {
   }
 }
 
-export type UserContext = [User, React.Dispatch<React.SetStateAction<User>>]
+export type UserContext = {
+  user: User
+  setUser: React.Dispatch<React.SetStateAction<User>>
+}
 
 export const UserContext = createContext<UserContext | null>(null)
 
@@ -38,7 +41,7 @@ const UserContextProvider = ({
   const [user, setUser] = useState<User>(defaultUserState)
 
   return (
-    <UserContext.Provider value={[user, setUser]}>
+    <UserContext.Provider value={{ user, setUser }}>
       {children}
     </UserContext.Provider>
   )

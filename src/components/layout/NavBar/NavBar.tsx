@@ -61,7 +61,7 @@ const NavLogo = styled(CMS.Image)`
 const NavBar = () => {
   const data = useIndexPageData()
 
-  const [user] = useUser()
+  const user = useUser()
 
   const links = [
     { to: '/about/', label: 'About' },

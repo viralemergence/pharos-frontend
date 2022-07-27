@@ -4,7 +4,7 @@ import {
   UserContext,
 } from 'components/Login/UserContextProvider'
 
-const useUser = (): UserContext => {
+const useUser = (): UserContext['user'] => {
   const userState = useContext(UserContext)
 
   // userState will be undefined on the build server
@@ -17,7 +17,20 @@ const useUser = (): UserContext => {
   // this is a thing that should not happen.
   if (!userState) throw new Error('User context not found')
 
-  return userState
+  // return the user portion of the state
+  return userState.user
 }
 
 export default useUser
+
+export const useSetUser = (): UserContext['setUser'] => {
+  const userState = useContext(UserContext)
+
+  // setUserState should be null on the build server; calling
+  // this on the build server can lead to rehydration bugs.
+  // @ts-expect-error: Type 'undefined' is not assignable to type 'UserContext'
+  if (typeof window === 'undefined' && !userState) return null
+
+  if (!userState) throw new Error('User context not found')
+  return userState.setUser
+}

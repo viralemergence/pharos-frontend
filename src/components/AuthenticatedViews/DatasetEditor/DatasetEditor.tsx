@@ -1,24 +1,20 @@
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import { useNavigate, useParams } from 'react-router-dom'
-
-import { ProjectStatus } from 'reducers/projectReducer/types'
 
 import MainGrid from 'components/layout/MainGrid'
 import Sidebar from 'components/Sidebar/Sidebar'
 
-import Uploader from './Uploader/Uploader'
-import DatasetGrid from './DataGrid/DataGrid'
+import CSVParser from './CSVParser/CSVParser'
+import DatasetGrid from './DatasetGrid/DatasetsGrid'
 import { Content, TopBar } from '../ViewComponents'
 
-import useProject from 'hooks/useProject'
 import UpdateButton from './UpdateButton/UpdateButton'
 
-import useDataset from 'hooks/useDatset'
-import useDatasetStatusMessage from 'hooks/useDatasetStatusMessage'
-import useActiveVersion from 'hooks/useActiveVersion'
+import useDataset from 'hooks/dataset/useDataset'
+import useDatasetStatusMessage from 'hooks/dataset/useDatasetStatusMessage'
 import VersionSwitcher from './VersionSwitcher/VersionSwitcher'
 import DownloadButton from './DownloadButton/DownloadButton'
+import useLoadRegister from 'hooks/register/useLoadRegister'
 
 const H1 = styled.h1`
   ${({ theme }) => theme.h3};
@@ -31,23 +27,14 @@ const H2 = styled.h2`
 `
 
 const DatasetEditor = () => {
-  const { id } = useParams()
-  const navigate = useNavigate()
-  const [project] = useProject()
-  console.log({ project })
+  const dataset = useDataset()
+  const datasetStatusMessage = useDatasetStatusMessage()
 
-  const dataset = useDataset(id)
+  // load the register as soon as the dataset is loaded
+  // and as long as the dataset has a registerKey
+  useLoadRegister()
 
-  // load the active version from the
-  // server into state if necessary
-  useActiveVersion(id)
-
-  const datasetStatusMessage = useDatasetStatusMessage(id)
-
-  // handle case where the page loads on a dataset that doesn't exist
-  useEffect(() => {
-    if (project.status === ProjectStatus.Loaded && !dataset) navigate('/')
-  }, [project.status, dataset, navigate])
+  console.log({ dataset })
 
   return (
     <MainGrid>
@@ -61,7 +48,7 @@ const DatasetEditor = () => {
         <H2>Collected Date: {dataset && dataset.date_collected}</H2>
         <H2>{datasetStatusMessage}</H2>
         <TopBar>
-          <Uploader />
+          <CSVParser />
           <VersionSwitcher />
         </TopBar>
         <DatasetGrid />

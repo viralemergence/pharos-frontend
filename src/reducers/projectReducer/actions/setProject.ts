@@ -6,7 +6,6 @@ export interface SetProjectAction {
   payload: Project
 }
 
-// action function to change views
 const setProject: ActionFunction<Project> = (state, payload) => ({
   ...state,
   ...payload,

@@ -5,7 +5,7 @@ import { UserStatus } from 'components/Login/UserContextProvider'
 import useUser from 'hooks/useUser'
 
 function RequireAuth({ children }: { children: JSX.Element }) {
-  const [user] = useUser()
+  const user = useUser()
   const location = useLocation()
 
   if (user.status !== UserStatus.loggedIn) {

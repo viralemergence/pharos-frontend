@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import useProject from 'hooks/useProject'
+import useProject from 'hooks/project/useProject'
 import { GridRow, HeaderRow } from './DatasetsTableRow'
 import { ProjectStatus } from 'reducers/projectReducer/types'
 
@@ -18,7 +18,7 @@ const DatasetsGrid = styled.div`
 `
 
 const DatasetsTable = () => {
-  const [project] = useProject()
+  const project = useProject()
 
   if (
     project.status === ProjectStatus.Initial ||
