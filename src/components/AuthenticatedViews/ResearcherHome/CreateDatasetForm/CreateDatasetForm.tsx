@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
-import { DatasetStatus } from 'reducers/projectReducer/types'
+import { DatasetStatus, RegisterStatus } from 'reducers/projectReducer/types'
 
 import MintButton from 'components/ui/MintButton'
 import Label from 'components/ui/InputLabel'
@@ -14,6 +14,7 @@ import useProject from 'hooks/project/useProject'
 
 import saveDataset from 'api/saveDataset'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
+import saveRegister from 'api/saveRegister'
 
 const Form = styled.form`
   width: 500px;
@@ -110,6 +111,34 @@ const CreateDatasetForm = () => {
     navigate(`/dataset/${datasetID}`)
 
     const saved = await saveDataset(datasetSaveData)
+
+    // save the register to the server
+    const registerSaved = await saveRegister({
+      datasetID,
+      researcherID: user.data.researcherID,
+      data: {
+        register: datasetClientData.register,
+        versions: [...datasetSaveData.versions],
+      },
+    })
+
+    if (registerSaved) {
+      projectDispatch({
+        type: ProjectActions.SetRegisterStatus,
+        payload: {
+          datasetID,
+          status: RegisterStatus.Saved,
+        },
+      })
+    } else {
+      projectDispatch({
+        type: ProjectActions.SetDatasetStatus,
+        payload: {
+          datasetID,
+          status: DatasetStatus.Error,
+        },
+      })
+    }
 
     if (saved) {
       projectDispatch({
