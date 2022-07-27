@@ -28,13 +28,33 @@ const useVersionedRows = () => {
   // can directly return the array of DataPoints in
   // the register without performing version checks
   if (version >= dataset.versions.length - 1) {
-    return Object.entries(dataset.register).map(
+    const newRows = Object.entries(dataset.register).map(
       ([recordID, record]) =>
         ({
           ...record,
           _meta: { recordID },
         } as RecordWithID)
     )
+
+    // add empty row for editing at the bottom
+    newRows.push(
+      Object.keys(newRows[0] ?? {}).reduce(
+        (acc, key) => ({
+          ...acc,
+          ...(key !== '_meta' && {
+            [key]: {
+              displayValue: '',
+              dataValue: '',
+              version: String(dataset.versions.length),
+            },
+          }),
+        }),
+        { _meta: { recordID: crypto.randomUUID() } }
+      ) as RecordWithID
+    )
+
+    console.log(newRows)
+    return newRows
   }
 
   // else return datapoints that are valid for the target version
