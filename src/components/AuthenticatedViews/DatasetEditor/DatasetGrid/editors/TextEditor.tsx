@@ -44,6 +44,8 @@ const autoFocusAndSelect = (input: HTMLInputElement | null) => {
   input?.select()
 }
 
+const recordIDColumn = 'SampleID'
+
 const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
   const user = useUser()
   const datasetID = useDatasetID()
@@ -58,10 +60,16 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
   const dispatchValue = () => {
     console.log('dispatching setDatapoint')
 
-    if (column.key === 'SampleID') {
+    if (column.key === recordIDColumn) {
       // get all current SampleID values
-      const ids = new Set(Object.keys(dataset?.register ?? {}))
+      const ids = new Set(
+        Object.values(dataset?.register ?? {}).map(
+          row => row[recordIDColumn].displayValue
+        )
+      )
 
+      console.log('check if unique')
+      console.log(ids)
       if (ids.has(editValue)) {
         console.log('not unique')
         alert('SampleID must be unique')
