@@ -54,18 +54,17 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
 
   const [editValue, setEditValue] = useState(datapoint?.displayValue ?? '')
   const [editableWarningModalOpen, setEditableWarningModalOpen] = useState(true)
-  const [uniqueWarningModalOpen, setUniqueWarningModalOpen] = useState(false)
 
   const dispatchValue = () => {
     console.log('dispatching setDatapoint')
 
     if (column.key === 'SampleID') {
-      console.log('special case edit ID')
-      console.log(editValue)
-      if (dataset?.register?.[editValue]) {
+      // get all current SampleID values
+      const ids = new Set(Object.keys(dataset?.register ?? {}))
+
+      if (ids.has(editValue)) {
         console.log('not unique')
-        setUniqueWarningModalOpen(true)
-        console.log('after setUniqueWarningModalOpen')
+        alert('SampleID must be unique')
         return
       }
     }
@@ -134,32 +133,20 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
       </Modal>
     )
 
-  console.log({ uniqueWarningModalOpen })
-
   return (
-    <>
-      <TextInput
-        key={(row._meta as RecordMeta).recordID}
-        ref={autoFocusAndSelect}
-        value={editValue}
-        onChange={event => {
-          setEditValue(event.target.value)
-        }}
-        onKeyDown={e => handleKeyDown(e)}
-        onBlur={() => {
-          dispatchValue()
-          onClose(true)
-        }}
-      />
-      <Modal open={uniqueWarningModalOpen} setOpen={setUniqueWarningModalOpen}>
-        <h3 style={{}}>SampleID must be unique within the dataset</h3>
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <MintButton onClick={() => setEditableWarningModalOpen(false)}>
-            ok
-          </MintButton>
-        </div>
-      </Modal>
-    </>
+    <TextInput
+      key={(row._meta as RecordMeta).recordID}
+      ref={autoFocusAndSelect}
+      value={editValue}
+      onChange={event => {
+        setEditValue(event.target.value)
+      }}
+      onKeyDown={e => handleKeyDown(e)}
+      onBlur={() => {
+        dispatchValue()
+        onClose(true)
+      }}
+    />
   )
 }
 
