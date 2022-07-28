@@ -7,6 +7,8 @@ import NavLink from './NavLink'
 import MobileMenu from './MobileMenu/MobileMenu'
 
 import useIndexPageData from 'cmsHooks/useIndexPageData'
+import useUser from 'hooks/useUser'
+import { UserStatus } from '../../Login/UserContextProvider'
 
 const Nav = styled.nav`
   background-color: ${({ theme }) => theme.darkPurple};
@@ -19,7 +21,6 @@ const Nav = styled.nav`
 `
 const Container = styled.div`
   margin: 0 auto;
-  max-width: 1500px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -60,25 +61,41 @@ const NavLogo = styled(CMS.Image)`
 const NavBar = () => {
   const data = useIndexPageData()
 
-  const links = (
-    <>
-      <NavLink to="/about/">About</NavLink>
-      <NavLink to="/guide/">User guide</NavLink>
-      <NavLink to="/login/">Sign in</NavLink>
-    </>
-  )
+  const user = useUser()
+
+  const links = [
+    { to: '/about/', label: 'About' },
+    { to: '/guide/', label: 'User guide' },
+  ]
+
+  if (user.status === UserStatus.loggedIn)
+    links.push({ to: '/app/', label: user.data?.name || '' })
+  else links.push({ to: '/app/#/login', label: 'Sign in' })
+
   return (
     <Nav>
       <Container>
         <LinkList>
-          <HomeLink to="/">
+          <HomeLink to={user.status === UserStatus.loggedIn ? '/app/' : '/'}>
             <NavLogo name="Site logo" data={data} />
             <CMS.Text name="Navbar title" data={data} />
           </HomeLink>
         </LinkList>
-        <DesktopNav>{links}</DesktopNav>
+        <DesktopNav>
+          {links.map(link => (
+            <NavLink key={link.label} to={link.to}>
+              {link.label}
+            </NavLink>
+          ))}
+        </DesktopNav>
         <MobileMenu>
-          <MobileLinkList>{links}</MobileLinkList>
+          <MobileLinkList>
+            {links.map(link => (
+              <NavLink key={link.label} to={link.to}>
+                {link.label}
+              </NavLink>
+            ))}
+          </MobileLinkList>
         </MobileMenu>
       </Container>
     </Nav>

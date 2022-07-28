@@ -33,3 +33,11 @@ yarn
 ```
 yarn start
 ```
+
+By default, the app will try to connect to the api at `http://localhost:3000`.
+
+However, any api url can be passed:
+
+```
+yarn start --api http://api.someplace:someport
+```

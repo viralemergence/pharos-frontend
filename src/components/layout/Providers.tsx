@@ -4,26 +4,24 @@ import { createGlobalStyle, ThemeProvider } from 'styled-components'
 
 import CMS from '@talus-analytics/library.airtable-cms'
 
-// import textStyles from '../figma/textStyles'
-// import textStyles from '../../figma/textStyles'
+import useSiteMetadataQuery from 'cmsHooks/useSiteMetadataQuery'
+import useIconsQuery from 'cmsHooks/useIconsQuery'
+import getTrackingId from 'utilities/trackingId'
+
 import textStyles from 'figma/textStyles'
 import colorPalette from 'figma/colorPalette'
-
-import useIconsQuery from 'cmsHooks/useIconsQuery'
-import useSiteMetadataQuery from 'cmsHooks/useSiteMetadataQuery'
-import getTrackingId from 'utilities/trackingId'
 
 import '../../../static/assets/fonts/fonts.css'
 
 const GlobalStyle = createGlobalStyle`
+  * {
+    box-sizing: border-box;
+  } 
   body {
     margin: 0;
     padding: 0;
     font-family: "Poppins", Arial, Helvetica, sans-serif;
     color: ${({ theme }) => theme.black};
-  }
-  * {
-    box-sizing: border-box;
   }
 `
 

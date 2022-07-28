@@ -15,11 +15,11 @@ while [[ "$#" > 0 ]];
   shift
 done
 
-# fetch environment variables from secrets manager
-export AIRTABLE_API_KEY=$(
-  aws secretsmanager get-secret-value --secret-id airtable-api-key --region us-west-1 |\
-  jq  -r .SecretString | jq -r .AIRTABLE_API_KEY\
-)
+# # fetch environment variables from secrets manager
+# export AIRTABLE_API_KEY=$(
+#   aws secretsmanager get-secret-value --secret-id airtable-api-key --region us-west-1 |\
+#   jq  -r .SecretString | jq -r .AIRTABLE_API_KEY\
+# )
 
 if [ "$reset" == "1" ]; then 
   bvm upgrade;
@@ -36,7 +36,7 @@ export GATSBY_API_URL=$api
 echo 'GATSBY_API_URL: '
 echo $GATSBY_API_URL
 
-gatsby develop;
+gatsby build;
 
 
 

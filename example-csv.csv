@@ -1,0 +1,3 @@
+DetectionID,SampleID,DetectionMethod,DetectionOutcome
+103, 8309, PCR, Positive
+124, 1975, PCR, Inconclusive
