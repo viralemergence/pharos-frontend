@@ -44,20 +44,39 @@ const autoFocusAndSelect = (input: HTMLInputElement | null) => {
   input?.select()
 }
 
+const recordIDColumn = 'SampleID'
+
 const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
   const user = useUser()
   const datasetID = useDatasetID()
   const projectDispatch = useProjectDispatch()
   const dataset = useDataset()
 
-  const datapoint = row[column.key]
+  const datapoint = row[column.key] as Datapoint | undefined
 
-  const [editValue, setEditValue] = useState(
-    (datapoint as Datapoint)?.displayValue ?? ''
-  )
+  const [editValue, setEditValue] = useState(datapoint?.displayValue ?? '')
+  const [editableWarningModalOpen, setEditableWarningModalOpen] = useState(true)
 
   const dispatchValue = () => {
     console.log('dispatching setDatapoint')
+
+    if (column.key === recordIDColumn) {
+      // get all current SampleID values
+      const ids = new Set(
+        Object.values(dataset?.register ?? {}).map(
+          row => row[recordIDColumn].displayValue
+        )
+      )
+
+      console.log('check if unique')
+      console.log(ids)
+      if (ids.has(editValue)) {
+        console.log('not unique')
+        alert('SampleID must be unique')
+        return
+      }
+    }
+
     projectDispatch({
       type: ProjectActions.SetDatapoint,
       payload: {
@@ -89,17 +108,23 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
 
   console.log('EDITOR Renders')
 
-  const [editable] = useState(
+  const editable =
     dataset.activeVersion === dataset.versions.length - 1 ||
-      dataset.versions.length === 0
-  )
-  const [open, setOpen] = useState(true)
+    dataset.versions.length === 0
+
   if (!editable)
     return (
-      <Modal {...{ open, setOpen }}>
+      <Modal
+        {...{
+          open: editableWarningModalOpen,
+          setOpen: setEditableWarningModalOpen,
+        }}
+      >
         <h3 style={{}}>Only the most recent version can be edited</h3>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <MintButton onClick={() => setOpen(false)}>ok</MintButton>
+          <MintButton onClick={() => setEditableWarningModalOpen(false)}>
+            ok
+          </MintButton>
           <MintButton
             style={{ marginLeft: 15 }}
             secondary

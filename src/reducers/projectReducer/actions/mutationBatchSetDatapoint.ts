@@ -26,8 +26,16 @@ const batchSetDatapoint: ActionFunction<BatchSetDatapointPayload> = (
   const version = String(nextState.datasets[datasetID].versions.length)
   const columns = Object.keys(rows[0])
 
+  const idMap: { [key: string]: string } = Object.entries(register).reduce(
+    (map, [recordID, record]) => ({
+      ...map,
+      [record[recordIDColumn].displayValue]: recordID,
+    }),
+    {}
+  )
+
   rows.forEach(row => {
-    const recordID = row[recordIDColumn]
+    const recordID = idMap[row[recordIDColumn]] ?? crypto.randomUUID()
     columns.forEach(datapointID => {
       const record = register[recordID] ?? {}
       const previous = record[datapointID]

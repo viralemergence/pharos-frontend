@@ -74,7 +74,7 @@ const CreateDatasetForm = () => {
       status: DatasetStatus.Saving,
       activeVersion: 0,
       register: {
-        exampleRecordID: {
+        [crypto.randomUUID()]: {
           SampleID: { displayValue: '', dataValue: '', version: '0' },
           'Detection ID': { displayValue: '', dataValue: '', version: '0' },
           'Organism Nickname': {
