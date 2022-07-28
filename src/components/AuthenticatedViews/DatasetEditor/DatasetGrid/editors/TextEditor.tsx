@@ -148,7 +148,7 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
         onKeyDown={e => handleKeyDown(e)}
         onBlur={() => {
           dispatchValue()
-          // onClose(true)
+          onClose(true)
         }}
       />
       <Modal open={uniqueWarningModalOpen} setOpen={setUniqueWarningModalOpen}>
