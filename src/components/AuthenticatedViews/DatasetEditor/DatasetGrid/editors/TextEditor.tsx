@@ -50,14 +50,26 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
   const projectDispatch = useProjectDispatch()
   const dataset = useDataset()
 
-  const datapoint = row[column.key]
+  const datapoint = row[column.key] as Datapoint | undefined
 
-  const [editValue, setEditValue] = useState(
-    (datapoint as Datapoint)?.displayValue ?? ''
-  )
+  const [editValue, setEditValue] = useState(datapoint?.displayValue ?? '')
+  const [editableWarningModalOpen, setEditableWarningModalOpen] = useState(true)
+  const [uniqueWarningModalOpen, setUniqueWarningModalOpen] = useState(false)
 
   const dispatchValue = () => {
     console.log('dispatching setDatapoint')
+
+    if (column.key === 'SampleID') {
+      console.log('special case edit ID')
+      console.log(editValue)
+      if (dataset?.register?.[editValue]) {
+        console.log('not unique')
+        setUniqueWarningModalOpen(true)
+        console.log('after setUniqueWarningModalOpen')
+        return
+      }
+    }
+
     projectDispatch({
       type: ProjectActions.SetDatapoint,
       payload: {
@@ -89,17 +101,23 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
 
   console.log('EDITOR Renders')
 
-  const [editable] = useState(
+  const editable =
     dataset.activeVersion === dataset.versions.length - 1 ||
-      dataset.versions.length === 0
-  )
-  const [open, setOpen] = useState(true)
+    dataset.versions.length === 0
+
   if (!editable)
     return (
-      <Modal {...{ open, setOpen }}>
+      <Modal
+        {...{
+          open: editableWarningModalOpen,
+          setOpen: setEditableWarningModalOpen,
+        }}
+      >
         <h3 style={{}}>Only the most recent version can be edited</h3>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <MintButton onClick={() => setOpen(false)}>ok</MintButton>
+          <MintButton onClick={() => setEditableWarningModalOpen(false)}>
+            ok
+          </MintButton>
           <MintButton
             style={{ marginLeft: 15 }}
             secondary
@@ -116,20 +134,32 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
       </Modal>
     )
 
+  console.log({ uniqueWarningModalOpen })
+
   return (
-    <TextInput
-      key={(row._meta as RecordMeta).recordID}
-      ref={autoFocusAndSelect}
-      value={editValue}
-      onChange={event => {
-        setEditValue(event.target.value)
-      }}
-      onKeyDown={e => handleKeyDown(e)}
-      onBlur={() => {
-        dispatchValue()
-        onClose(true)
-      }}
-    />
+    <>
+      <TextInput
+        key={(row._meta as RecordMeta).recordID}
+        ref={autoFocusAndSelect}
+        value={editValue}
+        onChange={event => {
+          setEditValue(event.target.value)
+        }}
+        onKeyDown={e => handleKeyDown(e)}
+        onBlur={() => {
+          dispatchValue()
+          // onClose(true)
+        }}
+      />
+      <Modal open={uniqueWarningModalOpen} setOpen={setUniqueWarningModalOpen}>
+        <h3 style={{}}>SampleID must be unique within the dataset</h3>
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <MintButton onClick={() => setEditableWarningModalOpen(false)}>
+            ok
+          </MintButton>
+        </div>
+      </Modal>
+    </>
   )
 }
 
