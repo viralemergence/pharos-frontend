@@ -124,7 +124,7 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
         <OnlyEditMostRecent
           {...{
             datasetID,
-            latestVersion: dataset.versions.length,
+            latestVersion: dataset.versions.length - 1,
             projectDispatch,
             setModalContent,
           }}
