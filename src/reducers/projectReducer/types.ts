@@ -162,22 +162,22 @@ export enum ProjectStatus {
 // all possible statuses for a
 // dataset in the frontend
 export enum DatasetStatus {
-  Loading,
-  Unsaved,
-  Saving,
-  Saved,
-  Error,
+  Loading = 'Loading',
+  Unsaved = 'Unsaved',
+  Saving = 'Saving',
+  Saved = 'Saved',
+  Error = 'Error',
 }
 
 // all possible statuses for a register
 // relative to the server
 export enum RegisterStatus {
-  Unsaved,
-  Saving,
-  Saved,
-  Error,
-  Loading,
-  Loaded,
+  Unsaved = 'Unsaved',
+  Saving = 'Saving',
+  Saved = 'Saved',
+  Error = 'Error',
+  Loading = 'Loading',
+  Loaded = 'Loaded',
 }
 
 export enum ReportScore {
