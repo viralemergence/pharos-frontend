@@ -29,17 +29,19 @@ const batchSetDatapoint: ActionFunction<BatchSetDatapointPayload> = (
   const idMap: { [key: string]: string } = Object.entries(register).reduce(
     (map, [recordID, record]) => ({
       ...map,
-      [record[recordIDColumn].displayValue]: recordID,
+      [record[recordIDColumn]?.displayValue]: recordID,
     }),
     {}
   )
 
+  let setNewHighestVersion = false
   rows.forEach(row => {
     const recordID = idMap[row[recordIDColumn]] ?? crypto.randomUUID()
     columns.forEach(datapointID => {
       const record = register[recordID] ?? {}
       const previous = record[datapointID]
       if (previous?.displayValue !== row[datapointID]) {
+        setNewHighestVersion = true
         register[recordID] = record
         register[recordID][datapointID] = {
           displayValue: row[datapointID],
@@ -51,6 +53,10 @@ const batchSetDatapoint: ActionFunction<BatchSetDatapointPayload> = (
       }
     })
   })
+
+  if (setNewHighestVersion)
+    nextState.datasets[datasetID].highestVersion =
+      nextState.datasets[datasetID].versions.length
 
   // This ended up being a little slower
   // though I think it should be faster
