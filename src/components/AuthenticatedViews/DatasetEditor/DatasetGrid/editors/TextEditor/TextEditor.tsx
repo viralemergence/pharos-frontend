@@ -74,11 +74,6 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
         {} as { [key: string]: string }
       )
 
-      console.log('check if value is unique')
-      console.log(idMap)
-      console.log(idMap[editValue])
-      console.log((row._meta as RecordMeta).recordID)
-
       if (
         idMap[editValue] &&
         idMap[editValue] !== (row._meta as RecordMeta).recordID
