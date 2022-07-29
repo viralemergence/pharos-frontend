@@ -1,5 +1,6 @@
 import { ActionFunction, ProjectActions } from '../projectReducer'
-import { Datapoint, Project } from '../types'
+import { Datapoint, Project, RegisterStatus } from '../types'
+import setRegisterStatus from './setRegisterStatus'
 
 export interface SetDatapointPayload {
   datasetID: string
@@ -42,7 +43,7 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
     ...(version !== previous?.version && { previous }),
   }
 
-  return {
+  let nextState = {
     ...state,
     datasets: {
       ...state.datasets,
@@ -60,6 +61,15 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
       },
     },
   }
+
+  // always set the registerStatus to
+  // unsaved when a new datapoint is set
+  nextState = setRegisterStatus(nextState, {
+    datasetID,
+    status: RegisterStatus.Unsaved,
+  })
+
+  return nextState
 }
 
 export default setDatapoint

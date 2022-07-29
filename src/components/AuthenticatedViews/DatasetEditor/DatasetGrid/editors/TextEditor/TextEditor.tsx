@@ -85,6 +85,8 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
       }
     }
 
+    if (!user.data?.researcherID) return
+
     projectDispatch({
       type: ProjectActions.SetDatapoint,
       payload: {
@@ -96,13 +98,6 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
           dataValue: editValue,
           modifiedBy: user.data?.researcherID,
         },
-      },
-    })
-    projectDispatch({
-      type: ProjectActions.SetRegisterStatus,
-      payload: {
-        datasetID,
-        status: RegisterStatus.Unsaved,
       },
     })
   }
