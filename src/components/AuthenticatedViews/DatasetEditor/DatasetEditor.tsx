@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 
 import MainGrid from 'components/layout/MainGrid'
@@ -16,6 +16,7 @@ import VersionSwitcher from './VersionSwitcher/VersionSwitcher'
 import DownloadButton from './DownloadButton/DownloadButton'
 import useLoadRegister from 'hooks/register/useLoadRegister'
 import ModalMessageProvider from './DatasetGrid/ModalMessage/ModalMessageProvider'
+import useAutosaveRegister from 'hooks/register/useAutosaveRegister'
 
 const H1 = styled.h1`
   ${({ theme }) => theme.h3};
@@ -34,6 +35,8 @@ const DatasetEditor = () => {
   // load the register as soon as the dataset is loaded
   // and as long as the dataset has a registerKey
   useLoadRegister()
+  // autosave the register when changes are committed
+  useAutosaveRegister()
 
   console.log({ dataset })
 
