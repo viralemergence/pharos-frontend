@@ -29,7 +29,7 @@ const useAutosaveRegister = () => {
           type: ProjectActions.SetRegisterStatus,
           payload: {
             datasetID,
-            status: RegisterStatus.Unsaved,
+            status: RegisterStatus.Saved,
           },
         })
       }
