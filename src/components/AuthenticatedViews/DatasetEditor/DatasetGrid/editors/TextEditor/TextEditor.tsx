@@ -61,16 +61,28 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
   const [editValue, setEditValue] = useState(datapoint?.displayValue ?? '')
 
   const dispatchValue = () => {
+    if (!dataset.register) return
+
     // special case for handling the ID column
     if (column.key === recordIDColumn) {
       // get all current SampleID values
-      const ids = new Set(
-        Object.values(dataset?.register ?? {}).map(
-          row => row[recordIDColumn].displayValue
-        )
+      const idMap = Object.entries(dataset.register).reduce(
+        (acc, [recordID, row]) => ({
+          ...acc,
+          [row[recordIDColumn].displayValue]: recordID,
+        }),
+        {} as { [key: string]: string }
       )
 
-      if (ids.has(editValue)) {
+      console.log('check if value is unique')
+      console.log(idMap)
+      console.log(idMap[editValue])
+      console.log((row._meta as RecordMeta).recordID)
+
+      if (
+        idMap[editValue] &&
+        idMap[editValue] !== (row._meta as RecordMeta).recordID
+      ) {
         setModalContent(
           <IDMustBeUnique {...{ recordIDColumn, setModalContent }} />
         )
