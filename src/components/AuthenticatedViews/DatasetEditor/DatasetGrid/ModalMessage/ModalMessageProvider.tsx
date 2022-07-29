@@ -1,9 +1,11 @@
 import React, { createContext, useState } from 'react'
 import Modal from 'components/ui/Modal'
 
-type setModalContent = React.Dispatch<React.SetStateAction<React.ReactNode>>
+export type SetModalContent = React.Dispatch<
+  React.SetStateAction<React.ReactNode>
+>
 
-export const ModalMessageContext = createContext<setModalContent | null>(null)
+export const ModalMessageContext = createContext<SetModalContent | null>(null)
 
 interface ProviderProps {
   children: React.ReactNode
@@ -24,14 +26,12 @@ const ModalMessageProvider = ({ children }: ProviderProps): JSX.Element => {
   }
 
   return (
-    <>
-      <ModalMessageContext.Provider value={setModalContent}>
-        {children}
-      </ModalMessageContext.Provider>
+    <ModalMessageContext.Provider value={setModalContent}>
+      {children}
       <Modal open={modalContent !== null} setOpen={setOpen}>
         {modalContent}
       </Modal>
-    </>
+    </ModalMessageContext.Provider>
   )
 }
 

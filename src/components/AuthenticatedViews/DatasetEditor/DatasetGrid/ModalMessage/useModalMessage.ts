@@ -1,7 +1,7 @@
 import { useContext } from 'react'
-import { ContextProps, ModalMessageContext } from './ModalMessageProvider'
+import { SetModalContent, ModalMessageContext } from './ModalMessageProvider'
 
-const useModalMessage = (): ContextProps => {
+const useModalMessage = (): SetModalContent => {
   const setModalContent = useContext(ModalMessageContext)
 
   // when running on the build server, throw an error if
@@ -9,6 +9,7 @@ const useModalMessage = (): ContextProps => {
   // rehydration issues.
   if (typeof window === 'undefined' && !setModalContent)
     return {
+      // @ts-expect-error: throw error if this is called in build server
       setModalContent: () => {
         throw new Error('Cannot call setModalContent() in build step')
       },
