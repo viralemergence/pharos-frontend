@@ -6,7 +6,6 @@ import {
   Datapoint,
   RecordMeta,
   RecordWithID,
-  RegisterStatus,
 } from 'reducers/projectReducer/types'
 
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
@@ -69,7 +68,7 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
       const idMap = Object.entries(dataset.register).reduce(
         (acc, [recordID, row]) => ({
           ...acc,
-          [row[recordIDColumn].displayValue]: recordID,
+          [row[recordIDColumn]?.displayValue]: recordID,
         }),
         {} as { [key: string]: string }
       )
@@ -78,9 +77,7 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
         idMap[editValue] &&
         idMap[editValue] !== (row._meta as RecordMeta).recordID
       ) {
-        setModalContent(
-          <IDMustBeUnique {...{ recordIDColumn, setModalContent }} />
-        )
+        setModalContent(<IDMustBeUnique {...{ recordIDColumn }} />)
         return
       }
     }
@@ -116,22 +113,9 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
   useEffect(() => {
     if (!editable)
       setModalContent(
-        <OnlyEditMostRecent
-          {...{
-            datasetID,
-            latestVersion: dataset.versions.length - 1,
-            projectDispatch,
-            setModalContent,
-          }}
-        />
+        <OnlyEditMostRecent latestVersion={dataset.versions.length - 1} />
       )
-  }, [
-    editable,
-    datasetID,
-    projectDispatch,
-    setModalContent,
-    dataset.versions.length,
-  ])
+  }, [editable, setModalContent, dataset.versions.length])
 
   if (!editable) {
     return <></>
