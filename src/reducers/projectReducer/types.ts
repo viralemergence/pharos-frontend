@@ -125,7 +125,7 @@ export interface Datapoint {
     data: { [key: string]: string }
   }
   // userID
-  modifiedBy?: string
+  modifiedBy: string
   // version number where this
   // datapoint was last modified.
   // it is valid for any version

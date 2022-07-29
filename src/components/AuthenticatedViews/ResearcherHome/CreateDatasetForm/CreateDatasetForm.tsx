@@ -75,24 +75,47 @@ const CreateDatasetForm = () => {
       activeVersion: 0,
       register: {
         [crypto.randomUUID()]: {
-          SampleID: { displayValue: '', dataValue: '', version: '0' },
-          'Detection ID': { displayValue: '', dataValue: '', version: '0' },
+          SampleID: {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+            modifiedBy: user.data?.researcherID,
+          },
+          'Detection ID': {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+            modifiedBy: user.data?.researcherID,
+          },
           'Organism Nickname': {
             displayValue: '',
             dataValue: '',
             version: '0',
+            modifiedBy: user.data?.researcherID,
           },
-          'Detection Method': { displayValue: '', dataValue: '', version: '0' },
+          'Detection Method': {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+            modifiedBy: user.data?.researcherID,
+          },
           'Detection Outcome': {
             displayValue: '',
             dataValue: '',
             version: '0',
+            modifiedBy: user.data?.researcherID,
           },
-          'Pathogen TaxID': { displayValue: '', dataValue: '', version: '0' },
+          'Pathogen TaxID': {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+            modifiedBy: user.data?.researcherID,
+          },
           'Detection Comments': {
             displayValue: '',
             dataValue: '',
             version: '0',
+            modifiedBy: user.data?.researcherID,
           },
         },
       },
