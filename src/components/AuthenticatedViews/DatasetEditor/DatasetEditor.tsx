@@ -15,6 +15,7 @@ import useDatasetStatusMessage from 'hooks/dataset/useDatasetStatusMessage'
 import VersionSwitcher from './VersionSwitcher/VersionSwitcher'
 import DownloadButton from './DownloadButton/DownloadButton'
 import useLoadRegister from 'hooks/register/useLoadRegister'
+import ModalMessageProvider from './DatasetGrid/ModalMessage/ModalMessageProvider'
 
 const H1 = styled.h1`
   ${({ theme }) => theme.h3};
@@ -37,23 +38,25 @@ const DatasetEditor = () => {
   console.log({ dataset })
 
   return (
-    <MainGrid>
-      <Sidebar />
-      <Content>
-        <TopBar>
-          <H1>{dataset ? dataset.name : 'Loading dataset'}</H1>
-          <UpdateButton />
-          <DownloadButton />
-        </TopBar>
-        <H2>Collected Date: {dataset && dataset.date_collected}</H2>
-        <H2>{datasetStatusMessage}</H2>
-        <TopBar>
-          <CSVParser />
-          <VersionSwitcher />
-        </TopBar>
-        <DatasetGrid />
-      </Content>
-    </MainGrid>
+    <ModalMessageProvider>
+      <MainGrid>
+        <Sidebar />
+        <Content>
+          <TopBar>
+            <H1>{dataset ? dataset.name : 'Loading dataset'}</H1>
+            <UpdateButton />
+            <DownloadButton />
+          </TopBar>
+          <H2>Collected Date: {dataset && dataset.date_collected}</H2>
+          <H2>{datasetStatusMessage}</H2>
+          <TopBar>
+            <CSVParser />
+            <VersionSwitcher />
+          </TopBar>
+          <DatasetGrid />
+        </Content>
+      </MainGrid>
+    </ModalMessageProvider>
   )
 }
 

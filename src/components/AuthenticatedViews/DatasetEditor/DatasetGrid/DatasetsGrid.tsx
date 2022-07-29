@@ -4,7 +4,7 @@ import DataGrid, { Column } from 'react-data-grid'
 
 import { RecordWithID, RegisterStatus } from 'reducers/projectReducer/types'
 
-import TextEditor from './editors/TextEditor'
+import TextEditor from './editors/TextEditor/TextEditor'
 
 import SimpleFormatter from './formatters/SimpleFormatter'
 

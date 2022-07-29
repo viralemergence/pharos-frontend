@@ -8,13 +8,15 @@ import {
   RecordWithID,
   RegisterStatus,
 } from 'reducers/projectReducer/types'
+
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
 import useDatasetID from 'hooks/dataset/useDatasetID'
 import useUser from 'hooks/useUser'
 import useDataset from 'hooks/dataset/useDataset'
-import Modal from 'components/ui/Modal'
-import MintButton from 'components/ui/MintButton'
+import useModalMessage from '../../ModalMessage/useModalMessage'
+import { useEffect } from 'react'
+import { IDMustBeUnique, OnlyEditMostRecent } from './textEditorMessages'
 
 const TextInput = styled.input`
   appearance: none;
@@ -52,27 +54,33 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
   const projectDispatch = useProjectDispatch()
   const dataset = useDataset()
 
+  const setModalContent = useModalMessage()
+
   const datapoint = row[column.key] as Datapoint | undefined
 
   const [editValue, setEditValue] = useState(datapoint?.displayValue ?? '')
-  const [editableWarningModalOpen, setEditableWarningModalOpen] = useState(true)
 
   const dispatchValue = () => {
-    console.log('dispatching setDatapoint')
+    if (!dataset.register) return
 
+    // special case for handling the ID column
     if (column.key === recordIDColumn) {
       // get all current SampleID values
-      const ids = new Set(
-        Object.values(dataset?.register ?? {}).map(
-          row => row[recordIDColumn].displayValue
-        )
+      const idMap = Object.entries(dataset.register).reduce(
+        (acc, [recordID, row]) => ({
+          ...acc,
+          [row[recordIDColumn].displayValue]: recordID,
+        }),
+        {} as { [key: string]: string }
       )
 
-      console.log('check if unique')
-      console.log(ids)
-      if (ids.has(editValue)) {
-        console.log('not unique')
-        alert('SampleID must be unique')
+      if (
+        idMap[editValue] &&
+        idMap[editValue] !== (row._meta as RecordMeta).recordID
+      ) {
+        setModalContent(
+          <IDMustBeUnique {...{ recordIDColumn, setModalContent }} />
+        )
         return
       }
     }
@@ -106,40 +114,33 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
     }
   }
 
-  console.log('EDITOR Renders')
-
   const editable =
     dataset.activeVersion === dataset.versions.length - 1 ||
     dataset.versions.length === 0
 
-  if (!editable)
-    return (
-      <Modal
-        {...{
-          open: editableWarningModalOpen,
-          setOpen: setEditableWarningModalOpen,
-        }}
-      >
-        <h3 style={{}}>Only the most recent version can be edited</h3>
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <MintButton onClick={() => setEditableWarningModalOpen(false)}>
-            ok
-          </MintButton>
-          <MintButton
-            style={{ marginLeft: 15 }}
-            secondary
-            onClick={() =>
-              projectDispatch({
-                type: ProjectActions.SetActiveVersion,
-                payload: { datasetID, version: dataset.versions.length - 1 },
-              })
-            }
-          >
-            Go to most recent
-          </MintButton>
-        </div>
-      </Modal>
-    )
+  useEffect(() => {
+    if (!editable)
+      setModalContent(
+        <OnlyEditMostRecent
+          {...{
+            datasetID,
+            latestVersion: dataset.versions.length,
+            projectDispatch,
+            setModalContent,
+          }}
+        />
+      )
+  }, [
+    editable,
+    datasetID,
+    projectDispatch,
+    setModalContent,
+    dataset.versions.length,
+  ])
+
+  if (!editable) {
+    return <></>
+  }
 
   return (
     <TextInput
