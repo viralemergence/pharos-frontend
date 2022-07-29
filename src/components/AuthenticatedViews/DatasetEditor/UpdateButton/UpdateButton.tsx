@@ -24,6 +24,11 @@ const UpdateButton = () => {
   let buttonMessage = 'Publish version'
   let buttonDisabled = false
   switch (true) {
+    // if there are no versions, we can publish
+    case dataset.versions.length === 0:
+      buttonMessage = 'Publish Version'
+      buttonDisabled = false
+      break
     // if we're looking at an old version, it's published
     case dataset.activeVersion < dataset.versions.length - 1:
       buttonMessage = 'Version Published'
