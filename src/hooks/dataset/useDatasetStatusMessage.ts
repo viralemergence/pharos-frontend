@@ -1,4 +1,4 @@
-import { DatasetStatus } from 'reducers/projectReducer/types'
+import { DatasetStatus, RegisterStatus } from 'reducers/projectReducer/types'
 import useDataset from './useDataset'
 
 const useDatasetStatusMessage = () => {
@@ -6,18 +6,31 @@ const useDatasetStatusMessage = () => {
 
   if (!dataset) return 'No dataset'
 
-  let datasetStatusMessage = 'Error'
-  switch (dataset.status) {
-    case DatasetStatus.Saved:
+  const registerStatus = dataset.registerStatus
+
+  console.log(
+    dataset.status === DatasetStatus.Saved &&
+      registerStatus === RegisterStatus.Loaded
+  )
+
+  let datasetStatusMessage
+  switch (true) {
+    case dataset.status === DatasetStatus.Saved &&
+      registerStatus === RegisterStatus.Saved:
       datasetStatusMessage = 'Dataset saved'
       break
-    case DatasetStatus.Saving:
+    case registerStatus === RegisterStatus.Loading:
+      datasetStatusMessage = 'Loading register'
+      break
+    case dataset.status === DatasetStatus.Saving ||
+      registerStatus === RegisterStatus.Saving:
       datasetStatusMessage = 'Saving...'
       break
-    case DatasetStatus.Unsaved:
+    case dataset.status === DatasetStatus.Unsaved ||
+      registerStatus === RegisterStatus.Unsaved:
       datasetStatusMessage = 'Dataset not saved'
       break
-    case DatasetStatus.Error:
+    case dataset.status === DatasetStatus.Error:
       datasetStatusMessage = 'Error'
   }
 

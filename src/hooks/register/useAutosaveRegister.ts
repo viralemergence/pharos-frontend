@@ -16,8 +16,14 @@ const useAutosaveRegister = () => {
   useEffect(() => {
     console.log(dataset.registerStatus)
     const save = async () => {
+      projectDispatch({
+        type: ProjectActions.SetRegisterStatus,
+        payload: {
+          datasetID,
+          status: RegisterStatus.Saving,
+        },
+      })
       if (!dataset?.register || !user.data?.researcherID) return
-      alert('saving register to server')
       const saved = await saveRegister({
         datasetID,
         researcherID: user.data.researcherID,
