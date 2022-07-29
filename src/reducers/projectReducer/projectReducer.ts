@@ -86,6 +86,7 @@ export const datasetInitialValue: Dataset = {
   researcherID: '',
   status: DatasetStatus.Loading,
   activeVersion: 0,
+  highestVersion: 0,
   versions: [],
   register: {},
 }

@@ -57,6 +57,9 @@ export interface Dataset {
   // the status of the register
   // relative to the server
   registerStatus?: RegisterStatus
+  // whether or not the most recent state
+  // of the register is a published version
+  highestVersion: number
   // name of the dataset
   name: string
   // general metadata, these are

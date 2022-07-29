@@ -1,5 +1,7 @@
 import { ActionFunction, ProjectActions } from '../projectReducer'
-import { Version } from '../types'
+import { RegisterStatus, Version } from '../types'
+import setActiveVersion from './setActiveVersion'
+import setRegisterStatus from './setRegisterStatus'
 
 export interface CreateVersionPayload {
   datasetID: string
@@ -13,22 +15,35 @@ export interface CreateVersionAction {
 
 const createVersion: ActionFunction<CreateVersionPayload> = (
   state,
-  payload
-) => ({
-  ...state,
-  datasets: {
-    ...state.datasets,
-    [payload.datasetID]: {
-      ...state.datasets[payload.datasetID],
-      versions: [
-        ...(state.datasets[payload.datasetID].versions ?? []),
-        // add new version
-        { ...payload.version },
-      ],
-      // set the new version to be active
-      activeVersion: state.datasets[payload.datasetID].versions?.length ?? 0,
+  { datasetID, version }
+) => {
+  let nextState = {
+    ...state,
+    datasets: {
+      ...state.datasets,
+      [datasetID]: {
+        ...state.datasets[datasetID],
+        versions: [
+          ...(state.datasets[datasetID].versions ?? []),
+          { ...version },
+        ],
+      },
     },
-  },
-})
+  }
+
+  // set the new version to be active
+  nextState = setActiveVersion(nextState, {
+    datasetID,
+    version: nextState.datasets[datasetID].versions?.length - 1 ?? 0,
+  })
+
+  // set register to unsaved
+  nextState = setRegisterStatus(nextState, {
+    datasetID,
+    status: RegisterStatus.Unsaved,
+  })
+
+  return nextState
+}
 
 export default createVersion

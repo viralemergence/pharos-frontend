@@ -49,6 +49,7 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
       ...state.datasets,
       [datasetID]: {
         ...prevDataset,
+        highestVersion: prevDataset.versions.length,
         register: {
           ...prevDataset.register,
           [recordID]: {
