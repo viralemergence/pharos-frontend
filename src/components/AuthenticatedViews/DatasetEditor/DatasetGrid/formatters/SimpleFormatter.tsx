@@ -45,8 +45,7 @@ const SimpleFormatter = ({
   let backgroundColor: string
   switch (true) {
     case Number(datapoint.version) >= versions.length:
-      // backgroundColor = '#f2ddd0'
-      backgroundColor = 'rgb(247 239 234)'
+      backgroundColor = 'rgb(170 233 219 / 28%)'
       break
     default:
       backgroundColor = 'rgba(0,0,0,0)'
