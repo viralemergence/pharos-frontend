@@ -82,13 +82,49 @@ const CreateDatasetForm = () => {
             version: '0',
             modifiedBy: user.data?.researcherID,
           },
-          'Detection ID': {
+          'Animal ID': {
             displayValue: '',
             dataValue: '',
             version: '0',
             modifiedBy: user.data?.researcherID,
           },
-          'Organism Nickname': {
+          'Animal nickname': {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+            modifiedBy: user.data?.researcherID,
+          },
+          Host: {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+            modifiedBy: user.data?.researcherID,
+          },
+          'Collection Date': {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+            modifiedBy: user.data?.researcherID,
+          },
+          Latitude: {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+            modifiedBy: user.data?.researcherID,
+          },
+          Longitude: {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+            modifiedBy: user.data?.researcherID,
+          },
+          'Spatial uncertainty': {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+            modifiedBy: user.data?.researcherID,
+          },
+          'Collection Method or Tissue': {
             displayValue: '',
             dataValue: '',
             version: '0',
@@ -106,7 +142,31 @@ const CreateDatasetForm = () => {
             version: '0',
             modifiedBy: user.data?.researcherID,
           },
-          'Pathogen TaxID': {
+          'Detection target': {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+            modifiedBy: user.data?.researcherID,
+          },
+          'Target CBCI Tax ID': {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+            modifiedBy: user.data?.researcherID,
+          },
+          Pathogen: {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+            modifiedBy: user.data?.researcherID,
+          },
+          'Pathogen NCBI Tax ID': {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+            modifiedBy: user.data?.researcherID,
+          },
+          'GenBank Accession': {
             displayValue: '',
             dataValue: '',
             version: '0',
