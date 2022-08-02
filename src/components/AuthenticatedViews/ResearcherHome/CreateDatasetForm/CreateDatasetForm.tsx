@@ -3,18 +3,16 @@ import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
-import { DatasetStatus, RegisterStatus } from 'reducers/projectReducer/types'
+import { DatasetStatus } from 'reducers/projectReducer/types'
 
 import MintButton from 'components/ui/MintButton'
 import Label from 'components/ui/InputLabel'
 import Input from 'components/ui/Input'
 
 import useUser from 'hooks/useUser'
-import useProject from 'hooks/project/useProject'
 
 import saveDataset from 'api/saveDataset'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
-import saveRegister from 'api/saveRegister'
 import generateID from 'utilities/generateID'
 
 const Form = styled.form`
@@ -31,23 +29,16 @@ const H1 = styled.h1`
 
 const CreateDatasetForm = () => {
   const user = useUser()
-  const project = useProject()
   const projectDispatch = useProjectDispatch()
 
   const [formMessage, setFormMessage] = useState('')
 
-  // generate a new datesetID to use
-  const [newDatasetID] = useState(String(new Date().getTime()))
-
   const navigate = useNavigate()
 
-  const newDatasetStatus = project.datasets[newDatasetID]?.status
-
-  const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>,
-    datasetID: string
-  ) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+
+    const datasetID = generateID.datasetID()
 
     const target = e.target as typeof e.target & {
       name: { value: string }
@@ -197,34 +188,6 @@ const CreateDatasetForm = () => {
 
     const saved = await saveDataset(datasetSaveData)
 
-    // save the register to the server
-    const registerSaved = await saveRegister({
-      datasetID,
-      researcherID: user.data.researcherID,
-      data: {
-        register: datasetClientData.register,
-        versions: [...datasetSaveData.versions],
-      },
-    })
-
-    if (registerSaved) {
-      projectDispatch({
-        type: ProjectActions.SetRegisterStatus,
-        payload: {
-          datasetID,
-          status: RegisterStatus.Saved,
-        },
-      })
-    } else {
-      projectDispatch({
-        type: ProjectActions.SetDatasetStatus,
-        payload: {
-          datasetID,
-          status: DatasetStatus.Error,
-        },
-      })
-    }
-
     if (saved) {
       projectDispatch({
         type: ProjectActions.SetDatasetStatus,
@@ -245,7 +208,7 @@ const CreateDatasetForm = () => {
   }
 
   return (
-    <Form onSubmit={e => handleSubmit(e, newDatasetID)}>
+    <Form onSubmit={handleSubmit}>
       <H1>Create Dataset</H1>
       <Label>
         Dataset Name
@@ -260,19 +223,9 @@ const CreateDatasetForm = () => {
         />
       </Label>
       <p style={{ margin: 0, padding: 0 }}>{formMessage}</p>
-      <MintButton
-        type="submit"
-        style={{ marginLeft: 'auto' }}
-        disabled={
-          newDatasetStatus === DatasetStatus.Saving ||
-          newDatasetStatus === DatasetStatus.Error
-        }
-      >
-        {newDatasetStatus === DatasetStatus.Saving ? 'Submitting...' : 'Create'}
+      <MintButton type="submit" style={{ marginLeft: 'auto' }}>
+        Create
       </MintButton>
-      {newDatasetStatus === DatasetStatus.Error && (
-        <p>There was an error creating the dataset</p>
-      )}
     </Form>
   )
 }
