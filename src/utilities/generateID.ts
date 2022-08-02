@@ -13,4 +13,4 @@ const recordID = () => 'rec' + nanoid()
 
 const datapointID = () => 'dat' + nanoid()
 
-export { projectID, datasetID, recordID, datapointID }
+export default { projectID, datasetID, recordID, datapointID }
