@@ -15,6 +15,7 @@ import useProject from 'hooks/project/useProject'
 import saveDataset from 'api/saveDataset'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
 import saveRegister from 'api/saveRegister'
+import generateID from 'utilities/generateID'
 
 const Form = styled.form`
   width: 500px;
@@ -75,7 +76,7 @@ const CreateDatasetForm = () => {
       status: DatasetStatus.Saving,
       activeVersion: 0,
       register: {
-        [crypto.randomUUID()]: {
+        [generateID.recordID()]: {
           SampleID: {
             displayValue: '',
             dataValue: '',
