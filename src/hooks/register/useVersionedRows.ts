@@ -54,7 +54,6 @@ const useVersionedRows = () => {
       ) as RecordWithID
     )
 
-    console.log(newRows)
     return newRows
   }
 

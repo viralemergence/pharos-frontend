@@ -15,11 +15,8 @@ const useAutosaveDataset = () => {
 
   useEffect(() => {
     const save = async () => {
-      console.log(dataset.status)
       if (dataset.status !== DatasetStatus.Unsaved || !user.data?.researcherID)
         return null
-
-      console.log('AUTOSAVE: Dataset')
 
       projectDispatch({
         type: ProjectActions.SetDatasetStatus,
@@ -29,6 +26,7 @@ const useAutosaveDataset = () => {
         },
       })
 
+      console.log('API Sync: Save Dataset')
       // omit register, save everything else to the server
       const { register: _, ...datasetSaveData } = dataset
       const saved = await saveDataset(datasetSaveData)

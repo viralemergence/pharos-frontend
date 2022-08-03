@@ -15,8 +15,6 @@ const useAutosaveRegister = () => {
 
   useEffect(() => {
     const save = async () => {
-      console.log('AUTOSAVE: Register')
-
       if (
         dataset.registerStatus !== RegisterStatus.Unsaved ||
         !dataset?.register ||
@@ -32,6 +30,7 @@ const useAutosaveRegister = () => {
         },
       })
 
+      console.log('API Sync: Save Register')
       const saved = await saveRegister({
         datasetID,
         researcherID: user.data.researcherID,
