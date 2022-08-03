@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
-import { DatasetStatus } from 'reducers/projectReducer/types'
+import { DatasetStatus, RegisterStatus } from 'reducers/projectReducer/types'
 
 import MintButton from 'components/ui/MintButton'
 import Label from 'components/ui/InputLabel'
@@ -64,6 +64,7 @@ const CreateDatasetForm = () => {
 
     const datasetClientData = {
       status: DatasetStatus.Unsaved,
+      registerStatus: RegisterStatus.Unsaved,
       activeVersion: 0,
       register: {
         [generateID.recordID()]: {

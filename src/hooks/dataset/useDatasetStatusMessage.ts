@@ -8,19 +8,15 @@ const useDatasetStatusMessage = () => {
 
   const registerStatus = dataset.registerStatus
 
-  console.log(
-    dataset.status === DatasetStatus.Saved &&
-      registerStatus === RegisterStatus.Loaded
-  )
-
   let datasetStatusMessage
+
   switch (true) {
+    case registerStatus === RegisterStatus.Loading:
+      datasetStatusMessage = 'Loading register'
+      break
     case dataset.status === DatasetStatus.Saved &&
       registerStatus === RegisterStatus.Saved:
       datasetStatusMessage = 'Dataset saved'
-      break
-    case registerStatus === RegisterStatus.Loading:
-      datasetStatusMessage = 'Loading register'
       break
     case dataset.status === DatasetStatus.Saving ||
       registerStatus === RegisterStatus.Saving:
@@ -28,10 +24,14 @@ const useDatasetStatusMessage = () => {
       break
     case dataset.status === DatasetStatus.Unsaved ||
       registerStatus === RegisterStatus.Unsaved:
-      datasetStatusMessage = 'Dataset not saved'
+      datasetStatusMessage = 'Not saved'
       break
-    case dataset.status === DatasetStatus.Error:
+    case dataset.status === DatasetStatus.Error ||
+      registerStatus === RegisterStatus.Error:
       datasetStatusMessage = 'Error'
+      break
+    default:
+      datasetStatusMessage = ' Unknown Error'
   }
 
   return datasetStatusMessage

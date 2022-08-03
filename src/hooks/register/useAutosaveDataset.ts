@@ -51,13 +51,7 @@ const useAutosaveDataset = () => {
     }
 
     save()
-  }, [
-    datasetID,
-    dataset,
-    projectDispatch,
-    dataset.registerStatus,
-    user.data?.researcherID,
-  ])
+  }, [datasetID, dataset, projectDispatch, user.data?.researcherID])
 }
 
 export default useAutosaveDataset
