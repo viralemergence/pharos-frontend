@@ -3,20 +3,22 @@ import styled from 'styled-components'
 
 import MainGrid from 'components/layout/MainGrid'
 import Sidebar from 'components/Sidebar/Sidebar'
+import DatasetGrid from './DatasetGrid/DatasetsGrid'
 
 import CSVParser from './CSVParser/CSVParser'
-import DatasetGrid from './DatasetGrid/DatasetsGrid'
 import { Content, TopBar } from '../ViewComponents'
 
+import VersionSwitcher from './VersionSwitcher/VersionSwitcher'
+import DownloadButton from './DownloadButton/DownloadButton'
+import ModalMessageProvider from './DatasetGrid/ModalMessage/ModalMessageProvider'
 import UpdateButton from './UpdateButton/UpdateButton'
 
 import useDataset from 'hooks/dataset/useDataset'
 import useDatasetStatusMessage from 'hooks/dataset/useDatasetStatusMessage'
-import VersionSwitcher from './VersionSwitcher/VersionSwitcher'
-import DownloadButton from './DownloadButton/DownloadButton'
-import useLoadRegister from 'hooks/register/useLoadRegister'
-import ModalMessageProvider from './DatasetGrid/ModalMessage/ModalMessageProvider'
+
 import useAutosaveRegister from 'hooks/register/useAutosaveRegister'
+import useAutosaveDataset from 'hooks/register/useAutosaveDataset'
+import useLoadRegister from 'hooks/register/useLoadRegister'
 
 const H1 = styled.h1`
   ${({ theme }) => theme.h3};
@@ -32,10 +34,17 @@ const DatasetEditor = () => {
   const dataset = useDataset()
   const datasetStatusMessage = useDatasetStatusMessage()
 
+  // Handling server status side effects
+
   // load the register as soon as the dataset is loaded
   // and as long as the dataset has a registerKey
   useLoadRegister()
+  // autosave dataset when changes are committed
+  // this saves everything in the dataset object
+  // except for the register itself
+  useAutosaveDataset()
   // autosave the register when changes are committed
+  // this saves both the versions array and the register
   useAutosaveRegister()
 
   console.log({ dataset })

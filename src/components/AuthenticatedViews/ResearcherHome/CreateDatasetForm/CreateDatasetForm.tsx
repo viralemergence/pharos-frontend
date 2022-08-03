@@ -11,7 +11,6 @@ import Input from 'components/ui/Input'
 
 import useUser from 'hooks/useUser'
 
-import saveDataset from 'api/saveDataset'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
 import generateID from 'utilities/generateID'
 
@@ -64,7 +63,7 @@ const CreateDatasetForm = () => {
     }
 
     const datasetClientData = {
-      status: DatasetStatus.Saving,
+      status: DatasetStatus.Unsaved,
       activeVersion: 0,
       register: {
         [generateID.recordID()]: {
@@ -185,26 +184,6 @@ const CreateDatasetForm = () => {
     // now that we can handle this, just navigate
     // straight to the dataset directly
     navigate(`/dataset/${datasetID}`)
-
-    const saved = await saveDataset(datasetSaveData)
-
-    if (saved) {
-      projectDispatch({
-        type: ProjectActions.SetDatasetStatus,
-        payload: {
-          datasetID,
-          status: DatasetStatus.Saved,
-        },
-      })
-    } else {
-      projectDispatch({
-        type: ProjectActions.SetDatasetStatus,
-        payload: {
-          datasetID,
-          status: DatasetStatus.Error,
-        },
-      })
-    }
   }
 
   return (
