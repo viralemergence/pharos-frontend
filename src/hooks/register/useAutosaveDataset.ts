@@ -28,7 +28,13 @@ const useAutosaveDataset = () => {
 
       console.log('API Sync: Save Dataset')
       // omit register, save everything else to the server
-      const { register: _, ...datasetSaveData } = dataset
+      const datasetSaveData = { ...dataset }
+      delete datasetSaveData.registerStatus
+      delete datasetSaveData.register
+      delete datasetSaveData.status
+
+      console.log(datasetSaveData)
+
       const saved = await saveDataset(datasetSaveData)
 
       if (saved) {
