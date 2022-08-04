@@ -57,21 +57,17 @@ const useLoadRegister = () => {
       })
 
       if (nextRegisterData) {
-        // commenting out importing the register and
-        // versions array from the server since
-        // these aren't truly handled safely everywhere
+        const { register, versions } = nextRegisterData
 
-        // const { register, versions } = nextRegisterData
+        projectDispatch({
+          type: ProjectActions.ReplaceRegister,
+          payload: { datasetID, register },
+        })
 
-        // projectDispatch({
-        //   type: ProjectActions.ReplaceRegister,
-        //   payload: { datasetID, register },
-        // })
-
-        // projectDispatch({
-        //   type: ProjectActions.SetVersions,
-        //   payload: { datasetID, versions },
-        // })
+        projectDispatch({
+          type: ProjectActions.SetVersions,
+          payload: { datasetID, versions },
+        })
 
         projectDispatch({
           type: ProjectActions.SetRegisterStatus,
