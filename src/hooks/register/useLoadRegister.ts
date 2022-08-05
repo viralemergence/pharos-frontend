@@ -71,7 +71,7 @@ const useLoadRegister = () => {
 
         projectDispatch({
           type: ProjectActions.SetRegisterStatus,
-          payload: { datasetID, status: RegisterStatus.Loaded },
+          payload: { datasetID, status: RegisterStatus.Saved },
         })
       } else {
         projectDispatch({
