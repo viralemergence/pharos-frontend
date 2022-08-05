@@ -1,0 +1,677 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 25.4.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 960 800" style="enable-background:new 0 0 960 800;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:none;stroke:#888888;stroke-width:1.2888;stroke-miterlimit:2.5777;}
+	.st1{fill:#E7F0DB;stroke:#000000;stroke-width:0.6444;stroke-miterlimit:2.5777;}
+	.st2{font-family:'Helvetica';}
+	.st3{font-size:9.0219px;}
+	.st4{fill:#E1D8F0;stroke:#000000;stroke-width:0.6444;stroke-miterlimit:2.5777;}
+	.st5{fill:#D8F0ED;stroke:#000000;stroke-width:0.6444;stroke-miterlimit:2.5777;}
+</style>
+<path class="st0" d="M415.9,35.5c0,31.6,0,31.6,0,63.2"/>
+<g transform="translate(10,118)">
+	<path class="st0" d="M405.9-19.3c0,55.1,0,55.1,0,110.2"/>
+	<g transform="translate(-143,78)">
+		<path class="st0" d="M548.9,12.9c0,61.5-175.3,63.2-175.3,124.7"/>
+		<g transform="translate(174,263)">
+			<path class="st0" d="M199.6-125.4l271.3-1.6"/>
+			<g transform="translate(-1383,0)">
+				<g transform="translate(0,20)">
+					<g transform="translate(0,0)">
+						<rect x="1489.8" y="-161.5" class="st1" width="23.2" height="15.5"/>
+						<text transform="matrix(1 0 0 1 1492.3921 -148.6548)" class="st2 st3">date</text>
+					</g>
+					<g transform="translate(36,0)">
+						<rect x="1477" y="-161.5" class="st1" width="161.7" height="15.5"/>
+						<text transform="matrix(1 0 0 1 1479.5913 -148.6548)" class="st2 st3">Tue, 12 Jul 2022 17:52:23 GMT</text>
+					</g>
+					<g transform="translate(0,24)">
+						<rect x="1489.8" y="-170.1" class="st1" width="23.2" height="16.1"/>
+						<text transform="matrix(1 0 0 1 1492.3921 -156.544)" class="st2 st3">key</text>
+					</g>
+					<g transform="translate(36,24)">
+						<rect x="1477" y="-170.1" class="st1" width="161.7" height="16.1"/>
+						<text transform="matrix(1 0 0 1 1479.5913 -157.1885)" class="st2 st3">7dfe67ae-24c7-3694-ac15-2bb47081...</text>
+					</g>
+				</g>
+				<g>
+					<text transform="matrix(1 0 0 1 1560.7983 -144.1211)" class="st2 st3">versions[0]</text>
+				</g>
+			</g>
+			<g transform="">
+				<path class="st0" d="M470.9-119.3c0,35.4,0.3,88.9,0.3,124.4"/>
+				<g transform="translate(149,143)">
+					<path class="st0" d="M322.3-137.9V-7"/>
+					<g transform="translate(-643,0)">
+						<path class="st0" d="M965.3-137.9c0,31.6,366.7,31.6,366.7,63.2"/>
+						<path class="st0" d="M965.3-137.9c0,31.6,290,31.6,290,63.2"/>
+						<path class="st0" d="M965.3-137.9c0,31.6,212,31.6,212,63.2"/>
+						<path class="st0" d="M965.3-137.9c0,31.6,131.5,31.6,131.5,63.2"/>
+						<path class="st0" d="M965.3-137.9c0,31.9,49.6,31.9,49.6,63.8"/>
+						<path class="st0" d="M965.3-137.9c0,31.9-33.5,31.9-33.5,63.8"/>
+						<path class="st0" d="M965.3-137.9c0,31.6-123.1,31.6-123.1,63.2"/>
+						<path class="st0" d="M965.3-137.9c0,31.6-206.2,31.6-206.2,63.2"/>
+						<path class="st0" d="M965.3-137.9c0,31.6-289.3,31.6-289.3,63.2"/>
+						<path class="st0" d="M965.3-137.9c0,31.6-366.7,31.6-366.7,63.2"/>
+						<g transform="translate(-592,78)">
+							<g transform="translate(0,20)">
+								<g transform="translate(0,0)">
+									<rect x="1158.4" y="-188.3" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 1160.9497 -175.3627)" class="st2 st3">value</text>
+								</g>
+								<g transform="translate(61,0)">
+									<rect x="1136.7" y="-188.3" class="st1" width="24.5" height="15.5"/>
+								</g>
+								<g transform="translate(0,24)">
+									<rect x="1158.4" y="-196.8" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 1160.9497 -183.8964)" class="st2 st3">modified</text>
+								</g>
+								<g transform="translate(61,24)">
+									<rect x="1136.7" y="-196.8" class="st4" width="24.5" height="15.5"/>
+									<text transform="matrix(1 0 0 1 1139.2593 -183.8964)" class="st2 st3">false</text>
+								</g>
+							</g>
+							<g>
+								<text transform="matrix(1 0 0 1 1167.0249 -170.8285)" class="st2 st3">DetectionID</text>
+							</g>
+						</g>
+						<g transform="translate(-483,78)">
+							<g transform="translate(0,20)">
+								<g transform="translate(0,0)">
+									<rect x="1119.6" y="-188.3" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 1122.1914 -175.3627)" class="st2 st3">value</text>
+								</g>
+								<g transform="translate(61,0)">
+									<rect x="1097.9" y="-188.3" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 1100.501 -175.3627)" class="st2 st3">modified</text>
+								</g>
+								<g transform="translate(0,24)">
+									<rect x="1119.6" y="-196.8" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 1122.1914 -183.8964)" class="st2 st3">modified</text>
+								</g>
+								<g transform="translate(61,24)">
+									<rect x="1097.9" y="-196.8" class="st4" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 1100.501 -183.8964)" class="st2 st3">true</text>
+								</g>
+							</g>
+							<g>
+								<text transform="matrix(1 0 0 1 1139.1177 -170.8285)" class="st2 st3">SampleID</text>
+							</g>
+						</g>
+						<g transform="translate(-351,78)">
+							<g transform="translate(8,20)">
+								<g transform="translate(0,0)">
+									<rect x="1069.8" y="-188.3" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 1072.4097 -175.3627)" class="st2 st3">value</text>
+								</g>
+								<g transform="translate(61,0)">
+									<rect x="1048.1" y="-188.3" class="st1" width="24.5" height="15.5"/>
+								</g>
+								<g transform="translate(0,24)">
+									<rect x="1069.8" y="-196.8" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 1072.4097 -183.8964)" class="st2 st3">modified</text>
+								</g>
+								<g transform="translate(61,24)">
+									<rect x="1048.1" y="-196.8" class="st4" width="24.5" height="15.5"/>
+									<text transform="matrix(1 0 0 1 1050.7197 -183.8964)" class="st2 st3">false</text>
+								</g>
+							</g>
+							<g>
+								<text transform="matrix(1 0 0 1 1075.3062 -170.8285)" class="st2 st3">DetectionMethod</text>
+							</g>
+						</g>
+						<g transform="translate(-227,78)">
+							<g transform="translate(13,20)">
+								<g transform="translate(0,0)">
+									<rect x="1024" y="-188.3" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 1026.54 -175.3627)" class="st2 st3">value</text>
+								</g>
+								<g transform="translate(61,0)">
+									<rect x="1002.3" y="-188.3" class="st1" width="24.5" height="15.5"/>
+									<text transform="matrix(1 0 0 1 1004.8495 -175.3627)" class="st2 st3">test</text>
+								</g>
+								<g transform="translate(0,24)">
+									<rect x="1024" y="-196.8" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 1026.54 -183.8964)" class="st2 st3">modified</text>
+								</g>
+								<g transform="translate(61,24)">
+									<rect x="1002.3" y="-196.8" class="st4" width="24.5" height="15.5"/>
+									<text transform="matrix(1 0 0 1 1004.8495 -183.8964)" class="st2 st3">false</text>
+								</g>
+							</g>
+							<g>
+								<text transform="matrix(1 0 0 1 1031.1807 -170.8285)" class="st2 st3">DetectionOutcome</text>
+							</g>
+						</g>
+						<g transform="translate(-93,78)">
+							<g transform="translate(12,20)">
+								<g transform="translate(0,0)">
+									<rect x="976.7" y="-188.3" class="st1" width="39.3" height="16.1"/>
+									<text transform="matrix(1 0 0 1 979.2475 -175.3627)" class="st2 st3">value</text>
+								</g>
+								<g transform="translate(61,0)">
+									<rect x="955" y="-188.3" class="st1" width="32.2" height="16.1"/>
+									<text transform="matrix(1 0 0 1 957.5576 -174.7182)" class="st2 st3">testing</text>
+								</g>
+								<g transform="translate(0,25)">
+									<rect x="976.7" y="-197.1" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 979.2475 -184.2519)" class="st2 st3">modified</text>
+								</g>
+								<g transform="translate(61,25)">
+									<rect x="955" y="-197.1" class="st4" width="32.2" height="15.5"/>
+									<text transform="matrix(1 0 0 1 957.5576 -184.2519)" class="st2 st3">false</text>
+								</g>
+							</g>
+							<g>
+								<text transform="matrix(1 0 0 1 983.893 -170.8285)" class="st2 st3">DetectionComments</text>
+							</g>
+						</g>
+						<g transform="translate(52,78)">
+							<g transform="translate(2,21)">
+								<g transform="translate(0,0)">
+									<rect x="928.7" y="-188.6" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 931.2446 -175.7182)" class="st2 st3">value</text>
+								</g>
+								<g transform="translate(61,0)">
+									<rect x="907" y="-188.6" class="st1" width="25.1" height="15.5"/>
+									<text transform="matrix(1 0 0 1 909.5541 -175.7182)" class="st2 st3">teste</text>
+								</g>
+								<g transform="translate(0,24)">
+									<rect x="928.7" y="-197.1" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 931.2446 -184.2519)" class="st2 st3">modified</text>
+								</g>
+								<g transform="translate(61,24)">
+									<rect x="907" y="-197.1" class="st4" width="25.1" height="15.5"/>
+									<text transform="matrix(1 0 0 1 909.5541 -184.2519)" class="st2 st3">false</text>
+								</g>
+							</g>
+							<g>
+								<text transform="matrix(1 0 0 1 932.0424 -170.184)" class="st2 st3">PathogenTaxID</text>
+							</g>
+						</g>
+						<g transform="translate(166,78)">
+							<g transform="translate(15,20)">
+								<g transform="translate(0,0)">
+									<rect x="883.5" y="-188.3" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 886.0854 -175.3627)" class="st2 st3">value</text>
+								</g>
+								<g transform="translate(61,0)">
+									<rect x="861.8" y="-188.3" class="st1" width="24.5" height="15.5"/>
+									<text transform="matrix(1 0 0 1 864.3954 -175.3627)" class="st2 st3">test</text>
+								</g>
+								<g transform="translate(0,24)">
+									<rect x="883.5" y="-196.8" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 886.0854 -183.8964)" class="st2 st3">modified</text>
+								</g>
+								<g transform="translate(61,24)">
+									<rect x="861.8" y="-196.8" class="st4" width="24.5" height="15.5"/>
+									<text transform="matrix(1 0 0 1 864.3954 -183.8964)" class="st2 st3">false</text>
+								</g>
+							</g>
+							<g>
+								<text transform="matrix(1 0 0 1 891.8618 -170.8285)" class="st2 st3">GenbankAccession</text>
+							</g>
+						</g>
+						<g transform="translate(305,78)">
+							<g transform="translate(1,20)">
+								<g transform="translate(0,0)">
+									<rect x="839.1" y="-188.3" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 841.6381 -175.3627)" class="st2 st3">value</text>
+								</g>
+								<g transform="translate(61,0)">
+									<rect x="817.4" y="-188.3" class="st1" width="24.5" height="15.5"/>
+									<text transform="matrix(1 0 0 1 819.9477 -175.3627)" class="st2 st3">test</text>
+								</g>
+								<g transform="translate(0,24)">
+									<rect x="839.1" y="-196.8" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 841.6381 -183.8964)" class="st2 st3">modified</text>
+								</g>
+								<g transform="translate(61,24)">
+									<rect x="817.4" y="-196.8" class="st4" width="24.5" height="15.5"/>
+									<text transform="matrix(1 0 0 1 819.9477 -183.8964)" class="st2 st3">false</text>
+								</g>
+							</g>
+							<g>
+								<text transform="matrix(1 0 0 1 842.4472 -170.8285)" class="st2 st3">SRAAccession</text>
+							</g>
+						</g>
+						<g transform="translate(416,78)">
+							<g transform="translate(11,20)">
+								<g transform="translate(0,0)">
+									<rect x="796" y="-188.3" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 798.6127 -175.3627)" class="st2 st3">value</text>
+								</g>
+								<g transform="translate(61,0)">
+									<rect x="774.3" y="-188.3" class="st1" width="24.5" height="15.5"/>
+								</g>
+								<g transform="translate(0,24)">
+									<rect x="796" y="-196.8" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 798.6127 -183.8964)" class="st2 st3">modified</text>
+								</g>
+								<g transform="translate(61,24)">
+									<rect x="774.3" y="-196.8" class="st4" width="24.5" height="15.5"/>
+									<text transform="matrix(1 0 0 1 776.9223 -183.8964)" class="st2 st3">false</text>
+								</g>
+							</g>
+							<g>
+								<text transform="matrix(1 0 0 1 802.7621 -170.8285)" class="st2 st3">GISAIDAccession</text>
+							</g>
+						</g>
+						<g transform="translate(546,78)">
+							<g transform="translate(0,20)">
+								<g transform="translate(0,0)">
+									<rect x="753.7" y="-188.3" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 756.2988 -175.3627)" class="st2 st3">value</text>
+								</g>
+								<g transform="translate(61,0)">
+									<rect x="732" y="-188.3" class="st1" width="24.5" height="15.5"/>
+								</g>
+								<g transform="translate(0,24)">
+									<rect x="753.7" y="-196.8" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 756.2988 -183.8964)" class="st2 st3">modified</text>
+								</g>
+								<g transform="translate(61,24)">
+									<rect x="732" y="-196.8" class="st4" width="24.5" height="15.5"/>
+									<text transform="matrix(1 0 0 1 734.6083 -183.8964)" class="st2 st3">false</text>
+								</g>
+							</g>
+							<g>
+								<text transform="matrix(1 0 0 1 758.1147 -170.8285)" class="st2 st3">GBIFIdentifier</text>
+							</g>
+						</g>
+						<g transform="translate(19,20)">
+							<g transform="translate(0,0)">
+								<rect x="941.1" y="-160.5" class="st1" width="5.2" height="5.2"/>
+							</g>
+							<g transform="translate(8,0)">
+								<rect x="938.3" y="-160.5" class="st1" width="5.2" height="5.2"/>
+							</g>
+						</g>
+						<g>
+							<text transform="matrix(1 0 0 1 950.728 -143.0932)" class="st2 st3">rows[0]</text>
+						</g>
+					</g>
+					<g transform="translate(596,0)">
+						<path class="st0" d="M-273.7-9.6C-273.7,22,88.4,22,88.4,53.6"/>
+						<path class="st0" d="M-273.7-9.6C-273.7,22,11.7,22,11.7,53.6"/>
+						<path class="st0" d="M-273.7-9.6C-273.7,22-66.2,22-66.2,53.6"/>
+						<path class="st0" d="M-273.7-9.6c0,31.6,127,31.6,127,63.2"/>
+						<path class="st0" d="M-273.7-9.6c0,31.9,45.8,31.9,45.8,63.8"/>
+						<path class="st0" d="M-273.7-9.6c0,31.6-38,31.6-38,63.2"/>
+						<path class="st0" d="M-273.7-9.6c0,31.9-127.6,31.9-127.6,63.8"/>
+						<path class="st0" d="M-273.7-9.6c0,31.6-213.9,31.6-213.9,63.2"/>
+						<path class="st0" d="M-273.7-9.6C-273.7,22-565,22-565,53.6"/>
+						<path class="st0" d="M-273.7-9.6c0,31.6-361.5,31.6-361.5,63.2"/>
+						<g transform="translate(-584,78)">
+							<g transform="translate(0,20)">
+								<g transform="translate(0,0)">
+									<rect x="-83.5" y="-59.9" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -80.8952 -46.9828)" class="st2 st3">value</text>
+								</g>
+								<g transform="translate(61,0)">
+									<rect x="-105.2" y="-59.9" class="st1" width="24.5" height="15.5"/>
+								</g>
+								<g transform="translate(0,24)">
+									<rect x="-83.5" y="-68.4" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -80.8952 -55.5164)" class="st2 st3">modified</text>
+								</g>
+								<g transform="translate(61,24)">
+									<rect x="-105.2" y="-68.4" class="st4" width="24.5" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -102.5857 -55.5164)" class="st2 st3">false</text>
+								</g>
+							</g>
+							<g>
+								<text transform="matrix(1 0 0 1 -74.82 -42.4486)" class="st2 st3">DetectionID</text>
+							</g>
+						</g>
+						<g transform="translate(-475,78)">
+							<g transform="translate(0,20)">
+								<g transform="translate(0,0)">
+									<rect x="-122.2" y="-59.9" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -119.6535 -46.9828)" class="st2 st3">value</text>
+								</g>
+								<g transform="translate(61,0)">
+									<rect x="-143.9" y="-59.9" class="st1" width="24.5" height="15.5"/>
+								</g>
+								<g transform="translate(0,24)">
+									<rect x="-122.2" y="-68.4" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -119.6535 -55.5164)" class="st2 st3">modified</text>
+								</g>
+								<g transform="translate(61,24)">
+									<rect x="-143.9" y="-68.4" class="st4" width="24.5" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -141.3435 -55.5164)" class="st2 st3">false</text>
+								</g>
+							</g>
+							<g>
+								<text transform="matrix(1 0 0 1 -109.8161 -42.4486)" class="st2 st3">SampleID</text>
+							</g>
+						</g>
+						<g transform="translate(-366,78)">
+							<g transform="translate(0,20)">
+								<g transform="translate(0,0)">
+									<rect x="-161" y="-59.9" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -158.4118 -46.9828)" class="st2 st3">value</text>
+								</g>
+								<g transform="translate(61,0)">
+									<rect x="-182.7" y="-59.9" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -180.1023 -46.9828)" class="st2 st3">Modified</text>
+								</g>
+								<g transform="translate(0,24)">
+									<rect x="-161" y="-68.4" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -158.4118 -55.5164)" class="st2 st3">modified</text>
+								</g>
+								<g transform="translate(61,24)">
+									<rect x="-182.7" y="-68.4" class="st4" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -180.1023 -55.5164)" class="st2 st3">true</text>
+								</g>
+							</g>
+							<g>
+								<text transform="matrix(1 0 0 1 -155.7829 -42.4486)" class="st2 st3">DetectionMethod</text>
+							</g>
+						</g>
+						<g transform="translate(-234,78)">
+							<g transform="translate(7,20)">
+								<g transform="translate(0,0)">
+									<rect x="-210.4" y="-59.9" class="st1" width="39.3" height="16.1"/>
+									<text transform="matrix(1 0 0 1 -207.8376 -46.9828)" class="st2 st3">value</text>
+								</g>
+								<g transform="translate(61,0)">
+									<rect x="-232.1" y="-59.9" class="st1" width="32.2" height="16.1"/>
+									<text transform="matrix(1 0 0 1 -229.528 -46.3382)" class="st2 st3">testing</text>
+								</g>
+								<g transform="translate(0,25)">
+									<rect x="-210.4" y="-68.8" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -207.8376 -55.8719)" class="st2 st3">modified</text>
+								</g>
+								<g transform="translate(61,25)">
+									<rect x="-232.1" y="-68.8" class="st4" width="32.2" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -229.528 -55.8719)" class="st2 st3">true</text>
+								</g>
+							</g>
+							<g>
+								<text transform="matrix(1 0 0 1 -205.3303 -42.4486)" class="st2 st3">DetectionOutcome</text>
+							</g>
+						</g>
+						<g transform="translate(-100,78)">
+							<g transform="translate(15,20)">
+								<g transform="translate(0,0)">
+									<rect x="-260.9" y="-59.9" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -258.3298 -46.9828)" class="st2 st3">value</text>
+								</g>
+								<g transform="translate(61,0)">
+									<rect x="-282.6" y="-59.9" class="st1" width="28.4" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -280.0202 -46.9828)" class="st2 st3">break</text>
+								</g>
+								<g transform="translate(0,24)">
+									<rect x="-260.9" y="-68.4" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -258.3298 -55.5164)" class="st2 st3">modified</text>
+								</g>
+								<g transform="translate(61,24)">
+									<rect x="-282.6" y="-68.4" class="st4" width="28.4" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -280.0202 -55.5164)" class="st2 st3">true</text>
+								</g>
+							</g>
+							<g>
+								<text transform="matrix(1 0 0 1 -252.6179 -42.4486)" class="st2 st3">DetectionComments</text>
+							</g>
+						</g>
+						<g transform="translate(45,78)">
+							<g transform="translate(3,21)">
+								<g transform="translate(0,0)">
+									<rect x="-308.2" y="-60.2" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -305.6218 -47.3382)" class="st2 st3">value</text>
+								</g>
+								<g transform="translate(61,0)">
+									<rect x="-329.9" y="-60.2" class="st1" width="24.5" height="15.5"/>
+								</g>
+								<g transform="translate(0,24)">
+									<rect x="-308.2" y="-68.8" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -305.6218 -55.8719)" class="st2 st3">modified</text>
+								</g>
+								<g transform="translate(61,24)">
+									<rect x="-329.9" y="-68.8" class="st4" width="24.5" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -327.3122 -55.8719)" class="st2 st3">false</text>
+								</g>
+							</g>
+							<g>
+								<text transform="matrix(1 0 0 1 -304.4685 -41.804)" class="st2 st3">PathogenTaxID</text>
+							</g>
+						</g>
+						<g transform="translate(159,78)">
+							<g transform="translate(15,20)">
+								<g transform="translate(0,0)">
+									<rect x="-353" y="-59.9" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -350.4255 -46.9828)" class="st2 st3">value</text>
+								</g>
+								<g transform="translate(61,0)">
+									<rect x="-374.7" y="-59.9" class="st1" width="24.5" height="15.5"/>
+								</g>
+								<g transform="translate(0,24)">
+									<rect x="-353" y="-68.4" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -350.4255 -55.5164)" class="st2 st3">modified</text>
+								</g>
+								<g transform="translate(61,24)">
+									<rect x="-374.7" y="-68.4" class="st4" width="24.5" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -372.1159 -55.5164)" class="st2 st3">false</text>
+								</g>
+							</g>
+							<g>
+								<text transform="matrix(1 0 0 1 -344.6491 -42.4486)" class="st2 st3">GenbankAccession</text>
+							</g>
+						</g>
+						<g transform="translate(298,78)">
+							<g transform="translate(1,20)">
+								<g transform="translate(0,0)">
+									<rect x="-397.5" y="-59.9" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -394.8728 -46.9828)" class="st2 st3">value</text>
+								</g>
+								<g transform="translate(61,0)">
+									<rect x="-419.1" y="-59.9" class="st1" width="24.5" height="15.5"/>
+								</g>
+								<g transform="translate(0,24)">
+									<rect x="-397.5" y="-68.4" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -394.8728 -55.5164)" class="st2 st3">modified</text>
+								</g>
+								<g transform="translate(61,24)">
+									<rect x="-419.1" y="-68.4" class="st4" width="24.5" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -416.5632 -55.5164)" class="st2 st3">false</text>
+								</g>
+							</g>
+							<g>
+								<text transform="matrix(1 0 0 1 -394.0632 -42.4486)" class="st2 st3">SRAAccession</text>
+							</g>
+						</g>
+						<g transform="translate(409,78)">
+							<g transform="translate(11,20)">
+								<g transform="translate(0,0)">
+									<rect x="-440.5" y="-59.9" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -437.8982 -46.9828)" class="st2 st3">value</text>
+								</g>
+								<g transform="translate(61,0)">
+									<rect x="-462.2" y="-59.9" class="st1" width="24.5" height="15.5"/>
+								</g>
+								<g transform="translate(0,24)">
+									<rect x="-440.5" y="-68.4" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -437.8982 -55.5164)" class="st2 st3">modified</text>
+								</g>
+								<g transform="translate(61,24)">
+									<rect x="-462.2" y="-68.4" class="st4" width="24.5" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -459.5886 -55.5164)" class="st2 st3">false</text>
+								</g>
+							</g>
+							<g>
+								<text transform="matrix(1 0 0 1 -433.7487 -42.4486)" class="st2 st3">GISAIDAccession</text>
+							</g>
+						</g>
+						<g transform="translate(539,78)">
+							<g transform="translate(0,20)">
+								<g transform="translate(0,0)">
+									<rect x="-482.8" y="-59.9" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -480.2116 -46.9828)" class="st2 st3">value</text>
+								</g>
+								<g transform="translate(61,0)">
+									<rect x="-504.5" y="-59.9" class="st1" width="24.5" height="15.5"/>
+								</g>
+								<g transform="translate(0,24)">
+									<rect x="-482.8" y="-68.4" class="st1" width="39.3" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -480.2116 -55.5164)" class="st2 st3">modified</text>
+								</g>
+								<g transform="translate(61,24)">
+									<rect x="-504.5" y="-68.4" class="st4" width="24.5" height="15.5"/>
+									<text transform="matrix(1 0 0 1 -501.903 -55.5164)" class="st2 st3">false</text>
+								</g>
+							</g>
+							<g>
+								<text transform="matrix(1 0 0 1 -478.3962 -42.4486)" class="st2 st3">GBIFIdentifier</text>
+							</g>
+						</g>
+						<g transform="translate(19,20)">
+							<g transform="translate(0,0)">
+								<rect x="-297.9" y="-32.1" class="st1" width="5.2" height="5.2"/>
+							</g>
+							<g transform="translate(8,0)">
+								<rect x="-300.7" y="-32.1" class="st1" width="5.2" height="5.2"/>
+							</g>
+						</g>
+						<g>
+							<text transform="matrix(1 0 0 1 -288.2722 -14.7132)" class="st2 st3">rows[1]</text>
+						</g>
+					</g>
+				</g>
+				<g transform="translate(0,20)">
+					<g transform="translate(0,0)">
+						<rect x="374.9" y="-163.2" class="st1" width="29.6" height="15.5"/>
+						<text transform="matrix(1 0 0 1 377.5044 -150.2661)" class="st2 st3">date</text>
+					</g>
+					<g transform="translate(46,0)">
+						<rect x="358.6" y="-163.2" class="st1" width="162.4" height="15.5"/>
+						<text transform="matrix(1 0 0 1 361.1475 -150.2661)" class="st2 st3">Tue, 12 Jul 2022 18:13:52 GMT</text>
+					</g>
+					<g transform="translate(0,24)">
+						<rect x="374.9" y="-171.7" class="st1" width="29.6" height="16.1"/>
+						<text transform="matrix(1 0 0 1 377.5044 -158.1553)" class="st2 st3">key</text>
+					</g>
+					<g transform="translate(46,24)">
+						<rect x="358.6" y="-171.7" class="st1" width="162.4" height="16.1"/>
+						<text transform="matrix(1 0 0 1 361.1475 -158.7998)" class="st2 st3">11410dbe-91d2-3e93-8460-edd3f5d9...</text>
+					</g>
+					<g transform="translate(0,49)">
+						<rect x="374.9" y="-180.6" class="st1" width="29.6" height="15.5"/>
+						<text transform="matrix(1 0 0 1 377.5044 -167.6895)" class="st2 st3">status</text>
+					</g>
+					<g transform="translate(46,49)">
+						<rect x="358.6" y="-180.6" class="st5" width="162.4" height="15.5"/>
+						<text transform="matrix(1 0 0 1 361.1475 -167.6895)" class="st2 st3">2</text>
+					</g>
+				</g>
+				<g>
+					<text transform="matrix(1 0 0 1 449.1328 -145.7324)" class="st2 st3">versions[1]</text>
+				</g>
+			</g>
+		</g>
+		<g transform="translate(0,20)">
+			<g transform="translate(0,0)">
+				<rect x="436.8" y="-69.6" class="st1" width="66.4" height="15.5"/>
+				<text transform="matrix(1 0 0 1 439.3755 -56.748)" class="st2 st3">datasetID</text>
+			</g>
+			<g transform="translate(103,0)">
+				<rect x="400.2" y="-69.6" class="st1" width="157.2" height="15.5"/>
+				<text transform="matrix(1 0 0 1 402.751 -56.748)" class="st2 st3">1657580421738</text>
+			</g>
+			<g transform="translate(0,24)">
+				<rect x="436.8" y="-78.2" class="st1" width="66.4" height="15.5"/>
+				<text transform="matrix(1 0 0 1 439.3755 -65.2822)" class="st2 st3">activeVersion</text>
+			</g>
+			<g transform="translate(103,24)">
+				<rect x="400.2" y="-78.2" class="st5" width="157.2" height="15.5"/>
+				<text transform="matrix(1 0 0 1 402.751 -65.2822)" class="st2 st3">7</text>
+			</g>
+			<g transform="translate(0,48)">
+				<rect x="436.8" y="-86.7" class="st1" width="66.4" height="15.5"/>
+				<text transform="matrix(1 0 0 1 439.3755 -73.8164)" class="st2 st3">status</text>
+			</g>
+			<g transform="translate(103,48)">
+				<rect x="400.2" y="-86.7" class="st5" width="157.2" height="15.5"/>
+				<text transform="matrix(1 0 0 1 402.751 -73.8164)" class="st2 st3">2</text>
+			</g>
+			<g transform="translate(0,72)">
+				<rect x="436.8" y="-95.2" class="st1" width="66.4" height="15.5"/>
+				<text transform="matrix(1 0 0 1 439.3755 -82.3501)" class="st2 st3">date_collected</text>
+			</g>
+			<g transform="translate(103,72)">
+				<rect x="400.2" y="-95.2" class="st1" width="157.2" height="15.5"/>
+				<text transform="matrix(1 0 0 1 402.751 -82.3501)" class="st2 st3">2022-07-11</text>
+			</g>
+			<g transform="translate(0,96)">
+				<rect x="436.8" y="-103.8" class="st1" width="66.4" height="15.5"/>
+				<text transform="matrix(1 0 0 1 439.3755 -90.8838)" class="st2 st3">samples_taken</text>
+			</g>
+			<g transform="translate(103,96)">
+				<rect x="400.2" y="-103.8" class="st1" width="157.2" height="15.5"/>
+				<text transform="matrix(1 0 0 1 402.751 -90.8838)" class="st2 st3">0</text>
+			</g>
+			<g transform="translate(0,120)">
+				<rect x="436.8" y="-112.3" class="st1" width="66.4" height="15.5"/>
+				<text transform="matrix(1 0 0 1 439.3755 -99.418)" class="st2 st3">researcherID</text>
+			</g>
+			<g transform="translate(103,120)">
+				<rect x="400.2" y="-112.3" class="st1" width="157.2" height="15.5"/>
+				<text transform="matrix(1 0 0 1 402.751 -99.418)" class="st2 st3">05b5964c861e4f28990fca98248c7f02</text>
+			</g>
+			<g transform="translate(0,144)">
+				<rect x="436.8" y="-120.8" class="st1" width="66.4" height="16.1"/>
+				<text transform="matrix(1 0 0 1 439.3755 -107.9521)" class="st2 st3">name</text>
+			</g>
+			<g transform="translate(103,144)">
+				<rect x="400.2" y="-120.8" class="st1" width="157.2" height="16.1"/>
+				<text transform="matrix(1 0 0 1 402.751 -107.3076)" class="st2 st3">New record type</text>
+			</g>
+			<g transform="translate(0,169)">
+				<rect x="436.8" y="-129.7" class="st1" width="66.4" height="15.5"/>
+				<text transform="matrix(1 0 0 1 439.3755 -116.8418)" class="st2 st3">detection_run</text>
+			</g>
+			<g transform="translate(103,169)">
+				<rect x="400.2" y="-129.7" class="st1" width="157.2" height="15.5"/>
+				<text transform="matrix(1 0 0 1 402.751 -116.8418)" class="st2 st3">0</text>
+			</g>
+		</g>
+		<g>
+			<text transform="matrix(1 0 0 1 516.3125 -52.2144)" class="st2 st3">1657580421738</text>
+		</g>
+	</g>
+	<g transform="translate(23,20)">
+		<g transform="translate(0,0)">
+			<rect x="377.8" y="-41.9" class="st1" width="5.2" height="5.2"/>
+		</g>
+		<g transform="translate(8,0)">
+			<rect x="374.9" y="-41.9" class="st1" width="5.2" height="5.2"/>
+		</g>
+	</g>
+	<g>
+		<text transform="matrix(1 0 0 1 388.874 -24.4795)" class="st2 st3">datasets</text>
+	</g>
+</g>
+<g transform="translate(0,20)">
+	<g transform="translate(0,0)">
+		<rect x="389.5" y="0.1" class="st1" width="41.9" height="15.5"/>
+		<text transform="matrix(1 0 0 1 392.083 12.9453)" class="st2 st3">projectID</text>
+	</g>
+	<g transform="translate(65,0)">
+		<rect x="366.4" y="0.1" class="st1" width="10.3" height="15.5"/>
+		<text transform="matrix(1 0 0 1 368.9707 12.9453)" class="st2 st3">0</text>
+	</g>
+	<g transform="translate(0,24)">
+		<rect x="389.5" y="-8.5" class="st1" width="41.9" height="15.5"/>
+		<text transform="matrix(1 0 0 1 392.083 4.4111)" class="st2 st3">status</text>
+	</g>
+	<g transform="translate(65,24)">
+		<rect x="366.4" y="-8.5" class="st5" width="10.3" height="15.5"/>
+		<text transform="matrix(1 0 0 1 368.9707 4.4111)" class="st2 st3">2</text>
+	</g>
+</g>
+<g>
+	<text transform="matrix(1 0 0 1 402.3872 17.4795)" class="st2 st3">project</text>
+</g>
+</svg>

@@ -14,8 +14,14 @@ const useAutosaveRegister = () => {
   const user = useUser()
 
   useEffect(() => {
-    console.log(dataset.registerStatus)
     const save = async () => {
+      if (
+        dataset.registerStatus !== RegisterStatus.Unsaved ||
+        !dataset?.register ||
+        !user.data?.researcherID
+      )
+        return null
+
       projectDispatch({
         type: ProjectActions.SetRegisterStatus,
         payload: {
@@ -23,14 +29,15 @@ const useAutosaveRegister = () => {
           status: RegisterStatus.Saving,
         },
       })
-      if (!dataset?.register || !user.data?.researcherID) return
+
+      console.log('API Sync: Save Register')
       const saved = await saveRegister({
         datasetID,
         researcherID: user.data.researcherID,
         data: { register: dataset.register, versions: dataset.versions },
       }).catch(e => console.log(e))
+
       if (saved) {
-        // set register status to unsaved
         projectDispatch({
           type: ProjectActions.SetRegisterStatus,
           payload: {
@@ -38,9 +45,18 @@ const useAutosaveRegister = () => {
             status: RegisterStatus.Saved,
           },
         })
+      } else {
+        projectDispatch({
+          type: ProjectActions.SetRegisterStatus,
+          payload: {
+            datasetID,
+            status: RegisterStatus.Error,
+          },
+        })
       }
     }
-    if (dataset.registerStatus === RegisterStatus.Unsaved) save()
+
+    save()
   }, [
     datasetID,
     projectDispatch,

@@ -1,3 +1,4 @@
+import generateID from 'utilities/generateID'
 import { ActionFunction, ProjectActions } from '../projectReducer'
 import { Project } from '../types'
 
@@ -24,6 +25,7 @@ const batchSetDatapoint: ActionFunction<BatchSetDatapointPayload> = (
 
   const register = nextState.datasets[datasetID].register ?? {}
   const version = String(nextState.datasets[datasetID].versions.length)
+
   const columns = Object.keys(rows[0])
 
   const idMap: { [key: string]: string } = Object.entries(register).reduce(
@@ -36,7 +38,14 @@ const batchSetDatapoint: ActionFunction<BatchSetDatapointPayload> = (
 
   let setNewHighestVersion = false
   rows.forEach(row => {
-    const recordID = idMap[row[recordIDColumn]] ?? crypto.randomUUID()
+    const recordID = idMap[row[recordIDColumn]] ?? generateID.recordID()
+    // get datapointID keys if they already exist
+
+    // Iterate through the record and create map of datapointID keys and datapoint displaynames
+
+    // if they don't exist create them
+
+    // row.forEach(cell => {
     columns.forEach(datapointID => {
       const record = register[recordID] ?? {}
       const previous = record[datapointID]

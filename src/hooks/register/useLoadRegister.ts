@@ -16,7 +16,6 @@ import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 import loadRegister from 'api/loadRegister'
 
 const useLoadRegister = () => {
-  console.log('useLoadRegister')
   const user = useUser()
   const dataset = useDataset()
   const navigate = useNavigate()
@@ -44,7 +43,6 @@ const useLoadRegister = () => {
         // if register is in an error state, don't retry
         dataset.registerStatus === RegisterStatus.Error
       ) {
-        console.log('short circuit')
         return null
       }
 
@@ -52,6 +50,7 @@ const useLoadRegister = () => {
       // this might need to change in a multi-user context
       if (register && Object.keys(register).length !== 0) return null
 
+      console.log('API Sync: Request Register')
       const nextRegisterData = await loadRegister({
         researcherID: user.data.researcherID,
         datasetID,

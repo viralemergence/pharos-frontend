@@ -1,0 +1,1246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 25.4.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 620.1 693.6" style="enable-background:new 0 0 620.1 693.6;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#FFFFFF;stroke:#000000;stroke-miterlimit:1.6495;}
+	.st1{fill:none;stroke:#888888;stroke-width:0.8248;stroke-miterlimit:1.6495;}
+	.st2{fill:#888888;stroke:#000000;stroke-width:0.4124;stroke-miterlimit:1.6495;}
+	.st3{font-family:'Helvetica';}
+	.st4{font-size:5.7734px;}
+	.st5{fill:#E7F0DB;stroke:#000000;stroke-width:0.4124;stroke-miterlimit:1.6495;}
+	.st6{fill:#D8F0ED;stroke:#000000;stroke-width:0.4124;stroke-miterlimit:1.6495;}
+	.st7{fill:#E1D8F0;stroke:#000000;stroke-width:0.4124;stroke-miterlimit:1.6495;}
+</style>
+<rect x="0.5" y="0.5" class="st0" width="619.1" height="692.6"/>
+<g transform="translate(-83.08355929690549,-15.282845970174378)scale(0.41238732751791846)">
+	<g transform="translate(480,20)">
+		<g transform="translate(-8,0)">
+			<path class="st1" d="M640.4,102.4c0,49,0,49,0,98"/>
+			<g transform="translate(-33,58)">
+				<path class="st1" d="M673.4,142.4c0,49,0,49,0,98"/>
+				<g transform="translate(10,118)">
+					<path class="st1" d="M663.4,122.4c0,85.5-339.2,103.6-339.2,189.1"/>
+					<path class="st1" d="M663.4,122.4c0,85.5,322.2,105.1,322.2,190.6"/>
+					<g transform="translate(-1531,78)">
+						<path class="st1" d="M2516.6,235c0,85,0,85,0,170"/>
+						<g transform="translate(174,263)">
+							<g transform="translate(-34,0)">
+								<g transform="translate(30,20)">
+									<rect x="2342.6" y="118" class="st2" width="8" height="8"/>
+								</g>
+								<g>
+									<text transform="matrix(2.4249 0 0 2.4249 2346.6287 134.0505)" class="st3 st4">versions[]</text>
+								</g>
+							</g>
+						</g>
+						<g transform="translate(0,20)">
+							<g transform="translate(0,0)">
+								<rect x="2342.6" y="118" class="st5" width="103" height="24"/>
+								<text transform="matrix(2.4249 0 0 2.4249 2346.5833 138.0504)" class="st3 st4">datasetID</text>
+							</g>
+							<g transform="translate(103,0)">
+								<rect x="2342.6" y="118" class="st5" width="244" height="24"/>
+								<text transform="matrix(2.4249 0 0 2.4249 2346.5837 138.0504)" class="st3 st4">1657580421738</text>
+							</g>
+							<g transform="translate(0,24)">
+								<rect x="2342.6" y="118" class="st5" width="103" height="24"/>
+								<text transform="matrix(2.4249 0 0 2.4249 2346.5833 138.0496)" class="st3 st4">activeVersion</text>
+							</g>
+							<g transform="translate(103,24)">
+								<rect x="2342.6" y="118" class="st6" width="244" height="24"/>
+								<text transform="matrix(2.4249 0 0 2.4249 2346.5837 138.0496)" class="st3 st4">7</text>
+							</g>
+							<g transform="translate(0,48)">
+								<rect x="2342.6" y="118" class="st5" width="103" height="24"/>
+								<text transform="matrix(2.4249 0 0 2.4249 2346.5833 138.05)" class="st3 st4">status</text>
+							</g>
+							<g transform="translate(103,48)">
+								<rect x="2342.6" y="118" class="st6" width="244" height="24"/>
+								<text transform="matrix(2.4249 0 0 2.4249 2346.5837 138.05)" class="st3 st4">2</text>
+							</g>
+							<g transform="translate(0,72)">
+								<rect x="2342.6" y="118" class="st5" width="103" height="24"/>
+								<text transform="matrix(2.4249 0 0 2.4249 2346.5833 138.0505)" class="st3 st4">date_collected</text>
+							</g>
+							<g transform="translate(103,72)">
+								<rect x="2342.6" y="118" class="st5" width="244" height="24"/>
+								<text transform="matrix(2.4249 0 0 2.4249 2346.5837 138.0505)" class="st3 st4">2022-07-11</text>
+							</g>
+							<g transform="translate(0,96)">
+								<rect x="2342.6" y="118" class="st5" width="103" height="24"/>
+								<text transform="matrix(2.4249 0 0 2.4249 2346.5833 138.0497)" class="st3 st4">samples_taken</text>
+							</g>
+							<g transform="translate(103,96)">
+								<rect x="2342.6" y="118" class="st5" width="244" height="24"/>
+								<text transform="matrix(2.4249 0 0 2.4249 2346.5837 138.0497)" class="st3 st4">0</text>
+							</g>
+							<g transform="translate(0,120)">
+								<rect x="2342.6" y="118" class="st5" width="103" height="24"/>
+								<text transform="matrix(2.4249 0 0 2.4249 2346.5833 138.0501)" class="st3 st4">researcherID</text>
+							</g>
+							<g transform="translate(103,120)">
+								<rect x="2342.6" y="118" class="st5" width="244" height="24"/>
+								<text transform="matrix(2.4249 0 0 2.4249 2346.5837 138.0501)" class="st3 st4">05b5964c861e4f28990fca98248c7f02</text>
+							</g>
+							<g transform="translate(0,144)">
+								<rect x="2342.6" y="118" class="st5" width="103" height="25"/>
+								<text transform="matrix(2.4249 0 0 2.4249 2346.5833 138.0506)" class="st3 st4">name</text>
+							</g>
+							<g transform="translate(103,144)">
+								<rect x="2342.6" y="118" class="st5" width="244" height="25"/>
+								<text transform="matrix(2.4249 0 0 2.4249 2346.5837 139.0499)" class="st3 st4">New record type</text>
+							</g>
+							<g transform="translate(0,169)">
+								<rect x="2342.6" y="118" class="st5" width="103" height="24"/>
+								<text transform="matrix(2.4249 0 0 2.4249 2346.5833 138.0503)" class="st3 st4">detection_run</text>
+							</g>
+							<g transform="translate(103,169)">
+								<rect x="2342.6" y="118" class="st5" width="244" height="24"/>
+								<text transform="matrix(2.4249 0 0 2.4249 2346.5837 138.0503)" class="st3 st4">0</text>
+							</g>
+						</g>
+						<g>
+							<text transform="matrix(2.4249 0 0 2.4249 2458.187 134.05)" class="st3 st4">165758042012038</text>
+						</g>
+					</g>
+					<g transform="translate(35,78)">
+						<path class="st1" d="M289.2,233.5C289.2,329-35,384.3-35,479.8"/>
+						<g transform="translate(174,263)">
+							<path class="st1" d="M-209,216.8l518.1-2.5"/>
+							<g transform="translate(-1383,0)">
+								<g transform="translate(0,20)">
+									<g transform="translate(0,0)">
+										<rect x="1030" y="171.8" class="st5" width="36" height="24"/>
+										<text transform="matrix(2.4249 0 0 2.4249 1033.995 191.7511)" class="st3 st4">date</text>
+									</g>
+									<g transform="translate(36,0)">
+										<rect x="1030" y="171.8" class="st5" width="251" height="24"/>
+										<text transform="matrix(2.4249 0 0 2.4249 1033.9956 191.7511)" class="st3 st4">Tue, 12 Jul 2022 17:52:23 GMT</text>
+									</g>
+									<g transform="translate(0,24)">
+										<rect x="1030" y="171.8" class="st5" width="36" height="25"/>
+										<text transform="matrix(2.4249 0 0 2.4249 1033.995 192.752)" class="st3 st4">key</text>
+									</g>
+									<g transform="translate(36,24)">
+										<rect x="1030" y="171.8" class="st5" width="251" height="25"/>
+										<text transform="matrix(2.4249 0 0 2.4249 1033.9956 191.7515)" class="st3 st4">7dfe67ae-24c7-3694-ac15-2bb47081...</text>
+									</g>
+								</g>
+								<g>
+									<text transform="matrix(2.4249 0 0 2.4249 1140.1475 187.7518)" class="st3 st4">versions[0]</text>
+								</g>
+							</g>
+							<g transform="">
+								<path class="st1" d="M309.1,226.3c0,55-1.1,107-1.1,162"/>
+								<g transform="translate(149,143)">
+									<path class="st1" d="M159,245.3v454.8"/>
+									<g transform="translate(-643,0)">
+										<path class="st1" d="M802,245.3c0,49,569,49,569,98"/>
+										<path class="st1" d="M802,245.3c0,49,450,49,450,98"/>
+										<path class="st1" d="M802,245.3c0,49,329,49,329,98"/>
+										<path class="st1" d="M802,245.3c0,49,204,49,204,98"/>
+										<path class="st1" d="M802,245.3c0,49.5,77,49.5,77,99"/>
+										<path class="st1" d="M802,245.3c0,49.5-52,49.5-52,99"/>
+										<path class="st1" d="M802,245.3c0,49-191,49-191,98"/>
+										<path class="st1" d="M802,245.3c0,49-320,49-320,98"/>
+										<path class="st1" d="M802,245.3c0,49-449,49-449,98"/>
+										<path class="st1" d="M802,245.3c0,49-569,49-569,98"/>
+										<g transform="translate(-592,78)">
+											<path class="st1" d="M825,265.3c0,59.5,0,59.5,0,119"/>
+											<g transform="translate(1,118)">
+												<g transform="translate(0,20)">
+													<g transform="translate(0,0)">
+														<rect x="775" y="221.3" class="st5" width="65" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.0184 241.2521)" class="st3 st4">pass</text>
+													</g>
+													<g transform="translate(65,0)">
+														<rect x="775" y="221.3" class="st7" width="33" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.0185 241.2521)" class="st3 st4">true</text>
+													</g>
+													<g transform="translate(0,24)">
+														<rect x="775" y="221.3" class="st5" width="65" height="25"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.0184 242.253)" class="st3 st4">message</text>
+													</g>
+													<g transform="translate(65,24)">
+														<rect x="775" y="221.3" class="st5" width="33" height="25"/>
+													</g>
+												</g>
+												<g>
+													<text transform="matrix(2.4249 0 0 2.4249 805.7327 237.2529)" class="st3 st4">report</text>
+												</g>
+											</g>
+											<g transform="translate(0,20)">
+												<g transform="translate(0,0)">
+													<rect x="775" y="221.3" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0191 241.2522)" class="st3 st4">value</text>
+												</g>
+												<g transform="translate(61,0)">
+													<rect x="775" y="221.3" class="st5" width="38" height="24"/>
+												</g>
+												<g transform="translate(0,24)">
+													<rect x="775" y="221.3" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0191 241.2526)" class="st3 st4">modified</text>
+												</g>
+												<g transform="translate(61,24)">
+													<rect x="775" y="221.3" class="st7" width="38" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0183 241.2526)" class="st3 st4">false</text>
+												</g>
+											</g>
+											<g>
+												<text transform="matrix(2.4249 0 0 2.4249 788.4464 237.2518)" class="st3 st4">DetectionID</text>
+											</g>
+										</g>
+										<g transform="translate(-483,78)">
+											<path class="st1" d="M836,265.3c0,59.5,0,59.5,0,119"/>
+											<g transform="translate(12,118)">
+												<g transform="translate(0,20)">
+													<g transform="translate(0,0)">
+														<rect x="775" y="221.3" class="st5" width="65" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.0182 241.2521)" class="st3 st4">pass</text>
+													</g>
+													<g transform="translate(65,0)">
+														<rect x="775" y="221.3" class="st7" width="33" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.0194 241.2521)" class="st3 st4">true</text>
+													</g>
+													<g transform="translate(0,24)">
+														<rect x="775" y="221.3" class="st5" width="65" height="25"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.0182 242.253)" class="st3 st4">message</text>
+													</g>
+													<g transform="translate(65,24)">
+														<rect x="775" y="221.3" class="st5" width="33" height="25"/>
+													</g>
+												</g>
+												<g>
+													<text transform="matrix(2.4249 0 0 2.4249 805.7324 237.2529)" class="st3 st4">report</text>
+												</g>
+											</g>
+											<g transform="translate(0,20)">
+												<g transform="translate(0,0)">
+													<rect x="775" y="221.3" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0192 241.2522)" class="st3 st4">value</text>
+												</g>
+												<g transform="translate(61,0)">
+													<rect x="775" y="221.3" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0183 241.2522)" class="st3 st4">modified</text>
+												</g>
+												<g transform="translate(0,24)">
+													<rect x="775" y="221.3" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0192 241.2526)" class="st3 st4">modified</text>
+												</g>
+												<g transform="translate(61,24)">
+													<rect x="775" y="221.3" class="st7" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0183 241.2526)" class="st3 st4">true</text>
+												</g>
+											</g>
+											<g>
+												<text transform="matrix(2.4249 0 0 2.4249 805.2834 237.2518)" class="st3 st4">SampleID</text>
+											</g>
+										</g>
+										<g transform="translate(-351,78)">
+											<path class="st1" d="M833,265.3c0,59.5-1,59.5-1,119"/>
+											<g transform="translate(8,118)">
+												<g transform="translate(0,20)">
+													<g transform="translate(0,0)">
+														<rect x="775" y="221.3" class="st5" width="65" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.0196 241.2521)" class="st3 st4">pass</text>
+													</g>
+													<g transform="translate(65,0)">
+														<rect x="775" y="221.3" class="st7" width="33" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.0185 241.2521)" class="st3 st4">true</text>
+													</g>
+													<g transform="translate(0,24)">
+														<rect x="775" y="221.3" class="st5" width="65" height="25"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.0196 242.253)" class="st3 st4">message</text>
+													</g>
+													<g transform="translate(65,24)">
+														<rect x="775" y="221.3" class="st5" width="33" height="25"/>
+													</g>
+												</g>
+												<g>
+													<text transform="matrix(2.4249 0 0 2.4249 805.7327 237.2529)" class="st3 st4">report</text>
+												</g>
+											</g>
+											<g transform="translate(8,20)">
+												<g transform="translate(0,0)">
+													<rect x="775" y="221.3" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0196 241.2522)" class="st3 st4">value</text>
+												</g>
+												<g transform="translate(61,0)">
+													<rect x="775" y="221.3" class="st5" width="38" height="24"/>
+												</g>
+												<g transform="translate(0,24)">
+													<rect x="775" y="221.3" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0196 241.2526)" class="st3 st4">modified</text>
+												</g>
+												<g transform="translate(61,24)">
+													<rect x="775" y="221.3" class="st7" width="38" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0188 241.2526)" class="st3 st4">false</text>
+												</g>
+											</g>
+											<g>
+												<text transform="matrix(2.4249 0 0 2.4249 779.0984 237.2518)" class="st3 st4">DetectionMethod</text>
+											</g>
+										</g>
+										<g transform="translate(-227,78)">
+											<path class="st1" d="M838,265.3c0,59.5-1,59.5-1,119"/>
+											<g transform="translate(13,118)">
+												<g transform="translate(0,20)">
+													<g transform="translate(0,0)">
+														<rect x="775" y="221.3" class="st5" width="65" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.0192 241.2521)" class="st3 st4">pass</text>
+													</g>
+													<g transform="translate(65,0)">
+														<rect x="775" y="221.3" class="st7" width="33" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.0193 241.2521)" class="st3 st4">true</text>
+													</g>
+													<g transform="translate(0,24)">
+														<rect x="775" y="221.3" class="st5" width="65" height="25"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.0192 242.253)" class="st3 st4">message</text>
+													</g>
+													<g transform="translate(65,24)">
+														<rect x="775" y="221.3" class="st5" width="33" height="25"/>
+													</g>
+												</g>
+												<g>
+													<text transform="matrix(2.4249 0 0 2.4249 805.7322 237.2529)" class="st3 st4">report</text>
+												</g>
+											</g>
+											<g transform="translate(13,20)">
+												<g transform="translate(0,0)">
+													<rect x="775" y="221.3" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0192 241.2522)" class="st3 st4">value</text>
+												</g>
+												<g transform="translate(61,0)">
+													<rect x="775" y="221.3" class="st5" width="38" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0184 241.2522)" class="st3 st4">test</text>
+												</g>
+												<g transform="translate(0,24)">
+													<rect x="775" y="221.3" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0192 241.2526)" class="st3 st4">modified</text>
+												</g>
+												<g transform="translate(61,24)">
+													<rect x="775" y="221.3" class="st7" width="38" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0184 241.2526)" class="st3 st4">false</text>
+												</g>
+											</g>
+											<g>
+												<text transform="matrix(2.4249 0 0 2.4249 779.0469 237.2518)" class="st3 st4">DetectionOutcome</text>
+											</g>
+										</g>
+										<g transform="translate(-93,78)">
+											<path class="st1" d="M843,266.3c0,59.5,0,59.5,0,119"/>
+											<g transform="translate(19,119)">
+												<g transform="translate(0,20)">
+													<g transform="translate(0,0)">
+														<rect x="775" y="221.3" class="st5" width="65" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.0185 241.2526)" class="st3 st4">pass</text>
+													</g>
+													<g transform="translate(65,0)">
+														<rect x="775" y="221.3" class="st7" width="33" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.0186 241.2526)" class="st3 st4">true</text>
+													</g>
+													<g transform="translate(0,24)">
+														<rect x="775" y="221.3" class="st5" width="65" height="25"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.0185 242.2523)" class="st3 st4">message</text>
+													</g>
+													<g transform="translate(65,24)">
+														<rect x="775" y="221.3" class="st5" width="33" height="25"/>
+													</g>
+												</g>
+												<g>
+													<text transform="matrix(2.4249 0 0 2.4249 805.7327 237.2522)" class="st3 st4">report</text>
+												</g>
+											</g>
+											<g transform="translate(12,20)">
+												<g transform="translate(0,0)">
+													<rect x="775" y="221.3" class="st5" width="61" height="25"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0185 241.2522)" class="st3 st4">value</text>
+												</g>
+												<g transform="translate(61,0)">
+													<rect x="775" y="221.3" class="st5" width="50" height="25"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0189 242.2527)" class="st3 st4">testing</text>
+												</g>
+												<g transform="translate(0,25)">
+													<rect x="775" y="221.3" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0185 241.252)" class="st3 st4">modified</text>
+												</g>
+												<g transform="translate(61,25)">
+													<rect x="775" y="221.3" class="st7" width="50" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0189 241.252)" class="st3 st4">false</text>
+												</g>
+											</g>
+											<g>
+												<text transform="matrix(2.4249 0 0 2.4249 779.6055 237.2518)" class="st3 st4">DetectionComments</text>
+											</g>
+										</g>
+										<g transform="translate(52,78)">
+											<path class="st1" d="M827,266.3c0,59.5,0,59.5,0,119"/>
+											<g transform="translate(3,119)">
+												<g transform="translate(0,20)">
+													<g transform="translate(0,0)">
+														<rect x="775" y="221.3" class="st5" width="65" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.0193 241.2526)" class="st3 st4">pass</text>
+													</g>
+													<g transform="translate(65,0)">
+														<rect x="775" y="221.3" class="st7" width="33" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.0193 241.2526)" class="st3 st4">true</text>
+													</g>
+													<g transform="translate(0,24)">
+														<rect x="775" y="221.3" class="st5" width="65" height="25"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.0193 242.2523)" class="st3 st4">message</text>
+													</g>
+													<g transform="translate(65,24)">
+														<rect x="775" y="221.3" class="st5" width="33" height="25"/>
+													</g>
+												</g>
+												<g>
+													<text transform="matrix(2.4249 0 0 2.4249 805.7335 237.2522)" class="st3 st4">report</text>
+												</g>
+											</g>
+											<g transform="translate(2,21)">
+												<g transform="translate(0,0)">
+													<rect x="775" y="221.3" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0187 241.2527)" class="st3 st4">value</text>
+												</g>
+												<g transform="translate(61,0)">
+													<rect x="775" y="221.3" class="st5" width="39" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0192 241.2527)" class="st3 st4">teste</text>
+												</g>
+												<g transform="translate(0,24)">
+													<rect x="775" y="221.3" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0187 241.252)" class="st3 st4">modified</text>
+												</g>
+												<g transform="translate(61,24)">
+													<rect x="775" y="221.3" class="st7" width="39" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0192 241.252)" class="st3 st4">false</text>
+												</g>
+											</g>
+											<g>
+												<text transform="matrix(2.4249 0 0 2.4249 779.1539 238.2523)" class="st3 st4">PathogenTaxID</text>
+											</g>
+										</g>
+										<g transform="translate(166,78)">
+											<path class="st1" d="M840,265.3c0,59.5,0,59.5,0,119"/>
+											<g transform="translate(16,118)">
+												<g transform="translate(0,20)">
+													<g transform="translate(0,0)">
+														<rect x="775" y="221.3" class="st5" width="65" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.019 241.2521)" class="st3 st4">pass</text>
+													</g>
+													<g transform="translate(65,0)">
+														<rect x="775" y="221.3" class="st7" width="33" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.0191 241.2521)" class="st3 st4">true</text>
+													</g>
+													<g transform="translate(0,24)">
+														<rect x="775" y="221.3" class="st5" width="65" height="25"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.019 242.253)" class="st3 st4">message</text>
+													</g>
+													<g transform="translate(65,24)">
+														<rect x="775" y="221.3" class="st5" width="33" height="25"/>
+													</g>
+												</g>
+												<g>
+													<text transform="matrix(2.4249 0 0 2.4249 805.7333 237.2529)" class="st3 st4">report</text>
+												</g>
+											</g>
+											<g transform="translate(15,20)">
+												<g transform="translate(0,0)">
+													<rect x="775" y="221.3" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0197 241.2522)" class="st3 st4">value</text>
+												</g>
+												<g transform="translate(61,0)">
+													<rect x="775" y="221.3" class="st5" width="38" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0189 241.2522)" class="st3 st4">test</text>
+												</g>
+												<g transform="translate(0,24)">
+													<rect x="775" y="221.3" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0197 241.2526)" class="st3 st4">modified</text>
+												</g>
+												<g transform="translate(61,24)">
+													<rect x="775" y="221.3" class="st7" width="38" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0189 241.2526)" class="st3 st4">false</text>
+												</g>
+											</g>
+											<g>
+												<text transform="matrix(2.4249 0 0 2.4249 779.7059 237.2518)" class="st3 st4">GenbankAccession</text>
+											</g>
+										</g>
+										<g transform="translate(305,78)">
+											<path class="st1" d="M826,265.3c0,59.5,0,59.5,0,119"/>
+											<g transform="translate(2,118)">
+												<g transform="translate(0,20)">
+													<g transform="translate(0,0)">
+														<rect x="775" y="221.3" class="st5" width="65" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.0189 241.2521)" class="st3 st4">pass</text>
+													</g>
+													<g transform="translate(65,0)">
+														<rect x="775" y="221.3" class="st7" width="33" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.019 241.2521)" class="st3 st4">true</text>
+													</g>
+													<g transform="translate(0,24)">
+														<rect x="775" y="221.3" class="st5" width="65" height="25"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.0189 242.253)" class="st3 st4">message</text>
+													</g>
+													<g transform="translate(65,24)">
+														<rect x="775" y="221.3" class="st5" width="33" height="25"/>
+													</g>
+												</g>
+												<g>
+													<text transform="matrix(2.4249 0 0 2.4249 805.7332 237.2529)" class="st3 st4">report</text>
+												</g>
+											</g>
+											<g transform="translate(1,20)">
+												<g transform="translate(0,0)">
+													<rect x="775" y="221.3" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0196 241.2522)" class="st3 st4">value</text>
+												</g>
+												<g transform="translate(61,0)">
+													<rect x="775" y="221.3" class="st5" width="38" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0188 241.2522)" class="st3 st4">test</text>
+												</g>
+												<g transform="translate(0,24)">
+													<rect x="775" y="221.3" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0196 241.2526)" class="st3 st4">modified</text>
+												</g>
+												<g transform="translate(61,24)">
+													<rect x="775" y="221.3" class="st7" width="38" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0188 241.2526)" class="st3 st4">false</text>
+												</g>
+											</g>
+											<g>
+												<text transform="matrix(2.4249 0 0 2.4249 779.7224 237.2518)" class="st3 st4">SRAAccession</text>
+											</g>
+										</g>
+										<g transform="translate(416,78)">
+											<path class="st1" d="M836,265.3c0,59.5-1,59.5-1,119"/>
+											<g transform="translate(11,118)">
+												<g transform="translate(0,20)">
+													<g transform="translate(0,0)">
+														<rect x="775" y="221.3" class="st5" width="65" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.0198 241.2521)" class="st3 st4">pass</text>
+													</g>
+													<g transform="translate(65,0)">
+														<rect x="775" y="221.3" class="st7" width="33" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.0199 241.2521)" class="st3 st4">true</text>
+													</g>
+													<g transform="translate(0,24)">
+														<rect x="775" y="221.3" class="st5" width="65" height="25"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.0198 242.253)" class="st3 st4">message</text>
+													</g>
+													<g transform="translate(65,24)">
+														<rect x="775" y="221.3" class="st5" width="33" height="25"/>
+													</g>
+												</g>
+												<g>
+													<text transform="matrix(2.4249 0 0 2.4249 805.7329 237.2529)" class="st3 st4">report</text>
+												</g>
+											</g>
+											<g transform="translate(11,20)">
+												<g transform="translate(0,0)">
+													<rect x="775" y="221.3" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0198 241.2522)" class="st3 st4">value</text>
+												</g>
+												<g transform="translate(61,0)">
+													<rect x="775" y="221.3" class="st5" width="38" height="24"/>
+												</g>
+												<g transform="translate(0,24)">
+													<rect x="775" y="221.3" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0198 241.2526)" class="st3 st4">modified</text>
+												</g>
+												<g transform="translate(61,24)">
+													<rect x="775" y="221.3" class="st7" width="38" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.019 241.2526)" class="st3 st4">false</text>
+												</g>
+											</g>
+											<g>
+												<text transform="matrix(2.4249 0 0 2.4249 779.3884 237.2518)" class="st3 st4">GISAIDAccession</text>
+											</g>
+										</g>
+										<g transform="translate(546,78)">
+											<path class="st1" d="M825,265.3c0,59.5,0,59.5,0,119"/>
+											<g transform="translate(1,118)">
+												<g transform="translate(0,20)">
+													<g transform="translate(0,0)">
+														<rect x="775" y="221.3" class="st5" width="65" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.0196 241.2521)" class="st3 st4">pass</text>
+													</g>
+													<g transform="translate(65,0)">
+														<rect x="775" y="221.3" class="st7" width="33" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.0197 241.2521)" class="st3 st4">true</text>
+													</g>
+													<g transform="translate(0,24)">
+														<rect x="775" y="221.3" class="st5" width="65" height="25"/>
+														<text transform="matrix(2.4249 0 0 2.4249 779.0196 242.253)" class="st3 st4">message</text>
+													</g>
+													<g transform="translate(65,24)">
+														<rect x="775" y="221.3" class="st5" width="33" height="25"/>
+													</g>
+												</g>
+												<g>
+													<text transform="matrix(2.4249 0 0 2.4249 805.7338 237.2529)" class="st3 st4">report</text>
+												</g>
+											</g>
+											<g transform="translate(0,20)">
+												<g transform="translate(0,0)">
+													<rect x="775" y="221.3" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.019 241.2522)" class="st3 st4">value</text>
+												</g>
+												<g transform="translate(61,0)">
+													<rect x="775" y="221.3" class="st5" width="38" height="24"/>
+												</g>
+												<g transform="translate(0,24)">
+													<rect x="775" y="221.3" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.019 241.2526)" class="st3 st4">modified</text>
+												</g>
+												<g transform="translate(61,24)">
+													<rect x="775" y="221.3" class="st7" width="38" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 779.0195 241.2526)" class="st3 st4">false</text>
+												</g>
+											</g>
+											<g>
+												<text transform="matrix(2.4249 0 0 2.4249 781.8371 237.2518)" class="st3 st4">GBIFIdentifier</text>
+											</g>
+										</g>
+										<g transform="translate(19,20)">
+											<g transform="translate(0,0)">
+												<rect x="775" y="221.3" class="st5" width="8" height="8"/>
+											</g>
+											<g transform="translate(8,0)">
+												<rect x="775" y="221.3" class="st5" width="8" height="8"/>
+											</g>
+										</g>
+										<g>
+											<text transform="matrix(2.4249 0 0 2.4249 779.4565 237.2522)" class="st3 st4">rows[0]</text>
+										</g>
+									</g>
+									<g transform="translate(596,0)">
+										<path class="st1" d="M-437,700.1c0,49,562,49,562,98"/>
+										<path class="st1" d="M-437,700.1c0,49,443,49,443,98"/>
+										<path class="st1" d="M-437,700.1c0,49,322,49,322,98"/>
+										<path class="st1" d="M-437,700.1c0,49,197,49,197,98"/>
+										<path class="st1" d="M-437,700.1c0,49.5,71,49.5,71,99"/>
+										<path class="st1" d="M-437,700.1c0,49-59,49-59,98"/>
+										<path class="st1" d="M-437,700.1c0,49.5-198,49.5-198,99"/>
+										<path class="st1" d="M-437,700.1c0,49-332,49-332,98"/>
+										<path class="st1" d="M-437,700.1c0,49-452,49-452,98"/>
+										<path class="st1" d="M-437,700.1c0,49-561,49-561,98"/>
+										<g transform="translate(-584,78)">
+											<path class="st1" d="M-414,720.1c0,59.5,0,59.5,0,119"/>
+											<g transform="translate(1,118)">
+												<g transform="translate(0,20)">
+													<g transform="translate(0,0)">
+														<rect x="-464" y="676.1" class="st5" width="65" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.9813 696.0857)" class="st3 st4">pass</text>
+													</g>
+													<g transform="translate(65,0)">
+														<rect x="-464" y="676.1" class="st7" width="33" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.9813 696.0857)" class="st3 st4">true</text>
+													</g>
+													<g transform="translate(0,24)">
+														<rect x="-464" y="676.1" class="st5" width="65" height="25"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.9813 697.0867)" class="st3 st4">message</text>
+													</g>
+													<g transform="translate(65,24)">
+														<rect x="-464" y="676.1" class="st5" width="33" height="25"/>
+													</g>
+												</g>
+												<g>
+													<text transform="matrix(2.4249 0 0 2.4249 -433.2671 692.0865)" class="st3 st4">report</text>
+												</g>
+											</g>
+											<g transform="translate(0,20)">
+												<g transform="translate(0,0)">
+													<rect x="-464" y="676.1" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9818 696.0858)" class="st3 st4">value</text>
+												</g>
+												<g transform="translate(61,0)">
+													<rect x="-464" y="676.1" class="st5" width="38" height="24"/>
+												</g>
+												<g transform="translate(0,24)">
+													<rect x="-464" y="676.1" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9818 696.0862)" class="st3 st4">modified</text>
+												</g>
+												<g transform="translate(61,24)">
+													<rect x="-464" y="676.1" class="st7" width="38" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9814 696.0862)" class="st3 st4">false</text>
+												</g>
+											</g>
+											<g>
+												<text transform="matrix(2.4249 0 0 2.4249 -450.5533 692.0854)" class="st3 st4">DetectionID</text>
+											</g>
+										</g>
+										<g transform="translate(-475,78)">
+											<path class="st1" d="M-414,720.1c0,59.5,0,59.5,0,119"/>
+											<g transform="translate(1,118)">
+												<g transform="translate(0,20)">
+													<g transform="translate(0,0)">
+														<rect x="-464" y="676.1" class="st5" width="65" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.9813 696.0857)" class="st3 st4">pass</text>
+													</g>
+													<g transform="translate(65,0)">
+														<rect x="-464" y="676.1" class="st7" width="33" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.9812 696.0857)" class="st3 st4">true</text>
+													</g>
+													<g transform="translate(0,24)">
+														<rect x="-464" y="676.1" class="st5" width="65" height="25"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.9813 697.0867)" class="st3 st4">message</text>
+													</g>
+													<g transform="translate(65,24)">
+														<rect x="-464" y="676.1" class="st5" width="33" height="25"/>
+													</g>
+												</g>
+												<g>
+													<text transform="matrix(2.4249 0 0 2.4249 -433.2671 692.0865)" class="st3 st4">report</text>
+												</g>
+											</g>
+											<g transform="translate(0,20)">
+												<g transform="translate(0,0)">
+													<rect x="-464" y="676.1" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9818 696.0858)" class="st3 st4">value</text>
+												</g>
+												<g transform="translate(61,0)">
+													<rect x="-464" y="676.1" class="st5" width="38" height="24"/>
+												</g>
+												<g transform="translate(0,24)">
+													<rect x="-464" y="676.1" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9818 696.0862)" class="st3 st4">modified</text>
+												</g>
+												<g transform="translate(61,24)">
+													<rect x="-464" y="676.1" class="st7" width="38" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9814 696.0862)" class="st3 st4">false</text>
+												</g>
+											</g>
+											<g>
+												<text transform="matrix(2.4249 0 0 2.4249 -444.716 692.0854)" class="st3 st4">SampleID</text>
+											</g>
+										</g>
+										<g transform="translate(-366,78)">
+											<path class="st1" d="M-403,720.1c0,59.5,0,59.5,0,119"/>
+											<g transform="translate(12,118)">
+												<g transform="translate(0,20)">
+													<g transform="translate(0,0)">
+														<rect x="-464" y="676.1" class="st5" width="65" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.9816 696.0857)" class="st3 st4">pass</text>
+													</g>
+													<g transform="translate(65,0)">
+														<rect x="-464" y="676.1" class="st7" width="33" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.9815 696.0857)" class="st3 st4">true</text>
+													</g>
+													<g transform="translate(0,24)">
+														<rect x="-464" y="676.1" class="st5" width="65" height="25"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.9816 697.0867)" class="st3 st4">message</text>
+													</g>
+													<g transform="translate(65,24)">
+														<rect x="-464" y="676.1" class="st5" width="33" height="25"/>
+													</g>
+												</g>
+												<g>
+													<text transform="matrix(2.4249 0 0 2.4249 -433.2673 692.0865)" class="st3 st4">report</text>
+												</g>
+											</g>
+											<g transform="translate(0,20)">
+												<g transform="translate(0,0)">
+													<rect x="-464" y="676.1" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9818 696.0858)" class="st3 st4">value</text>
+												</g>
+												<g transform="translate(61,0)">
+													<rect x="-464" y="676.1" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9814 696.0858)" class="st3 st4">Modified</text>
+												</g>
+												<g transform="translate(0,24)">
+													<rect x="-464" y="676.1" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9818 696.0862)" class="st3 st4">modified</text>
+												</g>
+												<g transform="translate(61,24)">
+													<rect x="-464" y="676.1" class="st7" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9814 696.0862)" class="st3 st4">true</text>
+												</g>
+											</g>
+											<g>
+												<text transform="matrix(2.4249 0 0 2.4249 -455.9016 692.0854)" class="st3 st4">DetectionMethod</text>
+											</g>
+										</g>
+										<g transform="translate(-234,78)">
+											<path class="st1" d="M-401,721.1c0,59.5-1,59.5-1,119"/>
+											<g transform="translate(13,119)">
+												<g transform="translate(0,20)">
+													<g transform="translate(0,0)">
+														<rect x="-464" y="676.1" class="st5" width="65" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.9811 696.0862)" class="st3 st4">pass</text>
+													</g>
+													<g transform="translate(65,0)">
+														<rect x="-464" y="676.1" class="st7" width="33" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.981 696.0862)" class="st3 st4">true</text>
+													</g>
+													<g transform="translate(0,24)">
+														<rect x="-464" y="676.1" class="st5" width="65" height="25"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.9811 697.086)" class="st3 st4">message</text>
+													</g>
+													<g transform="translate(65,24)">
+														<rect x="-464" y="676.1" class="st5" width="33" height="25"/>
+													</g>
+												</g>
+												<g>
+													<text transform="matrix(2.4249 0 0 2.4249 -433.2669 692.0858)" class="st3 st4">report</text>
+												</g>
+											</g>
+											<g transform="translate(7,20)">
+												<g transform="translate(0,0)">
+													<rect x="-464" y="676.1" class="st5" width="61" height="25"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9806 696.0858)" class="st3 st4">value</text>
+												</g>
+												<g transform="translate(61,0)">
+													<rect x="-464" y="676.1" class="st5" width="50" height="25"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9814 697.0864)" class="st3 st4">testing</text>
+												</g>
+												<g transform="translate(0,25)">
+													<rect x="-464" y="676.1" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9806 696.0856)" class="st3 st4">modified</text>
+												</g>
+												<g transform="translate(61,25)">
+													<rect x="-464" y="676.1" class="st7" width="50" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9814 696.0856)" class="st3 st4">true</text>
+												</g>
+											</g>
+											<g>
+												<text transform="matrix(2.4249 0 0 2.4249 -459.9534 692.0854)" class="st3 st4">DetectionOutcome</text>
+											</g>
+										</g>
+										<g transform="translate(-100,78)">
+											<path class="st1" d="M-396,720.1c0,59.5,0,59.5,0,119"/>
+											<g transform="translate(19,118)">
+												<g transform="translate(0,20)">
+													<g transform="translate(0,0)">
+														<rect x="-464" y="676.1" class="st5" width="65" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.9807 696.0857)" class="st3 st4">pass</text>
+													</g>
+													<g transform="translate(65,0)">
+														<rect x="-464" y="676.1" class="st7" width="33" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.9806 696.0857)" class="st3 st4">true</text>
+													</g>
+													<g transform="translate(0,24)">
+														<rect x="-464" y="676.1" class="st5" width="65" height="25"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.9807 697.0867)" class="st3 st4">message</text>
+													</g>
+													<g transform="translate(65,24)">
+														<rect x="-464" y="676.1" class="st5" width="33" height="25"/>
+													</g>
+												</g>
+												<g>
+													<text transform="matrix(2.4249 0 0 2.4249 -433.2676 692.0865)" class="st3 st4">report</text>
+												</g>
+											</g>
+											<g transform="translate(15,20)">
+												<g transform="translate(0,0)">
+													<rect x="-464" y="676.1" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9815 696.0858)" class="st3 st4">value</text>
+												</g>
+												<g transform="translate(61,0)">
+													<rect x="-464" y="676.1" class="st5" width="44" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9811 696.0858)" class="st3 st4">break</text>
+												</g>
+												<g transform="translate(0,24)">
+													<rect x="-464" y="676.1" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9815 696.0862)" class="st3 st4">modified</text>
+												</g>
+												<g transform="translate(61,24)">
+													<rect x="-464" y="676.1" class="st7" width="44" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9811 696.0862)" class="st3 st4">true</text>
+												</g>
+											</g>
+											<g>
+												<text transform="matrix(2.4249 0 0 2.4249 -459.3948 692.0854)" class="st3 st4">DetectionComments</text>
+											</g>
+										</g>
+										<g transform="translate(45,78)">
+											<path class="st1" d="M-411,721.1c0,59.5-1,59.5-1,119"/>
+											<g transform="translate(3,119)">
+												<g transform="translate(0,20)">
+													<g transform="translate(0,0)">
+														<rect x="-464" y="676.1" class="st5" width="65" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.981 696.0862)" class="st3 st4">pass</text>
+													</g>
+													<g transform="translate(65,0)">
+														<rect x="-464" y="676.1" class="st7" width="33" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.981 696.0862)" class="st3 st4">true</text>
+													</g>
+													<g transform="translate(0,24)">
+														<rect x="-464" y="676.1" class="st5" width="65" height="25"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.981 697.086)" class="st3 st4">message</text>
+													</g>
+													<g transform="translate(65,24)">
+														<rect x="-464" y="676.1" class="st5" width="33" height="25"/>
+													</g>
+												</g>
+												<g>
+													<text transform="matrix(2.4249 0 0 2.4249 -433.2668 692.0858)" class="st3 st4">report</text>
+												</g>
+											</g>
+											<g transform="translate(3,21)">
+												<g transform="translate(0,0)">
+													<rect x="-464" y="676.1" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.981 696.0864)" class="st3 st4">value</text>
+												</g>
+												<g transform="translate(61,0)">
+													<rect x="-464" y="676.1" class="st5" width="38" height="24"/>
+												</g>
+												<g transform="translate(0,24)">
+													<rect x="-464" y="676.1" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.981 696.0856)" class="st3 st4">modified</text>
+												</g>
+												<g transform="translate(61,24)">
+													<rect x="-464" y="676.1" class="st7" width="38" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9807 696.0856)" class="st3 st4">false</text>
+												</g>
+											</g>
+											<g>
+												<text transform="matrix(2.4249 0 0 2.4249 -459.8464 693.0859)" class="st3 st4">PathogenTaxID</text>
+											</g>
+										</g>
+										<g transform="translate(159,78)">
+											<path class="st1" d="M-399,720.1c0,59.5,0,59.5,0,119"/>
+											<g transform="translate(16,118)">
+												<g transform="translate(0,20)">
+													<g transform="translate(0,0)">
+														<rect x="-464" y="676.1" class="st5" width="65" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.9813 696.0857)" class="st3 st4">pass</text>
+													</g>
+													<g transform="translate(65,0)">
+														<rect x="-464" y="676.1" class="st7" width="33" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.9812 696.0857)" class="st3 st4">true</text>
+													</g>
+													<g transform="translate(0,24)">
+														<rect x="-464" y="676.1" class="st5" width="65" height="25"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.9813 697.0867)" class="st3 st4">message</text>
+													</g>
+													<g transform="translate(65,24)">
+														<rect x="-464" y="676.1" class="st5" width="33" height="25"/>
+													</g>
+												</g>
+												<g>
+													<text transform="matrix(2.4249 0 0 2.4249 -433.2671 692.0865)" class="st3 st4">report</text>
+												</g>
+											</g>
+											<g transform="translate(15,20)">
+												<g transform="translate(0,0)">
+													<rect x="-464" y="676.1" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9806 696.0858)" class="st3 st4">value</text>
+												</g>
+												<g transform="translate(61,0)">
+													<rect x="-464" y="676.1" class="st5" width="38" height="24"/>
+												</g>
+												<g transform="translate(0,24)">
+													<rect x="-464" y="676.1" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9806 696.0862)" class="st3 st4">modified</text>
+												</g>
+												<g transform="translate(61,24)">
+													<rect x="-464" y="676.1" class="st7" width="38" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9803 696.0862)" class="st3 st4">false</text>
+												</g>
+											</g>
+											<g>
+												<text transform="matrix(2.4249 0 0 2.4249 -459.2944 692.0854)" class="st3 st4">GenbankAccession</text>
+											</g>
+										</g>
+										<g transform="translate(298,78)">
+											<path class="st1" d="M-413,720.1c0,59.5,0,59.5,0,119"/>
+											<g transform="translate(2,118)">
+												<g transform="translate(0,20)">
+													<g transform="translate(0,0)">
+														<rect x="-464" y="676.1" class="st5" width="65" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.9802 696.0857)" class="st3 st4">pass</text>
+													</g>
+													<g transform="translate(65,0)">
+														<rect x="-464" y="676.1" class="st7" width="33" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.9801 696.0857)" class="st3 st4">true</text>
+													</g>
+													<g transform="translate(0,24)">
+														<rect x="-464" y="676.1" class="st5" width="65" height="25"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.9802 697.0867)" class="st3 st4">message</text>
+													</g>
+													<g transform="translate(65,24)">
+														<rect x="-464" y="676.1" class="st5" width="33" height="25"/>
+													</g>
+												</g>
+												<g>
+													<text transform="matrix(2.4249 0 0 2.4249 -433.2672 692.0865)" class="st3 st4">report</text>
+												</g>
+											</g>
+											<g transform="translate(1,20)">
+												<g transform="translate(0,0)">
+													<rect x="-464" y="676.1" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9807 696.0858)" class="st3 st4">value</text>
+												</g>
+												<g transform="translate(61,0)">
+													<rect x="-464" y="676.1" class="st5" width="38" height="24"/>
+												</g>
+												<g transform="translate(0,24)">
+													<rect x="-464" y="676.1" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9807 696.0862)" class="st3 st4">modified</text>
+												</g>
+												<g transform="translate(61,24)">
+													<rect x="-464" y="676.1" class="st7" width="38" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9803 696.0862)" class="st3 st4">false</text>
+												</g>
+											</g>
+											<g>
+												<text transform="matrix(2.4249 0 0 2.4249 -459.2767 692.0854)" class="st3 st4">SRAAccession</text>
+											</g>
+										</g>
+										<g transform="translate(409,78)">
+											<path class="st1" d="M-403,720.1c0,59.5-1,59.5-1,119"/>
+											<g transform="translate(11,118)">
+												<g transform="translate(0,20)">
+													<g transform="translate(0,0)">
+														<rect x="-464" y="676.1" class="st5" width="65" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.9805 696.0857)" class="st3 st4">pass</text>
+													</g>
+													<g transform="translate(65,0)">
+														<rect x="-464" y="676.1" class="st7" width="33" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.9804 696.0857)" class="st3 st4">true</text>
+													</g>
+													<g transform="translate(0,24)">
+														<rect x="-464" y="676.1" class="st5" width="65" height="25"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.9805 697.0867)" class="st3 st4">message</text>
+													</g>
+													<g transform="translate(65,24)">
+														<rect x="-464" y="676.1" class="st5" width="33" height="25"/>
+													</g>
+												</g>
+												<g>
+													<text transform="matrix(2.4249 0 0 2.4249 -433.2662 692.0865)" class="st3 st4">report</text>
+												</g>
+											</g>
+											<g transform="translate(11,20)">
+												<g transform="translate(0,0)">
+													<rect x="-464" y="676.1" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9805 696.0858)" class="st3 st4">value</text>
+												</g>
+												<g transform="translate(61,0)">
+													<rect x="-464" y="676.1" class="st5" width="38" height="24"/>
+												</g>
+												<g transform="translate(0,24)">
+													<rect x="-464" y="676.1" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9805 696.0862)" class="st3 st4">modified</text>
+												</g>
+												<g transform="translate(61,24)">
+													<rect x="-464" y="676.1" class="st7" width="38" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9801 696.0862)" class="st3 st4">false</text>
+												</g>
+											</g>
+											<g>
+												<text transform="matrix(2.4249 0 0 2.4249 -459.6119 692.0854)" class="st3 st4">GISAIDAccession</text>
+											</g>
+										</g>
+										<g transform="translate(539,78)">
+											<path class="st1" d="M-414,720.1c0,59.5,0,59.5,0,119"/>
+											<g transform="translate(1,118)">
+												<g transform="translate(0,20)">
+													<g transform="translate(0,0)">
+														<rect x="-464" y="676.1" class="st5" width="65" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.9807 696.0857)" class="st3 st4">pass</text>
+													</g>
+													<g transform="translate(65,0)">
+														<rect x="-464" y="676.1" class="st7" width="33" height="24"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.9807 696.0857)" class="st3 st4">true</text>
+													</g>
+													<g transform="translate(0,24)">
+														<rect x="-464" y="676.1" class="st5" width="65" height="25"/>
+														<text transform="matrix(2.4249 0 0 2.4249 -459.9807 697.0867)" class="st3 st4">message</text>
+													</g>
+													<g transform="translate(65,24)">
+														<rect x="-464" y="676.1" class="st5" width="33" height="25"/>
+													</g>
+												</g>
+												<g>
+													<text transform="matrix(2.4249 0 0 2.4249 -433.2665 692.0865)" class="st3 st4">report</text>
+												</g>
+											</g>
+											<g transform="translate(0,20)">
+												<g transform="translate(0,0)">
+													<rect x="-464" y="676.1" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9801 696.0858)" class="st3 st4">value</text>
+												</g>
+												<g transform="translate(61,0)">
+													<rect x="-464" y="676.1" class="st5" width="38" height="24"/>
+												</g>
+												<g transform="translate(0,24)">
+													<rect x="-464" y="676.1" class="st5" width="61" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9801 696.0862)" class="st3 st4">modified</text>
+												</g>
+												<g transform="translate(61,24)">
+													<rect x="-464" y="676.1" class="st7" width="38" height="24"/>
+													<text transform="matrix(2.4249 0 0 2.4249 -459.9809 696.0862)" class="st3 st4">false</text>
+												</g>
+											</g>
+											<g>
+												<text transform="matrix(2.4249 0 0 2.4249 -457.1632 692.0854)" class="st3 st4">GBIFIdentifier</text>
+											</g>
+										</g>
+										<g transform="translate(19,20)">
+											<g transform="translate(0,0)">
+												<rect x="-464" y="676.1" class="st5" width="8" height="8"/>
+											</g>
+											<g transform="translate(8,0)">
+												<rect x="-464" y="676.1" class="st5" width="8" height="8"/>
+											</g>
+										</g>
+										<g>
+											<text transform="matrix(2.4249 0 0 2.4249 -459.5426 692.0858)" class="st3 st4">rows[1]</text>
+										</g>
+									</g>
+								</g>
+								<g transform="translate(0,20)">
+									<g transform="translate(0,0)">
+										<rect x="160.1" y="169.3" class="st5" width="46" height="24"/>
+										<text transform="matrix(2.4249 0 0 2.4249 164.1059 189.2514)" class="st3 st4">date</text>
+									</g>
+									<g transform="translate(46,0)">
+										<rect x="160.1" y="169.3" class="st5" width="252" height="24"/>
+										<text transform="matrix(2.4249 0 0 2.4249 164.1058 189.2514)" class="st3 st4">Tue, 12 Jul 2022 18:13:52 GMT</text>
+									</g>
+									<g transform="translate(0,24)">
+										<rect x="160.1" y="169.3" class="st5" width="46" height="25"/>
+										<text transform="matrix(2.4249 0 0 2.4249 164.1059 190.2523)" class="st3 st4">key</text>
+									</g>
+									<g transform="translate(46,24)">
+										<rect x="160.1" y="169.3" class="st5" width="252" height="25"/>
+										<text transform="matrix(2.4249 0 0 2.4249 164.1058 189.2518)" class="st3 st4">11410dbe-91d2-3e93-8460-edd3f5d9...</text>
+									</g>
+									<g transform="translate(0,49)">
+										<rect x="160.1" y="169.3" class="st5" width="46" height="24"/>
+										<text transform="matrix(2.4249 0 0 2.4249 164.1059 189.2515)" class="st3 st4">status</text>
+									</g>
+									<g transform="translate(46,49)">
+										<rect x="160.1" y="169.3" class="st6" width="252" height="24"/>
+										<text transform="matrix(2.4249 0 0 2.4249 164.1058 189.2515)" class="st3 st4">2</text>
+									</g>
+								</g>
+								<g>
+									<text transform="matrix(2.4249 0 0 2.4249 275.2574 185.2521)" class="st3 st4">versions[1]</text>
+								</g>
+							</g>
+						</g>
+						<g transform="translate(0,20)">
+							<g transform="translate(0,0)">
+								<rect x="115.2" y="116.5" class="st5" width="103" height="24"/>
+								<text transform="matrix(2.4249 0 0 2.4249 119.1702 136.462)" class="st3 st4">datasetID</text>
+							</g>
+							<g transform="translate(103,0)">
+								<rect x="115.2" y="116.5" class="st5" width="244" height="24"/>
+								<text transform="matrix(2.4249 0 0 2.4249 119.1695 136.462)" class="st3 st4">1657580421738</text>
+							</g>
+							<g transform="translate(0,24)">
+								<rect x="115.2" y="116.5" class="st5" width="103" height="24"/>
+								<text transform="matrix(2.4249 0 0 2.4249 119.1702 136.4613)" class="st3 st4">activeVersion</text>
+							</g>
+							<g transform="translate(103,24)">
+								<rect x="115.2" y="116.5" class="st6" width="244" height="24"/>
+								<text transform="matrix(2.4249 0 0 2.4249 119.1695 136.4613)" class="st3 st4">7</text>
+							</g>
+							<g transform="translate(0,48)">
+								<rect x="115.2" y="116.5" class="st5" width="103" height="24"/>
+								<text transform="matrix(2.4249 0 0 2.4249 119.1702 136.4617)" class="st3 st4">status</text>
+							</g>
+							<g transform="translate(103,48)">
+								<rect x="115.2" y="116.5" class="st6" width="244" height="24"/>
+								<text transform="matrix(2.4249 0 0 2.4249 119.1695 136.4617)" class="st3 st4">2</text>
+							</g>
+							<g transform="translate(0,72)">
+								<rect x="115.2" y="116.5" class="st5" width="103" height="24"/>
+								<text transform="matrix(2.4249 0 0 2.4249 119.1702 136.4621)" class="st3 st4">date_collected</text>
+							</g>
+							<g transform="translate(103,72)">
+								<rect x="115.2" y="116.5" class="st5" width="244" height="24"/>
+								<text transform="matrix(2.4249 0 0 2.4249 119.1695 136.4621)" class="st3 st4">2022-07-11</text>
+							</g>
+							<g transform="translate(0,96)">
+								<rect x="115.2" y="116.5" class="st5" width="103" height="24"/>
+								<text transform="matrix(2.4249 0 0 2.4249 119.1702 136.4613)" class="st3 st4">samples_taken</text>
+							</g>
+							<g transform="translate(103,96)">
+								<rect x="115.2" y="116.5" class="st5" width="244" height="24"/>
+								<text transform="matrix(2.4249 0 0 2.4249 119.1695 136.4613)" class="st3 st4">0</text>
+							</g>
+							<g transform="translate(0,120)">
+								<rect x="115.2" y="116.5" class="st5" width="103" height="24"/>
+								<text transform="matrix(2.4249 0 0 2.4249 119.1702 136.4617)" class="st3 st4">researcherID</text>
+							</g>
+							<g transform="translate(103,120)">
+								<rect x="115.2" y="116.5" class="st5" width="244" height="24"/>
+								<text transform="matrix(2.4249 0 0 2.4249 119.1695 136.4617)" class="st3 st4">05b5964c861e4f28990fca98248c7f02</text>
+							</g>
+							<g transform="translate(0,144)">
+								<rect x="115.2" y="116.5" class="st5" width="103" height="25"/>
+								<text transform="matrix(2.4249 0 0 2.4249 119.1702 136.4622)" class="st3 st4">name</text>
+							</g>
+							<g transform="translate(103,144)">
+								<rect x="115.2" y="116.5" class="st5" width="244" height="25"/>
+								<text transform="matrix(2.4249 0 0 2.4249 119.1695 137.4615)" class="st3 st4">New record type</text>
+							</g>
+							<g transform="translate(0,169)">
+								<rect x="115.2" y="116.5" class="st5" width="103" height="24"/>
+								<text transform="matrix(2.4249 0 0 2.4249 119.1702 136.4619)" class="st3 st4">detection_run</text>
+							</g>
+							<g transform="translate(103,169)">
+								<rect x="115.2" y="116.5" class="st5" width="244" height="24"/>
+								<text transform="matrix(2.4249 0 0 2.4249 119.1695 136.4619)" class="st3 st4">0</text>
+							</g>
+						</g>
+						<g>
+							<text transform="matrix(2.4249 0 0 2.4249 238.5601 132.4616)" class="st3 st4">1657580421738</text>
+						</g>
+					</g>
+					<g transform="translate(23,20)">
+						<g transform="translate(0,0)">
+							<path class="st5" d="M636.4,98.4L636.4,98.4c2.2,0,4,1.8,4,4v0c0,2.2-1.8,4-4,4l0,0c-2.2,0-4-1.8-4-4v0
+								C632.4,100.2,634.2,98.4,636.4,98.4z"/>
+						</g>
+						<g transform="translate(8,0)">
+							<path class="st5" d="M636.4,98.4L636.4,98.4c2.2,0,4,1.8,4,4v0c0,2.2-1.8,4-4,4l0,0c-2.2,0-4-1.8-4-4v0
+								C632.4,100.2,634.2,98.4,636.4,98.4z"/>
+						</g>
+					</g>
+					<g>
+						<text transform="matrix(2.4249 0 0 2.4249 636.9445 114.4109)" class="st3 st4">datasets</text>
+					</g>
+				</g>
+				<g transform="translate(0,20)">
+					<g transform="translate(0,0)">
+						<path class="st5" d="M636.4,98.4h57c2.2,0,4,1.8,4,4v16c0,2.2-1.8,4-4,4h-57c-2.2,0-4-1.8-4-4v-16
+							C632.4,100.2,634.2,98.4,636.4,98.4z"/>
+						<text transform="matrix(2.4249 0 0 2.4249 636.4066 118.4103)" class="st3 st4">projectID</text>
+					</g>
+					<g transform="translate(65,0)">
+						<path class="st5" d="M636.4,98.4h8c2.2,0,4,1.8,4,4v16c0,2.2-1.8,4-4,4h-8c-2.2,0-4-1.8-4-4v-16
+							C632.4,100.2,634.2,98.4,636.4,98.4z"/>
+						<text transform="matrix(2.4249 0 0 2.4249 636.4066 118.4103)" class="st3 st4">0</text>
+					</g>
+					<g transform="translate(0,24)">
+						<path class="st5" d="M636.4,98.4h57c2.2,0,4,1.8,4,4v16c0,2.2-1.8,4-4,4h-57c-2.2,0-4-1.8-4-4v-16
+							C632.4,100.2,634.2,98.4,636.4,98.4z"/>
+						<text transform="matrix(2.4249 0 0 2.4249 636.4066 118.4107)" class="st3 st4">status</text>
+					</g>
+					<g transform="translate(65,24)">
+						<path class="st6" d="M636.4,98.4h8c2.2,0,4,1.8,4,4v16c0,2.2-1.8,4-4,4h-8c-2.2,0-4-1.8-4-4v-16
+							C632.4,100.2,634.2,98.4,636.4,98.4z"/>
+						<text transform="matrix(2.4249 0 0 2.4249 636.4066 118.4107)" class="st3 st4">2</text>
+					</g>
+				</g>
+				<g>
+					<text transform="matrix(2.4249 0 0 2.4249 652.397 114.4099)" class="st3 st4">project</text>
+				</g>
+			</g>
+			<g transform="translate(0,0)">
+				<path class="st5" d="M636.4,98.4L636.4,98.4c2.2,0,4,1.8,4,4v0c0,2.2-1.8,4-4,4l0,0c-2.2,0-4-1.8-4-4v0
+					C632.4,100.2,634.2,98.4,636.4,98.4z"/>
+			</g>
+			<g transform="translate(8,0)">
+				<path class="st5" d="M636.4,98.4L636.4,98.4c2.2,0,4,1.8,4,4v0c0,2.2-1.8,4-4,4l0,0c-2.2,0-4-1.8-4-4v0
+					C632.4,100.2,634.2,98.4,636.4,98.4z"/>
+			</g>
+		</g>
+	</g>
+</g>
+</svg>
