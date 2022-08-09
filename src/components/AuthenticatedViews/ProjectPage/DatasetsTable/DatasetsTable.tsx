@@ -1,11 +1,15 @@
 import React from 'react'
 
-import useProject from 'hooks/project/useProject'
-import { GridRow } from './DatasetsTableRow'
+import { DatasetInfo } from './DatasetsTableRow'
+import ListTable, { HeaderRow, RowLink } from 'components/ListTable/ListTable'
+
 import { ProjectStatus } from 'reducers/projectReducer/types'
-import ListTable, { HeaderRow } from 'components/ListTable/ListTable'
+
+import useProject from 'hooks/project/useProject'
+import useProjectID from 'hooks/project/useProjectID'
 
 const DatasetsTable = () => {
+  const projectID = useProjectID()
   const project = useProject()
 
   if (
@@ -29,7 +33,7 @@ const DatasetsTable = () => {
   })
 
   return (
-    <ListTable>
+    <ListTable columnTemplate="1.5fr 2.5fr repeat(4, 1.5fr)">
       <HeaderRow>
         <div>Dataset ID</div>
         <div>Name</div>
@@ -39,7 +43,9 @@ const DatasetsTable = () => {
         <div>Detection Run</div>
       </HeaderRow>
       {sorted.map(dataset => (
-        <GridRow key={dataset.datasetID} dataset={dataset} />
+        <RowLink to={`/project/${projectID}/${dataset.datasetID}`}>
+          <DatasetInfo key={dataset.datasetID} dataset={dataset} />
+        </RowLink>
       ))}
     </ListTable>
   )
