@@ -47,8 +47,6 @@ const DatasetEditor = () => {
   // this saves both the versions array and the register
   useAutosaveRegister()
 
-  console.log({ dataset })
-
   return (
     <ModalMessageProvider>
       <MainGrid>
