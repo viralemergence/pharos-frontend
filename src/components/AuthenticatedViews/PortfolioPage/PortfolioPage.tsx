@@ -23,7 +23,7 @@ const ProjectList = () => {
       <Sidebar />
       <Content>
         <TopBar>
-          <H1>My Datasets</H1>
+          <H1>My Projects</H1>
           <MintButton onClick={() => setCreateModalOpen(true)}>
             + New Project
           </MintButton>
