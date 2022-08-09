@@ -14,7 +14,7 @@ const H1 = styled.h1`
   margin: 0;
 `
 
-const ResearcherHome = () => {
+const ProjectPage = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false)
 
   return (
@@ -36,4 +36,4 @@ const ResearcherHome = () => {
   )
 }
 
-export default ResearcherHome
+export default ProjectPage
