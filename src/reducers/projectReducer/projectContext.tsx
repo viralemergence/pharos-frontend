@@ -41,6 +41,7 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
       })
 
       // api request
+      console.log('API CALL: list datasets')
       const datasetList = await listDatasets(researcherID)
 
       if (!datasetList) {
