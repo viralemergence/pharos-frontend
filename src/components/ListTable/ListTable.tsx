@@ -1,3 +1,4 @@
+import React from 'react'
 import styled from 'styled-components'
 import { lighten } from 'polished'
 
@@ -14,9 +15,10 @@ const TableGrid = styled.div`
   min-width: 800px;
   border: 1px solid ${({ theme }) => theme.veryLightGray};
 `
-export const RowLink = styled(Link)`
+export const RowLink = styled(Link)<{ columnTemplate?: string }>`
   display: grid;
-  grid-template-columns: 1.5fr 2.5fr repeat(4, 1.5fr);
+  grid-template-columns: ${({ columnTemplate }) => columnTemplate};
+  // grid-template-columns: 1.5fr 2.5fr repeat(4, 1.5fr);
   align-items: center;
   transition: 150ms ease;
 
@@ -42,19 +44,36 @@ export const RowLink = styled(Link)`
   }
 `
 
-export const HeaderRow = styled.div`
+export const HeaderRow = styled.div<{ columnTemplate?: string }>`
   display: grid;
-  grid-template-columns: 1.5fr 2.5fr repeat(4, 1.5fr);
+  grid-template-columns: ${({ columnTemplate }) => columnTemplate};
+  // grid-template-columns: 1.5fr 2.5fr repeat(4, 1.5fr);
   align-items: center;
   > div {
     padding: 15px;
   }
 `
 
-const ListTable = ({ children }: { children: React.ReactNode }) => (
-  <Container>
-    <TableGrid>{children}</TableGrid>
-  </Container>
-)
+interface ListTableProps {
+  children: React.ReactNode
+  columnTemplate: string
+}
+
+const ListTable = ({ children, columnTemplate }: ListTableProps) => {
+  const childrenWithColumns = React.Children.map(children, child => {
+    // Checking isValidElement is the safe way and avoids a typescript
+    // error too.
+    if (React.isValidElement(child)) {
+      return React.cloneElement(child, { columnTemplate })
+    }
+    return child
+  })
+
+  return (
+    <Container>
+      <TableGrid>{childrenWithColumns}</TableGrid>
+    </Container>
+  )
+}
 
 export default ListTable
