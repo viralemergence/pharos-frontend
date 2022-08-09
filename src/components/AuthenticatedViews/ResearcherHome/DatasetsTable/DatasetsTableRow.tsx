@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import formatDate from 'utilities/formatDate'
 import { lighten } from 'polished'
 import { Dataset } from 'reducers/projectReducer/types'
+import useProjectID from 'hooks/project/useProjectID'
 
 const Row = styled(Link)`
   display: grid;
@@ -44,6 +45,7 @@ export const HeaderRow = styled.div`
 `
 
 export const GridRow = ({ dataset }: { dataset: Dataset }) => {
+  const projectID = useProjectID()
   const lastUpdatedDate =
     dataset.versions && dataset.versions.length > 0
       ? dataset.versions?.slice(-1)[0].date
@@ -55,8 +57,15 @@ export const GridRow = ({ dataset }: { dataset: Dataset }) => {
   const collectedDateString = collectedDate ? formatDate(collectedDate) : '—'
 
   return (
-    <Row to={`/dataset/${dataset.datasetID}`}>
-      <div>{dataset.datasetID}</div>
+    <Row to={`/project/${projectID}/${dataset.datasetID}`}>
+      <div
+        style={{
+          textTransform: 'uppercase',
+          fontFamily: 'monospace',
+        }}
+      >
+        {dataset.datasetID}
+      </div>
       <div>{dataset.name}</div>
       <div>{collectedDateString}</div>
       <div>{lastUpdatedString}</div>

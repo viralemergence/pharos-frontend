@@ -26,7 +26,7 @@ const App = (): JSX.Element => {
           <Routes>
             <Route path={'/login'} element={<Login />} />
             <Route
-              path={'/dataset/:datasetID'}
+              path={'/project/:projectID/:datasetID'}
               element={
                 <RequireAuth>
                   <DatasetEditor />
@@ -34,7 +34,7 @@ const App = (): JSX.Element => {
               }
             />
             <Route
-              path={'/'}
+              path={'/project/:projectID'}
               element={
                 <RequireAuth>
                   <ResearcherHome />
