@@ -4,7 +4,7 @@ import ListTable, { HeaderRow } from 'components/ListTable/ListTable'
 
 const ProjectsTable = () => {
   return (
-    <ListTable columnTemplate="1.5fr 2.5fr repeat(5, 1.5fr)">
+    <ListTable columnTemplate="repeat(7, 1fr)">
       <HeaderRow>
         <div>Project name</div>
         <div>Start date</div>
