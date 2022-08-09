@@ -1,21 +1,9 @@
 import React from 'react'
-import styled from 'styled-components'
 
 import useProject from 'hooks/project/useProject'
-import { GridRow, HeaderRow } from './DatasetsTableRow'
+import { GridRow } from './DatasetsTableRow'
 import { ProjectStatus } from 'reducers/projectReducer/types'
-
-const Container = styled.div`
-  max-width: 100%;
-  overflow-x: scroll;
-  margin-top: 20px;
-`
-const DatasetsGrid = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-width: 800px;
-  border: 1px solid ${({ theme }) => theme.veryLightGray};
-`
+import ListTable, { HeaderRow } from 'components/ListTable/ListTable'
 
 const DatasetsTable = () => {
   const project = useProject()
@@ -41,21 +29,19 @@ const DatasetsTable = () => {
   })
 
   return (
-    <Container>
-      <DatasetsGrid>
-        <HeaderRow>
-          <div>Dataset ID</div>
-          <div>Name</div>
-          <div>Collected Date</div>
-          <div>Last Updated</div>
-          <div>Samples Taken</div>
-          <div>Detection Run</div>
-        </HeaderRow>
-        {sorted.map(dataset => (
-          <GridRow key={dataset.datasetID} dataset={dataset} />
-        ))}
-      </DatasetsGrid>
-    </Container>
+    <ListTable>
+      <HeaderRow>
+        <div>Dataset ID</div>
+        <div>Name</div>
+        <div>Collected Date</div>
+        <div>Last Updated</div>
+        <div>Samples Taken</div>
+        <div>Detection Run</div>
+      </HeaderRow>
+      {sorted.map(dataset => (
+        <GridRow key={dataset.datasetID} dataset={dataset} />
+      ))}
+    </ListTable>
   )
 }
 

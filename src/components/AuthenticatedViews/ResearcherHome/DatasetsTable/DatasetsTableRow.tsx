@@ -1,48 +1,10 @@
 import React from 'react'
-import styled from 'styled-components'
-import { Link } from 'react-router-dom'
 
-import formatDate from 'utilities/formatDate'
-import { lighten } from 'polished'
 import { Dataset } from 'reducers/projectReducer/types'
+import { RowLink } from 'components/ListTable/ListTable'
+
 import useProjectID from 'hooks/project/useProjectID'
-
-const Row = styled(Link)`
-  display: grid;
-  grid-template-columns: 1.5fr 2.5fr repeat(4, 1.5fr);
-  align-items: center;
-  transition: 150ms ease;
-
-  color: ${({ theme }) => theme.black};
-  text-decoration: none;
-
-  ${({ theme }) => theme.gridText};
-
-  > div {
-    padding: 15px;
-  }
-
-  &:nth-child(2n) {
-    background: ${({ theme }) => theme.veryLightGray};
-  }
-
-  &:nth-of-type(1) {
-    box-shadow: inset 0px 4px 4px #e0eae8;
-  }
-
-  &:hover {
-    background-color: ${({ theme }) => lighten(0.05, theme.hoverMint)};
-  }
-`
-
-export const HeaderRow = styled.div`
-  display: grid;
-  grid-template-columns: 1.5fr 2.5fr repeat(4, 1.5fr);
-  align-items: center;
-  > div {
-    padding: 15px;
-  }
-`
+import formatDate from 'utilities/formatDate'
 
 export const GridRow = ({ dataset }: { dataset: Dataset }) => {
   const projectID = useProjectID()
@@ -57,7 +19,7 @@ export const GridRow = ({ dataset }: { dataset: Dataset }) => {
   const collectedDateString = collectedDate ? formatDate(collectedDate) : '—'
 
   return (
-    <Row to={`/project/${projectID}/${dataset.datasetID}`}>
+    <RowLink to={`/project/${projectID}/${dataset.datasetID}`}>
       <div
         style={{
           textTransform: 'uppercase',
@@ -71,6 +33,6 @@ export const GridRow = ({ dataset }: { dataset: Dataset }) => {
       <div>{lastUpdatedString}</div>
       <div>{dataset.samples_taken || '—'}</div>
       <div>{dataset.detection_run || '—'}</div>
-    </Row>
+    </RowLink>
   )
 }
