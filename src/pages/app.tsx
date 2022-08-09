@@ -14,7 +14,7 @@ import ResearcherHome from 'components/AuthenticatedViews/ResearcherHome/Researc
 import ProjectContextProvider from 'reducers/projectReducer/projectContext'
 
 const App = (): JSX.Element => {
-  // on the buidl server, don't try to render the app
+  // on the build server, don't try to render the app
   if (typeof window === 'undefined') return <></>
 
   return (
