@@ -12,7 +12,7 @@ import DatasetEditor from 'components/AuthenticatedViews/DatasetEditor/DatasetEd
 import ProjectPage from 'components/AuthenticatedViews/ProjectPage/ProjectPage'
 
 import ProjectContextProvider from 'reducers/projectReducer/projectContext'
-import ProjectList from 'components/AuthenticatedViews/ProjectList/ProjectList'
+import ProjectList from 'components/AuthenticatedViews/PortfolioPage/PortfolioPage'
 
 const App = (): JSX.Element => {
   // on the build server, don't try to render the app
