@@ -42,12 +42,12 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
 
       // api request
       console.log('API CALL: list datasets')
-      const datasetList = await listDatasets(researcherID)
+      const datasetList = await listDatasets(researcherID, projectID)
 
       if (!datasetList) {
         projectDispatch({
           type: ProjectActions.SetProjectStatus,
-          payload: ProjectStatus.NetworkError,
+          payload: ProjectStatus.Error,
         })
         return null
       }
