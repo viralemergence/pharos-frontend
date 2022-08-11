@@ -19,6 +19,16 @@ export interface Portfolio {
 export interface Project {
   projectID: string
   status: ProjectStatus // don't save in api
+  projectName: string
+  description: string
+  projectType: string
+  surveillanceType: string
+  relatedMaterials: string[]
+  publicationsCiting: string[]
+  authors: {
+    researcherID: string
+    role: string
+  }[]
   datasets: {
     // dataset keys are the datasetID
     // to allow O(1) access to update
