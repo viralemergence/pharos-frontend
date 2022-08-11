@@ -19,13 +19,14 @@
 export interface Project {
   projectID: string
   status: ProjectStatus // don't save in api
-  projectName: string
-  description: string
-  projectType: string
-  surveillanceType: string
-  relatedMaterials: string[]
-  publicationsCiting: string[]
-  authors: {
+  projectName?: string
+  description?: string
+  projectType?: string
+  surveillanceType?: string
+  relatedMaterials?: string[]
+  publicationsCiting?: string[]
+  datasetIDs?: string[]
+  authors?: {
     researcherID: string
     role: string
   }[]
@@ -171,7 +172,7 @@ export enum ProjectStatus {
   Saved,
   Loading,
   Loaded,
-  NetworkError,
+  Error,
 }
 
 // all possible statuses for a
