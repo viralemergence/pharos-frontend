@@ -2,13 +2,13 @@
 // the user has access to and
 // their state in the frontend
 
-// portfolio is not yet implemented
-export interface Portfolio {
-  status: PortfolioStatus
-  projects: {
-    [key: string]: Project
-  }
-}
+// // portfolio is not yet implemented
+// export interface Portfolio {
+//   status: PortfolioStatus
+//   projects: {
+//     [key: string]: Project
+//   }
+// }
 
 // the overall Project object
 // representing everything the frontend
