@@ -9,6 +9,9 @@ import Typeahead from '@talus-analytics/library.ui.typeahead'
 import generateID from 'utilities/generateID'
 import saveProject from 'api/saveProject'
 import { ProjectStatus } from 'reducers/projectReducer/types'
+import { ProjectActions } from 'reducers/projectReducer/projectReducer'
+import useProjectDispatch from 'hooks/project/useProjectDispatch'
+import useProject from 'hooks/project/useProject'
 
 const Section = styled.section`
   width: 800px;
@@ -42,6 +45,8 @@ const projectTypes = [
 
 const CreateProjectForm = () => {
   const user = useUser()
+  const project = useProject()
+  const projectDispatch = useProjectDispatch()
   const [formMessage, setFormMessage] = useState('')
   const theme = useTheme()
 
@@ -64,7 +69,7 @@ const CreateProjectForm = () => {
 
     const saveData = {
       ...projectData,
-      status: ProjectStatus.Initial,
+      status: ProjectStatus.Saving,
       projectID,
       authors: [
         {
@@ -77,7 +82,16 @@ const CreateProjectForm = () => {
 
     const saved = await saveProject(saveData)
 
-    if (saved) alert('project saved')
+    if (saved) {
+      const project = {
+        ...saveData,
+        status: ProjectStatus.Saved,
+      }
+      projectDispatch({
+        type: ProjectActions.SetProject,
+        payload: project,
+      })
+    }
   }
 
   const updateProjectData = (
@@ -109,6 +123,23 @@ const CreateProjectForm = () => {
         [key]: [...prev[key].slice(0, index), ...prev[key].slice(index + 1)],
       }
     })
+  }
+
+  let buttonMessage
+  switch (true) {
+    // case !project.status:
+    //   buttonMessage = 'Create project'
+    //   break
+
+    case project.status === ProjectStatus.Saving:
+      buttonMessage = 'Saving...'
+      break
+    case project.status === ProjectStatus.Saved:
+      buttonMessage = 'Saved'
+      break
+    default:
+      buttonMessage = 'Create project'
+      break
   }
 
   return (
@@ -216,7 +247,7 @@ const CreateProjectForm = () => {
       )}
       <p style={{ margin: 0, padding: 0 }}>{formMessage}</p>
       <MintButton onClick={handleSubmit} style={{ marginLeft: 'auto' }}>
-        Create
+        {buttonMessage}
       </MintButton>
     </Section>
   )
