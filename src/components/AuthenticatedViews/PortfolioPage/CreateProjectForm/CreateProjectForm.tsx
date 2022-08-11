@@ -6,6 +6,9 @@ import Label from 'components/ui/InputLabel'
 import Input from 'components/ui/Input'
 import Textarea from 'components/ui/Textarea'
 import Typeahead from '@talus-analytics/library.ui.typeahead'
+import generateID from 'utilities/generateID'
+import saveProject from 'api/saveProject'
+import { ProjectStatus } from 'reducers/projectReducer/types'
 
 const Section = styled.section`
   width: 800px;
@@ -51,10 +54,30 @@ const CreateProjectForm = () => {
     publicationsCiting: [''],
   })
 
-  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     console.log(projectData)
-    alert('create project')
+
+    const projectID = generateID.projectID()
+
+    if (!user.data?.researcherID) throw new Error('Researcher ID undefined')
+
+    const saveData = {
+      ...projectData,
+      status: ProjectStatus.Initial,
+      projectID,
+      authors: [
+        {
+          researcherID: user.data.researcherID,
+          role: 'owner',
+        },
+      ],
+      datasets: {},
+    }
+
+    const saved = await saveProject(saveData)
+
+    if (saved) alert('project saved')
   }
 
   const updateProjectData = (
@@ -145,7 +168,6 @@ const CreateProjectForm = () => {
             key={index}
             type="text"
             name="name"
-            autoFocus
             value={string}
             onChange={e =>
               updateProjectData(e.target.value, 'relatedMaterials', index)
@@ -173,7 +195,6 @@ const CreateProjectForm = () => {
             key={index}
             type="text"
             name="name"
-            autoFocus
             value={string}
             onChange={e =>
               updateProjectData(e.target.value, 'publicationsCiting', index)
