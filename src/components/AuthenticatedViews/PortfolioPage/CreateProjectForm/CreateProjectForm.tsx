@@ -12,6 +12,7 @@ import { ProjectStatus } from 'reducers/projectReducer/types'
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
 import useProject from 'hooks/project/useProject'
+import { useNavigate } from 'react-router-dom'
 
 const Section = styled.section`
   width: 800px;
@@ -50,6 +51,8 @@ const CreateProjectForm = () => {
   const [formMessage, setFormMessage] = useState('')
   const theme = useTheme()
 
+  const navigate = useNavigate()
+
   const [projectData, setProjectData] = useState({
     projectName: '',
     description: '',
@@ -77,8 +80,14 @@ const CreateProjectForm = () => {
           role: 'owner',
         },
       ],
+      datasetIDs: [],
       datasets: {},
     }
+
+    projectDispatch({
+      type: ProjectActions.SetProjectStatus,
+      payload: ProjectStatus.Saving,
+    })
 
     const saved = await saveProject(saveData)
 
@@ -87,9 +96,17 @@ const CreateProjectForm = () => {
         ...saveData,
         status: ProjectStatus.Saved,
       }
+
       projectDispatch({
         type: ProjectActions.SetProject,
         payload: project,
+      })
+
+      navigate(`project/${projectID}`)
+    } else {
+      projectDispatch({
+        type: ProjectActions.SetProjectStatus,
+        payload: ProjectStatus.Error,
       })
     }
   }
@@ -215,7 +232,7 @@ const CreateProjectForm = () => {
             }))
           }
         >
-          + Add more related material
+          + Add more related laterial
         </AddMoreButton>
       )}
       <DividerLine />
