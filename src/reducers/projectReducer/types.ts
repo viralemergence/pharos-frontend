@@ -167,6 +167,8 @@ export enum PortfolioStatus {
 // datasets object
 export enum ProjectStatus {
   Initial,
+  Saving,
+  Saved,
   Loading,
   Loaded,
   NetworkError,
