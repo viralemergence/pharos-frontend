@@ -54,7 +54,7 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
       if (Object.keys(nextProjects).length === 0) {
         console.log('API CALL: listProjects')
         if (user.data?.projects && user.data.projects.length > 0) {
-          const response = await listProjects(researcherID, user.data?.projects)
+          const response = await listProjects(researcherID)
           if (response) {
             for (const project of response) {
               nextProjects[project.projectID] = project
@@ -68,7 +68,7 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
       if (!nextProjects[projectID]) {
         console.log('API CALL: listProjects')
         if (user.data?.projects && user.data.projects.length > 0) {
-          const response = await listProjects(researcherID, user.data?.projects)
+          const response = await listProjects(researcherID)
           if (response) {
             for (const project of response) {
               nextProjects[project.projectID] = project
