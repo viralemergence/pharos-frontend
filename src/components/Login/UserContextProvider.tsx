@@ -41,6 +41,8 @@ const UserContextProvider = ({
 }: CMSIconProviderProps): JSX.Element => {
   const [user, setUser] = useState<User>(defaultUserState)
 
+  console.log({ user })
+
   return (
     <UserContext.Provider value={{ user, setUser }}>
       {children}
