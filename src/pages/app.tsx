@@ -21,8 +21,8 @@ const App = (): JSX.Element => {
   return (
     <Providers>
       <CMS.SEO />
-      <ProjectContextProvider>
-        <HashRouter>
+      <HashRouter>
+        <ProjectContextProvider>
           <NavBar />
           <Routes>
             <Route path={'/login'} element={<Login />} />
@@ -51,8 +51,8 @@ const App = (): JSX.Element => {
               }
             />
           </Routes>
-        </HashRouter>
-      </ProjectContextProvider>
+        </ProjectContextProvider>
+      </HashRouter>
     </Providers>
   )
 }
