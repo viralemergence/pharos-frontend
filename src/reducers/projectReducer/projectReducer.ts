@@ -78,6 +78,7 @@ export const projectInitialValue: Project = {
   projectID: '0',
   status: ProjectStatus.Initial,
   datasets: {},
+  datasetIDs: [],
 }
 
 export const datasetInitialValue: Dataset = {
