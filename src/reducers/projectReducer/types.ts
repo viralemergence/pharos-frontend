@@ -25,7 +25,7 @@ export interface Project {
   surveillanceType?: string
   relatedMaterials?: string[]
   publicationsCiting?: string[]
-  datasetIDs?: string[]
+  datasetIDs: string[]
   authors?: {
     researcherID: string
     role: string
