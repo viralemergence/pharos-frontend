@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useReducer } from 'react'
+import React, { createContext, useEffect, useReducer, useState } from 'react'
 
 import { Dataset, Project, ProjectStatus, DatasetStatus } from './types'
 
@@ -10,6 +10,9 @@ import projectReducer, {
 
 import useUser from 'hooks/useUser'
 import listDatasets from 'api/listDatasets'
+import { useParams } from 'react-router-dom'
+import listProjects from 'api/listProjects'
+import useProjectDispatch from 'hooks/project/useProjectDispatch'
 
 type ProjectContextValue = {
   project: Project
@@ -25,6 +28,12 @@ export const ProjectContext = createContext<ProjectContextValue | null>(null)
 const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
   const user = useUser()
   const researcherID = user.data?.researcherID
+  const { projectID } = useParams()
+
+  const [projects, setProjects] = useState<{ [key: string]: Project }>({})
+
+  console.log('provider called')
+  console.log({ projectID })
 
   const [project, projectDispatch] = useReducer(
     projectReducer,
@@ -33,7 +42,47 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
 
   // any time the user ID changes, update the Project automatically
   useEffect(() => {
-    const getDatasetList = async (researcherID: string) => {
+    console.log('useEffect called')
+    const getDatasetList = async () => {
+      console.log('getDatsetList called')
+      console.log({ projectID, researcherID })
+
+      if (!researcherID) return null
+
+      const nextProjects = projects
+
+      if (Object.keys(nextProjects).length === 0) {
+        console.log('API CALL: listProjects')
+        if (user.data?.projects && user.data.projects.length > 0) {
+          const response = await listProjects(researcherID, user.data?.projects)
+          if (response) {
+            for (const project of response) {
+              nextProjects[project.projectID] = project
+            }
+          }
+        }
+      }
+
+      if (!projectID) return null
+
+      if (!nextProjects[projectID]) {
+        console.log('API CALL: listProjects')
+        if (user.data?.projects && user.data.projects.length > 0) {
+          const response = await listProjects(researcherID, user.data?.projects)
+          if (response) {
+            for (const project of response) {
+              nextProjects[project.projectID] = project
+            }
+          }
+        }
+      }
+
+      projectDispatch({
+        type: ProjectActions.SetProject,
+        payload: { ...nextProjects[projectID] },
+      })
+
+      console.log('set status to loading')
       // set status to loading
       projectDispatch({
         type: ProjectActions.SetProjectStatus,
@@ -43,6 +92,8 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
       // api request
       console.log('API CALL: list datasets')
       const datasetList = await listDatasets(researcherID, projectID)
+
+      console.log(datasetList)
 
       if (!datasetList) {
         projectDispatch({
@@ -54,10 +105,9 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
 
       if (datasetList.length === 0) {
         projectDispatch({
-          type: ProjectActions.SetProject,
-          payload: { ...projectInitialValue, status: ProjectStatus.Loaded },
+          type: ProjectActions.SetProjectStatus,
+          payload: ProjectStatus.Loaded,
         })
-
         return null
       }
 
@@ -82,8 +132,8 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
       })
     }
 
-    if (researcherID) getDatasetList(researcherID)
-  }, [researcherID])
+    getDatasetList()
+  }, [researcherID, projectID])
 
   return (
     <ProjectContext.Provider value={{ project, projectDispatch }}>
