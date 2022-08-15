@@ -18,7 +18,7 @@
 // but not in the API yet.
 export interface Project {
   projectID: string
-  status: ProjectStatus // don't save in api
+  status: ProjectStatus
   projectName?: string
   description?: string
   projectType?: string
@@ -168,6 +168,7 @@ export enum PortfolioStatus {
 // datasets object
 export enum ProjectStatus {
   Initial,
+  Unsaved,
   Saving,
   Saved,
   Loading,
