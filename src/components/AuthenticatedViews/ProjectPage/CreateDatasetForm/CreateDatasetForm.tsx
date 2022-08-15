@@ -10,8 +10,9 @@ import Label from 'components/ui/InputLabel'
 import Input from 'components/ui/Input'
 
 import useUser from 'hooks/useUser'
-
+import useProjectID from 'hooks/project/useProjectID'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
+
 import generateID from 'utilities/generateID'
 
 const Form = styled.form`
@@ -29,6 +30,7 @@ const H1 = styled.h1`
 const CreateDatasetForm = () => {
   const user = useUser()
   const projectDispatch = useProjectDispatch()
+  const projectID = useProjectID()
 
   const [formMessage, setFormMessage] = useState('')
 
@@ -184,7 +186,7 @@ const CreateDatasetForm = () => {
 
     // now that we can handle this, just navigate
     // straight to the dataset directly
-    navigate(`/dataset/${datasetID}`)
+    navigate(`/project/${projectID}/${datasetID}`)
   }
 
   return (
