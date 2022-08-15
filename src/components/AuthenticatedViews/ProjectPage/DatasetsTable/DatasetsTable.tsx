@@ -33,17 +33,18 @@ const DatasetsTable = () => {
   })
 
   return (
-    <ListTable columnTemplate="1.5fr 2.5fr repeat(4, 1.5fr)">
+    <ListTable columnTemplate="repeat(4, 1.5fr)">
       <HeaderRow>
         <div>Dataset ID</div>
         <div>Name</div>
         <div>Collected Date</div>
-        <div>Last Updated</div>
-        <div>Samples Taken</div>
-        <div>Detection Run</div>
+        <div>Status</div>
       </HeaderRow>
       {sorted.map(dataset => (
-        <RowLink to={`/project/${projectID}/${dataset.datasetID}`}>
+        <RowLink
+          key={dataset.datasetID}
+          to={`/project/${projectID}/${dataset.datasetID}`}
+        >
           <DatasetInfo key={dataset.datasetID} dataset={dataset} />
         </RowLink>
       ))}

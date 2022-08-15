@@ -26,10 +26,8 @@ export const DatasetInfo = ({ dataset }: { dataset: Dataset }) => {
         {dataset.datasetID}
       </div>
       <div>{dataset.name}</div>
-      <div>{collectedDateString}</div>
-      <div>{lastUpdatedString}</div>
-      <div>{dataset.samples_taken || '—'}</div>
-      <div>{dataset.detection_run || '—'}</div>
+      <div>-</div>
+      <div>-</div>
     </>
   )
 }
