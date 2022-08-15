@@ -22,36 +22,40 @@ const App = (): JSX.Element => {
     <Providers>
       <CMS.SEO />
       <HashRouter>
-        <ProjectContextProvider>
-          <NavBar />
-          <Routes>
-            <Route path={'/login'} element={<Login />} />
-            <Route
-              path={'/project/:projectID/:datasetID'}
-              element={
-                <RequireAuth>
+        <NavBar />
+        <Routes>
+          <Route path={'/login'} element={<Login />} />
+          <Route
+            path={'/project/:projectID/:datasetID'}
+            element={
+              <RequireAuth>
+                <ProjectContextProvider>
                   <DatasetEditor />
-                </RequireAuth>
-              }
-            />
-            <Route
-              path={'/project/:projectID'}
-              element={
-                <RequireAuth>
+                </ProjectContextProvider>
+              </RequireAuth>
+            }
+          />
+          <Route
+            path={'/project/:projectID'}
+            element={
+              <RequireAuth>
+                <ProjectContextProvider>
                   <ProjectPage />
-                </RequireAuth>
-              }
-            />
-            <Route
-              path={'/'}
-              element={
-                <RequireAuth>
+                </ProjectContextProvider>
+              </RequireAuth>
+            }
+          />
+          <Route
+            path={'/'}
+            element={
+              <RequireAuth>
+                <ProjectContextProvider>
                   <ProjectList />
-                </RequireAuth>
-              }
-            />
-          </Routes>
-        </ProjectContextProvider>
+                </ProjectContextProvider>
+              </RequireAuth>
+            }
+          />
+        </Routes>
       </HashRouter>
     </Providers>
   )
