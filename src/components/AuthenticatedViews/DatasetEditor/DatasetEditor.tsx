@@ -19,6 +19,7 @@ import useDatasetStatusMessage from 'hooks/dataset/useDatasetStatusMessage'
 import useAutosaveRegister from 'hooks/register/useAutosaveRegister'
 import useAutosaveDataset from 'hooks/register/useAutosaveDataset'
 import useLoadRegister from 'hooks/register/useLoadRegister'
+import useAutosaveProject from 'hooks/project/useAutosaveProject'
 
 const H1 = styled.h1`
   ${({ theme }) => theme.h3};
@@ -46,6 +47,8 @@ const DatasetEditor = () => {
   // autosave the register when changes are committed
   // this saves both the versions array and the register
   useAutosaveRegister()
+
+  useAutosaveProject()
 
   return (
     <ModalMessageProvider>
