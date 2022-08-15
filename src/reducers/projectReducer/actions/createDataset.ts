@@ -1,5 +1,5 @@
 import { ActionFunction, ProjectActions } from '../projectReducer'
-import { Dataset } from '../types'
+import { Dataset, ProjectStatus } from '../types'
 
 export interface CreateDatasetAction {
   type: ProjectActions.CreateDataset
@@ -8,6 +8,8 @@ export interface CreateDatasetAction {
 
 const createDataset: ActionFunction<Dataset> = (state, payload) => ({
   ...state,
+  status: ProjectStatus.Unsaved,
+  datasetIDs: [...state.datasetIDs, payload.datasetID],
   datasets: {
     ...state.datasets,
     [payload.datasetID]: { ...payload },
