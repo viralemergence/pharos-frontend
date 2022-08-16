@@ -11,6 +11,7 @@ import VersionSwitcher from './VersionSwitcher/VersionSwitcher'
 import DownloadButton from './DownloadButton/DownloadButton'
 import ModalMessageProvider from './DatasetGrid/ModalMessage/ModalMessageProvider'
 import UpdateButton from './UpdateButton/UpdateButton'
+import BackButtonLink from 'components/ui/BackButtonLink'
 
 import useDataset from 'hooks/dataset/useDataset'
 import useDatasetStatusMessage from 'hooks/dataset/useDatasetStatusMessage'
@@ -19,6 +20,7 @@ import useAutosaveRegister from 'hooks/register/useAutosaveRegister'
 import useAutosaveDataset from 'hooks/register/useAutosaveDataset'
 import useLoadRegister from 'hooks/register/useLoadRegister'
 import useAutosaveProject from 'hooks/project/useAutosaveProject'
+import useProjectID from 'hooks/project/useProjectID'
 
 const H1 = styled.h1`
   ${({ theme }) => theme.h3};
@@ -33,6 +35,7 @@ const H2 = styled.h2`
 const DatasetEditor = () => {
   const dataset = useDataset()
   const datasetStatusMessage = useDatasetStatusMessage()
+  const projectID = useProjectID()
 
   // Handling server status side effects
 
@@ -52,6 +55,9 @@ const DatasetEditor = () => {
   return (
     <ModalMessageProvider>
       <Main>
+        <TopBar>
+          <BackButtonLink to={`/project/${projectID}`}>Back</BackButtonLink>
+        </TopBar>
         <TopBar>
           <H1>{dataset ? dataset.name : 'Loading dataset'}</H1>
           <UpdateButton />
