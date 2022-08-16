@@ -11,12 +11,6 @@ import SimpleFormatter from './formatters/SimpleFormatter'
 import useVersionedRows from 'hooks/register/useVersionedRows'
 import useRegisterStatus from 'hooks/register/useRegisterStatus'
 
-const Container = styled.div`
-  padding: 0px;
-  // border-left: 1px solid ${({ theme }) => theme.darkGray};
-  // border-right: 1px solid ${({ theme }) => theme.darkGray};
-`
-
 const FillDatasetGrid = styled(DataGrid)`
   block-size: 100%;
   height: calc(100vh - 370px);
@@ -45,19 +39,17 @@ const DatasetGrid = () => {
     }))
 
   return (
-    <Container>
-      <FillDatasetGrid
-        className={'rdg-light'}
-        // todo: figure out the typescript for making this
-        // work with the data grid library
-        columns={columns as Column<unknown>[]}
-        rows={versionedRows}
-        rowKeyGetter={row => {
-          const record = row as unknown as RecordWithID
-          return record._meta.recordID
-        }}
-      />
-    </Container>
+    <FillDatasetGrid
+      className={'rdg-light'}
+      // todo: figure out the typescript for making this
+      // work with the data grid library
+      columns={columns as Column<unknown>[]}
+      rows={versionedRows}
+      rowKeyGetter={row => {
+        const record = row as unknown as RecordWithID
+        return record._meta.recordID
+      }}
+    />
   )
 }
 
