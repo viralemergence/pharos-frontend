@@ -10,7 +10,7 @@ import { TopBar } from '../ViewComponents'
 import VersionSwitcher from './VersionSwitcher/VersionSwitcher'
 import DownloadButton from './DownloadButton/DownloadButton'
 import ModalMessageProvider from './DatasetGrid/ModalMessage/ModalMessageProvider'
-import UpdateButton from './UpdateButton/UpdateButton'
+import ReleaseButton from './ReleaseButton/ReleaseButton'
 
 import useDataset from 'hooks/dataset/useDataset'
 import useDatasetStatusMessage from 'hooks/dataset/useDatasetStatusMessage'
@@ -73,7 +73,7 @@ const DatasetEditor = () => {
         </TopBar>
         <TopBar>
           <H1>{dataset ? dataset.name : 'Loading dataset'}</H1>
-          <UpdateButton />
+          <ReleaseButton />
           <DownloadButton />
         </TopBar>
         <H2>Collected Date: {dataset && dataset.date_collected}</H2>

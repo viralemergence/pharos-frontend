@@ -10,7 +10,7 @@ import useDatasetID from 'hooks/dataset/useDatasetID'
 import useDataset from 'hooks/dataset/useDataset'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
 
-const UpdateButton = () => {
+const ReleaseButton = () => {
   const user = useUser()
   const datasetID = useDatasetID()
   const projectDispatch = useProjectDispatch()
@@ -21,25 +21,25 @@ const UpdateButton = () => {
   // the project is loading, or there are no versions in the dataset
   if (!dataset || dataset.status === DatasetStatus.Error) return <></>
 
-  let buttonMessage = 'Publish version'
+  let buttonMessage = 'Release dataset'
   let buttonDisabled = false
   switch (true) {
     // if there are no versions, we can publish
     case dataset.versions.length === 0:
-      buttonMessage = 'Publish Version'
+      buttonMessage = 'Release dataset'
       buttonDisabled = false
       break
     // if we're looking at an old version, it's published
     case dataset.activeVersion < dataset.versions.length - 1:
-      buttonMessage = 'Version Published'
+      buttonMessage = 'Dataset released'
       buttonDisabled = true
       break
     case dataset.highestVersion > dataset.activeVersion:
-      buttonMessage = 'Publish Version'
+      buttonMessage = 'Release dataset'
       buttonDisabled = false
       break
     default:
-      buttonMessage = 'Version Published'
+      buttonMessage = 'Dataset released'
       buttonDisabled = true
       break
   }
@@ -72,4 +72,4 @@ const UpdateButton = () => {
   )
 }
 
-export default UpdateButton
+export default ReleaseButton
