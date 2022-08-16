@@ -14,6 +14,7 @@ const ProjectsTable = () => {
   console.log(JSON.stringify(projectsObj))
 
   const handleClick = (project: Project) => {
+    console.log({ project })
     projectDispatch({
       type: ProjectActions.SetProject,
       payload: project,

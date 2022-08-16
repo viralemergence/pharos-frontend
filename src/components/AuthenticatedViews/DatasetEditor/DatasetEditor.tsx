@@ -11,7 +11,6 @@ import VersionSwitcher from './VersionSwitcher/VersionSwitcher'
 import DownloadButton from './DownloadButton/DownloadButton'
 import ModalMessageProvider from './DatasetGrid/ModalMessage/ModalMessageProvider'
 import UpdateButton from './UpdateButton/UpdateButton'
-import BackButtonLink from 'components/ui/BackButtonLink'
 
 import useDataset from 'hooks/dataset/useDataset'
 import useDatasetStatusMessage from 'hooks/dataset/useDatasetStatusMessage'
@@ -20,7 +19,8 @@ import useAutosaveRegister from 'hooks/register/useAutosaveRegister'
 import useAutosaveDataset from 'hooks/register/useAutosaveDataset'
 import useLoadRegister from 'hooks/register/useLoadRegister'
 import useAutosaveProject from 'hooks/project/useAutosaveProject'
-import useProjectID from 'hooks/project/useProjectID'
+import BreadcrumbLink from 'components/ui/BreadcrumbLink'
+import useProject from 'hooks/project/useProject'
 
 const H1 = styled.h1`
   ${({ theme }) => theme.h3};
@@ -35,7 +35,9 @@ const H2 = styled.h2`
 const DatasetEditor = () => {
   const dataset = useDataset()
   const datasetStatusMessage = useDatasetStatusMessage()
-  const projectID = useProjectID()
+  const project = useProject()
+
+  console.log({ project })
 
   // Handling server status side effects
 
@@ -56,7 +58,18 @@ const DatasetEditor = () => {
     <ModalMessageProvider>
       <Main>
         <TopBar>
-          <BackButtonLink to={`/projects/${projectID}`}>Back</BackButtonLink>
+          <div>
+            <BreadcrumbLink to={`/projects/`}>All projects</BreadcrumbLink>
+            <BreadcrumbLink to={`/projects/${project.projectID}`}>
+              {project.projectName}
+            </BreadcrumbLink>
+            <BreadcrumbLink
+              active
+              to={`/projects/${project.projectID}/${dataset.datasetID}`}
+            >
+              {dataset.name}
+            </BreadcrumbLink>
+          </div>
         </TopBar>
         <TopBar>
           <H1>{dataset ? dataset.name : 'Loading dataset'}</H1>
