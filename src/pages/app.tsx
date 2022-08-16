@@ -1,5 +1,5 @@
 import React from 'react'
-import { HashRouter, Route, Routes } from 'react-router-dom'
+import { HashRouter, Route, Routes, Navigate } from 'react-router-dom'
 
 import CMS from '@talus-analytics/library.airtable-cms'
 import Providers from 'components/layout/Providers'
@@ -26,7 +26,7 @@ const App = (): JSX.Element => {
         <Routes>
           <Route path={'/login'} element={<Login />} />
           <Route
-            path={'/project/:projectID/:datasetID'}
+            path={'/projects/:projectID/:datasetID'}
             element={
               <RequireAuth>
                 <ProjectContextProvider>
@@ -36,7 +36,7 @@ const App = (): JSX.Element => {
             }
           />
           <Route
-            path={'/project/:projectID'}
+            path={'/projects/:projectID'}
             element={
               <RequireAuth>
                 <ProjectContextProvider>
@@ -46,7 +46,7 @@ const App = (): JSX.Element => {
             }
           />
           <Route
-            path={'/'}
+            path={'/projects'}
             element={
               <RequireAuth>
                 <ProjectContextProvider>
@@ -55,6 +55,7 @@ const App = (): JSX.Element => {
               </RequireAuth>
             }
           />
+          <Route path={`/`} element={<Navigate to={`/projects`} />} />
         </Routes>
       </HashRouter>
     </Providers>

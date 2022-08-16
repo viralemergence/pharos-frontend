@@ -43,7 +43,7 @@ const DatasetsTable = () => {
       {sorted.map(dataset => (
         <RowLink
           key={dataset.datasetID}
-          to={`/project/${projectID}/${dataset.datasetID}`}
+          to={`/projects/${projectID}/${dataset.datasetID}`}
         >
           <DatasetInfo key={dataset.datasetID} dataset={dataset} />
         </RowLink>

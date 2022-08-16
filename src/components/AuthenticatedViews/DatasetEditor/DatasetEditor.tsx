@@ -56,7 +56,7 @@ const DatasetEditor = () => {
     <ModalMessageProvider>
       <Main>
         <TopBar>
-          <BackButtonLink to={`/project/${projectID}`}>Back</BackButtonLink>
+          <BackButtonLink to={`/projects/${projectID}`}>Back</BackButtonLink>
         </TopBar>
         <TopBar>
           <H1>{dataset ? dataset.name : 'Loading dataset'}</H1>

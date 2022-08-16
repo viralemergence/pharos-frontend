@@ -35,7 +35,7 @@ const ProjectsTable = () => {
         <RowLink
           key={project.projectID}
           onClick={() => handleClick(project)}
-          to={`/project/${project.projectID}`}
+          to={`/projects/${project.projectID}`}
         >
           <div>{project.projectName}</div>
           <div>start date</div>

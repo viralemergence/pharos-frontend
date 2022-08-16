@@ -186,7 +186,7 @@ const CreateDatasetForm = () => {
 
     // now that we can handle this, just navigate
     // straight to the dataset directly
-    navigate(`/project/${projectID}/${datasetID}`)
+    navigate(`/projects/${projectID}/${datasetID}`)
   }
 
   return (
