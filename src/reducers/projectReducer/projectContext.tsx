@@ -44,9 +44,6 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
     ProjectsObjStatus.Initial
   )
 
-  console.log('provider called')
-  console.log({ projectID })
-
   const [project, projectDispatch] = useReducer(
     projectReducer,
     projectInitialValue
@@ -54,11 +51,7 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
 
   // any time the user ID changes, update the Project automatically
   useEffect(() => {
-    console.log('useEffect called')
     const getDatasetList = async () => {
-      console.log('getDatsetList called')
-      console.log({ projectID, researcherID })
-
       if (!researcherID) return null
 
       const nextProjects = projectsObj
@@ -106,7 +99,6 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
         payload: { ...nextProjects[projectID] },
       })
 
-      console.log('set status to loading')
       // set status to loading
       projectDispatch({
         type: ProjectActions.SetProjectStatus,
@@ -116,8 +108,6 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
       // api request
       console.log('API CALL: list datasets')
       const datasetList = await listDatasets(researcherID, projectID)
-
-      console.log(datasetList)
 
       if (!datasetList) {
         projectDispatch({
@@ -136,7 +126,9 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
       }
 
       // object to contain the datasets
-      const projectObj: Project = { ...projectInitialValue }
+      const projectObj: Project = {
+        ...(projectsObj[projectID] ?? projectInitialValue),
+      }
 
       // insert the datasets by key
       datasetList.forEach((dataset: Dataset) => {

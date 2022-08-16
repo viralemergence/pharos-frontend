@@ -7,8 +7,6 @@ const useProject = () => {
   // some error handling here so we know context is defined
   if (!context) throw new Error('Project context not found')
 
-  console.log(context.project)
-
   return context.project
 }
 
