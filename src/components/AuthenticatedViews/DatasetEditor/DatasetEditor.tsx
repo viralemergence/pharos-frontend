@@ -1,11 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import MainGrid from 'components/layout/MainGrid'
+import Main from 'components/layout/Main'
 import DatasetGrid from './DatasetGrid/DatasetsGrid'
 
 import CSVParser from './CSVParser/CSVParser'
-import { Content, TopBar } from '../ViewComponents'
+import { TopBar } from '../ViewComponents'
 
 import VersionSwitcher from './VersionSwitcher/VersionSwitcher'
 import DownloadButton from './DownloadButton/DownloadButton'
@@ -51,22 +51,20 @@ const DatasetEditor = () => {
 
   return (
     <ModalMessageProvider>
-      <MainGrid>
-        <Content>
-          <TopBar>
-            <H1>{dataset ? dataset.name : 'Loading dataset'}</H1>
-            <UpdateButton />
-            <DownloadButton />
-          </TopBar>
-          <H2>Collected Date: {dataset && dataset.date_collected}</H2>
-          <H2>{datasetStatusMessage}</H2>
-          <TopBar>
-            <CSVParser />
-            <VersionSwitcher />
-          </TopBar>
-          <DatasetGrid />
-        </Content>
-      </MainGrid>
+      <Main>
+        <TopBar>
+          <H1>{dataset ? dataset.name : 'Loading dataset'}</H1>
+          <UpdateButton />
+          <DownloadButton />
+        </TopBar>
+        <H2>Collected Date: {dataset && dataset.date_collected}</H2>
+        <H2>{datasetStatusMessage}</H2>
+        <TopBar>
+          <CSVParser />
+          <VersionSwitcher />
+        </TopBar>
+      </Main>
+      <DatasetGrid />
     </ModalMessageProvider>
   )
 }

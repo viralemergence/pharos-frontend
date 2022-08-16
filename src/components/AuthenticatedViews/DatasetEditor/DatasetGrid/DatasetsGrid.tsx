@@ -12,7 +12,9 @@ import useVersionedRows from 'hooks/register/useVersionedRows'
 import useRegisterStatus from 'hooks/register/useRegisterStatus'
 
 const Container = styled.div`
-  margin-top: 30px;
+  padding: 0px;
+  // border-left: 1px solid ${({ theme }) => theme.darkGray};
+  // border-right: 1px solid ${({ theme }) => theme.darkGray};
 `
 
 const FillDatasetGrid = styled(DataGrid)`

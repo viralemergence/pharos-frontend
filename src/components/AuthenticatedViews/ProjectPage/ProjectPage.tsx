@@ -1,15 +1,15 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 
-import MainGrid from 'components/layout/MainGrid'
 import Modal from 'components/ui/Modal'
 import CreateDatasetForm from './CreateDatasetForm/CreateDatasetForm'
 import MintButton from 'components/ui/MintButton'
 import DatasetsTable from './DatasetsTable/DatasetsTable'
-import { Content, TopBar } from '../ViewComponents'
+import { TopBar } from '../ViewComponents'
 import useAutosaveProject from 'hooks/project/useAutosaveProject'
 import useProject from 'hooks/project/useProject'
 import useUser from 'hooks/useUser'
+import Main from 'components/layout/Main'
 
 const H1 = styled.h1`
   ${({ theme }) => theme.h3}
@@ -60,30 +60,28 @@ const ProjectPage = () => {
   useAutosaveProject()
 
   return (
-    <MainGrid>
-      <Content>
-        <TopBar>
-          <H1>{project.projectName}</H1>
-          <MintButton onClick={() => setCreateModalOpen(true)}>
-            + New Dataset
-          </MintButton>
-          <Modal closeable open={createModalOpen} setOpen={setCreateModalOpen}>
-            <CreateDatasetForm />
-          </Modal>
-        </TopBar>
-        <MainSection>
-          <Left>
-            <H2>Author</H2>
-            <Author>{user.data?.name}</Author>
-            <H2>Description</H2>
-            <Description>{project.description}</Description>
-            <H2>Datasets</H2>
-            <DatasetsTable />
-          </Left>
-          <Right></Right>
-        </MainSection>
-      </Content>
-    </MainGrid>
+    <Main>
+      <TopBar>
+        <H1>{project.projectName}</H1>
+        <MintButton onClick={() => setCreateModalOpen(true)}>
+          + New Dataset
+        </MintButton>
+        <Modal closeable open={createModalOpen} setOpen={setCreateModalOpen}>
+          <CreateDatasetForm />
+        </Modal>
+      </TopBar>
+      <MainSection>
+        <Left>
+          <H2>Author</H2>
+          <Author>{user.data?.name}</Author>
+          <H2>Description</H2>
+          <Description>{project.description}</Description>
+          <H2>Datasets</H2>
+          <DatasetsTable />
+        </Left>
+        <Right></Right>
+      </MainSection>
+    </Main>
   )
 }
 
