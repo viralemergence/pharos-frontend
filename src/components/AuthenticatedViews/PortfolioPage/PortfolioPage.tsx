@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import MainGrid from 'components/layout/MainGrid'
-import Sidebar from 'components/Sidebar/Sidebar'
 import MintButton from 'components/ui/MintButton'
 import Modal from 'components/ui/Modal'
 
@@ -20,7 +19,6 @@ const ProjectList = () => {
 
   return (
     <MainGrid>
-      <Sidebar />
       <Content>
         <TopBar>
           <H1>My Projects</H1>

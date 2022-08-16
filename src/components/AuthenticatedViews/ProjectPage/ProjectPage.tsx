@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 
-import Sidebar from 'components/Sidebar/Sidebar'
 import MainGrid from 'components/layout/MainGrid'
 import Modal from 'components/ui/Modal'
 import CreateDatasetForm from './CreateDatasetForm/CreateDatasetForm'
@@ -62,7 +61,6 @@ const ProjectPage = () => {
 
   return (
     <MainGrid>
-      <Sidebar />
       <Content>
         <TopBar>
           <H1>{project.projectName}</H1>

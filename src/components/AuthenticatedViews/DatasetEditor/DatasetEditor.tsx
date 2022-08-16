@@ -2,7 +2,6 @@ import React from 'react'
 import styled from 'styled-components'
 
 import MainGrid from 'components/layout/MainGrid'
-import Sidebar from 'components/Sidebar/Sidebar'
 import DatasetGrid from './DatasetGrid/DatasetsGrid'
 
 import CSVParser from './CSVParser/CSVParser'
@@ -53,7 +52,6 @@ const DatasetEditor = () => {
   return (
     <ModalMessageProvider>
       <MainGrid>
-        <Sidebar />
         <Content>
           <TopBar>
             <H1>{dataset ? dataset.name : 'Loading dataset'}</H1>
