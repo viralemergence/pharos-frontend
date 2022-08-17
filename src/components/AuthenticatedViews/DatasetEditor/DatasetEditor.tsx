@@ -19,7 +19,9 @@ import useAutosaveRegister from 'hooks/register/useAutosaveRegister'
 import useAutosaveDataset from 'hooks/register/useAutosaveDataset'
 import useLoadRegister from 'hooks/register/useLoadRegister'
 import useAutosaveProject from 'hooks/project/useAutosaveProject'
-import BreadcrumbLink from 'components/ui/BreadcrumbLink'
+import BreadcrumbLink, {
+  BreadcrumbContainer,
+} from 'components/ui/BreadcrumbLink'
 import useProject from 'hooks/project/useProject'
 
 const H1 = styled.h1`
@@ -58,7 +60,7 @@ const DatasetEditor = () => {
     <ModalMessageProvider>
       <Main>
         <TopBar>
-          <div>
+          <BreadcrumbContainer>
             <BreadcrumbLink to={`/projects/`}>All projects</BreadcrumbLink>
             <BreadcrumbLink to={`/projects/${project.projectID}`}>
               {project.projectName}
@@ -69,7 +71,7 @@ const DatasetEditor = () => {
             >
               {dataset.name}
             </BreadcrumbLink>
-          </div>
+          </BreadcrumbContainer>
         </TopBar>
         <TopBar>
           <H1>{dataset ? dataset.name : 'Loading dataset'}</H1>

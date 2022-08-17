@@ -10,7 +10,9 @@ import useAutosaveProject from 'hooks/project/useAutosaveProject'
 import useProject from 'hooks/project/useProject'
 import useUser from 'hooks/useUser'
 import Main from 'components/layout/Main'
-import BreadcrumbLink from 'components/ui/BreadcrumbLink'
+import BreadcrumbLink, {
+  BreadcrumbContainer,
+} from 'components/ui/BreadcrumbLink'
 
 const H1 = styled.h1`
   ${({ theme }) => theme.h3}
@@ -63,12 +65,12 @@ const ProjectPage = () => {
   return (
     <Main>
       <TopBar>
-        <div>
+        <BreadcrumbContainer>
           <BreadcrumbLink to={`/projects/`}>All projects</BreadcrumbLink>
           <BreadcrumbLink active to={`/projects/${project.projectID}`}>
             {project.projectName}
           </BreadcrumbLink>
-        </div>
+        </BreadcrumbContainer>
       </TopBar>
       <TopBar>
         <H1>{project.projectName}</H1>
