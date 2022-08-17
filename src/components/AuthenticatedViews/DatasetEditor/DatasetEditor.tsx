@@ -13,7 +13,6 @@ import ModalMessageProvider from './DatasetGrid/ModalMessage/ModalMessageProvide
 import ReleaseButton from './ReleaseButton/ReleaseButton'
 
 import useDataset from 'hooks/dataset/useDataset'
-import useDatasetStatusMessage from 'hooks/dataset/useDatasetStatusMessage'
 
 import useAutosaveRegister from 'hooks/register/useAutosaveRegister'
 import useAutosaveDataset from 'hooks/register/useAutosaveDataset'
@@ -23,6 +22,7 @@ import BreadcrumbLink, {
   BreadcrumbContainer,
 } from 'components/ui/BreadcrumbLink'
 import useProject from 'hooks/project/useProject'
+import DatasetStatusMessage from './DatasetStatusMessage/DatasetStatusMessage'
 
 const H1 = styled.h1`
   ${({ theme }) => theme.h3};
@@ -36,7 +36,6 @@ const H2 = styled.h2`
 
 const DatasetEditor = () => {
   const dataset = useDataset()
-  const datasetStatusMessage = useDatasetStatusMessage()
   const project = useProject()
 
   console.log({ project })
@@ -71,6 +70,7 @@ const DatasetEditor = () => {
             >
               {dataset.name}
             </BreadcrumbLink>
+            <DatasetStatusMessage />
           </BreadcrumbContainer>
         </TopBar>
         <TopBar>
@@ -79,7 +79,6 @@ const DatasetEditor = () => {
           <DownloadButton />
         </TopBar>
         <H2>Collected Date: {dataset && dataset.date_collected}</H2>
-        <H2>{datasetStatusMessage}</H2>
         <TopBar>
           <CSVParser />
           <VersionSwitcher />
