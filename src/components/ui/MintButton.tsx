@@ -6,13 +6,16 @@ const MintButton = styled.button<{ secondary?: boolean }>`
   background: none;
   margin: 0;
   ${({ theme }) => theme.smallParagraph}
-  border: 1px solid;
+  border: 2px solid;
   background-color: ${({ theme, secondary }) =>
     secondary ? 'white' : theme.mint};
   border-color: ${({ theme }) => theme.mint};
   padding: 10px 20px;
 
   transition: 150ms ease;
+
+  display: flex;
+  align-items: center;
 
   &:hover {
     background: ${({ theme }) => lighten(0.07, theme.mint)};
