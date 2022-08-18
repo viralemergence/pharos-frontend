@@ -1,9 +1,19 @@
 import React from 'react'
+import styled from 'styled-components'
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 
 import useDataset from 'hooks/dataset/useDataset'
 import useDatasetID from 'hooks/dataset/useDatasetID'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
+
+const Select = styled.select`
+  ${({ theme }) => theme.smallParagraph};
+  color: ${({ theme }) => theme.black};
+  padding: 10px 20px;
+  border-radius: 0;
+  border: 1px solid ${({ theme }) => theme.medDarkGray};
+  background: white;
+`
 
 const VersionSwitcher = () => {
   const dataset = useDataset()
@@ -22,19 +32,14 @@ const VersionSwitcher = () => {
   }
 
   return (
-    <label>
-      Select version:{' '}
-      <select
-        onChange={onSelectVersion}
-        value={dataset.activeVersion}
-        style={{ marginLeft: '1ex' }}
-      >
+    <label style={{ marginLeft: 'auto', marginRight: 15 }}>
+      <Select onChange={onSelectVersion} value={dataset.activeVersion}>
         {dataset.versions.map((version, index) => (
           <option key={index + version.date} value={index}>
-            {version.date}
+            Version released {new Date(version.date).toLocaleString()}
           </option>
         ))}
-      </select>
+      </Select>
     </label>
   )
 }

@@ -62,11 +62,7 @@ const ReleaseButton = () => {
   }
 
   return (
-    <MintButton
-      onClick={e => onClickUpdate(e)}
-      disabled={buttonDisabled}
-      style={{ marginLeft: 'auto' }}
-    >
+    <MintButton onClick={e => onClickUpdate(e)} disabled={buttonDisabled}>
       {buttonMessage}
     </MintButton>
   )

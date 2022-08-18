@@ -24,14 +24,22 @@ import BreadcrumbLink, {
 import useProject from 'hooks/project/useProject'
 import DatasetStatusMessage from './DatasetStatusMessage/DatasetStatusMessage'
 
+const TopSection = styled.section`
+  padding: 20px 40px;
+`
 const H1 = styled.h1`
   ${({ theme }) => theme.h3};
   text-transform: uppercase;
   margin: 0;
+  margin-top: 15px;
 `
-const H2 = styled.h2`
-  ${({ theme }) => theme.extraSmallParagraph};
-  text-transform: uppercase;
+const ProjectName = styled.div`
+  ${({ theme }) => theme.smallParagraph};
+  color: ${({ theme }) => theme.darkGray};
+
+  > span {
+    color: ${({ theme }) => theme.link};
+  }
 `
 
 const DatasetEditor = () => {
@@ -57,7 +65,7 @@ const DatasetEditor = () => {
 
   return (
     <ModalMessageProvider>
-      <Main>
+      <TopSection>
         <TopBar>
           <BreadcrumbContainer>
             <BreadcrumbLink to={`/projects/`}>All projects</BreadcrumbLink>
@@ -74,16 +82,20 @@ const DatasetEditor = () => {
           </BreadcrumbContainer>
         </TopBar>
         <TopBar>
-          <H1>{dataset ? dataset.name : 'Loading dataset'}</H1>
+          <div>
+            <H1>{dataset ? dataset.name : 'Loading dataset'}</H1>
+            <ProjectName>
+              Project: <span>{project.projectName}</span>
+            </ProjectName>
+          </div>
+          <VersionSwitcher />
           <ReleaseButton />
           <DownloadButton />
         </TopBar>
-        <H2>Collected Date: {dataset && dataset.date_collected}</H2>
         <TopBar>
           <CSVParser />
-          <VersionSwitcher />
         </TopBar>
-      </Main>
+      </TopSection>
       <DatasetGrid />
     </ModalMessageProvider>
   )
