@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import Main from 'components/layout/Main'
 import DatasetGrid from './DatasetGrid/DatasetsGrid'
 
 import CSVParser from './CSVParser/CSVParser'
@@ -11,6 +10,7 @@ import VersionSwitcher from './VersionSwitcher/VersionSwitcher'
 import DownloadButton from './DownloadButton/DownloadButton'
 import ModalMessageProvider from './DatasetGrid/ModalMessage/ModalMessageProvider'
 import ReleaseButton from './ReleaseButton/ReleaseButton'
+import ReleaseHelpMessage from './ReleaseHelpMessage/ReleaseHelpMessage'
 
 import useDataset from 'hooks/dataset/useDataset'
 
@@ -26,6 +26,7 @@ import DatasetStatusMessage from './DatasetStatusMessage/DatasetStatusMessage'
 
 const TopSection = styled.section`
   padding: 20px 40px;
+  margin-bottom: 15px;
 `
 const H1 = styled.h1`
   ${({ theme }) => theme.h3};
@@ -80,6 +81,7 @@ const DatasetEditor = () => {
             </BreadcrumbLink>
             <DatasetStatusMessage />
           </BreadcrumbContainer>
+          <ReleaseHelpMessage />
         </TopBar>
         <TopBar>
           <div>
