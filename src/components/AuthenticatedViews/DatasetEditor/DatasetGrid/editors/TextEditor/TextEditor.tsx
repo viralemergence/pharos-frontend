@@ -13,7 +13,7 @@ import useProjectDispatch from 'hooks/project/useProjectDispatch'
 import useDatasetID from 'hooks/dataset/useDatasetID'
 import useUser from 'hooks/useUser'
 import useDataset from 'hooks/dataset/useDataset'
-import useModalMessage from '../../ModalMessage/useModalMessage'
+import useModal from '../../ModalMessage/useModalMessage'
 import { useEffect } from 'react'
 import { IDMustBeUnique, OnlyEditMostRecent } from './textEditorMessages'
 
@@ -53,7 +53,7 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
   const projectDispatch = useProjectDispatch()
   const dataset = useDataset()
 
-  const setModalContent = useModalMessage()
+  const setModal = useModal()
 
   const datapoint = row[column.key] as Datapoint | undefined
 
@@ -77,7 +77,7 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
         idMap[editValue] &&
         idMap[editValue] !== (row._meta as RecordMeta).recordID
       ) {
-        setModalContent(<IDMustBeUnique {...{ recordIDColumn }} />)
+        setModal(<IDMustBeUnique {...{ recordIDColumn }} />)
         return
       }
     }
@@ -112,10 +112,10 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
 
   useEffect(() => {
     if (!editable)
-      setModalContent(
+      setModal(
         <OnlyEditMostRecent latestVersion={dataset.versions.length - 1} />
       )
-  }, [editable, setModalContent, dataset.versions.length])
+  }, [editable, setModal, dataset.versions.length])
 
   if (!editable) {
     return <></>

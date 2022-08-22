@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import MintButton from 'components/ui/MintButton'
 
-import useModalMessage from '../DatasetGrid/ModalMessage/useModalMessage'
+import useModal from '../DatasetGrid/ModalMessage/useModalMessage'
 
 const Button = styled.button`
   background: none;
@@ -13,17 +13,14 @@ const Button = styled.button`
 `
 
 const ModalMessage = () => {
-  const setModalMessage = useModalMessage()
+  const setModal = useModal()
 
   return (
     <div>
       <p>
         Releasing a dataset marks all completed records as ready for publishing.
       </p>
-      <MintButton
-        onClick={() => setModalMessage(null)}
-        style={{ marginLeft: 'auto' }}
-      >
+      <MintButton onClick={() => setModal(null)} style={{ marginLeft: 'auto' }}>
         Ok
       </MintButton>
     </div>
@@ -31,10 +28,10 @@ const ModalMessage = () => {
 }
 
 export const ReleaseHelpMessage = () => {
-  const setModalMessage = useModalMessage()
+  const setModal = useModal()
 
   return (
-    <Button onClick={() => setModalMessage(<ModalMessage />)}>
+    <Button onClick={() => setModal(<ModalMessage />)}>
       When do I release?
     </Button>
   )

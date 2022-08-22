@@ -4,7 +4,7 @@ import {
   ModalMessageContext,
 } from './ModalMessageProvider'
 
-const useModalMessage = (): SetModalContentWithOpts => {
+const useModal = (): SetModalContentWithOpts => {
   const setModalContent = useContext(ModalMessageContext)
 
   // when running on the build server, throw an error if
@@ -27,4 +27,4 @@ const useModalMessage = (): SetModalContentWithOpts => {
   return setModalContent
 }
 
-export default useModalMessage
+export default useModal

@@ -1,7 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 
-import Modal from 'components/ui/Modal'
 import CreateDatasetForm from './CreateDatasetForm/CreateDatasetForm'
 import PublishProjectModal from './PublishProjectModal/PublishProjectModal'
 import MintButton from 'components/ui/MintButton'
@@ -14,7 +13,7 @@ import Main from 'components/layout/Main'
 import BreadcrumbLink, {
   BreadcrumbContainer,
 } from 'components/ui/BreadcrumbLink'
-import useModalMessage from '../DatasetEditor/DatasetGrid/ModalMessage/useModalMessage'
+import useModal from '../DatasetEditor/DatasetGrid/ModalMessage/useModalMessage'
 
 const H1 = styled.h1`
   ${({ theme }) => theme.h3}
@@ -58,7 +57,7 @@ const ProjectPage = () => {
   const user = useUser()
   const project = useProject()
 
-  const setModalMessage = useModalMessage()
+  const setModal = useModal()
 
   // Save any changes to the project
   // to the server
@@ -76,7 +75,7 @@ const ProjectPage = () => {
       </TopBar>
       <TopBar>
         <H1>{project.projectName}</H1>
-        <MintButton onClick={() => setModalMessage(<PublishProjectModal />)}>
+        <MintButton onClick={() => setModal(<PublishProjectModal />)}>
           Publish project
         </MintButton>
       </TopBar>
@@ -90,7 +89,7 @@ const ProjectPage = () => {
             <H2>Datasets</H2>
             <MintButton
               onClick={() =>
-                setModalMessage(<CreateDatasetForm />, { closeable: true })
+                setModal(<CreateDatasetForm />, { closeable: true })
               }
             >
               + New Dataset
