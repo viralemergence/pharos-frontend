@@ -14,6 +14,7 @@ import useProjectID from 'hooks/project/useProjectID'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
 
 import generateID from 'utilities/generateID'
+import useModal from 'hooks/useModal/useModal'
 
 const Form = styled.form`
   width: 500px;
@@ -31,6 +32,8 @@ const CreateDatasetForm = () => {
   const user = useUser()
   const projectDispatch = useProjectDispatch()
   const projectID = useProjectID()
+
+  const setModal = useModal()
 
   const [formMessage, setFormMessage] = useState('')
 
@@ -52,6 +55,8 @@ const CreateDatasetForm = () => {
     }
 
     if (!user.data) throw new Error('User not logged in')
+
+    setModal(null)
 
     const datasetSaveData = {
       datasetID,
