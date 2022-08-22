@@ -55,8 +55,6 @@ const Author = styled.p`
 `
 
 const ProjectPage = () => {
-  const [createModalOpen, setCreateModalOpen] = useState(false)
-
   const user = useUser()
   const project = useProject()
 
@@ -90,16 +88,13 @@ const ProjectPage = () => {
           <Description>{project.description}</Description>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <H2>Datasets</H2>
-            <MintButton onClick={() => setCreateModalOpen(true)}>
+            <MintButton
+              onClick={() =>
+                setModalMessage(<CreateDatasetForm />, { closeable: true })
+              }
+            >
               + New Dataset
             </MintButton>
-            <Modal
-              closeable
-              open={createModalOpen}
-              setOpen={setCreateModalOpen}
-            >
-              <CreateDatasetForm />
-            </Modal>
           </div>
           <DatasetsTable />
         </Left>
