@@ -1,7 +1,10 @@
 import { useContext } from 'react'
-import { SetModalContent, ModalMessageContext } from './ModalMessageProvider'
+import {
+  SetModalContentWithOpts,
+  ModalMessageContext,
+} from './ModalMessageProvider'
 
-const useModalMessage = (): SetModalContent => {
+const useModalMessage = (): SetModalContentWithOpts => {
   const setModalContent = useContext(ModalMessageContext)
 
   // when running on the build server, throw an error if
