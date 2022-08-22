@@ -24,42 +24,46 @@ const App = (): JSX.Element => {
       <CMS.SEO />
       <HashRouter>
         <NavBar />
-        <ModalMessageProvider>
-          <Routes>
-            <Route path={'/login'} element={<Login />} />
-            <Route
-              path={'/projects/:projectID/:datasetID'}
-              element={
-                <RequireAuth>
-                  <ProjectContextProvider>
+        <Routes>
+          <Route path={'/login'} element={<Login />} />
+          <Route
+            path={'/projects/:projectID/:datasetID'}
+            element={
+              <RequireAuth>
+                <ProjectContextProvider>
+                  <ModalMessageProvider>
                     <DatasetEditor />
-                  </ProjectContextProvider>
-                </RequireAuth>
-              }
-            />
-            <Route
-              path={'/projects/:projectID'}
-              element={
-                <RequireAuth>
-                  <ProjectContextProvider>
+                  </ModalMessageProvider>
+                </ProjectContextProvider>
+              </RequireAuth>
+            }
+          />
+          <Route
+            path={'/projects/:projectID'}
+            element={
+              <RequireAuth>
+                <ProjectContextProvider>
+                  <ModalMessageProvider>
                     <ProjectPage />
-                  </ProjectContextProvider>
-                </RequireAuth>
-              }
-            />
-            <Route
-              path={'/projects'}
-              element={
-                <RequireAuth>
-                  <ProjectContextProvider>
+                  </ModalMessageProvider>
+                </ProjectContextProvider>
+              </RequireAuth>
+            }
+          />
+          <Route
+            path={'/projects'}
+            element={
+              <RequireAuth>
+                <ProjectContextProvider>
+                  <ModalMessageProvider>
                     <ProjectList />
-                  </ProjectContextProvider>
-                </RequireAuth>
-              }
-            />
-            <Route path={`/`} element={<Navigate to={`/projects`} />} />
-          </Routes>
-        </ModalMessageProvider>
+                  </ModalMessageProvider>
+                </ProjectContextProvider>
+              </RequireAuth>
+            }
+          />
+          <Route path={`/`} element={<Navigate to={`/projects`} />} />
+        </Routes>
       </HashRouter>
     </Providers>
   )
