@@ -8,7 +8,7 @@ import useProjectDispatch from 'hooks/project/useProjectDispatch'
 
 const Select = styled.select`
   ${({ theme }) => theme.smallParagraph};
-  color: ${({ theme }) => theme.black};
+  color: ${({ theme }) => theme.darkGray};
   padding: 10px 20px;
   border-radius: 0;
   border: 1px solid ${({ theme }) => theme.medDarkGray};
@@ -32,7 +32,7 @@ const VersionSwitcher = () => {
   }
 
   return (
-    <label style={{ marginLeft: 'auto', marginRight: 15 }}>
+    <label>
       <Select onChange={onSelectVersion} value={dataset.activeVersion}>
         {dataset.versions.map((version, index) => (
           <option key={index + version.date} value={index}>

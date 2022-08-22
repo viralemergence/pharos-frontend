@@ -28,6 +28,12 @@ const TopSection = styled.section`
   padding: 20px 40px;
   margin-bottom: 15px;
 `
+const ButtonSection = styled.div`
+  margin-left: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+`
 const H1 = styled.h1`
   ${({ theme }) => theme.h3};
   text-transform: uppercase;
@@ -90,9 +96,11 @@ const DatasetEditor = () => {
               Project: <span>{project.projectName}</span>
             </ProjectName>
           </div>
-          <VersionSwitcher />
-          <ReleaseButton />
-          <DownloadButton />
+          <ButtonSection>
+            <VersionSwitcher />
+            <ReleaseButton />
+            <DownloadButton />
+          </ButtonSection>
         </TopBar>
         <TopBar>
           <CSVParser />

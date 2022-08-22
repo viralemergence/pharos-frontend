@@ -54,12 +54,7 @@ const DownloadButton = () => {
   }
 
   return (
-    <MintButton
-      secondary
-      disabled={disable}
-      style={{ marginLeft: 15 }}
-      onClick={e => handleClick(e)}
-    >
+    <MintButton secondary disabled={disable} onClick={e => handleClick(e)}>
       <svg
         width="18"
         height="18"
