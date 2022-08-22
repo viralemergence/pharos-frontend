@@ -37,7 +37,7 @@ const DatasetsTable = () => {
       <HeaderRow>
         <div>Dataset ID</div>
         <div>Name</div>
-        <div>Collected Date</div>
+        <div>Collected Dates</div>
         <div>Status</div>
       </HeaderRow>
       {sorted.map(dataset => (
