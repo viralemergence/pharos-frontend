@@ -23,10 +23,10 @@ const DatasetGrid = () => {
 
   const registerStatus = useRegisterStatus()
 
-  if (registerStatus === RegisterStatus.Loading) return <p>Loading version</p>
+  if (registerStatus === RegisterStatus.Loading) return <></>
   if (registerStatus === RegisterStatus.Error)
     return <p>Error retrieving register</p>
-  if (!versionedRows || !versionedRows[0]) return <p>Loading version</p>
+  if (!versionedRows || !versionedRows[0]) return <></>
 
   const columns: readonly Column<RecordWithID>[] = Object.keys(versionedRows[0])
     .filter(key => key !== '_meta')
