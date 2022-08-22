@@ -8,7 +8,6 @@ import { TopBar } from '../ViewComponents'
 
 import VersionSwitcher from './VersionSwitcher/VersionSwitcher'
 import DownloadButton from './DownloadButton/DownloadButton'
-import ModalMessageProvider from './DatasetGrid/ModalMessage/ModalMessageProvider'
 import ReleaseButton from './ReleaseButton/ReleaseButton'
 import ReleaseHelpMessage from './ReleaseHelpMessage/ReleaseHelpMessage'
 
@@ -71,7 +70,7 @@ const DatasetEditor = () => {
   useAutosaveProject()
 
   return (
-    <ModalMessageProvider>
+    <>
       <TopSection>
         <TopBar>
           <BreadcrumbContainer>
@@ -107,7 +106,7 @@ const DatasetEditor = () => {
         </TopBar>
       </TopSection>
       <DatasetGrid />
-    </ModalMessageProvider>
+    </>
   )
 }
 
