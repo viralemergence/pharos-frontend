@@ -3,6 +3,7 @@ import styled from 'styled-components'
 
 import Modal from 'components/ui/Modal'
 import CreateDatasetForm from './CreateDatasetForm/CreateDatasetForm'
+import PublishProjectModal from './PublishProjectModal/PublishProjectModal'
 import MintButton from 'components/ui/MintButton'
 import DatasetsTable from './DatasetsTable/DatasetsTable'
 import { TopBar } from '../ViewComponents'
@@ -13,6 +14,7 @@ import Main from 'components/layout/Main'
 import BreadcrumbLink, {
   BreadcrumbContainer,
 } from 'components/ui/BreadcrumbLink'
+import useModalMessage from '../DatasetEditor/DatasetGrid/ModalMessage/useModalMessage'
 
 const H1 = styled.h1`
   ${({ theme }) => theme.h3}
@@ -58,6 +60,8 @@ const ProjectPage = () => {
   const user = useUser()
   const project = useProject()
 
+  const setModalMessage = useModalMessage()
+
   // Save any changes to the project
   // to the server
   useAutosaveProject()
@@ -74,12 +78,17 @@ const ProjectPage = () => {
       </TopBar>
       <TopBar>
         <H1>{project.projectName}</H1>
-        <MintButton onClick={() => setCreateModalOpen(true)}>
-          + New Dataset
+        <MintButton onClick={() => setModalMessage(<PublishProjectModal />)}>
+          Publish project
         </MintButton>
-        <Modal closeable open={createModalOpen} setOpen={setCreateModalOpen}>
-          <CreateDatasetForm />
-        </Modal>
+        {
+          // <MintButton onClick={() => setCreateModalOpen(true)}>
+          //   + New Dataset
+          // </MintButton>
+          // <Modal closeable open={createModalOpen} setOpen={setCreateModalOpen}>
+          //   <CreateDatasetForm />
+          // </Modal>
+        }
       </TopBar>
       <MainSection>
         <Left>
