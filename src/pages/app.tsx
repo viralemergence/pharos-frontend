@@ -13,7 +13,7 @@ import ProjectPage from 'components/AuthenticatedViews/ProjectPage/ProjectPage'
 
 import ProjectContextProvider from 'reducers/projectReducer/projectContext'
 import ProjectList from 'components/AuthenticatedViews/PortfolioPage/PortfolioPage'
-import ModalMessageProvider from 'components/AuthenticatedViews/DatasetEditor/DatasetGrid/ModalMessage/ModalMessageProvider'
+import ModalMessageProvider from 'hooks/useModal/ModalMessageProvider'
 
 const App = (): JSX.Element => {
   // on the build server, don't try to render the app

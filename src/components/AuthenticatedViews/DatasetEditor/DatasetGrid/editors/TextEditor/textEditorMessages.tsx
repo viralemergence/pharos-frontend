@@ -4,7 +4,7 @@ import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 
 import useDatasetID from 'hooks/dataset/useDatasetID'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
-import useModal from '../../ModalMessage/useModalMessage'
+import useModal from 'hooks/useModal/useModal'
 
 interface IDMustBeUniqueProps {
   recordIDColumn: string

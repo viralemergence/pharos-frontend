@@ -13,7 +13,7 @@ import useProjectDispatch from 'hooks/project/useProjectDispatch'
 import useDatasetID from 'hooks/dataset/useDatasetID'
 import useUser from 'hooks/useUser'
 import useDataset from 'hooks/dataset/useDataset'
-import useModal from '../../ModalMessage/useModalMessage'
+import useModal from 'hooks/useModal/useModal'
 import { useEffect } from 'react'
 import { IDMustBeUnique, OnlyEditMostRecent } from './textEditorMessages'
 

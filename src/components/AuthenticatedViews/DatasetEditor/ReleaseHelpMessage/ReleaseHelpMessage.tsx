@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import MintButton from 'components/ui/MintButton'
 
-import useModal from '../DatasetGrid/ModalMessage/useModalMessage'
+import useModal from 'hooks/useModal/useModal'
 
 const Button = styled.button`
   background: none;

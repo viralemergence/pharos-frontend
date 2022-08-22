@@ -13,7 +13,8 @@ import Main from 'components/layout/Main'
 import BreadcrumbLink, {
   BreadcrumbContainer,
 } from 'components/ui/BreadcrumbLink'
-import useModal from '../DatasetEditor/DatasetGrid/ModalMessage/useModalMessage'
+
+import useModal from 'hooks/useModal/useModal'
 
 const H1 = styled.h1`
   ${({ theme }) => theme.h3}
