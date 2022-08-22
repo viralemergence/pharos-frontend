@@ -81,14 +81,6 @@ const ProjectPage = () => {
         <MintButton onClick={() => setModalMessage(<PublishProjectModal />)}>
           Publish project
         </MintButton>
-        {
-          // <MintButton onClick={() => setCreateModalOpen(true)}>
-          //   + New Dataset
-          // </MintButton>
-          // <Modal closeable open={createModalOpen} setOpen={setCreateModalOpen}>
-          //   <CreateDatasetForm />
-          // </Modal>
-        }
       </TopBar>
       <MainSection>
         <Left>
@@ -96,7 +88,19 @@ const ProjectPage = () => {
           <Author>{user.data?.name}</Author>
           <H2>Description</H2>
           <Description>{project.description}</Description>
-          <H2>Datasets</H2>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <H2>Datasets</H2>
+            <MintButton onClick={() => setCreateModalOpen(true)}>
+              + New Dataset
+            </MintButton>
+            <Modal
+              closeable
+              open={createModalOpen}
+              setOpen={setCreateModalOpen}
+            >
+              <CreateDatasetForm />
+            </Modal>
+          </div>
           <DatasetsTable />
         </Left>
         <Right></Right>
