@@ -15,6 +15,7 @@ import BreadcrumbLink, {
 } from 'components/ui/BreadcrumbLink'
 
 import useModal from 'hooks/useModal/useModal'
+import ProjectInfoPanel from './ProjectInfoPanel/ProjectInfoPanel'
 
 const H1 = styled.h1`
   ${({ theme }) => theme.h3}
@@ -98,7 +99,9 @@ const ProjectPage = () => {
           </div>
           <DatasetsTable />
         </Left>
-        <Right></Right>
+        <Right>
+          <ProjectInfoPanel />
+        </Right>
       </MainSection>
     </Main>
   )
