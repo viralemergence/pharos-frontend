@@ -44,6 +44,16 @@ const projectTypes = [
   { key: '3', label: 'Type three' },
 ]
 
+const surveillanceTypes = [
+  { key: '1', label: 'Active' },
+  { key: '2', label: 'Passive' },
+]
+
+const surveillanceStatuses = [
+  { key: '1', label: 'Ongoing' },
+  { key: '2', label: 'Ended' },
+]
+
 const CreateProjectForm = () => {
   const user = useUser()
   const project = useProject()
@@ -57,7 +67,9 @@ const CreateProjectForm = () => {
     projectName: '',
     description: '',
     projectType: '',
+    citation: '',
     surveillanceType: '',
+    surveillanceStatus: '',
     relatedMaterials: [''],
     publicationsCiting: [''],
   })
@@ -193,20 +205,35 @@ const CreateProjectForm = () => {
       <Label style={{ margin: '15px 0px -15px 0px' }}>Surveillance type</Label>
       <Typeahead
         style={{ marginBottom: 15 }}
-        items={projectTypes}
+        items={surveillanceTypes}
         placeholder="Project type"
         borderColor={theme.darkPurple}
         backgroundColor={theme.veryLightGray}
         onAdd={item => updateProjectData(item.label, 'surveillanceType')}
-        values={projectTypes.filter(
+        values={surveillanceTypes.filter(
           item => item.label === projectData.surveillanceType
         )}
       />
+      <Label style={{ margin: '15px 0px -15px 0px' }}>
+        Surveillance status
+      </Label>
+      <Typeahead
+        style={{ marginBottom: 15 }}
+        items={surveillanceStatuses}
+        placeholder="Project type"
+        borderColor={theme.darkPurple}
+        backgroundColor={theme.veryLightGray}
+        onAdd={item => updateProjectData(item.label, 'surveillanceStatus')}
+        values={projectTypes.filter(
+          item => item.label === projectData.surveillanceStatus
+        )}
+      />
+
       <Label>
         Cite this project
         <Textarea
           name="citation"
-          onChange={e => updateProjectData(e.target.value, 'surveillanceType')}
+          onChange={e => updateProjectData(e.target.value, 'citation')}
         />
       </Label>
       <Label>
