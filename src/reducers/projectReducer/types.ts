@@ -23,6 +23,8 @@ export interface Project {
   description?: string
   projectType?: string
   surveillanceType?: string
+  surveillanceStatus?: string
+  citation?: string
   relatedMaterials?: string[]
   publicationsCiting?: string[]
   datasetIDs: string[]
