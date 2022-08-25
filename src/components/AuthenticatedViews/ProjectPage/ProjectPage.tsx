@@ -24,7 +24,7 @@ const H1 = styled.h1`
 const MainSection = styled.section`
   display: flex;
   gap: 15px;
-  justify-content: stretch;
+  align-items: flex-start;
   margin-top: 20px;
 `
 const Left = styled.div`
