@@ -16,6 +16,7 @@ import BreadcrumbLink, {
 
 import useModal from 'hooks/useModal/useModal'
 import ProjectInfoPanel from './ProjectInfoPanel/ProjectInfoPanel'
+import TextButton from 'components/ui/TextButton'
 
 const H1 = styled.h1`
   ${({ theme }) => theme.h3}
@@ -89,13 +90,13 @@ const ProjectPage = () => {
           <Description>{project.description}</Description>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <H2>Datasets</H2>
-            <MintButton
+            <TextButton
               onClick={() =>
                 setModal(<CreateDatasetForm />, { closeable: true })
               }
             >
               + New Dataset
-            </MintButton>
+            </TextButton>
           </div>
           <DatasetsTable />
         </Left>
