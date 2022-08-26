@@ -39,9 +39,10 @@ const DividerLine = styled.div`
 `
 
 const projectTypes = [
-  { key: '1', label: 'Routine Surveillance' },
-  { key: '2', label: 'Type two' },
-  { key: '3', label: 'Type three' },
+  { key: '1', label: 'Routine surveillance' },
+  { key: '2', label: 'Opportunistic' },
+  { key: '3', label: 'Event-based' },
+  { key: '4', label: 'Archival' },
 ]
 
 const surveillanceTypes = [
@@ -64,7 +65,7 @@ const CreateProjectForm = () => {
   const navigate = useNavigate()
 
   const [projectData, setProjectData] = useState({
-    projectName: '',
+    name: '',
     description: '',
     projectType: '',
     citation: '',
@@ -180,8 +181,8 @@ const CreateProjectForm = () => {
           type="text"
           name="name"
           autoFocus
-          value={projectData.projectName}
-          onChange={e => updateProjectData(e.target.value, 'projectName')}
+          value={projectData.name}
+          onChange={e => updateProjectData(e.target.value, 'name')}
         />
       </Label>
       <Label>
@@ -204,7 +205,6 @@ const CreateProjectForm = () => {
       />
       <Label style={{ margin: '15px 0px -15px 0px' }}>Surveillance type</Label>
       <Typeahead
-        style={{ marginBottom: 15 }}
         items={surveillanceTypes}
         placeholder="Project type"
         borderColor={theme.darkPurple}
@@ -217,6 +217,7 @@ const CreateProjectForm = () => {
       <Label style={{ margin: '15px 0px -15px 0px' }}>
         Surveillance status
       </Label>
+      {console.log({ ...projectData })}
       <Typeahead
         style={{ marginBottom: 15 }}
         items={surveillanceStatuses}
@@ -224,7 +225,7 @@ const CreateProjectForm = () => {
         borderColor={theme.darkPurple}
         backgroundColor={theme.veryLightGray}
         onAdd={item => updateProjectData(item.label, 'surveillanceStatus')}
-        values={projectTypes.filter(
+        values={surveillanceStatuses.filter(
           item => item.label === projectData.surveillanceStatus
         )}
       />
