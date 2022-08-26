@@ -18,9 +18,9 @@
 // but not in the API yet.
 export interface Project {
   projectID: string
+  name?: string
   status: ProjectStatus
   lastUpdated?: string
-  name?: string
   description?: string
   projectType?: string
   surveillanceType?: string
