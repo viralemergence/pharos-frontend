@@ -3,6 +3,7 @@ import styled from 'styled-components'
 const Textarea = styled.textarea`
   border: none;
   border: 1px solid ${({ theme }) => theme.darkPurple};
+  border-radius: 5px;
   width: 100%;
   max-width: 100%;
   min-width: 100%;
