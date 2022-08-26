@@ -217,7 +217,6 @@ const CreateProjectForm = () => {
       <Label style={{ margin: '15px 0px -15px 0px' }}>
         Surveillance status
       </Label>
-      {console.log({ ...projectData })}
       <Typeahead
         style={{ marginBottom: 15 }}
         items={surveillanceStatuses}
