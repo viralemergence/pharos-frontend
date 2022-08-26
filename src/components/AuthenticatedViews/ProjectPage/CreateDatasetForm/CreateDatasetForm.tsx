@@ -46,7 +46,6 @@ const CreateDatasetForm = () => {
 
     const target = e.target as typeof e.target & {
       name: { value: string }
-      date_collected: { value: string }
     }
 
     if (!target.name.value) {
@@ -62,7 +61,6 @@ const CreateDatasetForm = () => {
       datasetID,
       researcherID: user.data.researcherID,
       name: target.name.value,
-      date_collected: target.date_collected.value,
       samples_taken: '0',
       detection_run: '0',
       versions: [],
@@ -200,14 +198,6 @@ const CreateDatasetForm = () => {
       <Label>
         Dataset Name
         <Input type="text" name="name" autoFocus />
-      </Label>
-      <Label>
-        Collection Date
-        <Input
-          type="date"
-          name="date_collected"
-          defaultValue={new Date().toISOString().split('T')[0]}
-        />
       </Label>
       <p style={{ margin: 0, padding: 0 }}>{formMessage}</p>
       <MintButton type="submit" style={{ marginLeft: 'auto' }}>
