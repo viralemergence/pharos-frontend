@@ -206,7 +206,7 @@ const CreateProjectForm = () => {
       <Label style={{ margin: '15px 0px -15px 0px' }}>Surveillance type</Label>
       <Typeahead
         items={surveillanceTypes}
-        placeholder="Project type"
+        placeholder="Surveillance type"
         borderColor={theme.darkPurple}
         backgroundColor={theme.veryLightGray}
         onAdd={item => updateProjectData(item.label, 'surveillanceType')}
@@ -220,7 +220,7 @@ const CreateProjectForm = () => {
       <Typeahead
         style={{ marginBottom: 15 }}
         items={surveillanceStatuses}
-        placeholder="Project type"
+        placeholder="Surveillance status"
         borderColor={theme.darkPurple}
         backgroundColor={theme.veryLightGray}
         onAdd={item => updateProjectData(item.label, 'surveillanceStatus')}
