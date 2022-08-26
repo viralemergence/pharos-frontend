@@ -11,7 +11,6 @@ const ProjectsTable = () => {
   const projectDispatch = useProjectDispatch()
 
   console.log({ projectsObj })
-  console.log(JSON.stringify(projectsObj))
 
   const handleClick = (project: Project) => {
     console.log({ project })
