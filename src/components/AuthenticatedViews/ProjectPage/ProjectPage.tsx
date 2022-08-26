@@ -72,12 +72,12 @@ const ProjectPage = () => {
         <BreadcrumbContainer>
           <BreadcrumbLink to={`/projects/`}>All projects</BreadcrumbLink>
           <BreadcrumbLink active to={`/projects/${project.projectID}`}>
-            {project.projectName}
+            {project.name}
           </BreadcrumbLink>
         </BreadcrumbContainer>
       </TopBar>
       <TopBar>
-        <H1>{project.projectName}</H1>
+        <H1>{project.name}</H1>
         <MintButton onClick={() => setModal(<PublishProjectModal />)}>
           Publish project
         </MintButton>

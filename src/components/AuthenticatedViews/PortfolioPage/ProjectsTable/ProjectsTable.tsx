@@ -36,7 +36,7 @@ const ProjectsTable = () => {
           onClick={() => handleClick(project)}
           to={`/projects/${project.projectID}`}
         >
-          <div>{project.projectName}</div>
+          <div>{project.name}</div>
           <div>{project.projectType || '—'}</div>
           <div>{project.surveillanceType || '—'}</div>
           <div>{project.surveillanceStatus || '—'}</div>

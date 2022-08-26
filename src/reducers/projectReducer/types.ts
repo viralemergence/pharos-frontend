@@ -20,7 +20,7 @@ export interface Project {
   projectID: string
   status: ProjectStatus
   lastUpdated?: string
-  projectName?: string
+  name?: string
   description?: string
   projectType?: string
   surveillanceType?: string

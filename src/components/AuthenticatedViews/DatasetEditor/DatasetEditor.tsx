@@ -76,7 +76,7 @@ const DatasetEditor = () => {
           <BreadcrumbContainer>
             <BreadcrumbLink to={`/projects/`}>All projects</BreadcrumbLink>
             <BreadcrumbLink to={`/projects/${project.projectID}`}>
-              {project.projectName}
+              {project.name}
             </BreadcrumbLink>
             <BreadcrumbLink
               active
@@ -92,7 +92,7 @@ const DatasetEditor = () => {
           <div>
             <H1>{dataset ? dataset.name : 'Loading dataset'}</H1>
             <ProjectName>
-              Project: <span>{project.projectName}</span>
+              Project: <span>{project.name}</span>
             </ProjectName>
           </div>
           <ButtonSection>
