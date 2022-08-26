@@ -15,9 +15,9 @@ const TableGrid = styled.div`
   min-width: 800px;
   border: 1px solid ${({ theme }) => theme.veryLightGray};
 `
-export const RowLink = styled(Link)<{ columnTemplate?: string }>`
+export const RowLink = styled(Link)<{ $columnTemplate?: string }>`
   display: grid;
-  grid-template-columns: ${({ columnTemplate }) => columnTemplate};
+  grid-template-columns: ${({ $columnTemplate }) => $columnTemplate};
   // grid-template-columns: 1.5fr 2.5fr repeat(4, 1.5fr);
   align-items: center;
   transition: 150ms ease;
@@ -44,9 +44,9 @@ export const RowLink = styled(Link)<{ columnTemplate?: string }>`
   }
 `
 
-export const HeaderRow = styled.div<{ columnTemplate?: string }>`
+export const HeaderRow = styled.div<{ $columnTemplate?: string }>`
   display: grid;
-  grid-template-columns: ${({ columnTemplate }) => columnTemplate};
+  grid-template-columns: ${({ $columnTemplate }) => $columnTemplate};
   // grid-template-columns: 1.5fr 2.5fr repeat(4, 1.5fr);
   align-items: center;
   > div {
@@ -64,7 +64,7 @@ const ListTable = ({ children, columnTemplate }: ListTableProps) => {
     // Checking isValidElement is the safe way and avoids a typescript
     // error too.
     if (React.isValidElement(child)) {
-      return React.cloneElement(child, { columnTemplate })
+      return React.cloneElement(child, { $columnTemplate: columnTemplate })
     }
     return child
   })
