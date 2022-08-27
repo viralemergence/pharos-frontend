@@ -18,21 +18,9 @@
 // but not in the API yet.
 export interface Project {
   projectID: string
-  name?: string
+  name: string
   status: ProjectStatus
-  lastUpdated?: string
-  description?: string
-  projectType?: string
-  surveillanceType?: string
-  surveillanceStatus?: string
-  citation?: string
-  relatedMaterials?: string[]
-  publicationsCiting?: string[]
   datasetIDs: string[]
-  authors?: {
-    researcherID: string
-    role: string
-  }[]
   datasets: {
     // dataset keys are the datasetID
     // to allow O(1) access to update
@@ -40,10 +28,25 @@ export interface Project {
     // functions.
     [key: string]: Dataset
   }
+  lastUpdated?: string
+  // metadata the user enters when they
+  // fill out the new project form
+  description?: string
+  projectType?: string
+  surveillanceType?: string
+  surveillanceStatus?: string
+  citation?: string
+  relatedMaterials?: string[]
+  projectPublications?: string[]
+  othersCiting?: string[]
+  authors?: {
+    researcherID: string
+    role: string
+  }[]
   // adding this as a note
-  // organisms should be implemented
+  // animals should be implemented
   // as a special case of a dataset
-  // organisms: {
+  // animals: {
   //   [key: string]: Dataset
   // }
 }

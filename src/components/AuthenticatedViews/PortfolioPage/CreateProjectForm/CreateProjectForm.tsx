@@ -34,9 +34,9 @@ const AddMoreButton = styled.button`
   color: ${({ theme }) => theme.darkGray};
   margin-top: -20px;
 `
-const DividerLine = styled.div`
-  border-bottom: 1px solid ${({ theme }) => theme.lightGray};
-`
+// const DividerLine = styled.div`
+//   border-bottom: 1px solid ${({ theme }) => theme.lightGray};
+// `
 
 const projectTypes = [
   { key: '1', label: 'Routine surveillance' },
@@ -72,7 +72,8 @@ const CreateProjectForm = () => {
     surveillanceType: '',
     surveillanceStatus: '',
     relatedMaterials: [''],
-    publicationsCiting: [''],
+    projectPublications: [''],
+    othersCiting: [''],
   })
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -95,6 +96,7 @@ const CreateProjectForm = () => {
       ],
       datasetIDs: [],
       datasets: {},
+      lastUpdated: JSON.stringify(new Date()),
     }
 
     projectDispatch({
@@ -228,7 +230,6 @@ const CreateProjectForm = () => {
           item => item.label === projectData.surveillanceStatus
         )}
       />
-
       <Label>
         Cite this project
         <Textarea
@@ -262,27 +263,54 @@ const CreateProjectForm = () => {
           + Add more related laterial
         </AddMoreButton>
       )}
-      <DividerLine />
       <Label>
-        Publications citing this project
-        {projectData.publicationsCiting.map((string, index) => (
+        Your project publications
+        {projectData.projectPublications.map((string, index) => (
           <Input
             key={index}
             type="text"
-            name="name"
+            name="your project publications"
+            placeholder="Publication citation"
             value={string}
             onChange={e =>
-              updateProjectData(e.target.value, 'publicationsCiting', index)
+              updateProjectData(e.target.value, 'projectPublications', index)
             }
           />
         ))}
       </Label>
-      {projectData.publicationsCiting.slice(-1)[0] !== '' && (
+      {projectData.projectPublications.slice(-1)[0] !== '' && (
         <AddMoreButton
           onClick={() =>
             setProjectData(prev => ({
               ...prev,
-              publicationsCiting: [...prev.publicationsCiting, ''],
+              projectPublications: [...prev.projectPublications, ''],
+            }))
+          }
+        >
+          + Add more related material
+        </AddMoreButton>
+      )}
+      <Label>
+        Other publications citing this project
+        {projectData.othersCiting.map((string, index) => (
+          <Input
+            key={index}
+            type="text"
+            name="other projects citing"
+            placeholder="Publication citation"
+            value={string}
+            onChange={e =>
+              updateProjectData(e.target.value, 'othersCiting', index)
+            }
+          />
+        ))}
+      </Label>
+      {projectData.othersCiting.slice(-1)[0] !== '' && (
+        <AddMoreButton
+          onClick={() =>
+            setProjectData(prev => ({
+              ...prev,
+              othersCiting: [...prev.othersCiting, ''],
             }))
           }
         >
