@@ -115,7 +115,7 @@ const CreateProjectForm = () => {
         payload: project,
       })
 
-      navigate(`project/${projectID}`)
+      navigate(`/projects/${projectID}`)
     } else {
       projectDispatch({
         type: ProjectActions.SetProjectStatus,
