@@ -41,7 +41,11 @@ const ProjectsTable = () => {
           <div>{project.surveillanceType || '—'}</div>
           <div>{project.surveillanceStatus || '—'}</div>
           <div>{project.datasetIDs.length}</div>
-          <div>{project.lastUpdated || '—'}</div>
+          <div>
+            {project.lastUpdated
+              ? new Date(project.lastUpdated).toLocaleString()
+              : '—'}
+          </div>
         </RowLink>
       ))}
     </ListTable>
