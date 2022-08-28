@@ -75,6 +75,7 @@ export enum ProjectActions {
 }
 
 export const projectInitialValue: Project = {
+  name: '',
   projectID: '0',
   status: ProjectStatus.Initial,
   datasets: {},
