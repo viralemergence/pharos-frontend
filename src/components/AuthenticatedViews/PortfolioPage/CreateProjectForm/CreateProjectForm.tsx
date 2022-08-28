@@ -1,18 +1,22 @@
 import React, { useState } from 'react'
 import styled, { useTheme } from 'styled-components'
-import useUser from 'hooks/useUser'
+import { useNavigate } from 'react-router-dom'
+
+import { ProjectStatus } from 'reducers/projectReducer/types'
+import { ProjectActions } from 'reducers/projectReducer/projectReducer'
+
 import MintButton from 'components/ui/MintButton'
 import Label from 'components/ui/InputLabel'
 import Input from 'components/ui/Input'
 import Textarea from 'components/ui/Textarea'
 import Typeahead from '@talus-analytics/library.ui.typeahead'
+
+import useUser from 'hooks/useUser'
+import useProject from 'hooks/project/useProject'
+import useProjectDispatch from 'hooks/project/useProjectDispatch'
+
 import generateID from 'utilities/generateID'
 import saveProject from 'api/saveProject'
-import { ProjectStatus } from 'reducers/projectReducer/types'
-import { ProjectActions } from 'reducers/projectReducer/projectReducer'
-import useProjectDispatch from 'hooks/project/useProjectDispatch'
-import useProject from 'hooks/project/useProject'
-import { useNavigate } from 'react-router-dom'
 
 const Section = styled.section`
   width: 800px;
@@ -96,7 +100,7 @@ const CreateProjectForm = () => {
       ],
       datasetIDs: [],
       datasets: {},
-      lastUpdated: JSON.stringify(new Date()),
+      lastUpdated: new Date().toUTCString(),
     }
 
     projectDispatch({
