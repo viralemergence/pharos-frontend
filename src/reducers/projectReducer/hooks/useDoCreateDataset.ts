@@ -151,8 +151,11 @@ const useDoCreateDataset = () => {
     projectDispatch({
       type: ProjectActions.CreateDataset,
       payload: {
-        ...datasetSaveData,
-        ...datasetClientData,
+        updated: new Date().toISOString(),
+        dataset: {
+          ...datasetSaveData,
+          ...datasetClientData,
+        },
       },
     })
 
