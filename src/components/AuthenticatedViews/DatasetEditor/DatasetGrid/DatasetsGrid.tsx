@@ -36,6 +36,7 @@ const DatasetGrid = () => {
       editor: TextEditor,
       formatter: SimpleFormatter,
       width: 150,
+      resizable: true,
     }))
 
   return (
