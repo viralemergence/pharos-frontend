@@ -82,11 +82,17 @@ const CreateProjectForm = () => {
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
+    setFormMessage('')
     console.log(projectData)
 
     const projectID = generateID.projectID()
 
     if (!user.data?.researcherID) throw new Error('Researcher ID undefined')
+
+    if (projectData.name === '') {
+      setFormMessage('Project name cannot be blank')
+      return
+    }
 
     const saveData = {
       ...projectData,
