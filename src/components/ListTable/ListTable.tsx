@@ -64,7 +64,14 @@ const ListTable = ({ children, columnTemplate }: ListTableProps) => {
     // Checking isValidElement is the safe way and avoids a typescript
     // error too.
     if (React.isValidElement(child)) {
-      return React.cloneElement(child, { $columnTemplate: columnTemplate })
+      return React.cloneElement(
+        // coercing child here to be a component that accepts the
+        // columnTemplate prop since typescript 4 yells about it
+        child as React.ReactElement<{ $columnTemplate: string }>,
+        {
+          $columnTemplate: columnTemplate,
+        }
+      )
     }
     return child
   })
