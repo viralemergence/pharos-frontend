@@ -86,8 +86,8 @@ export interface Dataset {
   // lastUpdated timestamp
   lastUpdated: string
   // earliest and latest date in the dataset
-  earliestDate: string
-  latestDate: string
+  earliestDate?: string
+  latestDate?: string
   // general metadata, these are
   // placeholder example values
   // and subject to change
