@@ -9,6 +9,7 @@ import generateID from 'utilities/generateID'
 import { DatasetDisplayStatus, DatasetStatus, RegisterStatus } from '../types'
 import { ProjectActions } from '../projectReducer'
 import useProjectID from 'hooks/project/useProjectID'
+import getTimestamp from 'utilities/getTimestamp'
 
 const useDoCreateDataset = () => {
   const user = useUser()
@@ -34,7 +35,7 @@ const useDoCreateDataset = () => {
       detection_run: '0',
       versions: [],
       highestVersion: 0,
-      lastUpdated: new Date().toISOString(),
+      lastUpdated: getTimestamp(),
       displayStatus: DatasetDisplayStatus.Unreleased,
     }
 
@@ -153,7 +154,7 @@ const useDoCreateDataset = () => {
     projectDispatch({
       type: ProjectActions.CreateDataset,
       payload: {
-        updated: new Date().toISOString(),
+        updated: getTimestamp(),
         dataset: {
           ...datasetSaveData,
           ...datasetClientData,
