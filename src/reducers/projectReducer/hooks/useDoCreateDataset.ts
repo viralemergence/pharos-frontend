@@ -6,7 +6,7 @@ import useUser from 'hooks/useUser'
 
 import generateID from 'utilities/generateID'
 
-import { DatasetReleaseStatus, DatasetStatus, RegisterStatus } from '../types'
+import { DatasetStatus, RegisterStatus } from '../types'
 import { ProjectActions } from '../projectReducer'
 import useProjectID from 'hooks/project/useProjectID'
 import getTimestamp from 'utilities/getTimestamp'
@@ -36,7 +36,6 @@ const useDoCreateDataset = () => {
       versions: [],
       highestVersion: 0,
       lastUpdated: getTimestamp(),
-      displayStatus: DatasetReleaseStatus.Unreleased,
     }
 
     const datasetClientData = {
@@ -45,31 +44,37 @@ const useDoCreateDataset = () => {
       activeVersion: 0,
       register: {
         [generateID.recordID()]: {
-          SampleID: {
+          'Row ID': {
             displayValue: '',
             dataValue: '',
             version: '0',
             modifiedBy: researcherID,
           },
-          'Animal ID': {
+          'Test ID': {
             displayValue: '',
             dataValue: '',
             version: '0',
             modifiedBy: researcherID,
           },
-          'Animal nickname': {
+          'Sample ID': {
             displayValue: '',
             dataValue: '',
             version: '0',
             modifiedBy: researcherID,
           },
-          Host: {
+          'Animal ID or nickname': {
             displayValue: '',
             dataValue: '',
             version: '0',
             modifiedBy: researcherID,
           },
-          'Collection Date': {
+          'Host species': {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+            modifiedBy: researcherID,
+          },
+          'Host NCBI Tax ID': {
             displayValue: '',
             dataValue: '',
             version: '0',
@@ -93,19 +98,19 @@ const useDoCreateDataset = () => {
             version: '0',
             modifiedBy: researcherID,
           },
-          'Collection Method or Tissue': {
+          'Collection date': {
             displayValue: '',
             dataValue: '',
             version: '0',
             modifiedBy: researcherID,
           },
-          'Detection Method': {
+          'Collection method or tissue': {
             displayValue: '',
             dataValue: '',
             version: '0',
             modifiedBy: researcherID,
           },
-          'Detection Outcome': {
+          'Detection method': {
             displayValue: '',
             dataValue: '',
             version: '0',
@@ -117,7 +122,19 @@ const useDoCreateDataset = () => {
             version: '0',
             modifiedBy: researcherID,
           },
-          'Target CBCI Tax ID': {
+          'Detection target NCBI Tax ID': {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+            modifiedBy: researcherID,
+          },
+          'Detection measurement': {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+            modifiedBy: researcherID,
+          },
+          'Detection outcome': {
             displayValue: '',
             dataValue: '',
             version: '0',
@@ -141,7 +158,67 @@ const useDoCreateDataset = () => {
             version: '0',
             modifiedBy: researcherID,
           },
-          'Detection Comments': {
+          'Detection comments': {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+            modifiedBy: researcherID,
+          },
+          'Organism sex': {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+            modifiedBy: researcherID,
+          },
+          'Dead or alive': {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+            modifiedBy: researcherID,
+          },
+          'Health notes': {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+            modifiedBy: researcherID,
+          },
+          'Life stage': {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+            modifiedBy: researcherID,
+          },
+          Age: {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+            modifiedBy: researcherID,
+          },
+          'Age units': {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+            modifiedBy: researcherID,
+          },
+          Mass: {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+            modifiedBy: researcherID,
+          },
+          'Mass units': {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+            modifiedBy: researcherID,
+          },
+          Length: {
+            displayValue: '',
+            dataValue: '',
+            version: '0',
+            modifiedBy: researcherID,
+          },
+          'Length units': {
             displayValue: '',
             dataValue: '',
             version: '0',
