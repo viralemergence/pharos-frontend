@@ -111,13 +111,20 @@ const ProjectPage = () => {
           </HorizontalBar>
           <DatasetsTable />
           <H2>Publications (this project)</H2>
-          {project?.projectPublications?.map(pub => (
-            <Description>{pub}</Description>
-          ))}
+          {!project.projectPublications ||
+          project.projectPublications[0] === '' ? (
+            <Description>—</Description>
+          ) : (
+            project?.projectPublications?.map(pub => (
+              <Description>{pub}</Description>
+            ))
+          )}
           <H2>Publications (other people)</H2>
-          {project?.othersCiting?.map(pub => (
-            <Description>{pub}</Description>
-          ))}
+          {!project.othersCiting || project.othersCiting[0] === '' ? (
+            <Description>—</Description>
+          ) : (
+            project?.othersCiting?.map(pub => <Description>{pub}</Description>)
+          )}
         </Left>
         <Right>
           <ProjectInfoPanel />
