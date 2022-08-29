@@ -23,12 +23,16 @@ import setVersions, { SetVersionsAction } from './actions/setVersions'
 import batchSetDatapoint, {
   BatchSetDatapointAction,
 } from './actions/mutationBatchSetDatapoint'
+import setDatasetLastUpdated, {
+  SetDatasetLastUpdatedAction,
+} from './actions/setDatasetLastUpdated'
 
 // reducer actions
 export enum ProjectActions {
   // datasets
   SetProject,
   SetDatasetStatus,
+  SetDatasetLastUpdated,
   // versions
 
   // allows the user to select past versions
@@ -100,6 +104,7 @@ export type ProjectAction =
   // datsets
   | CreateDatasetAction
   | SetDatasetStatusAction
+  | SetDatasetLastUpdatedAction
   // register
   | SetRegisterStatusAction
   | ReplaceRegisterAction
@@ -124,6 +129,8 @@ const projectReducer = (state: Project, action: ProjectAction) => {
       return createDataset(state, action.payload)
     case ProjectActions.SetDatasetStatus:
       return setDatasetStatus(state, action.payload)
+    case ProjectActions.SetDatasetLastUpdated:
+      return setDatasetLastUpdated(state, action.payload)
     case ProjectActions.CreateVersion:
       return createVersion(state, action.payload)
     case ProjectActions.SetVersions:
