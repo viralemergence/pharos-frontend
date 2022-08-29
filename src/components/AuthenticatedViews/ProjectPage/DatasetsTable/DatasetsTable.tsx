@@ -12,15 +12,26 @@ const DatasetsTable = () => {
   const projectID = useProjectID()
   const project = useProject()
 
-  let showLoadingMessage = false
+  // if (
+  //   project.status === ProjectStatus.Initial ||
+  //   project.status === ProjectStatus.Loading
+  // )
+  //   showLoadingMessage = true
 
-  if (
-    project.status === ProjectStatus.Initial ||
-    project.status === ProjectStatus.Loading
-  )
-    showLoadingMessage = true
+  const sorted =
+    Object.keys(project.datasets).length > 0
+      ? Object.values(project.datasets)
+      : project.datasetIDs.map(id => ({
+          datasetID: id,
+          researcherID: '',
+          versions: [],
+          highestVersion: 0,
+          activeVersion: 0,
+          name: 'Loading...',
+        }))
 
-  const sorted = Object.values(project.datasets)
+  console.log({ ...project })
+  console.log({ sorted })
 
   Object.values(project.datasets).sort((a, b) => {
     if (!a.versions || !b.versions) return 0
@@ -42,18 +53,14 @@ const DatasetsTable = () => {
         <div>Status</div>
         <div>Last updated</div>
       </HeaderRow>
-      {showLoadingMessage ? (
-        <p>Loading datasets...</p>
-      ) : (
-        sorted.map(dataset => (
-          <RowLink
-            key={dataset.datasetID}
-            to={`/projects/${projectID}/${dataset.datasetID}`}
-          >
-            <DatasetsTableRow key={dataset.datasetID} dataset={dataset} />
-          </RowLink>
-        ))
-      )}
+      {sorted.map(dataset => (
+        <RowLink
+          key={dataset.datasetID}
+          to={`/projects/${projectID}/${dataset.datasetID}`}
+        >
+          <DatasetsTableRow key={dataset.datasetID} dataset={dataset} />
+        </RowLink>
+      ))}
     </ListTable>
   )
 }
