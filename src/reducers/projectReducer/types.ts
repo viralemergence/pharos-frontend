@@ -202,9 +202,9 @@ export enum DatasetStatus {
 }
 
 export enum DatasetDisplayStatus {
-  'Unreleased',
-  'Released',
-  'Published',
+  Unreleased = 'Unreleased',
+  Released = 'Released',
+  Published = 'Published',
 }
 
 // all possible statuses for a register
