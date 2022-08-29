@@ -66,7 +66,7 @@ export interface Dataset {
   // the user-facing "status" of the
   // dataset which reflects released
   // and published status
-  displayStatus: string
+  displayStatus: DatasetDisplayStatus
   // the array of version metadata
   versions: Version[]
   // the version number which the user
@@ -199,6 +199,12 @@ export enum DatasetStatus {
   Saving = 'Saving',
   Saved = 'Saved',
   Error = 'Error',
+}
+
+export enum DatasetDisplayStatus {
+  'Unreleased',
+  'Released',
+  'Published',
 }
 
 // all possible statuses for a register
