@@ -63,6 +63,10 @@ export interface Dataset {
   // frontend status of the dataset, this
   // will be overwritten on page load
   status?: DatasetStatus
+  // the user-facing "status" of the
+  // dataset which reflects released
+  // and published status
+  displayStatus: string
   // the array of version metadata
   versions: Version[]
   // the version number which the user
@@ -79,6 +83,11 @@ export interface Dataset {
   highestVersion: number
   // name of the dataset
   name: string
+  // lastUpdated timestamp
+  lastUpdated: string
+  // earliest and latest date in the dataset
+  earliestDate: string
+  latestDate: string
   // general metadata, these are
   // placeholder example values
   // and subject to change
