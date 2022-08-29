@@ -1,5 +1,6 @@
 import useDataset from 'hooks/dataset/useDataset'
 import { Datapoint, RecordWithID } from 'reducers/projectReducer/types'
+import generateID from 'utilities/generateID'
 
 // recursively traverse the linked list until the
 // version number is satisfied for a given datapoint
@@ -49,11 +50,10 @@ const useVersionedRows = () => {
             },
           }),
         }),
-        { _meta: { recordID: crypto.randomUUID() } }
+        { _meta: { recordID: generateID.recordID() } }
       ) as RecordWithID
     )
 
-    console.log(newRows)
     return newRows
   }
 

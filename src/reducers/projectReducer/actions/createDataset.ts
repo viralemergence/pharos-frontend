@@ -1,16 +1,30 @@
 import { ActionFunction, ProjectActions } from '../projectReducer'
-import { Dataset } from '../types'
+import { Dataset, DatasetReleaseStatus, ProjectStatus } from '../types'
+
+interface CreateDatasetPayload {
+  updated: string
+  dataset: Dataset
+}
 
 export interface CreateDatasetAction {
   type: ProjectActions.CreateDataset
-  payload: Dataset
+  payload: CreateDatasetPayload
 }
 
-const createDataset: ActionFunction<Dataset> = (state, payload) => ({
+const createDataset: ActionFunction<CreateDatasetPayload> = (
+  state,
+  payload
+) => ({
   ...state,
+  lastUpdated: payload.updated,
+  status: ProjectStatus.Unsaved,
+  datasetIDs: [...state.datasetIDs, payload.dataset.datasetID],
   datasets: {
     ...state.datasets,
-    [payload.datasetID]: { ...payload },
+    [payload.dataset.datasetID]: {
+      ...payload.dataset,
+      releaseStatus: DatasetReleaseStatus.Unreleased,
+    },
   },
 })
 

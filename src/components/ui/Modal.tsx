@@ -16,7 +16,6 @@ const ModalContainer = styled.div`
   justify-content: center;
   z-index: 99;
 `
-
 const ModalBackgroundButton = styled.button`
   position: fixed;
   top: 0;
@@ -39,7 +38,6 @@ const ModalBackground = styled.div`
   overflow: scroll;
   z-index: 10;
 `
-
 const CloseModalButton = styled.button`
   position: absolute;
   top: 15px;

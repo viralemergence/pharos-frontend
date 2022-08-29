@@ -6,6 +6,7 @@ import MintButton from 'components/ui/MintButton'
 import useVersionedRows from 'hooks/register/useVersionedRows'
 import useDataset from 'hooks/dataset/useDataset'
 import { Datapoint } from 'reducers/projectReducer/types'
+import { useTheme } from 'styled-components'
 
 const downloadFile = (fileName: string, data: Blob) => {
   const downloadLink = document.createElement('a')
@@ -20,6 +21,7 @@ const downloadFile = (fileName: string, data: Blob) => {
 
 const DownloadButton = () => {
   const dataset = useDataset()
+  const theme = useTheme()
 
   const versionRows = useVersionedRows()
   const versionDate = dataset?.versions[dataset.activeVersion]?.date ?? ''
@@ -50,13 +52,20 @@ const DownloadButton = () => {
       new Blob([content], { type: 'text/csv;charset=utf-8;' })
     )
   }
+
   return (
-    <MintButton
-      secondary
-      disabled={disable}
-      style={{ marginLeft: 15 }}
-      onClick={e => handleClick(e)}
-    >
+    <MintButton secondary disabled={disable} onClick={e => handleClick(e)}>
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 18 18"
+        style={{ marginRight: 10 }}
+      >
+        <path
+          fill={theme.black}
+          d="M14.25 6.75H11.25V2.25H6.75V6.75H3.75L9 12L14.25 6.75ZM3.75 13.5V15H14.25V13.5H3.75Z"
+        />
+      </svg>
       Download CSV
     </MintButton>
   )

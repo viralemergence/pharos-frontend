@@ -45,7 +45,7 @@ const parseFile = ({ file, user, datasetID, projectDispatch }: ParseFile) => {
       // parse all rows
       projectDispatch({
         type: ProjectActions.BatchSetDatapoint,
-        payload: { researcherID, datasetID, recordIDColumn: 'SampleID', rows },
+        payload: { researcherID, datasetID, recordIDColumn: 'Row ID', rows },
       })
     },
   })
