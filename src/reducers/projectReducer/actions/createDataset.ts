@@ -1,5 +1,5 @@
 import { ActionFunction, ProjectActions } from '../projectReducer'
-import { Dataset, ProjectStatus } from '../types'
+import { Dataset, DatasetReleaseStatus, ProjectStatus } from '../types'
 
 interface CreateDatasetPayload {
   updated: string
@@ -21,7 +21,10 @@ const createDataset: ActionFunction<CreateDatasetPayload> = (
   datasetIDs: [...state.datasetIDs, payload.dataset.datasetID],
   datasets: {
     ...state.datasets,
-    [payload.dataset.datasetID]: { ...payload.dataset },
+    [payload.dataset.datasetID]: {
+      ...payload.dataset,
+      releaseStatus: DatasetReleaseStatus.Unreleased,
+    },
   },
 })
 
