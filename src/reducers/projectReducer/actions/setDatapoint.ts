@@ -1,5 +1,12 @@
 import { ActionFunction, ProjectActions } from '../projectReducer'
-import { Datapoint, DatasetStatus, Project, RegisterStatus } from '../types'
+import {
+  Datapoint,
+  DatasetDisplayStatus,
+  DatasetStatus,
+  Project,
+  ProjectStatus,
+  RegisterStatus,
+} from '../types'
 import setDatasetLastUpdated from './setDatasetLastUpdated'
 import setDatasetStatus from './setDatasetStatus'
 import setRegisterStatus from './setRegisterStatus'
@@ -46,12 +53,17 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
     ...(version !== previous?.version && { previous }),
   }
 
-  let nextState = {
+  let nextState: Project = {
     ...state,
+    lastUpdated,
+    status: ProjectStatus.Unsaved,
     datasets: {
       ...state.datasets,
       [datasetID]: {
         ...prevDataset,
+        lastUpdated,
+        status: DatasetStatus.Unsaved,
+        releaseStatus: DatasetDisplayStatus.Unreleased,
         highestVersion: prevDataset.versions.length,
         register: {
           ...prevDataset.register,
@@ -65,11 +77,6 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
       },
     },
   }
-
-  nextState = setDatasetLastUpdated(nextState, {
-    datasetID,
-    lastUpdated,
-  })
 
   nextState = setDatasetStatus(nextState, {
     datasetID,
