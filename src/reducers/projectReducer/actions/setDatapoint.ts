@@ -7,7 +7,6 @@ import {
   ProjectStatus,
   RegisterStatus,
 } from '../types'
-import setDatasetLastUpdated from './setDatasetLastUpdated'
 import setDatasetStatus from './setDatasetStatus'
 import setRegisterStatus from './setRegisterStatus'
 

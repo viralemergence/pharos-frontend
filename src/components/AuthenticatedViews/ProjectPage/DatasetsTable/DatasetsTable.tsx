@@ -3,8 +3,6 @@ import React from 'react'
 import { DatasetsTableRow } from './DatasetsTableRow'
 import ListTable, { HeaderRow, RowLink } from 'components/ListTable/ListTable'
 
-import { ProjectStatus } from 'reducers/projectReducer/types'
-
 import useProject from 'hooks/project/useProject'
 import useProjectID from 'hooks/project/useProjectID'
 
