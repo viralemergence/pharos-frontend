@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { DatasetInfo } from './DatasetsTableRow'
+import { DatasetsTableRow } from './DatasetsTableRow'
 import ListTable, { HeaderRow, RowLink } from 'components/ListTable/ListTable'
 
 import { ProjectStatus } from 'reducers/projectReducer/types'
@@ -35,17 +35,17 @@ const DatasetsTable = () => {
   return (
     <ListTable columnTemplate="repeat(4, 1.5fr)">
       <HeaderRow>
-        <div>Dataset ID</div>
         <div>Name</div>
-        <div>Collected Dates</div>
+        <div>Collection Dates</div>
         <div>Status</div>
+        <div>Last updated</div>
       </HeaderRow>
       {sorted.map(dataset => (
         <RowLink
           key={dataset.datasetID}
           to={`/projects/${projectID}/${dataset.datasetID}`}
         >
-          <DatasetInfo key={dataset.datasetID} dataset={dataset} />
+          <DatasetsTableRow key={dataset.datasetID} dataset={dataset} />
         </RowLink>
       ))}
     </ListTable>
