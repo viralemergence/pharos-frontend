@@ -21,7 +21,7 @@ const ProjectsTable = () => {
   }
 
   return (
-    <ListTable columnTemplate="repeat(7, 1fr)">
+    <ListTable columnTemplate="repeat(6, 1fr)">
       <HeaderRow>
         <div>Project name</div>
         <div>Project type</div>
