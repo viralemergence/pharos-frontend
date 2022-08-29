@@ -8,14 +8,11 @@ import {
   RecordWithID,
 } from 'reducers/projectReducer/types'
 
-import { ProjectActions } from 'reducers/projectReducer/projectReducer'
-import useProjectDispatch from 'hooks/project/useProjectDispatch'
-import useDatasetID from 'hooks/dataset/useDatasetID'
-import useUser from 'hooks/useUser'
 import useDataset from 'hooks/dataset/useDataset'
 import useModal from 'hooks/useModal/useModal'
 import { useEffect } from 'react'
 import { IDMustBeUnique, OnlyEditMostRecent } from './textEditorMessages'
+import useDoSetDatapoint from 'reducers/projectReducer/hooks/useDoSetDatapoint'
 
 const TextInput = styled.input`
   appearance: none;
@@ -48,12 +45,9 @@ const autoFocusAndSelect = (input: HTMLInputElement | null) => {
 const recordIDColumn = 'SampleID'
 
 const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
-  const user = useUser()
-  const datasetID = useDatasetID()
-  const projectDispatch = useProjectDispatch()
   const dataset = useDataset()
-
   const setModal = useModal()
+  const doSetDatapoint = useDoSetDatapoint()
 
   const datapoint = row[column.key] as Datapoint | undefined
 
@@ -82,20 +76,11 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
       }
     }
 
-    if (!user.data?.researcherID) return
-
-    projectDispatch({
-      type: ProjectActions.SetDatapoint,
-      payload: {
-        datasetID,
-        recordID: (row._meta as RecordMeta).recordID,
-        datapointID: column.key,
-        datapoint: {
-          displayValue: editValue,
-          dataValue: editValue,
-          modifiedBy: user.data?.researcherID,
-        },
-      },
+    doSetDatapoint({
+      recordID: (row._meta as RecordMeta).recordID,
+      datapointID: column.key,
+      displayValue: editValue,
+      dataValue: editValue,
     })
   }
 
