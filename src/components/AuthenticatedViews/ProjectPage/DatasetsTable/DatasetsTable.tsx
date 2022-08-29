@@ -5,16 +5,19 @@ import ListTable, { HeaderRow, RowLink } from 'components/ListTable/ListTable'
 
 import useProject from 'hooks/project/useProject'
 import useProjectID from 'hooks/project/useProjectID'
+import { ProjectStatus } from 'reducers/projectReducer/types'
 
 const DatasetsTable = () => {
   const projectID = useProjectID()
   const project = useProject()
 
-  // if (
-  //   project.status === ProjectStatus.Initial ||
-  //   project.status === ProjectStatus.Loading
-  // )
-  //   showLoadingMessage = true
+  let showLoadingMessage
+
+  if (
+    project.status === ProjectStatus.Initial ||
+    project.status === ProjectStatus.Loading
+  )
+    showLoadingMessage = true
 
   const sorted =
     Object.keys(project.datasets).length > 0
@@ -52,7 +55,11 @@ const DatasetsTable = () => {
         <div>Last updated</div>
       </HeaderRow>
       {sorted.length === 0 ? (
-        <p>Loading datasets...</p>
+        showLoadingMessage ? (
+          <p>Loading datasets...</p>
+        ) : (
+          <p>Create an new dataset to get started entering data</p>
+        )
       ) : (
         sorted.map(dataset => (
           <RowLink
