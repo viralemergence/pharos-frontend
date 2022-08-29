@@ -1,7 +1,7 @@
 import { ActionFunction, ProjectActions } from '../projectReducer'
 import {
   Datapoint,
-  DatasetDisplayStatus,
+  DatasetReleaseStatus,
   DatasetStatus,
   Project,
   ProjectStatus,
@@ -63,7 +63,7 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
         ...prevDataset,
         lastUpdated,
         status: DatasetStatus.Unsaved,
-        releaseStatus: DatasetDisplayStatus.Unreleased,
+        releaseStatus: DatasetReleaseStatus.Unreleased,
         highestVersion: prevDataset.versions.length,
         register: {
           ...prevDataset.register,

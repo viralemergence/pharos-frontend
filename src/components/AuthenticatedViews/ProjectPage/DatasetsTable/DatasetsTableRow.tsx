@@ -36,7 +36,7 @@ export const DatasetsTableRow = ({ dataset }: { dataset: Dataset }) => {
     <>
       <div>{dataset.name || '—'}</div>
       <div>{datesString}</div>
-      <div>{dataset.displayStatus || '—'}</div>
+      <div>{dataset.releaseStatus || '—'}</div>
       <div>{lastUpdated}</div>
     </>
   )
