@@ -44,16 +44,27 @@ const H2 = styled.h2`
   margin: 0;
   font-weight: normal;
   ${({ theme }) => theme.smallParagraph};
+  margin: 0;
   color: ${({ theme }) => theme.darkGray};
   text-transform: uppercase;
+  &:not(first-child) {
+    margin-top: 40px;
+  }
 `
 const Description = styled.p`
   ${({ theme }) => theme.smallParagraph};
+  margin: 0;
   color: ${({ theme }) => theme.black};
 `
 const Author = styled.p`
   ${({ theme }) => theme.smallParagraph};
+  margin: 0;
   color: #13a69d;
+`
+const HorizontalBar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
 `
 
 const ProjectPage = () => {
@@ -88,7 +99,7 @@ const ProjectPage = () => {
           <Author>{user.data?.name}</Author>
           <H2>Description</H2>
           <Description>{project.description}</Description>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <HorizontalBar>
             <H2>Datasets</H2>
             <TextButton
               onClick={() =>
@@ -97,8 +108,16 @@ const ProjectPage = () => {
             >
               + New Dataset
             </TextButton>
-          </div>
+          </HorizontalBar>
           <DatasetsTable />
+          <H2>Publications (this project)</H2>
+          {project?.projectPublications?.map(pub => (
+            <Description>{pub}</Description>
+          ))}
+          <H2>Publications (other people)</H2>
+          {project?.othersCiting?.map(pub => (
+            <Description>{pub}</Description>
+          ))}
         </Left>
         <Right>
           <ProjectInfoPanel />
