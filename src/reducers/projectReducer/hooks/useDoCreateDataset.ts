@@ -6,7 +6,7 @@ import useUser from 'hooks/useUser'
 
 import generateID from 'utilities/generateID'
 
-import { DatasetStatus, RegisterStatus } from '../types'
+import { DatasetDisplayStatus, DatasetStatus, RegisterStatus } from '../types'
 import { ProjectActions } from '../projectReducer'
 import useProjectID from 'hooks/project/useProjectID'
 
@@ -34,6 +34,8 @@ const useDoCreateDataset = () => {
       detection_run: '0',
       versions: [],
       highestVersion: 0,
+      lastUpdated: new Date().toISOString(),
+      displayStatus: DatasetDisplayStatus.Unreleased,
     }
 
     const datasetClientData = {
