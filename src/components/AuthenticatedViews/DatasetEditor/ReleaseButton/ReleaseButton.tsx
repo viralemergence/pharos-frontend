@@ -1,7 +1,10 @@
 import React from 'react'
 
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
-import { DatasetStatus } from 'reducers/projectReducer/types'
+import {
+  DatasetReleaseStatus,
+  DatasetStatus,
+} from 'reducers/projectReducer/types'
 
 import MintButton from 'components/ui/MintButton'
 
@@ -9,6 +12,8 @@ import useUser from 'hooks/useUser'
 import useDatasetID from 'hooks/dataset/useDatasetID'
 import useDataset from 'hooks/dataset/useDataset'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
+import getTimestamp from 'utilities/getTimestamp'
+import setDatasetReleaseStatus from 'reducers/projectReducer/actions/setDatasetReleaseStatus'
 
 const ReleaseButton = () => {
   const user = useUser()
@@ -48,6 +53,17 @@ const ReleaseButton = () => {
     e.preventDefault()
 
     if (!user.data?.researcherID) throw new Error('User data not found')
+
+    const lastUpdated = getTimestamp()
+
+    projectDispatch({
+      type: ProjectActions.SetDatasetReleaseStatus,
+      payload: {
+        datasetID,
+        lastUpdated,
+        releaseStatus: DatasetReleaseStatus.Released,
+      },
+    })
 
     projectDispatch({
       type: ProjectActions.CreateVersion,
