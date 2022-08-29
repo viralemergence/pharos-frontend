@@ -12,11 +12,13 @@ const DatasetsTable = () => {
   const projectID = useProjectID()
   const project = useProject()
 
+  let showLoadingMessage = false
+
   if (
     project.status === ProjectStatus.Initial ||
     project.status === ProjectStatus.Loading
   )
-    return <p>Loading project</p>
+    showLoadingMessage = true
 
   const sorted = Object.values(project.datasets)
 
@@ -40,14 +42,18 @@ const DatasetsTable = () => {
         <div>Status</div>
         <div>Last updated</div>
       </HeaderRow>
-      {sorted.map(dataset => (
-        <RowLink
-          key={dataset.datasetID}
-          to={`/projects/${projectID}/${dataset.datasetID}`}
-        >
-          <DatasetsTableRow key={dataset.datasetID} dataset={dataset} />
-        </RowLink>
-      ))}
+      {showLoadingMessage ? (
+        <p>Loading datasets...</p>
+      ) : (
+        sorted.map(dataset => (
+          <RowLink
+            key={dataset.datasetID}
+            to={`/projects/${projectID}/${dataset.datasetID}`}
+          >
+            <DatasetsTableRow key={dataset.datasetID} dataset={dataset} />
+          </RowLink>
+        ))
+      )}
     </ListTable>
   )
 }
