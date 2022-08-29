@@ -53,14 +53,18 @@ const DatasetsTable = () => {
         <div>Status</div>
         <div>Last updated</div>
       </HeaderRow>
-      {sorted.map(dataset => (
-        <RowLink
-          key={dataset.datasetID}
-          to={`/projects/${projectID}/${dataset.datasetID}`}
-        >
-          <DatasetsTableRow key={dataset.datasetID} dataset={dataset} />
-        </RowLink>
-      ))}
+      {sorted.length === 0 ? (
+        <p>Loading datasets...</p>
+      ) : (
+        sorted.map(dataset => (
+          <RowLink
+            key={dataset.datasetID}
+            to={`/projects/${projectID}/${dataset.datasetID}`}
+          >
+            <DatasetsTableRow key={dataset.datasetID} dataset={dataset} />
+          </RowLink>
+        ))
+      )}
     </ListTable>
   )
 }
