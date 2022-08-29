@@ -66,7 +66,7 @@ export interface Dataset {
   // the user-facing "status" of the
   // dataset which reflects released
   // and published status
-  displayStatus: DatasetDisplayStatus
+  displayStatus?: DatasetDisplayStatus
   // the array of version metadata
   versions: Version[]
   // the version number which the user
@@ -84,7 +84,7 @@ export interface Dataset {
   // name of the dataset
   name: string
   // lastUpdated timestamp
-  lastUpdated: string
+  lastUpdated?: string
   // earliest and latest date in the dataset
   earliestDate?: string
   latestDate?: string
