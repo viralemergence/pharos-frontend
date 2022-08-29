@@ -13,7 +13,6 @@ import useDatasetID from 'hooks/dataset/useDatasetID'
 import useDataset from 'hooks/dataset/useDataset'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
 import getTimestamp from 'utilities/getTimestamp'
-import setDatasetReleaseStatus from 'reducers/projectReducer/actions/setDatasetReleaseStatus'
 
 const ReleaseButton = () => {
   const user = useUser()
