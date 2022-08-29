@@ -47,7 +47,7 @@ const H2 = styled.h2`
   margin: 0;
   color: ${({ theme }) => theme.darkGray};
   text-transform: uppercase;
-  &:not(first-child) {
+  &:not(:first-child) {
     margin-top: 40px;
   }
 `
@@ -65,6 +65,7 @@ const HorizontalBar = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+  margin-top: 40px;
 `
 
 const ProjectPage = () => {
