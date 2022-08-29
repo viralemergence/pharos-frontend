@@ -1,6 +1,7 @@
 import useDatasetID from 'hooks/dataset/useDatasetID'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
 import useUser from 'hooks/useUser'
+import getTimestamp from 'utilities/getTimestamp'
 import { ProjectActions } from '../projectReducer'
 import { Datapoint } from '../types'
 
@@ -27,12 +28,15 @@ const useDoSetDatapoint = () => {
     displayValue,
     dataValue,
   }: DoSetDatapointProps) => {
+    const lastUpdated = getTimestamp()
+
     projectDispatch({
       type: ProjectActions.SetDatapoint,
       payload: {
         datasetID,
         recordID,
         datapointID,
+        lastUpdated,
         datapoint: {
           displayValue,
           dataValue,

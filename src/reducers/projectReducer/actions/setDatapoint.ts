@@ -1,11 +1,19 @@
 import { ActionFunction, ProjectActions } from '../projectReducer'
-import { Datapoint, Project, RegisterStatus } from '../types'
+import {
+  Datapoint,
+  DatasetDisplayStatus,
+  DatasetStatus,
+  Project,
+  RegisterStatus,
+} from '../types'
+import setDatasetStatus from './setDatasetStatus'
 import setRegisterStatus from './setRegisterStatus'
 
 export interface SetDatapointPayload {
   datasetID: string
   recordID: string
   datapointID: string
+  lastUpdated: string
   datapoint: {
     displayValue: Datapoint['displayValue']
     dataValue: Datapoint['dataValue']
@@ -20,7 +28,7 @@ export interface SetDatapointAction {
 
 const setDatapoint: ActionFunction<SetDatapointPayload> = (
   state,
-  { datasetID, recordID, datapointID, datapoint: newData }
+  { datasetID, recordID, datapointID, lastUpdated, datapoint: newData }
 ): Project => {
   const prevDataset = state.datasets[datasetID]
 
@@ -49,6 +57,7 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
       ...state.datasets,
       [datasetID]: {
         ...prevDataset,
+        lastUpdated,
         highestVersion: prevDataset.versions.length,
         register: {
           ...prevDataset.register,
@@ -62,6 +71,11 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
       },
     },
   }
+
+  nextState = setDatasetStatus(nextState, {
+    datasetID,
+    status: DatasetStatus.Unsaved,
+  })
 
   // always set the registerStatus to
   // unsaved when a new datapoint is set
