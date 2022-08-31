@@ -60,9 +60,9 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
         projectsObjStatus === ProjectsObjStatus.Initial &&
         Object.keys(nextProjects).length === 0
       ) {
-        console.log('API CALL: listProjects')
-        if (user.data?.projects && user.data.projects.length > 0) {
+        if (user.data?.projectIDs && user.data.projectIDs.length > 0) {
           setProjectsObjStatus(ProjectsObjStatus.Loading)
+          console.log('API CALL: listProjects')
           const response = await listProjects(researcherID)
           if (response) {
             setProjectsObjStatus(ProjectsObjStatus.Loaded)
@@ -80,9 +80,9 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
         !nextProjects[projectID] &&
         projectsObjStatus !== ProjectsObjStatus.Loading
       ) {
-        console.log('API CALL: listProjects')
-        if (user.data?.projects && user.data.projects.length > 0) {
+        if (user.data?.projectIDs && user.data.projectIDs.length > 0) {
           setProjectsObjStatus(ProjectsObjStatus.Loading)
+          console.log('API CALL: listProjects')
           const response = await listProjects(researcherID)
           if (response) {
             setProjectsObjStatus(ProjectsObjStatus.Loaded)
@@ -144,7 +144,7 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
     projectID,
     projectsObj,
     projectsObjStatus,
-    user.data?.projects,
+    user.data?.projectIDs,
   ])
 
   return (
