@@ -2,7 +2,7 @@ import React, { createContext, useEffect, useReducer, useState } from 'react'
 
 import { useParams } from 'react-router-dom'
 
-import { Dataset, Project, ProjectStatus, DatasetStatus } from './types'
+import { Project, ProjectStatus } from './types'
 
 import projectReducer, {
   ProjectAction,
