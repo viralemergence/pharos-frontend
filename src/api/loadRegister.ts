@@ -13,7 +13,7 @@ const loadRegister = async ({ researcherID, datasetID }: LoadRegister) => {
 
   const body = await response.json()
 
-  return JSON.parse(body.response)
+  return body
 }
 
 export default loadRegister
