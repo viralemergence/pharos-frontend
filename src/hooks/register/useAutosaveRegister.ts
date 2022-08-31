@@ -34,7 +34,7 @@ const useAutosaveRegister = () => {
       const saved = await saveRegister({
         datasetID,
         researcherID: user.data.researcherID,
-        data: { register: dataset.register, versions: dataset.versions },
+        register: dataset.register,
       }).catch(e => console.log(e))
 
       if (saved) {
