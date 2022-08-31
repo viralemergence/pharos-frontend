@@ -13,7 +13,7 @@ const TableGrid = styled.div`
   display: flex;
   flex-direction: column;
   min-width: 800px;
-  border: 1px solid ${({ theme }) => theme.veryLightGray};
+  border: 1px solid ${({ theme }) => theme.medGray};
 `
 export const RowLink = styled(Link)<{ $columnTemplate?: string }>`
   display: grid;
