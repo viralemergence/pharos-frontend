@@ -107,9 +107,9 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
 
       // api request
       console.log('API CALL: list datasets')
-      const datasetList = await listDatasets(researcherID, projectID)
+      const datasets = await listDatasets(researcherID, projectID)
 
-      if (!datasetList) {
+      if (!datasets) {
         projectDispatch({
           type: ProjectActions.SetProjectStatus,
           payload: ProjectStatus.Error,
@@ -117,7 +117,7 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
         return null
       }
 
-      if (datasetList.length === 0) {
+      if (Object.keys(datasets).length === 0) {
         projectDispatch({
           type: ProjectActions.SetProjectStatus,
           payload: ProjectStatus.Loaded,
@@ -130,17 +130,7 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
         ...(projectsObj[projectID] ?? projectInitialValue),
       }
 
-      // insert the datasets by key
-      datasetList.forEach((dataset: Dataset) => {
-        if (!dataset.datasetID) throw new Error('Dataset missing datasetID')
-
-        // set status to saved, because if it's coming from the
-        // server than it must be saved on the server by definition
-        projectObj.datasets[dataset.datasetID] = {
-          ...dataset,
-          status: DatasetStatus.Saved,
-        }
-      })
+      projectObj.datasets = datasets
 
       projectDispatch({
         type: ProjectActions.SetProject,

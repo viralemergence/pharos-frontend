@@ -8,9 +8,9 @@ const listDatasets = async (researcherID: string, projectID: string) => {
 
   if (!response || !response.ok) return null
 
-  const datasetList = (await response.json()) as Dataset[]
+  const datasets = (await response.json()) as { [key: string]: Dataset }
 
-  return datasetList
+  return datasets
 }
 
 export default listDatasets
