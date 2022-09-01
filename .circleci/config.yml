@@ -46,7 +46,7 @@ workflows:
       - deploy:
           bucket: 's3://prod-pharos-frontend'
           distribution: 'EG631FGRI2307'
-          api: https://wa769evyjf.execute-api.us-east-2.amazonaws.com/Prod
+          api: https://rt036ira4i.execute-api.us-west-1.amazonaws.com/Prod
           context: *credentials
           filters:
             branches:
