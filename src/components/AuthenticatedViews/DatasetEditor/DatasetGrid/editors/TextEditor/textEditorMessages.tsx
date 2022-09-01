@@ -4,14 +4,14 @@ import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 
 import useDatasetID from 'hooks/dataset/useDatasetID'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
-import useModalMessage from '../../ModalMessage/useModalMessage'
+import useModal from 'hooks/useModal/useModal'
 
 interface IDMustBeUniqueProps {
   recordIDColumn: string
 }
 
 export const IDMustBeUnique = ({ recordIDColumn }: IDMustBeUniqueProps) => {
-  const setModalContent = useModalMessage()
+  const setModal = useModal()
 
   return (
     <div style={{ maxWidth: 500 }}>
@@ -22,7 +22,7 @@ export const IDMustBeUnique = ({ recordIDColumn }: IDMustBeUniqueProps) => {
         ambiguous.
       </p>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <MintButton onClick={() => setModalContent(null)}>ok</MintButton>
+        <MintButton onClick={() => setModal(null)}>ok</MintButton>
       </div>
     </div>
   )
@@ -36,14 +36,14 @@ export const OnlyEditMostRecent = ({
   latestVersion,
 }: OnlyEditMostRecentProps) => {
   const datasetID = useDatasetID()
-  const setModalContent = useModalMessage()
+  const setModal = useModal()
   const projectDispatch = useProjectDispatch()
 
   return (
     <>
       <h3 style={{}}>Only the most recent version can be edited</h3>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <MintButton onClick={() => setModalContent(null)}>ok</MintButton>
+        <MintButton onClick={() => setModal(null)}>ok</MintButton>
         <MintButton
           style={{ marginLeft: 15 }}
           secondary
@@ -52,7 +52,7 @@ export const OnlyEditMostRecent = ({
               type: ProjectActions.SetActiveVersion,
               payload: { datasetID, version: latestVersion },
             })
-            setModalContent(null)
+            setModal(null)
           }}
         >
           Go to most recent

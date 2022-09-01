@@ -16,6 +16,7 @@ export interface User {
     organization: string
     email: string
     name: string
+    projectIDs?: string[]
   }
 }
 
@@ -39,6 +40,8 @@ const UserContextProvider = ({
   children,
 }: CMSIconProviderProps): JSX.Element => {
   const [user, setUser] = useState<User>(defaultUserState)
+
+  console.log({ user })
 
   return (
     <UserContext.Provider value={{ user, setUser }}>

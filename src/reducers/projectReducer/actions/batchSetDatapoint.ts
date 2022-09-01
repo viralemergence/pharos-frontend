@@ -1,6 +1,7 @@
 import { ActionFunction, ProjectActions } from '../projectReducer'
 import setDatapoint from './setDatapoint'
 import { Project } from '../types'
+import getTimestamp from 'utilities/getTimestamp'
 
 export type Rows = { [key: string]: string }[]
 
@@ -20,8 +21,10 @@ const batchSetDatapoint: ActionFunction<BatchSetDatapointPayload> = (
   state,
   { datasetID, researcherID, recordIDColumn, rows }
 ): Project => {
-  let nextState = state
   console.time('batchSetDatapoint')
+
+  let nextState = state
+  const lastUpdated = getTimestamp()
 
   for (const row of rows) {
     const recordID = row[recordIDColumn]
@@ -31,6 +34,7 @@ const batchSetDatapoint: ActionFunction<BatchSetDatapointPayload> = (
         datasetID,
         recordID,
         datapointID,
+        lastUpdated,
         datapoint: {
           displayValue: value,
           dataValue: value,

@@ -1,4 +1,5 @@
 import React from 'react'
+import styled from 'styled-components'
 import { FileUploader } from 'react-drag-drop-files'
 
 import useUser from 'hooks/useUser'
@@ -8,6 +9,11 @@ import useProjectDispatch from 'hooks/project/useProjectDispatch'
 import parseFile from './parse'
 
 const fileTypes = ['CSV']
+
+const Container = styled.div`
+  filter: hue-rotate(309deg) brightness(1.75) saturate(0.25) contrast(1.5);
+  margin-left: auto;
+`
 
 const CSVParser = () => {
   const user = useUser()
@@ -19,7 +25,7 @@ const CSVParser = () => {
   }
 
   return (
-    <div>
+    <Container>
       <FileUploader
         multiple={false}
         handleChange={handleChange}
@@ -27,7 +33,7 @@ const CSVParser = () => {
         types={fileTypes}
         label="Upload or drop new version"
       />
-    </div>
+    </Container>
   )
 }
 

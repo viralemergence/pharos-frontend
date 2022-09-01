@@ -57,16 +57,9 @@ const useLoadRegister = () => {
       })
 
       if (nextRegisterData) {
-        const { register, versions } = nextRegisterData
-
         projectDispatch({
           type: ProjectActions.ReplaceRegister,
-          payload: { datasetID, register },
-        })
-
-        projectDispatch({
-          type: ProjectActions.SetVersions,
-          payload: { datasetID, versions },
+          payload: { datasetID, register: nextRegisterData },
         })
 
         projectDispatch({

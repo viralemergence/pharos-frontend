@@ -2,13 +2,13 @@
 // the user has access to and
 // their state in the frontend
 
-// portfolio is not yet implemented
-export interface Portfolio {
-  status: PortfolioStatus
-  projects: {
-    [key: string]: Project
-  }
-}
+// // portfolio is not yet implemented
+// export interface Portfolio {
+//   status: PortfolioStatus
+//   projects: {
+//     [key: string]: Project
+//   }
+// }
 
 // the overall Project object
 // representing everything the frontend
@@ -18,7 +18,9 @@ export interface Portfolio {
 // but not in the API yet.
 export interface Project {
   projectID: string
-  status: ProjectStatus // don't save in api
+  name: string
+  status: ProjectStatus
+  datasetIDs: string[]
   datasets: {
     // dataset keys are the datasetID
     // to allow O(1) access to update
@@ -26,10 +28,25 @@ export interface Project {
     // functions.
     [key: string]: Dataset
   }
+  lastUpdated?: string
+  // metadata the user enters when they
+  // fill out the new project form
+  description?: string
+  projectType?: string
+  surveillanceType?: string
+  surveillanceStatus?: string
+  citation?: string
+  relatedMaterials?: string[]
+  projectPublications?: string[]
+  othersCiting?: string[]
+  authors?: {
+    researcherID: string
+    role: string
+  }[]
   // adding this as a note
-  // organisms should be implemented
+  // animals should be implemented
   // as a special case of a dataset
-  // organisms: {
+  // animals: {
   //   [key: string]: Dataset
   // }
 }
@@ -46,6 +63,10 @@ export interface Dataset {
   // frontend status of the dataset, this
   // will be overwritten on page load
   status?: DatasetStatus
+  // the user-facing "status" of the
+  // dataset which reflects released
+  // and published status
+  releaseStatus?: DatasetReleaseStatus
   // the array of version metadata
   versions: Version[]
   // the version number which the user
@@ -62,6 +83,11 @@ export interface Dataset {
   highestVersion: number
   // name of the dataset
   name: string
+  // lastUpdated timestamp
+  lastUpdated?: string
+  // earliest and latest date in the dataset
+  earliestDate?: string
+  latestDate?: string
   // general metadata, these are
   // placeholder example values
   // and subject to change
@@ -157,9 +183,12 @@ export enum PortfolioStatus {
 // datasets object
 export enum ProjectStatus {
   Initial,
+  Unsaved,
+  Saving,
+  Saved,
   Loading,
   Loaded,
-  NetworkError,
+  Error,
 }
 
 // all possible statuses for a
@@ -170,6 +199,12 @@ export enum DatasetStatus {
   Saving = 'Saving',
   Saved = 'Saved',
   Error = 'Error',
+}
+
+export enum DatasetReleaseStatus {
+  Unreleased = 'Unreleased',
+  Released = 'Released',
+  Published = 'Published',
 }
 
 // all possible statuses for a register

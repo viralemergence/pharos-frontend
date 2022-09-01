@@ -16,7 +16,7 @@ workflows:
           # distribution: 'E31RXXXXXXXXXX'
           bucket: 's3://dev-pharos-frontend'
           distribution: 'EWN5TGLCXWM1V'
-          api: https://gbzuegywr5.execute-api.us-east-2.amazonaws.com/Prod
+          api: https://9itsn2ewjb.execute-api.us-west-1.amazonaws.com/Prod
           context: *credentials
           filters:
             branches:
@@ -26,7 +26,7 @@ workflows:
       - deploy:
           bucket: 's3://review-pharos-frontend'
           distribution: 'E2TXCAC010VLUK'
-          api: https://r1den39i78.execute-api.us-east-2.amazonaws.com/Prod
+          api: https://wc85irdg5d.execute-api.us-west-1.amazonaws.com/Prod
           context: *credentials
           filters:
             branches:
@@ -36,7 +36,7 @@ workflows:
       - deploy:
           bucket: 's3://staging-pharos-frontend'
           distribution: 'E1MZX90GFW3KQ6'
-          api: https://wa769evyjf.execute-api.us-east-2.amazonaws.com/Prod
+          api: https://x77ethnbni.execute-api.us-west-1.amazonaws.com/Prod
           context: *credentials
           filters:
             branches:
@@ -46,7 +46,7 @@ workflows:
       - deploy:
           bucket: 's3://prod-pharos-frontend'
           distribution: 'EG631FGRI2307'
-          api: https://wa769evyjf.execute-api.us-east-2.amazonaws.com/Prod
+          api: https://rt036ira4i.execute-api.us-west-1.amazonaws.com/Prod
           context: *credentials
           filters:
             branches:

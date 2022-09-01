@@ -1,7 +1,10 @@
 import { useContext } from 'react'
-import { SetModalContent, ModalMessageContext } from './ModalMessageProvider'
+import {
+  SetModalContentWithOpts,
+  ModalMessageContext,
+} from './ModalMessageProvider'
 
-const useModalMessage = (): SetModalContent => {
+const useModal = (): SetModalContentWithOpts => {
   const setModalContent = useContext(ModalMessageContext)
 
   // when running on the build server, throw an error if
@@ -24,4 +27,4 @@ const useModalMessage = (): SetModalContent => {
   return setModalContent
 }
 
-export default useModalMessage
+export default useModal

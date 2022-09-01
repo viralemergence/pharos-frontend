@@ -1,35 +1,30 @@
-import { Register, Version } from 'reducers/projectReducer/types'
-
-interface RegisterData {
-  register: Register
-  versions: Version[]
-}
+import { Register } from 'reducers/projectReducer/types'
 
 interface SaveRegisterPayload {
   datasetID: string
   researcherID: string
-  data: RegisterData
+  register: Register
 }
 
 const saveRegister = async ({
   researcherID,
   datasetID,
-  data,
+  register,
 }: SaveRegisterPayload) => {
   const response = await fetch(`${process.env.GATSBY_API_URL}/save-register`, {
     method: 'POST',
     body: JSON.stringify({
       researcherID,
       datasetID,
-      data,
+      register,
     }),
   }).catch(e => console.log(e))
 
   if (!response || !response.ok) return null
 
-  const registerData = (await response.json()) as RegisterData
+  const nextRegister = (await response.json()) as Register
 
-  return registerData
+  return nextRegister
 }
 
 export default saveRegister
