@@ -1,16 +1,24 @@
 import React from 'react'
 
 import ListTable, { HeaderRow, RowLink } from 'components/ListTable/ListTable'
-import useProjecsObj from 'hooks/project/useProjectsObj'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 import { Project } from 'reducers/projectReducer/types'
 
+enum Status {
+  'Initial',
+  'Loading',
+  'Loaded',
+  'Error',
+}
+
 const ProjectsTable = () => {
-  const projectsObj = useProjecsObj()
   const projectDispatch = useProjectDispatch()
 
-  console.log({ projectsObj })
+  const [projects, setProjects] = useState({
+    status: Status.Initial,
+    projects: [],
+  })
 
   const handleClick = (project: Project) => {
     console.log({ project })
@@ -19,6 +27,8 @@ const ProjectsTable = () => {
       payload: project,
     })
   }
+
+  console.log({ projects })
 
   return (
     <ListTable columnTemplate="repeat(6, 1fr)">
