@@ -69,14 +69,16 @@ const NavBar = () => {
   ]
 
   if (user.status === UserStatus.loggedIn)
-    links.push({ to: '/app/', label: user.data?.name || '' })
+    links.push({ to: '/app/#/projects', label: user.data?.name || '' })
   else links.push({ to: '/app/#/login', label: 'Sign in' })
+
+  // to={user.status === UserStatus.loggedIn ? '/app/' : '/'}>
 
   return (
     <Nav>
       <Container>
         <LinkList>
-          <HomeLink to={user.status === UserStatus.loggedIn ? '/app/' : '/'}>
+          <HomeLink to="/">
             <NavLogo name="Site logo" data={data} />
             <CMS.Text name="Navbar title" data={data} />
           </HomeLink>
