@@ -1,15 +1,16 @@
 import React from 'react'
 import styled from 'styled-components'
+import { useLocation as useReachLocation } from '@reach/router'
+
 import CMS from '@talus-analytics/library.airtable-cms'
 
 import NavLink from './NavLink'
-
 import MobileMenu from './MobileMenu/MobileMenu'
 
-import useIndexPageData from 'cmsHooks/useIndexPageData'
-import useUser from 'hooks/useUser'
 import { UserStatus } from '../../Login/UserContextProvider'
-import { useLocation as useReachLocation } from '@reach/router'
+
+import useUser from 'hooks/useUser'
+import useIndexPageData from 'cmsHooks/useIndexPageData'
 
 const Nav = styled.nav`
   background-color: ${({ theme }) => theme.darkPurple};
