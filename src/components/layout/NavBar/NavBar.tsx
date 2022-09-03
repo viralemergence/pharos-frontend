@@ -9,6 +9,7 @@ import MobileMenu from './MobileMenu/MobileMenu'
 import useIndexPageData from 'cmsHooks/useIndexPageData'
 import useUser from 'hooks/useUser'
 import { UserStatus } from '../../Login/UserContextProvider'
+import { useLocation as useReachLocation } from '@reach/router'
 
 const Nav = styled.nav`
   background-color: ${({ theme }) => theme.darkPurple};
@@ -60,42 +61,68 @@ const NavLogo = styled(CMS.Image)`
 
 const NavBar = () => {
   const data = useIndexPageData()
-
   const user = useUser()
 
+  // Combining these routers is a mess because of S3...
+
+  // Long story short, reach router works for all server-side paths
+  // which actually exist in the S3 bucket.
+
+  // /app/ is the location of the SPA, and inside the SPA all routing
+  // is handled by react-router-dom. this "insideAppRouting" variable
+  // lets us build conditionals to reder either react router links
+  // or gatsby reach-router links based on whether we are on a static
+  // page or a page of the SPA with client-side routing.
+  const gatsbyLocation = useReachLocation()
+  const insideAppRouting = gatsbyLocation.pathname.startsWith('/app/')
+
+  // these links are always the same, and always reach-router
   const links = [
-    { to: '/about/', label: 'About' },
-    { to: '/guide/', label: 'User guide' },
+    { to: '/about/', children: 'About', reactRouterLink: false },
+    { to: '/guide/', children: 'User guide', reactRouterLink: false },
   ]
 
+  // the last link in the navbar switches text, path, and component
   if (user.status === UserStatus.loggedIn)
-    links.push({ to: '/app/#/projects', label: user.data?.name || '' })
-  else links.push({ to: '/app/#/login', label: 'Sign in' })
+    // if the user is logged in, the last link will be their username
+    // and clicking it should route to the projects page.
 
-  // to={user.status === UserStatus.loggedIn ? '/app/' : '/'}>
+    // if they are on a static page, the link should be a reach-router
+    // link to the full pathname + hash path, but if they are already
+    // on a client-routed app page, the link should be a react-router
+    // link to just the hash path (no /app/#/).
+    links.push({
+      to: insideAppRouting ? '/projects/' : '/app/#/projects/',
+      children: user.data?.name || '',
+      reactRouterLink: insideAppRouting,
+    })
+  // if user is logged out, the last link should be a reach-router
+  // link that points at the full pathname + hash of the login page
+  else
+    links.push({
+      to: '/app/#/login',
+      children: 'Sign in',
+      reactRouterLink: false,
+    })
 
   return (
     <Nav>
       <Container>
         <LinkList>
-          <HomeLink to="/">
+          <HomeLink to="/" reactRouterLink={false}>
             <NavLogo name="Site logo" data={data} />
             <CMS.Text name="Navbar title" data={data} />
           </HomeLink>
         </LinkList>
         <DesktopNav>
           {links.map(link => (
-            <NavLink key={link.label} to={link.to}>
-              {link.label}
-            </NavLink>
+            <NavLink {...link} />
           ))}
         </DesktopNav>
         <MobileMenu>
           <MobileLinkList>
             {links.map(link => (
-              <NavLink key={link.label} to={link.to}>
-                {link.label}
-              </NavLink>
+              <NavLink {...link} />
             ))}
           </MobileLinkList>
         </MobileMenu>
