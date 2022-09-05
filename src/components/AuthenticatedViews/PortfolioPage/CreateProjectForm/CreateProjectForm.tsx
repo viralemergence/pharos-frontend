@@ -170,10 +170,6 @@ const CreateProjectForm = () => {
   let buttonMessage
   let submitDisabled
   switch (true) {
-    // case !project.status:
-    //   buttonMessage = 'Create project'
-    //   break
-
     case project.status === ProjectStatus.Saving:
       buttonMessage = 'Saving...'
       submitDisabled = true
