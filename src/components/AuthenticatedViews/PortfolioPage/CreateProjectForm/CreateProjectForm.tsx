@@ -168,6 +168,7 @@ const CreateProjectForm = () => {
   }
 
   let buttonMessage
+  let submitDisabled
   switch (true) {
     // case !project.status:
     //   buttonMessage = 'Create project'
@@ -175,12 +176,15 @@ const CreateProjectForm = () => {
 
     case project.status === ProjectStatus.Saving:
       buttonMessage = 'Saving...'
+      submitDisabled = true
       break
     case project.status === ProjectStatus.Saved:
       buttonMessage = 'Saved'
+      submitDisabled = true
       break
     default:
       buttonMessage = 'Create project'
+      submitDisabled = false
       break
   }
 
@@ -328,7 +332,11 @@ const CreateProjectForm = () => {
         </AddMoreButton>
       )}
       <p style={{ margin: 0, padding: 0 }}>{formMessage}</p>
-      <MintButton onClick={handleSubmit} style={{ marginLeft: 'auto' }}>
+      <MintButton
+        disabled={submitDisabled}
+        onClick={handleSubmit}
+        style={{ marginLeft: 'auto' }}
+      >
         {buttonMessage}
       </MintButton>
     </Section>
