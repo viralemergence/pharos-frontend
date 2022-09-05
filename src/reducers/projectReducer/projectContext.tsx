@@ -15,7 +15,6 @@ import listDatasets from 'api/listDatasets'
 import listProjects from 'api/listProjects'
 
 type ProjectContextValue = {
-  projectsObj: { [key: string]: Project }
   project: Project
   projectDispatch: React.Dispatch<ProjectAction>
 }
@@ -148,7 +147,7 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
   ])
 
   return (
-    <ProjectContext.Provider value={{ project, projectDispatch, projectsObj }}>
+    <ProjectContext.Provider value={{ project, projectDispatch }}>
       {children}
     </ProjectContext.Provider>
   )
