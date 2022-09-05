@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import ListTable, { HeaderRow, RowLink } from 'components/ListTable/ListTable'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 import { Project } from 'reducers/projectReducer/types'
+import listProjects from 'api/listProjects'
+import useUser from 'hooks/useUser'
 
 enum Status {
   'Initial',
@@ -12,13 +14,33 @@ enum Status {
   'Error',
 }
 
+interface Projects {
+  status: Status
+  projects?: Project[]
+}
+
 const ProjectsTable = () => {
   const projectDispatch = useProjectDispatch()
+  const user = useUser()
 
-  const [projects, setProjects] = useState({
-    status: Status.Initial,
-    projects: [],
-  })
+  const [projects, setProjects] = useState<Projects>({ status: Status.Initial })
+
+  useEffect(() => {
+    const getProjectList = async (researcherID?: string) => {
+      if (!researcherID) return
+
+      setProjects({ status: Status.Loaded, projects: [] })
+
+      const projects = await listProjects(researcherID)
+
+      if (projects) setProjects({ status: Status.Loaded, projects })
+      else setProjects({ status: Status.Error })
+    }
+
+    const researcherID = user.data?.researcherID
+
+    getProjectList(researcherID)
+  }, [user])
 
   const handleClick = (project: Project) => {
     console.log({ project })
@@ -40,24 +62,26 @@ const ProjectsTable = () => {
         <div># of datasets</div>
         <div>Last updated</div>
       </HeaderRow>
-      {Object.values(projectsObj).map(project => (
-        <RowLink
-          key={project.projectID}
-          onClick={() => handleClick(project)}
-          to={`/projects/${project.projectID}`}
-        >
-          <div>{project.name}</div>
-          <div>{project.projectType || '—'}</div>
-          <div>{project.surveillanceType || '—'}</div>
-          <div>{project.surveillanceStatus || '—'}</div>
-          <div>{project.datasetIDs.length}</div>
-          <div>
-            {project.lastUpdated
-              ? new Date(project.lastUpdated).toLocaleString()
-              : '—'}
-          </div>
-        </RowLink>
-      ))}
+      {projects.status === Status.Loaded &&
+        projects.projects &&
+        Object.values(projects.projects).map(project => (
+          <RowLink
+            key={project.projectID}
+            onClick={() => handleClick(project)}
+            to={`/projects/${project.projectID}`}
+          >
+            <div>{project.name}</div>
+            <div>{project.projectType || '—'}</div>
+            <div>{project.surveillanceType || '—'}</div>
+            <div>{project.surveillanceStatus || '—'}</div>
+            <div>{project.datasetIDs.length}</div>
+            <div>
+              {project.lastUpdated
+                ? new Date(project.lastUpdated).toLocaleString()
+                : '—'}
+            </div>
+          </RowLink>
+        ))}
     </ListTable>
   )
 }
