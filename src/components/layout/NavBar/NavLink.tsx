@@ -20,7 +20,6 @@ const linkStyle = css`
     color: ${({ theme }) => theme.lightPurple} !important;
   }
 `
-
 // applying the same styling to reach-router links
 // and react-router-dom links so they look the same
 const StyledLink = styled(Link)`
