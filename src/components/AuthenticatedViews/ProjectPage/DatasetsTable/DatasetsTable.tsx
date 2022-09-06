@@ -6,33 +6,50 @@ import ListTable, { HeaderRow, RowLink } from 'components/ListTable/ListTable'
 import useProject from 'hooks/project/useProject'
 import useProjectID from 'hooks/project/useProjectID'
 import { ProjectStatus } from 'reducers/projectReducer/types'
+import useModal from 'hooks/useModal/useModal'
+import CreateProjectForm from 'components/AuthenticatedViews/PortfolioPage/CreateProjectForm/CreateProjectForm'
+import CreateDatasetForm from '../CreateDatasetForm/CreateDatasetForm'
+
+const datasetPlaceholder = {
+  datasetID: '',
+  researcherID: '',
+  versions: [],
+  highestVersion: 0,
+  activeVersion: 0,
+  name: '—',
+}
 
 const DatasetsTable = () => {
   const projectID = useProjectID()
   const project = useProject()
+  const setModal = useModal()
 
-  let showLoadingMessage
-
-  if (
-    project.status === ProjectStatus.Initial ||
-    project.status === ProjectStatus.Loading
-  )
-    showLoadingMessage = true
-
-  const sorted =
+  // create rows for each dataset based on datasetIDs
+  // using placeholder for datasets that aren't loaded
+  // these links will still work since their IDs are valid
+  let sorted =
     Object.keys(project.datasets).length > 0
       ? Object.values(project.datasets)
       : project.datasetIDs.map(id => ({
+          ...datasetPlaceholder,
           datasetID: id,
-          researcherID: '',
-          versions: [],
-          highestVersion: 0,
-          activeVersion: 0,
           name: 'Loading...',
         }))
 
-  console.log({ ...project })
-  console.log({ sorted })
+  const loading =
+    project.status === ProjectStatus.Initial ||
+    project.status === ProjectStatus.Loading
+
+  // if we end up still having no rows to show, show a loading
+  // placeholder if the project is loading or a full placeholder
+  // if the project is loaded and the project has no datasets
+  if (sorted.length === 0)
+    sorted = [
+      {
+        ...datasetPlaceholder,
+        name: loading ? 'Loading...' : datasetPlaceholder.name,
+      },
+    ]
 
   Object.values(project.datasets).sort((a, b) => {
     if (!a.versions || !b.versions) return 0
@@ -54,22 +71,20 @@ const DatasetsTable = () => {
         <div>Status</div>
         <div>Last updated</div>
       </HeaderRow>
-      {sorted.length === 0 ? (
-        showLoadingMessage ? (
-          <p>Loading datasets...</p>
-        ) : (
-          <p>Create an new dataset to get started entering data</p>
-        )
-      ) : (
-        sorted.map(dataset => (
-          <RowLink
-            key={dataset.datasetID}
-            to={`/projects/${projectID}/${dataset.datasetID}`}
-          >
-            <DatasetsTableRow key={dataset.datasetID} dataset={dataset} />
-          </RowLink>
-        ))
-      )}
+      {sorted.map(dataset => (
+        <RowLink
+          key={dataset.datasetID}
+          to={`/projects/${projectID}/${dataset.datasetID}`}
+          onClick={e => {
+            if (dataset.datasetID === datasetPlaceholder.datasetID) {
+              e.preventDefault()
+              setModal(<CreateDatasetForm />, { closeable: true })
+            }
+          }}
+        >
+          <DatasetsTableRow key={dataset.datasetID} dataset={dataset} />
+        </RowLink>
+      ))}
     </ListTable>
   )
 }
