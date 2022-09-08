@@ -18,7 +18,7 @@ const FillDatasetGrid = styled(DataGrid)`
 
 const DatasetGrid = () => {
   console.time('useVersionedRows')
-  const versionedRows = useVersionedRows()
+  const { rows: versionedRows, colNames } = useVersionedRows()
   console.timeEnd('useVersionedRows')
 
   const registerStatus = useRegisterStatus()
@@ -28,16 +28,16 @@ const DatasetGrid = () => {
     return <p>Error retrieving register</p>
   if (!versionedRows || !versionedRows[0]) return <></>
 
-  const columns: readonly Column<RecordWithID>[] = Object.keys(versionedRows[0])
-    .filter(key => key !== '_meta')
-    .map(key => ({
-      key,
-      name: key,
-      editor: TextEditor,
-      formatter: SimpleFormatter,
-      width: 150,
-      resizable: true,
-    }))
+  const columns: readonly Column<RecordWithID>[] = colNames.map(name => ({
+    key: name,
+    name,
+    editor: TextEditor,
+    formatter: SimpleFormatter,
+    width: 150,
+    resizable: true,
+  }))
+
+  console.log({ columnNames: colNames })
 
   return (
     <FillDatasetGrid
