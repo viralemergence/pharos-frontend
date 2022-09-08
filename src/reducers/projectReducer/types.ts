@@ -182,13 +182,13 @@ export enum PortfolioStatus {
 // the status states of the overall
 // datasets object
 export enum ProjectStatus {
-  Initial,
-  Unsaved,
-  Saving,
-  Saved,
-  Loading,
-  Loaded,
-  Error,
+  Initial = 'Initial',
+  Unsaved = 'Unsaved',
+  Saving = 'Saving',
+  Saved = 'Saved',
+  Loading = 'Loading',
+  Loaded = 'Loaded',
+  Error = 'Error',
 }
 
 // all possible statuses for a

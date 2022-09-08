@@ -107,6 +107,7 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
       // api request
       console.log('API CALL: list datasets')
       const datasets = await listDatasets(researcherID, projectID)
+      console.log(project.status)
 
       if (!datasets) {
         projectDispatch({
@@ -116,13 +117,12 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
         return null
       }
 
-      if (Object.keys(datasets).length === 0) {
-        projectDispatch({
-          type: ProjectActions.SetProjectStatus,
-          payload: ProjectStatus.Loaded,
-        })
-        return null
-      }
+      projectDispatch({
+        type: ProjectActions.SetProjectStatus,
+        payload: ProjectStatus.Loaded,
+      })
+
+      if (Object.keys(datasets).length === 0) return null
 
       // object to contain the datasets
       const projectObj: Project = {
@@ -137,8 +137,13 @@ const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
       })
     }
 
-    getDatasetList()
+    if (
+      project.status !== ProjectStatus.Loaded &&
+      project.status !== ProjectStatus.Loading
+    )
+      getDatasetList()
   }, [
+    project.status,
     researcherID,
     projectID,
     projectsObj,
