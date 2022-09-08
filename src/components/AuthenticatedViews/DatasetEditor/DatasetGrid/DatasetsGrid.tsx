@@ -10,6 +10,7 @@ import SimpleFormatter from './formatters/SimpleFormatter'
 
 import useVersionedRows from 'hooks/register/useVersionedRows'
 import useRegisterStatus from 'hooks/register/useRegisterStatus'
+import generateID from 'utilities/generateID'
 
 const FillDatasetGrid = styled(DataGrid)`
   block-size: 100%;
@@ -36,6 +37,10 @@ const DatasetGrid = () => {
     width: 150,
     resizable: true,
   }))
+
+  versionedRows.push({
+    _meta: { recordID: generateID.recordID() },
+  })
 
   console.log({ columnNames: colNames })
 
