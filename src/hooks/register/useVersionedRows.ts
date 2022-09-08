@@ -1,6 +1,8 @@
 import useDataset from 'hooks/dataset/useDataset'
 import { Datapoint, RecordWithID } from 'reducers/projectReducer/types'
 
+import defaultColumns from '../../../config/newDatasetColumns.json'
+
 // recursively traverse the linked list until the
 // version number is satisfied for a given datapoint
 const getDatapointAtVersion = (
@@ -23,7 +25,7 @@ const useVersionedRows = () => {
 
   const version = dataset.activeVersion
 
-  const colNameSet: Set<string> = new Set()
+  const colNames = defaultColumns.columns
 
   // check if version number requested is higher than
   // the length of the versions array; this means we
@@ -33,11 +35,14 @@ const useVersionedRows = () => {
     const rows: RecordWithID[] = []
 
     for (const [recordID, record] of Object.entries(dataset.register)) {
-      for (const colName of Object.keys(record)) colNameSet.add(colName)
+      for (const key of Object.keys(record)) {
+        if (!colNames[key]) colNames[key] = { type: 'string' }
+      }
+
       rows.push({ ...record, _meta: { recordID } })
     }
 
-    return { rows, colNames: [...colNameSet] }
+    return { rows, colNames: [...Object.keys(colNames)] }
   }
 
   // else return datapoints that are valid for the target version

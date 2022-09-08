@@ -42,8 +42,6 @@ const DatasetGrid = () => {
     _meta: { recordID: generateID.recordID() },
   })
 
-  console.log({ columnNames: colNames })
-
   return (
     <FillDatasetGrid
       className={'rdg-light'}
