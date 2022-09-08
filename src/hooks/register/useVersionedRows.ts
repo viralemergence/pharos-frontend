@@ -25,7 +25,7 @@ const useVersionedRows = () => {
 
   const version = dataset.activeVersion
 
-  const colNames = defaultColumns.columns
+  const colNames: { [key: string]: { type: string } } = defaultColumns.columns
 
   // check if version number requested is higher than
   // the length of the versions array; this means we
