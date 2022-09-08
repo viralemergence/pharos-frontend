@@ -1,7 +1,7 @@
 import useDataset from 'hooks/dataset/useDataset'
 import { Datapoint, RecordWithID } from 'reducers/projectReducer/types'
 
-import defaultColumns from '../../../config/newDatasetColumns.json'
+import defaultColumns from '../../../config/defaultColumns.json'
 
 // recursively traverse the linked list until the
 // version number is satisfied for a given datapoint
