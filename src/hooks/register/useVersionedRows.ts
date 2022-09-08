@@ -1,6 +1,5 @@
 import useDataset from 'hooks/dataset/useDataset'
 import { Datapoint, RecordWithID } from 'reducers/projectReducer/types'
-import generateID from 'utilities/generateID'
 
 // recursively traverse the linked list until the
 // version number is satisfied for a given datapoint
@@ -32,6 +31,7 @@ const useVersionedRows = () => {
   // the register without performing version checks
   if (version >= dataset.versions.length - 1) {
     const rows: RecordWithID[] = []
+
     for (const [recordID, record] of Object.entries(dataset.register)) {
       for (const colName of Object.keys(record)) colNameSet.add(colName)
       rows.push({ ...record, _meta: { recordID } })
