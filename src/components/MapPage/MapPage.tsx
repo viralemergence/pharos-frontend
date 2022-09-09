@@ -54,6 +54,7 @@ const MapPage = () => {
           Longitude: number
           Host_species: string
           Parasite_species: string
+          Dataset: string
         }
         geometry: { coordinates: mapboxgl.LngLatLike }
       }
@@ -61,7 +62,13 @@ const MapPage = () => {
       new mapboxgl.Popup({ offset: [0, -5] })
         .setLngLat(feature.geometry.coordinates)
         .setHTML(
-          `<h3>Host Species: ${feature.properties.Host_species}</h3><p>Parasite Species: ${feature.properties.Parasite_species}</p>`
+          `<h3 style="margin-bottom: 0; margin-top: 0">Host Species</h3>
+            <p style="margin-top: 0">${feature.properties.Host_species}</p>
+            <h3 style="margin-bottom: 0">Parasite Species</h3>
+            <p style="margin-top: 0">${feature.properties.Parasite_species}</p>
+            <h3 style="margin-bottom: 0">Dataset</h3>
+            <p style="margin-top: 0; margin-bottom: 0">${feature.properties.Dataset}</p>
+            `
         )
         .addTo(map.current)
     })
