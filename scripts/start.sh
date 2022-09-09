@@ -20,6 +20,10 @@ export AIRTABLE_API_KEY=$(
   aws secretsmanager get-secret-value --secret-id airtable-api-key --region us-west-1 |\
   jq  -r .SecretString | jq -r .AIRTABLE_API_KEY\
 )
+export GATSBY_MAPBOX_API_KEY=$(
+  aws secretsmanager get-secret-value --secret-id pharos-mapbox-api-key --region us-west-1 |\
+  jq  -r .SecretString | jq -r .MAPBOX_API_KEY\
+)
 
 if [ "$reset" == "1" ]; then 
   bvm upgrade;
