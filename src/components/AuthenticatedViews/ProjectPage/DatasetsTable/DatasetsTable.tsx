@@ -7,7 +7,6 @@ import useProject from 'hooks/project/useProject'
 import useProjectID from 'hooks/project/useProjectID'
 import { ProjectStatus } from 'reducers/projectReducer/types'
 import useModal from 'hooks/useModal/useModal'
-import CreateProjectForm from 'components/AuthenticatedViews/PortfolioPage/CreateProjectForm/CreateProjectForm'
 import CreateDatasetForm from '../CreateDatasetForm/CreateDatasetForm'
 
 const datasetPlaceholder = {
