@@ -39,7 +39,7 @@ const LoggedOutLanding = () => {
           <CMS.Text name="H1" data={data} />
         </H1>
         <MintButtonLink to="/app/#/login/">
-          <CMS.Text name="H1" data={data} />
+          <CMS.Text name="CTA" data={data} />
         </MintButtonLink>
       </Header>
       <LandingText name="Intro paragraph" data={data} />
