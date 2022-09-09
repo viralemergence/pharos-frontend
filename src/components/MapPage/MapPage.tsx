@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import mapboxgl from 'mapbox-gl'
 
@@ -17,9 +17,13 @@ const MapPage = () => {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<null | mapboxgl.Map>(null)
 
-  const [lng, setLng] = React.useState(0)
-  const [lat, setLat] = React.useState(0)
-  const [zoom, setZoom] = React.useState(1.7)
+  const [mapProjection, setMapProjection] = useState<'naturalEarth' | 'globe'>(
+    'naturalEarth'
+  )
+
+  // const [lng, setLng] = React.useState(0)
+  // const [lat, setLat] = React.useState(0)
+  // const [zoom, setZoom] = React.useState(1.7)
 
   useEffect(() => {
     if (map.current) return // initialize map only once
@@ -29,12 +33,12 @@ const MapPage = () => {
       container: mapContainer.current,
       style: 'mapbox://styles/ryan-talus/cl7uqzqjh002215oxyz136ijf/draft',
       // projection: { name: 'mercator' },
-      projection: { name: 'naturalEarth' },
+      projection: { name: mapProjection },
       maxZoom: 12,
       minZoom: 1.5,
       // bounds,
-      center: [lng, lat],
-      zoom: zoom,
+      center: [0, 0],
+      zoom: 1.7,
     })
 
     map.current.on('click', event => {
@@ -74,7 +78,37 @@ const MapPage = () => {
     })
   })
 
-  return <MapContainer ref={mapContainer} />
+  useEffect(() => {
+    if (!map.current) return
+    console.log('setProjection')
+    // @ts-expect-error property does not exist
+    map.current.setProjection({ name: mapProjection })
+  }, [mapProjection])
+
+  return (
+    <>
+      <MapContainer ref={mapContainer} />
+      <button
+        style={{
+          position: 'fixed',
+          top: '100px',
+          right: '10px',
+          background: '#050A3733',
+          border: '1px solid #050A37',
+          borderRadius: '5px',
+          color: 'white',
+        }}
+        onClick={() =>
+          setMapProjection(prev => {
+            console.log(prev === 'naturalEarth' ? 'globe' : 'naturalEarth')
+            return prev === 'naturalEarth' ? 'globe' : 'naturalEarth'
+          })
+        }
+      >
+        {mapProjection === 'naturalEarth' ? 'View globe' : 'View flat'}
+      </button>
+    </>
+  )
 }
 
 export default MapPage
