@@ -80,6 +80,7 @@ const NavBar = () => {
   // these links are always the same, and always reach-router
   const links = [
     { to: '/about/', children: 'About', reactRouterLink: false },
+    { to: '/map/', children: 'Map', reactRouterLink: false },
     { to: '/guide/', children: 'User guide', reactRouterLink: false },
   ]
 
