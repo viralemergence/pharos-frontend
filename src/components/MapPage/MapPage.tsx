@@ -48,6 +48,8 @@ const MapPage = () => {
         layers: ['pharosinitial-5yalgb'],
       })
 
+      console.log(features.length)
+
       if (!features.length) {
         return
       }
