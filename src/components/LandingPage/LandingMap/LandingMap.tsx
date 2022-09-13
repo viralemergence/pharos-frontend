@@ -6,15 +6,11 @@ import mapboxgl from 'mapbox-gl'
 mapboxgl.accessToken = process.env.GATSBY_MAPBOX_API_KEY!
 
 const MapContainer = styled.div`
-  height: 765px;
+  height: 650px;
   width: 100vw;
   background: #0b103b;
-
-  // height: 100vh;
-  // position: absolute;
-  // top: 0;
-  // left: 0;
-  // z-index: -1;
+  z-index: -1;
+  filter: brightness(0.7);
 `
 
 const LandingMap = (): JSX.Element => {
@@ -29,10 +25,10 @@ const LandingMap = (): JSX.Element => {
       container: mapContainer.current,
       style: 'mapbox://styles/ryan-talus/cl7uqzqjh002215oxyz136ijf/draft',
       projection: { name: 'globe' },
-      maxZoom: 2,
-      minZoom: 2,
+      maxZoom: 1.8,
+      minZoom: 1.8,
       center: [0, 0],
-      zoom: 2,
+      zoom: 1.8,
     })
 
     const interactions = [
