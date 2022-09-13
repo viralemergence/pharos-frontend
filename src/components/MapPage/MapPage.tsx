@@ -48,6 +48,8 @@ const MapPage = () => {
         layers: ['pharosinitial-5yalgb'],
       })
 
+      console.log(features.length)
+
       if (!features.length) {
         return
       }
@@ -80,7 +82,6 @@ const MapPage = () => {
 
   useEffect(() => {
     if (!map.current) return
-    console.log('setProjection')
     // @ts-expect-error property does not exist
     map.current.setProjection({ name: mapProjection })
   }, [mapProjection])
