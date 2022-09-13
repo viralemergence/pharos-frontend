@@ -11,13 +11,14 @@ import LandingMap from './LandingMap/LandingMap'
 const HeaderContainer = styled.div`
   position: absolute;
   width: 100vw;
+  height: calc(100vh - 80px);
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
 `
 const Header = styled.header`
   max-width: 1000px;
-  margin: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -28,16 +29,16 @@ const Header = styled.header`
 const H1 = styled.h1`
   ${({ theme }) => theme.bigMarketing};
   color: ${({ theme }) => theme.darkPurple};
-  margin-top: 50px;
+  // margin-top: 50px;
   color: white;
 `
 const LandingText = styled(CMS.RichText)`
   max-width: 1000px;
-  margin: auto;
-  margin-bottom: 70px;
+  padding-bottom: 30px;
 
   > p {
     ${({ theme }) => theme.h3};
+    color: white;
   }
 `
 const ButtonBox = styled.div`
@@ -63,11 +64,11 @@ const LoggedOutLanding = () => {
             <MintButtonLink to="/map/">View map</MintButtonLink>
           </ButtonBox>
         </Header>
+        <Main>
+          <LandingText name="Intro paragraph" data={data} />
+        </Main>
       </HeaderContainer>
       <LandingMap />
-      <Main>
-        <LandingText name="Intro paragraph" data={data} />
-      </Main>
     </>
   )
 }
