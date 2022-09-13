@@ -19,6 +19,7 @@ const buttonStyle = css<{ secondary?: boolean }>`
 
   display: flex;
   align-items: center;
+  justify-content: center;
 
   &:hover {
     background: ${({ theme }) => lighten(0.07, theme.mint)};
