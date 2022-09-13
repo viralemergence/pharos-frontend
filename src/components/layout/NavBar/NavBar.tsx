@@ -118,13 +118,13 @@ const NavBar = () => {
         </LinkList>
         <DesktopNav>
           {links.map(link => (
-            <NavLink {...link} />
+            <NavLink key={link.to} {...link} />
           ))}
         </DesktopNav>
         <MobileMenu>
           <MobileLinkList>
             {links.map(link => (
-              <NavLink {...link} />
+              <NavLink key={link.to} {...link} />
             ))}
           </MobileLinkList>
         </MobileMenu>
