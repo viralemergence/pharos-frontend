@@ -6,44 +6,52 @@ import Main from 'components/layout/Main'
 
 import useIndexPageData from 'cmsHooks/useIndexPageData'
 import { MintButtonLink } from 'components/ui/MintButton'
+import LandingMap from './LandingMap/LandingMap'
+import { Link } from 'gatsby'
 
-const LandingText = styled(CMS.RichText)`
-  max-width: 800px;
-  margin: auto;
-  margin-bottom: 8em;
-
-  > p {
-    ${({ theme }) => theme.bigParagraph};
-  }
-`
 const Header = styled.header`
-  max-width: 950px;
+  max-width: 1000px;
   margin: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
   margin-bottom: 70px;
 `
 const H1 = styled.h1`
   ${({ theme }) => theme.bigMarketing};
   color: ${({ theme }) => theme.darkPurple};
 `
+const LandingText = styled(CMS.RichText)`
+  max-width: 1000px;
+  margin: auto;
+  margin-bottom: 70px;
+
+  > p {
+    ${({ theme }) => theme.h3};
+  }
+`
 
 const LoggedOutLanding = () => {
   const data = useIndexPageData()
 
   return (
-    <Main>
-      <Header>
-        <H1>
-          <CMS.Text name="H1" data={data} />
-        </H1>
-        <MintButtonLink to="/app/#/login/">
-          <CMS.Text name="CTA" data={data} />
-        </MintButtonLink>
-      </Header>
-      <LandingText name="Intro paragraph" data={data} />
-    </Main>
+    <>
+      <Main>
+        <Header>
+          <H1>
+            <CMS.Text name="H1" data={data} />
+          </H1>
+          <MintButtonLink to="/app/#/login/">
+            <CMS.Text name="CTA" data={data} />
+          </MintButtonLink>
+        </Header>
+        <LandingText name="Intro paragraph" data={data} />
+      </Main>
+      <Link to="/map/">
+        <LandingMap />
+      </Link>
+    </>
   )
 }
 
