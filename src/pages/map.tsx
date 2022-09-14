@@ -3,15 +3,15 @@ import React from 'react'
 import CMS from '@talus-analytics/library.airtable-cms'
 import Providers from 'components/layout/Providers'
 
-import LandingPage from 'components/LandingPage/LandingPage'
 import NavBar from 'components/layout/NavBar/NavBar'
+import MapPage from 'components/MapPage/MapPage'
 
-const IndexPage = (): JSX.Element => (
+const Map = (): JSX.Element => (
   <Providers>
     <CMS.SEO />
     <NavBar />
-    <LandingPage />
+    <MapPage />
   </Providers>
 )
 
-export default IndexPage
+export default Map
