@@ -7,6 +7,7 @@ import Main from 'components/layout/Main'
 import useIndexPageData from 'cmsHooks/useIndexPageData'
 import { MintButtonLink } from 'components/ui/MintButton'
 import LandingMap from './LandingMap/LandingMap'
+import Footer from './Footer/Footer'
 
 const HeaderContainer = styled.div`
   position: absolute;
@@ -69,6 +70,7 @@ const LoggedOutLanding = () => {
         </Main>
       </HeaderContainer>
       <LandingMap />
+      <Footer />
     </>
   )
 }
