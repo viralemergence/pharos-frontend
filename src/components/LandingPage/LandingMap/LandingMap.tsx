@@ -50,8 +50,6 @@ const LandingMap = (): JSX.Element => {
     const spinGlobe = () => {
       if (!map.current) return
 
-      console.log('spinGlobe')
-
       // 360 degrees / seconds per rotation
       const degreesPerSecond = 360 / 120
       const center = map.current.getCenter()
