@@ -47,6 +47,12 @@ const ButtonBox = styled.div`
   grid-template-columns: repeat(2, 1fr);
   gap: 15px;
 `
+const FooterHeaderText = styled.h3`
+  ${({ theme }) => theme.bigParagraph};
+  color: ${({ theme }) => theme.black};
+  margin-top: 150px;
+  text-align: center;
+`
 
 const LoggedOutLanding = () => {
   const data = useIndexPageData()
@@ -70,6 +76,9 @@ const LoggedOutLanding = () => {
         </Main>
       </HeaderContainer>
       <LandingMap />
+      <FooterHeaderText>
+        <CMS.Text name="Above footer" data={data} />
+      </FooterHeaderText>
       <Footer />
     </>
   )
