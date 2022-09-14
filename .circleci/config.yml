@@ -4,6 +4,7 @@ credentials: &credentials
   - AWS Credentials
   - Airtable Credentials
   - Bit Credentials
+  - Mapbox Credentials
 
 workflows:
   version: 2
