@@ -12,6 +12,7 @@
     "start": "scripts/start.sh",
     "build": "scripts/build.sh",
     "serve": "gatsby serve",
+    "preinstall": "scripts/preinstall.sh",
     "postinstall": "scripts/postinstall.sh"
   },
   "browserslist": [
