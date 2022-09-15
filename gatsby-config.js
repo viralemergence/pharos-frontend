@@ -62,6 +62,16 @@ module.exports = {
       },
     },
     {
+      // filesystem plugin for documentation pages,
+      // pulling from the pharos-documentation
+      // repository git submodule.
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: 'documentation',
+        path: `${__dirname}/src/pharos-documentation`,
+      },
+    },
+    {
       resolve: 'gatsby-source-filesystem',
       options: {
         name: 'pages',
@@ -74,6 +84,7 @@ module.exports = {
     'talus-gatsby-transformer-svg',
     'gatsby-plugin-react-helmet',
     'gatsby-plugin-root-import',
+    'gatsby-transformer-remark',
     'gatsby-transformer-sharp',
     'gatsby-plugin-sharp',
     'gatsby-plugin-image',
