@@ -1,4 +1,5 @@
-// eslint-disable-next-line
+/* eslint-disable */
+/* tslint:disable */
 module.exports = {
   siteMetadata: {
     siteUrl: 'https://example.talusanalytics.com/',
