@@ -1,11 +1,16 @@
 import { GatsbyNode } from 'gatsby'
 import path from 'path'
 
+import { extendObjectByPath } from './src/utilities/objectPathTools'
+
 interface DocsPathQuery {
   allMarkdownRemark: {
     nodes: {
       fileAbsolutePath: string
       id: string
+      frontmatter: {
+        title: string
+      }
     }[]
   }
 }
@@ -22,19 +27,26 @@ export const createPages: GatsbyNode['createPages'] = async ({
     {
       allMarkdownRemark {
         nodes {
-          fileAbsolutePath
           id
+          fileAbsolutePath
+          frontmatter {
+            title
+          }
         }
       }
     }
   `)
+
+  // construct sitemap of all the file paths
+  const siteMap = {}
+  const pages = []
 
   for (const pathNode of docsPathsQuery.data.allMarkdownRemark.nodes) {
     // absolute path of the pharos-documentation repo
     const basePath = `${__dirname}/src/pharos-documentation`
 
     // strip off the basePath and the extension
-    const relativePath = pathNode.fileAbsolutePath
+    let relativePath = pathNode.fileAbsolutePath
       .replace(basePath, '')
       .replace('.md', '')
 
@@ -44,14 +56,33 @@ export const createPages: GatsbyNode['createPages'] = async ({
     // if it's a README not in the root
     // directory, make it an index page.
     if (relativePath.split('/').at(-1) === 'README')
-      relativePath.replace('README', '')
+      relativePath = relativePath.replace('README', '')
+    else relativePath += '/'
 
-    actions.createPage({
-      path: relativePath,
-      component: DefaultDocsPage,
-      context: { id: pathNode.id },
+    const steps = relativePath.split(/(?=\/)/g)
+
+    extendObjectByPath({
+      obj: siteMap,
+      path: steps,
+      valueObj: {
+        id: pathNode.id,
+        path: relativePath,
+        title: pathNode.frontmatter.title,
+      },
     })
 
-    console.log(relativePath)
+    pages.push({
+      id: pathNode.id,
+      path: relativePath,
+      title: pathNode.frontmatter.title,
+    })
+  }
+
+  for (const page of pages) {
+    actions.createPage({
+      path: page.path,
+      component: DefaultDocsPage,
+      context: { id: page.id, sitemap: siteMap },
+    })
   }
 }
