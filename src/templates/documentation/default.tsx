@@ -4,24 +4,26 @@ import { graphql } from 'gatsby'
 
 import Providers from 'components/layout/Providers'
 import NavBar from 'components/layout/NavBar/NavBar'
-import Main from 'components/layout/Main'
 import { baseStyle } from './styles'
 
-const Content = styled.div`
-  ${baseStyle}
-`
+import Sidebar from './Sidebar/Sidebar'
 
-const DocsDefault = ({ data }: { data: Data }) => {
-  return (
-    <Providers>
-      <NavBar />
-      <Main>
-        <Content
-          dangerouslySetInnerHTML={{ __html: data.markdownRemark.html }}
-        />
-      </Main>
-    </Providers>
-  )
+export interface PageInfo {
+  id: string
+  title: string
+  path: string
+}
+
+export interface SiteMap {
+  [key: string]: Record<string, SiteMap> | PageInfo
+}
+
+interface DocsDefaultProps {
+  data: Data
+  pageContext: {
+    id: string
+    siteMap: SiteMap
+  }
 }
 
 interface Data {
@@ -37,5 +39,26 @@ export const query = graphql`
     }
   }
 `
+const Layout = styled.main`
+  display: grid;
+  grid-template-areas: 'sidebar article';
+  max-width: 1500px;
+  gap: 15px;
+  padding: 15px;
+  margin: auto;
+`
+const Content = styled.div`
+  ${baseStyle}
+`
+
+const DocsDefault = ({ data, pageContext }: DocsDefaultProps): JSX.Element => (
+  <Providers>
+    <NavBar />
+    <Layout>
+      <Sidebar siteMap={pageContext.siteMap} />
+      <Content dangerouslySetInnerHTML={{ __html: data.markdownRemark.html }} />
+    </Layout>
+  </Providers>
+)
 
 export default DocsDefault
