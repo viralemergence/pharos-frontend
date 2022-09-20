@@ -1,3 +1,3 @@
 [submodule "src/pharos-documentation"]
 	path = src/pharos-documentation
-	url = https://github.com/viralemergence/pharos-documentation
+	url = git@github.com:viralemergence/pharos-documentation.git
