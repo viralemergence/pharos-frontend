@@ -81,7 +81,7 @@ const NavBar = () => {
   const links = [
     { to: '/about/', children: 'About', reactRouterLink: false },
     { to: '/map/', children: 'Map', reactRouterLink: false },
-    { to: '/guide/', children: 'User guide', reactRouterLink: false },
+    { to: '/user-guide/', children: 'User guide', reactRouterLink: false },
   ]
 
   // the last link in the navbar switches text, path, and component

@@ -25,6 +25,12 @@ done
 #   jq  -r .SecretString | jq -r .MAPBOX_API_KEY\
 # )
 
+echo 'Pull latest Pharos Documentation';
+cd src/pharos-documentation;
+git checkout publish;
+git pull;
+cd ../../;
+
 
 if [ "$reset" == "1" ]; then 
   bvm upgrade;
