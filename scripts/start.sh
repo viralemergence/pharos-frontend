@@ -28,7 +28,7 @@ export GATSBY_MAPBOX_API_KEY=$(
 
 echo 'Pull latest Pharos Documentation';
 cd src/pharos-documentation;
-git checkout publish;
+# git checkout publish;
 git pull;
 cd ../../;
 
