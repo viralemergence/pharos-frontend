@@ -82,7 +82,7 @@ export const createPages: GatsbyNode['createPages'] = async ({
     actions.createPage({
       path: page.path,
       component: DefaultDocsPage,
-      context: { id: page.id, sitemap: siteMap },
+      context: { id: page.id, siteMap },
     })
   }
 }
