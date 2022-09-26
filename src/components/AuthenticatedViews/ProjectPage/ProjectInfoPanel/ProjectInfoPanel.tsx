@@ -43,8 +43,6 @@ const ProjectInfoPanel = (): JSX.Element => {
       <Divider />
       <H2>Project type</H2>
       <P>{project.projectType || '—'}</P>
-      <H2>Surveillance type</H2>
-      <P>{project.surveillanceType || '—'}</P>
       <H2>Surveillance status</H2>
       <P>{project.surveillanceStatus || '—'}</P>
       <H2>Related materials</H2>
