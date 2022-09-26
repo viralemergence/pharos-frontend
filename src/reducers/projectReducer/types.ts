@@ -33,7 +33,6 @@ export interface Project {
   // fill out the new project form
   description?: string
   projectType?: string
-  surveillanceType?: string
   surveillanceStatus?: string
   citation?: string
   relatedMaterials?: string[]
