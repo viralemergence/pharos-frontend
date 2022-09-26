@@ -19,7 +19,7 @@ import ProjectInfoPanel from './ProjectInfoPanel/ProjectInfoPanel'
 import TextButton from 'components/ui/TextButton'
 
 const H1 = styled.h1`
-  ${({ theme }) => theme.h3}
+  ${({ theme }) => theme.h1}
   margin: 0;
 `
 const MainSection = styled.section`
