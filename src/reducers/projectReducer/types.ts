@@ -38,6 +38,7 @@ export interface Project {
   relatedMaterials?: string[]
   projectPublications?: string[]
   othersCiting?: string[]
+  publishStatus: ProjectPublishStatus
   authors?: {
     researcherID: string
     role: string
@@ -188,6 +189,11 @@ export enum ProjectStatus {
   Loading,
   Loaded,
   Error,
+}
+
+export enum ProjectPublishStatus {
+  Unpublished = 'Unpublished',
+  Published = 'Published',
 }
 
 // all possible statuses for a
