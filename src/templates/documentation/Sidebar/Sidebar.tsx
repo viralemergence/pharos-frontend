@@ -29,16 +29,26 @@ const SidebarSection = ({ siteMap }: { siteMap: SiteMap }) => {
   const current = siteMap['/'] as PageInfo
 
   // all the other keys will be child siteMaps
-  const children = Object.entries(siteMap).filter(([key]) => key !== '/')
+  const children = Object.entries(siteMap).filter(([key]) => key !== '/') as [
+    string,
+    SiteMap
+  ][]
 
   return (
     <li>
       {current && <SiteMapLink to={current.path}>{current.title}</SiteMapLink>}
       {children.length > 0 && (
         <SidebarChildren style={{ paddingLeft: 15 }}>
-          {children.map(([key, child]) => (
-            <SidebarSection key={key} siteMap={child as SiteMap} />
-          ))}
+          {children
+            .sort((a, b) =>
+              typeof a[1]?.['/']?.title === 'string' &&
+              typeof b[1]?.['/']?.title === 'string'
+                ? a[1]['/'].title.localeCompare(b[1]['/'].title)
+                : -1
+            )
+            .map(([key, child]) => (
+              <SidebarSection key={key} siteMap={child} />
+            ))}
         </SidebarChildren>
       )}
     </li>
