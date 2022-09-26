@@ -53,13 +53,14 @@ const ProjectsTable = () => {
   console.log({ projects })
 
   return (
-    <ListTable columnTemplate="repeat(5, 1fr)">
+    <ListTable columnTemplate="repeat(6, 1fr)">
       <HeaderRow>
         <div>Project name</div>
         <div>Project type</div>
         <div>Surveillance status</div>
         <div># of datasets</div>
         <div>Last updated</div>
+        <div>Project status</div>
       </HeaderRow>
       {projects.status === Status.Loaded &&
         projects.projects &&
@@ -71,12 +72,14 @@ const ProjectsTable = () => {
           >
             <div>{project.name}</div>
             <div>{project.projectType || '—'}</div>
-            <div>{project.datasetIDs.length}</div>
+            <div>{project.surveillanceStatus || '—'}</div>
+            <div>datasets {project.datasetIDs.length}</div>
             <div>
               {project.lastUpdated
                 ? new Date(project.lastUpdated).toLocaleString()
                 : '—'}
             </div>
+            <div>{project.publishStatus || 'Unpublished'}</div>
           </RowLink>
         ))}
     </ListTable>
