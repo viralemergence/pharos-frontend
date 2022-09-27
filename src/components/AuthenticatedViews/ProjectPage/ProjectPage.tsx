@@ -103,11 +103,12 @@ const ProjectPage = () => {
           <HorizontalBar>
             <H2>Datasets</H2>
             <TextButton
+              primary
               onClick={() =>
                 setModal(<CreateDatasetForm />, { closeable: true })
               }
             >
-              + New Dataset
+              + Add new Dataset
             </TextButton>
           </HorizontalBar>
           <DatasetsTable />

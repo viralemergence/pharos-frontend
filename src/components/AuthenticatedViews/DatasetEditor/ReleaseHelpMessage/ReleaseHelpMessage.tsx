@@ -10,6 +10,12 @@ const Button = styled.button`
   border: none;
   ${({ theme }) => theme.extraSmallParagraph};
   color: ${({ theme }) => theme.veryDarkGray};
+
+  transition: 150ms ease;
+
+  &:hover {
+    color: ${({ theme }) => theme.link};
+  }
 `
 
 const ModalMessage = () => {
