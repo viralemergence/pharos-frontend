@@ -17,10 +17,11 @@ import BreadcrumbLink, {
 import useModal from 'hooks/useModal/useModal'
 import ProjectInfoPanel from './ProjectInfoPanel/ProjectInfoPanel'
 import TextButton from 'components/ui/TextButton'
+import PublishingHelpMessage from './PublishingHelpMessage/PublishingHelpMessage'
 
 const H1 = styled.h1`
   ${({ theme }) => theme.h3}
-  margin: 0;
+  margin: 15px 0;
 `
 const MainSection = styled.section`
   display: flex;
@@ -87,6 +88,7 @@ const ProjectPage = () => {
             {project.name}
           </BreadcrumbLink>
         </BreadcrumbContainer>
+        <PublishingHelpMessage />
       </TopBar>
       <TopBar>
         <H1>{project.name}</H1>
