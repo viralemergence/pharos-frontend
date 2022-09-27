@@ -33,12 +33,12 @@ export interface Project {
   // fill out the new project form
   description?: string
   projectType?: string
-  surveillanceType?: string
   surveillanceStatus?: string
   citation?: string
   relatedMaterials?: string[]
   projectPublications?: string[]
   othersCiting?: string[]
+  publishStatus: ProjectPublishStatus
   authors?: {
     researcherID: string
     role: string
@@ -189,6 +189,11 @@ export enum ProjectStatus {
   Loading,
   Loaded,
   Error,
+}
+
+export enum ProjectPublishStatus {
+  Unpublished = 'Unpublished',
+  Published = 'Published',
 }
 
 // all possible statuses for a
