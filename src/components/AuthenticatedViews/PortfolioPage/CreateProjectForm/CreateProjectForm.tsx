@@ -49,11 +49,6 @@ const projectTypes = [
   { key: '4', label: 'Archival' },
 ]
 
-const surveillanceTypes = [
-  { key: '1', label: 'Active' },
-  { key: '2', label: 'Passive' },
-]
-
 const surveillanceStatuses = [
   { key: '1', label: 'Ongoing' },
   { key: '2', label: 'Ended' },
@@ -73,7 +68,6 @@ const CreateProjectForm = () => {
     description: '',
     projectType: '',
     citation: '',
-    surveillanceType: '',
     surveillanceStatus: '',
     relatedMaterials: [''],
     projectPublications: [''],
@@ -213,17 +207,6 @@ const CreateProjectForm = () => {
         onAdd={item => updateProjectData(item.label, 'projectType')}
         values={projectTypes.filter(
           item => item.label === projectData.projectType
-        )}
-      />
-      <Label style={{ margin: '15px 0px -15px 0px' }}>Surveillance type</Label>
-      <Typeahead
-        items={surveillanceTypes}
-        placeholder="Surveillance type"
-        borderColor={theme.darkPurple}
-        backgroundColor={theme.veryLightGray}
-        onAdd={item => updateProjectData(item.label, 'surveillanceType')}
-        values={surveillanceTypes.filter(
-          item => item.label === projectData.surveillanceType
         )}
       />
       <Label style={{ margin: '15px 0px -15px 0px' }}>
