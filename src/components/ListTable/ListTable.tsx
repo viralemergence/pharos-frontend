@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 const Container = styled.div`
   max-width: 100%;
   overflow-x: scroll;
-  margin-top: 20px;
+  margin-top: 15px;
 `
 const TableGrid = styled.div`
   display: flex;

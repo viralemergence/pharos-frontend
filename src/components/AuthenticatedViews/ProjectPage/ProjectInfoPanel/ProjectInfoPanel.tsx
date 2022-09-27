@@ -35,7 +35,7 @@ const ProjectInfoPanel = (): JSX.Element => {
   return (
     <>
       <H2>Project status</H2>
-      <P>{project.status || '—'}</P>
+      <P>{'Unpublished'}</P>
       <H2>DOI</H2>
       <P>Not yet available</P>
       <H2>How to cite this project</H2>
@@ -43,8 +43,6 @@ const ProjectInfoPanel = (): JSX.Element => {
       <Divider />
       <H2>Project type</H2>
       <P>{project.projectType || '—'}</P>
-      <H2>Surveillance type</H2>
-      <P>{project.surveillanceType || '—'}</P>
       <H2>Surveillance status</H2>
       <P>{project.surveillanceStatus || '—'}</P>
       <H2>Related materials</H2>
