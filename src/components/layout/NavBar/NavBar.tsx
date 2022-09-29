@@ -57,7 +57,7 @@ const MobileLinkList = styled(LinkList)`
 `
 const NavLogo = styled(CMS.Image)`
   height: 70px;
-  margin-right: 20px;
+  margin-right: 30px;
 `
 
 const NavBar = () => {

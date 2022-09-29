@@ -8,10 +8,13 @@ import { TopBar } from '../ViewComponents'
 import CreateProjectForm from './CreateProjectForm/CreateProjectForm'
 import ProjectsTable from './ProjectsTable/ProjectsTable'
 import Main from 'components/layout/Main'
+import BreadcrumbLink, {
+  BreadcrumbContainer,
+} from 'components/ui/BreadcrumbLink'
 
 const H1 = styled.h1`
-  ${({ theme }) => theme.h3}
-  margin: 0;
+  ${({ theme }) => theme.h1}
+  margin: 15px 0;
 `
 
 const ProjectList = () => {
@@ -19,6 +22,11 @@ const ProjectList = () => {
 
   return (
     <Main>
+      <TopBar>
+        <BreadcrumbContainer>
+          <BreadcrumbLink to={`/projects/`}>All projects</BreadcrumbLink>
+        </BreadcrumbContainer>
+      </TopBar>
       <TopBar>
         <H1>My Projects</H1>
         <MintButton onClick={() => setCreateModalOpen(true)}>

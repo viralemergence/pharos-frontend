@@ -17,14 +17,15 @@ import BreadcrumbLink, {
 import useModal from 'hooks/useModal/useModal'
 import ProjectInfoPanel from './ProjectInfoPanel/ProjectInfoPanel'
 import TextButton from 'components/ui/TextButton'
+import PublishingHelpMessage from './PublishingHelpMessage/PublishingHelpMessage'
 
 const H1 = styled.h1`
-  ${({ theme }) => theme.h3}
-  margin: 0;
+  ${({ theme }) => theme.h1}
+  margin: 15px 0;
 `
 const MainSection = styled.section`
   display: flex;
-  gap: 15px;
+  gap: 40px;
   align-items: flex-start;
   margin-top: 20px;
 `
@@ -87,6 +88,7 @@ const ProjectPage = () => {
             {project.name}
           </BreadcrumbLink>
         </BreadcrumbContainer>
+        <PublishingHelpMessage />
       </TopBar>
       <TopBar>
         <H1>{project.name}</H1>
@@ -103,11 +105,12 @@ const ProjectPage = () => {
           <HorizontalBar>
             <H2>Datasets</H2>
             <TextButton
+              primary
               onClick={() =>
                 setModal(<CreateDatasetForm />, { closeable: true })
               }
             >
-              + New Dataset
+              + Add new Dataset
             </TextButton>
           </HorizontalBar>
           <DatasetsTable />
