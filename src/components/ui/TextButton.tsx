@@ -1,3 +1,4 @@
+import { lighten } from 'polished'
 import styled from 'styled-components'
 
 const TextButton = styled.button<{ primary?: boolean; small?: boolean }>`
@@ -9,9 +10,16 @@ const TextButton = styled.button<{ primary?: boolean; small?: boolean }>`
   border: none;
   color: ${({ theme, primary }) => (primary ? theme.link : theme.veryDarkGray)};
 
-  transition: 150ms ease;
+  transition: 500ms ease;
+  border-radius: 2px;
+  border: thin solid rgba(0, 0, 0, 0);
+
   &:hover {
-    color: ${({ theme, primary }) => (primary ? theme.black : theme.link)};
+    color: ${({ theme }) => theme.link};
+    background-color: ${({ theme, primary }) =>
+      primary ? theme.veryLightGray : 'none'};
+    border: thin solid ${({ theme }) => lighten(-0.015, theme.veryLightGray)};
+    transition: 150ms ease;
   }
 `
 

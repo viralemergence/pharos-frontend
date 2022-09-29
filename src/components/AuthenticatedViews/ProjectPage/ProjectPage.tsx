@@ -20,12 +20,12 @@ import TextButton from 'components/ui/TextButton'
 import PublishingHelpMessage from './PublishingHelpMessage/PublishingHelpMessage'
 
 const H1 = styled.h1`
-  ${({ theme }) => theme.h3}
+  ${({ theme }) => theme.h1}
   margin: 15px 0;
 `
 const MainSection = styled.section`
   display: flex;
-  gap: 15px;
+  gap: 40px;
   align-items: flex-start;
   margin-top: 20px;
 `
