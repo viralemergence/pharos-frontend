@@ -9,9 +9,11 @@ const ModalMessage = () => {
   const setModal = useModal()
 
   return (
-    <div>
+    <div style={{ maxWidth: '100%', width: 500 }}>
       <p>
-        Releasing a dataset marks all completed records as ready for publishing.
+        Publishing a project integrates all released datasets into the primary
+        database, making the data available for download and integrating it into
+        PHAROS visualizations and maps.
       </p>
       <MintButton onClick={() => setModal(null)} style={{ marginLeft: 'auto' }}>
         Ok
@@ -20,14 +22,14 @@ const ModalMessage = () => {
   )
 }
 
-export const ReleaseHelpMessage = () => {
+export const PublishingHelpMessage = () => {
   const setModal = useModal()
 
   return (
     <TextButton small onClick={() => setModal(<ModalMessage />)}>
-      When do I release?
+      When do I publish?
     </TextButton>
   )
 }
 
-export default ReleaseHelpMessage
+export default PublishingHelpMessage
