@@ -34,14 +34,14 @@ const ButtonSection = styled.div`
   gap: 15px;
 `
 const H1 = styled.h1`
-  ${({ theme }) => theme.h3};
-  text-transform: uppercase;
+  ${({ theme }) => theme.h1};
   margin: 0;
-  margin-top: 15px;
+  margin: 15px 0;
 `
 const ProjectName = styled.div`
   ${({ theme }) => theme.smallParagraph};
   color: ${({ theme }) => theme.darkGray};
+  align-self: flex-start;
 
   > span {
     color: ${({ theme }) => theme.link};
@@ -91,9 +91,6 @@ const DatasetEditor = () => {
         <TopBar>
           <div>
             <H1>{dataset ? dataset.name : 'Loading dataset'}</H1>
-            <ProjectName>
-              Project: <span>{project.name}</span>
-            </ProjectName>
           </div>
           <ButtonSection>
             <VersionSwitcher />
@@ -102,6 +99,9 @@ const DatasetEditor = () => {
           </ButtonSection>
         </TopBar>
         <TopBar>
+          <ProjectName>
+            Project: <span>{project.name}</span>
+          </ProjectName>
           <CSVParser />
         </TopBar>
       </TopSection>
