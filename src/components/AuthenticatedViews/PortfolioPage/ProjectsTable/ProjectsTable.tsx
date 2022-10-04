@@ -50,7 +50,13 @@ const ProjectsTable = () => {
     })
   }
 
-  console.log({ projects })
+  const sorted =
+    projects.projects &&
+    Object.values(projects.projects).sort(
+      (a, b) =>
+        new Date(b.lastUpdated ?? '').getTime() -
+        new Date(a.lastUpdated ?? '').getTime()
+    )
 
   return (
     <ListTable columnTemplate="repeat(6, 1fr)">
@@ -63,8 +69,8 @@ const ProjectsTable = () => {
         <div>Project status</div>
       </HeaderRow>
       {projects.status === Status.Loaded &&
-        projects.projects &&
-        Object.values(projects.projects).map(project => (
+        sorted &&
+        sorted.map(project => (
           <RowLink
             key={project.projectID}
             onClick={() => handleClick(project)}
