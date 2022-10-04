@@ -128,6 +128,13 @@ export interface Record {
 
 export interface RecordMeta {
   recordID: string
+
+  // report?: {
+  //   pass: ReportScore
+  //   message: string
+  //   data: { [key: string]: string }
+  // }
+
   // ingested: boolean
 }
 
