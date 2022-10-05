@@ -15,15 +15,15 @@ while [[ "$#" > 0 ]];
   shift
 done
 
-# # fetch environment variables from secrets manager
-# export AIRTABLE_API_KEY=$(
-#   aws secretsmanager get-secret-value --secret-id airtable-api-key --region us-west-1 |\
-#   jq  -r .SecretString | jq -r .AIRTABLE_API_KEY\
-# )
-# export GATSBY_MAPBOX_API_KEY=$(
-#   aws secretsmanager get-secret-value --secret-id pharos-mapbox-api-key --region us-west-1 |\
-#   jq  -r .SecretString | jq -r .MAPBOX_API_KEY\
-# )
+# fetch environment variables from secrets manager
+export AIRTABLE_API_KEY=$(
+  aws secretsmanager get-secret-value --secret-id airtable-api-key --region us-west-1 |\
+  jq  -r .SecretString | jq -r .AIRTABLE_API_KEY\
+)
+export GATSBY_MAPBOX_API_KEY=$(
+  aws secretsmanager get-secret-value --secret-id pharos-mapbox-api-key --region us-west-1 |\
+  jq  -r .SecretString | jq -r .MAPBOX_API_KEY\
+)
 
 echo 'Pull latest Pharos Documentation';
 cd src/pharos-documentation;
