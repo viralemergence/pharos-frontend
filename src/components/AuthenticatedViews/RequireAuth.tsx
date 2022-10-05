@@ -8,6 +8,10 @@ function RequireAuth({ children }: { children: JSX.Element }) {
   const user = useUser()
   const location = useLocation()
 
+  // if the user status is unknown (local database isn't checked)
+  // then just return a fragment
+  if (user.status === UserStatus.initial) return <></>
+
   if (user.status !== UserStatus.loggedIn) {
     return (
       <Navigate
