@@ -23,18 +23,18 @@ const DownloadButton = () => {
   const dataset = useDataset()
   const theme = useTheme()
 
-  const versionRows = useVersionedRows()
+  const { rows } = useVersionedRows()
   const versionDate = dataset?.versions[dataset.activeVersion]?.date ?? ''
 
-  const disable = !versionRows || versionRows.length === 0
+  const disable = !rows || rows.length === 0
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
 
-    if (!versionRows) return null
+    if (!rows) return null
 
     const content = Papa.unparse(
-      versionRows.map(row =>
+      rows.map(row =>
         Object.entries(row)
           .filter(([key]) => key !== '_meta')
           .reduce(
