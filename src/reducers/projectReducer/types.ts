@@ -1,14 +1,29 @@
-// this is the set of projects
-// the user has access to and
-// their state in the frontend
+export interface State {
+  project: Project
+  apiQueue: APIMessage[]
+}
 
-// // portfolio is not yet implemented
-// export interface Portfolio {
-//   status: PortfolioStatus
-//   projects: {
-//     [key: string]: Project
-//   }
-// }
+export interface APIMessage {
+  route: string
+  status: APIMessageStatus
+  data: { [key: string]: unknown }
+}
+
+export enum APIMessageStatus {
+  // when the api message is created
+  Initial,
+
+  // when the request is sent but no
+  // response is recieved yet
+  Pending,
+
+  // Error states; successful responses are
+  // just removed from the queue so it doesn't
+  // need to have a success status.
+  NetworkError,
+  ServerError,
+  UnknownError,
+}
 
 // the overall Project object
 // representing everything the frontend
