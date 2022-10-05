@@ -2,8 +2,10 @@ import React, { useState } from 'react'
 import styled, { useTheme } from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 
-import { ProjectStatus } from 'reducers/projectReducer/types'
-import { ProjectActions } from 'reducers/projectReducer/projectReducer'
+import {
+  ProjectPublishStatus,
+  ProjectStatus,
+} from 'reducers/projectReducer/types'
 
 import MintButton from 'components/ui/MintButton'
 import Label from 'components/ui/InputLabel'
@@ -13,10 +15,9 @@ import Typeahead from '@talus-analytics/library.ui.typeahead'
 
 import useUser from 'hooks/useUser'
 import useProject from 'hooks/project/useProject'
-import useProjectDispatch from 'hooks/project/useProjectDispatch'
 
 import generateID from 'utilities/generateID'
-import saveProject from 'api/saveProject'
+import useDoSetProject from 'reducers/projectReducer/hooks/useDoSaveProject'
 
 const Section = styled.section`
   width: 800px;
@@ -57,9 +58,10 @@ const surveillanceStatuses = [
 const CreateProjectForm = () => {
   const user = useUser()
   const project = useProject()
-  const projectDispatch = useProjectDispatch()
   const [formMessage, setFormMessage] = useState('')
   const theme = useTheme()
+
+  const doSetProject = useDoSetProject()
 
   const navigate = useNavigate()
 
@@ -101,33 +103,12 @@ const CreateProjectForm = () => {
       datasetIDs: [],
       datasets: {},
       lastUpdated: new Date().toUTCString(),
+      publishStatus: ProjectPublishStatus.Unpublished,
     }
 
-    projectDispatch({
-      type: ProjectActions.SetProjectStatus,
-      payload: ProjectStatus.Saving,
-    })
+    await doSetProject(saveData)
 
-    const saved = await saveProject(saveData)
-
-    if (saved) {
-      const project = {
-        ...saveData,
-        status: ProjectStatus.Saved,
-      }
-
-      projectDispatch({
-        type: ProjectActions.SetProject,
-        payload: project,
-      })
-
-      navigate(`/projects/${projectID}`)
-    } else {
-      projectDispatch({
-        type: ProjectActions.SetProjectStatus,
-        payload: ProjectStatus.Error,
-      })
-    }
+    navigate(`/projects/${projectID}`)
   }
 
   const updateProjectData = (

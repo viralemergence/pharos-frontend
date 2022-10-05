@@ -6,7 +6,6 @@ import PublishProjectModal from './PublishProjectModal/PublishProjectModal'
 import MintButton from 'components/ui/MintButton'
 import DatasetsTable from './DatasetsTable/DatasetsTable'
 import { TopBar } from '../ViewComponents'
-import useAutosaveProject from 'hooks/project/useAutosaveProject'
 import useProject from 'hooks/project/useProject'
 import useUser from 'hooks/useUser'
 import Main from 'components/layout/Main'
@@ -74,10 +73,6 @@ const ProjectPage = () => {
   const project = useProject()
 
   const setModal = useModal()
-
-  // Save any changes to the project
-  // to the server
-  useAutosaveProject()
 
   return (
     <Main>
