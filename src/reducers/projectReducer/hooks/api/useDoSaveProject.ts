@@ -1,16 +1,20 @@
 import saveProject from 'api/saveProject'
+import useProject from 'hooks/project/useProject'
 import useProjectDispatch from 'hooks/project/useProjectDispatch'
 import useUser from 'hooks/useUser'
-import { ProjectActions } from '../projectReducer'
-import { Project, ProjectStatus } from '../types'
+import { ProjectActions } from '../../projectReducer'
+import { ProjectStatus } from '../../types'
 
 const useDoSaveProject = () => {
   const user = useUser()
+  const project = useProject()
   const projectDispatch = useProjectDispatch()
 
-  const doSaveProject = async (project: Project) => {
-    console.log('Do Action: Set Project')
+  const doSaveProject = async () => {
+    console.log('Do Action: Save Project')
     if (!user.data?.researcherID) throw new Error('Researcher ID undefined')
+
+    console.log({ project })
 
     projectDispatch({
       type: ProjectActions.SetProjectStatus,

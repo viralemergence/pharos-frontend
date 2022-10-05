@@ -1,11 +1,7 @@
 import React, { useState } from 'react'
 import styled, { useTheme } from 'styled-components'
-import { useNavigate } from 'react-router-dom'
 
-import {
-  ProjectPublishStatus,
-  ProjectStatus,
-} from 'reducers/projectReducer/types'
+import { ProjectStatus } from 'reducers/projectReducer/types'
 
 import MintButton from 'components/ui/MintButton'
 import Label from 'components/ui/InputLabel'
@@ -13,11 +9,8 @@ import Input from 'components/ui/Input'
 import Textarea from 'components/ui/Textarea'
 import Typeahead from '@talus-analytics/library.ui.typeahead'
 
-import useUser from 'hooks/useUser'
 import useProject from 'hooks/project/useProject'
-
-import generateID from 'utilities/generateID'
-import useDoSetProject from 'reducers/projectReducer/hooks/useDoSaveProject'
+import useDoCreateProject from 'reducers/projectReducer/hooks/useDoCreateProject'
 
 const Section = styled.section`
   width: 800px;
@@ -55,17 +48,24 @@ const surveillanceStatuses = [
   { key: '2', label: 'Ended' },
 ]
 
+export interface FormData {
+  name: string
+  description: string
+  citation: string
+  projectType: typeof projectTypes[0]['label']
+  surveillanceStatus: typeof surveillanceStatuses[0]['label']
+  relatedMaterials: string[]
+  projectPublications: string[]
+  othersCiting: string[]
+}
+
 const CreateProjectForm = () => {
-  const user = useUser()
   const project = useProject()
+  const doCreateProject = useDoCreateProject()
   const [formMessage, setFormMessage] = useState('')
   const theme = useTheme()
 
-  const doSetProject = useDoSetProject()
-
-  const navigate = useNavigate()
-
-  const [projectData, setProjectData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     description: '',
     projectType: '',
@@ -79,44 +79,21 @@ const CreateProjectForm = () => {
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     setFormMessage('')
-    console.log(projectData)
 
-    const projectID = generateID.projectID()
-
-    if (!user.data?.researcherID) throw new Error('Researcher ID undefined')
-
-    if (projectData.name === '') {
+    if (formData.name === '') {
       setFormMessage('Project name cannot be blank')
       return
     }
 
-    const saveData = {
-      ...projectData,
-      status: ProjectStatus.Saving,
-      projectID,
-      authors: [
-        {
-          researcherID: user.data.researcherID,
-          role: 'owner',
-        },
-      ],
-      datasetIDs: [],
-      datasets: {},
-      lastUpdated: new Date().toUTCString(),
-      publishStatus: ProjectPublishStatus.Unpublished,
-    }
-
-    await doSetProject(saveData)
-
-    navigate(`/projects/${projectID}`)
+    doCreateProject(formData)
   }
 
   const updateProjectData = (
     value: string,
-    key: keyof typeof projectData,
+    key: keyof typeof formData,
     index = 0
   ) => {
-    setProjectData(prev => {
+    setFormData(prev => {
       // if the type of state is just a string, replace it
       if (typeof prev[key] === 'string') return { ...prev, [key]: value }
 
@@ -168,14 +145,14 @@ const CreateProjectForm = () => {
           type="text"
           name="name"
           autoFocus
-          value={projectData.name}
+          value={formData.name}
           onChange={e => updateProjectData(e.target.value, 'name')}
         />
       </Label>
       <Label>
         Description
         <Textarea
-          value={projectData.description}
+          value={formData.description}
           onChange={e => updateProjectData(e.target.value, 'description')}
         />
       </Label>
@@ -187,7 +164,7 @@ const CreateProjectForm = () => {
         backgroundColor={theme.veryLightGray}
         onAdd={item => updateProjectData(item.label, 'projectType')}
         values={projectTypes.filter(
-          item => item.label === projectData.projectType
+          item => item.label === formData.projectType
         )}
       />
       <Label style={{ margin: '15px 0px -15px 0px' }}>
@@ -201,7 +178,7 @@ const CreateProjectForm = () => {
         backgroundColor={theme.veryLightGray}
         onAdd={item => updateProjectData(item.label, 'surveillanceStatus')}
         values={surveillanceStatuses.filter(
-          item => item.label === projectData.surveillanceStatus
+          item => item.label === formData.surveillanceStatus
         )}
       />
       <Label>
@@ -213,7 +190,7 @@ const CreateProjectForm = () => {
       </Label>
       <Label>
         Related materials
-        {projectData.relatedMaterials.map((string, index) => (
+        {formData.relatedMaterials.map((string, index) => (
           <Input
             key={index}
             type="text"
@@ -225,10 +202,10 @@ const CreateProjectForm = () => {
           />
         ))}
       </Label>
-      {projectData.relatedMaterials.slice(-1)[0] !== '' && (
+      {formData.relatedMaterials.slice(-1)[0] !== '' && (
         <AddMoreButton
           onClick={() =>
-            setProjectData(prev => ({
+            setFormData(prev => ({
               ...prev,
               relatedMaterials: [...prev.relatedMaterials, ''],
             }))
@@ -239,7 +216,7 @@ const CreateProjectForm = () => {
       )}
       <Label>
         Your project publications
-        {projectData.projectPublications.map((string, index) => (
+        {formData.projectPublications.map((string, index) => (
           <Input
             key={index}
             type="text"
@@ -252,10 +229,10 @@ const CreateProjectForm = () => {
           />
         ))}
       </Label>
-      {projectData.projectPublications.slice(-1)[0] !== '' && (
+      {formData.projectPublications.slice(-1)[0] !== '' && (
         <AddMoreButton
           onClick={() =>
-            setProjectData(prev => ({
+            setFormData(prev => ({
               ...prev,
               projectPublications: [...prev.projectPublications, ''],
             }))
@@ -266,7 +243,7 @@ const CreateProjectForm = () => {
       )}
       <Label>
         Other publications citing this project
-        {projectData.othersCiting.map((string, index) => (
+        {formData.othersCiting.map((string, index) => (
           <Input
             key={index}
             type="text"
@@ -279,10 +256,10 @@ const CreateProjectForm = () => {
           />
         ))}
       </Label>
-      {projectData.othersCiting.slice(-1)[0] !== '' && (
+      {formData.othersCiting.slice(-1)[0] !== '' && (
         <AddMoreButton
           onClick={() =>
-            setProjectData(prev => ({
+            setFormData(prev => ({
               ...prev,
               othersCiting: [...prev.othersCiting, ''],
             }))

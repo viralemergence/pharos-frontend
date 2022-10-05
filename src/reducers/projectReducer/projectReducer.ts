@@ -1,4 +1,10 @@
-import { Dataset, DatasetStatus, Project, ProjectStatus } from './types'
+import {
+  Dataset,
+  DatasetStatus,
+  Project,
+  ProjectPublishStatus,
+  ProjectStatus,
+} from './types'
 
 import setActiveVersion, {
   SetActiveVersionAction,
@@ -85,9 +91,10 @@ export enum ProjectActions {
 export const projectInitialValue: Project = {
   name: '',
   projectID: '0',
-  status: ProjectStatus.Initial,
   datasets: {},
   datasetIDs: [],
+  status: ProjectStatus.Initial,
+  publishStatus: ProjectPublishStatus.Unpublished,
 }
 
 export const datasetInitialValue: Dataset = {

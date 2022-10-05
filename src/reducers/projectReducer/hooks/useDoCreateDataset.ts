@@ -10,13 +10,20 @@ import { DatasetStatus, RegisterStatus } from '../types'
 import { ProjectActions } from '../projectReducer'
 import useProjectID from 'hooks/project/useProjectID'
 import getTimestamp from 'utilities/getTimestamp'
+import useDoSaveProject from './api/useDoSaveProject'
+import useDoSaveDataset from './api/useDoSaveDataset'
+import useProject from 'hooks/project/useProject'
 
 const useDoCreateDataset = () => {
   const user = useUser()
   const projectDispatch = useProjectDispatch()
   const setModal = useModal()
-  const navigate = useNavigate()
   const projectID = useProjectID()
+  const project = useProject()
+  const doSaveProject = useDoSaveProject()
+  const doSaveDataset = useDoSaveDataset()
+
+  const navigate = useNavigate()
 
   if (!user.data) throw new Error('User not logged in')
 
@@ -26,8 +33,8 @@ const useDoCreateDataset = () => {
 
   const datasetID = generateID.datasetID()
 
-  const doCreateDataset = ({ name }: { name: string }) => {
-    const datasetSaveData = {
+  const doCreateDataset = async ({ name }: { name: string }) => {
+    const dataset = {
       name,
       datasetID,
       researcherID,
@@ -36,9 +43,6 @@ const useDoCreateDataset = () => {
       versions: [],
       highestVersion: 0,
       lastUpdated: getTimestamp(),
-    }
-
-    const datasetClientData = {
       status: DatasetStatus.Unsaved,
       registerStatus: RegisterStatus.Unsaved,
       activeVersion: 0,
@@ -54,19 +58,23 @@ const useDoCreateDataset = () => {
       },
     }
 
+    console.log('dispatch dataset')
+    console.log({ project })
+
     projectDispatch({
       type: ProjectActions.CreateDataset,
       payload: {
         updated: getTimestamp(),
-        dataset: {
-          ...datasetSaveData,
-          ...datasetClientData,
-        },
+        dataset,
       },
     })
 
-    setModal(null)
+    console.log({ projectAfterDispatch: { ...project } })
 
+    doSaveDataset(dataset)
+    doSaveProject()
+
+    setModal(null)
     navigate(`/projects/${projectID}/${datasetID}`)
   }
 
