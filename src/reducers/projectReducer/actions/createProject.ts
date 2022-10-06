@@ -30,6 +30,18 @@ const createProject: ActionFunction<Project> = (state, payload) => {
     messageStack: {
       ...state.messageStack,
       [nanoid()]: {
+        route: APIRoutes.saveUser,
+        target: 'local',
+        status: StorageMessageStatus.Initial,
+        data: nextUser,
+      },
+      [nanoid()]: {
+        route: APIRoutes.saveUser,
+        target: 'remote',
+        status: StorageMessageStatus.Initial,
+        data: nextUser,
+      },
+      [nanoid()]: {
         route: APIRoutes.saveProject,
         target: 'local',
         status: StorageMessageStatus.Initial,
@@ -41,18 +53,6 @@ const createProject: ActionFunction<Project> = (state, payload) => {
         status: StorageMessageStatus.Initial,
         data: payload,
       },
-      // [nanoid()]: {
-      //   route: APIRoute.saveUser,
-      //   target: 'local',
-      //   status: StorageMessageStatus.Initial,
-      //   data: nextUser,
-      // },
-      // [nanoid()]: {
-      //   route: APIRoute.saveUser,
-      //   target: 'remote',
-      //   status: StorageMessageStatus.Initial,
-      //   data: nextUser,
-      // },
     },
   }
 }
