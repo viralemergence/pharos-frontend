@@ -6,9 +6,7 @@ import {
 } from 'reducers/projectReducer/projectReducer'
 import { MessageStackStatus } from 'reducers/projectReducer/types'
 
-import localSaveProject, {
-  SaveProject,
-} from 'storage/storageFunctions/localSaveProject'
+import saveProject, { SaveProject } from 'storage/storageFunctions/saveProject'
 
 export enum StorageMessageStatus {
   // when the api message is created
@@ -55,7 +53,7 @@ const synchronizeMessageQueue = async (
   for (const [key, message] of Object.entries(messageStack)) {
     switch (message.route) {
       case APIRoutes.saveProject:
-        localSaveProject(key, message, dispatch)
+        saveProject(key, message, dispatch)
         continue
 
       // case APIRoutes.saveUser:

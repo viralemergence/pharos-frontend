@@ -1,10 +1,7 @@
 import localforage from 'localforage'
 
-import {
-  ProjectAction,
-  ProjectActions,
-} from 'reducers/projectReducer/projectReducer'
 import { Project } from 'reducers/projectReducer/types'
+import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 
 import {
   APIRoutes,
@@ -19,7 +16,7 @@ export interface SaveProject {
   status: StorageMessageStatus
 }
 
-const localSaveProject: StorageFunction<SaveProject> = async (
+const saveProject: StorageFunction<SaveProject> = async (
   key,
   message,
   dispatch
@@ -40,4 +37,4 @@ const localSaveProject: StorageFunction<SaveProject> = async (
   } else console.log('save project to server')
 }
 
-export default localSaveProject
+export default saveProject
