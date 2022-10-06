@@ -6,7 +6,7 @@ import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 import { NodeStatus, Project } from 'reducers/projectReducer/types'
 
 import useUser from 'hooks/useUser'
-import useAppState from './useAppState'
+import useAppState from '../useAppState'
 import useDispatch from './useProjectDispatch'
 
 const useProjects = () => {
@@ -66,7 +66,7 @@ const useProjects = () => {
           method: 'post',
           body: JSON.stringify({ researcherID: user.data.researcherID }),
         }
-      ).catch(error => {
+      ).catch(() => {
         // catch network error and go into offline mode
         dispatch({
           type: ProjectActions.SetAppStateStatus,
