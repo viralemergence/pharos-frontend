@@ -3,9 +3,12 @@ import {
   defaultUserState,
   User,
   UserContext,
+  UserStatus,
 } from 'components/Login/UserContextProvider'
 import useAppState from './useAppState'
 import localforage from 'localforage'
+import useDispatch from './useDispatch'
+import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 
 // const useUser = (): UserContext['user'] => {
 //   const userState = useContext(UserContext)
@@ -40,6 +43,7 @@ import localforage from 'localforage'
 
 const useUser = () => {
   const { user } = useAppState()
+  const dispatch = useDispatch()
 
   // async check for local user data
   useEffect(() => {
@@ -48,7 +52,10 @@ const useUser = () => {
 
       if (localUser) {
         // set local data in state
-        console.log('setUser(localUser)')
+        dispatch({
+          type: ProjectActions.SetUser,
+          payload: localUser,
+        })
 
         // request updated user data
         const response = await fetch(`${process.env.GATSBY_API_URL}/auth`, {
@@ -59,29 +66,31 @@ const useUser = () => {
         // if it's valid set the updated data in state
         if (response && response.ok) {
           const updatedUserData = await response.json()
-          console.log(`
-          setUser({
-            status: UserStatus.loggedIn,
-            statusMessage: 'Logged in',
-            data: updatedUserData,
+          dispatch({
+            type: ProjectActions.SetUser,
+            payload: {
+              status: UserStatus.loggedIn,
+              statusMessage: 'Logged in',
+              data: updatedUserData,
+            },
           })
-                      `)
         }
       }
 
       // if no local user data, set the user
       // to logged out state now that we're sure
       else
-        console.log(`
-        setUser({
-          status: UserStatus.loggedOut,
-          statusMessage: 'Logged out',
+        dispatch({
+          type: ProjectActions.SetUser,
+          payload: {
+            status: UserStatus.loggedOut,
+            statusMessage: 'Logged out',
+          },
         })
-                    `)
     }
 
     loadUser()
-  }, [])
+  }, [dispatch])
   // // userState will be undefined on the build server
   // // so if window is undefined and userState is undefined
   // // we'll just return the default user state and no state setter
