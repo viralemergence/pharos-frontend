@@ -7,6 +7,7 @@ import {
 import { MessageStackStatus } from 'reducers/projectReducer/types'
 
 import saveProject, { SaveProject } from 'storage/storageFunctions/saveProject'
+import saveUser, { SaveUser } from './storageFunctions/saveUser'
 
 export enum StorageMessageStatus {
   // when the api message is created
@@ -28,7 +29,7 @@ export enum APIRoutes {
   saveUser = 'save-user',
 }
 
-export type StorageMessage = SaveProject
+export type StorageMessage = SaveProject | SaveUser
 
 export type StorageFunction<T> = (
   key: string,
@@ -56,10 +57,9 @@ const synchronizeMessageQueue = async (
         saveProject(key, message, dispatch)
         continue
 
-      // case APIRoutes.saveUser:
-      //   if (message.target === 'local') console.log('Local save user')
-      //   else console.log('remote save user')
-      //   continue
+      case APIRoutes.saveUser:
+        saveUser(key, message, dispatch)
+        continue
     }
   }
 
