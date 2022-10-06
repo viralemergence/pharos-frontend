@@ -1,5 +1,4 @@
 import { ActionFunction, ProjectActions } from '../projectReducer'
-import { NodeStatus, StorageMessageStatus } from '../types'
 
 export interface RemoveStorageMessageAction {
   type: ProjectActions.RemoveStorageMessage
