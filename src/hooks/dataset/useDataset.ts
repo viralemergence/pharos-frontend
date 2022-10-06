@@ -2,9 +2,9 @@ import { useEffect } from 'react'
 
 import { datasetInitialValue } from 'reducers/projectReducer/projectReducer'
 
-import useAppState from '../project/useProject'
 import useProjectID from 'hooks/project/useProjectID'
 import useDatasetID from './useDatasetID'
+import useAppState from 'hooks/useAppState'
 
 const useDataset = () => {
   const state = useAppState()

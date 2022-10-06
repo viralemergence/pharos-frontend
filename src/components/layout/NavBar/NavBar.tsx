@@ -11,7 +11,6 @@ import { UserStatus } from '../../Login/UserContextProvider'
 
 import useUser from 'hooks/useUser'
 import useIndexPageData from 'cmsHooks/useIndexPageData'
-import useAppState from 'hooks/project/useProject'
 
 const Nav = styled.nav`
   background-color: ${({ theme }) => theme.darkPurple};

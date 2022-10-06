@@ -1,18 +1,11 @@
-import { useContext } from 'react'
-import { ProjectContext } from 'reducers/projectReducer/projectContext'
-import { projectInitialValue } from 'reducers/projectReducer/projectReducer'
+import useAppState from 'hooks/useAppState'
 import useProjectID from './useProjectID'
 
-const useAppState = () => {
-  const context = useContext(ProjectContext)
+const useProject = () => {
+  const state = useAppState()
   const projectID = useProjectID()
 
-  // some error handling here so we know context is defined
-  if (!context) throw new Error('Project context not found')
-
-  const project = context.state.projects[projectID]
-
-  return project
+  return state.projects[projectID]
 }
 
-export default useAppState
+export default useProject
