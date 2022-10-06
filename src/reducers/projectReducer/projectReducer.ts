@@ -42,6 +42,12 @@ import setAppStateStatus, {
   SetAppStateStatusAction,
 } from './actions/setAppStateStatus'
 import createProject, { CreateProjectAction } from './actions/createProject'
+import setStorageMessageStatus, {
+  SetStorageMessageStatusAction,
+} from './actions/setStorageMessageStatus'
+import removeStorageMessage, {
+  RemoveStorageMessageAction,
+} from './actions/removeStorageMessage'
 
 // reducer actions
 export enum ProjectActions {
@@ -49,6 +55,8 @@ export enum ProjectActions {
   UpdateProjects,
   CreateProject,
   SetAppStateStatus,
+  SetStorageMessageStatus,
+  RemoveStorageMessage,
 
   // SetDatasetStatus,
   // SetDatasetReleaseStatus,
@@ -99,7 +107,11 @@ export const stateInitialValue: AppState = {
 
 export type ProjectAction =
   // | SetProjectAction
-  SetAppStateStatusAction | UpdateProjectsAction | CreateProjectAction
+  | SetAppStateStatusAction
+  | UpdateProjectsAction
+  | CreateProjectAction
+  | SetStorageMessageStatusAction
+  | RemoveStorageMessageAction
 // state relative to server
 // | SetProjectStatusAction
 // // datsets
@@ -135,6 +147,12 @@ const projectReducer = (state: AppState, action: ProjectAction) => {
     //   return setProjectStatus(state, action.payload)
     // case ProjectActions.SetProject:
     //   return setProject(state, action.payload)
+
+    // storage message actions
+    case ProjectActions.SetStorageMessageStatus:
+      return setStorageMessageStatus(state, action.payload)
+    case ProjectActions.RemoveStorageMessage:
+      return removeStorageMessage(state, action.payload)
 
     case ProjectActions.UpdateProjects:
       return updateProjects(state, action.payload)
