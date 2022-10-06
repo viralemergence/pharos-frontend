@@ -25,7 +25,8 @@ const StateContextProvider = ({ children }: ProjectContextProviderProps) => {
 
   const { status, messageStack } = state
   useEffect(() => {
-    synchronizeMessageQueue(messageStack, status, dispatch)
+    if (Object.keys(messageStack).length === 0) return
+    synchronizeMessageQueue(messageStack, dispatch)
   }, [messageStack, status])
 
   return (

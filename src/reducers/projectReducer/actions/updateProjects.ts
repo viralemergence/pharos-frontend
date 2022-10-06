@@ -1,6 +1,10 @@
 import { ActionFunction, ProjectActions } from '../projectReducer'
-import { APIRoute, NodeStatus, Project, StorageMessageStatus } from '../types'
+import { NodeStatus, Project } from '../types'
 import { nanoid } from 'nanoid'
+import {
+  APIRoutes,
+  StorageMessageStatus,
+} from 'storage/synchronizeMessageQueue'
 
 interface SetProjectsActionPayload {
   source: 'local' | 'remote'
@@ -37,7 +41,7 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
           nextState.messageStack = {
             ...nextState.messageStack,
             [nanoid()]: {
-              route: APIRoute.saveProject,
+              route: APIRoutes.saveProject,
               target: payload.source === 'local' ? 'remote' : 'local',
               status: StorageMessageStatus.Initial,
               data: nextProject,
@@ -49,7 +53,7 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
           nextState.messageStack = {
             ...nextState.messageStack,
             [nanoid()]: {
-              route: APIRoute.saveProject,
+              route: APIRoutes.saveProject,
               target: payload.source === 'local' ? 'local' : 'remote',
               status: StorageMessageStatus.Initial,
               data: prevProject,
@@ -65,7 +69,7 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
         nextState.messageStack = {
           ...nextState.messageStack,
           [nanoid()]: {
-            route: APIRoute.saveProject,
+            route: APIRoutes.saveProject,
             target: payload.source === 'local' ? 'remote' : 'local',
             status: StorageMessageStatus.Initial,
             data: nextProject,

@@ -1,4 +1,5 @@
 import { User } from 'components/Login/UserContextProvider'
+import { StorageMessage } from 'storage/synchronizeMessageQueue'
 
 export enum NodeStatus {
   Drifted = 'Drifted',
@@ -13,34 +14,6 @@ export interface AppState {
   status: NodeStatus
   projects: { [key: string]: Project }
   messageStack: { [key: string]: StorageMessage }
-}
-
-export enum APIRoute {
-  saveProject = 'save-project',
-}
-
-export interface StorageMessage {
-  route: string
-  target: 'local' | 'remote'
-  status: StorageMessageStatus
-  data: Project
-}
-
-export enum StorageMessageStatus {
-  // when the api message is created
-  Initial,
-
-  // when the request is sent but no
-  // response is recieved yet
-  Pending,
-
-  // Error states; successful responses are
-  // just removed from the queue so it doesn't
-  // need to have a success status.
-  NetworkError,
-  ServerError,
-  LocalStorageError,
-  UnknownError,
 }
 
 // the overall Project object

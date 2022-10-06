@@ -1,6 +1,7 @@
 import { ActionFunction, ProjectActions } from '../projectReducer'
 import { APIRoute, Project, StorageMessageStatus } from '../types'
 import { nanoid } from 'nanoid'
+import { defaultUserState, User } from 'components/Login/UserContextProvider'
 
 export interface CreateProjectAction {
   type: ProjectActions.CreateProject
@@ -8,8 +9,17 @@ export interface CreateProjectAction {
 }
 
 const createProject: ActionFunction<Project> = (state, payload) => {
+  const nextUser = {
+    ...state.user,
+    data: {
+      ...state.user.data!,
+      projectIDs: [...(state.user.data?.projectIDs ?? []), payload.projectID],
+    },
+  }
+
   return {
     ...state,
+    user: nextUser,
     projects: {
       ...state.projects,
       [payload.projectID]: payload,
@@ -28,6 +38,18 @@ const createProject: ActionFunction<Project> = (state, payload) => {
         status: StorageMessageStatus.Initial,
         data: payload,
       },
+      // [nanoid()]: {
+      //   route: APIRoute.saveUser,
+      //   target: 'local',
+      //   status: StorageMessageStatus.Initial,
+      //   data: nextUser,
+      // },
+      // [nanoid()]: {
+      //   route: APIRoute.saveUser,
+      //   target: 'remote',
+      //   status: StorageMessageStatus.Initial,
+      //   data: nextUser,
+      // },
     },
   }
 }
