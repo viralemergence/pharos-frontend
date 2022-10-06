@@ -81,7 +81,7 @@ const ProjectPage = () => {
       <TopBar>
         <BreadcrumbContainer>
           <BreadcrumbLink to={`/projects/`}>All projects</BreadcrumbLink>
-          <BreadcrumbLink active to={`/projects/${project.projectID}`}>
+          <BreadcrumbLink $active to={`/projects/${project.projectID}`}>
             {project.name}
           </BreadcrumbLink>
         </BreadcrumbContainer>

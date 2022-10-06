@@ -76,7 +76,7 @@ const DatasetEditor = () => {
               {project.name}
             </BreadcrumbLink>
             <BreadcrumbLink
-              active
+              $active
               to={`/projects/${project.projectID}/${dataset.datasetID}`}
             >
               {dataset.name}
