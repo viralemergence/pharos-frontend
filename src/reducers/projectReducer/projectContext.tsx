@@ -1,20 +1,13 @@
 import React, { createContext, useEffect, useReducer, useState } from 'react'
 
-// import { useParams } from 'react-router-dom'
-
-import { Project, ProjectStatus, AppState, NodeStatus, APIRoute } from './types'
+import { AppState, NodeStatus, APIRoute } from './types'
 
 import projectReducer, {
   ProjectAction,
-  // ProjectActions,
-  // projectInitialValue,
   stateInitialValue,
 } from './projectReducer'
 
-import useUser from 'hooks/useUser'
 import localSaveProject from 'storage/local/localSaveProject'
-// import listDatasets from 'api/listDatasets'
-// import listProjects from 'api/listProjects'
 
 type ProjectContextValue = {
   state: AppState
@@ -28,9 +21,6 @@ interface ProjectContextProviderProps {
 export const ProjectContext = createContext<ProjectContextValue | null>(null)
 
 const StateContextProvider = ({ children }: ProjectContextProviderProps) => {
-  // const user = useUser()
-  // const researcherID = user.data?.researcherID
-
   const [state, dispatch] = useReducer(projectReducer, stateInitialValue)
 
   const status = state.status
