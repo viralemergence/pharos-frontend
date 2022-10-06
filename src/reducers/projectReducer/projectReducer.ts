@@ -49,10 +49,12 @@ import removeStorageMessage, {
   RemoveStorageMessageAction,
 } from './actions/removeStorageMessage'
 import { defaultUserState } from 'components/Login/UserContextProvider'
+import setUser, { SetUserAction } from './actions/setUser'
 
 // reducer actions
 export enum ProjectActions {
   // SetProject,
+  SetUser,
   UpdateProjects,
   CreateProject,
   SetAppStateStatus,
@@ -109,6 +111,7 @@ export const stateInitialValue: AppState = {
 
 export type ProjectAction =
   // | SetProjectAction
+  | SetUserAction
   | SetAppStateStatusAction
   | UpdateProjectsAction
   | CreateProjectAction
@@ -149,6 +152,9 @@ const projectReducer = (state: AppState, action: ProjectAction) => {
     //   return setProjectStatus(state, action.payload)
     // case ProjectActions.SetProject:
     //   return setProject(state, action.payload)
+
+    case ProjectActions.SetUser:
+      return setUser(state, action.payload)
 
     case ProjectActions.SetAppStateStatus:
       return setAppStateStatus(state, action.payload)
