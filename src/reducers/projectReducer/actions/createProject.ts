@@ -1,5 +1,6 @@
 import { ActionFunction, ProjectActions } from '../projectReducer'
 import { APIRoute, Project, StorageMessageStatus } from '../types'
+import { nanoid } from 'nanoid'
 
 export interface CreateProjectAction {
   type: ProjectActions.CreateProject
@@ -13,21 +14,21 @@ const createProject: ActionFunction<Project> = (state, payload) => {
       ...state.projects,
       [payload.projectID]: payload,
     },
-    messageStack: [
+    messageStack: {
       ...state.messageStack,
-      {
+      [nanoid()]: {
         route: APIRoute.saveProject,
         target: 'local',
         status: StorageMessageStatus.Initial,
         data: payload,
       },
-      {
+      [nanoid()]: {
         route: APIRoute.saveProject,
         target: 'remote',
         status: StorageMessageStatus.Initial,
         data: payload,
       },
-    ],
+    },
   }
 }
 
