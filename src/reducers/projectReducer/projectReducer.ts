@@ -94,7 +94,7 @@ export const datasetInitialValue: Dataset = {
 export const stateInitialValue: AppState = {
   status: NodeStatus.Drifted,
   projects: {},
-  messageStack: [],
+  messageStack: {},
 }
 
 export type ProjectAction =

@@ -11,6 +11,8 @@ import projectReducer, {
 import localSaveProject from 'storage/local/localSaveProject'
 import localforage from 'localforage'
 import setAppStateStatus from './actions/setAppStateStatus'
+import useSyncMessageQueue from './hooks/useSyncMessageQueue'
+import synchronizeMessageQueue from 'storage/synchronizeMessageQueue'
 
 type ProjectContextValue = {
   state: AppState
@@ -26,24 +28,9 @@ export const ProjectContext = createContext<ProjectContextValue | null>(null)
 const StateContextProvider = ({ children }: ProjectContextProviderProps) => {
   const [state, dispatch] = useReducer(projectReducer, stateInitialValue)
 
-  const status = state.status
-  const messageStack = state.messageStack
-
-  console.log(`[STATUS]  AppStateStatus: ${status}`)
-
+  const { status, messageStack } = state
   useEffect(() => {
-    console.log(JSON.stringify(messageStack))
-    if (Object.keys(messageStack).length > 0) {
-      localforage.setItem('messageStack', messageStack)
-
-      for (const [key, message] of Object.entries(messageStack)) {
-        switch (message.route) {
-          case APIRoute.saveProject:
-            if (message.target == 'local') localSaveProject(message.data)
-            else console.log('need to handle server save project')
-        }
-      }
-    }
+    synchronizeMessageQueue(messageStack, status, dispatch)
   }, [messageStack, status])
 
   // // any time the user ID changes, update the Project automatically

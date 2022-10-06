@@ -36,6 +36,7 @@ export enum StorageMessageStatus {
   // need to have a success status.
   NetworkError,
   ServerError,
+  LocalStorageError,
   UnknownError,
 }
 
