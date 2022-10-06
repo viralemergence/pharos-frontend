@@ -41,12 +41,15 @@ import setDatasetReleaseStatus, {
 import setAppStateStatus, {
   SetAppStateStatusAction,
 } from './actions/setAppStateStatus'
+import createProject, { CreateProjectAction } from './actions/createProject'
 
 // reducer actions
 export enum ProjectActions {
   // SetProject,
   UpdateProjects,
+  CreateProject,
   SetAppStateStatus,
+
   // SetDatasetStatus,
   // SetDatasetReleaseStatus,
   // SetDatasetLastUpdated,
@@ -96,7 +99,7 @@ export const stateInitialValue: AppState = {
 
 export type ProjectAction =
   // | SetProjectAction
-  UpdateProjectsAction | SetAppStateStatusAction
+  SetAppStateStatusAction | UpdateProjectsAction | CreateProjectAction
 // state relative to server
 // | SetProjectStatusAction
 // // datsets
@@ -129,6 +132,8 @@ const projectReducer = (state: AppState, action: ProjectAction) => {
       return updateProjects(state, action.payload)
     case ProjectActions.SetAppStateStatus:
       return setAppStateStatus(state, action.payload)
+    case ProjectActions.CreateProject:
+      return createProject(state, action.payload)
 
     // case ProjectActions.CreateDataset:
     //   return createDataset(state, action.payload)

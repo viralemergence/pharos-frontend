@@ -58,6 +58,7 @@ const useProjects = () => {
 
       // if we're offline, we're done
       if (status === NodeStatus.Offline) return
+      console.log('API REQUEST')
 
       // otherwise, request and sync projects from remote
       const response = await fetch(
@@ -82,7 +83,13 @@ const useProjects = () => {
         return
       }
 
+      // dispatch({
+      //   type: ProjectActions.SetAppStateStatus,
+      //   payload: NodeStatus.Syncing,
+      // })
+
       const remoteProjectList = (await response.json()) as Project[]
+      console.log('After API REQUEST')
 
       if (remoteProjectList) {
         const remoteProjects = {} as { [key: string]: Project }
@@ -90,17 +97,14 @@ const useProjects = () => {
         for (const project of remoteProjectList)
           remoteProjects[project.projectID] = project
 
+        console.log('updating from remote')
+
         dispatch({
           type: ProjectActions.UpdateProjects,
           payload: {
             source: 'remote',
             projects: remoteProjects,
           },
-        })
-
-        dispatch({
-          type: ProjectActions.SetAppStateStatus,
-          payload: NodeStatus.Syncing,
         })
       }
     }

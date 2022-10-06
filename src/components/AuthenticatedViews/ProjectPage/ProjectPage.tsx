@@ -72,6 +72,8 @@ const ProjectPage = () => {
   const user = useUser()
   const project = useProject()
 
+  console.log({ project })
+
   const setModal = useModal()
 
   return (

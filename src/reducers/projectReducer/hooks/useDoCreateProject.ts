@@ -1,23 +1,21 @@
 import useUser from 'hooks/useUser'
 
 import { FormData } from 'components/AuthenticatedViews/PortfolioPage/CreateProjectForm/CreateProjectForm'
-import { ProjectPublishStatus, ProjectStatus } from '../types'
+import { NodeStatus, ProjectPublishStatus, ProjectStatus } from '../types'
 import generateID from 'utilities/generateID'
 import useDispatch from 'hooks/useDispatch'
 import { ProjectActions } from '../projectReducer'
-import useDoSaveProject from './api/useDoSaveProject'
-import { useNavigate } from '@reach/router'
+import { useNavigate } from 'react-router-dom'
 
 const useDoCreateProject = () => {
   const user = useUser()
-  const projectID = generateID.projectID()
-  const projectDispatch = useDispatch()
-  const doSaveProject = useDoSaveProject()
-
+  const dispatch = useDispatch()
   const navigate = useNavigate()
 
   const doCreateProject = async (formData: FormData) => {
     if (!user.data?.researcherID) throw new Error('Researcher ID undefined')
+
+    const projectID = generateID.projectID()
 
     const projectData = {
       ...formData,
@@ -35,12 +33,10 @@ const useDoCreateProject = () => {
       publishStatus: ProjectPublishStatus.Unpublished,
     }
 
-    projectDispatch({
-      type: ProjectActions.SetProject,
+    dispatch({
+      type: ProjectActions.CreateProject,
       payload: projectData,
     })
-
-    await doSaveProject()
 
     navigate(`/projects/${projectID}`)
   }

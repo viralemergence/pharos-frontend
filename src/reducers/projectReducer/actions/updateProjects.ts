@@ -15,6 +15,9 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
   state,
   payload
 ) => {
+  console.log('updateProjects')
+  console.log(JSON.stringify(state))
+
   const nextState = { ...state }
 
   for (const [key, nextProject] of Object.entries(payload.projects)) {

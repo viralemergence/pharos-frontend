@@ -60,7 +60,6 @@ export interface FormData {
 }
 
 const CreateProjectForm = () => {
-  const project = useProject()
   const doCreateProject = useDoCreateProject()
   const [formMessage, setFormMessage] = useState('')
   const theme = useTheme()
@@ -119,22 +118,22 @@ const CreateProjectForm = () => {
     })
   }
 
-  let buttonMessage
-  let submitDisabled
-  switch (true) {
-    case project.status === ProjectStatus.Saving:
-      buttonMessage = 'Saving...'
-      submitDisabled = true
-      break
-    case project.status === ProjectStatus.Saved:
-      buttonMessage = 'Saved'
-      submitDisabled = true
-      break
-    default:
-      buttonMessage = 'Create project'
-      submitDisabled = false
-      break
-  }
+  // let buttonMessage
+  // let submitDisabled
+  // switch (true) {
+  //   case project.status === ProjectStatus.Saving:
+  //     buttonMessage = 'Saving...'
+  //     submitDisabled = true
+  //     break
+  //   case project.status === ProjectStatus.Saved:
+  //     buttonMessage = 'Saved'
+  //     submitDisabled = true
+  //     break
+  //   default:
+  //     buttonMessage = 'Create project'
+  //     submitDisabled = false
+  //     break
+  // }
 
   return (
     <Section>
@@ -269,12 +268,8 @@ const CreateProjectForm = () => {
         </AddMoreButton>
       )}
       <p style={{ margin: 0, padding: 0 }}>{formMessage}</p>
-      <MintButton
-        disabled={submitDisabled}
-        onClick={handleSubmit}
-        style={{ marginLeft: 'auto' }}
-      >
-        {buttonMessage}
+      <MintButton onClick={handleSubmit} style={{ marginLeft: 'auto' }}>
+        Create Project
       </MintButton>
     </Section>
   )

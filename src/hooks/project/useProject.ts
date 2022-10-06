@@ -1,5 +1,6 @@
 import { useContext } from 'react'
 import { ProjectContext } from 'reducers/projectReducer/projectContext'
+import { projectInitialValue } from 'reducers/projectReducer/projectReducer'
 import useProjectID from './useProjectID'
 
 const useAppState = () => {

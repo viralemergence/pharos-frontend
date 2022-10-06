@@ -8,6 +8,7 @@ import projectReducer, {
 } from './projectReducer'
 
 import localSaveProject from 'storage/local/localSaveProject'
+import localforage from 'localforage'
 
 type ProjectContextValue = {
   state: AppState
@@ -25,11 +26,18 @@ const StateContextProvider = ({ children }: ProjectContextProviderProps) => {
 
   const status = state.status
   const storageQueue = state.storageQueue
+  const storageQueueLength = state.storageQueue.length.toString()
 
+  console.log(JSON.stringify(state))
+
+  console.log({ length: storageQueueLength })
   useEffect(() => {
     if (status === NodeStatus.Syncing) {
+      console.log(JSON.stringify(state))
+      console.log({ useEffectLength: storageQueueLength })
       console.log('storageQueue needs to be handled')
       console.log({ queue: [...storageQueue] })
+
       for (const message of storageQueue) {
         switch (message.route) {
           case APIRoute.saveProject:
@@ -38,7 +46,7 @@ const StateContextProvider = ({ children }: ProjectContextProviderProps) => {
         }
       }
     }
-  }, [storageQueue, status])
+  }, [state, storageQueue, status, storageQueueLength])
 
   // // any time the user ID changes, update the Project automatically
   // useEffect(() => {
