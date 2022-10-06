@@ -1,58 +1,46 @@
 import React, { useEffect, useState } from 'react'
 
 import ListTable, { HeaderRow, RowLink } from 'components/ListTable/ListTable'
-import useProjectDispatch from 'hooks/project/useProjectDispatch'
+import useDispatch from 'hooks/project/useProjectDispatch'
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 import { Project } from 'reducers/projectReducer/types'
 import listProjects from 'api/listProjects'
-import useUser from 'hooks/useUser'
-
-enum Status {
-  'Initial',
-  'Loading',
-  'Loaded',
-  'Error',
-}
-
-interface Projects {
-  status: Status
-  projects?: Project[]
-}
+import localforage from 'localforage'
+import useAppState from 'hooks/project/useProject'
+import useProjects from 'hooks/project/useProjects'
 
 const ProjectsTable = () => {
-  const projectDispatch = useProjectDispatch()
-  const user = useUser()
+  const projects = useProjects()
 
-  const [projects, setProjects] = useState<Projects>({ status: Status.Initial })
+  // useEffect(() => {
+  //   const getProjectList = async (researcherID?: string) => {
+  //     if (!researcherID) return
 
-  useEffect(() => {
-    const getProjectList = async (researcherID?: string) => {
-      if (!researcherID) return
+  //     const localProjects = (await localforage.getItem('projects')) as Project[]
 
-      setProjects({ status: Status.Loaded, projects: [] })
+  //     const projects = await listProjects(researcherID)
 
-      const projects = await listProjects(researcherID)
+  //     if (projects) setProjects({ status: Status.Loaded, projects })
+  //     else setProjects({ status: Status.Error })
+  //   }
 
-      if (projects) setProjects({ status: Status.Loaded, projects })
-      else setProjects({ status: Status.Error })
-    }
+  //   const researcherID = user.data?.researcherID
 
-    const researcherID = user.data?.researcherID
+  //   getProjectList(researcherID)
+  // }, [user])
 
-    getProjectList(researcherID)
-  }, [user])
+  // const handleClick = (project: Project) => {
+  //   console.log({ project })
 
-  const handleClick = (project: Project) => {
-    console.log({ project })
-    projectDispatch({
-      type: ProjectActions.SetProject,
-      payload: project,
-    })
-  }
+  //   dispatch({
+  //     type: ProjectActions.SetProject,
+  //     payload: project,
+  //   })
+  // }
 
   const sorted =
-    projects.projects &&
-    Object.values(projects.projects).sort(
+    projects &&
+    Object.values(projects).sort(
       (a, b) =>
         new Date(b.lastUpdated ?? '').getTime() -
         new Date(a.lastUpdated ?? '').getTime()
@@ -68,12 +56,10 @@ const ProjectsTable = () => {
         <div>Last updated</div>
         <div>Project status</div>
       </HeaderRow>
-      {projects.status === Status.Loaded &&
-        sorted &&
+      {sorted &&
         sorted.map(project => (
           <RowLink
             key={project.projectID}
-            onClick={() => handleClick(project)}
             to={`/projects/${project.projectID}`}
           >
             <div>{project.name}</div>

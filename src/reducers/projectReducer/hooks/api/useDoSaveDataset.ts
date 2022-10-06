@@ -1,13 +1,13 @@
 import saveDataset from 'api/saveDataset'
 import useDataset from 'hooks/dataset/useDataset'
 import useDatasetID from 'hooks/dataset/useDatasetID'
-import useProjectDispatch from 'hooks/project/useProjectDispatch'
+import useDispatch from 'hooks/project/useProjectDispatch'
 import useUser from 'hooks/useUser'
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 import { Dataset, DatasetStatus } from 'reducers/projectReducer/types'
 
 const useDoSaveDataset = () => {
-  const projectDispatch = useProjectDispatch()
+  const projectDispatch = useDispatch()
   const user = useUser()
 
   const doSaveDataset = async (dataset: Dataset) => {

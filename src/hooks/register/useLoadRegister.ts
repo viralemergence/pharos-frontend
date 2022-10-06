@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom'
 
 import useUser from 'hooks/useUser'
 import useDataset from 'hooks/dataset/useDataset'
-import useProject from 'hooks/project/useProject'
-import useProjectDispatch from 'hooks/project/useProjectDispatch'
+import useState from 'hooks/project/useProject'
+import useDispatch from 'hooks/project/useProjectDispatch'
 
 import {
   DatasetStatus,
@@ -19,8 +19,8 @@ const useLoadRegister = () => {
   const user = useUser()
   const dataset = useDataset()
   const navigate = useNavigate()
-  const project = useProject()
-  const projectDispatch = useProjectDispatch()
+  const project = useState()
+  const projectDispatch = useDispatch()
 
   const { datasetID, register, registerStatus } = dataset
 

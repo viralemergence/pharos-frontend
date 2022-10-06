@@ -1,14 +1,14 @@
 import saveProject from 'api/saveProject'
-import useProject from 'hooks/project/useProject'
-import useProjectDispatch from 'hooks/project/useProjectDispatch'
+import useState from 'hooks/project/useProject'
+import useDispatch from 'hooks/project/useProjectDispatch'
 import useUser from 'hooks/useUser'
 import { ProjectActions } from '../../projectReducer'
 import { ProjectStatus } from '../../types'
 
 const useDoSaveProject = () => {
   const user = useUser()
-  const project = useProject()
-  const projectDispatch = useProjectDispatch()
+  const project = useState()
+  const projectDispatch = useDispatch()
 
   const doSaveProject = async () => {
     console.log('Do Action: Save Project')

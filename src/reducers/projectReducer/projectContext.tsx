@@ -1,161 +1,174 @@
 import React, { createContext, useEffect, useReducer, useState } from 'react'
 
-import { useParams } from 'react-router-dom'
+// import { useParams } from 'react-router-dom'
 
-import { Project, ProjectStatus } from './types'
+import { Project, ProjectStatus, AppState, NodeStatus, APIRoute } from './types'
 
 import projectReducer, {
   ProjectAction,
-  ProjectActions,
-  projectInitialValue,
+  // ProjectActions,
+  // projectInitialValue,
+  stateInitialValue,
 } from './projectReducer'
 
 import useUser from 'hooks/useUser'
-import listDatasets from 'api/listDatasets'
-import listProjects from 'api/listProjects'
+import localSaveProject from 'storage/local/localSaveProject'
+// import listDatasets from 'api/listDatasets'
+// import listProjects from 'api/listProjects'
 
 type ProjectContextValue = {
-  project: Project
-  projectDispatch: React.Dispatch<ProjectAction>
+  state: AppState
+  dispatch: React.Dispatch<ProjectAction>
 }
 
 interface ProjectContextProviderProps {
   children: React.ReactNode
 }
 
-enum ProjectsObjStatus {
-  'Initial',
-  'Loading',
-  'Loaded',
-  'Error',
-}
-
 export const ProjectContext = createContext<ProjectContextValue | null>(null)
 
-const ProjectContextProvider = ({ children }: ProjectContextProviderProps) => {
-  const user = useUser()
-  const researcherID = user.data?.researcherID
-  const { projectID } = useParams()
+const StateContextProvider = ({ children }: ProjectContextProviderProps) => {
+  // const user = useUser()
+  // const researcherID = user.data?.researcherID
 
-  const [projectsObj, setProjectsObj] = useState<{ [key: string]: Project }>({})
+  const [state, dispatch] = useReducer(projectReducer, stateInitialValue)
 
-  const [projectsObjStatus, setProjectsObjStatus] = useState(
-    ProjectsObjStatus.Initial
-  )
+  const status = state.status
+  const storageQueue = state.storageQueue
 
-  const [project, projectDispatch] = useReducer(
-    projectReducer,
-    projectInitialValue
-  )
-
-  // any time the user ID changes, update the Project automatically
   useEffect(() => {
-    const getDatasetList = async () => {
-      if (!researcherID) return null
-
-      const nextProjects = projectsObj
-
-      if (
-        projectsObjStatus === ProjectsObjStatus.Initial &&
-        Object.keys(nextProjects).length === 0
-      ) {
-        if (user.data?.projectIDs && user.data.projectIDs.length > 0) {
-          setProjectsObjStatus(ProjectsObjStatus.Loading)
-          console.log('API CALL: listProjects')
-          const response = await listProjects(researcherID)
-          if (response) {
-            setProjectsObjStatus(ProjectsObjStatus.Loaded)
-            for (const project of response) {
-              nextProjects[project.projectID] = project
-            }
-            setProjectsObj({ ...nextProjects })
-          }
+    if (status === NodeStatus.Syncing) {
+      console.log('storageQueue needs to be handled')
+      console.log({ queue: [...storageQueue] })
+      for (const message of storageQueue) {
+        switch (message.route) {
+          case APIRoute.saveProject:
+            if (message.target == 'local') localSaveProject(message.data)
+            else console.log('need to handle server save project')
         }
       }
-
-      if (!projectID) return null
-
-      if (
-        !nextProjects[projectID] &&
-        projectsObjStatus !== ProjectsObjStatus.Loading
-      ) {
-        if (user.data?.projectIDs && user.data.projectIDs.length > 0) {
-          setProjectsObjStatus(ProjectsObjStatus.Loading)
-          console.log('API CALL: listProjects')
-          const response = await listProjects(researcherID)
-          if (response) {
-            setProjectsObjStatus(ProjectsObjStatus.Loaded)
-            for (const project of response) {
-              nextProjects[project.projectID] = project
-            }
-            setProjectsObj({ ...nextProjects })
-          }
-        }
-      }
-
-      projectDispatch({
-        type: ProjectActions.SetProject,
-        payload: { ...nextProjects[projectID] },
-      })
-
-      // set status to loading
-      projectDispatch({
-        type: ProjectActions.SetProjectStatus,
-        payload: ProjectStatus.Loading,
-      })
-
-      // api request
-      console.log('API CALL: list datasets')
-      const datasets = await listDatasets(researcherID, projectID)
-      console.log(project.status)
-
-      if (!datasets) {
-        projectDispatch({
-          type: ProjectActions.SetProjectStatus,
-          payload: ProjectStatus.Error,
-        })
-        return null
-      }
-
-      projectDispatch({
-        type: ProjectActions.SetProjectStatus,
-        payload: ProjectStatus.Loaded,
-      })
-
-      if (Object.keys(datasets).length === 0) return null
-
-      // object to contain the datasets
-      const projectObj: Project = {
-        ...(projectsObj[projectID] ?? projectInitialValue),
-      }
-
-      projectObj.datasets = datasets
-
-      projectDispatch({
-        type: ProjectActions.SetProject,
-        payload: { ...projectObj, status: ProjectStatus.Loaded },
-      })
     }
+  }, [storageQueue, status])
 
-    if (
-      project.status !== ProjectStatus.Loaded &&
-      project.status !== ProjectStatus.Loading
-    )
-      getDatasetList()
-  }, [
-    project.status,
-    researcherID,
-    projectID,
-    projectsObj,
-    projectsObjStatus,
-    user.data?.projectIDs,
-  ])
+  // // any time the user ID changes, update the Project automatically
+  // useEffect(() => {
+  //   if (!researcherID) return null
+
+  //   const getDatasetList = async () => {
+  //     if (!researcherID) return null
+
+  //     const nextProjects = projectsObj
+
+  //     if (
+  //       projectsObjStatus === ProjectsObjStatus.Initial &&
+  //       Object.keys(nextProjects).length === 0
+  //     ) {
+  //       if (user.data?.projectIDs && user.data.projectIDs.length > 0) {
+  //         setProjectsObjStatus(ProjectsObjStatus.Loading)
+  //         console.log('API CALL: listProjects')
+  //         const response = await listProjects(researcherID)
+  //         if (response) {
+  //           setProjectsObjStatus(ProjectsObjStatus.Loaded)
+  //           for (const project of response) {
+  //             nextProjects[project.projectID] = project
+  //           }
+  //           setProjectsObj({ ...nextProjects })
+  //         }
+  //       }
+  //     }
+
+  //     if (!projectID) return null
+
+  //     if (
+  //       !nextProjects[projectID] &&
+  //       projectsObjStatus !== ProjectsObjStatus.Loading
+  //     ) {
+  //       if (user.data?.projectIDs && user.data.projectIDs.length > 0) {
+  //         setProjectsObjStatus(ProjectsObjStatus.Loading)
+  //         console.log('API CALL: listProjects')
+  //         const response = await listProjects(researcherID)
+  //         if (response) {
+  //           setProjectsObjStatus(ProjectsObjStatus.Loaded)
+  //           for (const project of response) {
+  //             nextProjects[project.projectID] = project
+  //           }
+  //           setProjectsObj({ ...nextProjects })
+  //         }
+  //       }
+  //     }
+
+  //     dispatch({
+  //       type: ProjectActions.SetProject,
+  //       payload: { projectID, project: { ...nextProjects[projectID] } },
+  //     })
+
+  //     // set status to loading
+  //     dispatch({
+  //       type: ProjectActions.SetProjectStatus,
+  //       payload: {
+  //         projectID,
+  //         status: ProjectStatus.Loading,
+  //       },
+  //     })
+
+  //     // api request
+  //     console.log('API CALL: list datasets')
+  //     const datasets = await listDatasets(researcherID, projectID)
+  //     console.log(project.status)
+
+  //     if (!datasets) {
+  //       dispatch({
+  //         type: ProjectActions.SetProjectStatus,
+  //         payload: {
+  //           projectID,
+  //           status: ProjectStatus.Error,
+  //         },
+  //       })
+  //       return null
+  //     }
+
+  //     dispatch({
+  //       type: ProjectActions.SetProjectStatus,
+  //       payload: {
+  //         projectID,
+  //         status: ProjectStatus.Loaded,
+  //       },
+  //     })
+
+  //     if (Object.keys(datasets).length === 0) return null
+
+  //     // object to contain the datasets
+  //     const projectObj: Project = {
+  //       ...(projectsObj[projectID] ?? projectInitialValue),
+  //     }
+
+  //     projectObj.datasets = datasets
+
+  //     dispatch({
+  //       type: ProjectActions.SetProject,
+  //       payload: { ...projectObj, status: ProjectStatus.Loaded },
+  //     })
+  //   }
+
+  //   if (
+  //     project.status !== ProjectStatus.Loaded &&
+  //     project.status !== ProjectStatus.Loading
+  //   )
+  //     getDatasetList()
+  // }, [
+  //   project.status,
+  //   researcherID,
+  //   projectID,
+  //   projectsObj,
+  //   projectsObjStatus,
+  //   user.data?.projectIDs,
+  // ])
 
   return (
-    <ProjectContext.Provider value={{ project, projectDispatch }}>
+    <ProjectContext.Provider value={{ state, dispatch }}>
       {children}
     </ProjectContext.Provider>
   )
 }
 
-export default ProjectContextProvider
+export default StateContextProvider

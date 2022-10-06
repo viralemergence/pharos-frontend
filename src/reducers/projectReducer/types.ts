@@ -1,15 +1,29 @@
-export interface State {
-  project: Project
-  apiQueue: APIMessage[]
+export enum NodeStatus {
+  Drifted = 'Drifted',
+  Loading = 'Loading',
+  Syncing = 'Syncing',
+  Synced = 'Synced',
+  Offline = 'Offline',
 }
 
-export interface APIMessage {
+export interface AppState {
+  status: NodeStatus
+  projects: { [key: string]: Project }
+  storageQueue: StorageMessage[]
+}
+
+export enum APIRoute {
+  saveProject = 'save-project',
+}
+
+export interface StorageMessage {
   route: string
-  status: APIMessageStatus
-  data: { [key: string]: unknown }
+  target: 'local' | 'remote'
+  status: StorageMessageStatus
+  data: Project
 }
 
-export enum APIMessageStatus {
+export enum StorageMessageStatus {
   // when the api message is created
   Initial,
 

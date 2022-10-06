@@ -1,15 +1,18 @@
 import {
+  AppState,
   Dataset,
   DatasetStatus,
   Project,
   ProjectPublishStatus,
   ProjectStatus,
+  NodeStatus,
 } from './types'
 
 import setActiveVersion, {
   SetActiveVersionAction,
 } from './actions/setActiveVersion'
-import setProject, { SetProjectAction } from './actions/setProject'
+// import setProject, { SetProjectAction } from './actions/setProject'
+import updateProjects, { UpdateProjectsAction } from './actions/updateProjects'
 import setProjectStatus, {
   SetProjectStatusAction,
 } from './actions/setProjectStatus'
@@ -35,57 +38,34 @@ import setDatasetLastUpdated, {
 import setDatasetReleaseStatus, {
   SetDatasetReleaseStatusAction,
 } from './actions/setDatasetReleaseStatus'
+import setAppStateStatus, {
+  SetAppStateStatusAction,
+} from './actions/setAppStateStatus'
 
 // reducer actions
 export enum ProjectActions {
-  // datasets
-  SetProject,
-  SetDatasetStatus,
-  SetDatasetReleaseStatus,
-  SetDatasetLastUpdated,
-  // versions
+  // SetProject,
+  UpdateProjects,
+  SetAppStateStatus,
+  // SetDatasetStatus,
+  // SetDatasetReleaseStatus,
+  // SetDatasetLastUpdated,
 
-  // allows the user to select past versions
-  SetActiveVersion,
-  SetVersions,
+  // SetActiveVersion,
+  // SetVersions,
 
-  // create new dataset this is where we set up
-  // the register and prepare it for records
-  CreateDataset,
+  // CreateDataset,
 
-  // set the status of the project
-  // relative to the server
-  SetProjectStatus,
+  // SetProjectStatus,
 
-  // add a new project to the portfolio
-  // skip for now, we need to decide if
-  // that is within the scope of this reducer
-  // CreateProject,
+  // SetRegisterStatus,
 
-  // set status of the register
-  // this is called in the process of handling
-  // the network request to the server
-  SetRegisterStatus,
+  // CreateVersion,
 
-  // create new version
-  // called when the user presses the save button
-  CreateVersion,
-
-  // actions to implement
-
-  // if the datapoint doesn't exist, create it
-
-  // if the datapoint exists, and the
-  // current version is unsaved, update
-  // the value in the current version
-
-  // if the current version is saved
-  // update the value as one version
-  // number higher
-  SetDatapoint,
-  SetRegisterKey,
-  ReplaceRegister,
-  BatchSetDatapoint,
+  // SetDatapoint,
+  // SetRegisterKey,
+  // ReplaceRegister,
+  // BatchSetDatapoint,
 }
 
 export const projectInitialValue: Project = {
@@ -108,57 +88,70 @@ export const datasetInitialValue: Dataset = {
   register: {},
 }
 
+export const stateInitialValue: AppState = {
+  status: NodeStatus.Drifted,
+  projects: {},
+  storageQueue: [],
+}
+
 export type ProjectAction =
-  | SetProjectAction
-  // state relative to server
-  | SetProjectStatusAction
-  // datsets
-  | CreateDatasetAction
-  | SetDatasetStatusAction
-  | SetDatasetReleaseStatusAction
-  | SetDatasetLastUpdatedAction
-  // register
-  | SetRegisterStatusAction
-  | ReplaceRegisterAction
-  // versions
-  | CreateVersionAction
-  | SetActiveVersionAction
-  | SetVersionsAction
-  // datapoint
-  | SetDatapointAction
-  | BatchSetDatapointAction
+  // | SetProjectAction
+  UpdateProjectsAction | SetAppStateStatusAction
+// state relative to server
+// | SetProjectStatusAction
+// // datsets
+// | CreateDatasetAction
+// | SetDatasetStatusAction
+// | SetDatasetReleaseStatusAction
+// | SetDatasetLastUpdatedAction
+// // register
+// | SetRegisterStatusAction
+// | ReplaceRegisterAction
+// // versions
+// | CreateVersionAction
+// | SetActiveVersionAction
+// | SetVersionsAction
+// // datapoint
+// | SetDatapointAction
+// | BatchSetDatapointAction
 
-export type ActionFunction<T = void> = (state: Project, payload: T) => Project
+export type ActionFunction<T = void> = (state: AppState, payload: T) => AppState
 
-const projectReducer = (state: Project, action: ProjectAction) => {
+const projectReducer = (state: AppState, action: ProjectAction) => {
   switch (action.type) {
     // datsets
-    case ProjectActions.SetProjectStatus:
-      return setProjectStatus(state, action.payload)
-    case ProjectActions.SetProject:
-      return setProject(state, action.payload)
-    case ProjectActions.CreateDataset:
-      return createDataset(state, action.payload)
-    case ProjectActions.SetDatasetStatus:
-      return setDatasetStatus(state, action.payload)
-    case ProjectActions.SetDatasetReleaseStatus:
-      return setDatasetReleaseStatus(state, action.payload)
-    case ProjectActions.SetDatasetLastUpdated:
-      return setDatasetLastUpdated(state, action.payload)
-    case ProjectActions.CreateVersion:
-      return createVersion(state, action.payload)
-    case ProjectActions.SetVersions:
-      return setVersions(state, action.payload)
-    case ProjectActions.SetRegisterStatus:
-      return setRegisterStatus(state, action.payload)
-    case ProjectActions.ReplaceRegister:
-      return replaceRegister(state, action.payload)
-    case ProjectActions.SetActiveVersion:
-      return setActiveVersion(state, action.payload)
-    case ProjectActions.SetDatapoint:
-      return setDatapoint(state, action.payload)
-    case ProjectActions.BatchSetDatapoint:
-      return batchSetDatapoint(state, action.payload)
+    // case ProjectActions.SetProjectStatus:
+    //   return setProjectStatus(state, action.payload)
+    // case ProjectActions.SetProject:
+    //   return setProject(state, action.payload)
+
+    case ProjectActions.UpdateProjects:
+      return updateProjects(state, action.payload)
+    case ProjectActions.SetAppStateStatus:
+      return setAppStateStatus(state, action.payload)
+
+    // case ProjectActions.CreateDataset:
+    //   return createDataset(state, action.payload)
+    // case ProjectActions.SetDatasetStatus:
+    //   return setDatasetStatus(state, action.payload)
+    // case ProjectActions.SetDatasetReleaseStatus:
+    //   return setDatasetReleaseStatus(state, action.payload)
+    // case ProjectActions.SetDatasetLastUpdated:
+    //   return setDatasetLastUpdated(state, action.payload)
+    // case ProjectActions.CreateVersion:
+    //   return createVersion(state, action.payload)
+    // case ProjectActions.SetVersions:
+    //   return setVersions(state, action.payload)
+    // case ProjectActions.SetRegisterStatus:
+    //   return setRegisterStatus(state, action.payload)
+    // case ProjectActions.ReplaceRegister:
+    //   return replaceRegister(state, action.payload)
+    // case ProjectActions.SetActiveVersion:
+    //   return setActiveVersion(state, action.payload)
+    // case ProjectActions.SetDatapoint:
+    //   return setDatapoint(state, action.payload)
+    // case ProjectActions.BatchSetDatapoint:
+    //   return batchSetDatapoint(state, action.payload)
     default:
       return state
   }

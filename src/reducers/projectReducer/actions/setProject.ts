@@ -8,7 +8,10 @@ export interface SetProjectAction {
 
 const setProject: ActionFunction<Project> = (state, payload) => ({
   ...state,
-  ...payload,
+  projects: {
+    ...state.projects,
+    [payload.projectID]: payload,
+  },
 })
 
 export default setProject

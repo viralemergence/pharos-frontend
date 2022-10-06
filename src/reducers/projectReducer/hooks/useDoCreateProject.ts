@@ -3,7 +3,7 @@ import useUser from 'hooks/useUser'
 import { FormData } from 'components/AuthenticatedViews/PortfolioPage/CreateProjectForm/CreateProjectForm'
 import { ProjectPublishStatus, ProjectStatus } from '../types'
 import generateID from 'utilities/generateID'
-import useProjectDispatch from 'hooks/project/useProjectDispatch'
+import useDispatch from 'hooks/project/useProjectDispatch'
 import { ProjectActions } from '../projectReducer'
 import useDoSaveProject from './api/useDoSaveProject'
 import { useNavigate } from '@reach/router'
@@ -11,7 +11,7 @@ import { useNavigate } from '@reach/router'
 const useDoCreateProject = () => {
   const user = useUser()
   const projectID = generateID.projectID()
-  const projectDispatch = useProjectDispatch()
+  const projectDispatch = useDispatch()
   const doSaveProject = useDoSaveProject()
 
   const navigate = useNavigate()

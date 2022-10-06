@@ -1,14 +1,14 @@
 import saveRegister from 'api/saveRegister'
 import useDataset from 'hooks/dataset/useDataset'
 import useDatasetID from 'hooks/dataset/useDatasetID'
-import useProjectDispatch from 'hooks/project/useProjectDispatch'
+import useDispatch from 'hooks/project/useProjectDispatch'
 import useUser from 'hooks/useUser'
 import { useEffect } from 'react'
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 import { RegisterStatus } from 'reducers/projectReducer/types'
 
 const useAutosaveRegister = () => {
-  const projectDispatch = useProjectDispatch()
+  const projectDispatch = useDispatch()
   const datasetID = useDatasetID()
   const dataset = useDataset()
   const user = useUser()

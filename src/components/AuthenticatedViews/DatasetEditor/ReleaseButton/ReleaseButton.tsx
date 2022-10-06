@@ -11,13 +11,13 @@ import MintButton from 'components/ui/MintButton'
 import useUser from 'hooks/useUser'
 import useDatasetID from 'hooks/dataset/useDatasetID'
 import useDataset from 'hooks/dataset/useDataset'
-import useProjectDispatch from 'hooks/project/useProjectDispatch'
+import useDispatch from 'hooks/project/useProjectDispatch'
 import getTimestamp from 'utilities/getTimestamp'
 
 const ReleaseButton = () => {
   const user = useUser()
   const datasetID = useDatasetID()
-  const projectDispatch = useProjectDispatch()
+  const projectDispatch = useDispatch()
 
   const dataset = useDataset()
 

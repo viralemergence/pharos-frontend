@@ -3,7 +3,7 @@ import MintButton from 'components/ui/MintButton'
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 
 import useDatasetID from 'hooks/dataset/useDatasetID'
-import useProjectDispatch from 'hooks/project/useProjectDispatch'
+import useDispatch from 'hooks/project/useProjectDispatch'
 import useModal from 'hooks/useModal/useModal'
 
 interface IDMustBeUniqueProps {
@@ -37,7 +37,7 @@ export const OnlyEditMostRecent = ({
 }: OnlyEditMostRecentProps) => {
   const datasetID = useDatasetID()
   const setModal = useModal()
-  const projectDispatch = useProjectDispatch()
+  const projectDispatch = useDispatch()
 
   return (
     <>

@@ -1,5 +1,5 @@
 import useDatasetID from 'hooks/dataset/useDatasetID'
-import useProjectDispatch from 'hooks/project/useProjectDispatch'
+import useDispatch from 'hooks/project/useProjectDispatch'
 import useUser from 'hooks/useUser'
 import getTimestamp from 'utilities/getTimestamp'
 import { ProjectActions } from '../projectReducer'
@@ -13,7 +13,7 @@ interface DoSetDatapointProps {
 }
 
 const useDoSetDatapoint = () => {
-  const projectDispatch = useProjectDispatch()
+  const projectDispatch = useDispatch()
   const datasetID = useDatasetID()
   const user = useUser()
 

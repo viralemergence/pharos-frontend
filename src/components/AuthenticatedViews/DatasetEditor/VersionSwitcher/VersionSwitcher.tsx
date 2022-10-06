@@ -4,7 +4,7 @@ import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 
 import useDataset from 'hooks/dataset/useDataset'
 import useDatasetID from 'hooks/dataset/useDatasetID'
-import useProjectDispatch from 'hooks/project/useProjectDispatch'
+import useDispatch from 'hooks/project/useProjectDispatch'
 
 const Select = styled.select`
   ${({ theme }) => theme.smallParagraph};
@@ -18,7 +18,7 @@ const Select = styled.select`
 const VersionSwitcher = () => {
   const dataset = useDataset()
   const datasetID = useDatasetID()
-  const projectDispatch = useProjectDispatch()
+  const projectDispatch = useDispatch()
 
   if (!dataset || !dataset.versions || dataset.versions.length < 2) return <></>
 

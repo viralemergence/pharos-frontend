@@ -11,7 +11,7 @@ import RequireAuth from 'components/AuthenticatedViews/RequireAuth'
 import DatasetEditor from 'components/AuthenticatedViews/DatasetEditor/DatasetEditor'
 import ProjectPage from 'components/AuthenticatedViews/ProjectPage/ProjectPage'
 
-import ProjectContextProvider from 'reducers/projectReducer/projectContext'
+import StateContextProvider from 'reducers/projectReducer/projectContext'
 import ProjectList from 'components/AuthenticatedViews/PortfolioPage/PortfolioPage'
 import ModalMessageProvider from 'hooks/useModal/ModalMessageProvider'
 
@@ -23,49 +23,41 @@ const App = (): JSX.Element => {
     <Providers>
       <CMS.SEO />
       <React.StrictMode>
-        <HashRouter>
-          <NavBar />
-          <Routes>
-            <Route path={'/login'} element={<Login />} />
-            <Route
-              path={'/projects/:projectID/:datasetID'}
-              element={
-                <RequireAuth>
-                  <ProjectContextProvider>
-                    <ModalMessageProvider>
+        <StateContextProvider>
+          <ModalMessageProvider>
+            <HashRouter>
+              <NavBar />
+              <Routes>
+                <Route path={'/login'} element={<Login />} />
+                <Route
+                  path={'/projects/:projectID/:datasetID'}
+                  element={
+                    <RequireAuth>
                       <DatasetEditor />
-                    </ModalMessageProvider>
-                  </ProjectContextProvider>
-                </RequireAuth>
-              }
-            />
-            <Route
-              path={'/projects/:projectID'}
-              element={
-                <RequireAuth>
-                  <ProjectContextProvider>
-                    <ModalMessageProvider>
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path={'/projects/:projectID'}
+                  element={
+                    <RequireAuth>
                       <ProjectPage />
-                    </ModalMessageProvider>
-                  </ProjectContextProvider>
-                </RequireAuth>
-              }
-            />
-            <Route
-              path={'/projects'}
-              element={
-                <RequireAuth>
-                  <ProjectContextProvider>
-                    <ModalMessageProvider>
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path={'/projects'}
+                  element={
+                    <RequireAuth>
                       <ProjectList />
-                    </ModalMessageProvider>
-                  </ProjectContextProvider>
-                </RequireAuth>
-              }
-            />
-            <Route path={`/`} element={<Navigate to={`/projects`} />} />
-          </Routes>
-        </HashRouter>
+                    </RequireAuth>
+                  }
+                />
+                <Route path={`/`} element={<Navigate to={`/projects`} />} />
+              </Routes>
+            </HashRouter>
+          </ModalMessageProvider>
+        </StateContextProvider>
       </React.StrictMode>
     </Providers>
   )
