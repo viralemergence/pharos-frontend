@@ -13,6 +13,8 @@ import MintButton from 'components/ui/MintButton'
 import Label from 'components/ui/InputLabel'
 import Input from 'components/ui/Input'
 import Main from 'components/layout/Main'
+import useDispatch from 'hooks/useDispatch'
+import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 
 const Container = styled(Main)`
   max-width: 505px;
@@ -41,6 +43,8 @@ const Login = () => {
   const [researcherID, setResearcherID] = useState('')
   const user = useUser()
 
+  const dispatch = useDispatch()
+
   const firstInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -58,8 +62,10 @@ const Login = () => {
     // authenticate details
     const user = await authenticate(researcherID)
 
-    // store in global user context
-    setUser(user)
+    dispatch({
+      type: ProjectActions.SetUser,
+      payload: user,
+    })
 
     setSubmitting(false)
 
