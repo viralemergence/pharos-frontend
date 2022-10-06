@@ -34,6 +34,8 @@ const synchronizeMessageQueue = async (
       }
     }
   }
+
+  localforage.setItem('messageStack', messageStack)
 }
 
 export default synchronizeMessageQueue
