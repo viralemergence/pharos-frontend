@@ -48,6 +48,7 @@ import setStorageMessageStatus, {
 import removeStorageMessage, {
   RemoveStorageMessageAction,
 } from './actions/removeStorageMessage'
+import { defaultUserState } from 'components/Login/UserContextProvider'
 
 // reducer actions
 export enum ProjectActions {
@@ -101,6 +102,7 @@ export const datasetInitialValue: Dataset = {
 
 export const stateInitialValue: AppState = {
   status: NodeStatus.Drifted,
+  user: defaultUserState,
   projects: {},
   messageStack: {},
 }
@@ -148,18 +150,20 @@ const projectReducer = (state: AppState, action: ProjectAction) => {
     // case ProjectActions.SetProject:
     //   return setProject(state, action.payload)
 
+    case ProjectActions.SetAppStateStatus:
+      return setAppStateStatus(state, action.payload)
+
     // storage message actions
     case ProjectActions.SetStorageMessageStatus:
       return setStorageMessageStatus(state, action.payload)
     case ProjectActions.RemoveStorageMessage:
       return removeStorageMessage(state, action.payload)
 
-    case ProjectActions.UpdateProjects:
-      return updateProjects(state, action.payload)
-    case ProjectActions.SetAppStateStatus:
-      return setAppStateStatus(state, action.payload)
+    // project actions
     case ProjectActions.CreateProject:
       return createProject(state, action.payload)
+    case ProjectActions.UpdateProjects:
+      return updateProjects(state, action.payload)
 
     // case ProjectActions.CreateDataset:
     //   return createDataset(state, action.payload)
