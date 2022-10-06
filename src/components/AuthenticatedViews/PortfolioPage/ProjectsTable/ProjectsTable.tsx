@@ -1,42 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 import ListTable, { HeaderRow, RowLink } from 'components/ListTable/ListTable'
-import useDispatch from 'hooks/project/useProjectDispatch'
-import { ProjectActions } from 'reducers/projectReducer/projectReducer'
-import { Project } from 'reducers/projectReducer/types'
-import listProjects from 'api/listProjects'
-import localforage from 'localforage'
-import useAppState from 'hooks/project/useProject'
+
 import useProjects from 'hooks/project/useProjects'
 
 const ProjectsTable = () => {
   const projects = useProjects()
-
-  // useEffect(() => {
-  //   const getProjectList = async (researcherID?: string) => {
-  //     if (!researcherID) return
-
-  //     const localProjects = (await localforage.getItem('projects')) as Project[]
-
-  //     const projects = await listProjects(researcherID)
-
-  //     if (projects) setProjects({ status: Status.Loaded, projects })
-  //     else setProjects({ status: Status.Error })
-  //   }
-
-  //   const researcherID = user.data?.researcherID
-
-  //   getProjectList(researcherID)
-  // }, [user])
-
-  // const handleClick = (project: Project) => {
-  //   console.log({ project })
-
-  //   dispatch({
-  //     type: ProjectActions.SetProject,
-  //     payload: project,
-  //   })
-  // }
 
   const sorted =
     projects &&
