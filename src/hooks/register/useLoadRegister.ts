@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import useUser from 'hooks/useUser'
 import useDataset from 'hooks/dataset/useDataset'
 import useState from 'hooks/project/useProject'
-import useDispatch from 'hooks/project/useProjectDispatch'
+import useDispatch from 'hooks/useDispatch'
 
 import {
   DatasetStatus,

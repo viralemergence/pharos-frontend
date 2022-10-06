@@ -1,6 +1,6 @@
 import saveProject from 'api/saveProject'
 import useState from 'hooks/project/useProject'
-import useDispatch from 'hooks/project/useProjectDispatch'
+import useDispatch from 'hooks/useDispatch'
 import useUser from 'hooks/useUser'
 import { ProjectActions } from '../../projectReducer'
 import { ProjectStatus } from '../../types'

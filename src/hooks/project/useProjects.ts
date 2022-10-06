@@ -7,7 +7,7 @@ import { NodeStatus, Project } from 'reducers/projectReducer/types'
 
 import useUser from 'hooks/useUser'
 import useAppState from '../useAppState'
-import useDispatch from './useProjectDispatch'
+import useDispatch from '../useDispatch'
 
 const useProjects = () => {
   const user = useUser()

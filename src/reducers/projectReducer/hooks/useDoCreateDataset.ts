@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 
-import useProjectDispatch from 'hooks/project/useProjectDispatch'
+import useProjectDispatch from 'hooks/useDispatch'
 import useModal from 'hooks/useModal/useModal'
 import useUser from 'hooks/useUser'
 

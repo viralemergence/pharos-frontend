@@ -1,5 +1,5 @@
 import useDatasetID from 'hooks/dataset/useDatasetID'
-import useDispatch from 'hooks/project/useProjectDispatch'
+import useDispatch from 'hooks/useDispatch'
 import useUser from 'hooks/useUser'
 import getTimestamp from 'utilities/getTimestamp'
 import { ProjectActions } from '../projectReducer'

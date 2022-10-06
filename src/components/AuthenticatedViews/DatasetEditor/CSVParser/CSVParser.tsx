@@ -4,7 +4,7 @@ import { FileUploader } from 'react-drag-drop-files'
 
 import useUser from 'hooks/useUser'
 import useDatasetID from 'hooks/dataset/useDatasetID'
-import useDispatch from 'hooks/project/useProjectDispatch'
+import useDispatch from 'hooks/useDispatch'
 
 import parseFile from './parse'
 

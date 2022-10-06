@@ -3,7 +3,7 @@ import MintButton from 'components/ui/MintButton'
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 
 import useDatasetID from 'hooks/dataset/useDatasetID'
-import useDispatch from 'hooks/project/useProjectDispatch'
+import useDispatch from 'hooks/useDispatch'
 import useModal from 'hooks/useModal/useModal'
 
 interface IDMustBeUniqueProps {
