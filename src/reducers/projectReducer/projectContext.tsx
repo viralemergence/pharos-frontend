@@ -29,7 +29,7 @@ const StateContextProvider = ({ children }: ProjectContextProviderProps) => {
   const status = state.status
   const messageStack = state.messageStack
 
-  console.log(JSON.stringify(status))
+  console.log(`[STATUS]  AppStateStatus: ${status}`)
 
   useEffect(() => {
     if (status === NodeStatus.Syncing) {

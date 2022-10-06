@@ -17,8 +17,6 @@ const useProjects = () => {
 
   useEffect(() => {
     const loadProjects = async () => {
-      console.count('loadProjects')
-      console.log(status)
       // skip loading if
       if (
         // if the user has no data
@@ -59,7 +57,7 @@ const useProjects = () => {
       // if we're offline, we're done
       if (status === NodeStatus.Offline) return
 
-      console.log('API REQUEST')
+      console.log('[API]     Request:  /list-projects')
       // otherwise, request and sync projects from remote
       const response = await fetch(
         `${process.env.GATSBY_API_URL}/list-projects`,
@@ -75,6 +73,8 @@ const useProjects = () => {
         })
       })
 
+      console.log(`[API]     Response: /list-projects: ${response?.status}`)
+
       if (!response || !response.ok) {
         dispatch({
           type: ProjectActions.SetAppStateStatus,
@@ -84,7 +84,6 @@ const useProjects = () => {
       }
 
       const remoteProjectList = (await response.json()) as Project[]
-      console.log('After API REQUEST')
 
       if (remoteProjectList) {
         const remoteProjects = {} as { [key: string]: Project }
