@@ -94,7 +94,7 @@ export const datasetInitialValue: Dataset = {
 export const stateInitialValue: AppState = {
   status: NodeStatus.Drifted,
   projects: {},
-  storageQueue: [],
+  messageStack: [],
 }
 
 export type ProjectAction =
@@ -119,6 +119,14 @@ export type ProjectAction =
 // | BatchSetDatapointAction
 
 export type ActionFunction<T = void> = (state: AppState, payload: T) => AppState
+
+// const projectReducer = (state: AppState, action: ProjectAction) => {
+//   console.log('STATE ' + JSON.stringify(state))
+//   console.log('ACTION ' + JSON.stringify(action))
+//   const nextState = _projectReducer(state, action)
+//   console.log('NEXT ' + JSON.stringify(nextState))
+//   return nextState
+// }
 
 const projectReducer = (state: AppState, action: ProjectAction) => {
   switch (action.type) {

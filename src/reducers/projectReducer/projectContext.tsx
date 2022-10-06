@@ -4,11 +4,13 @@ import { AppState, NodeStatus, APIRoute } from './types'
 
 import projectReducer, {
   ProjectAction,
+  ProjectActions,
   stateInitialValue,
 } from './projectReducer'
 
 import localSaveProject from 'storage/local/localSaveProject'
 import localforage from 'localforage'
+import setAppStateStatus from './actions/setAppStateStatus'
 
 type ProjectContextValue = {
   state: AppState
@@ -25,20 +27,18 @@ const StateContextProvider = ({ children }: ProjectContextProviderProps) => {
   const [state, dispatch] = useReducer(projectReducer, stateInitialValue)
 
   const status = state.status
-  const storageQueue = state.storageQueue
-  const storageQueueLength = state.storageQueue.length.toString()
+  const messageStack = state.messageStack
 
-  console.log(JSON.stringify(state))
+  console.log(JSON.stringify(status))
 
-  console.log({ length: storageQueueLength })
   useEffect(() => {
     if (status === NodeStatus.Syncing) {
-      console.log(JSON.stringify(state))
-      console.log({ useEffectLength: storageQueueLength })
-      console.log('storageQueue needs to be handled')
-      console.log({ queue: [...storageQueue] })
-
-      for (const message of storageQueue) {
+      if (messageStack.length === 0)
+        dispatch({
+          type: ProjectActions.SetAppStateStatus,
+          payload: NodeStatus.Synced,
+        })
+      for (const message of messageStack) {
         switch (message.route) {
           case APIRoute.saveProject:
             if (message.target == 'local') localSaveProject(message.data)
@@ -46,7 +46,7 @@ const StateContextProvider = ({ children }: ProjectContextProviderProps) => {
         }
       }
     }
-  }, [state, storageQueue, status, storageQueueLength])
+  }, [messageStack, status])
 
   // // any time the user ID changes, update the Project automatically
   // useEffect(() => {

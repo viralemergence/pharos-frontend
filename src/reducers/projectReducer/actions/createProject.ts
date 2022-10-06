@@ -13,8 +13,8 @@ const createProject: ActionFunction<Project> = (state, payload) => {
       ...state.projects,
       [payload.projectID]: payload,
     },
-    storageQueue: [
-      ...state.storageQueue,
+    messageStack: [
+      ...state.messageStack,
       {
         route: APIRoute.saveProject,
         target: 'local',

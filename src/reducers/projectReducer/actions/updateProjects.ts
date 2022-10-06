@@ -15,9 +15,6 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
   state,
   payload
 ) => {
-  console.log('updateProjects')
-  console.log(JSON.stringify(state))
-
   const nextState = { ...state }
 
   for (const [key, nextProject] of Object.entries(payload.projects)) {
@@ -33,11 +30,11 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
 
       // if the incoming project is newer than the one in state
       if (prevDate.getTime() < nextDate.getTime()) {
-        nextState.projects[key] = { ...nextProject }
+        nextState.projects = { ...nextState.projects, [key]: nextProject }
 
         if (nextState.status === NodeStatus.Syncing)
-          nextState.storageQueue = [
-            ...nextState.storageQueue,
+          nextState.messageStack = [
+            ...nextState.messageStack,
             {
               route: APIRoute.saveProject,
               target: payload.source === 'local' ? 'remote' : 'local',
@@ -48,8 +45,8 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
       } else {
         // if it is not newer, we need to update storage
         if (nextState.status === NodeStatus.Syncing)
-          nextState.storageQueue = [
-            ...nextState.storageQueue,
+          nextState.messageStack = [
+            ...nextState.messageStack,
             {
               route: APIRoute.saveProject,
               target: payload.source === 'local' ? 'local' : 'remote',
@@ -60,12 +57,12 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
       }
     } else {
       // if the project is new in state, add it
-      nextState.projects[key] = { ...nextProject }
+      nextState.projects = { ...nextState.projects, [key]: nextProject }
 
       // and add to the queue to store it
-      if (nextState.status === NodeStatus.Syncing)
-        nextState.storageQueue = [
-          ...nextState.storageQueue,
+      if (nextState.status === NodeStatus.Syncing) {
+        nextState.messageStack = [
+          ...nextState.messageStack,
           {
             route: APIRoute.saveProject,
             target: payload.source === 'local' ? 'remote' : 'local',
@@ -73,6 +70,7 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
             data: nextProject,
           },
         ]
+      }
     }
   }
 

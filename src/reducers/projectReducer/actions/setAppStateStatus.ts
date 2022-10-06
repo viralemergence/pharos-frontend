@@ -7,7 +7,6 @@ export interface SetAppStateStatusAction {
 }
 
 const setAppStateStatus: ActionFunction<NodeStatus> = (state, payload) => {
-  console.log('setAppStateStatus')
   return {
     ...state,
     status: payload,

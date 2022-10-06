@@ -17,6 +17,8 @@ const useProjects = () => {
 
   useEffect(() => {
     const loadProjects = async () => {
+      console.count('loadProjects')
+      console.log(status)
       // skip loading if
       if (
         // if the user has no data
@@ -32,14 +34,17 @@ const useProjects = () => {
       )
         return
 
+      dispatch({
+        type: ProjectActions.SetAppStateStatus,
+        payload: NodeStatus.Loading,
+      })
+
       // check local storage for projects
       const localProjects = (await localforage.getItems(
         user.data.projectIDs
       )) as {
         [key: string]: Project
       }
-
-      console.log({ localProjects })
 
       if (localProjects) {
         dispatch({
@@ -51,15 +56,10 @@ const useProjects = () => {
         })
       }
 
-      dispatch({
-        type: ProjectActions.SetAppStateStatus,
-        payload: NodeStatus.Loading,
-      })
-
       // if we're offline, we're done
       if (status === NodeStatus.Offline) return
-      console.log('API REQUEST')
 
+      console.log('API REQUEST')
       // otherwise, request and sync projects from remote
       const response = await fetch(
         `${process.env.GATSBY_API_URL}/list-projects`,
@@ -83,11 +83,6 @@ const useProjects = () => {
         return
       }
 
-      // dispatch({
-      //   type: ProjectActions.SetAppStateStatus,
-      //   payload: NodeStatus.Syncing,
-      // })
-
       const remoteProjectList = (await response.json()) as Project[]
       console.log('After API REQUEST')
 
@@ -97,7 +92,10 @@ const useProjects = () => {
         for (const project of remoteProjectList)
           remoteProjects[project.projectID] = project
 
-        console.log('updating from remote')
+        dispatch({
+          type: ProjectActions.SetAppStateStatus,
+          payload: NodeStatus.Syncing,
+        })
 
         dispatch({
           type: ProjectActions.UpdateProjects,
