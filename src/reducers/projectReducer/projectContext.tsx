@@ -32,13 +32,11 @@ const StateContextProvider = ({ children }: ProjectContextProviderProps) => {
   console.log(`[STATUS]  AppStateStatus: ${status}`)
 
   useEffect(() => {
-    if (status === NodeStatus.Syncing) {
-      if (messageStack.length === 0)
-        dispatch({
-          type: ProjectActions.SetAppStateStatus,
-          payload: NodeStatus.Synced,
-        })
-      for (const message of messageStack) {
+    console.log(JSON.stringify(messageStack))
+    if (Object.keys(messageStack).length > 0) {
+      localforage.setItem('messageStack', messageStack)
+
+      for (const [key, message] of Object.entries(messageStack)) {
         switch (message.route) {
           case APIRoute.saveProject:
             if (message.target == 'local') localSaveProject(message.data)

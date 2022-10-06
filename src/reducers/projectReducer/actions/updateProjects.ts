@@ -1,5 +1,6 @@
 import { ActionFunction, ProjectActions } from '../projectReducer'
 import { APIRoute, NodeStatus, Project, StorageMessageStatus } from '../types'
+import { nanoid } from 'nanoid'
 
 interface SetProjectsActionPayload {
   source: 'local' | 'remote'
@@ -33,27 +34,27 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
         nextState.projects = { ...nextState.projects, [key]: nextProject }
 
         if (nextState.status === NodeStatus.Syncing)
-          nextState.messageStack = [
+          nextState.messageStack = {
             ...nextState.messageStack,
-            {
+            [nanoid()]: {
               route: APIRoute.saveProject,
               target: payload.source === 'local' ? 'remote' : 'local',
               status: StorageMessageStatus.Initial,
               data: nextProject,
             },
-          ]
+          }
       } else {
         // if it is not newer, we need to update storage
         if (nextState.status === NodeStatus.Syncing)
-          nextState.messageStack = [
+          nextState.messageStack = {
             ...nextState.messageStack,
-            {
+            [nanoid()]: {
               route: APIRoute.saveProject,
               target: payload.source === 'local' ? 'local' : 'remote',
               status: StorageMessageStatus.Initial,
               data: prevProject,
             },
-          ]
+          }
       }
     } else {
       // if the project is new in state, add it
@@ -61,15 +62,15 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
 
       // and add to the queue to store it
       if (nextState.status === NodeStatus.Syncing) {
-        nextState.messageStack = [
+        nextState.messageStack = {
           ...nextState.messageStack,
-          {
+          [nanoid()]: {
             route: APIRoute.saveProject,
             target: payload.source === 'local' ? 'remote' : 'local',
             status: StorageMessageStatus.Initial,
             data: nextProject,
           },
-        ]
+        }
       }
     }
   }

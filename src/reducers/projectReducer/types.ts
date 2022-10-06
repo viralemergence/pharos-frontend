@@ -9,7 +9,7 @@ export enum NodeStatus {
 export interface AppState {
   status: NodeStatus
   projects: { [key: string]: Project }
-  messageStack: StorageMessage[]
+  messageStack: { [key: string]: StorageMessage }
 }
 
 export enum APIRoute {
