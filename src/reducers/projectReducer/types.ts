@@ -1,3 +1,5 @@
+import { User } from 'components/Login/UserContextProvider'
+
 export enum NodeStatus {
   Drifted = 'Drifted',
   Loading = 'Loading',
@@ -7,6 +9,7 @@ export enum NodeStatus {
 }
 
 export interface AppState {
+  user: User
   status: NodeStatus
   projects: { [key: string]: Project }
   messageStack: { [key: string]: StorageMessage }
