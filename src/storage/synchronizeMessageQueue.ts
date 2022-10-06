@@ -1,6 +1,10 @@
 import localforage from 'localforage'
 
-import { ProjectAction } from 'reducers/projectReducer/projectReducer'
+import {
+  ProjectAction,
+  ProjectActions,
+} from 'reducers/projectReducer/projectReducer'
+import { MessageStackStatus } from 'reducers/projectReducer/types'
 
 import localSaveProject, {
   SaveProject,
@@ -41,6 +45,11 @@ const synchronizeMessageQueue = async (
   console.log(JSON.stringify(messageStack))
   console.count('synchronizeMessageQueue')
 
+  dispatch({
+    type: ProjectActions.SetMessageStackStatus,
+    payload: MessageStackStatus.Syncing,
+  })
+
   localforage.setItem('messageStack', messageStack)
 
   for (const [key, message] of Object.entries(messageStack)) {
@@ -55,6 +64,11 @@ const synchronizeMessageQueue = async (
       //   continue
     }
   }
+
+  dispatch({
+    type: ProjectActions.SetMessageStackStatus,
+    payload: MessageStackStatus.Ready,
+  })
 
   localforage.setItem('messageStack', messageStack)
 }

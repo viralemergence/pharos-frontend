@@ -14,6 +14,12 @@ export interface AppState {
   status: NodeStatus
   projects: { [key: string]: Project }
   messageStack: { [key: string]: StorageMessage }
+  messageStackStatus: MessageStackStatus
+}
+
+export enum MessageStackStatus {
+  Syncing,
+  Ready,
 }
 
 // the overall Project object

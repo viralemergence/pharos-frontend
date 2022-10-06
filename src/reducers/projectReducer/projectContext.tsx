@@ -1,9 +1,10 @@
 import React, { createContext, useEffect, useReducer } from 'react'
 
-import { AppState } from './types'
+import { AppState, MessageStackStatus } from './types'
 
 import projectReducer, {
   ProjectAction,
+  ProjectActions,
   stateInitialValue,
 } from './projectReducer'
 
@@ -23,11 +24,17 @@ export const ProjectContext = createContext<ProjectContextValue | null>(null)
 const StateContextProvider = ({ children }: ProjectContextProviderProps) => {
   const [state, dispatch] = useReducer(projectReducer, stateInitialValue)
 
-  const { status, messageStack } = state
+  const { messageStackStatus, messageStack } = state
   useEffect(() => {
     if (Object.keys(messageStack).length === 0) return
-    synchronizeMessageQueue(messageStack, dispatch)
-  }, [messageStack, status])
+    if (messageStackStatus === MessageStackStatus.Ready) {
+      dispatch({
+        type: ProjectActions.SetMessageStackStatus,
+        payload: MessageStackStatus.Syncing,
+      })
+      synchronizeMessageQueue(messageStack, dispatch)
+    }
+  }, [messageStack, messageStackStatus])
 
   return (
     <ProjectContext.Provider value={{ state, dispatch }}>
