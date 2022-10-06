@@ -65,11 +65,6 @@ const synchronizeMessageQueue = async (
     }
   }
 
-  dispatch({
-    type: ProjectActions.SetMessageStackStatus,
-    payload: MessageStackStatus.Ready,
-  })
-
   localforage.setItem('messageStack', messageStack)
 }
 

@@ -26,12 +26,15 @@ const StateContextProvider = ({ children }: ProjectContextProviderProps) => {
 
   const { messageStackStatus, messageStack } = state
   useEffect(() => {
-    if (Object.keys(messageStack).length === 0) return
-    if (messageStackStatus === MessageStackStatus.Ready) {
+    // only mark the messageStack as ready if it
+    // hits a point where there are zero items.
+    if (Object.keys(messageStack).length === 0)
       dispatch({
         type: ProjectActions.SetMessageStackStatus,
-        payload: MessageStackStatus.Syncing,
+        payload: MessageStackStatus.Ready,
       })
+
+    if (messageStackStatus === MessageStackStatus.Ready) {
       synchronizeMessageQueue(messageStack, dispatch)
     }
   }, [messageStack, messageStackStatus])
