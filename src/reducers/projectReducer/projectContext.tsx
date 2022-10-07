@@ -49,17 +49,8 @@ const StateContextProvider = ({ children }: ProjectContextProviderProps) => {
   }, [])
 
   useEffect(() => {
-    // only mark the messageStack as ready if it
-    // hits a point where there are zero items.
-    if (Object.keys(messageStack).length === 0) {
-      return
-    }
-
-    // if (messageStackStatus === MessageStackStatus.Ready) {
-    synchronizeMessageQueue(messageStack, dispatch)
-
     localforage.setItem('messageStack', messageStack)
-    // }
+    synchronizeMessageQueue(messageStack, dispatch)
   }, [messageStack])
 
   return (
