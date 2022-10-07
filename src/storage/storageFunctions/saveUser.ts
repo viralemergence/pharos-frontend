@@ -30,7 +30,12 @@ const saveUser: StorageFunction<SaveUser> = async (key, message, dispatch) => {
       })
     )
     dispatch({ type: ProjectActions.RemoveStorageMessage, payload: key })
-  } else console.log('save user to server')
+  } else {
+    dispatch({
+      type: ProjectActions.SetStorageMessageStatus,
+      payload: { key, status: StorageMessageStatus.NetworkError },
+    })
+  }
 }
 
 export default saveUser

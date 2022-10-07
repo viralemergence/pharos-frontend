@@ -34,7 +34,12 @@ const saveProject: StorageFunction<SaveProject> = async (
       })
     )
     dispatch({ type: ProjectActions.RemoveStorageMessage, payload: key })
-  } else console.log('save project to server')
+  } else {
+    dispatch({
+      type: ProjectActions.SetStorageMessageStatus,
+      payload: { key, status: StorageMessageStatus.NetworkError },
+    })
+  }
 }
 
 export default saveProject
