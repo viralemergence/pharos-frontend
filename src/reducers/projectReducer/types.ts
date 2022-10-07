@@ -13,6 +13,7 @@ export interface AppState {
   user: User
   status: NodeStatus
   projects: { [key: string]: Project }
+  datasets: { [key: string]: Dataset }
   messageStack: { [key: string]: StorageMessage }
   messageStackStatus: MessageStackStatus
 }
@@ -33,13 +34,13 @@ export interface Project {
   name: string
   status: ProjectStatus
   datasetIDs: string[]
-  datasets: {
-    // dataset keys are the datasetID
-    // to allow O(1) access to update
-    // individual datasets in reducer
-    // functions.
-    [key: string]: Dataset
-  }
+  // datasets: {
+  //   // dataset keys are the datasetID
+  //   // to allow O(1) access to update
+  //   // individual datasets in reducer
+  //   // functions.
+  //   [key: string]: Dataset
+  // }
   lastUpdated?: string
   // metadata the user enters when they
   // fill out the new project form
