@@ -54,6 +54,9 @@ import setUser, { SetUserAction } from './actions/setUser'
 import setMessageStackStatus, {
   SetMessageStackStatusAction,
 } from './actions/setMessageStackStatus'
+import setMessageStack, {
+  SetMessageStackAction,
+} from './actions/setMessageStack'
 
 // reducer actions
 export enum ProjectActions {
@@ -64,6 +67,7 @@ export enum ProjectActions {
   UpdateProjects,
   CreateProject,
 
+  SetMessageStack,
   SetMessageStackStatus,
   SetStorageMessageStatus,
   RemoveStorageMessage,
@@ -123,6 +127,7 @@ export type ProjectAction =
   | SetAppStateStatusAction
   | UpdateProjectsAction
   | CreateProjectAction
+  | SetMessageStackAction
   | SetMessageStackStatusAction
   | SetStorageMessageStatusAction
   | RemoveStorageMessageAction
@@ -169,6 +174,8 @@ const projectReducer = (state: AppState, action: ProjectAction) => {
       return setAppStateStatus(state, action.payload)
 
     // storage message actions
+    case ProjectActions.SetMessageStack:
+      return setMessageStack(state, action.payload)
     case ProjectActions.SetMessageStackStatus:
       return setMessageStackStatus(state, action.payload)
     case ProjectActions.SetStorageMessageStatus:

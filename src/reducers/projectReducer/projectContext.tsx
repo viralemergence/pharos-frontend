@@ -8,7 +8,10 @@ import projectReducer, {
   stateInitialValue,
 } from './projectReducer'
 
-import synchronizeMessageQueue from 'storage/synchronizeMessageQueue'
+import synchronizeMessageQueue, {
+  StorageMessage,
+} from 'storage/synchronizeMessageQueue'
+import localforage from 'localforage'
 
 type ProjectContextValue = {
   state: AppState
@@ -25,6 +28,26 @@ const StateContextProvider = ({ children }: ProjectContextProviderProps) => {
   const [state, dispatch] = useReducer(projectReducer, stateInitialValue)
 
   const { messageStack } = state
+
+  useEffect(() => {
+    const getLocalMessageStack = async () => {
+      const stack = (await localforage.getItem('messageStack')) as
+        | {
+            [key: string]: StorageMessage
+          }
+        | undefined
+
+      if (stack) {
+        console.log('[MESSAGES] Load Local Messages')
+        dispatch({
+          type: ProjectActions.SetMessageStack,
+          payload: stack,
+        })
+      }
+    }
+    getLocalMessageStack()
+  }, [])
+
   useEffect(() => {
     // only mark the messageStack as ready if it
     // hits a point where there are zero items.
