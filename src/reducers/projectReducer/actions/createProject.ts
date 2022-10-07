@@ -29,25 +29,25 @@ const createProject: ActionFunction<Project> = (state, payload) => {
     },
     messageStack: {
       ...state.messageStack,
-      [nanoid()]: {
+      [`${APIRoutes.saveUser}_user_local`]: {
         route: APIRoutes.saveUser,
         target: 'local',
         status: StorageMessageStatus.Initial,
         data: nextUser,
       },
-      [nanoid()]: {
+      [`${APIRoutes.saveUser}_user_remote`]: {
         route: APIRoutes.saveUser,
         target: 'remote',
         status: StorageMessageStatus.Initial,
         data: nextUser,
       },
-      [nanoid()]: {
+      [`${APIRoutes.saveProject}_${payload.projectID}_remote`]: {
         route: APIRoutes.saveProject,
         target: 'local',
         status: StorageMessageStatus.Initial,
         data: payload,
       },
-      [nanoid()]: {
+      [`${APIRoutes.saveProject}_${payload.projectID}_local`]: {
         route: APIRoutes.saveProject,
         target: 'remote',
         status: StorageMessageStatus.Initial,
