@@ -1,6 +1,5 @@
 import { ActionFunction, ProjectActions } from '../projectReducer'
-import { NodeStatus, Project } from '../types'
-import { nanoid } from 'nanoid'
+import { Project } from '../types'
 import {
   APIRoutes,
   StorageMessageStatus,
@@ -37,26 +36,16 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
       if (prevDate.getTime() < nextDate.getTime()) {
         nextState.projects = { ...nextState.projects, [key]: nextProject }
 
-        if (nextState.status === NodeStatus.Syncing)
+        // if the newer incomeing project
+        // is from the remote save it to local
+        if (payload.source === 'remote')
           nextState.messageStack = {
             ...nextState.messageStack,
-            [nanoid()]: {
+            [`${APIRoutes.saveProject}_${nextProject.projectID}_local`]: {
               route: APIRoutes.saveProject,
-              target: payload.source === 'local' ? 'remote' : 'local',
+              target: 'local',
               status: StorageMessageStatus.Initial,
               data: nextProject,
-            },
-          }
-      } else {
-        // if it is not newer, we need to update storage
-        if (nextState.status === NodeStatus.Syncing)
-          nextState.messageStack = {
-            ...nextState.messageStack,
-            [nanoid()]: {
-              route: APIRoutes.saveProject,
-              target: payload.source === 'local' ? 'local' : 'remote',
-              status: StorageMessageStatus.Initial,
-              data: prevProject,
             },
           }
       }
@@ -65,12 +54,12 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
       nextState.projects = { ...nextState.projects, [key]: nextProject }
 
       // and add to the queue to store it
-      if (nextState.status === NodeStatus.Syncing) {
+      if (payload.source === 'remote') {
         nextState.messageStack = {
           ...nextState.messageStack,
-          [nanoid()]: {
+          [`${APIRoutes.saveProject}_${nextProject.projectID}_local`]: {
             route: APIRoutes.saveProject,
-            target: payload.source === 'local' ? 'remote' : 'local',
+            target: 'local',
             status: StorageMessageStatus.Initial,
             data: nextProject,
           },
