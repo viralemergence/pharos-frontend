@@ -8,7 +8,7 @@ const useDispatch = () => {
   // this on the build server can lead to rehydration bugs.
   if (typeof window === 'undefined' && !context) return null
 
-  if (!context) throw new Error('Project context not found')
+  if (!context?.dispatch) throw new Error('Project context not found')
 
   return context.dispatch
 }
