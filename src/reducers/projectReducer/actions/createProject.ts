@@ -1,6 +1,5 @@
 import { ActionFunction, ProjectActions } from '../projectReducer'
 import { Project } from '../types'
-import { nanoid } from 'nanoid'
 import {
   APIRoutes,
   StorageMessageStatus,
