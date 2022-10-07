@@ -59,7 +59,23 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setSubmitting(true)
-    // authenticate details
+
+    // // for testing; skip login by setting
+    // // a user directly.
+    // const user = {
+    //   status: UserStatus.loggedIn,
+    //   statusMessage: 'Logged in',
+    //   data: {
+    //     researcherID: 'dev',
+    //     organization: 'Talus Analytics',
+    //     email: 'ryan.zimmerman@georgetown.edu',
+    //     name: 'Ryan Offline',
+    //     projectIDs: [],
+    //   },
+    // }
+
+    // localforage.setItem('user', user)
+
     const user = await authenticate(researcherID)
 
     dispatch({
