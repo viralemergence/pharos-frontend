@@ -1,12 +1,8 @@
-import localforage from 'localforage'
+import { ProjectAction } from 'reducers/projectReducer/projectReducer'
 
-import {
-  ProjectAction,
-  ProjectActions,
-} from 'reducers/projectReducer/projectReducer'
-
-import saveProject, { SaveProject } from 'storage/storageFunctions/saveProject'
 import saveUser, { SaveUser } from './storageFunctions/saveUser'
+import saveProject, { SaveProject } from 'storage/storageFunctions/saveProject'
+import saveDataset, { SaveDataset } from './storageFunctions/saveDataset'
 
 export enum StorageMessageStatus {
   // when the api message is created
@@ -17,18 +13,19 @@ export enum StorageMessageStatus {
   // Error states; successful responses are
   // just removed from the queue so it doesn't
   // need to have a success status.
+  LocalStorageError = 'LocalStorageError',
   NetworkError = 'NetworkError',
   ServerError = 'ServerError',
-  LocalStorageError = 'LocalStorageError',
   UnknownError = 'UnknownError',
 }
 
 export enum APIRoutes {
-  saveProject = 'save-project',
   saveUser = 'save-user',
+  saveProject = 'save-project',
+  saveDataset = 'save-dataset',
 }
 
-export type StorageMessage = SaveProject | SaveUser
+export type StorageMessage = SaveProject | SaveUser | SaveDataset
 
 export type StorageFunction<T> = (
   key: string,
@@ -48,7 +45,7 @@ const synchronizeMessageQueue = async (
   // })
 
   for (const [key, message] of Object.entries(messageStack)) {
-    // don't touch messages in these states:
+    // skip messages in these states:
     if (
       message.status !== StorageMessageStatus.LocalStorageError &&
       message.status !== StorageMessageStatus.UnknownError &&
@@ -57,12 +54,16 @@ const synchronizeMessageQueue = async (
       message.status !== StorageMessageStatus.Pending
     ) {
       switch (message.route) {
+        case APIRoutes.saveUser:
+          saveUser(key, message, dispatch)
+          continue
+
         case APIRoutes.saveProject:
           saveProject(key, message, dispatch)
           continue
 
-        case APIRoutes.saveUser:
-          saveUser(key, message, dispatch)
+        case APIRoutes.saveDataset:
+          saveDataset(key, message, dispatch)
           continue
       }
     }

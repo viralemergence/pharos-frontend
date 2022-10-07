@@ -1,8 +1,13 @@
+import {
+  APIRoutes,
+  StorageMessageStatus,
+} from 'storage/synchronizeMessageQueue'
 import { ActionFunction, ProjectActions } from '../projectReducer'
-import { Dataset, DatasetReleaseStatus, ProjectStatus } from '../types'
+import { Dataset, DatasetReleaseStatus, Project, ProjectStatus } from '../types'
 
 interface CreateDatasetPayload {
-  updated: string
+  timestamp: string
+  projectID: string
   dataset: Dataset
 }
 
@@ -14,18 +19,59 @@ export interface CreateDatasetAction {
 const createDataset: ActionFunction<CreateDatasetPayload> = (
   state,
   payload
-) => ({
-  ...state,
-  lastUpdated: payload.updated,
-  status: ProjectStatus.Unsaved,
-  datasetIDs: [...state.datasetIDs, payload.dataset.datasetID],
-  datasets: {
-    ...state.datasets,
-    [payload.dataset.datasetID]: {
-      ...payload.dataset,
-      releaseStatus: DatasetReleaseStatus.Unreleased,
+) => {
+  const nextProject: Project = {
+    ...state.projects[payload.projectID],
+    lastUpdated: payload.timestamp,
+    status: ProjectStatus.Unsaved,
+    datasetIDs: [
+      ...state.projects[payload.projectID].datasetIDs,
+      payload.dataset.datasetID,
+    ],
+  }
+
+  return {
+    ...state,
+    projects: {
+      ...state.projects,
+      [payload.projectID]: nextProject,
     },
-  },
-})
+    datasets: {
+      ...state.datasets,
+      [payload.dataset.datasetID]: {
+        ...payload.dataset,
+        lastUpdated: payload.timestamp,
+        releaseStatus: DatasetReleaseStatus.Unreleased,
+      },
+    },
+    messageStack: {
+      ...state.messageStack,
+      [`${APIRoutes.saveDataset}_${payload.dataset.datasetID}_local`]: {
+        route: APIRoutes.saveDataset,
+        target: 'local',
+        status: StorageMessageStatus.Initial,
+        data: payload.dataset,
+      },
+      [`${APIRoutes.saveDataset}_${payload.dataset.datasetID}_remote`]: {
+        route: APIRoutes.saveDataset,
+        target: 'remote',
+        status: StorageMessageStatus.Initial,
+        data: payload.dataset,
+      },
+      [`${APIRoutes.saveProject}_${payload.projectID}_local`]: {
+        route: APIRoutes.saveProject,
+        target: 'local',
+        status: StorageMessageStatus.Initial,
+        data: nextProject,
+      },
+      [`${APIRoutes.saveProject}_${payload.projectID}_remote`]: {
+        route: APIRoutes.saveProject,
+        target: 'remote',
+        status: StorageMessageStatus.Initial,
+        data: nextProject,
+      },
+    },
+  }
+}
 
 export default createDataset

@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 
-import useProjectDispatch from 'hooks/useDispatch'
+import useDispatch from 'hooks/useDispatch'
 import useModal from 'hooks/useModal/useModal'
 import useUser from 'hooks/useUser'
 
@@ -16,7 +16,7 @@ import useProject from 'hooks/project/useProject'
 
 const useDoCreateDataset = () => {
   const user = useUser()
-  const projectDispatch = useProjectDispatch()
+  const dispatch = useDispatch()
   const setModal = useModal()
   const projectID = useProjectID()
   const project = useProject()
@@ -59,12 +59,12 @@ const useDoCreateDataset = () => {
     }
 
     console.log('dispatch dataset')
-    console.log({ project })
 
-    projectDispatch({
+    dispatch({
       type: ProjectActions.CreateDataset,
       payload: {
-        updated: getTimestamp(),
+        timestamp: getTimestamp(),
+        projectID,
         dataset,
       },
     })

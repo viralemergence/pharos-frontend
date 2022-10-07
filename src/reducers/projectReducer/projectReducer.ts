@@ -72,14 +72,14 @@ export enum ProjectActions {
   SetStorageMessageStatus,
   RemoveStorageMessage,
 
+  CreateDataset,
+
   // SetDatasetStatus,
   // SetDatasetReleaseStatus,
   // SetDatasetLastUpdated,
 
   // SetActiveVersion,
   // SetVersions,
-
-  // CreateDataset,
 
   // SetProjectStatus,
 
@@ -131,10 +131,10 @@ export type ProjectAction =
   | SetMessageStackStatusAction
   | SetStorageMessageStatusAction
   | RemoveStorageMessageAction
-// state relative to server
-// | SetProjectStatusAction
-// // datsets
-// | CreateDatasetAction
+  // state relative to server
+  // | SetProjectStatusAction
+  // // datsets
+  | CreateDatasetAction
 // | SetDatasetStatusAction
 // | SetDatasetReleaseStatusAction
 // | SetDatasetLastUpdatedAction
@@ -189,8 +189,10 @@ const projectReducer = (state: AppState, action: ProjectAction) => {
     case ProjectActions.UpdateProjects:
       return updateProjects(state, action.payload)
 
-    // case ProjectActions.CreateDataset:
-    //   return createDataset(state, action.payload)
+    // dataset actions
+    case ProjectActions.CreateDataset:
+      return createDataset(state, action.payload)
+
     // case ProjectActions.SetDatasetStatus:
     //   return setDatasetStatus(state, action.payload)
     // case ProjectActions.SetDatasetReleaseStatus:
