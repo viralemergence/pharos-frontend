@@ -22,39 +22,43 @@ const App = (): JSX.Element => {
     <Providers>
       <CMS.SEO />
       <React.StrictMode>
-        <ModalMessageProvider>
-          <HashRouter>
-            <NavBar />
-            <Routes>
-              <Route path={'/login'} element={<Login />} />
-              <Route
-                path={'/projects/:projectID/:datasetID'}
-                element={
-                  <RequireAuth>
+        <HashRouter>
+          <NavBar />
+          <Routes>
+            <Route path={'/login'} element={<Login />} />
+            <Route
+              path={'/projects/:projectID/:datasetID'}
+              element={
+                <RequireAuth>
+                  <ModalMessageProvider>
                     <DatasetEditor />
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path={'/projects/:projectID'}
-                element={
-                  <RequireAuth>
+                  </ModalMessageProvider>
+                </RequireAuth>
+              }
+            />
+            <Route
+              path={'/projects/:projectID'}
+              element={
+                <RequireAuth>
+                  <ModalMessageProvider>
                     <ProjectPage />
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path={'/projects'}
-                element={
-                  <RequireAuth>
+                  </ModalMessageProvider>
+                </RequireAuth>
+              }
+            />
+            <Route
+              path={'/projects'}
+              element={
+                <RequireAuth>
+                  <ModalMessageProvider>
                     <ProjectList />
-                  </RequireAuth>
-                }
-              />
-              <Route path={`/`} element={<Navigate to={`/projects`} />} />
-            </Routes>
-          </HashRouter>
-        </ModalMessageProvider>
+                  </ModalMessageProvider>
+                </RequireAuth>
+              }
+            />
+            <Route path={`/`} element={<Navigate to={`/projects`} />} />
+          </Routes>
+        </HashRouter>
       </React.StrictMode>
     </Providers>
   )
