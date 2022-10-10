@@ -3,7 +3,7 @@ import {
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
 import { ActionFunction, ProjectActions } from '../projectReducer'
-import { Dataset, DatasetReleaseStatus, Project, ProjectStatus } from '../types'
+import { Project, ProjectStatus, Dataset, DatasetReleaseStatus } from '../types'
 
 interface CreateDatasetPayload {
   timestamp: string
@@ -21,11 +21,11 @@ const createDataset: ActionFunction<CreateDatasetPayload> = (
   payload
 ) => {
   const nextProject: Project = {
-    ...state.projects[payload.projectID],
+    ...state.projects.data[payload.projectID],
     lastUpdated: payload.timestamp,
     status: ProjectStatus.Unsaved,
     datasetIDs: [
-      ...state.projects[payload.projectID].datasetIDs,
+      ...state.projects.data[payload.projectID].datasetIDs,
       payload.dataset.datasetID,
     ],
   }
@@ -34,14 +34,20 @@ const createDataset: ActionFunction<CreateDatasetPayload> = (
     ...state,
     projects: {
       ...state.projects,
-      [payload.projectID]: nextProject,
+      data: {
+        ...state.projects.data,
+        [payload.projectID]: nextProject,
+      },
     },
     datasets: {
       ...state.datasets,
-      [payload.dataset.datasetID]: {
-        ...payload.dataset,
-        lastUpdated: payload.timestamp,
-        releaseStatus: DatasetReleaseStatus.Unreleased,
+      data: {
+        ...state.datasets.data,
+        [payload.dataset.datasetID]: {
+          ...payload.dataset,
+          lastUpdated: payload.timestamp,
+          releaseStatus: DatasetReleaseStatus.Unreleased,
+        },
       },
     },
     messageStack: {
