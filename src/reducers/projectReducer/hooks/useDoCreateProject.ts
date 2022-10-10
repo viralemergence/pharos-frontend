@@ -30,7 +30,6 @@ const useDoCreateProject = () => {
         },
       ],
       datasetIDs: [],
-      datasets: {},
       lastUpdated: new Date().toUTCString(),
       publishStatus: ProjectPublishStatus.Unpublished,
     }
