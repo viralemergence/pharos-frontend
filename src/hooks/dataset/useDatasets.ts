@@ -9,7 +9,6 @@ import { Dataset, NodeStatus } from 'reducers/projectReducer/types'
 
 const useDatasets = () => {
   const project = useProject()
-  const { projectID } = project
   const dispatch = useDispatch()
   const user = useUser()
 
@@ -19,16 +18,6 @@ const useDatasets = () => {
   const {
     datasets: { status, data: datasets },
   } = useAppState()
-
-  useEffect(() => {
-    dispatch({
-      type: ProjectActions.UpdateDatasets,
-      payload: {
-        source: 'reset',
-        data: {},
-      },
-    })
-  }, [projectID, dispatch])
 
   useEffect(() => {
     const loadDatasets = async () => {
@@ -42,6 +31,7 @@ const useDatasets = () => {
         status === NodeStatus.Synced
       )
         return
+      console.log('LOAD DATASETS runs')
 
       // this needs to be replaced by a status
       // specifically for loading datasets
