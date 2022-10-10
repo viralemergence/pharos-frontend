@@ -11,10 +11,7 @@ const useDoSaveProject = () => {
   const projectDispatch = useDispatch()
 
   const doSaveProject = async () => {
-    console.log('Do Action: Save Project')
     if (!user.data?.researcherID) throw new Error('Researcher ID undefined')
-
-    console.log({ project })
 
     projectDispatch({
       type: ProjectActions.SetProjectStatus,

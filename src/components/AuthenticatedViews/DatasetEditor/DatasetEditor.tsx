@@ -49,8 +49,6 @@ const DatasetEditor = () => {
   const dataset = useDataset()
   const project = useProject()
 
-  console.log({ project })
-
   return (
     <>
       <TopSection>

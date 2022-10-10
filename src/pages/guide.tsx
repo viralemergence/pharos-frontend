@@ -31,14 +31,8 @@ const UserGuidePage = ({ data }: { data: Data }): JSX.Element => {
     // skip the readme in the root of the repository
     if (relativePath === '/README') continue
 
-    console.log({ basePath })
-    console.log({ relativePath })
-
-    console.log(node.tableOfContents)
-
     const toc = node.tableOfContents.replace('#', relativePath)
 
-    console.log({ toc })
     articles.push({
       title: node.headings[0]?.value ?? 'No h1 found in .md file',
       toc,

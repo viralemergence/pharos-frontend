@@ -58,8 +58,6 @@ const useDoCreateDataset = () => {
       },
     }
 
-    console.log('dispatch dataset')
-
     dispatch({
       type: ProjectActions.CreateDataset,
       payload: {
@@ -68,8 +66,6 @@ const useDoCreateDataset = () => {
         dataset,
       },
     })
-
-    console.log({ projectAfterDispatch: { ...project } })
 
     doSaveDataset(dataset)
     doSaveProject()

@@ -23,7 +23,6 @@ const DatasetsTable = () => {
   const projectID = useProjectID()
   const project = useProject()
   const setModal = useModal()
-  console.log('call useDatasets')
   const datasets = useDatasets()
 
   // create rows for each dataset based on datasetIDs

@@ -20,8 +20,6 @@ const useDatasets = () => {
     datasets: { status, data: datasets },
   } = useAppState()
 
-  console.log('useDatasets hook')
-
   useEffect(() => {
     dispatch({
       type: ProjectActions.UpdateDatasets,
@@ -34,7 +32,6 @@ const useDatasets = () => {
 
   useEffect(() => {
     const loadDatasets = async () => {
-      console.log('loadDatasets call')
       // skip loading if:
       if (
         // project has no datasets

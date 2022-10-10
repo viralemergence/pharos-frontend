@@ -7,9 +7,7 @@ import useAppState from 'hooks/useAppState'
 
 const ProjectsTable = () => {
   const state = useAppState()
-  console.log({ state })
   const projects = useProjects()
-  console.log(projects)
 
   const sorted =
     projects &&
