@@ -11,9 +11,11 @@ import useDispatch from '../useDispatch'
 
 const useProjects = () => {
   const user = useUser()
-
-  const { status, projects } = useAppState()
   const dispatch = useDispatch()
+
+  const {
+    projects: { status, data },
+  } = useAppState()
 
   useEffect(() => {
     const loadProjects = async () => {
@@ -34,7 +36,10 @@ const useProjects = () => {
 
       dispatch({
         type: ProjectActions.SetAppStateStatus,
-        payload: NodeStatus.Loading,
+        payload: {
+          key: 'projects',
+          status: NodeStatus.Loading,
+        },
       })
 
       // check local storage for projects
@@ -42,7 +47,7 @@ const useProjects = () => {
         user.data.projectIDs
       )) as {
         [key: string]: Project
-      }
+      } | null
 
       if (localProjects) {
         dispatch({
@@ -69,7 +74,10 @@ const useProjects = () => {
         // catch network error and go into offline mode
         dispatch({
           type: ProjectActions.SetAppStateStatus,
-          payload: NodeStatus.Offline,
+          payload: {
+            key: 'projects',
+            status: NodeStatus.Offline,
+          },
         })
       })
 
@@ -78,7 +86,10 @@ const useProjects = () => {
       if (!response || !response.ok) {
         dispatch({
           type: ProjectActions.SetAppStateStatus,
-          payload: NodeStatus.Offline,
+          payload: {
+            key: 'projects',
+            status: NodeStatus.Offline,
+          },
         })
         return
       }
@@ -92,24 +103,27 @@ const useProjects = () => {
           remoteProjects[project.projectID] = project
 
         dispatch({
-          type: ProjectActions.SetAppStateStatus,
-          payload: NodeStatus.Syncing,
-        })
-
-        dispatch({
           type: ProjectActions.UpdateProjects,
           payload: {
             source: 'remote',
             projects: remoteProjects,
           },
         })
+
+        dispatch({
+          type: ProjectActions.SetAppStateStatus,
+          payload: {
+            key: 'projects',
+            status: NodeStatus.Synced,
+          },
+        })
       }
     }
 
     loadProjects()
-  }, [user, status, projects, dispatch])
+  }, [user, status, dispatch])
 
-  return projects
+  return data
 }
 
 export default useProjects

@@ -22,10 +22,10 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
   const nextState = { ...state }
 
   for (const [key, nextProject] of Object.entries(payload.projects)) {
-    const prevProject = state.projects[key]
+    const prevProject = state.projects.data[key]
 
     // if the project already exists in state
-    if (state.projects[key]) {
+    if (state.projects.data[key]) {
       const prevDate = new Date(prevProject.lastUpdated ?? 0)
       const nextDate = new Date(nextProject.lastUpdated ?? 0)
 
@@ -34,7 +34,10 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
 
       // if the incoming project is newer than the one in state
       if (prevDate.getTime() < nextDate.getTime()) {
-        nextState.projects = { ...nextState.projects, [key]: nextProject }
+        nextState.projects.data = {
+          ...nextState.projects.data,
+          [key]: nextProject,
+        }
 
         // if the newer incomeing project
         // is from the remote save it to local
@@ -51,7 +54,10 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
       }
     } else {
       // if the project is new in state, add it
-      nextState.projects = { ...nextState.projects, [key]: nextProject }
+      nextState.projects.data = {
+        ...nextState.projects.data,
+        [key]: nextProject,
+      }
 
       // and add to the queue to store it
       if (payload.source === 'remote') {

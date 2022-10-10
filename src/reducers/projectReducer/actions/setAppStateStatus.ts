@@ -1,15 +1,26 @@
 import { ActionFunction, ProjectActions } from '../projectReducer'
-import { NodeStatus } from '../types'
+import { AppState, NodeStatus } from '../types'
+
+interface SetAppStateStatusPayload {
+  key: 'projects' | 'datasets'
+  status: NodeStatus
+}
 
 export interface SetAppStateStatusAction {
   type: ProjectActions.SetAppStateStatus
-  payload: NodeStatus
+  payload: SetAppStateStatusPayload
 }
 
-const setAppStateStatus: ActionFunction<NodeStatus> = (state, payload) => {
+const setAppStateStatus: ActionFunction<SetAppStateStatusPayload> = (
+  state,
+  { key, status }
+) => {
   return {
     ...state,
-    status: payload,
+    [key]: {
+      ...state[key],
+      status,
+    },
   }
 }
 

@@ -57,6 +57,7 @@ import setMessageStackStatus, {
 import setMessageStack, {
   SetMessageStackAction,
 } from './actions/setMessageStack'
+import updateDatasets, { UpdateDatasetsAction } from './actions/updateDatasets'
 
 // reducer actions
 export enum ProjectActions {
@@ -73,6 +74,7 @@ export enum ProjectActions {
   RemoveStorageMessage,
 
   CreateDataset,
+  UpdateDatasets,
 
   // SetDatasetStatus,
   // SetDatasetReleaseStatus,
@@ -96,7 +98,6 @@ export enum ProjectActions {
 export const projectInitialValue: Project = {
   name: '',
   projectID: '0',
-  datasets: {},
   datasetIDs: [],
   status: ProjectStatus.Initial,
   publishStatus: ProjectPublishStatus.Unpublished,
@@ -114,9 +115,15 @@ export const datasetInitialValue: Dataset = {
 }
 
 export const stateInitialValue: AppState = {
-  status: NodeStatus.Drifted,
   user: defaultUserState,
-  projects: {},
+  projects: {
+    status: NodeStatus.Drifted,
+    data: {},
+  },
+  datasets: {
+    status: NodeStatus.Drifted,
+    data: {},
+  },
   messageStack: {},
   messageStackStatus: MessageStackStatus.Ready,
 }
@@ -135,6 +142,7 @@ export type ProjectAction =
   // | SetProjectStatusAction
   // // datsets
   | CreateDatasetAction
+  | UpdateDatasetsAction
 // | SetDatasetStatusAction
 // | SetDatasetReleaseStatusAction
 // | SetDatasetLastUpdatedAction
@@ -190,6 +198,8 @@ const projectReducer = (state: AppState, action: ProjectAction) => {
       return updateProjects(state, action.payload)
 
     // dataset actions
+    case ProjectActions.UpdateDatasets:
+      return updateDatasets(state, action.payload)
     case ProjectActions.CreateDataset:
       return createDataset(state, action.payload)
 

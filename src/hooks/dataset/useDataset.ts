@@ -1,30 +1,15 @@
-import { useEffect } from 'react'
-
 import { datasetInitialValue } from 'reducers/projectReducer/projectReducer'
 
-import useProjectID from 'hooks/project/useProjectID'
 import useDatasetID from './useDatasetID'
-import useAppState from 'hooks/useAppState'
+import useDatasets from './useDatasets'
 
 const useDataset = () => {
-  const state = useAppState()
-  const projectID = useProjectID()
   const datasetID = useDatasetID()
+  const datasets = useDatasets()
 
-  const project = state.projects[projectID]
-  const dataset = project?.datasets[datasetID]
+  const dataset = datasets[datasetID] ?? datasetInitialValue
 
-  //   // effect to load the datasets or pull
-  //   // them from local storage as necessary
-  //   useEffect(() => {
-  //     const requestDatasets = async () => {}
-
-  //     if (!project.datasets) {
-
-  //     }
-  //   }, [project, dataset, projectID, datasetID])
-
-  return dataset ?? datasetInitialValue
+  return dataset
 }
 
 export default useDataset

@@ -27,6 +27,7 @@ const saveDataset: StorageFunction<SaveDataset> = async (
   })
 
   if (message.target === 'local') {
+    console.log('local save dataset')
     await localforage.setItem(message.data.datasetID, message.data).catch(() =>
       dispatch({
         type: ProjectActions.SetStorageMessageStatus,
