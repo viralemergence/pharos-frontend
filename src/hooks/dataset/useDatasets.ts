@@ -110,7 +110,7 @@ const useDatasets = () => {
         dispatch({
           type: ProjectActions.UpdateDatasets,
           payload: {
-            source: 'remote',
+            source: 'local',
             data: remoteDatsets,
           },
         })
