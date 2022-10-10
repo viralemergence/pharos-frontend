@@ -39,11 +39,6 @@ const synchronizeMessageQueue = async (
 ) => {
   console.log('[MESSAGES] Synchronize')
 
-  // dispatch({
-  //   type: ProjectActions.SetMessageStackStatus,
-  //   payload: MessageStackStatus.Syncing,
-  // })
-
   for (const [key, message] of Object.entries(messageStack)) {
     // skip messages in these states:
     if (

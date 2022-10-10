@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useReducer } from 'react'
 
-import { AppState, MessageStackStatus } from './types'
+import { AppState } from './types'
 
 import projectReducer, {
   ProjectAction,

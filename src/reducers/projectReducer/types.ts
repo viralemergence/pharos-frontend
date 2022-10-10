@@ -11,21 +11,14 @@ export enum NodeStatus {
 
 export interface AppState {
   user: User
-  // status: NodeStatus
   projects: MetadataObj<Project>
   datasets: MetadataObj<Dataset>
   messageStack: { [key: string]: StorageMessage }
-  messageStackStatus: MessageStackStatus
 }
 
 export interface MetadataObj<T> {
   status: NodeStatus
   data: { [key: string]: T }
-}
-
-export enum MessageStackStatus {
-  Syncing,
-  Ready,
 }
 
 // the overall Project object

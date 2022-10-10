@@ -6,7 +6,6 @@ import {
   ProjectPublishStatus,
   ProjectStatus,
   NodeStatus,
-  MessageStackStatus,
 } from './types'
 
 import setActiveVersion, {
@@ -51,9 +50,6 @@ import removeStorageMessage, {
 } from './actions/removeStorageMessage'
 import { defaultUserState } from 'components/Login/UserContextProvider'
 import setUser, { SetUserAction } from './actions/setUser'
-import setMessageStackStatus, {
-  SetMessageStackStatusAction,
-} from './actions/setMessageStackStatus'
 import setMessageStack, {
   SetMessageStackAction,
 } from './actions/setMessageStack'
@@ -69,7 +65,6 @@ export enum ProjectActions {
   CreateProject,
 
   SetMessageStack,
-  SetMessageStackStatus,
   SetStorageMessageStatus,
   RemoveStorageMessage,
 
@@ -125,7 +120,6 @@ export const stateInitialValue: AppState = {
     data: {},
   },
   messageStack: {},
-  messageStackStatus: MessageStackStatus.Ready,
 }
 
 export type ProjectAction =
@@ -135,7 +129,6 @@ export type ProjectAction =
   | UpdateProjectsAction
   | CreateProjectAction
   | SetMessageStackAction
-  | SetMessageStackStatusAction
   | SetStorageMessageStatusAction
   | RemoveStorageMessageAction
   // state relative to server
@@ -184,8 +177,6 @@ const projectReducer = (state: AppState, action: ProjectAction) => {
     // storage message actions
     case ProjectActions.SetMessageStack:
       return setMessageStack(state, action.payload)
-    case ProjectActions.SetMessageStackStatus:
-      return setMessageStackStatus(state, action.payload)
     case ProjectActions.SetStorageMessageStatus:
       return setStorageMessageStatus(state, action.payload)
     case ProjectActions.RemoveStorageMessage:
