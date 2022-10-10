@@ -1,11 +1,13 @@
 import useUser from 'hooks/useUser'
 
 import { FormData } from 'components/AuthenticatedViews/PortfolioPage/CreateProjectForm/CreateProjectForm'
-import { NodeStatus, ProjectPublishStatus, ProjectStatus } from '../types'
-import generateID from 'utilities/generateID'
-import useDispatch from 'hooks/useDispatch'
+import { ProjectPublishStatus, ProjectStatus } from '../types'
 import { ProjectActions } from '../projectReducer'
+
 import { useNavigate } from 'react-router-dom'
+import useDispatch from 'hooks/useDispatch'
+
+import generateID from 'utilities/generateID'
 
 const useDoCreateProject = () => {
   const user = useUser()
