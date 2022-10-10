@@ -52,24 +52,23 @@ const updateDatasets: ActionFunction<UpdateDatasetsAction['payload']> = (
 
         // if the newer incomeing project
         // is from the remote save it to local
-        if (source === 'remote') console.log('local save dataset please')
-        nextState.messageStack = {
-          ...nextState.messageStack,
-          [`${APIRoutes.saveDataset}_${nextData.datasetID}_local`]: {
-            route: APIRoutes.saveDataset,
-            target: 'local',
-            status: StorageMessageStatus.Initial,
-            data: nextData,
-          },
-        }
+        if (source === 'remote')
+          nextState.messageStack = {
+            ...nextState.messageStack,
+            [`${APIRoutes.saveDataset}_${nextData.datasetID}_local`]: {
+              route: APIRoutes.saveDataset,
+              target: 'local',
+              status: StorageMessageStatus.Initial,
+              data: nextData,
+            },
+          }
       }
     } else {
       // if the project is new in state, add it
       nextState.datasets.data = { ...nextState.datasets.data, [key]: nextData }
 
       // and add to the queue to store it
-      if (source === 'remote') {
-        console.log('local save dataset please')
+      if (source === 'remote')
         nextState.messageStack = {
           ...nextState.messageStack,
           [`${APIRoutes.saveDataset}_${nextData.datasetID}_local`]: {
@@ -79,7 +78,6 @@ const updateDatasets: ActionFunction<UpdateDatasetsAction['payload']> = (
             data: nextData,
           },
         }
-      }
     }
   }
 
