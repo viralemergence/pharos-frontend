@@ -13,12 +13,10 @@ import ReleaseHelpMessage from './ReleaseHelpMessage/ReleaseHelpMessage'
 
 import useDataset from 'hooks/dataset/useDataset'
 
-import useAutosaveRegister from 'hooks/register/useAutosaveRegister'
-import useAutosaveDataset from 'hooks/register/useAutosaveDataset'
-import useLoadRegister from 'hooks/register/useLoadRegister'
 import BreadcrumbLink, {
   BreadcrumbContainer,
 } from 'components/ui/BreadcrumbLink'
+
 import useProject from 'hooks/project/useProject'
 import DatasetStatusMessage from './DatasetStatusMessage/DatasetStatusMessage'
 
@@ -52,19 +50,6 @@ const DatasetEditor = () => {
   const project = useProject()
 
   console.log({ project })
-
-  // Handling server status side effects
-
-  // load the register as soon as the dataset is loaded
-  // and as long as the dataset has a registerKey
-  useLoadRegister()
-  // autosave dataset when changes are committed
-  // this saves everything in the dataset object
-  // except for the register itself
-  useAutosaveDataset()
-  // autosave the register when changes are committed
-  // this saves both the versions array and the register
-  useAutosaveRegister()
 
   return (
     <>
