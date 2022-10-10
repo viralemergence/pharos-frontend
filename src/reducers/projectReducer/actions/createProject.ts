@@ -24,7 +24,10 @@ const createProject: ActionFunction<Project> = (state, payload) => {
     user: nextUser,
     projects: {
       ...state.projects,
-      [payload.projectID]: payload,
+      data: {
+        ...state.projects.data,
+        [payload.projectID]: payload,
+      },
     },
     messageStack: {
       ...state.messageStack,
