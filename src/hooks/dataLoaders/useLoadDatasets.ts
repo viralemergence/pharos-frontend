@@ -22,8 +22,6 @@ const useLoadDatasets = () => {
   // Effect for accessing datasets from local indexedDB
   useEffect(() => {
     const loadLocalDatasets = async () => {
-      if (datasetIDs.length === 0) return
-
       // just to be safe, set the datasets object
       // to empty while we query the local DB
       dispatch({
@@ -31,6 +29,18 @@ const useLoadDatasets = () => {
         payload: {
           source: 'local',
           data: {},
+        },
+      })
+
+      if (datasetIDs.length === 0) return
+
+      // set status back to initial so it'll pull
+      // the latest datasets from the server again
+      dispatch({
+        type: ProjectActions.SetAppStateStatus,
+        payload: {
+          key: 'datasets',
+          status: NodeStatus.Initial,
         },
       })
 
@@ -57,6 +67,7 @@ const useLoadDatasets = () => {
       if (
         datasetIDs.length === 0 ||
         status === NodeStatus.Loading ||
+        status === NodeStatus.Loaded ||
         status === NodeStatus.Offline
       )
         return
@@ -109,7 +120,7 @@ const useLoadDatasets = () => {
         dispatch({
           type: ProjectActions.UpdateDatasets,
           payload: {
-            source: 'local',
+            source: 'remote',
             data: remoteDatsets,
           },
         })

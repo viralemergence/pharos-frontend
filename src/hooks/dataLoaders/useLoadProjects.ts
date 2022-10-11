@@ -26,8 +26,10 @@ const useLoadProjects = () => {
         // if the user has no projects associated
         !user.data.projectIDs ||
         user.data.projectIDs?.length === 0 ||
-        // if we're already already trying to sync this data
-        status === NodeStatus.Loading
+        // if we're already already trying to load this
+        status === NodeStatus.Loading ||
+        // if we're already did load this
+        status === NodeStatus.Loaded
       )
         return
 
