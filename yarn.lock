@@ -10076,7 +10076,7 @@ rc@1.2.8, rc@^1.2.7, rc@^1.2.8:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-data-grid@^7.0.0-beta.13:
+react-data-grid@^7.0.0-beta.19:
   version "7.0.0-beta.19"
   resolved "https://registry.yarnpkg.com/react-data-grid/-/react-data-grid-7.0.0-beta.19.tgz#0498225e78ab555caaa0e1bd8ec0b4b56fe89e19"
   integrity sha512-Sfz+cAOioqEEokdlQSaczkICHVPmt7wLiOmH3aUH2B3BFjZwM0K54gnQ92LbnjOddua54rHLFIO54N0vUeXRaQ==
