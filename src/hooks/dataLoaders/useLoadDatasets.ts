@@ -1,4 +1,5 @@
 import useProject from 'hooks/project/useProject'
+import useProjectID from 'hooks/project/useProjectID'
 import useAppState from 'hooks/useAppState'
 import useDispatch from 'hooks/useDispatch'
 import useUser from 'hooks/useUser'
@@ -16,33 +17,40 @@ const useLoadDatasets = () => {
   if (!researcherID) throw new Error('researcherID required for useDatasets')
 
   const {
-    datasets: { status },
+    datasets: { status, data },
   } = useAppState()
+
+  useEffect(() => {
+    // just to be safe, set the datasets object
+    // to empty while we query the local DB
+    dispatch({
+      type: ProjectActions.UpdateDatasets,
+      payload: {
+        source: 'local',
+        data: {},
+      },
+    })
+
+    // set status back to initial so it'll pull
+    // the latest datasets from the server again
+    dispatch({
+      type: ProjectActions.SetAppStateStatus,
+      payload: {
+        key: 'datasets',
+        status: NodeStatus.Initial,
+      },
+    })
+  }, [projectID, dispatch])
 
   // Effect for accessing datasets from local indexedDB
   useEffect(() => {
     const loadLocalDatasets = async () => {
-      // just to be safe, set the datasets object
-      // to empty while we query the local DB
-      dispatch({
-        type: ProjectActions.UpdateDatasets,
-        payload: {
-          source: 'local',
-          data: {},
-        },
-      })
-
       if (datasetIDs.length === 0) return
 
-      // set status back to initial so it'll pull
-      // the latest datasets from the server again
-      dispatch({
-        type: ProjectActions.SetAppStateStatus,
-        payload: {
-          key: 'datasets',
-          status: NodeStatus.Initial,
-        },
-      })
+      // early return if the project has the same number of datasets
+      // loaded as are currently loaded; this happens when a new
+      // dataset is created so we don't need to pull from storage
+      if (datasetIDs.length === Object.keys(data).length) return
 
       const localDatasets = (await localforage.getItems(datasetIDs)) as {
         [key: string]: Dataset
@@ -58,7 +66,7 @@ const useLoadDatasets = () => {
         })
     }
     loadLocalDatasets()
-  }, [projectID, dispatch, datasetIDs])
+  }, [projectID, datasetIDs, data, dispatch])
 
   // effect for loading datasets from remote server
   useEffect(() => {
