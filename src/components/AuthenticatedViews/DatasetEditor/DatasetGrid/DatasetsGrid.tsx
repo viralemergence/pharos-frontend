@@ -12,6 +12,8 @@ import useVersionedRows from 'hooks/register/useVersionedRows'
 import useRegisterStatus from 'hooks/register/useRegisterStatus'
 import generateID from 'utilities/generateID'
 
+import 'react-data-grid/lib/styles.css'
+
 const FillDatasetGrid = styled(DataGrid)`
   block-size: 100%;
   height: calc(100vh - 370px);
