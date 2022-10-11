@@ -6,13 +6,13 @@ import {
   Datapoint,
   RecordMeta,
   RecordWithID,
-} from 'reducers/projectReducer/types'
+} from 'reducers/stateReducer/types'
 
 import useDataset from 'hooks/dataset/useDataset'
 import useModal from 'hooks/useModal/useModal'
 import { useEffect } from 'react'
 import { IDMustBeUnique, OnlyEditMostRecent } from './textEditorMessages'
-import useDoSetDatapoint from 'reducers/projectReducer/hooks/useDoSetDatapoint'
+import useDoSetDatapoint from 'reducers/stateReducer/hooks/useDoSetDatapoint'
 
 const TextInput = styled.input`
   appearance: none;

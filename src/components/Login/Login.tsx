@@ -7,14 +7,14 @@ import CMS from '@talus-analytics/library.airtable-cms'
 import useSignInPageData from 'cmsHooks/useSignInPageData'
 import useUser from 'hooks/useUser'
 
-import { UserStatus } from 'reducers/projectReducer/types'
+import { UserStatus } from 'reducers/stateReducer/types'
 import authenticate from 'components/Login/authenticate'
 import MintButton from 'components/ui/MintButton'
 import Label from 'components/ui/InputLabel'
 import Input from 'components/ui/Input'
 import Main from 'components/layout/Main'
 import useDispatch from 'hooks/useDispatch'
-import { StateActions } from 'reducers/projectReducer/stateReducer'
+import { StateActions } from 'reducers/stateReducer/stateReducer'
 
 const Container = styled(Main)`
   max-width: 505px;

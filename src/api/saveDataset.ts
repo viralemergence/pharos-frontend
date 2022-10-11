@@ -1,4 +1,4 @@
-import { Dataset } from 'reducers/projectReducer/types'
+import { Dataset } from 'reducers/stateReducer/types'
 
 // export interface SaveDatasetPayload {
 //   name: Dataset['name']

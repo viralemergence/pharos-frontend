@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import useDataset from 'hooks/dataset/useDataset'
 import styled from 'styled-components'
 import { FormatterProps } from 'react-data-grid'
-import { Datapoint, RecordWithID } from 'reducers/projectReducer/types'
+import { Datapoint, RecordWithID } from 'reducers/stateReducer/types'
 
 import SimpleCellModal from './SimpleCellModal'
 

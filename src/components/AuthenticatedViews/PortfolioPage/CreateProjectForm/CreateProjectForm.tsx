@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled, { useTheme } from 'styled-components'
 
-import { ProjectStatus } from 'reducers/projectReducer/types'
+import { ProjectStatus } from 'reducers/stateReducer/types'
 
 import MintButton from 'components/ui/MintButton'
 import Label from 'components/ui/InputLabel'
@@ -10,7 +10,7 @@ import Textarea from 'components/ui/Textarea'
 import Typeahead from '@talus-analytics/library.ui.typeahead'
 
 import useProject from 'hooks/project/useProject'
-import useDoCreateProject from 'reducers/projectReducer/hooks/useDoCreateProject'
+import useDoCreateProject from 'reducers/stateReducer/hooks/useDoCreateProject'
 
 const Section = styled.section`
   width: 800px;

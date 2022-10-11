@@ -2,8 +2,8 @@ import { useEffect } from 'react'
 import localforage from 'localforage'
 import 'localforage-getitems'
 
-import { StateActions } from 'reducers/projectReducer/stateReducer'
-import { NodeStatus, Project } from 'reducers/projectReducer/types'
+import { StateActions } from 'reducers/stateReducer/stateReducer'
+import { NodeStatus, Project } from 'reducers/stateReducer/types'
 
 import useUser from 'hooks/useUser'
 import useDispatch from '../useDispatch'

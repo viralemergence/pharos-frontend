@@ -1,6 +1,6 @@
 import React from 'react'
 import MintButton from 'components/ui/MintButton'
-import { StateActions } from 'reducers/projectReducer/stateReducer'
+import { StateActions } from 'reducers/stateReducer/stateReducer'
 
 import useDatasetID from 'hooks/dataset/useDatasetID'
 import useDispatch from 'hooks/useDispatch'

@@ -1,4 +1,4 @@
-import { StateAction } from 'reducers/projectReducer/stateReducer'
+import { StateAction } from 'reducers/stateReducer/stateReducer'
 
 import saveUser, { SaveUser } from './storageFunctions/saveUser'
 import saveProject, { SaveProject } from 'storage/storageFunctions/saveProject'

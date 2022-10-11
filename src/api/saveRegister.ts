@@ -1,4 +1,4 @@
-import { Register } from 'reducers/projectReducer/types'
+import { Register } from 'reducers/stateReducer/types'
 
 interface SaveRegisterPayload {
   datasetID: string

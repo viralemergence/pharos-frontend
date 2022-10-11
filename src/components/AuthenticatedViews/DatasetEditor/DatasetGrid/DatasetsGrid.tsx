@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import DataGrid, { Column } from 'react-data-grid'
 
-import { RecordWithID, RegisterStatus } from 'reducers/projectReducer/types'
+import { RecordWithID, RegisterStatus } from 'reducers/stateReducer/types'
 
 import TextEditor from './editors/TextEditor/TextEditor'
 

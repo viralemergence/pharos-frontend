@@ -1,4 +1,4 @@
-import { Project } from 'reducers/projectReducer/types'
+import { Project } from 'reducers/stateReducer/types'
 
 const listProjects = async (researcherID: string) => {
   const response = await fetch(`${process.env.GATSBY_API_URL}/list-projects`, {

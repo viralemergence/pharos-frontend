@@ -1,6 +1,6 @@
 import React from 'react'
 import Modal from 'components/ui/Modal'
-import { Datapoint } from 'reducers/projectReducer/types'
+import { Datapoint } from 'reducers/stateReducer/types'
 import styled from 'styled-components'
 
 interface SimpleCellModalProps {

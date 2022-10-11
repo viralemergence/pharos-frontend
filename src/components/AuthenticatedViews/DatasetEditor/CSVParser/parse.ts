@@ -1,10 +1,10 @@
 import Papa from 'papaparse'
 
-import { StateAction, StateActions } from 'reducers/projectReducer/stateReducer'
+import { StateAction, StateActions } from 'reducers/stateReducer/stateReducer'
 
-import { User } from 'reducers/projectReducer/types'
-import { RegisterStatus } from 'reducers/projectReducer/types'
-import { Rows } from 'reducers/projectReducer/actions/batchSetDatapoint'
+import { User } from 'reducers/stateReducer/types'
+import { RegisterStatus } from 'reducers/stateReducer/types'
+import { Rows } from 'reducers/stateReducer/actions/batchSetDatapoint'
 
 interface ParseFile {
   file: File

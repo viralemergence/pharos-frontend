@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import useDataset from 'hooks/dataset/useDataset'
-import { DatasetStatus, RegisterStatus } from 'reducers/projectReducer/types'
+import { DatasetStatus, RegisterStatus } from 'reducers/stateReducer/types'
 import { useTheme } from 'styled-components'
 
 const Span = styled.span`

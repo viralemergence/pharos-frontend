@@ -1,4 +1,4 @@
-import { projectInitialValue } from 'reducers/projectReducer/initialValues'
+import { projectInitialValue } from 'reducers/stateReducer/initialValues'
 import useProjectID from './useProjectID'
 import useProjects from './useProjects'
 

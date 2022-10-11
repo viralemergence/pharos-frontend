@@ -1,5 +1,5 @@
 import useDataset from 'hooks/dataset/useDataset'
-import { Datapoint, RecordWithID } from 'reducers/projectReducer/types'
+import { Datapoint, RecordWithID } from 'reducers/stateReducer/types'
 
 import defaultColumns from '../../../config/defaultColumns.json'
 

@@ -5,7 +5,7 @@ import MintButton from 'components/ui/MintButton'
 import Label from 'components/ui/InputLabel'
 import Input from 'components/ui/Input'
 
-import useDoCreateDataset from 'reducers/projectReducer/hooks/useDoCreateDataset'
+import useDoCreateDataset from 'reducers/stateReducer/hooks/useDoCreateDataset'
 
 const Form = styled.form`
   width: 500px;

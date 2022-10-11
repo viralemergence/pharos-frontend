@@ -1,10 +1,10 @@
 import React from 'react'
 
-import { StateActions } from 'reducers/projectReducer/stateReducer'
+import { StateActions } from 'reducers/stateReducer/stateReducer'
 import {
   DatasetReleaseStatus,
   DatasetStatus,
-} from 'reducers/projectReducer/types'
+} from 'reducers/stateReducer/types'
 
 import MintButton from 'components/ui/MintButton'
 

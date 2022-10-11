@@ -1,4 +1,4 @@
-import { User, UserStatus } from 'reducers/projectReducer/types'
+import { User, UserStatus } from 'reducers/stateReducer/types'
 import localforage from 'localforage'
 
 const authenticate = async (researcherID: string) => {

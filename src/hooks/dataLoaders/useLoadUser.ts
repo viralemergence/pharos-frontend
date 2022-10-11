@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 import localforage from 'localforage'
 
-import { StateAction, StateActions } from 'reducers/projectReducer/stateReducer'
-import { User, UserStatus } from 'reducers/projectReducer/types'
+import { StateAction, StateActions } from 'reducers/stateReducer/stateReducer'
+import { User, UserStatus } from 'reducers/stateReducer/types'
 
 const useLoadUser = (dispatch: React.Dispatch<StateAction>) => {
   useEffect(() => {

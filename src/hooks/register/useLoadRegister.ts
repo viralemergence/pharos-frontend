@@ -10,8 +10,8 @@ import {
   DatasetStatus,
   ProjectStatus,
   RegisterStatus,
-} from 'reducers/projectReducer/types'
-import { StateActions } from 'reducers/projectReducer/stateReducer'
+} from 'reducers/stateReducer/types'
+import { StateActions } from 'reducers/stateReducer/stateReducer'
 
 import loadRegister from 'api/loadRegister'
 

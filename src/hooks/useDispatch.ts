@@ -1,6 +1,6 @@
 import { useContext } from 'react'
-import { StateContext } from 'reducers/projectReducer/stateContext'
-import { StateAction } from 'reducers/projectReducer/stateReducer'
+import { StateContext } from 'reducers/stateReducer/stateContext'
+import { StateAction } from 'reducers/stateReducer/stateReducer'
 
 const useDispatch = (): React.Dispatch<StateAction> => {
   const context = useContext(StateContext)

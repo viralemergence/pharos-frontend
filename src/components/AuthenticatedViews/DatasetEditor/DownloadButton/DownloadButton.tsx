@@ -5,7 +5,7 @@ import MintButton from 'components/ui/MintButton'
 
 import useVersionedRows from 'hooks/register/useVersionedRows'
 import useDataset from 'hooks/dataset/useDataset'
-import { Datapoint } from 'reducers/projectReducer/types'
+import { Datapoint } from 'reducers/stateReducer/types'
 import { useTheme } from 'styled-components'
 
 const downloadFile = (fileName: string, data: Blob) => {

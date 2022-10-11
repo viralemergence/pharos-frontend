@@ -1,4 +1,4 @@
-import { Dataset } from 'reducers/projectReducer/types'
+import { Dataset } from 'reducers/stateReducer/types'
 
 const listDatasets = async (researcherID: string, projectID: string) => {
   const response = await fetch(`${process.env.GATSBY_API_URL}/list-datasets`, {

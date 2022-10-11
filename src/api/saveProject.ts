@@ -1,4 +1,4 @@
-import { Project } from 'reducers/projectReducer/types'
+import { Project } from 'reducers/stateReducer/types'
 
 const saveProject = async (payload: Project) => {
   const response = await fetch(`${process.env.GATSBY_API_URL}/save-project`, {

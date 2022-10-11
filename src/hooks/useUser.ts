@@ -1,5 +1,5 @@
 import useAppState from './useAppState'
-import { userInitialValue } from 'reducers/projectReducer/initialValues'
+import { userInitialValue } from 'reducers/stateReducer/initialValues'
 
 const useUser = () => {
   const { user } = useAppState()

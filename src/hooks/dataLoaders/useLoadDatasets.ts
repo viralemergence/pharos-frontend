@@ -5,8 +5,8 @@ import useDispatch from 'hooks/useDispatch'
 import useUser from 'hooks/useUser'
 import localforage from 'localforage'
 import { useEffect } from 'react'
-import { StateActions } from 'reducers/projectReducer/stateReducer'
-import { Dataset, NodeStatus } from 'reducers/projectReducer/types'
+import { StateActions } from 'reducers/stateReducer/stateReducer'
+import { Dataset, NodeStatus } from 'reducers/stateReducer/types'
 
 const useLoadDatasets = () => {
   const { projectID, datasetIDs } = useProject()
