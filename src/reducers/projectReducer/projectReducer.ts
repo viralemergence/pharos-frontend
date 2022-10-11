@@ -119,7 +119,7 @@ export type ActionFunction<T = void> = (state: AppState, payload: T) => AppState
 //   return nextState
 // }
 
-const projectReducer = (state: AppState, action: StateAction) => {
+const stateReducer = (state: AppState, action: StateAction) => {
   switch (action.type) {
     // datsets
     // case ProjectActions.SetProjectStatus:
@@ -178,4 +178,4 @@ const projectReducer = (state: AppState, action: StateAction) => {
   }
 }
 
-export default projectReducer
+export default stateReducer

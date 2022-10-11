@@ -2,7 +2,7 @@ import React, { createContext, useEffect, useReducer } from 'react'
 
 import { AppState } from './types'
 
-import projectReducer, { StateAction, StateActions } from './projectReducer'
+import stateReducer, { StateAction, StateActions } from './projectReducer'
 
 import synchronizeMessageQueue, {
   StorageMessage,
@@ -25,7 +25,7 @@ interface StateContextProviderProps {
 export const StateContext = createContext<StateContextValue | null>(null)
 
 const StateContextProvider = ({ children }: StateContextProviderProps) => {
-  const [state, dispatch] = useReducer(projectReducer, stateInitialValue)
+  const [state, dispatch] = useReducer(stateReducer, stateInitialValue)
   const { messageStack } = state
 
   useLoadUser(dispatch)
