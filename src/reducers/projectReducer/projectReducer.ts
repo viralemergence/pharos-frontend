@@ -48,7 +48,11 @@ import setStorageMessageStatus, {
 import removeStorageMessage, {
   RemoveStorageMessageAction,
 } from './actions/removeStorageMessage'
-import { defaultUserState } from 'components/Login/UserContextProvider'
+import {
+  defaultUserState,
+  User,
+  UserStatus,
+} from 'components/Login/UserContextProvider'
 import setUser, { SetUserAction } from './actions/setUser'
 import setMessageStack, {
   SetMessageStackAction,
@@ -90,6 +94,11 @@ export enum ProjectActions {
   // BatchSetDatapoint,
 }
 
+export const userInitialValue: User = {
+  status: UserStatus.initial,
+  statusMessage: 'Unknown user state',
+}
+
 export const projectInitialValue: Project = {
   name: '',
   projectID: '0',
@@ -110,7 +119,7 @@ export const datasetInitialValue: Dataset = {
 }
 
 export const stateInitialValue: AppState = {
-  user: defaultUserState,
+  user: userInitialValue,
   projects: {
     status: NodeStatus.Initial,
     data: {},

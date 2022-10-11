@@ -13,6 +13,7 @@ import synchronizeMessageQueue, {
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
 import localforage from 'localforage'
+import useLoadUser from 'hooks/dataLoaders/useLoadUser'
 
 type ProjectContextValue = {
   state: AppState
@@ -27,8 +28,9 @@ export const ProjectContext = createContext<ProjectContextValue | null>(null)
 
 const StateContextProvider = ({ children }: ProjectContextProviderProps) => {
   const [state, dispatch] = useReducer(projectReducer, stateInitialValue)
-
   const { messageStack } = state
+
+  useLoadUser(dispatch)
 
   useEffect(() => {
     const getLocalMessageStack = async () => {

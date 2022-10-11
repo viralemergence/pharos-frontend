@@ -1,0 +1,59 @@
+import { useEffect } from 'react'
+import localforage from 'localforage'
+
+import {
+  ProjectAction,
+  ProjectActions,
+} from 'reducers/projectReducer/projectReducer'
+import { User, UserStatus } from 'components/Login/UserContextProvider'
+
+const useLoadUser = (dispatch: React.Dispatch<ProjectAction>) => {
+  useEffect(() => {
+    const loadUser = async () => {
+      console.log('loadUser called')
+      const localUser = (await localforage.getItem('user')) as User | null
+
+      if (localUser) {
+        // set local data in state
+        dispatch({
+          type: ProjectActions.SetUser,
+          payload: localUser,
+        })
+
+        // request updated user data
+        const response = await fetch(`${process.env.GATSBY_API_URL}/auth`, {
+          method: 'POST',
+          body: `{"researcherID":"${localUser.data?.researcherID}"}`,
+        }).catch(error => console.log(error))
+
+        // if it's valid set the updated data in state
+        if (response && response.ok) {
+          const updatedUserData = await response.json()
+          dispatch({
+            type: ProjectActions.SetUser,
+            payload: {
+              status: UserStatus.loggedIn,
+              statusMessage: 'Logged in',
+              data: updatedUserData,
+            },
+          })
+        }
+      }
+
+      // if no local user data, set the user
+      // to logged out state now that we're sure
+      else
+        dispatch({
+          type: ProjectActions.SetUser,
+          payload: {
+            status: UserStatus.loggedOut,
+            statusMessage: 'Logged out',
+          },
+        })
+    }
+
+    loadUser()
+  }, [dispatch])
+}
+
+export default useLoadUser
