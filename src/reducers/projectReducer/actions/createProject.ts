@@ -1,4 +1,4 @@
-import { ActionFunction, ProjectActions } from '../projectReducer'
+import { ActionFunction, StateActions } from '../projectReducer'
 import { Project } from '../types'
 import {
   APIRoutes,
@@ -6,7 +6,7 @@ import {
 } from 'storage/synchronizeMessageQueue'
 
 export interface CreateProjectAction {
-  type: ProjectActions.CreateProject
+  type: StateActions.CreateProject
   payload: Project
 }
 

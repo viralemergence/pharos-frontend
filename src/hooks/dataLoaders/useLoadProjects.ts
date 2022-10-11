@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import localforage from 'localforage'
 import 'localforage-getitems'
 
-import { ProjectActions } from 'reducers/projectReducer/projectReducer'
+import { StateActions } from 'reducers/projectReducer/projectReducer'
 import { NodeStatus, Project } from 'reducers/projectReducer/types'
 
 import useUser from 'hooks/useUser'
@@ -34,7 +34,7 @@ const useLoadProjects = () => {
         return
 
       dispatch({
-        type: ProjectActions.SetAppStateStatus,
+        type: StateActions.SetAppStateStatus,
         payload: {
           key: 'projects',
           status: NodeStatus.Loading,
@@ -50,7 +50,7 @@ const useLoadProjects = () => {
 
       if (localProjects) {
         dispatch({
-          type: ProjectActions.UpdateProjects,
+          type: StateActions.UpdateProjects,
           payload: {
             source: 'local',
             projects: localProjects,
@@ -72,7 +72,7 @@ const useLoadProjects = () => {
       ).catch(() => {
         // catch network error and go into offline mode
         dispatch({
-          type: ProjectActions.SetAppStateStatus,
+          type: StateActions.SetAppStateStatus,
           payload: {
             key: 'projects',
             status: NodeStatus.Offline,
@@ -84,7 +84,7 @@ const useLoadProjects = () => {
 
       if (!response || !response.ok) {
         dispatch({
-          type: ProjectActions.SetAppStateStatus,
+          type: StateActions.SetAppStateStatus,
           payload: {
             key: 'projects',
             status: NodeStatus.Offline,
@@ -102,7 +102,7 @@ const useLoadProjects = () => {
           remoteProjects[project.projectID] = project
 
         dispatch({
-          type: ProjectActions.UpdateProjects,
+          type: StateActions.UpdateProjects,
           payload: {
             source: 'remote',
             projects: remoteProjects,
@@ -110,7 +110,7 @@ const useLoadProjects = () => {
         })
 
         dispatch({
-          type: ProjectActions.SetAppStateStatus,
+          type: StateActions.SetAppStateStatus,
           payload: {
             key: 'projects',
             status: NodeStatus.Loaded,

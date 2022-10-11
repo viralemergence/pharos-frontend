@@ -14,7 +14,7 @@ import Label from 'components/ui/InputLabel'
 import Input from 'components/ui/Input'
 import Main from 'components/layout/Main'
 import useDispatch from 'hooks/useDispatch'
-import { ProjectActions } from 'reducers/projectReducer/projectReducer'
+import { StateActions } from 'reducers/projectReducer/projectReducer'
 
 const Container = styled(Main)`
   max-width: 505px;
@@ -79,7 +79,7 @@ const Login = () => {
     const user = await authenticate(researcherID)
 
     dispatch({
-      type: ProjectActions.SetUser,
+      type: StateActions.SetUser,
       payload: user,
     })
 

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { ProjectActions } from 'reducers/projectReducer/projectReducer'
+import { StateActions } from 'reducers/projectReducer/projectReducer'
 import {
   DatasetReleaseStatus,
   DatasetStatus,
@@ -56,7 +56,7 @@ const ReleaseButton = () => {
     const lastUpdated = getTimestamp()
 
     projectDispatch({
-      type: ProjectActions.SetDatasetReleaseStatus,
+      type: StateActions.SetDatasetReleaseStatus,
       payload: {
         datasetID,
         lastUpdated,
@@ -65,7 +65,7 @@ const ReleaseButton = () => {
     })
 
     projectDispatch({
-      type: ProjectActions.CreateVersion,
+      type: StateActions.CreateVersion,
       payload: {
         datasetID,
         version: {

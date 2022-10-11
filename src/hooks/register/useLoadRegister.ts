@@ -11,7 +11,7 @@ import {
   ProjectStatus,
   RegisterStatus,
 } from 'reducers/projectReducer/types'
-import { ProjectActions } from 'reducers/projectReducer/projectReducer'
+import { StateActions } from 'reducers/projectReducer/projectReducer'
 
 import loadRegister from 'api/loadRegister'
 
@@ -58,17 +58,17 @@ const useLoadRegister = () => {
 
       if (nextRegisterData) {
         projectDispatch({
-          type: ProjectActions.ReplaceRegister,
+          type: StateActions.ReplaceRegister,
           payload: { datasetID, register: nextRegisterData },
         })
 
         projectDispatch({
-          type: ProjectActions.SetRegisterStatus,
+          type: StateActions.SetRegisterStatus,
           payload: { datasetID, status: RegisterStatus.Saved },
         })
       } else {
         projectDispatch({
-          type: ProjectActions.SetRegisterStatus,
+          type: StateActions.SetRegisterStatus,
           payload: { datasetID, status: RegisterStatus.Error },
         })
       }

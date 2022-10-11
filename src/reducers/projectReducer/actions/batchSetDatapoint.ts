@@ -1,4 +1,4 @@
-import { ActionFunction, ProjectActions } from '../projectReducer'
+import { ActionFunction, StateActions } from '../projectReducer'
 import setDatapoint from './setDatapoint'
 import { Project } from '../types'
 import getTimestamp from 'utilities/getTimestamp'
@@ -13,7 +13,7 @@ export interface BatchSetDatapointPayload {
 }
 
 export interface BatchSetDatapointAction {
-  type: ProjectActions.BatchSetDatapoint
+  type: StateActions.BatchSetDatapoint
   payload: BatchSetDatapointPayload
 }
 

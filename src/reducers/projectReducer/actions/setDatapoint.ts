@@ -1,4 +1,4 @@
-import { ActionFunction, ProjectActions } from '../projectReducer'
+import { ActionFunction, StateActions } from '../projectReducer'
 import {
   Datapoint,
   DatasetReleaseStatus,
@@ -23,7 +23,7 @@ export interface SetDatapointPayload {
 }
 
 export interface SetDatapointAction {
-  type: ProjectActions.SetDatapoint
+  type: StateActions.SetDatapoint
   payload: SetDatapointPayload
 }
 

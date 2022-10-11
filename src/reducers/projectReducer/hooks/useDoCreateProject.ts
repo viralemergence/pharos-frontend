@@ -2,7 +2,7 @@ import useUser from 'hooks/useUser'
 
 import { FormData } from 'components/AuthenticatedViews/PortfolioPage/CreateProjectForm/CreateProjectForm'
 import { ProjectPublishStatus, ProjectStatus } from '../types'
-import { ProjectActions } from '../projectReducer'
+import { StateActions } from '../projectReducer'
 
 import { useNavigate } from 'react-router-dom'
 import useDispatch from 'hooks/useDispatch'
@@ -35,7 +35,7 @@ const useDoCreateProject = () => {
     }
 
     dispatch({
-      type: ProjectActions.CreateProject,
+      type: StateActions.CreateProject,
       payload: projectData,
     })
 

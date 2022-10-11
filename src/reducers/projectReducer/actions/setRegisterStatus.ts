@@ -1,4 +1,4 @@
-import { ActionFunction, ProjectActions } from '../projectReducer'
+import { ActionFunction, StateActions } from '../projectReducer'
 import { RegisterStatus } from '../types'
 
 export interface SetRegisterStatusPayload {
@@ -7,7 +7,7 @@ export interface SetRegisterStatusPayload {
 }
 
 export interface SetRegisterStatusAction {
-  type: ProjectActions.SetRegisterStatus
+  type: StateActions.SetRegisterStatus
   payload: SetRegisterStatusPayload
 }
 

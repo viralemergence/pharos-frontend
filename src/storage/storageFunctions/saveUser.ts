@@ -1,7 +1,7 @@
 import localforage from 'localforage'
 
 import { User } from 'reducers/projectReducer/types'
-import { ProjectActions } from 'reducers/projectReducer/projectReducer'
+import { StateActions } from 'reducers/projectReducer/projectReducer'
 
 import {
   APIRoutes,
@@ -18,21 +18,21 @@ export interface SaveUser {
 
 const saveUser: StorageFunction<SaveUser> = async (key, message, dispatch) => {
   dispatch({
-    type: ProjectActions.SetStorageMessageStatus,
+    type: StateActions.SetStorageMessageStatus,
     payload: { key, status: StorageMessageStatus.Pending },
   })
 
   if (message.target === 'local') {
     await localforage.setItem('user', message.data).catch(() =>
       dispatch({
-        type: ProjectActions.SetStorageMessageStatus,
+        type: StateActions.SetStorageMessageStatus,
         payload: { key, status: StorageMessageStatus.LocalStorageError },
       })
     )
-    dispatch({ type: ProjectActions.RemoveStorageMessage, payload: key })
+    dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
   } else {
     dispatch({
-      type: ProjectActions.SetStorageMessageStatus,
+      type: StateActions.SetStorageMessageStatus,
       payload: { key, status: StorageMessageStatus.NetworkError },
     })
   }

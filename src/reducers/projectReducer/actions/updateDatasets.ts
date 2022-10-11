@@ -1,4 +1,4 @@
-import { ActionFunction, ProjectActions } from '../projectReducer'
+import { ActionFunction, StateActions } from '../projectReducer'
 import { Dataset } from '../types'
 import {
   APIRoutes,
@@ -11,7 +11,7 @@ interface SetDatasetsActionPayload {
 }
 
 export interface UpdateDatasetsAction {
-  type: ProjectActions.UpdateDatasets
+  type: StateActions.UpdateDatasets
   payload: SetDatasetsActionPayload
 }
 

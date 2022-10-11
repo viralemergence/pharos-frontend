@@ -5,7 +5,7 @@ import useDispatch from 'hooks/useDispatch'
 import useUser from 'hooks/useUser'
 import localforage from 'localforage'
 import { useEffect } from 'react'
-import { ProjectActions } from 'reducers/projectReducer/projectReducer'
+import { StateActions } from 'reducers/projectReducer/projectReducer'
 import { Dataset, NodeStatus } from 'reducers/projectReducer/types'
 
 const useLoadDatasets = () => {
@@ -24,7 +24,7 @@ const useLoadDatasets = () => {
     // just to be safe, set the datasets object
     // to empty while we query the local DB
     dispatch({
-      type: ProjectActions.UpdateDatasets,
+      type: StateActions.UpdateDatasets,
       payload: {
         source: 'local',
         data: {},
@@ -34,7 +34,7 @@ const useLoadDatasets = () => {
     // set status back to initial so it'll pull
     // the latest datasets from the server again
     dispatch({
-      type: ProjectActions.SetAppStateStatus,
+      type: StateActions.SetAppStateStatus,
       payload: {
         key: 'datasets',
         status: NodeStatus.Initial,
@@ -58,7 +58,7 @@ const useLoadDatasets = () => {
 
       if (localDatasets)
         dispatch({
-          type: ProjectActions.UpdateDatasets,
+          type: StateActions.UpdateDatasets,
           payload: {
             source: 'local',
             data: localDatasets,
@@ -81,7 +81,7 @@ const useLoadDatasets = () => {
         return
 
       dispatch({
-        type: ProjectActions.SetAppStateStatus,
+        type: StateActions.SetAppStateStatus,
         payload: {
           key: 'datasets',
           status: NodeStatus.Loading,
@@ -100,7 +100,7 @@ const useLoadDatasets = () => {
         }
       ).catch(() => {
         dispatch({
-          type: ProjectActions.SetAppStateStatus,
+          type: StateActions.SetAppStateStatus,
           payload: {
             key: 'datasets',
             status: NodeStatus.Offline,
@@ -111,7 +111,7 @@ const useLoadDatasets = () => {
       console.log(`[API]     Response: /list-datasets: ${response?.status}`)
       if (!response || !response.ok) {
         dispatch({
-          type: ProjectActions.SetAppStateStatus,
+          type: StateActions.SetAppStateStatus,
           payload: {
             key: 'datasets',
             status: NodeStatus.Offline,
@@ -126,7 +126,7 @@ const useLoadDatasets = () => {
 
       if (remoteDatsets) {
         dispatch({
-          type: ProjectActions.UpdateDatasets,
+          type: StateActions.UpdateDatasets,
           payload: {
             source: 'remote',
             data: remoteDatsets,
@@ -134,7 +134,7 @@ const useLoadDatasets = () => {
         })
 
         dispatch({
-          type: ProjectActions.SetAppStateStatus,
+          type: StateActions.SetAppStateStatus,
           payload: {
             key: 'datasets',
             status: NodeStatus.Loaded,

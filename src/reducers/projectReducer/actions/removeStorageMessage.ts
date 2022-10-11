@@ -1,7 +1,7 @@
-import { ActionFunction, ProjectActions } from '../projectReducer'
+import { ActionFunction, StateActions } from '../projectReducer'
 
 export interface RemoveStorageMessageAction {
-  type: ProjectActions.RemoveStorageMessage
+  type: StateActions.RemoveStorageMessage
   payload: string
 }
 

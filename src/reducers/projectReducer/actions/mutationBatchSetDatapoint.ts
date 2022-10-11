@@ -1,5 +1,5 @@
 import generateID from 'utilities/generateID'
-import { ActionFunction, ProjectActions } from '../projectReducer'
+import { ActionFunction, StateActions } from '../projectReducer'
 import { Project } from '../types'
 
 export type Rows = { [key: string]: string }[]
@@ -12,7 +12,7 @@ export interface BatchSetDatapointPayload {
 }
 
 export interface BatchSetDatapointAction {
-  type: ProjectActions.BatchSetDatapoint
+  type: StateActions.BatchSetDatapoint
   payload: BatchSetDatapointPayload
 }
 

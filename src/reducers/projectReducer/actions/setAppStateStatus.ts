@@ -1,4 +1,4 @@
-import { ActionFunction, ProjectActions } from '../projectReducer'
+import { ActionFunction, StateActions } from '../projectReducer'
 import { AppState, NodeStatus } from '../types'
 
 interface SetAppStateStatusPayload {
@@ -7,7 +7,7 @@ interface SetAppStateStatusPayload {
 }
 
 export interface SetAppStateStatusAction {
-  type: ProjectActions.SetAppStateStatus
+  type: StateActions.SetAppStateStatus
   payload: SetAppStateStatusPayload
 }
 

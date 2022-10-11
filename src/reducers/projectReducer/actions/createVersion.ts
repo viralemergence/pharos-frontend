@@ -1,4 +1,4 @@
-import { ActionFunction, ProjectActions } from '../projectReducer'
+import { ActionFunction, StateActions } from '../projectReducer'
 import { RegisterStatus, Version } from '../types'
 import setActiveVersion from './setActiveVersion'
 import setRegisterStatus from './setRegisterStatus'
@@ -9,7 +9,7 @@ export interface CreateVersionPayload {
 }
 
 export interface CreateVersionAction {
-  type: ProjectActions.CreateVersion
+  type: StateActions.CreateVersion
   payload: CreateVersionPayload
 }
 

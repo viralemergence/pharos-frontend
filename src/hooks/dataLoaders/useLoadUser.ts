@@ -3,7 +3,7 @@ import localforage from 'localforage'
 
 import {
   ProjectAction,
-  ProjectActions,
+  StateActions,
 } from 'reducers/projectReducer/projectReducer'
 import { User, UserStatus } from 'reducers/projectReducer/types'
 
@@ -16,7 +16,7 @@ const useLoadUser = (dispatch: React.Dispatch<ProjectAction>) => {
       if (localUser) {
         // set local data in state
         dispatch({
-          type: ProjectActions.SetUser,
+          type: StateActions.SetUser,
           payload: localUser,
         })
 
@@ -30,7 +30,7 @@ const useLoadUser = (dispatch: React.Dispatch<ProjectAction>) => {
         if (response && response.ok) {
           const updatedUserData = await response.json()
           dispatch({
-            type: ProjectActions.SetUser,
+            type: StateActions.SetUser,
             payload: {
               status: UserStatus.loggedIn,
               statusMessage: 'Logged in',
@@ -44,7 +44,7 @@ const useLoadUser = (dispatch: React.Dispatch<ProjectAction>) => {
       // to logged out state now that we're sure
       else
         dispatch({
-          type: ProjectActions.SetUser,
+          type: StateActions.SetUser,
           payload: {
             status: UserStatus.loggedOut,
             statusMessage: 'Logged out',

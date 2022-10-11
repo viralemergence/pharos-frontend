@@ -1,8 +1,8 @@
 import { User } from '../types'
-import { ActionFunction, ProjectActions } from '../projectReducer'
+import { ActionFunction, StateActions } from '../projectReducer'
 
 export interface SetUserAction {
-  type: ProjectActions.SetUser
+  type: StateActions.SetUser
   payload: User
 }
 

@@ -2,7 +2,7 @@ import Papa from 'papaparse'
 
 import {
   ProjectAction,
-  ProjectActions,
+  StateActions,
 } from 'reducers/projectReducer/projectReducer'
 
 import { User } from 'reducers/projectReducer/types'
@@ -22,7 +22,7 @@ const parseFile = ({ file, user, datasetID, projectDispatch }: ParseFile) => {
     complete: async results => {
       // set the register status to unsaved
       projectDispatch({
-        type: ProjectActions.SetRegisterStatus,
+        type: StateActions.SetRegisterStatus,
         payload: { datasetID, status: RegisterStatus.Unsaved },
       })
 
@@ -32,7 +32,7 @@ const parseFile = ({ file, user, datasetID, projectDispatch }: ParseFile) => {
 
       // create a version
       projectDispatch({
-        type: ProjectActions.CreateVersion,
+        type: StateActions.CreateVersion,
         payload: {
           datasetID,
           version: {
@@ -44,7 +44,7 @@ const parseFile = ({ file, user, datasetID, projectDispatch }: ParseFile) => {
 
       // parse all rows
       projectDispatch({
-        type: ProjectActions.BatchSetDatapoint,
+        type: StateActions.BatchSetDatapoint,
         payload: { researcherID, datasetID, recordIDColumn: 'Row ID', rows },
       })
     },

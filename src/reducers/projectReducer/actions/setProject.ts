@@ -1,8 +1,8 @@
-import { ActionFunction, ProjectActions } from '../projectReducer'
+import { ActionFunction, StateActions } from '../projectReducer'
 import { Project } from '../types'
 
 export interface SetProjectAction {
-  type: ProjectActions.SetProject
+  type: StateActions.SetProject
   payload: Project
 }
 

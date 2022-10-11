@@ -1,4 +1,4 @@
-import { ActionFunction, ProjectActions } from '../projectReducer'
+import { ActionFunction, StateActions } from '../projectReducer'
 import { Project } from '../types'
 import {
   APIRoutes,
@@ -11,7 +11,7 @@ interface SetProjectsActionPayload {
 }
 
 export interface UpdateProjectsAction {
-  type: ProjectActions.UpdateProjects
+  type: StateActions.UpdateProjects
   payload: SetProjectsActionPayload
 }
 

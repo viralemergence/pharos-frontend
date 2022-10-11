@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { ProjectActions } from 'reducers/projectReducer/projectReducer'
+import { StateActions } from 'reducers/projectReducer/projectReducer'
 
 import useDataset from 'hooks/dataset/useDataset'
 import useDatasetID from 'hooks/dataset/useDatasetID'
@@ -26,7 +26,7 @@ const VersionSwitcher = () => {
     const nextVersion = e.target.value
 
     projectDispatch({
-      type: ProjectActions.SetActiveVersion,
+      type: StateActions.SetActiveVersion,
       payload: { datasetID: datasetID, version: Number(nextVersion) },
     })
   }

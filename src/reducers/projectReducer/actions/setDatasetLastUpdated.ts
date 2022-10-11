@@ -1,4 +1,4 @@
-import { ActionFunction, ProjectActions } from '../projectReducer'
+import { ActionFunction, StateActions } from '../projectReducer'
 
 export interface SetDatasetLastUpdatedPayload {
   datasetID: string
@@ -6,7 +6,7 @@ export interface SetDatasetLastUpdatedPayload {
 }
 
 export interface SetDatasetLastUpdatedAction {
-  type: ProjectActions.SetDatasetLastUpdated
+  type: StateActions.SetDatasetLastUpdated
   payload: SetDatasetLastUpdatedPayload
 }
 

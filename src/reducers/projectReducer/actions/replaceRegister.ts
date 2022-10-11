@@ -1,4 +1,4 @@
-import { ActionFunction, ProjectActions } from '../projectReducer'
+import { ActionFunction, StateActions } from '../projectReducer'
 import { Register } from '../types'
 
 export interface ReplaceRegisterPayload {
@@ -7,7 +7,7 @@ export interface ReplaceRegisterPayload {
 }
 
 export interface ReplaceRegisterAction {
-  type: ProjectActions.ReplaceRegister
+  type: StateActions.ReplaceRegister
   payload: ReplaceRegisterPayload
 }
 

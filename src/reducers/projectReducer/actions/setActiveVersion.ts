@@ -1,7 +1,7 @@
-import { ActionFunction, ProjectActions } from '../projectReducer'
+import { ActionFunction, StateActions } from '../projectReducer'
 
 export interface SetActiveVersionAction {
-  type: ProjectActions.SetActiveVersion
+  type: StateActions.SetActiveVersion
   payload: SetActiveVersionPayload
 }
 

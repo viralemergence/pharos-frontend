@@ -1,4 +1,4 @@
-import { ActionFunction, ProjectActions } from '../projectReducer'
+import { ActionFunction, StateActions } from '../projectReducer'
 import { Version } from '../types'
 
 export interface SetVersionsPayload {
@@ -7,7 +7,7 @@ export interface SetVersionsPayload {
 }
 
 export interface SetVersionsAction {
-  type: ProjectActions.SetVersions
+  type: StateActions.SetVersions
   payload: SetVersionsPayload
 }
 

@@ -47,7 +47,7 @@ import setMessageStack, {
 import updateDatasets, { UpdateDatasetsAction } from './actions/updateDatasets'
 
 // reducer actions
-export enum ProjectActions {
+export enum StateActions {
   // SetProject,
   SetUser,
   SetAppStateStatus,
@@ -127,30 +127,30 @@ const projectReducer = (state: AppState, action: ProjectAction) => {
     // case ProjectActions.SetProject:
     //   return setProject(state, action.payload)
 
-    case ProjectActions.SetUser:
+    case StateActions.SetUser:
       return setUser(state, action.payload)
 
-    case ProjectActions.SetAppStateStatus:
+    case StateActions.SetAppStateStatus:
       return setAppStateStatus(state, action.payload)
 
     // storage message actions
-    case ProjectActions.SetMessageStack:
+    case StateActions.SetMessageStack:
       return setMessageStack(state, action.payload)
-    case ProjectActions.SetStorageMessageStatus:
+    case StateActions.SetStorageMessageStatus:
       return setStorageMessageStatus(state, action.payload)
-    case ProjectActions.RemoveStorageMessage:
+    case StateActions.RemoveStorageMessage:
       return removeStorageMessage(state, action.payload)
 
     // project actions
-    case ProjectActions.CreateProject:
+    case StateActions.CreateProject:
       return createProject(state, action.payload)
-    case ProjectActions.UpdateProjects:
+    case StateActions.UpdateProjects:
       return updateProjects(state, action.payload)
 
     // dataset actions
-    case ProjectActions.UpdateDatasets:
+    case StateActions.UpdateDatasets:
       return updateDatasets(state, action.payload)
-    case ProjectActions.CreateDataset:
+    case StateActions.CreateDataset:
       return createDataset(state, action.payload)
 
     // case ProjectActions.SetDatasetStatus:

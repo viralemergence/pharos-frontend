@@ -2,7 +2,7 @@ import {
   APIRoutes,
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
-import { ActionFunction, ProjectActions } from '../projectReducer'
+import { ActionFunction, StateActions } from '../projectReducer'
 import { Project, ProjectStatus, Dataset, DatasetReleaseStatus } from '../types'
 
 interface CreateDatasetPayload {
@@ -12,7 +12,7 @@ interface CreateDatasetPayload {
 }
 
 export interface CreateDatasetAction {
-  type: ProjectActions.CreateDataset
+  type: StateActions.CreateDataset
   payload: CreateDatasetPayload
 }
 

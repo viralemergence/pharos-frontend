@@ -7,7 +7,7 @@ import useUser from 'hooks/useUser'
 import generateID from 'utilities/generateID'
 
 import { DatasetStatus, RegisterStatus } from '../types'
-import { ProjectActions } from '../projectReducer'
+import { StateActions } from '../projectReducer'
 import useProjectID from 'hooks/project/useProjectID'
 import getTimestamp from 'utilities/getTimestamp'
 
@@ -53,7 +53,7 @@ const useDoCreateDataset = () => {
     }
 
     dispatch({
-      type: ProjectActions.CreateDataset,
+      type: StateActions.CreateDataset,
       payload: {
         timestamp: getTimestamp(),
         projectID,
