@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import { ProjectContext } from 'reducers/projectReducer/projectContext'
-import { stateInitialValue } from 'reducers/projectReducer/projectReducer'
+import { stateInitialValue } from 'reducers/projectReducer/initialValues'
 
 const useAppState = () => {
   const context = useContext(ProjectContext)

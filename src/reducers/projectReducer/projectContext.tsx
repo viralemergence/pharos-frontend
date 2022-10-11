@@ -2,11 +2,7 @@ import React, { createContext, useEffect, useReducer } from 'react'
 
 import { AppState } from './types'
 
-import projectReducer, {
-  ProjectAction,
-  ProjectActions,
-  stateInitialValue,
-} from './projectReducer'
+import projectReducer, { ProjectAction, ProjectActions } from './projectReducer'
 
 import synchronizeMessageQueue, {
   StorageMessage,
@@ -14,6 +10,8 @@ import synchronizeMessageQueue, {
 } from 'storage/synchronizeMessageQueue'
 import localforage from 'localforage'
 import useLoadUser from 'hooks/dataLoaders/useLoadUser'
+
+import { stateInitialValue } from './initialValues'
 
 type ProjectContextValue = {
   state: AppState

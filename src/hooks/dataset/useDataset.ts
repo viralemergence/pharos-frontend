@@ -1,4 +1,4 @@
-import { datasetInitialValue } from 'reducers/projectReducer/projectReducer'
+import { datasetInitialValue } from 'reducers/projectReducer/initialValues'
 
 import useDatasetID from './useDatasetID'
 import useDatasets from './useDatasets'
