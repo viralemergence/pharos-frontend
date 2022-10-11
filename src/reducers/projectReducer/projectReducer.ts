@@ -119,7 +119,7 @@ export const datasetInitialValue: Dataset = {
 }
 
 export const stateInitialValue: AppState = {
-  user: userInitialValue,
+  user: defaultUserState,
   projects: {
     status: NodeStatus.Initial,
     data: {},

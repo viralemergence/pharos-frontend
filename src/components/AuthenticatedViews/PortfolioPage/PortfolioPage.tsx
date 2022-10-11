@@ -19,8 +19,6 @@ const H1 = styled.h1`
 `
 
 const ProjectList = () => {
-  useLoadProjects()
-
   const [createModalOpen, setCreateModalOpen] = useState(false)
 
   return (

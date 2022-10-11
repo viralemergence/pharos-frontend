@@ -19,8 +19,6 @@ import BreadcrumbLink, {
 
 import useProject from 'hooks/project/useProject'
 import DatasetStatusMessage from './DatasetStatusMessage/DatasetStatusMessage'
-import useLoadProjects from 'hooks/dataLoaders/useLoadProjects'
-import useLoadDatasets from 'hooks/dataLoaders/useLoadDatasets'
 
 const TopSection = styled.section`
   padding: 20px 40px;
@@ -48,9 +46,6 @@ const ProjectName = styled.div`
 `
 
 const DatasetEditor = () => {
-  useLoadProjects()
-  useLoadDatasets()
-
   const dataset = useDataset()
   const project = useProject()
 

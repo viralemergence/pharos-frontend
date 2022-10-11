@@ -3,10 +3,8 @@ import React, { useEffect } from 'react'
 import ListTable, { HeaderRow, RowLink } from 'components/ListTable/ListTable'
 
 import useProjects from 'hooks/project/useProjects'
-import useAppState from 'hooks/useAppState'
 
 const ProjectsTable = () => {
-  const state = useAppState()
   const projects = useProjects()
 
   const sorted =

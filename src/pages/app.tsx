@@ -13,6 +13,7 @@ import ProjectPage from 'components/AuthenticatedViews/ProjectPage/ProjectPage'
 
 import ProjectList from 'components/AuthenticatedViews/PortfolioPage/PortfolioPage'
 import ModalMessageProvider from 'hooks/useModal/ModalMessageProvider'
+import DataLoader from 'components/AuthenticatedViews/DataLoader'
 
 const App = (): JSX.Element => {
   // on the build server, don't try to render the app
@@ -30,9 +31,11 @@ const App = (): JSX.Element => {
               path={'/projects/:projectID/:datasetID'}
               element={
                 <RequireAuth>
-                  <ModalMessageProvider>
-                    <DatasetEditor />
-                  </ModalMessageProvider>
+                  <DataLoader>
+                    <ModalMessageProvider>
+                      <DatasetEditor />
+                    </ModalMessageProvider>
+                  </DataLoader>
                 </RequireAuth>
               }
             />
@@ -40,9 +43,11 @@ const App = (): JSX.Element => {
               path={'/projects/:projectID'}
               element={
                 <RequireAuth>
-                  <ModalMessageProvider>
-                    <ProjectPage />
-                  </ModalMessageProvider>
+                  <DataLoader>
+                    <ModalMessageProvider>
+                      <ProjectPage />
+                    </ModalMessageProvider>
+                  </DataLoader>
                 </RequireAuth>
               }
             />
@@ -50,9 +55,11 @@ const App = (): JSX.Element => {
               path={'/projects'}
               element={
                 <RequireAuth>
-                  <ModalMessageProvider>
-                    <ProjectList />
-                  </ModalMessageProvider>
+                  <DataLoader>
+                    <ModalMessageProvider>
+                      <ProjectList />
+                    </ModalMessageProvider>
+                  </DataLoader>
                 </RequireAuth>
               }
             />
