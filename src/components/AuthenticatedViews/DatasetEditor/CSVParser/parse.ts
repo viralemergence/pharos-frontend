@@ -1,7 +1,7 @@
 import Papa from 'papaparse'
 
 import {
-  ProjectAction,
+  StateAction,
   StateActions,
 } from 'reducers/projectReducer/projectReducer'
 
@@ -13,7 +13,7 @@ interface ParseFile {
   file: File
   user: User
   datasetID: string
-  projectDispatch: React.Dispatch<ProjectAction>
+  projectDispatch: React.Dispatch<StateAction>
 }
 
 const parseFile = ({ file, user, datasetID, projectDispatch }: ParseFile) => {

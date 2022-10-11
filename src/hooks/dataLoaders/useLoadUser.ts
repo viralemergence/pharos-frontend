@@ -2,12 +2,12 @@ import { useEffect } from 'react'
 import localforage from 'localforage'
 
 import {
-  ProjectAction,
+  StateAction,
   StateActions,
 } from 'reducers/projectReducer/projectReducer'
 import { User, UserStatus } from 'reducers/projectReducer/types'
 
-const useLoadUser = (dispatch: React.Dispatch<ProjectAction>) => {
+const useLoadUser = (dispatch: React.Dispatch<StateAction>) => {
   useEffect(() => {
     const loadUser = async () => {
       console.log('loadUser called')

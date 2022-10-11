@@ -1,4 +1,4 @@
-import { ProjectAction } from 'reducers/projectReducer/projectReducer'
+import { StateAction } from 'reducers/projectReducer/projectReducer'
 
 import saveUser, { SaveUser } from './storageFunctions/saveUser'
 import saveProject, { SaveProject } from 'storage/storageFunctions/saveProject'
@@ -30,12 +30,12 @@ export type StorageMessage = SaveProject | SaveUser | SaveDataset
 export type StorageFunction<T> = (
   key: string,
   data: T,
-  dispatch: React.Dispatch<ProjectAction>
+  dispatch: React.Dispatch<StateAction>
 ) => void
 
 const synchronizeMessageQueue = async (
   messageStack: { [key: string]: StorageMessage },
-  dispatch: React.Dispatch<ProjectAction>
+  dispatch: React.Dispatch<StateAction>
 ) => {
   for (const [key, message] of Object.entries(messageStack)) {
     // skip messages in these states:

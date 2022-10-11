@@ -1,8 +1,8 @@
 import { useContext } from 'react'
 import { StateContext } from 'reducers/projectReducer/stateContext'
-import { ProjectAction } from 'reducers/projectReducer/projectReducer'
+import { StateAction } from 'reducers/projectReducer/projectReducer'
 
-const useDispatch = (): React.Dispatch<ProjectAction> => {
+const useDispatch = (): React.Dispatch<StateAction> => {
   const context = useContext(StateContext)
 
   // dispatch should be null on the build server; calling

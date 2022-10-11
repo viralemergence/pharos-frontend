@@ -81,7 +81,7 @@ export enum StateActions {
   // BatchSetDatapoint,
 }
 
-export type ProjectAction =
+export type StateAction =
   // | SetProjectAction
   | SetUserAction
   | SetAppStateStatusAction
@@ -119,7 +119,7 @@ export type ActionFunction<T = void> = (state: AppState, payload: T) => AppState
 //   return nextState
 // }
 
-const projectReducer = (state: AppState, action: ProjectAction) => {
+const projectReducer = (state: AppState, action: StateAction) => {
   switch (action.type) {
     // datsets
     // case ProjectActions.SetProjectStatus:

@@ -2,7 +2,7 @@ import React, { createContext, useEffect, useReducer } from 'react'
 
 import { AppState } from './types'
 
-import projectReducer, { ProjectAction, StateActions } from './projectReducer'
+import projectReducer, { StateAction, StateActions } from './projectReducer'
 
 import synchronizeMessageQueue, {
   StorageMessage,
@@ -15,7 +15,7 @@ import { stateInitialValue } from './initialValues'
 
 type StateContextValue = {
   state: AppState
-  dispatch: React.Dispatch<ProjectAction>
+  dispatch: React.Dispatch<StateAction>
 }
 
 interface StateContextProviderProps {
