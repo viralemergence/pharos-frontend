@@ -13,18 +13,18 @@ import useLoadUser from 'hooks/dataLoaders/useLoadUser'
 
 import { stateInitialValue } from './initialValues'
 
-type ProjectContextValue = {
+type StateContextValue = {
   state: AppState
   dispatch: React.Dispatch<ProjectAction>
 }
 
-interface ProjectContextProviderProps {
+interface StateContextProviderProps {
   children: React.ReactNode
 }
 
-export const ProjectContext = createContext<ProjectContextValue | null>(null)
+export const StateContext = createContext<StateContextValue | null>(null)
 
-const StateContextProvider = ({ children }: ProjectContextProviderProps) => {
+const StateContextProvider = ({ children }: StateContextProviderProps) => {
   const [state, dispatch] = useReducer(projectReducer, stateInitialValue)
   const { messageStack } = state
 
@@ -75,9 +75,9 @@ const StateContextProvider = ({ children }: ProjectContextProviderProps) => {
   }, [messageStack])
 
   return (
-    <ProjectContext.Provider value={{ state, dispatch }}>
+    <StateContext.Provider value={{ state, dispatch }}>
       {children}
-    </ProjectContext.Provider>
+    </StateContext.Provider>
   )
 }
 

@@ -1,9 +1,9 @@
 import { useContext } from 'react'
-import { ProjectContext } from 'reducers/projectReducer/projectContext'
+import { StateContext } from 'reducers/projectReducer/stateContext'
 import { ProjectAction } from 'reducers/projectReducer/projectReducer'
 
 const useDispatch = (): React.Dispatch<ProjectAction> => {
-  const context = useContext(ProjectContext)
+  const context = useContext(StateContext)
 
   // dispatch should be null on the build server; calling
   // this on the build server can lead to rehydration bugs.

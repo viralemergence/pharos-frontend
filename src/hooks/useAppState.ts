@@ -1,9 +1,9 @@
 import { useContext } from 'react'
-import { ProjectContext } from 'reducers/projectReducer/projectContext'
+import { StateContext } from 'reducers/projectReducer/stateContext'
 import { stateInitialValue } from 'reducers/projectReducer/initialValues'
 
 const useAppState = () => {
-  const context = useContext(ProjectContext)
+  const context = useContext(StateContext)
 
   // userState will be undefined on the build server
   // so if window is undefined and userState is undefined
