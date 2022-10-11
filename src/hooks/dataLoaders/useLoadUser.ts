@@ -5,7 +5,7 @@ import {
   ProjectAction,
   ProjectActions,
 } from 'reducers/projectReducer/projectReducer'
-import { User, UserStatus } from 'components/Login/UserContextProvider'
+import { User, UserStatus } from 'reducers/projectReducer/types'
 
 const useLoadUser = (dispatch: React.Dispatch<ProjectAction>) => {
   useEffect(() => {

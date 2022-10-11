@@ -6,6 +6,8 @@ import {
   ProjectPublishStatus,
   ProjectStatus,
   NodeStatus,
+  User,
+  UserStatus,
 } from './types'
 
 import setActiveVersion, {
@@ -48,11 +50,6 @@ import setStorageMessageStatus, {
 import removeStorageMessage, {
   RemoveStorageMessageAction,
 } from './actions/removeStorageMessage'
-import {
-  defaultUserState,
-  User,
-  UserStatus,
-} from 'components/Login/UserContextProvider'
 import setUser, { SetUserAction } from './actions/setUser'
 import setMessageStack, {
   SetMessageStackAction,
@@ -119,7 +116,7 @@ export const datasetInitialValue: Dataset = {
 }
 
 export const stateInitialValue: AppState = {
-  user: defaultUserState,
+  user: userInitialValue,
   projects: {
     status: NodeStatus.Initial,
     data: {},

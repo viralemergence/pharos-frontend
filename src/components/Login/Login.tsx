@@ -7,7 +7,7 @@ import CMS from '@talus-analytics/library.airtable-cms'
 import useSignInPageData from 'cmsHooks/useSignInPageData'
 import useUser from 'hooks/useUser'
 
-import { UserStatus } from 'components/Login/UserContextProvider'
+import { UserStatus } from 'reducers/projectReducer/types'
 import authenticate from 'components/Login/authenticate'
 import MintButton from 'components/ui/MintButton'
 import Label from 'components/ui/InputLabel'

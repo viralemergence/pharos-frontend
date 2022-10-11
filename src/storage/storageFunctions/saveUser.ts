@@ -1,6 +1,6 @@
 import localforage from 'localforage'
 
-import { User } from 'components/Login/UserContextProvider'
+import { User } from 'reducers/projectReducer/types'
 import { ProjectActions } from 'reducers/projectReducer/projectReducer'
 
 import {

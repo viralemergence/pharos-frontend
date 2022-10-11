@@ -7,7 +7,7 @@ import CMS from '@talus-analytics/library.airtable-cms'
 import NavLink from './NavLink'
 import MobileMenu from './MobileMenu/MobileMenu'
 
-import { UserStatus } from '../../Login/UserContextProvider'
+import { UserStatus } from 'reducers/projectReducer/types'
 
 import useUser from 'hooks/useUser'
 import useIndexPageData from 'cmsHooks/useIndexPageData'

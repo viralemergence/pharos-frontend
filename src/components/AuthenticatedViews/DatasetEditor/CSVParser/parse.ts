@@ -5,7 +5,7 @@ import {
   ProjectActions,
 } from 'reducers/projectReducer/projectReducer'
 
-import { User } from 'components/Login/UserContextProvider'
+import { User } from 'reducers/projectReducer/types'
 import { RegisterStatus } from 'reducers/projectReducer/types'
 import { Rows } from 'reducers/projectReducer/actions/batchSetDatapoint'
 

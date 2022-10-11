@@ -1,4 +1,4 @@
-import { User } from 'components/Login/UserContextProvider'
+import { User } from '../types'
 import { ActionFunction, ProjectActions } from '../projectReducer'
 
 export interface SetUserAction {

@@ -1,5 +1,25 @@
-import { User } from 'components/Login/UserContextProvider'
 import { StorageMessage } from 'storage/synchronizeMessageQueue'
+
+export interface User {
+  status: UserStatus
+  statusMessage: string
+  data?: {
+    researcherID: string
+    organization: string
+    email: string
+    name: string
+    projectIDs?: string[]
+  }
+}
+
+export enum UserStatus {
+  'initial',
+  'loggedOut',
+  'loggedIn',
+  'sessionExpired',
+  'invalidUser',
+  'authError',
+}
 
 export enum NodeStatus {
   Initial = 'initial',
