@@ -19,55 +19,21 @@ const useLoadDatasets = () => {
     datasets: { status },
   } = useAppState()
 
-  // debugger
-
+  // Effect for accessing datasets from local indexedDB
   useEffect(() => {
-    dispatch({
-      type: ProjectActions.UpdateDatasets,
-      payload: {
-        source: 'local',
-        data: {},
-      },
-    })
-  }, [projectID, dispatch])
+    const loadLocalDatasets = async () => {
+      if (datasetIDs.length === 0) return
 
-  useEffect(() => {
-    const loadDatasets = async () => {
-      // debugger
-      // skip loading if:
-      console.log('effect runs')
-      if (
-        // project has no datasets
-        datasetIDs.length === 0 ||
-        status === NodeStatus.Syncing ||
-        status === NodeStatus.Loading
-        // if we already tried to load exactly this
-        // status === NodeStatus.Synced
-      )
-        return
-
-      console.log('LOAD DATASETS runs')
-
-      // this needs to be replaced by a status
-      // specifically for loading datasets
+      // just to be safe, set the datasets object
+      // to empty while we query the local DB
       dispatch({
-        type: ProjectActions.SetAppStateStatus,
+        type: ProjectActions.UpdateDatasets,
         payload: {
-          key: 'datasets',
-          status: NodeStatus.Loading,
+          source: 'local',
+          data: {},
         },
       })
 
-      // dispatch({
-      //   type: ProjectActions.UpdateDatasets,
-      //   payload: {
-      //     source: 'local',
-      //     data: {},
-      //   },
-      // })
-
-      console.log('calling load local')
-      console.log({ datasetIDs })
       const localDatasets = (await localforage.getItems(datasetIDs)) as {
         [key: string]: Dataset
       } | null
@@ -80,11 +46,38 @@ const useLoadDatasets = () => {
             data: localDatasets,
           },
         })
+    }
+    loadLocalDatasets()
+  }, [projectID, dispatch, datasetIDs])
 
-      if (status === NodeStatus.Offline) return
+  // effect for loading datasets from remote server
+  useEffect(() => {
+    const loadDatasets = async () => {
+      // debugger
+      // skip loading if:
+      console.log('effect runs')
+      console.log({ projectID })
+      console.log({ status })
+      console.log({ datasetIDs })
+
+      if (
+        datasetIDs.length === 0 ||
+        status === NodeStatus.Loading ||
+        status === NodeStatus.Offline
+      )
+        return
+
+      console.log('LOAD DATASETS runs')
+
+      dispatch({
+        type: ProjectActions.SetAppStateStatus,
+        payload: {
+          key: 'datasets',
+          status: NodeStatus.Loading,
+        },
+      })
 
       console.log('[API]     Request:  /list-datasets')
-      // otherwise, request and sync projects from remote
       const response = await fetch(
         `${process.env.GATSBY_API_URL}/list-datasets`,
         {
@@ -105,7 +98,6 @@ const useLoadDatasets = () => {
       })
 
       console.log(`[API]     Response: /list-datasets: ${response?.status}`)
-
       if (!response || !response.ok) {
         dispatch({
           type: ProjectActions.SetAppStateStatus,
@@ -134,7 +126,7 @@ const useLoadDatasets = () => {
           type: ProjectActions.SetAppStateStatus,
           payload: {
             key: 'datasets',
-            status: NodeStatus.Synced,
+            status: NodeStatus.Loaded,
           },
         })
       }
