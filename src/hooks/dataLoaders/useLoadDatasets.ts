@@ -53,21 +53,13 @@ const useLoadDatasets = () => {
   // effect for loading datasets from remote server
   useEffect(() => {
     const loadDatasets = async () => {
-      // debugger
       // skip loading if:
-      console.log('effect runs')
-      console.log({ projectID })
-      console.log({ status })
-      console.log({ datasetIDs })
-
       if (
         datasetIDs.length === 0 ||
         status === NodeStatus.Loading ||
         status === NodeStatus.Offline
       )
         return
-
-      console.log('LOAD DATASETS runs')
 
       dispatch({
         type: ProjectActions.SetAppStateStatus,

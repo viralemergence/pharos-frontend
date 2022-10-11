@@ -37,8 +37,6 @@ const synchronizeMessageQueue = async (
   messageStack: { [key: string]: StorageMessage },
   dispatch: React.Dispatch<ProjectAction>
 ) => {
-  console.log('[MESSAGES] Synchronize')
-
   for (const [key, message] of Object.entries(messageStack)) {
     // skip messages in these states:
     if (
@@ -48,6 +46,10 @@ const synchronizeMessageQueue = async (
       message.status !== StorageMessageStatus.ServerError &&
       message.status !== StorageMessageStatus.Pending
     ) {
+      console.log(
+        `[MESSAGES] Synchronize ${message.route} to ${message.target}`
+      )
+
       switch (message.route) {
         case APIRoutes.saveUser:
           saveUser(key, message, dispatch)

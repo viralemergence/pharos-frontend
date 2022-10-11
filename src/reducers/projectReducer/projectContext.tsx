@@ -39,7 +39,9 @@ const StateContextProvider = ({ children }: ProjectContextProviderProps) => {
         | undefined
 
       if (stack) {
-        console.log('[MESSAGES] Load Local Messages')
+        console.log(
+          `[MESSAGES] Load ${Object.keys(stack).length} Local Messages`
+        )
 
         const changeStatus = Object.entries(stack).reduce(
           (stack, [key, message]) => ({
