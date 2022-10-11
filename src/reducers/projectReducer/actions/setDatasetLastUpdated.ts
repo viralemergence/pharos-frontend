@@ -1,4 +1,4 @@
-import { ActionFunction, StateActions } from '../projectReducer'
+import { ActionFunction, StateActions } from '../stateReducer'
 
 export interface SetDatasetLastUpdatedPayload {
   datasetID: string

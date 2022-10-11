@@ -1,4 +1,4 @@
-import { ActionFunction, StateActions } from '../projectReducer'
+import { ActionFunction, StateActions } from '../stateReducer'
 import { Dataset } from '../types'
 import {
   APIRoutes,

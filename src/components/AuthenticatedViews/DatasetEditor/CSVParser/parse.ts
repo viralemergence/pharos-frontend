@@ -1,9 +1,6 @@
 import Papa from 'papaparse'
 
-import {
-  StateAction,
-  StateActions,
-} from 'reducers/projectReducer/projectReducer'
+import { StateAction, StateActions } from 'reducers/projectReducer/stateReducer'
 
 import { User } from 'reducers/projectReducer/types'
 import { RegisterStatus } from 'reducers/projectReducer/types'

@@ -1,5 +1,5 @@
 import { StorageMessageStatus } from 'storage/synchronizeMessageQueue'
-import { ActionFunction, StateActions } from '../projectReducer'
+import { ActionFunction, StateActions } from '../stateReducer'
 
 export interface SetStorageMessageStatusPayload {
   key: string

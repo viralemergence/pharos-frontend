@@ -2,7 +2,7 @@ import useUser from 'hooks/useUser'
 
 import { FormData } from 'components/AuthenticatedViews/PortfolioPage/CreateProjectForm/CreateProjectForm'
 import { ProjectPublishStatus, ProjectStatus } from '../types'
-import { StateActions } from '../projectReducer'
+import { StateActions } from '../stateReducer'
 
 import { useNavigate } from 'react-router-dom'
 import useDispatch from 'hooks/useDispatch'

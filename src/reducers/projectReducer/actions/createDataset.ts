@@ -2,7 +2,7 @@ import {
   APIRoutes,
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
-import { ActionFunction, StateActions } from '../projectReducer'
+import { ActionFunction, StateActions } from '../stateReducer'
 import { Project, ProjectStatus, Dataset, DatasetReleaseStatus } from '../types'
 
 interface CreateDatasetPayload {

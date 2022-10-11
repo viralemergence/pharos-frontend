@@ -1,4 +1,4 @@
-import { ActionFunction, StateActions } from '../projectReducer'
+import { ActionFunction, StateActions } from '../stateReducer'
 import { RegisterStatus, Version } from '../types'
 import setActiveVersion from './setActiveVersion'
 import setRegisterStatus from './setRegisterStatus'

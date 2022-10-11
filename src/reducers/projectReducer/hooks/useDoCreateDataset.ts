@@ -7,7 +7,7 @@ import useUser from 'hooks/useUser'
 import generateID from 'utilities/generateID'
 
 import { DatasetStatus, RegisterStatus } from '../types'
-import { StateActions } from '../projectReducer'
+import { StateActions } from '../stateReducer'
 import useProjectID from 'hooks/project/useProjectID'
 import getTimestamp from 'utilities/getTimestamp'
 

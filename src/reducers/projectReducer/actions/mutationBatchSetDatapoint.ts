@@ -1,5 +1,5 @@
 import generateID from 'utilities/generateID'
-import { ActionFunction, StateActions } from '../projectReducer'
+import { ActionFunction, StateActions } from '../stateReducer'
 import { Project } from '../types'
 
 export type Rows = { [key: string]: string }[]

@@ -1,4 +1,4 @@
-import { ActionFunction, StateActions } from '../projectReducer'
+import { ActionFunction, StateActions } from '../stateReducer'
 import setDatapoint from './setDatapoint'
 import { Project } from '../types'
 import getTimestamp from 'utilities/getTimestamp'

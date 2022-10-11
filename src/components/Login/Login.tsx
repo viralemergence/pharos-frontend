@@ -14,7 +14,7 @@ import Label from 'components/ui/InputLabel'
 import Input from 'components/ui/Input'
 import Main from 'components/layout/Main'
 import useDispatch from 'hooks/useDispatch'
-import { StateActions } from 'reducers/projectReducer/projectReducer'
+import { StateActions } from 'reducers/projectReducer/stateReducer'
 
 const Container = styled(Main)`
   max-width: 505px;

@@ -11,7 +11,7 @@ import {
   ProjectStatus,
   RegisterStatus,
 } from 'reducers/projectReducer/types'
-import { StateActions } from 'reducers/projectReducer/projectReducer'
+import { StateActions } from 'reducers/projectReducer/stateReducer'
 
 import loadRegister from 'api/loadRegister'
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { StateActions } from 'reducers/projectReducer/projectReducer'
+import { StateActions } from 'reducers/projectReducer/stateReducer'
 
 import useDataset from 'hooks/dataset/useDataset'
 import useDatasetID from 'hooks/dataset/useDatasetID'

@@ -2,7 +2,7 @@ import React, { createContext, useEffect, useReducer } from 'react'
 
 import { AppState } from './types'
 
-import stateReducer, { StateAction, StateActions } from './projectReducer'
+import stateReducer, { StateAction, StateActions } from './stateReducer'
 
 import synchronizeMessageQueue, {
   StorageMessage,

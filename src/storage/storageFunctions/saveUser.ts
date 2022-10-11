@@ -1,7 +1,7 @@
 import localforage from 'localforage'
 
 import { User } from 'reducers/projectReducer/types'
-import { StateActions } from 'reducers/projectReducer/projectReducer'
+import { StateActions } from 'reducers/projectReducer/stateReducer'
 
 import {
   APIRoutes,

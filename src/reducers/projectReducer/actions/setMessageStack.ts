@@ -1,5 +1,5 @@
 import { StorageMessage } from 'storage/synchronizeMessageQueue'
-import { ActionFunction, StateActions } from '../projectReducer'
+import { ActionFunction, StateActions } from '../stateReducer'
 
 export interface SetMessageStackAction {
   type: StateActions.SetMessageStack

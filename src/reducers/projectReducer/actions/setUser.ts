@@ -1,5 +1,5 @@
 import { User } from '../types'
-import { ActionFunction, StateActions } from '../projectReducer'
+import { ActionFunction, StateActions } from '../stateReducer'
 
 export interface SetUserAction {
   type: StateActions.SetUser
