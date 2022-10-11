@@ -27,17 +27,10 @@ const useLoadProjects = () => {
         !user.data.projectIDs ||
         user.data.projectIDs?.length === 0 ||
         // if we're already already trying to sync this data
-        status === NodeStatus.Syncing ||
-        status === NodeStatus.Loading ||
-        // if we already tried to load exactly this
-        status === NodeStatus.Synced
+        status === NodeStatus.Loading
       )
         return
 
-      console.log('Load Projects Runs')
-      console.log(JSON.stringify(status))
-
-      console.log('dispatch projects loading')
       dispatch({
         type: ProjectActions.SetAppStateStatus,
         payload: {
@@ -118,7 +111,7 @@ const useLoadProjects = () => {
           type: ProjectActions.SetAppStateStatus,
           payload: {
             key: 'projects',
-            status: NodeStatus.Synced,
+            status: NodeStatus.Loaded,
           },
         })
       }

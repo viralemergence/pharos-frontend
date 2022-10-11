@@ -2,10 +2,9 @@ import { User } from 'components/Login/UserContextProvider'
 import { StorageMessage } from 'storage/synchronizeMessageQueue'
 
 export enum NodeStatus {
-  Drifted = 'Drifted',
+  Initial = 'initial',
   Loading = 'Loading',
-  Syncing = 'Syncing',
-  Synced = 'Synced',
+  Loaded = 'Loaded',
   Offline = 'Offline',
 }
 

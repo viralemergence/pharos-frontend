@@ -112,11 +112,11 @@ export const datasetInitialValue: Dataset = {
 export const stateInitialValue: AppState = {
   user: defaultUserState,
   projects: {
-    status: NodeStatus.Drifted,
+    status: NodeStatus.Initial,
     data: {},
   },
   datasets: {
-    status: NodeStatus.Drifted,
+    status: NodeStatus.Initial,
     data: {},
   },
   messageStack: {},
