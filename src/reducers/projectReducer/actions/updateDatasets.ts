@@ -1,5 +1,5 @@
 import { ActionFunction, ProjectActions } from '../projectReducer'
-import { Dataset, NodeStatus } from '../types'
+import { Dataset } from '../types'
 import {
   APIRoutes,
   StorageMessageStatus,

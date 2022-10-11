@@ -11,6 +11,7 @@ import Main from 'components/layout/Main'
 import BreadcrumbLink, {
   BreadcrumbContainer,
 } from 'components/ui/BreadcrumbLink'
+import useLoadProjects from 'hooks/dataLoaders/useLoadProjects'
 
 const H1 = styled.h1`
   ${({ theme }) => theme.h1}
@@ -18,6 +19,8 @@ const H1 = styled.h1`
 `
 
 const ProjectList = () => {
+  useLoadProjects()
+
   const [createModalOpen, setCreateModalOpen] = useState(false)
 
   return (

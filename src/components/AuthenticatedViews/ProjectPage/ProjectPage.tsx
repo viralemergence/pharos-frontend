@@ -17,6 +17,8 @@ import useModal from 'hooks/useModal/useModal'
 import ProjectInfoPanel from './ProjectInfoPanel/ProjectInfoPanel'
 import TextButton from 'components/ui/TextButton'
 import PublishingHelpMessage from './PublishingHelpMessage/PublishingHelpMessage'
+import useLoadProjects from 'hooks/dataLoaders/useLoadProjects'
+import useLoadDatasets from 'hooks/dataLoaders/useLoadDatasets'
 
 const H1 = styled.h1`
   ${({ theme }) => theme.h1}
@@ -69,6 +71,9 @@ const HorizontalBar = styled.div`
 `
 
 const ProjectPage = () => {
+  useLoadProjects()
+  useLoadDatasets()
+
   const user = useUser()
   const project = useProject()
   const setModal = useModal()
