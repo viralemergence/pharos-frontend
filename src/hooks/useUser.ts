@@ -7,8 +7,7 @@ const useUser = () => {
   // so if window is undefined and userState is undefinedj
   // we'll just return the default user state and no state setter
   // since the state should never be updated on the build server anyway.
-  // @ts-expect-error: Type 'undefined' is not assignable to type 'UserContext'
-  if (typeof window === 'undefined' && !userState) return userInitialValue
+  if (typeof window === 'undefined' && !user) return userInitialValue
   // if we're not on the build server, throw an error since
   // this is a thing that should not happen.
   if (!user) throw new Error('App context not found')
