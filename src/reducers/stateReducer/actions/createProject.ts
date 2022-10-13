@@ -45,13 +45,13 @@ const createProject: ActionFunction<Project> = (state, payload) => {
       },
       [`${APIRoutes.saveProject}_${payload.projectID}_remote`]: {
         route: APIRoutes.saveProject,
-        target: 'local',
+        target: 'remote',
         status: StorageMessageStatus.Initial,
         data: payload,
       },
       [`${APIRoutes.saveProject}_${payload.projectID}_local`]: {
         route: APIRoutes.saveProject,
-        target: 'remote',
+        target: 'local',
         status: StorageMessageStatus.Initial,
         data: payload,
       },
