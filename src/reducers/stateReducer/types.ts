@@ -178,7 +178,7 @@ export interface RecordWithID {
 // or in a form-like interface
 export interface Datapoint {
   // human readable label
-  displayValue: string
+  displayValue: string // this needs localization
   // value of the datapoint inside our system,
   // where that needs to be different; for
   // example to implement links to other data
@@ -201,6 +201,10 @@ export interface Datapoint {
   // since it will come back from
   // the API as a string
   version: string
+
+  // // TODO: replace version with timestamp
+  // timestamp: string
+
   // to access versions before
   // the version number, traverse
   // the linked list.
