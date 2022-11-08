@@ -1,5 +1,4 @@
 import useProject from 'hooks/project/useProject'
-import useProjectID from 'hooks/project/useProjectID'
 import useAppState from 'hooks/useAppState'
 import useDispatch from 'hooks/useDispatch'
 import useUser from 'hooks/useUser'
