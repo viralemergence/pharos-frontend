@@ -32,6 +32,7 @@ export interface AppState {
   user: User
   projects: MetadataObj<Project>
   datasets: MetadataObj<Dataset>
+  register: MetadataObj<Register>
   messageStack: { [key: string]: StorageMessage }
 }
 
@@ -102,12 +103,6 @@ export interface Dataset {
   // the version number which the user
   // is looking at in the table interface
   activeVersion: number
-  // the register as represented
-  // in global state on the frontend
-  register?: Register
-  // the status of the register
-  // relative to the server
-  registerStatus?: RegisterStatus
   // whether or not the most recent state
   // of the register is a published version
   highestVersion: number
