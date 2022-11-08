@@ -31,18 +31,17 @@ export const datasetInitialValue: Dataset = {
   activeVersion: 0,
   highestVersion: 0,
   versions: [],
-  register: {},
+}
+
+const metadataObjInitialValue = {
+  status: NodeStatus.Initial,
+  data: {},
 }
 
 export const stateInitialValue: AppState = {
   user: userInitialValue,
-  projects: {
-    status: NodeStatus.Initial,
-    data: {},
-  },
-  datasets: {
-    status: NodeStatus.Initial,
-    data: {},
-  },
+  projects: metadataObjInitialValue,
+  datasets: metadataObjInitialValue,
+  register: metadataObjInitialValue,
   messageStack: {},
 }
