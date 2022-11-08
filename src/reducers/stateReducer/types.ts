@@ -265,7 +265,7 @@ export enum RegisterStatus {
 }
 
 export enum ReportScore {
-  fail,
-  pass,
-  warning,
+  fail = 'FAIL',
+  pass = 'SUCCESS',
+  warning = 'WARNING',
 }
