@@ -2,7 +2,7 @@ import { ActionFunction, StateActions } from '../stateReducer'
 import { AppState, NodeStatus } from '../types'
 
 interface SetAppStateStatusPayload {
-  key: 'projects' | 'datasets'
+  key: 'projects' | 'datasets' | 'register'
   status: NodeStatus
 }
 
