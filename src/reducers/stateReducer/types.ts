@@ -21,6 +21,10 @@ export enum UserStatus {
   'authError',
 }
 
+export type ProjectID = string
+export type RecordID = string
+export type DatasetID = string
+
 export enum NodeStatus {
   Initial = 'initial',
   Loading = 'Loading',
@@ -30,15 +34,15 @@ export enum NodeStatus {
 
 export interface AppState {
   user: User
-  projects: MetadataObj<Project>
-  datasets: MetadataObj<Dataset>
+  projects: MetadataObj<{ [key: ProjectID]: Project }>
+  datasets: MetadataObj<{ [key: DatasetID]: Dataset }>
   register: MetadataObj<Register>
   messageStack: { [key: string]: StorageMessage }
 }
 
 export interface MetadataObj<T> {
   status: NodeStatus
-  data: { [key: string]: T }
+  data: T
 }
 
 // the overall Project object
@@ -140,7 +144,7 @@ export interface Version {
 // which the user will see as a
 // row, or as an input form
 export interface Register {
-  [key: string]: Record
+  [key: RecordID]: Record
 }
 
 // a single record of data, a collection
