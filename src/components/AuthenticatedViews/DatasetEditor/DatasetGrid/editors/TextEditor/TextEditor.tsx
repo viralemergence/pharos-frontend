@@ -13,6 +13,7 @@ import useModal from 'hooks/useModal/useModal'
 import { useEffect } from 'react'
 import { IDMustBeUnique, OnlyEditMostRecent } from './textEditorMessages'
 import useDoSetDatapoint from 'reducers/stateReducer/hooks/useDoSetDatapoint'
+import useRegister from 'hooks/register/useRegister'
 
 const TextInput = styled.input`
   appearance: none;
@@ -46,6 +47,7 @@ const recordIDColumn = 'SampleID'
 
 const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
   const dataset = useDataset()
+  const register = useRegister()
   const setModal = useModal()
   const doSetDatapoint = useDoSetDatapoint()
 
@@ -54,12 +56,10 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
   const [editValue, setEditValue] = useState(datapoint?.displayValue ?? '')
 
   const dispatchValue = () => {
-    if (!dataset.register) return
-
     // special case for handling the ID column
     if (column.key === recordIDColumn) {
       // get all current SampleID values
-      const idMap = Object.entries(dataset.register).reduce(
+      const idMap = Object.entries(register).reduce(
         (acc, [recordID, row]) => ({
           ...acc,
           [row[recordIDColumn]?.displayValue]: recordID,
@@ -92,8 +92,10 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
   }
 
   const editable =
-    dataset.activeVersion === dataset.versions.length - 1 ||
+    Number(dataset.activeVersion) === dataset.versions.length - 1 ||
     dataset.versions.length === 0
+
+  console.log(dataset)
 
   useEffect(() => {
     if (!editable)
