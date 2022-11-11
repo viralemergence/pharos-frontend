@@ -45,6 +45,7 @@ import setMessageStack, {
   SetMessageStackAction,
 } from './actions/setMessageStack'
 import updateDatasets, { UpdateDatasetsAction } from './actions/updateDatasets'
+import setRegister, { SetRegisterAction } from './actions/setRegister'
 
 // reducer actions
 export enum StateActions {
@@ -61,6 +62,8 @@ export enum StateActions {
 
   CreateDataset,
   UpdateDatasets,
+
+  SetRegister,
 
   // SetDatasetStatus,
   // SetDatasetReleaseStatus,
@@ -95,6 +98,7 @@ export type StateAction =
   // // datsets
   | CreateDatasetAction
   | UpdateDatasetsAction
+  | SetRegisterAction
 // | SetDatasetStatusAction
 // | SetDatasetReleaseStatusAction
 // | SetDatasetLastUpdatedAction
@@ -152,6 +156,10 @@ const stateReducer = (state: AppState, action: StateAction) => {
       return updateDatasets(state, action.payload)
     case StateActions.CreateDataset:
       return createDataset(state, action.payload)
+
+    // register actions
+    case StateActions.SetRegister:
+      return setRegister(state, action.payload)
 
     // case ProjectActions.SetDatasetStatus:
     //   return setDatasetStatus(state, action.payload)
