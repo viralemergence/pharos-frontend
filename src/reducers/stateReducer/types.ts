@@ -106,10 +106,10 @@ export interface Dataset {
   versions: Version[]
   // the version number which the user
   // is looking at in the table interface
-  activeVersion: number
+  activeVersion: string
   // whether or not the most recent state
   // of the register is a published version
-  highestVersion: number
+  highestVersion: string
   // name of the dataset
   name: string
   // lastUpdated timestamp
