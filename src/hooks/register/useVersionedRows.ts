@@ -2,6 +2,7 @@ import useDataset from 'hooks/dataset/useDataset'
 import { Datapoint, RecordWithID } from 'reducers/stateReducer/types'
 
 import defaultColumns from '../../../config/defaultColumns.json'
+import useRegister from './useRegister'
 
 // recursively traverse the linked list until the
 // version number is satisfied for a given datapoint
@@ -18,10 +19,12 @@ const getDatapointAtVersion = (
 // hook to provide access to the rows of an arbitrary
 // version of a register for displaying in the table
 const useVersionedRows = () => {
+  const register = useRegister()
   const dataset = useDataset()
 
   // if the register is not available, return empty []
-  if (!dataset.register) return { rows: [], colNames: [] }
+  if (!dataset || !register || Object.keys(register).length === 0)
+    return { rows: [], colNames: [] }
 
   const version = dataset.activeVersion
 
@@ -34,7 +37,7 @@ const useVersionedRows = () => {
   if (version >= dataset.versions.length - 1) {
     const rows: RecordWithID[] = []
 
-    for (const [recordID, record] of Object.entries(dataset.register)) {
+    for (const [recordID, record] of Object.entries(register)) {
       for (const key of Object.keys(record)) {
         if (!colNames[key]) colNames[key] = { type: 'string' }
       }
@@ -47,7 +50,7 @@ const useVersionedRows = () => {
 
   // else return datapoints that are valid for the target version
   return {
-    rows: Object.entries(dataset.register).reduce((row, [recordID, record]) => {
+    rows: Object.entries(register).reduce((row, [recordID, record]) => {
       const datapoints = Object.entries(record).reduce(
         (rec, [key, datapoint]) => {
           const versioned = getDatapointAtVersion(datapoint, version)
