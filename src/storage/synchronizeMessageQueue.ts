@@ -27,9 +27,9 @@ export enum APIRoutes {
   saveRegister = 'save-register',
 }
 
-export interface StorageMessagePayload<T, K> {
-  data: K
-  route: T
+export interface StorageMessagePayload<Data, Route> {
+  data: Route
+  route: Data
   target: 'local' | 'remote'
   status: StorageMessageStatus
 }
