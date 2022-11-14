@@ -6,15 +6,11 @@ import { StateActions } from 'reducers/stateReducer/stateReducer'
 import {
   APIRoutes,
   StorageFunction,
+  StorageMessagePayload,
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
 
-export interface SaveProject {
-  route: APIRoutes.saveProject
-  target: 'local' | 'remote'
-  data: Project
-  status: StorageMessageStatus
-}
+export type SaveProject = StorageMessagePayload<APIRoutes.saveProject, Project>
 
 const saveProject: StorageFunction<SaveProject> = async (
   key,

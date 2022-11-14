@@ -6,15 +6,11 @@ import { StateActions } from 'reducers/stateReducer/stateReducer'
 import {
   APIRoutes,
   StorageFunction,
+  StorageMessagePayload,
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
 
-export interface SaveDataset {
-  route: APIRoutes.saveDataset
-  target: 'local' | 'remote'
-  data: Dataset
-  status: StorageMessageStatus
-}
+export type SaveDataset = StorageMessagePayload<APIRoutes.saveDataset, Dataset>
 
 const saveDataset: StorageFunction<SaveDataset> = async (
   key,
