@@ -25,7 +25,14 @@ export enum APIRoutes {
   saveDataset = 'save-dataset',
 }
 
-export type StorageMessage = SaveProject | SaveUser | SaveDataset
+export interface StorageMessagePayload<T, K> {
+  data: K
+  route: T
+  target: 'local' | 'remote'
+  status: StorageMessageStatus
+}
+
+export type StorageMessage = SaveProject | SaveUser | SaveDataset | SaveRegister
 
 export type StorageFunction<T> = (
   key: string,
