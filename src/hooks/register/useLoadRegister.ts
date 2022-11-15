@@ -26,7 +26,11 @@ const useLoadRegister = () => {
   useEffect(() => {
     dispatch({
       type: StateActions.SetRegister,
-      payload: {},
+      payload: {
+        source: 'local',
+        datasetID,
+        data: {},
+      },
     })
     dispatch({
       type: StateActions.SetAppStateStatus,
@@ -43,13 +47,17 @@ const useLoadRegister = () => {
       if (!datasetID) return
 
       const localRegister = (await localforage.getItem(
-        `${datasetID}_register`
+        `${datasetID}-register`
       )) as Register | null
 
       if (localRegister)
         dispatch({
           type: StateActions.SetRegister,
-          payload: localRegister,
+          payload: {
+            datasetID,
+            source: 'local',
+            data: localRegister,
+          },
         })
     }
 
@@ -100,7 +108,11 @@ const useLoadRegister = () => {
       if (remoteRegister) {
         dispatch({
           type: StateActions.SetRegister,
-          payload: remoteRegister,
+          payload: {
+            datasetID,
+            source: 'remote',
+            data: remoteRegister,
+          },
         })
 
         dispatch({

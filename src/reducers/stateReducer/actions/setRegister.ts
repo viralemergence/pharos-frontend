@@ -33,7 +33,7 @@ const setRegister: ActionFunction<SetRegisterActionPayload> = (
     }
 
   // if source is remote and current state is empty, just set it and save to local
-  if (source === 'remote' && Object.entries(state.register).length === 0)
+  if (source === 'remote' && Object.entries(state.register.data).length === 0)
     return {
       ...state,
       register: {
