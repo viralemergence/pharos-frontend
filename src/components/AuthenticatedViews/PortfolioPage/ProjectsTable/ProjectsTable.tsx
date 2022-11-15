@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 
 import ListTable, { HeaderRow, RowLink } from 'components/ListTable/ListTable'
 
@@ -34,7 +34,7 @@ const ProjectsTable = () => {
             <div>{project.name}</div>
             <div>{project.projectType || '—'}</div>
             <div>{project.surveillanceStatus || '—'}</div>
-            <div>datasets {project.datasetIDs.length}</div>
+            <div>datasets {project.datasetIDs?.length || 0}</div>
             <div>
               {project.lastUpdated
                 ? new Date(project.lastUpdated).toLocaleString()
