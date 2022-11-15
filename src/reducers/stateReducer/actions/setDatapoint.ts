@@ -3,22 +3,7 @@ import {
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
 import { ActionFunction, StateActions } from '../stateReducer'
-import {
-  Datapoint,
-  Dataset,
-  DatasetID,
-  DatasetReleaseStatus,
-  DatasetStatus,
-  NodeStatus,
-  Project,
-  ProjectID,
-  ProjectStatus,
-  RecordID,
-  Register,
-  RegisterStatus,
-} from '../types'
-import setDatasetStatus from './setDatasetStatus'
-import setRegisterStatus from './setRegisterStatus'
+import { Datapoint, DatasetID, ProjectID, RecordID } from '../types'
 
 export interface SetDatapointPayload {
   projectID: ProjectID
