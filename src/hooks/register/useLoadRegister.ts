@@ -33,7 +33,7 @@ const useLoadRegister = () => {
       },
     })
     dispatch({
-      type: StateActions.SetAppStateStatus,
+      type: StateActions.SetMetadataObjStatus,
       payload: {
         key: 'register',
         status: NodeStatus.Initial,
@@ -83,7 +83,7 @@ const useLoadRegister = () => {
         }
       ).catch(() =>
         dispatch({
-          type: StateActions.SetAppStateStatus,
+          type: StateActions.SetMetadataObjStatus,
           payload: {
             key: 'register',
             status: NodeStatus.Offline,
@@ -94,7 +94,7 @@ const useLoadRegister = () => {
       console.log(`[API]     Response: /load-register: ${response?.status}`)
       if (!response || !response.ok) {
         dispatch({
-          type: StateActions.SetAppStateStatus,
+          type: StateActions.SetMetadataObjStatus,
           payload: {
             key: 'register',
             status: NodeStatus.Offline,
@@ -116,7 +116,7 @@ const useLoadRegister = () => {
         })
 
         dispatch({
-          type: StateActions.SetAppStateStatus,
+          type: StateActions.SetMetadataObjStatus,
           payload: {
             key: 'register',
             status: NodeStatus.Loaded,

@@ -27,8 +27,8 @@ import setDatasetLastUpdated, {
 import setDatasetReleaseStatus, {
   SetDatasetReleaseStatusAction,
 } from './actions/setDatasetReleaseStatus'
-import setAppStateStatus, {
-  SetAppStateStatusAction,
+import setMetadataObjStatus, {
+  SetMetadataObjStatus,
 } from './actions/setAppStateStatus'
 import createProject, { CreateProjectAction } from './actions/createProject'
 import setStorageMessageStatus, {
@@ -48,7 +48,7 @@ import setRegister, { SetRegisterAction } from './actions/setRegister'
 export enum StateActions {
   // SetProject,
   SetUser,
-  SetAppStateStatus,
+  SetMetadataObjStatus,
 
   UpdateProjects,
   CreateProject,
@@ -82,7 +82,7 @@ export enum StateActions {
 export type StateAction =
   // | SetProjectAction
   | SetUserAction
-  | SetAppStateStatusAction
+  | SetMetadataObjStatus
   | UpdateProjectsAction
   | CreateProjectAction
   | SetMessageStackAction
@@ -128,8 +128,10 @@ const stateReducer = (state: AppState, action: StateAction) => {
     case StateActions.SetUser:
       return setUser(state, action.payload)
 
-    case StateActions.SetAppStateStatus:
-      return setAppStateStatus(state, action.payload)
+    // set status of one of the main state objects:
+    // projects, datasets, or register.
+    case StateActions.SetMetadataObjStatus:
+      return setMetadataObjStatus(state, action.payload)
 
     // storage message actions
     case StateActions.SetMessageStack:

@@ -34,7 +34,7 @@ const useLoadProjects = () => {
         return
 
       dispatch({
-        type: StateActions.SetAppStateStatus,
+        type: StateActions.SetMetadataObjStatus,
         payload: {
           key: 'projects',
           status: NodeStatus.Loading,
@@ -72,7 +72,7 @@ const useLoadProjects = () => {
       ).catch(() => {
         // catch network error and go into offline mode
         dispatch({
-          type: StateActions.SetAppStateStatus,
+          type: StateActions.SetMetadataObjStatus,
           payload: {
             key: 'projects',
             status: NodeStatus.Offline,
@@ -84,7 +84,7 @@ const useLoadProjects = () => {
 
       if (!response || !response.ok) {
         dispatch({
-          type: StateActions.SetAppStateStatus,
+          type: StateActions.SetMetadataObjStatus,
           payload: {
             key: 'projects',
             status: NodeStatus.Offline,
@@ -110,7 +110,7 @@ const useLoadProjects = () => {
         })
 
         dispatch({
-          type: StateActions.SetAppStateStatus,
+          type: StateActions.SetMetadataObjStatus,
           payload: {
             key: 'projects',
             status: NodeStatus.Loaded,

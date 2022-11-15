@@ -33,7 +33,7 @@ const useLoadDatasets = () => {
     // set status back to initial so it'll pull
     // the latest datasets from the server again
     dispatch({
-      type: StateActions.SetAppStateStatus,
+      type: StateActions.SetMetadataObjStatus,
       payload: {
         key: 'datasets',
         status: NodeStatus.Initial,
@@ -80,7 +80,7 @@ const useLoadDatasets = () => {
         return
 
       dispatch({
-        type: StateActions.SetAppStateStatus,
+        type: StateActions.SetMetadataObjStatus,
         payload: {
           key: 'datasets',
           status: NodeStatus.Loading,
@@ -99,7 +99,7 @@ const useLoadDatasets = () => {
         }
       ).catch(() => {
         dispatch({
-          type: StateActions.SetAppStateStatus,
+          type: StateActions.SetMetadataObjStatus,
           payload: {
             key: 'datasets',
             status: NodeStatus.Offline,
@@ -110,7 +110,7 @@ const useLoadDatasets = () => {
       console.log(`[API]     Response: /list-datasets: ${response?.status}`)
       if (!response || !response.ok) {
         dispatch({
-          type: StateActions.SetAppStateStatus,
+          type: StateActions.SetMetadataObjStatus,
           payload: {
             key: 'datasets',
             status: NodeStatus.Offline,
@@ -133,7 +133,7 @@ const useLoadDatasets = () => {
         })
 
         dispatch({
-          type: StateActions.SetAppStateStatus,
+          type: StateActions.SetMetadataObjStatus,
           payload: {
             key: 'datasets',
             status: NodeStatus.Loaded,

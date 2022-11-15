@@ -1,17 +1,17 @@
 import { ActionFunction, StateActions } from '../stateReducer'
 import { NodeStatus } from '../types'
 
-interface SetAppStateStatusPayload {
+interface SetMetadataObjStatusPayload {
   key: 'projects' | 'datasets' | 'register'
   status: NodeStatus
 }
 
-export interface SetAppStateStatusAction {
-  type: StateActions.SetAppStateStatus
-  payload: SetAppStateStatusPayload
+export interface SetMetadataObjStatus {
+  type: StateActions.SetMetadataObjStatus
+  payload: SetMetadataObjStatusPayload
 }
 
-const setAppStateStatus: ActionFunction<SetAppStateStatusPayload> = (
+const setMetadataObjStatus: ActionFunction<SetMetadataObjStatusPayload> = (
   state,
   { key, status }
 ) => {
@@ -24,4 +24,4 @@ const setAppStateStatus: ActionFunction<SetAppStateStatusPayload> = (
   }
 }
 
-export default setAppStateStatus
+export default setMetadataObjStatus
