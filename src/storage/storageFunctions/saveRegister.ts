@@ -29,13 +29,14 @@ const saveRegister: StorageFunction<SaveRegister> = async (
   })
 
   if (message.target === 'local') {
-    const key = `${message.data.datasetID}-register`
-    await localforage.setItem(key, message.data.register).catch(() =>
-      dispatch({
-        type: StateActions.SetStorageMessageStatus,
-        payload: { key, status: StorageMessageStatus.LocalStorageError },
-      })
-    )
+    await localforage
+      .setItem(`${message.data.datasetID}-register`, message.data.register)
+      .catch(() =>
+        dispatch({
+          type: StateActions.SetStorageMessageStatus,
+          payload: { key, status: StorageMessageStatus.LocalStorageError },
+        })
+      )
     dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
   } else {
     dispatch({
