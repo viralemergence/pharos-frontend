@@ -23,7 +23,8 @@ const setRegister: ActionFunction<SetRegisterActionPayload> = (
   const { data: register, source, datasetID } = payload
 
   // if we're loading from the indexedDB we can just set it directly
-  if (source === 'local')
+  if (source === 'local') {
+    console.log('setRegister: local, set directly')
     return {
       ...state,
       register: {
@@ -31,9 +32,11 @@ const setRegister: ActionFunction<SetRegisterActionPayload> = (
         data: register,
       },
     }
+  }
 
   // if source is remote and current state is empty, just set it and save to local
-  if (source === 'remote' && Object.entries(state.register.data).length === 0)
+  if (source === 'remote' && Object.entries(state.register.data).length === 0) {
+    console.log('setRegister: remote, but local is empty, set directly')
     return {
       ...state,
       register: {
@@ -50,7 +53,9 @@ const setRegister: ActionFunction<SetRegisterActionPayload> = (
         },
       },
     }
+  }
 
+  console.log('setRegister: remote, and need to merge')
   // if source is remote and we have a register already loaded we need to merge them
   const nextRegister: Register = {}
 
@@ -67,13 +72,14 @@ const setRegister: ActionFunction<SetRegisterActionPayload> = (
       nextRegister[recordID][datapointID] = remoteDatapoint
 
       // if the version strings match, continue (keep local)
-      if (localDatapoint.version === remoteDatapoint.version) continue
+      // if (localDatapoint.version === remoteDatapoint.version) continue
 
       // parse the version strings into numbers
       const localDate = Number(localRecord.version || 0)
       const remoteDate = Number(remoteRecord.version || 0)
 
       // if the local one is newer keep that
+      console.log({ localDate, remoteDate })
       if (localDate > remoteDate) {
         nextRegister[recordID][datapointID] = localDatapoint
         continue

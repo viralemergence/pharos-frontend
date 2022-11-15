@@ -20,9 +20,9 @@ const FillDatasetGrid = styled(DataGrid)`
 `
 
 const DatasetGrid = () => {
-  console.time('useVersionedRows')
+  // console.time('useVersionedRows')
   const { rows: versionedRows, colNames } = useVersionedRows()
-  console.timeEnd('useVersionedRows')
+  // console.timeEnd('useVersionedRows')
 
   const registerStatus = useRegisterStatus()
 

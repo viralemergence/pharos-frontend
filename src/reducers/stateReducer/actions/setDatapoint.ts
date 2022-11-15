@@ -1,18 +1,29 @@
+import {
+  APIRoutes,
+  StorageMessageStatus,
+} from 'storage/synchronizeMessageQueue'
 import { ActionFunction, StateActions } from '../stateReducer'
 import {
   Datapoint,
+  Dataset,
+  DatasetID,
   DatasetReleaseStatus,
   DatasetStatus,
+  NodeStatus,
   Project,
+  ProjectID,
   ProjectStatus,
+  RecordID,
+  Register,
   RegisterStatus,
 } from '../types'
 import setDatasetStatus from './setDatasetStatus'
 import setRegisterStatus from './setRegisterStatus'
 
 export interface SetDatapointPayload {
-  datasetID: string
-  recordID: string
+  projectID: ProjectID
+  datasetID: DatasetID
+  recordID: RecordID
   datapointID: string
   lastUpdated: string
   datapoint: {
@@ -29,67 +40,107 @@ export interface SetDatapointAction {
 
 const setDatapoint: ActionFunction<SetDatapointPayload> = (
   state,
-  { datasetID, recordID, datapointID, lastUpdated, datapoint: newData }
-): Project => {
-  const prevDataset = state.datasets[datasetID]
-
+  { projectID, datasetID, recordID, datapointID, lastUpdated, datapoint: next }
+) => {
   // get the previous record, if it's undefined make a new record
-  const prevRecord = prevDataset.register?.[recordID] ?? {}
+  const prevRecord = state.register.data[recordID] ?? {}
 
-  // version for the new datapoint
-  const version = String(prevDataset.versions.length)
+  // get previous datapoint
   const previous = prevRecord[datapointID]
 
-  if (previous?.displayValue === newData.displayValue) return state
+  // short circuit if the display value is unchanged
+  if (previous?.displayValue === next.displayValue) return state
+
+  const nextProject = {
+    ...state.projects.data[projectID],
+    lastUpdated,
+  }
+
+  const nextDataset = {
+    ...state.datasets.data[datasetID],
+    lastUpdated,
+  }
 
   // next datapoint is all the previous data, overwritten with
   // the values from the payload, with the next version number
   // and the previous datapoint in the previous property
   const nextDatapoint = {
     ...previous,
-    ...newData,
-    version,
-    ...(version !== previous?.version && { previous }),
+    ...next,
+    version: String(new Date(lastUpdated).getTime()),
+    previous: previous,
   }
 
-  let nextState: Project = {
-    ...state,
-    lastUpdated,
-    status: ProjectStatus.Unsaved,
-    datasets: {
-      ...state.datasets,
-      [datasetID]: {
-        ...prevDataset,
-        lastUpdated,
-        status: DatasetStatus.Unsaved,
-        releaseStatus: DatasetReleaseStatus.Unreleased,
-        highestVersion: prevDataset.versions.length,
-        register: {
-          ...prevDataset.register,
-          [recordID]: {
-            ...prevRecord,
-            [datapointID]: {
-              ...nextDatapoint,
-            },
-          },
-        },
+  const nextRegister = {
+    ...state.register.data,
+    [recordID]: {
+      ...prevRecord,
+      [datapointID]: {
+        ...nextDatapoint,
       },
     },
   }
 
-  nextState = setDatasetStatus(nextState, {
-    datasetID,
-    status: DatasetStatus.Unsaved,
-  })
-
-  // always set the registerStatus to
-  // unsaved when a new datapoint is set
-  nextState = setRegisterStatus(nextState, {
-    datasetID,
-    status: RegisterStatus.Unsaved,
-  })
-
-  return nextState
+  return {
+    ...state,
+    projects: {
+      ...state.projects,
+      data: {
+        ...state.projects.data,
+        [projectID]: nextProject,
+      },
+    },
+    datasets: {
+      ...state.datasets,
+      data: {
+        ...state.datasets.data,
+        [datasetID]: nextDataset,
+      },
+    },
+    register: {
+      ...state.register,
+      data: nextRegister,
+    },
+    messageStack: {
+      ...state.messageStack,
+      [`${APIRoutes.saveProject}_${projectID}_local`]: {
+        route: APIRoutes.saveProject,
+        target: 'local',
+        status: StorageMessageStatus.Initial,
+        data: nextProject,
+      },
+      [`${APIRoutes.saveProject}_${projectID}_remote`]: {
+        route: APIRoutes.saveProject,
+        target: 'remote',
+        status: StorageMessageStatus.Initial,
+        data: nextProject,
+      },
+      [`${APIRoutes.saveDataset}_${datasetID}_local`]: {
+        route: APIRoutes.saveDataset,
+        target: 'local',
+        status: StorageMessageStatus.Initial,
+        data: nextDataset,
+      },
+      [`${APIRoutes.saveDataset}_${datasetID}_remote`]: {
+        route: APIRoutes.saveDataset,
+        target: 'remote',
+        status: StorageMessageStatus.Initial,
+        data: nextDataset,
+      },
+      [`${APIRoutes.saveRegister}_${datasetID}_local`]: {
+        route: APIRoutes.saveRegister,
+        target: 'local',
+        status: StorageMessageStatus.Initial,
+        data: { register: nextRegister, datasetID },
+      },
+      [`${APIRoutes.saveRegister}_${datasetID}_remote`]: {
+        route: APIRoutes.saveRegister,
+        target: 'remote',
+        status: StorageMessageStatus.Initial,
+        data: { register: nextRegister, datasetID },
+      },
+    },
+  }
 }
 
 export default setDatapoint

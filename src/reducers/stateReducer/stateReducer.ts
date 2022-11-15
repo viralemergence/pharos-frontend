@@ -78,7 +78,7 @@ export enum StateActions {
 
   // CreateVersion,
 
-  // SetDatapoint,
+  SetDatapoint,
   // SetRegisterKey,
   // ReplaceRegister,
   // BatchSetDatapoint,
@@ -99,18 +99,18 @@ export type StateAction =
   | CreateDatasetAction
   | UpdateDatasetsAction
   | SetRegisterAction
-// | SetDatasetStatusAction
-// | SetDatasetReleaseStatusAction
-// | SetDatasetLastUpdatedAction
-// // register
-// | SetRegisterStatusAction
-// | ReplaceRegisterAction
-// // versions
-// | CreateVersionAction
-// | SetActiveVersionAction
-// | SetVersionsAction
-// // datapoint
-// | SetDatapointAction
+  // | SetDatasetStatusAction
+  // | SetDatasetReleaseStatusAction
+  // | SetDatasetLastUpdatedAction
+  // // register
+  // | SetRegisterStatusAction
+  // | ReplaceRegisterAction
+  // // versions
+  // | CreateVersionAction
+  // | SetActiveVersionAction
+  // | SetVersionsAction
+  // // datapoint
+  | SetDatapointAction
 // | BatchSetDatapointAction
 
 export type ActionFunction<T = void> = (state: AppState, payload: T) => AppState
@@ -161,6 +161,10 @@ const stateReducer = (state: AppState, action: StateAction) => {
     case StateActions.SetRegister:
       return setRegister(state, action.payload)
 
+    // datapoint
+    case StateActions.SetDatapoint:
+      return setDatapoint(state, action.payload)
+
     // case ProjectActions.SetDatasetStatus:
     //   return setDatasetStatus(state, action.payload)
     // case ProjectActions.SetDatasetReleaseStatus:
@@ -177,8 +181,6 @@ const stateReducer = (state: AppState, action: StateAction) => {
     //   return replaceRegister(state, action.payload)
     // case ProjectActions.SetActiveVersion:
     //   return setActiveVersion(state, action.payload)
-    // case ProjectActions.SetDatapoint:
-    //   return setDatapoint(state, action.payload)
     // case ProjectActions.BatchSetDatapoint:
     //   return batchSetDatapoint(state, action.payload)
     default:
