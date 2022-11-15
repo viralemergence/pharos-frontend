@@ -118,8 +118,6 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
     Number(dataset.activeVersion) === dataset.versions.length - 1 ||
     dataset.versions.length === 0
 
-  console.log(dataset)
-
   useEffect(() => {
     if (!editable)
       setModal(

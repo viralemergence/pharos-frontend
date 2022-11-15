@@ -24,7 +24,6 @@ const setRegister: ActionFunction<SetRegisterActionPayload> = (
 
   // if we're loading from the indexedDB we can just set it directly
   if (source === 'local') {
-    console.log('setRegister: local, set directly')
     return {
       ...state,
       register: {
@@ -36,7 +35,6 @@ const setRegister: ActionFunction<SetRegisterActionPayload> = (
 
   // if source is remote and current state is empty, just set it and save to local
   if (source === 'remote' && Object.entries(state.register.data).length === 0) {
-    console.log('setRegister: remote, but local is empty, set directly')
     return {
       ...state,
       register: {
@@ -55,7 +53,6 @@ const setRegister: ActionFunction<SetRegisterActionPayload> = (
     }
   }
 
-  console.log('setRegister: remote, and need to merge')
   // if source is remote and we have a register already loaded we need to merge them
   const nextRegister: Register = {}
 

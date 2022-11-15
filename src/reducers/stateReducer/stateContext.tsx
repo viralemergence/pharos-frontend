@@ -28,8 +28,6 @@ const StateContextProvider = ({ children }: StateContextProviderProps) => {
   const [state, dispatch] = useReducer(stateReducer, stateInitialValue)
   const { messageStack } = state
 
-  console.log(state)
-
   useLoadUser(dispatch)
 
   useEffect(() => {
