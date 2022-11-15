@@ -3,21 +3,12 @@ import { AppState } from './types'
 import setActiveVersion, {
   SetActiveVersionAction,
 } from './actions/setActiveVersion'
-// import setProject, { SetProjectAction } from './actions/setProject'
-import updateProjects, { UpdateProjectsAction } from './actions/updateProjects'
-import setProjectStatus, {
-  SetProjectStatusAction,
-} from './actions/setProjectStatus'
-import createDataset, { CreateDatasetAction } from './actions/createDataset'
-import setDatasetStatus, {
-  SetDatasetStatusAction,
-} from './actions/setDatasetStatus'
 import createVersion, { CreateVersionAction } from './actions/createVersion'
-import setDatapoint, { SetDatapointAction } from './actions/setDatapoint'
-import replaceRegister, {
-  ReplaceRegisterAction,
-} from './actions/replaceRegister'
 import setVersions, { SetVersionsAction } from './actions/setVersions'
+
+import updateProjects, { UpdateProjectsAction } from './actions/updateProjects'
+import createDataset, { CreateDatasetAction } from './actions/createDataset'
+import setDatapoint, { SetDatapointAction } from './actions/setDatapoint'
 import batchSetDatapoint, {
   BatchSetDatapointAction,
 } from './actions/mutationBatchSetDatapoint'
