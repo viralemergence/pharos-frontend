@@ -13,9 +13,6 @@ import setDatasetStatus, {
   SetDatasetStatusAction,
 } from './actions/setDatasetStatus'
 import createVersion, { CreateVersionAction } from './actions/createVersion'
-import setRegisterStatus, {
-  SetRegisterStatusAction,
-} from './actions/setRegisterStatus'
 import setDatapoint, { SetDatapointAction } from './actions/setDatapoint'
 import replaceRegister, {
   ReplaceRegisterAction,
@@ -74,8 +71,6 @@ export enum StateActions {
 
   // SetProjectStatus,
 
-  // SetRegisterStatus,
-
   // CreateVersion,
 
   SetDatapoint,
@@ -103,7 +98,6 @@ export type StateAction =
   // | SetDatasetReleaseStatusAction
   // | SetDatasetLastUpdatedAction
   // // register
-  // | SetRegisterStatusAction
   // | ReplaceRegisterAction
   // // versions
   // | CreateVersionAction
@@ -175,8 +169,6 @@ const stateReducer = (state: AppState, action: StateAction) => {
     //   return createVersion(state, action.payload)
     // case ProjectActions.SetVersions:
     //   return setVersions(state, action.payload)
-    // case ProjectActions.SetRegisterStatus:
-    //   return setRegisterStatus(state, action.payload)
     // case ProjectActions.ReplaceRegister:
     //   return replaceRegister(state, action.payload)
     // case ProjectActions.SetActiveVersion:

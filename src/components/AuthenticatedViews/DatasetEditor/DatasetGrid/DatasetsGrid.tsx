@@ -9,7 +9,6 @@ import TextEditor from './editors/TextEditor/TextEditor'
 import SimpleFormatter from './formatters/SimpleFormatter'
 
 import useVersionedRows from 'hooks/register/useVersionedRows'
-import useRegisterStatus from 'hooks/register/useRegisterStatus'
 import generateID from 'utilities/generateID'
 
 import 'react-data-grid/lib/styles.css'
@@ -23,13 +22,6 @@ const DatasetGrid = () => {
   // console.time('useVersionedRows')
   const { rows: versionedRows, colNames } = useVersionedRows()
   // console.timeEnd('useVersionedRows')
-
-  const registerStatus = useRegisterStatus()
-
-  // if (registerStatus === RegisterStatus.Loading) return <></>
-  if (registerStatus === RegisterStatus.Error)
-    return <p>Error retrieving register</p>
-  // if (!versionedRows || !versionedRows[0]) return <></>
 
   const columns: readonly Column<RecordWithID>[] = colNames.map(name => ({
     key: name,
