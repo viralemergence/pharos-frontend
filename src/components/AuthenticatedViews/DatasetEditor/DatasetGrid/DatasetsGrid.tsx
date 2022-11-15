@@ -26,10 +26,10 @@ const DatasetGrid = () => {
 
   const registerStatus = useRegisterStatus()
 
-  if (registerStatus === RegisterStatus.Loading) return <></>
+  // if (registerStatus === RegisterStatus.Loading) return <></>
   if (registerStatus === RegisterStatus.Error)
     return <p>Error retrieving register</p>
-  if (!versionedRows || !versionedRows[0]) return <></>
+  // if (!versionedRows || !versionedRows[0]) return <></>
 
   const columns: readonly Column<RecordWithID>[] = colNames.map(name => ({
     key: name,

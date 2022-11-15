@@ -79,7 +79,6 @@ const setRegister: ActionFunction<SetRegisterActionPayload> = (
       const remoteDate = Number(remoteRecord.version || 0)
 
       // if the local one is newer keep that
-      console.log({ localDate, remoteDate })
       if (localDate > remoteDate) {
         nextRegister[recordID][datapointID] = localDatapoint
         continue

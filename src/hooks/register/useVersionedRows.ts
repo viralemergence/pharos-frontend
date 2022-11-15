@@ -22,13 +22,14 @@ const useVersionedRows = () => {
   const register = useRegister()
   const dataset = useDataset()
 
+  // load colNames from config json
+  const colNames: { [key: string]: { type: string } } = defaultColumns.columns
+
   // if the register is not available, return empty []
   if (!dataset || !register || Object.keys(register).length === 0)
-    return { rows: [], colNames: [] }
+    return { rows: [], colNames: [...Object.keys(colNames)] }
 
   const version = dataset.activeVersion
-
-  const colNames: { [key: string]: { type: string } } = defaultColumns.columns
 
   // check if version number requested is higher than
   // the length of the versions array; this means we
@@ -37,6 +38,7 @@ const useVersionedRows = () => {
   if (version >= dataset.versions.length - 1) {
     const rows: RecordWithID[] = []
 
+    // add column names for non-default columns
     for (const [recordID, record] of Object.entries(register)) {
       for (const key of Object.keys(record)) {
         if (!colNames[key]) colNames[key] = { type: 'string' }
