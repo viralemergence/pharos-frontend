@@ -5,18 +5,18 @@ import {
 import { ActionFunction, StateActions } from '../stateReducer'
 import { DatasetID, NodeStatus, Register } from '../types'
 
-interface SetRegisterActionPayload {
+interface UpdateRegisterActionPayload {
   source: 'local' | 'remote'
   data: Register
   datasetID: DatasetID
 }
 
-export interface SetRegisterAction {
-  type: StateActions.SetRegister
-  payload: SetRegisterActionPayload
+export interface UpdateRegisterAction {
+  type: StateActions.UpdateRegister
+  payload: UpdateRegisterActionPayload
 }
 
-const setRegister: ActionFunction<SetRegisterActionPayload> = (
+const updateRegister: ActionFunction<UpdateRegisterActionPayload> = (
   state,
   payload
 ) => {
@@ -101,4 +101,4 @@ const setRegister: ActionFunction<SetRegisterActionPayload> = (
   }
 }
 
-export default setRegister
+export default updateRegister

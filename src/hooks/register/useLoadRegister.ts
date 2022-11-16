@@ -25,7 +25,7 @@ const useLoadRegister = () => {
   // set the register empty when the projectID changes
   useEffect(() => {
     dispatch({
-      type: StateActions.SetRegister,
+      type: StateActions.UpdateRegister,
       payload: {
         source: 'local',
         datasetID,
@@ -52,7 +52,7 @@ const useLoadRegister = () => {
 
       if (localRegister)
         dispatch({
-          type: StateActions.SetRegister,
+          type: StateActions.UpdateRegister,
           payload: {
             datasetID,
             source: 'local',
@@ -107,7 +107,7 @@ const useLoadRegister = () => {
 
       if (remoteRegister) {
         dispatch({
-          type: StateActions.SetRegister,
+          type: StateActions.UpdateRegister,
           payload: {
             datasetID,
             source: 'remote',
