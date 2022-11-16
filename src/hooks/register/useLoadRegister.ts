@@ -24,6 +24,7 @@ const useLoadRegister = () => {
 
   // set the register empty when the projectID changes
   useEffect(() => {
+    if (!datasetID) return
     dispatch({
       type: StateActions.UpdateRegister,
       payload: {
@@ -43,6 +44,7 @@ const useLoadRegister = () => {
 
   // load and process register from indexedDB
   useEffect(() => {
+    if (!datasetID) return
     const loadLocalDatasets = async () => {
       if (!datasetID) return
 
@@ -65,6 +67,7 @@ const useLoadRegister = () => {
   }, [datasetID, dispatch])
 
   useEffect(() => {
+    if (!datasetID) return
     const requestRegister = async () => {
       // skip loading if:
       if (
