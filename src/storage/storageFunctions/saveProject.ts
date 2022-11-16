@@ -15,7 +15,8 @@ export type SaveProject = StorageMessagePayload<APIRoutes.saveProject, Project>
 const saveProject: StorageFunction<SaveProject> = async (
   key,
   message,
-  dispatch
+  dispatch,
+  researcherID
 ) => {
   dispatch({
     type: StateActions.SetStorageMessageStatus,
@@ -35,7 +36,7 @@ const saveProject: StorageFunction<SaveProject> = async (
       `${process.env.GATSBY_API_URL}/${message.route}`,
       {
         method: 'POST',
-        body: JSON.stringify(message.data),
+        body: JSON.stringify({ ...message.data, researcherID }),
       }
     ).catch(() =>
       dispatch({

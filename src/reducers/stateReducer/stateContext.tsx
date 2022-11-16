@@ -26,7 +26,9 @@ export const StateContext = createContext<StateContextValue | null>(null)
 
 const StateContextProvider = ({ children }: StateContextProviderProps) => {
   const [state, dispatch] = useReducer(stateReducer, stateInitialValue)
-  const { messageStack } = state
+  const { messageStack, user } = state
+
+  const researcherID = user.data?.researcherID || ''
 
   useLoadUser(dispatch)
 
@@ -71,7 +73,7 @@ const StateContextProvider = ({ children }: StateContextProviderProps) => {
 
   useEffect(() => {
     localforage.setItem('messageStack', messageStack)
-    synchronizeMessageQueue(messageStack, dispatch)
+    synchronizeMessageQueue(messageStack, dispatch, researcherID)
   }, [messageStack])
 
   return (

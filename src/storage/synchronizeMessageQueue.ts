@@ -39,12 +39,14 @@ export type StorageMessage = SaveProject | SaveUser | SaveDataset | SaveRegister
 export type StorageFunction<T> = (
   key: string,
   data: T,
-  dispatch: React.Dispatch<StateAction>
+  dispatch: React.Dispatch<StateAction>,
+  researcherID: string
 ) => void
 
 const synchronizeMessageQueue = async (
   messageStack: { [key: string]: StorageMessage },
-  dispatch: React.Dispatch<StateAction>
+  dispatch: React.Dispatch<StateAction>,
+  researcherID: string
 ) => {
   for (const [key, message] of Object.entries(messageStack)) {
     // skip messages in these states:
@@ -61,19 +63,19 @@ const synchronizeMessageQueue = async (
 
       switch (message.route) {
         case APIRoutes.saveUser:
-          saveUser(key, message, dispatch)
+          saveUser(key, message, dispatch, researcherID)
           continue
 
         case APIRoutes.saveProject:
-          saveProject(key, message, dispatch)
+          saveProject(key, message, dispatch, researcherID)
           continue
 
         case APIRoutes.saveDataset:
-          saveDataset(key, message, dispatch)
+          saveDataset(key, message, dispatch, researcherID)
           continue
 
         case APIRoutes.saveRegister:
-          saveRegister(key, message, dispatch)
+          saveRegister(key, message, dispatch, researcherID)
           continue
       }
     }
