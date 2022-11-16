@@ -21,7 +21,7 @@ export enum StorageMessageStatus {
 }
 
 export enum APIRoutes {
-  saveUser = 'save-user',
+  saveUser = 'create-user',
   saveProject = 'save-project',
   saveDataset = 'save-dataset',
   saveRegister = 'save-register',
