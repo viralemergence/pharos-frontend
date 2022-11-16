@@ -27,9 +27,8 @@ export const datasetInitialValue: Dataset = {
   name: 'Loading dataset',
   datasetID: '',
   researcherID: '',
-  status: DatasetStatus.Loading,
-  activeVersion: 0,
-  highestVersion: 0,
+  activeVersion: '0',
+  highestVersion: '0',
   versions: [],
 }
 

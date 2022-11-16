@@ -95,9 +95,6 @@ export interface Dataset {
   // that's fine now that we're storing
   // researcherID in the datapoint
   researcherID: string
-  // frontend status of the dataset, this
-  // will be overwritten on page load
-  status?: DatasetStatus
   // the user-facing "status" of the
   // dataset which reflects released
   // and published status

@@ -5,7 +5,15 @@ import MintButton from 'components/ui/MintButton'
 import Label from 'components/ui/InputLabel'
 import Input from 'components/ui/Input'
 
-import useDoCreateDataset from 'reducers/stateReducer/hooks/useDoCreateDataset'
+import useDispatch from 'hooks/useDispatch'
+import { StateActions } from 'reducers/stateReducer/stateReducer'
+import getTimestamp from 'utilities/getTimestamp'
+import useUser from 'hooks/useUser'
+import useModal from 'hooks/useModal/useModal'
+import useProjectID from 'hooks/project/useProjectID'
+import { useNavigate } from 'react-router-dom'
+import generateID from 'utilities/generateID'
+import { datasetInitialValue } from 'reducers/stateReducer/initialValues'
 
 const Form = styled.form`
   width: 500px;
@@ -20,7 +28,19 @@ const H1 = styled.h1`
 `
 
 const CreateDatasetForm = () => {
-  const doCreateDataset = useDoCreateDataset()
+  const user = useUser()
+  const dispatch = useDispatch()
+  const setModal = useModal()
+  const projectID = useProjectID()
+  const datasetID = generateID.datasetID()
+
+  const navigate = useNavigate()
+
+  if (!user.data) throw new Error('User not logged in')
+
+  const {
+    data: { researcherID },
+  } = user
 
   const [formMessage, setFormMessage] = useState('')
 
@@ -36,7 +56,22 @@ const CreateDatasetForm = () => {
       return null
     }
 
-    doCreateDataset({ name: target.name.value })
+    dispatch({
+      type: StateActions.CreateDataset,
+      payload: {
+        timestamp: getTimestamp(),
+        projectID,
+        dataset: {
+          ...datasetInitialValue,
+          datasetID,
+          researcherID,
+          name: target.name.value,
+        },
+      },
+    })
+
+    setModal(null)
+    navigate(`/projects/${projectID}/${datasetID}`)
   }
 
   return (
