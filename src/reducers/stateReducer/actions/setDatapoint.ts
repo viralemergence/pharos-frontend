@@ -56,6 +56,8 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
     previous: previous,
   }
 
+  if (nextDatapoint.report) delete nextDatapoint.report
+
   const nextRegister = {
     ...state.register.data,
     [recordID]: {
