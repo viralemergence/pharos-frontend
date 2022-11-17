@@ -1,7 +1,8 @@
 import React from 'react'
 import Modal from 'components/ui/Modal'
-import { Datapoint } from 'reducers/stateReducer/types'
+import { Datapoint, ReportScore } from 'reducers/stateReducer/types'
 import styled from 'styled-components'
+import cellHighlightColors from '../../../../../../config/cellHighlightColors'
 
 interface SimpleCellModalProps {
   datapointID: string
@@ -35,6 +36,17 @@ const Instructions = styled.div`
   margin-top: 15px;
   border-top: 1px solid ${({ theme }) => theme.medGray};
   padding-top: 15px;
+`
+const ReportContainer = styled.div<{ score?: ReportScore }>`
+  margin-top: 15px;
+  padding: 10px 15px;
+  background-color: ${({ score }) =>
+    score ? cellHighlightColors[score] : 'rgba(0,0,0,0)'};
+  border-radius: 10px;
+`
+const Report = styled.p`
+  padding: 0;
+  margin: 0;
 `
 const HistoryName = styled.div`
   ${({ theme }) => theme.smallParagraph};
@@ -76,9 +88,15 @@ const SimpleCellModal = ({
         <Data>
           <SectionHeader>{datapointID}</SectionHeader>
           <label>{datapoint.displayValue}</label>
-          <Instructions>
-            <SectionHeader>Directions</SectionHeader>
-          </Instructions>
+          {
+            // <Instructions>
+            // <SectionHeader>Directions</SectionHeader>
+            // </Instructions>
+          }
+          <ReportContainer score={datapoint.report?.status}>
+            <SectionHeader>Validation Report</SectionHeader>
+            <Report>{datapoint.report?.message}</Report>
+          </ReportContainer>
         </Data>
         <History>
           <SectionHeader>History</SectionHeader>
