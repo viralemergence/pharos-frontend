@@ -33,7 +33,7 @@ import setMessageStack, {
   SetMessageStackAction,
 } from './actions/setMessageStack'
 import updateDatasets, { UpdateDatasetsAction } from './actions/updateDatasets'
-import updateRegister, { UpdateRegisterAction } from './actions/setRegister'
+import updateRegister, { UpdateRegisterAction } from './actions/updateRegister'
 
 // reducer actions
 export enum StateActions {
