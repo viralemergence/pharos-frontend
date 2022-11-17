@@ -32,6 +32,11 @@ export default function HTML(props) {
           href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css"
         />
         {props.headComponents}
+        <link
+          rel="manifest"
+          href="/manifest.webmanifest"
+          crossorigin="use-credentials"
+        />
         <script
           async
           src={`https://www.googletagmanager.com/gtag/js?id=${trackingId}`}
