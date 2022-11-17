@@ -29,45 +29,37 @@ const useVersionedRows = () => {
   if (!dataset || !register || Object.keys(register).length === 0)
     return { rows: [], colNames: [...Object.keys(colNames)] }
 
-  const version = dataset.activeVersion
+  const rows: RecordWithID[] = []
 
-  // check if version number requested is higher than
-  // the length of the versions array; this means we
-  // can directly return the array of DataPoints in
-  // the register without performing version checks
-  if (version >= dataset.versions.length - 1) {
-    const rows: RecordWithID[] = []
-
-    // add column names for non-default columns
-    for (const [recordID, record] of Object.entries(register)) {
-      for (const key of Object.keys(record)) {
-        if (!colNames[key]) colNames[key] = { type: 'string' }
-      }
-
-      rows.push({ ...record, _meta: { recordID } })
+  // add column names for non-default columns
+  for (const [recordID, record] of Object.entries(register)) {
+    for (const key of Object.keys(record)) {
+      if (!colNames[key]) colNames[key] = { type: 'string' }
     }
 
-    return { rows, colNames: [...Object.keys(colNames)] }
+    rows.push({ ...record, _meta: { recordID } })
   }
 
-  // else return datapoints that are valid for the target version
-  return {
-    rows: Object.entries(register).reduce((row, [recordID, record]) => {
-      const datapoints = Object.entries(record).reduce(
-        (rec, [key, datapoint]) => {
-          const versioned = getDatapointAtVersion(datapoint, version)
-          // only set the key if the datapoint exists in that version
-          return { ...rec, ...(versioned && { [key]: versioned }) }
-        },
-        {}
-      )
-      // only create the row if it has datapoints in the given version
-      if (Object.keys(datapoints).length > 0)
-        row.push({ ...datapoints, _meta: { recordID } })
-      return row
-    }, [] as RecordWithID[]),
-    colNames: ['Row ID'],
-  }
+  return { rows, colNames: [...Object.keys(colNames)] }
+
+  // // else return datapoints that are valid for the target version
+  // return {
+  //   rows: Object.entries(register).reduce((row, [recordID, record]) => {
+  //     const datapoints = Object.entries(record).reduce(
+  //       (rec, [key, datapoint]) => {
+  //         const versioned = getDatapointAtVersion(datapoint, version)
+  //         // only set the key if the datapoint exists in that version
+  //         return { ...rec, ...(versioned && { [key]: versioned }) }
+  //       },
+  //       {}
+  //     )
+  //     // only create the row if it has datapoints in the given version
+  //     if (Object.keys(datapoints).length > 0)
+  //       row.push({ ...datapoints, _meta: { recordID } })
+  //     return row
+  //   }, [] as RecordWithID[]),
+  //   colNames: ['Row ID'],
+  // }
 }
 
 export default useVersionedRows
