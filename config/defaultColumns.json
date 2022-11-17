@@ -10,7 +10,9 @@
     "Longitude": { "type": "string" },
     "Spatial uncertainty": { "type": "string" },
     "Spatial uncertainty units": { "type": "string" },
-    "Collection date": { "type": "string" },
+    "Collection day": { "type": "string" },
+    "Collection month": { "type": "string" },
+    "Collection year": { "type": "string" },
     "Collection method or tissue": { "type": "string" },
     "Detection method": { "type": "string" },
     "Primer sequence": { "type": "string" },
@@ -33,6 +35,6 @@
     "Mass": { "type": "string" },
     "Mass units": { "type": "string" },
     "Length": { "type": "string" },
-    "Length units": { "type": "string" }
+    "Length unit": { "type": "string" }
   }
 }
