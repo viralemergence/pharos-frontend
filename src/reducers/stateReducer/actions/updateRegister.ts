@@ -30,10 +30,15 @@ const mergeDatapoint = (
   // parse timestamps as numbers (they get converted to strings in the API)
   const [leftTime, rightTime] = [Number(left.version), Number(right.version)]
 
-  // if the timestamps match, take left and set previous
-  // to the merge of the previous of both datapoints
+  // if the timestamps match, take the combination of left and right
+  // which captures any different metadata (like the report) and set
+  // previous to the merge of the previous of both datapoints
   if (leftTime === rightTime)
-    return { ...left, previous: mergeDatapoint(left.previous, right.previous) }
+    return {
+      ...left,
+      ...right,
+      previous: mergeDatapoint(left.previous, right.previous),
+    }
 
   // if left is newer, return left, and set previous to
   // the merge of left.previous and right
@@ -115,7 +120,7 @@ const updateRegister: ActionFunction<UpdateRegisterActionPayload> = (
       [`${APIRoutes.saveRegister}_${datasetID}_local`]: {
         route: APIRoutes.saveRegister,
         status: StorageMessageStatus.Initial,
-        data: { register, datasetID },
+        data: { register: nextRegister, datasetID },
         target: 'local',
       },
     },
