@@ -46,8 +46,6 @@ const SimpleFormatter = ({
     ? cellHighlightColors[datapoint.report.status]
     : 'white'
 
-  console.log({ report: datapoint.report?.status, backgroundColor })
-
   return (
     <CellContainer style={{ backgroundColor }}>
       <span>{datapoint.displayValue}</span>
