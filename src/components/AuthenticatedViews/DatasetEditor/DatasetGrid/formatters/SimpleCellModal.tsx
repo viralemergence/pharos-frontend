@@ -103,8 +103,12 @@ const SimpleCellModal = ({
           {history &&
             history.map(datapoint => (
               <div key={datapoint.version}>
-                <HistoryName>{datapoint.modifiedBy}</HistoryName>
-                <HistoryModified>version {datapoint.version}</HistoryModified>
+                {
+                  // <HistoryName>{datapoint.modifiedBy}</HistoryName>
+                }
+                <HistoryModified>
+                  {new Date(Number(datapoint.version)).toLocaleString()}
+                </HistoryModified>
                 <HistoryBlock>
                   <HistoryModified>{datapointID}</HistoryModified>
                   <HistoryName>{datapoint.displayValue}</HistoryName>
