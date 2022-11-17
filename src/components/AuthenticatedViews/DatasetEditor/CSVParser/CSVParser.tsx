@@ -4,7 +4,7 @@ import { FileUploader } from 'react-drag-drop-files'
 
 import useUser from 'hooks/useUser'
 import useDatasetID from 'hooks/dataset/useDatasetID'
-import useProjectDispatch from 'hooks/project/useProjectDispatch'
+import useDispatch from 'hooks/useDispatch'
 
 import parseFile from './parse'
 
@@ -18,7 +18,7 @@ const Container = styled.div`
 const CSVParser = () => {
   const user = useUser()
   const datasetID = useDatasetID()
-  const projectDispatch = useProjectDispatch()
+  const projectDispatch = useDispatch()
 
   const handleChange = (file: File) => {
     parseFile({ file, datasetID, projectDispatch, user })

@@ -1,19 +1,16 @@
 import Papa from 'papaparse'
 
-import {
-  ProjectAction,
-  ProjectActions,
-} from 'reducers/projectReducer/projectReducer'
+import { StateAction, StateActions } from 'reducers/stateReducer/stateReducer'
 
-import { User } from 'components/Login/UserContextProvider'
-import { RegisterStatus } from 'reducers/projectReducer/types'
-import { Rows } from 'reducers/projectReducer/actions/batchSetDatapoint'
+import { User } from 'reducers/stateReducer/types'
+import { RegisterStatus } from 'reducers/stateReducer/types'
+import { Rows } from 'reducers/stateReducer/actions/batchSetDatapoint'
 
 interface ParseFile {
   file: File
   user: User
   datasetID: string
-  projectDispatch: React.Dispatch<ProjectAction>
+  projectDispatch: React.Dispatch<StateAction>
 }
 
 const parseFile = ({ file, user, datasetID, projectDispatch }: ParseFile) => {
@@ -22,7 +19,7 @@ const parseFile = ({ file, user, datasetID, projectDispatch }: ParseFile) => {
     complete: async results => {
       // set the register status to unsaved
       projectDispatch({
-        type: ProjectActions.SetRegisterStatus,
+        type: StateActions.SetRegisterStatus,
         payload: { datasetID, status: RegisterStatus.Unsaved },
       })
 
@@ -32,7 +29,7 @@ const parseFile = ({ file, user, datasetID, projectDispatch }: ParseFile) => {
 
       // create a version
       projectDispatch({
-        type: ProjectActions.CreateVersion,
+        type: StateActions.CreateVersion,
         payload: {
           datasetID,
           version: {
@@ -44,7 +41,7 @@ const parseFile = ({ file, user, datasetID, projectDispatch }: ParseFile) => {
 
       // parse all rows
       projectDispatch({
-        type: ProjectActions.BatchSetDatapoint,
+        type: StateActions.BatchSetDatapoint,
         payload: { researcherID, datasetID, recordIDColumn: 'Row ID', rows },
       })
     },

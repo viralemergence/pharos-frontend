@@ -1,10 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import { ProjectActions } from 'reducers/projectReducer/projectReducer'
+import { StateActions } from 'reducers/stateReducer/stateReducer'
 
 import useDataset from 'hooks/dataset/useDataset'
 import useDatasetID from 'hooks/dataset/useDatasetID'
-import useProjectDispatch from 'hooks/project/useProjectDispatch'
+import useDispatch from 'hooks/useDispatch'
 
 const Select = styled.select`
   ${({ theme }) => theme.smallParagraph};
@@ -18,7 +18,7 @@ const Select = styled.select`
 const VersionSwitcher = () => {
   const dataset = useDataset()
   const datasetID = useDatasetID()
-  const projectDispatch = useProjectDispatch()
+  const projectDispatch = useDispatch()
 
   if (!dataset || !dataset.versions || dataset.versions.length < 2) return <></>
 
@@ -26,7 +26,7 @@ const VersionSwitcher = () => {
     const nextVersion = e.target.value
 
     projectDispatch({
-      type: ProjectActions.SetActiveVersion,
+      type: StateActions.SetActiveVersion,
       payload: { datasetID: datasetID, version: Number(nextVersion) },
     })
   }

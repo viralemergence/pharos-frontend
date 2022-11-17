@@ -1,4 +1,5 @@
-import { User, UserStatus } from 'components/Login/UserContextProvider'
+import { User, UserStatus } from 'reducers/stateReducer/types'
+import localforage from 'localforage'
 
 const authenticate = async (researcherID: string) => {
   // offline debugging
@@ -40,6 +41,8 @@ const authenticate = async (researcherID: string) => {
     statusMessage: 'Logged In',
     data: data,
   }
+
+  localforage.setItem('user', user)
 
   return user as User
 }
