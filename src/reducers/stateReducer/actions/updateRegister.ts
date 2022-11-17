@@ -28,10 +28,7 @@ const mergeDatapoint = (
   if (!right) return left
 
   // parse timestamps as numbers (they get converted to strings in the API)
-  const [leftTime, rightTime] = [
-    Number(left.timestamp),
-    Number(right.timestamp),
-  ]
+  const [leftTime, rightTime] = [Number(left.version), Number(right.version)]
 
   // if the timestamps match, take the combination of left and right
   // which captures any different metadata (like the report) and set

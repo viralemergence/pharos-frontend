@@ -196,7 +196,7 @@ export interface Datapoint {
   // Changing this to a string,
   // since it will come back from
   // the API as a string
-  timestamp: string
+  version: string
 
   // // TODO: replace version with timestamp
   // timestamp: string

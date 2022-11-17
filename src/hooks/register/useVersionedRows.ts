@@ -11,7 +11,7 @@ const getDatapointAtVersion = (
   version: number
 ): Datapoint | undefined => {
   if (!datapoint) return undefined
-  if (Number(datapoint.timestamp) > version)
+  if (Number(datapoint.version) > version)
     return getDatapointAtVersion(datapoint.previous, version)
   return datapoint
 }
