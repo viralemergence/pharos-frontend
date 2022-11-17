@@ -21,7 +21,8 @@ export type SaveRegister = StorageMessagePayload<
 const saveRegister: StorageFunction<SaveRegister> = async (
   key,
   message,
-  dispatch
+  dispatch,
+  researcherID
 ) => {
   dispatch({
     type: StateActions.SetStorageMessageStatus,
@@ -39,10 +40,40 @@ const saveRegister: StorageFunction<SaveRegister> = async (
       )
     dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
   } else {
-    dispatch({
-      type: StateActions.SetStorageMessageStatus,
-      payload: { key, status: StorageMessageStatus.NetworkError },
-    })
+    const response = await fetch(
+      `${process.env.GATSBY_API_URL}/${message.route}`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ ...message.data, researcherID }),
+      }
+    ).catch(() =>
+      dispatch({
+        type: StateActions.SetStorageMessageStatus,
+        payload: { key, status: StorageMessageStatus.NetworkError },
+      })
+    )
+
+    if (!response || !response.ok)
+      dispatch({
+        type: StateActions.SetStorageMessageStatus,
+        payload: { key, status: StorageMessageStatus.NetworkError },
+      })
+    else {
+      dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
+
+      const remoteRegister = (await response.json()) as Register | null
+
+      if (remoteRegister) {
+        dispatch({
+          type: StateActions.UpdateRegister,
+          payload: {
+            source: 'remote',
+            datasetID: message.data.datasetID,
+            data: remoteRegister,
+          },
+        })
+      }
+    }
   }
 }
 

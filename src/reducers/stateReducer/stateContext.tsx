@@ -74,7 +74,7 @@ const StateContextProvider = ({ children }: StateContextProviderProps) => {
   useEffect(() => {
     localforage.setItem('messageStack', messageStack)
     synchronizeMessageQueue(messageStack, dispatch, researcherID)
-  }, [messageStack])
+  }, [messageStack, researcherID])
 
   return (
     <StateContext.Provider value={{ state, dispatch }}>
