@@ -102,9 +102,9 @@ const SimpleCellModal = ({
           <SectionHeader>History</SectionHeader>
           {history &&
             history.map(datapoint => (
-              <div key={datapoint.version}>
+              <div key={datapoint.timestamp}>
                 <HistoryName>{datapoint.modifiedBy}</HistoryName>
-                <HistoryModified>version {datapoint.version}</HistoryModified>
+                <HistoryModified>version {datapoint.timestamp}</HistoryModified>
                 <HistoryBlock>
                   <HistoryModified>{datapointID}</HistoryModified>
                   <HistoryName>{datapoint.displayValue}</HistoryName>
