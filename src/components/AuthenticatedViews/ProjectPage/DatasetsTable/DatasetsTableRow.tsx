@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Dataset } from 'reducers/projectReducer/types'
+import { Dataset } from 'reducers/stateReducer/types'
 
 import formatDate from 'utilities/formatDate'
 

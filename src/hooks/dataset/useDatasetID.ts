@@ -4,9 +4,9 @@ import { useParams } from 'react-router-dom'
 // and throw error if it is undefined
 const useDatasetID = () => {
   const { datasetID } = useParams()
-  if (!datasetID) throw new Error('Dataset ID not found in url params')
+  // if (!datasetID) throw new Error('Dataset ID not found in url params')
 
-  return datasetID
+  return datasetID ?? ''
 }
 
 export default useDatasetID

@@ -1,7 +1,7 @@
 export default {
   h1: `
 	font-size:36px;
-	font-family:"Poppins";
+	font-family:"Poppins", helvetica, sans-serif;
 	font-weight:400;
 	font-style:normal;
 	text-decoration:none;
@@ -9,7 +9,7 @@ export default {
 	`,
   h2: `
 	font-size:28px;
-	font-family:"Poppins";
+	font-family:"Poppins", helvetica, sans-serif;
 	font-weight:400;
 	font-style:normal;
 	text-decoration:none;
@@ -17,7 +17,7 @@ export default {
 	`,
   h3: `
 	font-size:24px;
-	font-family:"Poppins";
+	font-family:"Poppins", helvetica, sans-serif;
 	font-weight:400;
 	font-style:normal;
 	text-decoration:none;
@@ -25,7 +25,7 @@ export default {
 	`,
   bigParagraph: `
 	font-size:20px;
-	font-family:"Poppins";
+	font-family:"Poppins", helvetica, sans-serif;
 	font-weight:400;
 	font-style:normal;
 	text-decoration:none;
@@ -33,7 +33,7 @@ export default {
 	`,
   smallParagraph: `
 	font-size:16px;
-	font-family:"Poppins";
+	font-family:"Poppins", helvetica, sans-serif;
 	font-weight:400;
 	font-style:normal;
 	text-decoration:none;
@@ -41,7 +41,7 @@ export default {
 	`,
   extraSmallParagraph: `
 	font-size:14px;
-	font-family:"Poppins";
+	font-family:"Poppins", helvetica, sans-serif;
 	font-weight:400;
 	font-style:normal;
 	text-decoration:none;
@@ -49,7 +49,7 @@ export default {
 	`,
   bigMarketing: `
 	font-size:80px;
-	font-family:"Poppins";
+	font-family:"Poppins", helvetica, sans-serif;
 	font-weight:400;
 	font-style:normal;
 	text-decoration:none;
@@ -57,7 +57,7 @@ export default {
 	`,
   medMarketing: `
 	font-size:50px;
-	font-family:"Poppins";
+	font-family:"Poppins", helvetica, sans-serif;
 	font-weight:400;
 	font-style:normal;
 	text-decoration:none;
@@ -65,7 +65,7 @@ export default {
 	`,
   gridText: `
 	font-size:14px;
-	font-family:"Poppins";
+	font-family:"Poppins", helvetica, sans-serif;
 	font-weight:400;
 	font-style:normal;
 	text-decoration:none;
@@ -73,7 +73,7 @@ export default {
   `,
   gridTextBold: `
 	font-size:14px;
-	font-family:"Poppins";
+	font-family:"Poppins", helvetica, sans-serif;
 	font-weight:500;
 	font-style:normal;
 	text-decoration:none;
