@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
-import useDataset from 'hooks/dataset/useDataset'
 import styled from 'styled-components'
 import { FormatterProps } from 'react-data-grid'
 import { Datapoint, RecordWithID } from 'reducers/stateReducer/types'
+
+import cellHighlightColors from '../../../../../../config/cellHighlightColors'
 
 import SimpleCellModal from './SimpleCellModal'
 
@@ -35,21 +36,17 @@ const SimpleFormatter = ({
   column,
   row: { [column.key]: datapoint },
 }: FormatterProps<RecordWithID>) => {
-  const { versions } = useDataset()
   const [open, setOpen] = useState(false)
 
   datapoint = datapoint as Datapoint
 
   if (!datapoint || !datapoint.displayValue) return <span />
 
-  let backgroundColor: string
-  switch (true) {
-    case Number(datapoint.version) >= versions.length:
-      backgroundColor = 'rgb(170 233 219 / 28%)'
-      break
-    default:
-      backgroundColor = 'rgba(0,0,0,0)'
-  }
+  const backgroundColor = datapoint.report?.status
+    ? cellHighlightColors[datapoint.report.status]
+    : 'white'
+
+  console.log({ report: datapoint.report?.status, backgroundColor })
 
   return (
     <CellContainer style={{ backgroundColor }}>

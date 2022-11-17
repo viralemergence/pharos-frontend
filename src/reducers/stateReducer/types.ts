@@ -182,7 +182,7 @@ export interface Datapoint {
   dataValue: string | { [key: string]: string }
   // validation report response
   report?: {
-    pass: ReportScore
+    status: ReportScore
     message: string
     data: { [key: string]: string }
   }
