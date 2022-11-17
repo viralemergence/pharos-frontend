@@ -6,7 +6,6 @@ import PublishProjectModal from './PublishProjectModal/PublishProjectModal'
 import MintButton from 'components/ui/MintButton'
 import DatasetsTable from './DatasetsTable/DatasetsTable'
 import { TopBar } from '../ViewComponents'
-import useAutosaveProject from 'hooks/project/useAutosaveProject'
 import useProject from 'hooks/project/useProject'
 import useUser from 'hooks/useUser'
 import Main from 'components/layout/Main'
@@ -17,14 +16,15 @@ import BreadcrumbLink, {
 import useModal from 'hooks/useModal/useModal'
 import ProjectInfoPanel from './ProjectInfoPanel/ProjectInfoPanel'
 import TextButton from 'components/ui/TextButton'
+import PublishingHelpMessage from './PublishingHelpMessage/PublishingHelpMessage'
 
 const H1 = styled.h1`
-  ${({ theme }) => theme.h3}
-  margin: 0;
+  ${({ theme }) => theme.h1}
+  margin: 15px 0;
 `
 const MainSection = styled.section`
   display: flex;
-  gap: 15px;
+  gap: 40px;
   align-items: flex-start;
   margin-top: 20px;
 `
@@ -71,22 +71,18 @@ const HorizontalBar = styled.div`
 const ProjectPage = () => {
   const user = useUser()
   const project = useProject()
-
   const setModal = useModal()
-
-  // Save any changes to the project
-  // to the server
-  useAutosaveProject()
 
   return (
     <Main>
       <TopBar>
         <BreadcrumbContainer>
           <BreadcrumbLink to={`/projects/`}>All projects</BreadcrumbLink>
-          <BreadcrumbLink active to={`/projects/${project.projectID}`}>
+          <BreadcrumbLink $active to={`/projects/${project.projectID}`}>
             {project.name}
           </BreadcrumbLink>
         </BreadcrumbContainer>
+        <PublishingHelpMessage />
       </TopBar>
       <TopBar>
         <H1>{project.name}</H1>

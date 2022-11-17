@@ -11,9 +11,9 @@ import RequireAuth from 'components/AuthenticatedViews/RequireAuth'
 import DatasetEditor from 'components/AuthenticatedViews/DatasetEditor/DatasetEditor'
 import ProjectPage from 'components/AuthenticatedViews/ProjectPage/ProjectPage'
 
-import ProjectContextProvider from 'reducers/projectReducer/projectContext'
 import ProjectList from 'components/AuthenticatedViews/PortfolioPage/PortfolioPage'
 import ModalMessageProvider from 'hooks/useModal/ModalMessageProvider'
+import DataLoader from 'components/AuthenticatedViews/DataLoader'
 
 const App = (): JSX.Element => {
   // on the build server, don't try to render the app
@@ -31,11 +31,11 @@ const App = (): JSX.Element => {
               path={'/projects/:projectID/:datasetID'}
               element={
                 <RequireAuth>
-                  <ProjectContextProvider>
+                  <DataLoader>
                     <ModalMessageProvider>
                       <DatasetEditor />
                     </ModalMessageProvider>
-                  </ProjectContextProvider>
+                  </DataLoader>
                 </RequireAuth>
               }
             />
@@ -43,11 +43,11 @@ const App = (): JSX.Element => {
               path={'/projects/:projectID'}
               element={
                 <RequireAuth>
-                  <ProjectContextProvider>
+                  <DataLoader>
                     <ModalMessageProvider>
                       <ProjectPage />
                     </ModalMessageProvider>
-                  </ProjectContextProvider>
+                  </DataLoader>
                 </RequireAuth>
               }
             />
@@ -55,11 +55,11 @@ const App = (): JSX.Element => {
               path={'/projects'}
               element={
                 <RequireAuth>
-                  <ProjectContextProvider>
+                  <DataLoader>
                     <ModalMessageProvider>
                       <ProjectList />
                     </ModalMessageProvider>
-                  </ProjectContextProvider>
+                  </DataLoader>
                 </RequireAuth>
               }
             />

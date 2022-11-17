@@ -1,22 +1,9 @@
 import React from 'react'
-import styled from 'styled-components'
 
 import MintButton from 'components/ui/MintButton'
+import TextButton from 'components/ui/TextButton'
 
 import useModal from 'hooks/useModal/useModal'
-
-const Button = styled.button`
-  background: none;
-  border: none;
-  ${({ theme }) => theme.extraSmallParagraph};
-  color: ${({ theme }) => theme.veryDarkGray};
-
-  transition: 150ms ease;
-
-  &:hover {
-    color: ${({ theme }) => theme.link};
-  }
-`
 
 const ModalMessage = () => {
   const setModal = useModal()
@@ -37,9 +24,9 @@ export const ReleaseHelpMessage = () => {
   const setModal = useModal()
 
   return (
-    <Button onClick={() => setModal(<ModalMessage />)}>
+    <TextButton small onClick={() => setModal(<ModalMessage />)}>
       When do I release?
-    </Button>
+    </TextButton>
   )
 }
 
