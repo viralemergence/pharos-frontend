@@ -1,9 +1,10 @@
+import { rem } from 'polished'
 import {
   APIRoutes,
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
 import { ActionFunction, StateActions } from '../stateReducer'
-import { DatasetID, NodeStatus, Register } from '../types'
+import { Datapoint, DatasetID, NodeStatus, Register } from '../types'
 
 interface UpdateRegisterActionPayload {
   source: 'local' | 'remote'
@@ -14,6 +15,34 @@ interface UpdateRegisterActionPayload {
 export interface UpdateRegisterAction {
   type: StateActions.UpdateRegister
   payload: UpdateRegisterActionPayload
+}
+
+const mergeDatapoint = (
+  left: Datapoint | undefined,
+  right: Datapoint | undefined
+): Datapoint | undefined => {
+  // base case; if one is undefined return the other, if both are undefined
+  // return undefined. no further merge is necessary because all previous
+  // datapoints are already in order in the linked list.
+  if (!left) return right
+  if (!right) return left
+
+  // parse timestamps as numbers (they get converted to strings in the API)
+  const [leftTime, rightTime] = [Number(left.version), Number(right.version)]
+
+  // if the timestamps match, take left and set previous
+  // to the merge of the previous of both datapoints
+  if (leftTime === rightTime)
+    return { ...left, previous: mergeDatapoint(left.previous, right.previous) }
+
+  // if left is newer, return left, and set previous to
+  // the merge of left.previous and right
+  if (leftTime > rightTime)
+    return { ...left, previous: mergeDatapoint(left.previous, right) }
+
+  // if right is newer, return right and set previous
+  // to the merge of right.previous and left
+  return { ...right, previous: mergeDatapoint(left, right.previous) }
 }
 
 const updateRegister: ActionFunction<UpdateRegisterActionPayload> = (
@@ -55,31 +84,21 @@ const updateRegister: ActionFunction<UpdateRegisterActionPayload> = (
 
   // if source is remote and we have a register already loaded we need to merge them
   const nextRegister: Register = {}
-
   // iterate over the records in the register
   for (const [recordID, remoteRecord] of Object.entries(register)) {
-    const localRecord = state.register.data[recordID]
-    nextRegister[recordID] = localRecord
-
+    // copy local record into next register
+    nextRegister[recordID] = { ...state.register.data[recordID] }
     // iterate over the datapoints in the record
     for (const [datapointID, remoteDatapoint] of Object.entries(remoteRecord)) {
-      const localDatapoint = localRecord[datapointID]
-
-      // overwrite the local datapoint with the remote datapoint
-      nextRegister[recordID][datapointID] = remoteDatapoint
-
-      // if the version strings match, continue (keep local)
-      // if (localDatapoint.version === remoteDatapoint.version) continue
-
-      // parse the version strings into numbers
-      const localDate = Number(localRecord.version || 0)
-      const remoteDate = Number(remoteRecord.version || 0)
-
-      // if the local one is newer keep that
-      if (localDate > remoteDate) {
-        nextRegister[recordID][datapointID] = localDatapoint
-        continue
-      }
+      // merge the two datapoints;
+      // The result of the merge is coerced to Datapoint because we can't
+      // reach this point if both local and remote datapoints are undefined
+      // and the merge of at least one defined datapoint always returns Datapoint
+      nextRegister[recordID][datapointID] = mergeDatapoint(
+        // local record is the one we just copied into the nextRegister
+        nextRegister[recordID][datapointID],
+        remoteDatapoint
+      )!
     }
   }
 
