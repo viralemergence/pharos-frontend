@@ -18,36 +18,37 @@ export interface UpdateRegisterAction {
 }
 
 const mergeDatapoint = (
-  left: Datapoint | undefined,
-  right: Datapoint | undefined
+  local: Datapoint | undefined,
+  remote: Datapoint | undefined
 ): Datapoint | undefined => {
   // base case; if one is undefined return the other, if both are undefined
   // return undefined. no further merge is necessary because all previous
   // datapoints are already in order in the linked list.
-  if (!left) return right
-  if (!right) return left
+  if (!local) return remote
+  if (!remote) return local
 
   // parse timestamps as numbers (they get converted to strings in the API)
-  const [leftTime, rightTime] = [Number(left.version), Number(right.version)]
+  const [localTime, remoteTime] = [
+    Number(local.version),
+    Number(remote.version),
+  ]
 
-  // if the timestamps match, take the combination of left and right
-  // which captures any different metadata (like the report) and set
-  // previous to the merge of the previous of both datapoints
-  if (leftTime === rightTime)
+  // if the timestamps match, prefer remote datapoint
+  // to keep latest from remote such as validation report
+  if (localTime === remoteTime)
     return {
-      ...left,
-      ...right,
-      previous: mergeDatapoint(left.previous, right.previous),
+      ...remote,
+      previous: mergeDatapoint(local.previous, remote.previous),
     }
 
-  // if left is newer, return left, and set previous to
-  // the merge of left.previous and right
-  if (leftTime > rightTime)
-    return { ...left, previous: mergeDatapoint(left.previous, right) }
+  // if local is newer, return local, and set previous to
+  // the merge of local.previous and remote
+  if (localTime > remoteTime)
+    return { ...local, previous: mergeDatapoint(local.previous, remote) }
 
-  // if right is newer, return right and set previous
-  // to the merge of right.previous and left
-  return { ...right, previous: mergeDatapoint(left, right.previous) }
+  // if remote is newer, return right and set previous
+  // to the merge of remote.previous and local
+  return { ...remote, previous: mergeDatapoint(local, remote.previous) }
 }
 
 const updateRegister: ActionFunction<UpdateRegisterActionPayload> = (
