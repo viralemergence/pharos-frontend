@@ -83,6 +83,7 @@ const updateRegister: ActionFunction<UpdateRegisterActionPayload> = (
   }
 
   // if source is remote and we have a register already loaded we need to merge them
+  console.time(`${'[MERGE]'.padEnd(15)} Merge Register`)
   const nextRegister: Register = {}
   // iterate over the records in the register
   for (const [recordID, remoteRecord] of Object.entries(register)) {
@@ -101,6 +102,7 @@ const updateRegister: ActionFunction<UpdateRegisterActionPayload> = (
       )!
     }
   }
+  console.timeEnd(`${'[MERGE]'.padEnd(15)} Merge Register`)
 
   return {
     ...state,

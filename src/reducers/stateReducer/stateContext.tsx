@@ -42,7 +42,9 @@ const StateContextProvider = ({ children }: StateContextProviderProps) => {
 
       if (stack) {
         console.log(
-          `[MESSAGES] Load ${Object.keys(stack).length} Local Messages`
+          `${'[MESSAGES]'.padEnd(15)} Load ${
+            Object.keys(stack).length
+          } Local Messages`
         )
 
         const changeStatus = Object.entries(stack).reduce(

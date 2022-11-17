@@ -77,7 +77,7 @@ const useLoadRegister = () => {
       )
         return
 
-      console.log('[API]     Request:  /load-register')
+      console.log(`${'[API]'.padEnd(15)} Request:  /load-register`)
       const response = await fetch(
         `${process.env.GATSBY_API_URL}/load-register`,
         {
@@ -94,7 +94,9 @@ const useLoadRegister = () => {
         })
       )
 
-      console.log(`[API]     Response: /load-register: ${response?.status}`)
+      console.log(
+        `${'[API]'.padEnd(15)} Response: /load-register: ${response?.status}`
+      )
       if (!response || !response.ok) {
         dispatch({
           type: StateActions.SetMetadataObjStatus,

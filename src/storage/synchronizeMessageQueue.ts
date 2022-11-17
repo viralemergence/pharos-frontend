@@ -58,7 +58,9 @@ const synchronizeMessageQueue = async (
       message.status !== StorageMessageStatus.Pending
     ) {
       console.log(
-        `[MESSAGES] Synchronize ${message.route} to ${message.target}`
+        `${'[MESSAGES]'.padEnd(15)} Synchronize ${message.route} to ${
+          message.target
+        }`
       )
 
       switch (message.route) {

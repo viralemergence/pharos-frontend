@@ -87,7 +87,7 @@ const useLoadDatasets = () => {
         },
       })
 
-      console.log('[API]     Request:  /list-datasets')
+      console.log(`${'[API]'.padEnd(15)} Request:  /list-datasets`)
       const response = await fetch(
         `${process.env.GATSBY_API_URL}/list-datasets`,
         {
@@ -107,7 +107,9 @@ const useLoadDatasets = () => {
         })
       })
 
-      console.log(`[API]     Response: /list-datasets: ${response?.status}`)
+      console.log(
+        `${'[API]'.padEnd(15)} Response: /list-datasets: ${response?.status}`
+      )
       if (!response || !response.ok) {
         dispatch({
           type: StateActions.SetMetadataObjStatus,

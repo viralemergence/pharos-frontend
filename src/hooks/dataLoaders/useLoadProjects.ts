@@ -61,7 +61,7 @@ const useLoadProjects = () => {
       // if we're offline, we're done
       if (status === NodeStatus.Offline) return
 
-      console.log('[API]     Request:  /list-projects')
+      console.log(`${'[API]'.padEnd(15)} Request:  /list-projects`)
       // otherwise, request and sync projects from remote
       const response = await fetch(
         `${process.env.GATSBY_API_URL}/list-projects`,
@@ -80,7 +80,9 @@ const useLoadProjects = () => {
         })
       })
 
-      console.log(`[API]     Response: /list-projects: ${response?.status}`)
+      console.log(
+        `${'[API]'.padEnd(15)} Response: /list-projects: ${response?.status}`
+      )
 
       if (!response || !response.ok) {
         dispatch({

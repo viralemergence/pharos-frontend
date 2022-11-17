@@ -7,7 +7,6 @@ import { User, UserStatus } from 'reducers/stateReducer/types'
 const useLoadUser = (dispatch: React.Dispatch<StateAction>) => {
   useEffect(() => {
     const loadUser = async () => {
-      console.log('loadUser called')
       const localUser = (await localforage.getItem('user')) as User | null
 
       if (localUser) {
