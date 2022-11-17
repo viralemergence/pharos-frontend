@@ -106,6 +106,7 @@ module.exports = {
       resolve: 'gatsby-plugin-offline',
       options: {
         precachePages: [`/about/*`, `/user-guide/*`, `/app/*`],
+        crossOrigin: `use-credentials`,
       },
     },
   ],
