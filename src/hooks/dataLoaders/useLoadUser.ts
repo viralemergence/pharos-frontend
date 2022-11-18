@@ -12,7 +12,7 @@ const useLoadUser = (dispatch: React.Dispatch<StateAction>) => {
       if (localUser) {
         // set local data in state
         dispatch({
-          type: StateActions.SetUser,
+          type: StateActions.UpdateUser,
           payload: localUser,
         })
 
@@ -26,7 +26,7 @@ const useLoadUser = (dispatch: React.Dispatch<StateAction>) => {
         if (response && response.ok) {
           const updatedUserData = await response.json()
           dispatch({
-            type: StateActions.SetUser,
+            type: StateActions.UpdateUser,
             payload: {
               status: UserStatus.loggedIn,
               statusMessage: 'Logged in',
@@ -40,7 +40,7 @@ const useLoadUser = (dispatch: React.Dispatch<StateAction>) => {
       // to logged out state now that we're sure
       else
         dispatch({
-          type: StateActions.SetUser,
+          type: StateActions.UpdateUser,
           payload: {
             status: UserStatus.loggedOut,
             statusMessage: 'Logged out',

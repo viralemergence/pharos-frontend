@@ -6,12 +6,12 @@ import {
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
 
-export interface SetUserAction {
-  type: StateActions.SetUser
+export interface UpdateUserAction {
+  type: StateActions.UpdateUser
   payload: User
 }
 
-const setUser: ActionFunction<User> = (state, payload) => {
+const updateUser: ActionFunction<User> = (state, payload) => {
   const nextUser = { ...state.user }
   if (payload.data) {
     nextUser.data = { ...state.user.data, ...payload.data }
@@ -36,4 +36,4 @@ const setUser: ActionFunction<User> = (state, payload) => {
   }
 }
 
-export default setUser
+export default updateUser

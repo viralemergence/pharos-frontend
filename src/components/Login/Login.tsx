@@ -79,7 +79,7 @@ const Login = () => {
     const user = await authenticate(researcherID)
 
     dispatch({
-      type: StateActions.SetUser,
+      type: StateActions.UpdateUser,
       payload: user,
     })
 
