@@ -35,6 +35,6 @@
     "Mass": { "type": "string" },
     "Mass units": { "type": "string" },
     "Length": { "type": "string" },
-    "Length unit": { "type": "string" }
+    "Length units": { "type": "string" }
   }
 }
