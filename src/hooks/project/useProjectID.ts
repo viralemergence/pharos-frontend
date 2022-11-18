@@ -4,9 +4,9 @@ import { useParams } from 'react-router-dom'
 // and throw error if it is undefined
 const useProjectID = () => {
   const { projectID } = useParams()
-  if (!projectID) throw new Error('Project ID not found in url params')
+  // if (!projectID) throw new Error('Project ID not found in url params')
 
-  return projectID
+  return projectID ?? ''
 }
 
 export default useProjectID

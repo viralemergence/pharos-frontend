@@ -5,14 +5,16 @@ import styled from 'styled-components'
 import CMS from '@talus-analytics/library.airtable-cms'
 
 import useSignInPageData from 'cmsHooks/useSignInPageData'
-import useUser, { useSetUser } from 'hooks/useUser'
+import useUser from 'hooks/useUser'
 
-import { UserStatus } from 'components/Login/UserContextProvider'
+import { UserStatus } from 'reducers/stateReducer/types'
 import authenticate from 'components/Login/authenticate'
 import MintButton from 'components/ui/MintButton'
 import Label from 'components/ui/InputLabel'
 import Input from 'components/ui/Input'
 import Main from 'components/layout/Main'
+import useDispatch from 'hooks/useDispatch'
+import { StateActions } from 'reducers/stateReducer/stateReducer'
 
 const Container = styled(Main)`
   max-width: 505px;
@@ -40,7 +42,8 @@ const Login = () => {
   const data = useSignInPageData()
   const [researcherID, setResearcherID] = useState('')
   const user = useUser()
-  const setUser = useSetUser()
+
+  const dispatch = useDispatch()
 
   const firstInputRef = useRef<HTMLInputElement>(null)
 
@@ -56,11 +59,29 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setSubmitting(true)
-    // authenticate details
+
+    // // for testing; skip login by setting
+    // // a user directly.
+    // const user = {
+    //   status: UserStatus.loggedIn,
+    //   statusMessage: 'Logged in',
+    //   data: {
+    //     researcherID: 'dev',
+    //     organization: 'Talus Analytics',
+    //     email: 'ryan.zimmerman@georgetown.edu',
+    //     name: 'Ryan Offline',
+    //     projectIDs: [],
+    //   },
+    // }
+
+    // localforage.setItem('user', user)
+
     const user = await authenticate(researcherID)
 
-    // store in global user context
-    setUser(user)
+    dispatch({
+      type: StateActions.SetUser,
+      payload: user,
+    })
 
     setSubmitting(false)
 

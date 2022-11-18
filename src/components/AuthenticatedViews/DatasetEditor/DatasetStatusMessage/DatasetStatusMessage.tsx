@@ -1,8 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
 import useDataset from 'hooks/dataset/useDataset'
-import { DatasetStatus, RegisterStatus } from 'reducers/projectReducer/types'
+import { NodeStatus } from 'reducers/stateReducer/types'
 import { useTheme } from 'styled-components'
+import useAppState from 'hooks/useAppState'
+import { StorageMessageStatus } from 'storage/synchronizeMessageQueue'
 
 const Span = styled.span`
   ${({ theme }) => theme.extraSmallParagraph};
@@ -15,38 +17,43 @@ const Span = styled.span`
 const DatasetStatusMessage = (): JSX.Element => {
   const dataset = useDataset()
   const theme = useTheme()
+  const appState = useAppState()
 
   if (!dataset) return <Span style={{ color: theme.red }}>No dataset</Span>
 
-  const registerStatus = dataset.registerStatus
+  const {
+    messageStack,
+    datasets: { status: datasetStatus },
+    register: { status: registerStatus },
+  } = appState
+
+  // show offline status if any message in the stack has a NetworkError status
+  const offline = Object.values(messageStack).reduce(
+    (offline, message) =>
+      offline || message.status === StorageMessageStatus.NetworkError,
+    false
+  )
 
   let datasetStatusMessage
   let color
 
   switch (true) {
-    case registerStatus === RegisterStatus.Loading:
+    case datasetStatus === NodeStatus.Loading ||
+      registerStatus === NodeStatus.Loading:
       datasetStatusMessage = 'Loading...'
       color = theme.orange
       break
-    case dataset.status === DatasetStatus.Saved &&
-      registerStatus === RegisterStatus.Saved:
+    case offline:
+      datasetStatusMessage = 'Saved Offline'
+      color = theme.medDarkGray
+      break
+    case Object.keys(messageStack).length === 0:
       datasetStatusMessage = 'Saved'
       color = theme.medDarkGray
       break
-    case dataset.status === DatasetStatus.Saving ||
-      registerStatus === RegisterStatus.Saving:
-      datasetStatusMessage = 'Saving...'
+    case Object.keys(messageStack).length > 0:
+      datasetStatusMessage = 'Syncing...'
       color = theme.orange
-      break
-    case dataset.status === DatasetStatus.Unsaved ||
-      registerStatus === RegisterStatus.Unsaved:
-      datasetStatusMessage = 'Unsaved'
-      color = theme.orange
-      break
-    case dataset.status === DatasetStatus.Error ||
-      registerStatus === RegisterStatus.Error:
-      datasetStatusMessage = 'Error'
-      color = theme.red
       break
     default:
       datasetStatusMessage = 'Loading...'

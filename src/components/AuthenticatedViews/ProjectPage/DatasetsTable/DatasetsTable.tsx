@@ -8,6 +8,7 @@ import useProjectID from 'hooks/project/useProjectID'
 import useModal from 'hooks/useModal/useModal'
 import CreateDatasetForm from '../CreateDatasetForm/CreateDatasetForm'
 import CreateNewDatasetRow from './CreateNewDatasetRow'
+import useDatasets from 'hooks/dataset/useDatasets'
 
 const datasetPlaceholder = {
   datasetID: '',
@@ -22,13 +23,14 @@ const DatasetsTable = () => {
   const projectID = useProjectID()
   const project = useProject()
   const setModal = useModal()
+  const datasets = useDatasets()
 
   // create rows for each dataset based on datasetIDs
   // using placeholder for datasets that aren't loaded
   // these links will still work since their IDs are valid
   const sorted =
-    Object.keys(project.datasets).length > 0
-      ? Object.values(project.datasets)
+    Object.keys(datasets).length > 0
+      ? Object.values(datasets)
       : project.datasetIDs.map(id => ({
           ...datasetPlaceholder,
           datasetID: id,
@@ -49,7 +51,7 @@ const DatasetsTable = () => {
   //     },
   //   ]
 
-  Object.values(project.datasets).sort((a, b) => {
+  Object.values(datasets).sort((a, b) => {
     if (!a.versions || !b.versions) return 0
     if (a.versions.length !== 0 || b.versions.length !== 0) return 0
     if (!a.versions.slice(-1)[0]?.date) return 0

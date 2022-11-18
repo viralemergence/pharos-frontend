@@ -8,6 +8,7 @@ import useIndexPageData from 'cmsHooks/useIndexPageData'
 import { MintButtonLink } from 'components/ui/MintButton'
 import LandingMap from './LandingMap/LandingMap'
 import Footer from './Footer/Footer'
+import useUser from 'hooks/useUser'
 
 const HeaderContainer = styled.div`
   position: absolute;
@@ -55,29 +56,34 @@ const FooterHeaderText = styled.h3`
 `
 
 const LoggedOutLanding = () => {
-  const data = useIndexPageData()
+  const cmsData = useIndexPageData()
+  const user = useUser()
 
   return (
     <>
       <HeaderContainer>
         <Header>
           <H1>
-            <CMS.Text name="H1" data={data} />
+            <CMS.Text name="H1" data={cmsData} />
           </H1>
           <ButtonBox>
-            <MintButtonLink to="/app/#/login/">
-              <CMS.Text name="CTA" data={data} />
+            <MintButtonLink to="/app/#/projects/">
+              {user.data ? (
+                'My projects'
+              ) : (
+                <CMS.Text name="CTA" data={cmsData} />
+              )}
             </MintButtonLink>
             <MintButtonLink to="/map/">View map</MintButtonLink>
           </ButtonBox>
         </Header>
         <Main>
-          <LandingText name="Intro paragraph" data={data} />
+          <LandingText name="Intro paragraph" data={cmsData} />
         </Main>
       </HeaderContainer>
       <LandingMap />
       <FooterHeaderText>
-        <CMS.Text name="Above footer" data={data} />
+        <CMS.Text name="Above footer" data={cmsData} />
       </FooterHeaderText>
       <Footer />
     </>
