@@ -28,7 +28,7 @@ import setStorageMessageStatus, {
 import removeStorageMessage, {
   RemoveStorageMessageAction,
 } from './actions/removeStorageMessage'
-import updateUser, { UpdateUserAction } from './actions/setUser'
+import updateUser, { UpdateUserAction } from './actions/updateUser'
 import setMessageStack, {
   SetMessageStackAction,
 } from './actions/setMessageStack'

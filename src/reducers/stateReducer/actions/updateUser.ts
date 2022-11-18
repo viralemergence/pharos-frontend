@@ -1,6 +1,6 @@
 import { User } from '../types'
 import { ActionFunction, StateActions } from '../stateReducer'
-import { userInitialValue } from '../initialValues'
+
 import {
   APIRoutes,
   StorageMessageStatus,
