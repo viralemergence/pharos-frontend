@@ -12,6 +12,7 @@
     "noUnusedParameters": true,
     "removeComments": false,
     "preserveConstEnums": true,
+    "resolveJsonModule": true,
     "plugins": [
       {
         "name": "typescript-styled-plugin"

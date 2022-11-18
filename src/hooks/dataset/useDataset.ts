@@ -1,12 +1,15 @@
-import { datasetInitialValue } from 'reducers/projectReducer/projectReducer'
-import useProject from '../project/useProject'
+import { datasetInitialValue } from 'reducers/stateReducer/initialValues'
+
 import useDatasetID from './useDatasetID'
+import useDatasets from './useDatasets'
 
 const useDataset = () => {
-  const project = useProject()
   const datasetID = useDatasetID()
+  const datasets = useDatasets()
 
-  return project.datasets[datasetID] ?? datasetInitialValue
+  const dataset = datasets[datasetID] ?? datasetInitialValue
+
+  return dataset
 }
 
 export default useDataset

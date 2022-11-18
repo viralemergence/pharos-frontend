@@ -1,23 +1,23 @@
 import React from 'react'
 
-import { ProjectActions } from 'reducers/projectReducer/projectReducer'
+import { StateActions } from 'reducers/stateReducer/stateReducer'
 import {
   DatasetReleaseStatus,
   DatasetStatus,
-} from 'reducers/projectReducer/types'
+} from 'reducers/stateReducer/types'
 
 import MintButton from 'components/ui/MintButton'
 
 import useUser from 'hooks/useUser'
 import useDatasetID from 'hooks/dataset/useDatasetID'
 import useDataset from 'hooks/dataset/useDataset'
-import useProjectDispatch from 'hooks/project/useProjectDispatch'
+import useDispatch from 'hooks/useDispatch'
 import getTimestamp from 'utilities/getTimestamp'
 
 const ReleaseButton = () => {
   const user = useUser()
   const datasetID = useDatasetID()
-  const projectDispatch = useProjectDispatch()
+  const projectDispatch = useDispatch()
 
   const dataset = useDataset()
 
@@ -56,7 +56,7 @@ const ReleaseButton = () => {
     const lastUpdated = getTimestamp()
 
     projectDispatch({
-      type: ProjectActions.SetDatasetReleaseStatus,
+      type: StateActions.SetDatasetReleaseStatus,
       payload: {
         datasetID,
         lastUpdated,
@@ -65,7 +65,7 @@ const ReleaseButton = () => {
     })
 
     projectDispatch({
-      type: ProjectActions.CreateVersion,
+      type: StateActions.CreateVersion,
       payload: {
         datasetID,
         version: {

@@ -1,9 +1,9 @@
 import React from 'react'
 import MintButton from 'components/ui/MintButton'
-import { ProjectActions } from 'reducers/projectReducer/projectReducer'
+import { StateActions } from 'reducers/stateReducer/stateReducer'
 
 import useDatasetID from 'hooks/dataset/useDatasetID'
-import useProjectDispatch from 'hooks/project/useProjectDispatch'
+import useDispatch from 'hooks/useDispatch'
 import useModal from 'hooks/useModal/useModal'
 
 interface IDMustBeUniqueProps {
@@ -37,7 +37,7 @@ export const OnlyEditMostRecent = ({
 }: OnlyEditMostRecentProps) => {
   const datasetID = useDatasetID()
   const setModal = useModal()
-  const projectDispatch = useProjectDispatch()
+  const projectDispatch = useDispatch()
 
   return (
     <>
@@ -49,7 +49,7 @@ export const OnlyEditMostRecent = ({
           secondary
           onClick={() => {
             projectDispatch({
-              type: ProjectActions.SetActiveVersion,
+              type: StateActions.SetActiveVersion,
               payload: { datasetID, version: latestVersion },
             })
             setModal(null)
