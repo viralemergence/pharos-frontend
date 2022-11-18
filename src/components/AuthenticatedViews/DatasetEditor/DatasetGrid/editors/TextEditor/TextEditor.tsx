@@ -6,13 +6,18 @@ import {
   Datapoint,
   RecordMeta,
   RecordWithID,
-} from 'reducers/projectReducer/types'
+} from 'reducers/stateReducer/types'
 
 import useDataset from 'hooks/dataset/useDataset'
 import useModal from 'hooks/useModal/useModal'
 import { useEffect } from 'react'
 import { IDMustBeUnique, OnlyEditMostRecent } from './textEditorMessages'
-import useDoSetDatapoint from 'reducers/projectReducer/hooks/useDoSetDatapoint'
+import useRegister from 'hooks/register/useRegister'
+import useUser from 'hooks/useUser'
+import getTimestamp from 'utilities/getTimestamp'
+import { StateActions } from 'reducers/stateReducer/stateReducer'
+import useDispatch from 'hooks/useDispatch'
+import useProjectID from 'hooks/project/useProjectID'
 
 const TextInput = styled.input`
   appearance: none;
@@ -45,21 +50,23 @@ const autoFocusAndSelect = (input: HTMLInputElement | null) => {
 const recordIDColumn = 'SampleID'
 
 const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
+  const user = useUser()
   const dataset = useDataset()
+  const register = useRegister()
+  const projectID = useProjectID()
+
   const setModal = useModal()
-  const doSetDatapoint = useDoSetDatapoint()
+  const projectDispatch = useDispatch()
 
   const datapoint = row[column.key] as Datapoint | undefined
 
   const [editValue, setEditValue] = useState(datapoint?.displayValue ?? '')
 
   const dispatchValue = () => {
-    if (!dataset.register) return
-
     // special case for handling the ID column
     if (column.key === recordIDColumn) {
       // get all current SampleID values
-      const idMap = Object.entries(dataset.register).reduce(
+      const idMap = Object.entries(register).reduce(
         (acc, [recordID, row]) => ({
           ...acc,
           [row[recordIDColumn]?.displayValue]: recordID,
@@ -76,11 +83,27 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
       }
     }
 
-    doSetDatapoint({
-      recordID: (row._meta as RecordMeta).recordID,
-      datapointID: column.key,
-      displayValue: editValue,
-      dataValue: editValue,
+    if (!user.data?.researcherID)
+      throw new Error('Cannot set datapoint when user data is undefined ')
+
+    const modifiedBy = user.data.researcherID
+
+    const lastUpdated = getTimestamp()
+
+    projectDispatch({
+      type: StateActions.SetDatapoint,
+      payload: {
+        projectID,
+        datasetID: dataset.datasetID,
+        recordID: (row._meta as RecordMeta).recordID,
+        datapointID: column.key,
+        lastUpdated,
+        datapoint: {
+          displayValue: editValue,
+          dataValue: editValue,
+          modifiedBy,
+        },
+      },
     })
   }
 
@@ -92,7 +115,7 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
   }
 
   const editable =
-    dataset.activeVersion === dataset.versions.length - 1 ||
+    Number(dataset.activeVersion) === dataset.versions.length - 1 ||
     dataset.versions.length === 0
 
   useEffect(() => {

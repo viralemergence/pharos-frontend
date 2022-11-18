@@ -7,7 +7,7 @@ import CMS from '@talus-analytics/library.airtable-cms'
 import NavLink from './NavLink'
 import MobileMenu from './MobileMenu/MobileMenu'
 
-import { UserStatus } from '../../Login/UserContextProvider'
+import { UserStatus } from 'reducers/stateReducer/types'
 
 import useUser from 'hooks/useUser'
 import useIndexPageData from 'cmsHooks/useIndexPageData'
@@ -57,7 +57,7 @@ const MobileLinkList = styled(LinkList)`
 `
 const NavLogo = styled(CMS.Image)`
   height: 70px;
-  margin-right: 20px;
+  margin-right: 30px;
 `
 
 const NavBar = () => {

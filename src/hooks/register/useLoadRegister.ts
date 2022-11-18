@@ -1,90 +1,137 @@
 import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import localforage from 'localforage'
 
 import useUser from 'hooks/useUser'
-import useDataset from 'hooks/dataset/useDataset'
-import useProject from 'hooks/project/useProject'
-import useProjectDispatch from 'hooks/project/useProjectDispatch'
+import useDispatch from 'hooks/useDispatch'
 
-import {
-  DatasetStatus,
-  ProjectStatus,
-  RegisterStatus,
-} from 'reducers/projectReducer/types'
-import { ProjectActions } from 'reducers/projectReducer/projectReducer'
+import { NodeStatus, Register } from 'reducers/stateReducer/types'
+import { StateActions } from 'reducers/stateReducer/stateReducer'
 
-import loadRegister from 'api/loadRegister'
+import useAppState from 'hooks/useAppState'
+import useDatasetID from 'hooks/dataset/useDatasetID'
 
 const useLoadRegister = () => {
   const user = useUser()
-  const dataset = useDataset()
-  const navigate = useNavigate()
-  const project = useProject()
-  const projectDispatch = useProjectDispatch()
+  const datasetID = useDatasetID()
+  const dispatch = useDispatch()
 
-  const { datasetID, register, registerStatus } = dataset
+  const researcherID = user.data?.researcherID
+  if (!researcherID) throw new Error('researcherID required for useDatasets')
+
+  const {
+    register: { status },
+  } = useAppState()
+
+  // set the register empty when the projectID changes
+  useEffect(() => {
+    if (!datasetID) return
+    dispatch({
+      type: StateActions.UpdateRegister,
+      payload: {
+        source: 'local',
+        datasetID,
+        data: {},
+      },
+    })
+    dispatch({
+      type: StateActions.SetMetadataObjStatus,
+      payload: {
+        key: 'register',
+        status: NodeStatus.Initial,
+      },
+    })
+  }, [datasetID, dispatch])
+
+  // load and process register from indexedDB
+  useEffect(() => {
+    if (!datasetID) return
+    const loadLocalDatasets = async () => {
+      if (!datasetID) return
+
+      const localRegister = (await localforage.getItem(
+        `${datasetID}-register`
+      )) as Register | null
+
+      if (localRegister)
+        dispatch({
+          type: StateActions.UpdateRegister,
+          payload: {
+            datasetID,
+            source: 'local',
+            data: localRegister,
+          },
+        })
+    }
+
+    loadLocalDatasets()
+  }, [datasetID, dispatch])
 
   useEffect(() => {
-    // handle case where the page loads on a dataset that doesn't exist
-    if (
-      project.status === ProjectStatus.Loaded &&
-      dataset.status === DatasetStatus.Loading
-    )
-      navigate('/')
-
+    if (!datasetID) return
     const requestRegister = async () => {
+      // skip loading if:
       if (
-        // if user data is undefined we can't check
-        !user.data?.researcherID ||
-        // can't check if datasetID is empty
-        datasetID === '' ||
-        // if register is loaded we don't need to check
-        registerStatus === RegisterStatus.Loaded ||
-        // if register is in an error state, don't retry
-        dataset.registerStatus === RegisterStatus.Error
-      ) {
-        return null
+        status === NodeStatus.Loading ||
+        status === NodeStatus.Loaded ||
+        status === NodeStatus.Offline
+      )
+        return
+
+      console.log(`${'[API]'.padEnd(15)} Request:  /load-register`)
+      const response = await fetch(
+        `${process.env.GATSBY_API_URL}/load-register`,
+        {
+          method: 'POST',
+          body: JSON.stringify({ researcherID, datasetID }),
+        }
+      ).catch(() =>
+        dispatch({
+          type: StateActions.SetMetadataObjStatus,
+          payload: {
+            key: 'register',
+            status: NodeStatus.Offline,
+          },
+        })
+      )
+
+      console.log(
+        `${'[API]'.padEnd(15)} Response: /load-register: ${response?.status}`
+      )
+      if (!response || !response.ok) {
+        dispatch({
+          type: StateActions.SetMetadataObjStatus,
+          payload: {
+            key: 'register',
+            status: NodeStatus.Offline,
+          },
+        })
+        return
       }
 
-      // if the register contains rows, we don't need to check
-      // this might need to change in a multi-user context
-      if (register && Object.keys(register).length !== 0) return null
+      const remoteRegister = (await response.json()) as Register | null
 
-      console.log('API Sync: Request Register')
-      const nextRegisterData = await loadRegister({
-        researcherID: user.data.researcherID,
-        datasetID,
-      })
-
-      if (nextRegisterData) {
-        projectDispatch({
-          type: ProjectActions.ReplaceRegister,
-          payload: { datasetID, register: nextRegisterData },
+      if (remoteRegister) {
+        dispatch({
+          type: StateActions.UpdateRegister,
+          payload: {
+            datasetID,
+            source: 'remote',
+            data: remoteRegister,
+          },
         })
 
-        projectDispatch({
-          type: ProjectActions.SetRegisterStatus,
-          payload: { datasetID, status: RegisterStatus.Saved },
-        })
-      } else {
-        projectDispatch({
-          type: ProjectActions.SetRegisterStatus,
-          payload: { datasetID, status: RegisterStatus.Error },
+        dispatch({
+          type: StateActions.SetMetadataObjStatus,
+          payload: {
+            key: 'register',
+            status: NodeStatus.Loaded,
+          },
         })
       }
     }
 
     requestRegister()
-  }, [
-    dataset,
-    navigate,
-    register,
-    datasetID,
-    registerStatus,
-    project.status,
-    projectDispatch,
-    user.data?.researcherID,
-  ])
+  }, [researcherID, datasetID, status, dispatch])
 }
 
 export default useLoadRegister

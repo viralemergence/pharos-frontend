@@ -90,5 +90,24 @@ module.exports = {
     'gatsby-plugin-image',
     'gatsby-plugin-sass',
     'gatsby-plugin-mdx',
+    {
+      resolve: `gatsby-plugin-manifest`,
+      options: {
+        name: `PHAROS`,
+        short_name: `PHAROS`,
+        start_url: `/`,
+        background_color: `#f7f0eb`,
+        theme_color: `#050A37`,
+        display: `standalone`,
+        icon: `icon.png`,
+      },
+    },
+    {
+      resolve: 'gatsby-plugin-offline',
+      options: {
+        crossOrigin: `use-credentials`,
+        // precachePages: [`/about/*`, `/user-guide/*`, `/app/*`],
+      },
+    },
   ],
 }
