@@ -82,7 +82,9 @@ const DatasetEditor = () => {
           <ProjectName>
             Project: <span>{project.name}</span>
           </ProjectName>
-          <CSVParser />
+          {
+            // <CSVParser />
+          }
         </TopBar>
       </TopSection>
       <DatasetGrid />
