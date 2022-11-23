@@ -3,7 +3,8 @@ import {
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
 import { ActionFunction, StateActions } from '../stateReducer'
-import { Datapoint, DatasetID, ProjectID, RecordID } from '../types'
+import { AppState, Datapoint, DatasetID, ProjectID, RecordID } from '../types'
+import setDatasetLastUpdated from './setDatasetLastUpdated'
 
 export interface SetDatapointPayload {
   projectID: ProjectID
@@ -41,11 +42,6 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
     lastUpdated,
   }
 
-  const nextDataset = {
-    ...state.datasets.data[datasetID],
-    lastUpdated,
-  }
-
   // next datapoint is all the previous data, overwritten with
   // the values from the payload, with the next version number
   // and the previous datapoint in the previous property
@@ -68,20 +64,13 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
     },
   }
 
-  return {
+  let nextState: AppState = {
     ...state,
     projects: {
       ...state.projects,
       data: {
         ...state.projects.data,
         [projectID]: nextProject,
-      },
-    },
-    datasets: {
-      ...state.datasets,
-      data: {
-        ...state.datasets.data,
-        [datasetID]: nextDataset,
       },
     },
     register: {
@@ -102,18 +91,6 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
         status: StorageMessageStatus.Initial,
         data: nextProject,
       },
-      [`${APIRoutes.saveDataset}_${datasetID}_local`]: {
-        route: APIRoutes.saveDataset,
-        target: 'local',
-        status: StorageMessageStatus.Initial,
-        data: nextDataset,
-      },
-      [`${APIRoutes.saveDataset}_${datasetID}_remote`]: {
-        route: APIRoutes.saveDataset,
-        target: 'remote',
-        status: StorageMessageStatus.Initial,
-        data: nextDataset,
-      },
       [`${APIRoutes.saveRegister}_${datasetID}_local`]: {
         route: APIRoutes.saveRegister,
         target: 'local',
@@ -128,6 +105,14 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
       },
     },
   }
+
+  // set dataset lastUpdated date
+  nextState = setDatasetLastUpdated(nextState, {
+    datasetID,
+    lastUpdated,
+  })
+
+  return nextState
 }
 
 export default setDatapoint

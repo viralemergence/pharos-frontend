@@ -50,12 +50,12 @@ export enum StateActions {
 
   CreateDataset,
   UpdateDatasets,
+  SetDatasetLastUpdated,
 
   UpdateRegister,
 
   // SetDatasetStatus,
   // SetDatasetReleaseStatus,
-  // SetDatasetLastUpdated,
 
   // SetActiveVersion,
   // SetVersions,
@@ -84,10 +84,10 @@ export type StateAction =
   // // datsets
   | CreateDatasetAction
   | UpdateDatasetsAction
+  | SetDatasetLastUpdatedAction
   | UpdateRegisterAction
   // | SetDatasetStatusAction
   // | SetDatasetReleaseStatusAction
-  // | SetDatasetLastUpdatedAction
   // // register
   // | ReplaceRegisterAction
   // // versions
@@ -156,8 +156,8 @@ const stateReducer = (state: AppState, action: StateAction) => {
     //   return setDatasetStatus(state, action.payload)
     // case ProjectActions.SetDatasetReleaseStatus:
     //   return setDatasetReleaseStatus(state, action.payload)
-    // case ProjectActions.SetDatasetLastUpdated:
-    //   return setDatasetLastUpdated(state, action.payload)
+    case StateActions.SetDatasetLastUpdated:
+      return setDatasetLastUpdated(state, action.payload)
     // case ProjectActions.CreateVersion:
     //   return createVersion(state, action.payload)
     // case ProjectActions.SetVersions:

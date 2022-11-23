@@ -1,3 +1,7 @@
+import {
+  APIRoutes,
+  StorageMessageStatus,
+} from 'storage/synchronizeMessageQueue'
 import { ActionFunction, StateActions } from '../stateReducer'
 
 export interface SetDatasetLastUpdatedPayload {
@@ -12,16 +16,37 @@ export interface SetDatasetLastUpdatedAction {
 
 const setDatasetLastUpdated: ActionFunction<SetDatasetLastUpdatedPayload> = (
   state,
-  payload
-) => ({
-  ...state,
-  datasets: {
-    ...state.datasets,
-    [payload.datasetID]: {
-      ...state.datasets[payload.datasetID],
-      lastUpdated: payload.lastUpdated,
+  { datasetID, lastUpdated }
+) => {
+  const nextDataset = {
+    ...state.datasets.data[datasetID],
+    lastUpdated,
+  }
+
+  return {
+    ...state,
+    datasets: {
+      ...state.datasets,
+      data: {
+        ...state.datasets.data,
+        [datasetID]: nextDataset,
+      },
     },
-  },
-})
+    messageStack: {
+      [`${APIRoutes.saveDataset}_${datasetID}_local`]: {
+        route: APIRoutes.saveDataset,
+        target: 'local',
+        status: StorageMessageStatus.Initial,
+        data: nextDataset,
+      },
+      [`${APIRoutes.saveDataset}_${datasetID}_remote`]: {
+        route: APIRoutes.saveDataset,
+        target: 'remote',
+        status: StorageMessageStatus.Initial,
+        data: nextDataset,
+      },
+    },
+  }
+}
 
 export default setDatasetLastUpdated
