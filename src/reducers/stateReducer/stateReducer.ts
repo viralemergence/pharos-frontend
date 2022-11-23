@@ -3,9 +3,6 @@ import { AppState } from './types'
 import updateProjects, { UpdateProjectsAction } from './actions/updateProjects'
 import createDataset, { CreateDatasetAction } from './actions/createDataset'
 import setDatapoint, { SetDatapointAction } from './actions/setDatapoint'
-import batchSetDatapoint, {
-  BatchSetDatapointAction,
-} from './actions/mutationBatchSetDatapoint'
 import setDatasetReleaseStatus, {
   SetDatasetReleaseStatusAction,
 } from './actions/setDatasetReleaseStatus'
@@ -28,66 +25,60 @@ import updateRegister, { UpdateRegisterAction } from './actions/updateRegister'
 
 // reducer actions
 export enum StateActions {
-  // SetProject,
+  // user actions
   UpdateUser,
+
+  // general state
   SetMetadataObjStatus,
 
-  UpdateProjects,
-  CreateProject,
-
+  // storage messages
   SetMessageStack,
   SetStorageMessageStatus,
   RemoveStorageMessage,
 
+  // project actions
+  UpdateProjects,
+  CreateProject,
+
+  // dataset actions
   CreateDataset,
   UpdateDatasets,
   SetDatasetReleaseStatus,
 
+  // register actions
   UpdateRegister,
-
-  // SetDatasetStatus,
-
-  // SetActiveVersion,
-
-  // SetProjectStatus,
-
-  // CreateVersion,
-
   SetDatapoint,
-  // SetRegisterKey,
-  // ReplaceRegister,
-  // BatchSetDatapoint,
 }
 
 export type StateAction =
-  // | SetProjectAction
+  // user actions
   | UpdateUserAction
+
+  // general state
   | SetMetadataObjStatus
-  | UpdateProjectsAction
-  | CreateProjectAction
+
+  // storage messages
   | SetMessageStackAction
   | SetStorageMessageStatusAction
   | RemoveStorageMessageAction
-  // state relative to server
-  // | SetProjectStatusAction
-  // // datsets
+
+  // project actions
+  | UpdateProjectsAction
+  | CreateProjectAction
+
+  // dataset actions
   | CreateDatasetAction
   | UpdateDatasetsAction
   | SetDatasetReleaseStatusAction
+
+  // register actions
   | UpdateRegisterAction
-  // | SetDatasetStatusAction
-  // // register
-  // | ReplaceRegisterAction
-  // // versions
-  // | CreateVersionAction
-  // | SetActiveVersionAction
-  // // datapoint
   | SetDatapointAction
-// | BatchSetDatapointAction
 
 export type ActionFunction<T = void> = (state: AppState, payload: T) => AppState
 
-// const projectReducer = (state: AppState, action: ProjectAction) => {
+// // debugging wrapper on stateReducer
+// const stateReducer = (state: AppState, action: ProjectAction) => {
 //   console.log('STATE ' + JSON.stringify(state))
 //   console.log('ACTION ' + JSON.stringify(action))
 //   const nextState = _projectReducer(state, action)
@@ -97,12 +88,6 @@ export type ActionFunction<T = void> = (state: AppState, payload: T) => AppState
 
 const stateReducer = (state: AppState, action: StateAction) => {
   switch (action.type) {
-    // datsets
-    // case ProjectActions.SetProjectStatus:
-    //   return setProjectStatus(state, action.payload)
-    // case ProjectActions.SetProject:
-    //   return setProject(state, action.payload)
-
     case StateActions.UpdateUser:
       return updateUser(state, action.payload)
 
@@ -136,21 +121,9 @@ const stateReducer = (state: AppState, action: StateAction) => {
     // register actions
     case StateActions.UpdateRegister:
       return updateRegister(state, action.payload)
-
-    // datapoint
     case StateActions.SetDatapoint:
       return setDatapoint(state, action.payload)
 
-    // case ProjectActions.SetDatasetStatus:
-    //   return setDatasetStatus(state, action.payload)
-    // case ProjectActions.CreateVersion:
-    //   return createVersion(state, action.payload)
-    // case ProjectActions.ReplaceRegister:
-    //   return replaceRegister(state, action.payload)
-    // case ProjectActions.SetActiveVersion:
-    //   return setActiveVersion(state, action.payload)
-    // case ProjectActions.BatchSetDatapoint:
-    //   return batchSetDatapoint(state, action.payload)
     default:
       return state
   }
