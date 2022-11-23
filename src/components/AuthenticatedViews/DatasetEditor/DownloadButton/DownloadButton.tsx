@@ -24,7 +24,7 @@ const DownloadButton = () => {
   const theme = useTheme()
 
   const { rows } = useVersionedRows()
-  const versionDate = dataset?.versions[dataset.activeVersion]?.date ?? ''
+  const versionDate = new Date().toLocaleDateString()
 
   const disable = !rows || rows.length === 0
 
