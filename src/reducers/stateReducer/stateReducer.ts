@@ -1,11 +1,5 @@
 import { AppState } from './types'
 
-import setActiveVersion, {
-  SetActiveVersionAction,
-} from './actions/setActiveVersion'
-import createVersion, { CreateVersionAction } from './actions/createVersion'
-import setVersions, { SetVersionsAction } from './actions/setVersions'
-
 import updateProjects, { UpdateProjectsAction } from './actions/updateProjects'
 import createDataset, { CreateDatasetAction } from './actions/createDataset'
 import setDatapoint, { SetDatapointAction } from './actions/setDatapoint'
@@ -54,7 +48,6 @@ export enum StateActions {
   // SetDatasetStatus,
 
   // SetActiveVersion,
-  // SetVersions,
 
   // SetProjectStatus,
 
@@ -88,7 +81,6 @@ export type StateAction =
   // // versions
   // | CreateVersionAction
   // | SetActiveVersionAction
-  // | SetVersionsAction
   // // datapoint
   | SetDatapointAction
 // | BatchSetDatapointAction
@@ -153,8 +145,6 @@ const stateReducer = (state: AppState, action: StateAction) => {
     //   return setDatasetStatus(state, action.payload)
     // case ProjectActions.CreateVersion:
     //   return createVersion(state, action.payload)
-    // case ProjectActions.SetVersions:
-    //   return setVersions(state, action.payload)
     // case ProjectActions.ReplaceRegister:
     //   return replaceRegister(state, action.payload)
     // case ProjectActions.SetActiveVersion:
