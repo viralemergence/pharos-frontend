@@ -12,9 +12,6 @@ import setDatapoint, { SetDatapointAction } from './actions/setDatapoint'
 import batchSetDatapoint, {
   BatchSetDatapointAction,
 } from './actions/mutationBatchSetDatapoint'
-import setDatasetLastUpdated, {
-  SetDatasetLastUpdatedAction,
-} from './actions/setDatasetLastUpdated'
 import setDatasetReleaseStatus, {
   SetDatasetReleaseStatusAction,
 } from './actions/setDatasetReleaseStatus'
@@ -50,7 +47,6 @@ export enum StateActions {
 
   CreateDataset,
   UpdateDatasets,
-  SetDatasetLastUpdated,
   SetDatasetReleaseStatus,
 
   UpdateRegister,
@@ -84,7 +80,6 @@ export type StateAction =
   // // datsets
   | CreateDatasetAction
   | UpdateDatasetsAction
-  | SetDatasetLastUpdatedAction
   | SetDatasetReleaseStatusAction
   | UpdateRegisterAction
   // | SetDatasetStatusAction
@@ -156,8 +151,6 @@ const stateReducer = (state: AppState, action: StateAction) => {
 
     // case ProjectActions.SetDatasetStatus:
     //   return setDatasetStatus(state, action.payload)
-    case StateActions.SetDatasetLastUpdated:
-      return setDatasetLastUpdated(state, action.payload)
     // case ProjectActions.CreateVersion:
     //   return createVersion(state, action.payload)
     // case ProjectActions.SetVersions:

@@ -3,8 +3,7 @@ import {
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
 import { ActionFunction, StateActions } from '../stateReducer'
-import { AppState, Datapoint, DatasetID, ProjectID, RecordID } from '../types'
-import setDatasetLastUpdated from './setDatasetLastUpdated'
+import { Datapoint, DatasetID, ProjectID, RecordID } from '../types'
 
 export interface SetDatapointPayload {
   projectID: ProjectID
@@ -37,8 +36,15 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
   // short circuit if the display value is unchanged
   if (previous?.displayValue === next.displayValue) return state
 
+  // update lastUpdated
   const nextProject = {
     ...state.projects.data[projectID],
+    lastUpdated,
+  }
+
+  // update lastUpdated
+  const nextDataset = {
+    ...state.datasets.data[datasetID],
     lastUpdated,
   }
 
@@ -64,7 +70,7 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
     },
   }
 
-  let nextState: AppState = {
+  return {
     ...state,
     projects: {
       ...state.projects,
@@ -91,6 +97,18 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
         status: StorageMessageStatus.Initial,
         data: nextProject,
       },
+      [`${APIRoutes.saveDataset}_${datasetID}_local`]: {
+        route: APIRoutes.saveDataset,
+        target: 'local',
+        status: StorageMessageStatus.Initial,
+        data: nextDataset,
+      },
+      [`${APIRoutes.saveDataset}_${datasetID}_remote`]: {
+        route: APIRoutes.saveDataset,
+        target: 'remote',
+        status: StorageMessageStatus.Initial,
+        data: nextDataset,
+      },
       [`${APIRoutes.saveRegister}_${datasetID}_local`]: {
         route: APIRoutes.saveRegister,
         target: 'local',
@@ -105,14 +123,6 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
       },
     },
   }
-
-  // set dataset lastUpdated date
-  nextState = setDatasetLastUpdated(nextState, {
-    datasetID,
-    lastUpdated,
-  })
-
-  return nextState
 }
 
 export default setDatapoint
