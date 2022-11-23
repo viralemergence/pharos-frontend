@@ -1,5 +1,9 @@
+import {
+  APIRoutes,
+  StorageMessageStatus,
+} from 'storage/synchronizeMessageQueue'
 import { ActionFunction, StateActions } from '../stateReducer'
-import { DatasetReleaseStatus, DatasetStatus } from '../types'
+import { DatasetReleaseStatus } from '../types'
 
 export interface SetDatasetReleaseStatusPayload {
   datasetID: string
@@ -14,17 +18,37 @@ export interface SetDatasetReleaseStatusAction {
 
 const setDatasetReleaseStatus: ActionFunction<
   SetDatasetReleaseStatusPayload
-> = (state, payload) => ({
-  ...state,
-  datasets: {
-    ...state.datasets,
-    [payload.datasetID]: {
-      ...state.datasets[payload.datasetID],
-      lastUpdated: payload.lastUpdated,
-      releaseStatus: payload.releaseStatus,
-      status: DatasetStatus.Unsaved,
+> = (state, { datasetID, lastUpdated, releaseStatus }) => {
+  const nextDataset = {
+    ...state.datasets.data[datasetID],
+    releaseStatus,
+    lastUpdated,
+  }
+
+  return {
+    ...state,
+    datasets: {
+      ...state.datasets,
+      data: {
+        ...state.datasets.data,
+        [datasetID]: nextDataset,
+      },
     },
-  },
-})
+    messageStack: {
+      [`${APIRoutes.saveDataset}_${datasetID}_local`]: {
+        route: APIRoutes.saveDataset,
+        target: 'local',
+        status: StorageMessageStatus.Initial,
+        data: nextDataset,
+      },
+      [`${APIRoutes.saveDataset}_${datasetID}_remote`]: {
+        route: APIRoutes.saveDataset,
+        target: 'remote',
+        status: StorageMessageStatus.Initial,
+        data: nextDataset,
+      },
+    },
+  }
+}
 
 export default setDatasetReleaseStatus
