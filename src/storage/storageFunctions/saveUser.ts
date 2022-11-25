@@ -31,7 +31,7 @@ const saveUser: StorageFunction<SaveUser> = async (key, message, dispatch) => {
       `${process.env.GATSBY_API_URL}/${message.route}`,
       {
         method: 'POST',
-        body: JSON.stringify(message.data.data),
+        body: JSON.stringify(message.data),
       }
     ).catch(() =>
       dispatch({

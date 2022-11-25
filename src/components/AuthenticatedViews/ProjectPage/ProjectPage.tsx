@@ -93,7 +93,7 @@ const ProjectPage = () => {
       <MainSection>
         <Left>
           <H2>Author</H2>
-          <Author>{user.data?.name}</Author>
+          <Author>{user.name}</Author>
           <H2>Description</H2>
           <Description>{project.description}</Description>
           <HorizontalBar>

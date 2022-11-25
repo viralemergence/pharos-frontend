@@ -21,11 +21,9 @@ const useLoadProjects = () => {
     const loadProjects = async () => {
       // skip loading if
       if (
-        // if the user has no data
-        !user.data ||
         // if the user has no projects associated
-        !user.data.projectIDs ||
-        user.data.projectIDs?.length === 0 ||
+        !user.projectIDs ||
+        user.projectIDs.length === 0 ||
         // if we're already already trying to load this
         status === NodeStatus.Loading ||
         // if we're already did load this
@@ -42,9 +40,7 @@ const useLoadProjects = () => {
       })
 
       // check local storage for projects
-      const localProjects = (await localforage.getItems(
-        user.data.projectIDs
-      )) as {
+      const localProjects = (await localforage.getItems(user.projectIDs)) as {
         [key: string]: Project
       } | null
 
@@ -67,7 +63,7 @@ const useLoadProjects = () => {
         `${process.env.GATSBY_API_URL}/list-projects`,
         {
           method: 'post',
-          body: JSON.stringify({ researcherID: user.data.researcherID }),
+          body: JSON.stringify({ researcherID: user.researcherID }),
         }
       ).catch(() => {
         // catch network error and go into offline mode
