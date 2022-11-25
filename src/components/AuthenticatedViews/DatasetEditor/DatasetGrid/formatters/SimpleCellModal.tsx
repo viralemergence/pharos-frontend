@@ -32,11 +32,11 @@ const History = styled.div`
   padding: 0px 10px;
   padding-left: 30px;
 `
-const Instructions = styled.div`
-  margin-top: 15px;
-  border-top: 1px solid ${({ theme }) => theme.medGray};
-  padding-top: 15px;
-`
+// const Instructions = styled.div`
+//   margin-top: 15px;
+//   border-top: 1px solid ${({ theme }) => theme.medGray};
+//   padding-top: 15px;
+// `
 const ReportContainer = styled.div<{ score?: ReportScore }>`
   margin-top: 15px;
   padding: 10px 15px;

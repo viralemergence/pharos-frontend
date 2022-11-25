@@ -12,16 +12,16 @@ export interface CreateProjectAction {
 
 const createProject: ActionFunction<Project> = (state, payload) => {
   const nextUser = {
-    ...state.user,
-    data: {
-      ...state.user.data!,
-      projectIDs: [...(state.user.data?.projectIDs ?? []), payload.projectID],
-    },
+    ...state.user.data!,
+    projectIDs: [...(state.user.data?.projectIDs ?? []), payload.projectID],
   }
 
   return {
     ...state,
-    user: nextUser,
+    user: {
+      ...state.user,
+      data: nextUser,
+    },
     projects: {
       ...state.projects,
       data: {

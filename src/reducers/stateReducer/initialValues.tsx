@@ -1,19 +1,12 @@
 import {
   AppState,
   Dataset,
-  DatasetStatus,
   Project,
   ProjectPublishStatus,
   ProjectStatus,
   NodeStatus,
-  User,
   UserStatus,
 } from './types'
-
-export const userInitialValue: User = {
-  status: UserStatus.initial,
-  statusMessage: 'Unknown user state',
-}
 
 export const projectInitialValue: Project = {
   name: '',
@@ -38,7 +31,7 @@ const metadataObjInitialValue = {
 }
 
 export const stateInitialValue: AppState = {
-  user: userInitialValue,
+  user: { status: UserStatus.initial },
   projects: metadataObjInitialValue,
   datasets: metadataObjInitialValue,
   register: metadataObjInitialValue,

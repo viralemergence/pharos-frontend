@@ -1,26 +1,5 @@
 import { StorageMessage } from 'storage/synchronizeMessageQueue'
 
-export interface User {
-  status: UserStatus
-  statusMessage: string
-  data?: {
-    researcherID: string
-    organization: string
-    email: string
-    name: string
-    projectIDs?: string[]
-  }
-}
-
-export enum UserStatus {
-  'initial',
-  'loggedOut',
-  'loggedIn',
-  'sessionExpired',
-  'invalidUser',
-  'authError',
-}
-
 export type ProjectID = string
 export type RecordID = string
 export type DatasetID = string
@@ -32,8 +11,17 @@ export enum NodeStatus {
   Offline = 'Offline',
 }
 
+export enum UserStatus {
+  'initial',
+  'loggedOut',
+  'loggedIn',
+  'sessionExpired',
+  'invalidUser',
+  'authError',
+}
+
 export interface AppState {
-  user: User
+  user: UserObj
   projects: MetadataObj<{ [key: ProjectID]: Project }>
   datasets: MetadataObj<{ [key: DatasetID]: Dataset }>
   register: MetadataObj<Register>
@@ -43,6 +31,21 @@ export interface AppState {
 export interface MetadataObj<T> {
   status: NodeStatus
   data: T
+}
+
+// special case of MetadataObj
+// which allows for special user states
+interface UserObj {
+  status: UserStatus
+  data?: User
+}
+
+export interface User {
+  researcherID: string
+  organization: string
+  email: string
+  name: string
+  projectIDs?: string[]
 }
 
 // the overall Project object

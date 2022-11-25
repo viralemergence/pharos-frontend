@@ -2,10 +2,10 @@ import React from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 
 import { UserStatus } from 'reducers/stateReducer/types'
-import useUser from 'hooks/useUser'
+import useAppState from 'hooks/useAppState'
 
 function RequireAuth({ children }: { children: JSX.Element }) {
-  const user = useUser()
+  const { user } = useAppState()
   const location = useLocation()
 
   // if the user status is unknown (local database isn't checked)

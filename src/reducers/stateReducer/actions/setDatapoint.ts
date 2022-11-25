@@ -36,11 +36,13 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
   // short circuit if the display value is unchanged
   if (previous?.displayValue === next.displayValue) return state
 
+  // update lastUpdated
   const nextProject = {
     ...state.projects.data[projectID],
     lastUpdated,
   }
 
+  // update lastUpdated
   const nextDataset = {
     ...state.datasets.data[datasetID],
     lastUpdated,
@@ -75,13 +77,6 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
       data: {
         ...state.projects.data,
         [projectID]: nextProject,
-      },
-    },
-    datasets: {
-      ...state.datasets,
-      data: {
-        ...state.datasets.data,
-        [datasetID]: nextDataset,
       },
     },
     register: {
