@@ -52,13 +52,8 @@ const StateContextProvider = ({ children }: StateContextProviderProps) => {
             ...stack,
             [key]: {
               ...message,
-              status:
-                // if the messages were initial or pending when saved
-                // they should be considered unknown errors now
-                message.status === StorageMessageStatus.Initial ||
-                message.status === StorageMessageStatus.Pending
-                  ? StorageMessageStatus.UnknownError
-                  : message.status,
+              // set storage messages to initial so they get retried
+              status: StorageMessageStatus.Initial,
             },
           }),
           {}
