@@ -16,11 +16,7 @@ import setStorageMessageStatus, {
 import removeStorageMessage, {
   RemoveStorageMessageAction,
 } from './actions/removeStorageMessage'
-<<<<<<< HEAD
-import setUser, { SetUserAction } from './actions/setUser'
-=======
 import updateUser, { UpdateUserAction } from './actions/updateUser'
->>>>>>> dev
 import setMessageStack, {
   SetMessageStackAction,
 } from './actions/setMessageStack'
@@ -30,16 +26,11 @@ import setUserStatus, { SetUserStatusAction } from './actions/setUserStatus'
 
 // reducer actions
 export enum StateActions {
-<<<<<<< HEAD
-  // SetProject,
-  SetUser,
-=======
   // user actions
   UpdateUser,
   SetUserStatus,
 
   // general state
->>>>>>> dev
   SetMetadataObjStatus,
 
   // storage messages
@@ -62,16 +53,11 @@ export enum StateActions {
 }
 
 export type StateAction =
-<<<<<<< HEAD
-  // | SetProjectAction
-  | SetUserAction
-=======
   // user actions
   | UpdateUserAction
   | SetUserStatusAction
 
   // general state
->>>>>>> dev
   | SetMetadataObjStatus
 
   // storage messages
@@ -105,21 +91,10 @@ export type ActionFunction<T = void> = (state: AppState, payload: T) => AppState
 
 const stateReducer = (state: AppState, action: StateAction) => {
   switch (action.type) {
-<<<<<<< HEAD
-    // datsets
-    // case ProjectActions.SetProjectStatus:
-    //   return setProjectStatus(state, action.payload)
-    // case ProjectActions.SetProject:
-    //   return setProject(state, action.payload)
-
-    case StateActions.SetUser:
-      return setUser(state, action.payload)
-=======
     case StateActions.UpdateUser:
       return updateUser(state, action.payload)
     case StateActions.SetUserStatus:
       return setUserStatus(state, action.payload)
->>>>>>> dev
 
     // set status of one of the main state objects:
     // projects, datasets, or register.
