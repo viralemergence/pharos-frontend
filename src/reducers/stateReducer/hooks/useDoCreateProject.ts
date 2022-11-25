@@ -15,8 +15,6 @@ const useDoCreateProject = () => {
   const navigate = useNavigate()
 
   const doCreateProject = async (formData: FormData) => {
-    if (!user.data?.researcherID) throw new Error('Researcher ID undefined')
-
     const projectID = generateID.projectID()
 
     const projectData = {
@@ -25,7 +23,7 @@ const useDoCreateProject = () => {
       projectID,
       authors: [
         {
-          researcherID: user.data.researcherID,
+          researcherID: user.researcherID,
           role: 'owner',
         },
       ],

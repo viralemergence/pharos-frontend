@@ -5,6 +5,8 @@ const useUser = () => {
     user: { data: user },
   } = useAppState()
 
+  if (!user) throw new Error('User not logged in')
+
   return user
 }
 

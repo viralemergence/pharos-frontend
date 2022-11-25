@@ -11,12 +11,9 @@ import useAppState from 'hooks/useAppState'
 import useDatasetID from 'hooks/dataset/useDatasetID'
 
 const useLoadRegister = () => {
-  const user = useUser()
+  const { researcherID } = useUser()
   const datasetID = useDatasetID()
   const dispatch = useDispatch()
-
-  const researcherID = user.data?.researcherID
-  if (!researcherID) throw new Error('researcherID required for useDatasets')
 
   const {
     register: { status },

@@ -10,10 +10,7 @@ import { Dataset, NodeStatus } from 'reducers/stateReducer/types'
 const useLoadDatasets = () => {
   const { projectID, datasetIDs } = useProject()
   const dispatch = useDispatch()
-  const user = useUser()
-
-  const researcherID = user.data?.researcherID
-  if (!researcherID) throw new Error('researcherID required for useDatasets')
+  const { researcherID } = useUser()
 
   const {
     datasets: { status, data },
