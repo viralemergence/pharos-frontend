@@ -5,16 +5,14 @@ import styled from 'styled-components'
 import CMS from '@talus-analytics/library.airtable-cms'
 
 import useSignInPageData from 'cmsHooks/useSignInPageData'
-import useUser from 'hooks/useUser'
 
 import { UserStatus } from 'reducers/stateReducer/types'
-import authenticate from 'components/Login/authenticate'
 import MintButton from 'components/ui/MintButton'
 import Label from 'components/ui/InputLabel'
 import Input from 'components/ui/Input'
 import Main from 'components/layout/Main'
-import useDispatch from 'hooks/useDispatch'
-import { StateActions } from 'reducers/stateReducer/stateReducer'
+import useAuthenticate from 'components/Login/useAuthenticate'
+import useAppState from 'hooks/useAppState'
 
 const Container = styled(Main)`
   max-width: 505px;
@@ -39,11 +37,13 @@ const Form = styled.form`
   margin-top: 40px;
 `
 const Login = () => {
+  const navigate = useNavigate()
+  const [search] = useSearchParams()
+  const { user } = useAppState()
+  const authenticate = useAuthenticate()
   const data = useSignInPageData()
-  const [researcherID, setResearcherID] = useState('')
-  const user = useUser()
 
-  const dispatch = useDispatch()
+  const [researcherID, setResearcherID] = useState('')
 
   const firstInputRef = useRef<HTMLInputElement>(null)
 
@@ -51,44 +51,29 @@ const Login = () => {
     firstInputRef.current?.focus()
   }, [])
 
-  const navigate = useNavigate()
-  const [search] = useSearchParams()
-
   const [submitting, setSubmitting] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setSubmitting(true)
 
-    // // for testing; skip login by setting
-    // // a user directly.
-    // const user = {
-    //   status: UserStatus.loggedIn,
-    //   statusMessage: 'Logged in',
-    //   data: {
-    //     researcherID: 'dev',
-    //     organization: 'Talus Analytics',
-    //     email: 'ryan.zimmerman@georgetown.edu',
-    //     name: 'Ryan Offline',
-    //     projectIDs: [],
-    //   },
-    // }
-
-    // localforage.setItem('user', user)
-
-    const user = await authenticate(researcherID)
-
-    dispatch({
-      type: StateActions.UpdateUser,
-      payload: user,
-    })
+    const success = await authenticate(researcherID)
 
     setSubmitting(false)
 
     // if successful, navigate to 'next' from search params
-    if (user.status === UserStatus.loggedIn) {
+    if (success) {
       navigate(search.get('next') || '/')
     }
+  }
+
+  let statusMessage
+  switch (user.status) {
+    case UserStatus.invalidUser:
+      statusMessage = 'User not found'
+      break
+    case UserStatus.authError:
+      statusMessage = 'Error logging in, please check network connection.'
   }
 
   return (
@@ -108,7 +93,7 @@ const Login = () => {
             style={{ textTransform: 'uppercase' }}
           />
         </Label>
-        {user.status !== UserStatus.loggedOut && <p>{user.statusMessage}</p>}
+        {user.status !== UserStatus.loggedOut && <p>{statusMessage}</p>}
         <MintButton
           type="submit"
           style={{ marginTop: 40 }}
