@@ -6,7 +6,7 @@ import useUser from 'hooks/useUser'
 import useDataset from 'hooks/dataset/useDataset'
 
 const ReleaseButton = () => {
-  const user = useUser()
+  // const user = useUser()
   // const datasetID = useDatasetID()
   // const projectDispatch = useDispatch()
 
@@ -41,8 +41,6 @@ const ReleaseButton = () => {
 
   const onClickUpdate = async (e: React.SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault()
-
-    if (!user.data?.researcherID) throw new Error('User data not found')
 
     // const lastUpdated = getTimestamp()
 

@@ -50,10 +50,10 @@ const autoFocusAndSelect = (input: HTMLInputElement | null) => {
 const recordIDColumn = 'SampleID'
 
 const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
-  const user = useUser()
   const dataset = useDataset()
   const register = useRegister()
   const projectID = useProjectID()
+  const { researcherID: modifiedBy } = useUser()
 
   const setModal = useModal()
   const projectDispatch = useDispatch()
@@ -82,11 +82,6 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
         return
       }
     }
-
-    if (!user.data?.researcherID)
-      throw new Error('Cannot set datapoint when user data is undefined ')
-
-    const modifiedBy = user.data.researcherID
 
     const lastUpdated = getTimestamp()
 

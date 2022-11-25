@@ -22,11 +22,13 @@ import setMessageStack, {
 } from './actions/setMessageStack'
 import updateDatasets, { UpdateDatasetsAction } from './actions/updateDatasets'
 import updateRegister, { UpdateRegisterAction } from './actions/updateRegister'
+import setUserStatus, { SetUserStatusAction } from './actions/setUserStatus'
 
 // reducer actions
 export enum StateActions {
   // user actions
   UpdateUser,
+  SetUserStatus,
 
   // general state
   SetMetadataObjStatus,
@@ -53,6 +55,7 @@ export enum StateActions {
 export type StateAction =
   // user actions
   | UpdateUserAction
+  | SetUserStatusAction
 
   // general state
   | SetMetadataObjStatus
@@ -90,6 +93,8 @@ const stateReducer = (state: AppState, action: StateAction) => {
   switch (action.type) {
     case StateActions.UpdateUser:
       return updateUser(state, action.payload)
+    case StateActions.SetUserStatus:
+      return setUserStatus(state, action.payload)
 
     // set status of one of the main state objects:
     // projects, datasets, or register.

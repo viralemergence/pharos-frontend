@@ -9,28 +9,39 @@ const useLoadUser = (dispatch: React.Dispatch<StateAction>) => {
     const loadUser = async () => {
       const localUser = (await localforage.getItem('user')) as User | null
 
+      console.log({ localUser })
       if (localUser) {
         // set local data in state
         dispatch({
           type: StateActions.UpdateUser,
-          payload: localUser,
+          payload: {
+            user: localUser,
+            source: 'local',
+          },
+        })
+        dispatch({
+          type: StateActions.SetUserStatus,
+          payload: UserStatus.loggedIn,
         })
 
         // request updated user data
         const response = await fetch(`${process.env.GATSBY_API_URL}/auth`, {
           method: 'POST',
-          body: `{"researcherID":"${localUser.data?.researcherID}"}`,
+          body: `{"researcherID":"${localUser.researcherID}"}`,
         }).catch(error => console.log(error))
 
         // if it's valid set the updated data in state
         if (response && response.ok) {
-          const updatedUserData = await response.json()
+          const remoteUser = (await response.json()) as User
+          dispatch({
+            type: StateActions.SetUserStatus,
+            payload: UserStatus.loggedIn,
+          })
           dispatch({
             type: StateActions.UpdateUser,
             payload: {
-              status: UserStatus.loggedIn,
-              statusMessage: 'Logged in',
-              data: updatedUserData,
+              source: 'remote',
+              user: remoteUser,
             },
           })
         }
@@ -40,11 +51,8 @@ const useLoadUser = (dispatch: React.Dispatch<StateAction>) => {
       // to logged out state now that we're sure
       else
         dispatch({
-          type: StateActions.UpdateUser,
-          payload: {
-            status: UserStatus.loggedOut,
-            statusMessage: 'Logged out',
-          },
+          type: StateActions.SetUserStatus,
+          payload: UserStatus.loggedOut,
         })
     }
 

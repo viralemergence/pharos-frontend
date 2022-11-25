@@ -28,19 +28,13 @@ const H1 = styled.h1`
 `
 
 const CreateDatasetForm = () => {
-  const user = useUser()
+  const { researcherID } = useUser()
   const dispatch = useDispatch()
   const setModal = useModal()
   const projectID = useProjectID()
   const datasetID = generateID.datasetID()
 
   const navigate = useNavigate()
-
-  if (!user.data) throw new Error('User not logged in')
-
-  const {
-    data: { researcherID },
-  } = user
 
   const [formMessage, setFormMessage] = useState('')
 
