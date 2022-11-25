@@ -8,7 +8,7 @@ import useIndexPageData from 'cmsHooks/useIndexPageData'
 import { MintButtonLink } from 'components/ui/MintButton'
 import LandingMap from './LandingMap/LandingMap'
 import Footer from './Footer/Footer'
-import useUser from 'hooks/useUser'
+import useAppState from 'hooks/useAppState'
 
 const HeaderContainer = styled.div`
   position: absolute;
@@ -57,7 +57,7 @@ const FooterHeaderText = styled.h3`
 
 const LoggedOutLanding = () => {
   const cmsData = useIndexPageData()
-  const user = useUser()
+  const { user } = useAppState()
 
   return (
     <>

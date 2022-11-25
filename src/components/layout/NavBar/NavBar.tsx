@@ -9,8 +9,8 @@ import MobileMenu from './MobileMenu/MobileMenu'
 
 import { UserStatus } from 'reducers/stateReducer/types'
 
-import useUser from 'hooks/useUser'
 import useIndexPageData from 'cmsHooks/useIndexPageData'
+import useAppState from 'hooks/useAppState'
 
 const Nav = styled.nav`
   background-color: ${({ theme }) => theme.darkPurple};
@@ -62,7 +62,7 @@ const NavLogo = styled(CMS.Image)`
 
 const NavBar = () => {
   const data = useIndexPageData()
-  const user = useUser()
+  const { user } = useAppState()
 
   // Combining these routers is a mess because of S3...
 

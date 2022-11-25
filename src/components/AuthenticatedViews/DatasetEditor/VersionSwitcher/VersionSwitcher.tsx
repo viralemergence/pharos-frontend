@@ -1,10 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { StateActions } from 'reducers/stateReducer/stateReducer'
 
 import useDataset from 'hooks/dataset/useDataset'
-import useDatasetID from 'hooks/dataset/useDatasetID'
-import useDispatch from 'hooks/useDispatch'
 
 const Select = styled.select`
   ${({ theme }) => theme.smallParagraph};
@@ -17,18 +14,18 @@ const Select = styled.select`
 
 const VersionSwitcher = () => {
   const dataset = useDataset()
-  const datasetID = useDatasetID()
-  const projectDispatch = useDispatch()
+  // const datasetID = useDatasetID()
+  // const projectDispatch = useDispatch()
 
   if (!dataset || !dataset.versions || dataset.versions.length < 2) return <></>
 
   const onSelectVersion = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const nextVersion = e.target.value
-
-    projectDispatch({
-      type: StateActions.SetActiveVersion,
-      payload: { datasetID: datasetID, version: Number(nextVersion) },
-    })
+    // const nextVersion = e.target.value
+    console.log('reimplement version switching', e)
+    // projectDispatch({
+    //   type: StateActions.SetActiveVersion,
+    //   payload: { datasetID: datasetID, version: Number(nextVersion) },
+    // })
   }
 
   return (

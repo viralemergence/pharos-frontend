@@ -1,4 +1,3 @@
-import { rem } from 'polished'
 import {
   APIRoutes,
   StorageMessageStatus,
