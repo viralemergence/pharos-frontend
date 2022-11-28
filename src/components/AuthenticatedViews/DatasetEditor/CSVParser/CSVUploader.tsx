@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { FileUploader } from 'react-drag-drop-files'
+import useUpdateRegisterFromCSV from './useUpdateRegisterFromCSV'
 
 // import useUser from 'hooks/useUser'
 // import useDatasetID from 'hooks/dataset/useDatasetID'
@@ -16,14 +17,13 @@ const Container = styled.div`
 `
 
 const CSVUploader = () => {
+  const updateRegisterFromCSV = useUpdateRegisterFromCSV()
   // const user = useUser()
   // const datasetID = useDatasetID()
   // const projectDispatch = useDispatch()
 
   const handleChange = (file: File) => {
-    // parseFile({ file, datasetID, projectDispatch, user })
-    console.log('PARSE FILE')
-    console.log(file)
+    updateRegisterFromCSV(file)
   }
 
   return (
