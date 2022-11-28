@@ -15,7 +15,7 @@ const Container = styled.div`
   margin-left: auto;
 `
 
-const CSVParser = () => {
+const CSVUploader = () => {
   // const user = useUser()
   // const datasetID = useDatasetID()
   // const projectDispatch = useDispatch()
@@ -39,4 +39,4 @@ const CSVParser = () => {
   )
 }
 
-export default CSVParser
+export default CSVUploader
