@@ -1,5 +1,4 @@
 {
-  "mergeColumn": "Row ID",
   "columns": {
     "Row ID": { "type": "string", "definition": "" },
     "Sample ID": {
