@@ -5,7 +5,6 @@ import useDispatch from 'hooks/useDispatch'
 import useRegister from 'hooks/register/useRegister'
 import useDatasetID from 'hooks/dataset/useDatasetID'
 
-import { mergeColumn } from '../../../../../config/defaultColumns.json'
 import generateID from 'utilities/generateID'
 import { StateActions } from 'reducers/stateReducer/stateReducer'
 
@@ -27,41 +26,44 @@ const useUpdateRegisterFromCSV = () => {
 
         const registerCopy = { ...register }
 
-        // generate mapping of recordIDs to the
-        // user-provided IDs in the merge column
-        const idMap: { [key: string]: string } = Object.entries(
-          registerCopy
-        ).reduce(
-          (map, [recordID, record]) => ({
-            ...map,
-            ...(record[mergeColumn]?.displayValue && {
-              [record[mergeColumn]?.displayValue]: recordID,
-            }),
-          }),
-          {}
-        )
+        // // Code for merging CSV with preexisting register
+        // // this feature is deprecated
+        // // generate mapping of recordIDs to the
+        // // user-provided IDs in the merge column
+        // const idMap: { [key: string]: string } = Object.entries(
+        //   registerCopy
+        // ).reduce(
+        //   (map, [recordID, record]) => ({
+        //     ...map,
+        //     ...(record[mergeColumn]?.displayValue && {
+        //       [record[mergeColumn]?.displayValue]: recordID,
+        //     }),
+        //   }),
+        //   {}
+        // )
 
         rows.forEach(row => {
+          // merge code --- deprecated
           // pull ID from map, if it doesn't exist generate a new one
-          let recordID = idMap[row[mergeColumn]]
+          // let recordID = idMap[row[mergeColumn]]
+          // if (!recordID || recordID.trim().length === 0)
 
-          if (!recordID || recordID.trim().length === 0)
-            recordID = generateID.recordID()
+          const recordID = generateID.recordID()
 
           columns.forEach(columnName => {
             const record = registerCopy[recordID] ?? {}
-            const previous = record[columnName]
+            // const previous = record[columnName]
 
-            if (previous?.dataValue !== row[columnName]) {
-              registerCopy[recordID] = record
-              registerCopy[recordID][columnName] = {
-                displayValue: row[columnName],
-                dataValue: row[columnName],
-                modifiedBy,
-                previous,
-                version,
-              }
+            // if (previous?.dataValue !== row[columnName]) {
+            registerCopy[recordID] = record
+            registerCopy[recordID][columnName] = {
+              displayValue: row[columnName],
+              dataValue: row[columnName],
+              modifiedBy,
+              // previous,
+              version,
             }
+            // }
           })
         })
 
