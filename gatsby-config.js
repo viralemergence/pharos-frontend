@@ -100,12 +100,12 @@ module.exports = {
         theme_color: `#050A37`,
         display: `standalone`,
         icon: `icon.png`,
+        crossOrigin: `use-credentials`,
       },
     },
     {
       resolve: 'gatsby-plugin-offline',
       options: {
-        crossOrigin: `use-credentials`,
         // precachePages: [`/about/*`, `/user-guide/*`, `/app/*`],
       },
     },
