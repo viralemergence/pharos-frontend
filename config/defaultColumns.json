@@ -31,10 +31,10 @@
     "Health notes": { "type": "string", "definition": "Any additional notes about the state of the animal at the time of sample collection." },
     "Life stage": { "type": "string", "definition": "The life stage of the animal from which the sample was collection. Must be one of the following: 'adult' or 'juvenile' or 'neo-natal' or 'unknown'" },
     "Age": { "type": "string", "definition": "The numeric age of the animal from which the sample was collected, at the time of sample collection, together with the column 'age units'" },
-    "Age units": { "type": "string", "definition": "The units that correspond to the number entered in the column 'age'. Units must be one of the following: 'years' or 'months' or 'days'" },
+    "Age units": { "type": "string", "definition": "" },
     "Mass": { "type": "string", "definition": "The numeric mass of the animal from which the sample was collected, at the time of sample collection, together with the column 'mass units'" },
-    "Mass units": { "type": "string", "definition": "The units that correspond to the number entered in the column 'mass'. Units must be one of the following: 'tons' or 'lb' or 'kg' or 'g' or 'oz'" },
+    "Mass units": { "type": "string", "definition": "" },
     "Length": { "type": "string", "definition": "The numeric length of the animal from which the sample was collected, at the time of sample collection, together with the column 'length units'" },
-    "Length units": { "type": "string", "definition": "The units that correspond to the number entered in the column 'length'. Units must be one of the following: 'ft' or 'in' or 'm' or 'cm' or 'mm'" }
+    "Length units": { "type": "string", "definition": "" }
   }
 }
