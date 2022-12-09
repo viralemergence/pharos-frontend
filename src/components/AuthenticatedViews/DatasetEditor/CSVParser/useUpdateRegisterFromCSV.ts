@@ -2,18 +2,19 @@ import Papa from 'papaparse'
 
 import useUser from 'hooks/useUser'
 import useDispatch from 'hooks/useDispatch'
-import useRegister from 'hooks/register/useRegister'
 import useDatasetID from 'hooks/dataset/useDatasetID'
 
 import generateID from 'utilities/generateID'
 import { StateActions } from 'reducers/stateReducer/stateReducer'
+import { Register } from 'reducers/stateReducer/types'
+import useProjectID from 'hooks/project/useProjectID'
 
 type Rows = { [key: string]: string }[]
 
 const useUpdateRegisterFromCSV = () => {
   const { researcherID: modifiedBy } = useUser()
   const datasetID = useDatasetID()
-  const register = useRegister()
+  const projectID = useProjectID()
   const dispatch = useDispatch()
 
   const updateRegisterFromCSV = (file: File) =>
@@ -24,7 +25,8 @@ const useUpdateRegisterFromCSV = () => {
         const rows = results.data as Rows
         const columns = Object.keys(rows[0])
 
-        const registerCopy = { ...register }
+        // const registerCopy = { ...register }
+        const newRecords: Register = {}
 
         // // Code for merging CSV with preexisting register
         // // this feature is deprecated
@@ -51,12 +53,12 @@ const useUpdateRegisterFromCSV = () => {
           const recordID = generateID.recordID()
 
           columns.forEach(columnName => {
-            const record = registerCopy[recordID] ?? {}
+            const record = newRecords[recordID] ?? {}
             // const previous = record[columnName]
 
             // if (previous?.dataValue !== row[columnName]) {
-            registerCopy[recordID] = record
-            registerCopy[recordID][columnName] = {
+            newRecords[recordID] = record
+            newRecords[recordID][columnName] = {
               displayValue: row[columnName],
               dataValue: row[columnName],
               modifiedBy,
@@ -67,13 +69,11 @@ const useUpdateRegisterFromCSV = () => {
           })
         })
 
+        const lastUpdated = String(new Date().getTime())
+
         dispatch({
-          type: StateActions.UpdateRegister,
-          payload: {
-            data: registerCopy,
-            source: 'local',
-            datasetID,
-          },
+          type: StateActions.ExtendRegister,
+          payload: { projectID, datasetID, lastUpdated, newRecords },
         })
       },
     })
