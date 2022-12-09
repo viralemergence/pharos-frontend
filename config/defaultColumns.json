@@ -1,6 +1,5 @@
 {
   "columns": {
-    "Row ID": { "type": "string", "definition": "" },
     "Sample ID": {
       "type": "string",
       "definition": "The researcher generated unique ID of the sample collected."
