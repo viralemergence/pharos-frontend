@@ -23,6 +23,7 @@ import setMessageStack, {
 import updateDatasets, { UpdateDatasetsAction } from './actions/updateDatasets'
 import updateRegister, { UpdateRegisterAction } from './actions/updateRegister'
 import setUserStatus, { SetUserStatusAction } from './actions/setUserStatus'
+import extendRegister, { ExtendRegisterAction } from './actions/extendRegister'
 
 // reducer actions
 export enum StateActions {
@@ -49,6 +50,7 @@ export enum StateActions {
 
   // register actions
   UpdateRegister,
+  ExtendRegister,
   SetDatapoint,
 }
 
@@ -76,6 +78,7 @@ export type StateAction =
 
   // register actions
   | UpdateRegisterAction
+  | ExtendRegisterAction
   | SetDatapointAction
 
 export type ActionFunction<T = void> = (state: AppState, payload: T) => AppState
@@ -126,6 +129,8 @@ const stateReducer = (state: AppState, action: StateAction) => {
     // register actions
     case StateActions.UpdateRegister:
       return updateRegister(state, action.payload)
+    case StateActions.ExtendRegister:
+      return extendRegister(state, action.payload)
     case StateActions.SetDatapoint:
       return setDatapoint(state, action.payload)
 
