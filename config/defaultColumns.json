@@ -1,6 +1,29 @@
 {
-  "mergeColumn": "Row ID",
   "columns": {
+    "Sample ID": {
+      "type": "string",
+      "definition": "The researcher generated unique ID of the sample collected."
+    },
+    "Animal ID": {
+      "type": "string",
+      "definition": "The researcher generated unique ID of the individual animal from which the sample was collected."
+    },
+    "Host species": {
+      "type": "string",
+      "definition": "(Required) The species of the animal from which the sample was collected, written using binomial nomenclature, e.g. 'Vicugna pacos'"
+    },
+    "Host NCBI tax ID": {
+      "type": "string",
+      "definition": "The NCBI taxonomic ID of the host species, if known. Must be numeric, 1-7 digits long, e.g. '30538'"
+    },
+    "Latitude": {
+      "type": "string",
+      "definition": "(Required) The north south position of a collection site, written in form '00.00000' with 5 decimal places."
+    },
+    "Longitude": {
+      "type": "string",
+      "definition": "(Required) The east west position of a collection site, written in form '00.00000' with 5 decimal places."
+    },
     "Row ID": { "type": "string", "definition": "" },
     "Sample ID": { "type": "string", "definition": "The researcher generated unique ID of the sample collected." },
     "Animal ID": { "type": "string", "definition": "The researcher generated unique ID of the individual animal from which the sample was collected." },
@@ -10,6 +33,26 @@
     "Longitude": { "type": "string", "definition": "(Required) The east west position of a collection site, written in form '00.00000' with 5 decimal places." },
     "Spatial uncertainty": { "type": "string", "definition": "" },
     "Spatial uncertainty units": { "type": "string", "definition": "" },
+    "Collection day": {
+      "type": "string",
+      "definition": "(Required) The day of the month on which the speciman was collected. If unknown, use '1' for the first day of the month."
+    },
+    "Collection month": {
+      "type": "string",
+      "definition": "(Required) The month in which the speciman was collected, in numeric form. E.g. type '12' for December."
+    },
+    "Collection year": {
+      "type": "string",
+      "definition": "(Required) The year in which the speciman was collected. Type as four digits, e.g. '2021'"
+    },
+    "Collection method or tissue": {
+      "type": "string",
+      "definition": "The technique used to extract the sample, e.g. 'oropharyngeal swab', or the tissue from which the sample was extracted."
+    },
+    "Detection method": {
+      "type": "string",
+      "definition": "The type of test performed to detect the pathogen, e.g. 'conventional PCR'"
+    },
     "Collection day": { "type": "string", "definition": "(Required) The day of the month on which the speciman was collected. If unknown, use '1' for the first day of the month." },
     "Collection month": { "type": "string", "definition": "(Required) The month in which the speciman was collected, in numeric form. E.g. type '12' for December." },
     "Collection year": { "type": "string", "definition": "(Required) The year in which the speciman was collected. Type as four digits, e.g. '2021'" },
