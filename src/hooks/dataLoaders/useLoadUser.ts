@@ -38,7 +38,7 @@ const useLoadUser = (dispatch: React.Dispatch<StateAction>) => {
             payload: UserStatus.loggedIn,
           })
           dispatch({
-            type: StateActions.UpdateUser,
+            type: StateActions.SetUser,
             payload: {
               source: 'remote',
               user: remoteUser,
