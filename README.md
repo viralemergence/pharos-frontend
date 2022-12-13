@@ -2,7 +2,18 @@
   Pharos Frontend
 </h1>
 
-This is the frontend repo for the PHAROS project.
+## 🚀 Deployment Status
+
+| Branch  | CI/CD Status                                                                                                                                                                                                                                                                       | Url                                                                                                |
+| ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Prod    | [![CircleCI](https://dl.circleci.com/status-badge/img/gh/talus-analytics-bus/pharos-frontend/tree/prod.svg?style=svg&circle-token=1dfe5a4082b4f295d911e50e199af76056073983)](https://dl.circleci.com/status-badge/redirect/gh/talus-analytics-bus/pharos-frontend/tree/prod)       | [prod-pharos-frontend.talusanalytics.com/](https://prod-pharos-frontend.talusanalytics.com/)       |
+| Staging | [![CircleCI](https://dl.circleci.com/status-badge/img/gh/talus-analytics-bus/pharos-frontend/tree/staging.svg?style=svg&circle-token=1dfe5a4082b4f295d911e50e199af76056073983)](https://dl.circleci.com/status-badge/redirect/gh/talus-analytics-bus/pharos-frontend/tree/staging) | [staging-pharos-frontend.talusanalytics.com/](https://staging-pharos-frontend.talusanalytics.com/) |
+| Review  | [![CircleCI](https://dl.circleci.com/status-badge/img/gh/talus-analytics-bus/pharos-frontend/tree/review.svg?style=svg&circle-token=1dfe5a4082b4f295d911e50e199af76056073983)](https://dl.circleci.com/status-badge/redirect/gh/talus-analytics-bus/pharos-frontend/tree/review)   | [review-pharos-frontend.talusanalytics.com/](https://review-pharos-frontend.talusanalytics.com/)   |
+| Dev     | [![CircleCI](https://dl.circleci.com/status-badge/img/gh/talus-analytics-bus/pharos-frontend/tree/dev.svg?style=svg&circle-token=1dfe5a4082b4f295d911e50e199af76056073983)](https://dl.circleci.com/status-badge/redirect/gh/talus-analytics-bus/pharos-frontend/tree/dev)         | [dev-pharos-frontend.talusanalytics.com/](https://dev-pharos-frontend.talusanalytics.com/)         |
+
+Automated deployment schedule: Airtable data is ingested, "About" content is ingested, and full site is built weekly on `Staging` site.
+
+## 👩‍💻 Local Development Quick start
 
 This project requires you to have bit set up on your computer (one-time setup, works across projects):
 
@@ -19,8 +30,6 @@ This project requires you to have bit set up on your computer (one-time setup, w
 ```
   npm config set '@talus-analytics:registry' https://node.bit.cloud
 ```
-
-## 🚀 Quick start
 
 1. Install packages:
 
@@ -41,3 +50,13 @@ However, any api url can be passed:
 ```
 yarn start --api http://api.someplace:someport
 ```
+
+## 🖥 Deployment Infrastructure
+
+All PHAROS frontend Infrastructure is managed using the CloudFormation template within
+the `/CloudFormation/` directory. All changes to hosting, domain names, alternate domain
+names, and access control must be made in the template and deployed using the update command.
+
+Infrastructure updates must be made with care as they can cause site downtime.
+
+Remember to update site passwords before running deployment command.
