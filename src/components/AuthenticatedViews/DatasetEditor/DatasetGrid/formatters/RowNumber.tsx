@@ -9,7 +9,7 @@ const CellContainer = styled.div`
   padding: 0 8px;
   display: flex;
   justify-content: space-between;
-  background-color: ${({ theme }) => theme.medGray};
+  background-color: ${({ theme }) => theme.veryLightGray};
   display: flex;
   justify-content: center;
   align-items: center;
