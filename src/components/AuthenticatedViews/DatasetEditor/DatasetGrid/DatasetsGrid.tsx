@@ -16,7 +16,8 @@ import RowNumber from './formatters/RowNumber'
 
 const FillDatasetGrid = styled(DataGrid)`
   block-size: 100%;
-  height: calc(100vh - 370px);
+  height: calc(100vh - 300px);
+  margin: 0 40px;
 `
 
 const DatasetGrid = () => {
