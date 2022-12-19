@@ -3,6 +3,7 @@ import Modal from 'components/ui/Modal'
 import { Datapoint, ReportScore } from 'reducers/stateReducer/types'
 import styled from 'styled-components'
 import cellHighlightColors from '../../../../../../config/cellHighlightColors'
+import columnsMetadata from '../../../../../../config/defaultColumns.json'
 
 interface SimpleCellModalProps {
   datapointID: string
@@ -32,11 +33,11 @@ const History = styled.div`
   padding: 0px 10px;
   padding-left: 30px;
 `
-// const Instructions = styled.div`
-//   margin-top: 15px;
-//   border-top: 1px solid ${({ theme }) => theme.medGray};
-//   padding-top: 15px;
-// `
+const Instructions = styled.div`
+  margin-top: 15px;
+  border-top: 1px solid ${({ theme }) => theme.medGray};
+  padding-top: 15px;
+`
 const ReportContainer = styled.div<{ score?: ReportScore }>`
   margin-top: 15px;
   padding: 10px 15px;
@@ -82,21 +83,24 @@ const SimpleCellModal = ({
 
   const history = getDatapointHistory(datapoint)
 
+  type ColumnKey = keyof typeof columnsMetadata.columns
+
   return (
     <Modal closeable {...{ open, setOpen }}>
       <Container>
         <Data>
           <SectionHeader>{datapointID}</SectionHeader>
           <label>{datapoint.displayValue}</label>
-          {
-            // <Instructions>
-            // <SectionHeader>Directions</SectionHeader>
-            // </Instructions>
-          }
           <ReportContainer score={datapoint.report?.status}>
             <SectionHeader>Validation Report</SectionHeader>
             <Report>{datapoint.report?.message}</Report>
           </ReportContainer>
+          <Instructions>
+            <SectionHeader>Definition</SectionHeader>
+            <p>
+              {columnsMetadata.columns[datapointID as ColumnKey].definition}
+            </p>
+          </Instructions>
         </Data>
         <History>
           <SectionHeader>History</SectionHeader>
