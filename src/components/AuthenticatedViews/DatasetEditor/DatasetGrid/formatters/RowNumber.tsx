@@ -21,7 +21,7 @@ const RowNumber = ({
   },
 }: FormatterProps<RecordWithID>) => (
   <CellContainer>
-    <span>{rowNumber}</span>
+    <span>{rowNumber + 1}</span>
   </CellContainer>
 )
 
