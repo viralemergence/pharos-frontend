@@ -157,6 +157,7 @@ export interface Record {
 
 export interface RecordMeta {
   recordID: string
+  rowNumber: number
 
   // report?: {
   //   pass: ReportScore

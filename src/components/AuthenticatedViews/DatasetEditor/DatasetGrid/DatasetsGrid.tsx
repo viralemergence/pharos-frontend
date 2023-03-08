@@ -12,10 +12,12 @@ import useVersionedRows from 'hooks/register/useVersionedRows'
 import generateID from 'utilities/generateID'
 
 import 'react-data-grid/lib/styles.css'
+import RowNumber from './formatters/RowNumber'
 
 const FillDatasetGrid = styled(DataGrid)`
   block-size: 100%;
-  height: calc(100vh - 370px);
+  height: calc(100vh - 300px);
+  margin: 0 40px;
 `
 
 const DatasetGrid = () => {
@@ -23,18 +25,43 @@ const DatasetGrid = () => {
   const { rows: versionedRows, colNames } = useVersionedRows()
   // console.timeEnd('useVersionedRows')
 
-  const columns: readonly Column<RecordWithID>[] = colNames.map(name => ({
-    key: name,
-    name,
-    editor: TextEditor,
-    formatter: SimpleFormatter,
-    width: 150,
-    resizable: true,
-  }))
+  const rowNumberColumn = {
+    key: 'rowNumber',
+    name: '',
+    formatter: RowNumber,
+    frozen: true,
+    resizable: false,
+    minWidth: 35,
+    width: 35,
+  }
+
+  const columns: readonly Column<RecordWithID>[] = [
+    rowNumberColumn,
+    ...colNames.map(name => ({
+      key: name,
+      name,
+      editor: TextEditor,
+      formatter: SimpleFormatter,
+      width: 150,
+      resizable: true,
+      sortable: true,
+    })),
+  ]
 
   versionedRows.push({
-    _meta: { recordID: generateID.recordID() },
+    _meta: {
+      recordID: generateID.recordID(),
+      rowNumber: versionedRows.length + 1,
+    },
   })
+
+  const numberedVersionedRows = versionedRows.map((record, index) => ({
+    ...record,
+    _meta: {
+      ...record._meta,
+      rowNumber: index,
+    },
+  }))
 
   return (
     <FillDatasetGrid
@@ -42,7 +69,7 @@ const DatasetGrid = () => {
       // todo: figure out the typescript for making this
       // work with the data grid library
       columns={columns as Column<unknown>[]}
-      rows={versionedRows}
+      rows={numberedVersionedRows}
       rowKeyGetter={row => {
         const record = row as unknown as RecordWithID
         return record._meta.recordID

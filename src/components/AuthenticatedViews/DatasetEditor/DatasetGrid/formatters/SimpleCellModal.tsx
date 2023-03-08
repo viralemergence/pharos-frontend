@@ -3,6 +3,7 @@ import Modal from 'components/ui/Modal'
 import { Datapoint, ReportScore } from 'reducers/stateReducer/types'
 import styled from 'styled-components'
 import cellHighlightColors from '../../../../../../config/cellHighlightColors'
+import columnsMetadata from '../../../../../../config/defaultColumns.json'
 
 interface SimpleCellModalProps {
   datapointID: string
@@ -13,30 +14,43 @@ interface SimpleCellModalProps {
 
 const Container = styled.div`
   display: flex;
+  gap: 30px;
   min-width: 650px;
+  max-width: 900px;
   min-height: 300px;
   padding: 15px;
+`
+const Header = styled.h1`
+  ${({ theme }) => theme.h3};
+  color: ${({ theme }) => theme.black};
+  margin: 0 0 20px 0;
+`
+const ValueContainer = styled.div`
+  ${({ theme }) => theme.bigParagraph};
+  background-color: ${({ theme }) => theme.veryLightGray};
+  color: ${({ theme }) => theme.black};
+  border: 1px solid ${({ theme }) => theme.black};
+  padding: 8px 10px;
 `
 const SectionHeader = styled.h2`
   ${({ theme }) => theme.extraSmallParagraph};
   color: ${({ theme }) => theme.darkGray};
-  margin: 0;
+  margin: 30px 0 0 0;
 `
 const Data = styled.div`
-  flex-basis: 50%;
-  padding: 0 10px;
+  flex-grow: 1;
+  padding: 10px 0;
 `
 const History = styled.div`
-  flex-basis: 50%;
+  flex-basis: 33%;
   border-left: 1px solid ${({ theme }) => theme.medGray};
   padding: 0px 10px;
   padding-left: 30px;
 `
-// const Instructions = styled.div`
-//   margin-top: 15px;
-//   border-top: 1px solid ${({ theme }) => theme.medGray};
-//   padding-top: 15px;
-// `
+const Instructions = styled.div`
+  margin-top: 30px;
+  border-top: 1px solid ${({ theme }) => theme.medGray};
+`
 const ReportContainer = styled.div<{ score?: ReportScore }>`
   margin-top: 15px;
   padding: 10px 15px;
@@ -82,21 +96,30 @@ const SimpleCellModal = ({
 
   const history = getDatapointHistory(datapoint)
 
+  type ColumnKey = keyof typeof columnsMetadata.columns
+
   return (
     <Modal closeable {...{ open, setOpen }}>
-      <Container>
+      <Container
+        onClick={e => {
+          e.preventDefault()
+          e.stopPropagation()
+          console.log(e)
+        }}
+      >
         <Data>
-          <SectionHeader>{datapointID}</SectionHeader>
-          <label>{datapoint.displayValue}</label>
-          {
-            // <Instructions>
-            // <SectionHeader>Directions</SectionHeader>
-            // </Instructions>
-          }
+          <Header>{datapointID}</Header>
+          <ValueContainer>{datapoint.displayValue}</ValueContainer>
+          <SectionHeader>Validation Report</SectionHeader>
           <ReportContainer score={datapoint.report?.status}>
-            <SectionHeader>Validation Report</SectionHeader>
             <Report>{datapoint.report?.message}</Report>
           </ReportContainer>
+          <Instructions>
+            <SectionHeader>Definition</SectionHeader>
+            <p>
+              {columnsMetadata.columns[datapointID as ColumnKey].definition}
+            </p>
+          </Instructions>
         </Data>
         <History>
           <SectionHeader>History</SectionHeader>
