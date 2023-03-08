@@ -24,7 +24,7 @@
       "type": "string",
       "definition": "(Required) The east west position of a collection site, written in form '00.00000' with 5 decimal places."
     },
-    "Spatial uncertainty": { "type": "string", "definition": "" },
+    "Spatial uncertainty": { "type": "string", "definition": "WHERE YOU ARE" },
     "Collection day": {
       "type": "string",
       "definition": "(Required) The day of the month on which the speciman was collected. If unknown, use '1' for the first day of the month."
