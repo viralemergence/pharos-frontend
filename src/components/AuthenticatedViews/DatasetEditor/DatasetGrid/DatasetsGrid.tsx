@@ -55,21 +55,13 @@ const DatasetGrid = () => {
     },
   })
 
-  const numberedVersionedRows = versionedRows.map((record, index) => ({
-    ...record,
-    _meta: {
-      ...record._meta,
-      rowNumber: index,
-    },
-  }))
-
   return (
     <FillDatasetGrid
       className={'rdg-light'}
       // todo: figure out the typescript for making this
       // work with the data grid library
       columns={columns as Column<unknown>[]}
-      rows={numberedVersionedRows}
+      rows={versionedRows}
       rowKeyGetter={row => {
         const record = row as unknown as RecordWithID
         return record._meta.recordID

@@ -32,13 +32,12 @@ const useVersionedRows = () => {
   const rows: RecordWithID[] = []
 
   // add column names for non-default columns
-  for (const [recordID, record] of Object.entries(register)) {
-    for (const key of Object.keys(record)) {
+  Object.entries(register).forEach(([recordID, record], index) => {
+    for (const key of Object.keys(record))
       if (!colNames[key]) colNames[key] = { type: 'string' }
-    }
 
-    rows.push({ ...record, _meta: { recordID } })
-  }
+    rows.push({ ...record, _meta: { recordID, rowNumber: index } })
+  })
 
   return { rows, colNames: [...Object.keys(colNames)] }
 
