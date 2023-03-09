@@ -16,7 +16,7 @@ import '../../../static/assets/fonts/fonts.css'
 const GlobalStyle = createGlobalStyle`
   * {
     box-sizing: border-box;
-  } 
+  }
   body {
     margin: 0;
     padding: 0;
