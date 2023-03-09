@@ -2,7 +2,6 @@ import React from 'react'
 
 import MintButton from 'components/ui/MintButton'
 
-import useUser from 'hooks/useUser'
 import useDataset from 'hooks/dataset/useDataset'
 
 const ReleaseButton = () => {
