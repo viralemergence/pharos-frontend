@@ -51,7 +51,7 @@ const DatasetGrid = () => {
   versionedRows.push({
     _meta: {
       recordID: generateID.recordID(),
-      rowNumber: versionedRows.length + 1,
+      rowNumber: versionedRows.length,
     },
   })
 

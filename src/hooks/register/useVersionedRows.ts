@@ -39,7 +39,7 @@ const useVersionedRows = () => {
     rows.push({ ...record, _meta: { recordID, rowNumber: index } })
   })
 
-  return { rows, colNames: [...Object.keys(colNames)] }
+  return { rows: [...rows], colNames: [...Object.keys(colNames)] }
 
   // // else return datapoints that are valid for the target version
   // return {
