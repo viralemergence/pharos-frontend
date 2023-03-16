@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import DatasetGrid from './DatasetGrid/DatasetsGrid'
 
-import CSVParser from './CSVParser/CSVParser'
+import CSVUploader from './CSVParser/CSVUploader'
 import { TopBar } from '../ViewComponents'
 
 import VersionSwitcher from './VersionSwitcher/VersionSwitcher'
@@ -82,7 +82,7 @@ const DatasetEditor = () => {
           <ProjectName>
             Project: <span>{project.name}</span>
           </ProjectName>
-          <CSVParser />
+          <CSVUploader />
         </TopBar>
       </TopSection>
       <DatasetGrid />

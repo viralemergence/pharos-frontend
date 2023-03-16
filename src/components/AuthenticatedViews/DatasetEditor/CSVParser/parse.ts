@@ -18,10 +18,6 @@
 //     header: true,
 //     complete: async results => {
 //       // set the register status to unsaved
-//       projectDispatch({
-//         type: StateActions.SetRegisterStatus,
-//         payload: { datasetID, status: RegisterStatus.Unsaved },
-//       })
 
 //       const rows = results.data as Rows
 //       const researcherID = user.data?.researcherID
