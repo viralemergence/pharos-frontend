@@ -23,7 +23,7 @@ const useUpdateRegisterFromCSV = () => {
       complete: async results => {
         const version = String(new Date().getTime())
         const rows = results.data as Rows
-        const columns = Object.keys(rows[0])
+        const columns = Object.keys(rows[0]).map(column => column.trim())
 
         // const registerCopy = { ...register }
         const newRecords: Register = {}
@@ -52,21 +52,22 @@ const useUpdateRegisterFromCSV = () => {
 
           const recordID = generateID.recordID()
 
-          columns.forEach(columnName => {
+          for (const columnName of columns) {
+            if (!row[columnName]) continue
+
             const record = newRecords[recordID] ?? {}
             // const previous = record[columnName]
 
             // if (previous?.dataValue !== row[columnName]) {
             newRecords[recordID] = record
             newRecords[recordID][columnName] = {
-              displayValue: row[columnName],
-              dataValue: row[columnName],
+              displayValue: row[columnName]?.trim(),
+              dataValue: row[columnName]?.trim(),
               modifiedBy,
               // previous,
               version,
             }
-            // }
-          })
+          }
         })
 
         const lastUpdated = String(new Date().getTime())
