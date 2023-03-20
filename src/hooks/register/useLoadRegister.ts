@@ -105,15 +105,20 @@ const useLoadRegister = () => {
         return
       }
 
-      const remoteRegister = (await response.json()) as Register | null
+      const remoteRegister = await response.json()
 
-      if (remoteRegister) {
+      if (
+        remoteRegister &&
+        typeof remoteRegister === 'object' &&
+        'register' in remoteRegister &&
+        typeof remoteRegister?.register === 'object'
+      ) {
         dispatch({
           type: StateActions.UpdateRegister,
           payload: {
             datasetID,
             source: 'remote',
-            data: remoteRegister,
+            data: remoteRegister.register as Register,
           },
         })
 
