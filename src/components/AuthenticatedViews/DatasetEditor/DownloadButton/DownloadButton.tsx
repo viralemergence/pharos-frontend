@@ -23,29 +23,30 @@ const DownloadButton = () => {
   const dataset = useDataset()
   const theme = useTheme()
 
-  const { rows } = useVersionedRows()
+  const { rows, colNames } = useVersionedRows()
   const versionDate = new Date().toLocaleDateString()
-
-  const disable = !rows || rows.length === 0
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
 
-    if (!rows) return null
+    let content = ''
 
-    const content = Papa.unparse(
-      rows.map(row =>
-        Object.entries(row)
-          .filter(([key]) => key !== '_meta')
-          .reduce(
-            (obj, [key, value]) => ({
-              ...obj,
-              [key]: (value as unknown as Datapoint).displayValue,
-            }),
-            {}
-          )
+    if (!rows || rows.length === 0) content = colNames.join(',') + '\n,'
+    else
+      content = Papa.unparse(
+        rows.map(row =>
+          Object.entries(row)
+            .filter(([key]) => key !== '_meta')
+            .reduce(
+              (obj, [key, value]) => ({
+                ...obj,
+                [key]: (value as unknown as Datapoint).displayValue,
+              }),
+              {}
+            )
+        ),
+        { columns: colNames }
       )
-    )
 
     downloadFile(
       `${dataset?.name} ${versionDate}.csv`,
@@ -54,7 +55,7 @@ const DownloadButton = () => {
   }
 
   return (
-    <MintButton secondary disabled={disable} onClick={e => handleClick(e)}>
+    <MintButton secondary onClick={e => handleClick(e)}>
       <svg
         width="18"
         height="18"

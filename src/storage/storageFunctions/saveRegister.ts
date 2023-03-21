@@ -40,6 +40,7 @@ const saveRegister: StorageFunction<SaveRegister> = async (
       )
     dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
   } else {
+    console.log({ ...message.data, researcherID })
     const response = await fetch(
       `${process.env.GATSBY_API_URL}/${message.route}`,
       {
@@ -61,15 +62,20 @@ const saveRegister: StorageFunction<SaveRegister> = async (
     else {
       dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
 
-      const remoteRegister = (await response.json()) as Register | null
+      const remoteRegister = await response.json()
 
-      if (remoteRegister) {
+      if (
+        remoteRegister &&
+        typeof remoteRegister === 'object' &&
+        'register' in remoteRegister &&
+        typeof remoteRegister?.register === 'object'
+      ) {
         dispatch({
           type: StateActions.UpdateRegister,
           payload: {
             source: 'remote',
             datasetID: message.data.datasetID,
-            data: remoteRegister,
+            data: remoteRegister.register as Register,
           },
         })
       }

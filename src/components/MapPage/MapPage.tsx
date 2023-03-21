@@ -82,7 +82,6 @@ const MapPage = () => {
 
   useEffect(() => {
     if (!map.current) return
-    // @ts-expect-error property does not exist
     map.current.setProjection({ name: mapProjection })
   }, [mapProjection])
 

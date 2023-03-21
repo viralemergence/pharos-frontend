@@ -51,17 +51,9 @@ const DatasetGrid = () => {
   versionedRows.push({
     _meta: {
       recordID: generateID.recordID(),
-      rowNumber: versionedRows.length + 1,
+      rowNumber: versionedRows.length,
     },
   })
-
-  const numberedVersionedRows = versionedRows.map((record, index) => ({
-    ...record,
-    _meta: {
-      ...record._meta,
-      rowNumber: index,
-    },
-  }))
 
   return (
     <FillDatasetGrid
@@ -69,7 +61,7 @@ const DatasetGrid = () => {
       // todo: figure out the typescript for making this
       // work with the data grid library
       columns={columns as Column<unknown>[]}
-      rows={numberedVersionedRows}
+      rows={versionedRows}
       rowKeyGetter={row => {
         const record = row as unknown as RecordWithID
         return record._meta.recordID

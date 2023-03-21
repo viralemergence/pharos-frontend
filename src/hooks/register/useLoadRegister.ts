@@ -105,17 +105,33 @@ const useLoadRegister = () => {
         return
       }
 
-      const remoteRegister = (await response.json()) as Register | null
+      const remoteRegister = await response.json()
 
-      if (remoteRegister) {
-        dispatch({
-          type: StateActions.UpdateRegister,
-          payload: {
-            datasetID,
-            source: 'remote',
-            data: remoteRegister,
-          },
-        })
+      if (remoteRegister && typeof remoteRegister === 'object') {
+        // current regster format has {register: Register} as the top level object
+        if (
+          'register' in remoteRegister &&
+          typeof remoteRegister?.register === 'object'
+        ) {
+          dispatch({
+            type: StateActions.UpdateRegister,
+            payload: {
+              datasetID,
+              source: 'remote',
+              data: remoteRegister.register as Register,
+            },
+          })
+        } else {
+          // fallback for old format; top level object keys are records
+          dispatch({
+            type: StateActions.UpdateRegister,
+            payload: {
+              datasetID,
+              source: 'remote',
+              data: remoteRegister as Register,
+            },
+          })
+        }
 
         dispatch({
           type: StateActions.SetMetadataObjStatus,
