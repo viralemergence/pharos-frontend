@@ -18,11 +18,11 @@
     },
     "Latitude": {
       "type": "string",
-      "definition": "(Required) The north south position of a collection site, written in form '00.00000' with 5 decimal places."
+      "definition": "(Required) The north south position of a collection site."
     },
     "Longitude": {
       "type": "string",
-      "definition": "(Required) The east west position of a collection site, written in form '00.00000' with 5 decimal places."
+      "definition": "(Required) The east west position of a collection site."
     },
     "Spatial uncertainty": {
       "type": "string",
