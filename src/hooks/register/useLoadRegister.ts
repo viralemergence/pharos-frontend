@@ -74,6 +74,14 @@ const useLoadRegister = () => {
       )
         return
 
+      dispatch({
+        type: StateActions.SetMetadataObjStatus,
+        payload: {
+          key: 'register',
+          status: NodeStatus.Loading,
+        },
+      })
+
       console.log(`${'[API]'.padEnd(15)} Request:  /load-register`)
       const response = await fetch(
         `${process.env.GATSBY_API_URL}/load-register`,
@@ -132,7 +140,6 @@ const useLoadRegister = () => {
             },
           })
         }
-
         dispatch({
           type: StateActions.SetMetadataObjStatus,
           payload: {
