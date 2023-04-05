@@ -40,7 +40,7 @@ const DownloadButton = () => {
             .reduce(
               (obj, [key, value]) => ({
                 ...obj,
-                [key]: (value as unknown as Datapoint).displayValue,
+                [key]: (value as unknown as Datapoint).dataValue,
               }),
               {}
             )

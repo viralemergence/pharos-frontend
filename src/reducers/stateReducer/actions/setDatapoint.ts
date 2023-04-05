@@ -12,7 +12,7 @@ export interface SetDatapointPayload {
   datapointID: string
   lastUpdated: string
   datapoint: {
-    displayValue: Datapoint['displayValue']
+    displayValue: Datapoint['dataValue']
     dataValue: Datapoint['dataValue']
     modifiedBy: Datapoint['modifiedBy']
   }
@@ -34,7 +34,7 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
   const previous = prevRecord[datapointID]
 
   // short circuit if the display value is unchanged
-  if (previous?.displayValue === next.displayValue) return state
+  if (previous?.dataValue === next.displayValue) return state
 
   // update lastUpdated
   const nextProject = {

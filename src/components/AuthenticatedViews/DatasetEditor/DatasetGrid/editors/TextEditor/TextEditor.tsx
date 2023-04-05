@@ -60,7 +60,7 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
 
   const datapoint = row[column.key] as Datapoint | undefined
 
-  const [editValue, setEditValue] = useState(datapoint?.displayValue ?? '')
+  const [editValue, setEditValue] = useState(datapoint?.dataValue ?? '')
 
   const dispatchValue = () => {
     // special case for handling the ID column
@@ -69,7 +69,7 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
       const idMap = Object.entries(register).reduce(
         (acc, [recordID, row]) => ({
           ...acc,
-          [row[recordIDColumn]?.displayValue]: recordID,
+          [row[recordIDColumn]?.dataValue]: recordID,
         }),
         {} as { [key: string]: string }
       )

@@ -61,7 +61,6 @@ const useUpdateRegisterFromCSV = () => {
             // if (previous?.dataValue !== row[columnName]) {
             newRecords[recordID] = record
             newRecords[recordID][columnName] = {
-              displayValue: row[columnName]?.trim(),
               dataValue: row[columnName]?.trim(),
               modifiedBy,
               // previous,

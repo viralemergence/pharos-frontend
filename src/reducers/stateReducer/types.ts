@@ -166,13 +166,8 @@ export interface RecordWithID {
 // sees this as a cell in the dataset table
 // or in a form-like interface
 export interface Datapoint {
-  // human readable label
-  displayValue: string // this needs localization
-  // value of the datapoint inside our system,
-  // where that needs to be different; for
-  // example to implement links to other data
-  // such as organisms or locations
-  dataValue: string | { [key: string]: string }
+  // value that the datapoint represents
+  dataValue: string
   // validation report response
   report?: {
     status: ReportScore
