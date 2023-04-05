@@ -58,7 +58,6 @@ const CreateDatasetForm = () => {
         dataset: {
           ...datasetInitialValue,
           datasetID,
-          researcherID,
           name: target.name.value,
         },
       },
