@@ -94,8 +94,7 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
         datapointID: column.key,
         lastUpdated,
         datapoint: {
-          dataValue: editValue,
-          dataValue: editValue,
+          dataValue: editValue.trim(),
           modifiedBy,
         },
       },
