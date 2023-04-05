@@ -93,11 +93,6 @@ export interface Project {
 export interface Dataset {
   // frontend sets the id now
   datasetID: string
-  // This might need to be re-thought
-  // for a collaborative context, but
-  // that's fine now that we're storing
-  // researcherID in the datapoint
-  researcherID: string
   // the user-facing "status" of the
   // dataset which reflects released
   // and published status
@@ -117,12 +112,6 @@ export interface Dataset {
   // earliest and latest date in the dataset
   earliestDate?: string
   latestDate?: string
-  // general metadata, these are
-  // placeholder example values
-  // and subject to change
-  samples_taken?: string
-  detection_run?: string
-  date_collected?: string
 }
 
 // this is the container for information
