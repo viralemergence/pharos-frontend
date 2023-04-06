@@ -104,7 +104,6 @@ const SimpleCellModal = ({
         onClick={e => {
           e.preventDefault()
           e.stopPropagation()
-          console.log(e)
         }}
       >
         <Data>

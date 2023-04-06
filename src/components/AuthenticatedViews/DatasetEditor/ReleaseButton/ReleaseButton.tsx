@@ -28,8 +28,6 @@ const ReleaseButton = () => {
 
   const [releasing, setReleasing] = useState(false)
 
-  console.log(dataset.releaseStatus)
-
   const buttonMessage = releasing
     ? 'Loading...'
     : dataset.releaseStatus &&
