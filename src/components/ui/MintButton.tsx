@@ -24,6 +24,11 @@ const buttonStyle = css<{ secondary?: boolean }>`
   &:hover {
     background: ${({ theme }) => lighten(0.07, theme.mint)};
   }
+
+  &:disabled {
+    background: ${({ theme }) => lighten(0.1, theme.mint)};
+    color: ${({ theme }) => theme.darkGray};
+  }
 `
 
 const MintButton = styled.button<{ secondary?: boolean }>`
