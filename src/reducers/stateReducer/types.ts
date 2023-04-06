@@ -120,9 +120,9 @@ export interface ReleaseReport {
   warningCount: number
   failCount: number
   missingCount: number
-  warningFields: { [key: string]: string[] }
-  failFields: { [key: string]: string[] }
-  missingFields: { [key: string]: string[] }
+  warningFields: { [key: RecordID]: string[] }
+  failFields: { [key: RecordID]: string[] }
+  missingFields: { [key: RecordID]: string[] }
 }
 
 // this is the container for information
