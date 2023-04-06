@@ -3,7 +3,13 @@ import {
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
 import { ActionFunction, StateActions } from '../stateReducer'
-import { Datapoint, DatasetID, ProjectID, RecordID } from '../types'
+import {
+  Datapoint,
+  DatasetID,
+  DatasetReleaseStatus,
+  ProjectID,
+  RecordID,
+} from '../types'
 
 export interface SetDatapointPayload {
   projectID: ProjectID
@@ -45,6 +51,7 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
   const nextDataset = {
     ...state.datasets.data[datasetID],
     lastUpdated,
+    releaseStatus: DatasetReleaseStatus.Unreleased,
   }
 
   // next datapoint is all the previous data, overwritten with
@@ -81,6 +88,13 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
     register: {
       ...state.register,
       data: nextRegister,
+    },
+    datasets: {
+      ...state.datasets,
+      data: {
+        ...state.datasets.data,
+        [datasetID]: nextDataset,
+      },
     },
     messageStack: {
       ...state.messageStack,
