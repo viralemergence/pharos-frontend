@@ -5,12 +5,20 @@ import MintButton from 'components/ui/MintButton'
 import useModal from 'hooks/useModal/useModal'
 import useDatasetID from 'hooks/dataset/useDatasetID'
 import useUser from 'hooks/useUser'
+import useDispatch from 'hooks/useDispatch'
+import { StateActions } from 'reducers/stateReducer/stateReducer'
+import {
+  DatasetReleaseStatus,
+  ReleaseReport,
+} from 'reducers/stateReducer/types'
+import useDataset from 'hooks/dataset/useDataset'
 
 const ReleaseButton = () => {
   const { researcherID } = useUser()
+  const dataset = useDataset()
   const datasetID = useDatasetID()
   const setModal = useModal()
-  // const projectDispatch = useDispatch()
+  const projectDispatch = useDispatch()
 
   // const dataset = useDataset()
 
@@ -20,7 +28,17 @@ const ReleaseButton = () => {
 
   const [releasing, setReleasing] = useState(false)
 
-  const buttonMessage = releasing ? 'Loading...' : 'Release dataset'
+  console.log(dataset.releaseStatus)
+
+  const buttonMessage = releasing
+    ? 'Loading...'
+    : dataset.releaseStatus &&
+      [DatasetReleaseStatus.Released, DatasetReleaseStatus.Published].includes(
+        dataset.releaseStatus
+      )
+    ? 'Dataset released'
+    : 'Release dataset'
+
   const buttonDisabled = releasing
   // switch (true) {
   //   // if there are no versions, we can publish
@@ -58,25 +76,34 @@ const ReleaseButton = () => {
     ).catch(error => console.log(error))
 
     if (!response) return
-    const json = await response.json()
+    const report = await response.json()
+
+    function reportIsReport(report: unknown): report is Partial<ReleaseReport> {
+      if (typeof report !== 'object') return false
+      if (!report) return false
+      if (!('releaseStatus' in report)) return false
+      if (typeof report.releaseStatus !== 'string') return false
+      if (!(report.releaseStatus in DatasetReleaseStatus)) return false
+      return true
+    }
+
+    if (reportIsReport(report) && report.releaseStatus)
+      projectDispatch({
+        type: StateActions.SetDatasetReleaseStatus,
+        payload: {
+          datasetID,
+          releaseStatus: report.releaseStatus,
+        },
+      })
 
     setModal(
-      <pre style={{ margin: '20px' }}>{JSON.stringify(json, null, 4)}</pre>,
+      <pre style={{ margin: '20px' }}>{JSON.stringify(report, null, 4)}</pre>,
       { closeable: true }
     )
 
     setReleasing(false)
 
     // const lastUpdated = getTimestamp()
-
-    // projectDispatch({
-    //   type: StateActions.SetDatasetReleaseStatus,
-    //   payload: {
-    //     datasetID,
-    //     lastUpdated,
-    //     releaseStatus: DatasetReleaseStatus.Released,
-    //   },
-    // })
 
     // projectDispatch({
     //   type: StateActions.CreateVersion,
