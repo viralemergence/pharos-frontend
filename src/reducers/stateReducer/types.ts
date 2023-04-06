@@ -114,6 +114,17 @@ export interface Dataset {
   latestDate?: string
 }
 
+export interface ReleaseReport {
+  releaseStatus: DatasetReleaseStatus
+  successCount: number
+  warningCount: number
+  failCount: number
+  missingCount: number
+  warningFields: { [key: string]: string[] }
+  failFields: { [key: string]: string[] }
+  missingFields: { [key: string]: string[] }
+}
+
 // this is the container for information
 // that globally applies to an entire version,
 // the index in the array is the corresponding
