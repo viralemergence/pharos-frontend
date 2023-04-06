@@ -9,9 +9,12 @@ import useDispatch from 'hooks/useDispatch'
 import { StateActions } from 'reducers/stateReducer/stateReducer'
 import {
   DatasetReleaseStatus,
+  NodeStatus,
   ReleaseReport,
 } from 'reducers/stateReducer/types'
 import useDataset from 'hooks/dataset/useDataset'
+import useAppState from 'hooks/useAppState'
+import { StorageMessageStatus } from 'storage/synchronizeMessageQueue'
 
 const ReleaseButton = () => {
   const { researcherID } = useUser()
@@ -19,45 +22,56 @@ const ReleaseButton = () => {
   const datasetID = useDatasetID()
   const setModal = useModal()
   const projectDispatch = useDispatch()
-
-  // const dataset = useDataset()
-
-  // don't render the update button if there are no datasets loaded,
-  // the project is loading, or there are no versions in the dataset
-  // if (!dataset) return <></>
+  const { datasets, register, messageStack } = useAppState()
 
   const [releasing, setReleasing] = useState(false)
 
-  const buttonMessage = releasing
-    ? 'Loading...'
-    : dataset.releaseStatus &&
-      [DatasetReleaseStatus.Released, DatasetReleaseStatus.Published].includes(
-        dataset.releaseStatus
-      )
-    ? 'Dataset released'
-    : 'Release dataset'
+  // show offline status if any message in the stack has a NetworkError status
+  const offline = Object.values(messageStack).reduce(
+    (offline, message) =>
+      offline || message.status === StorageMessageStatus.NetworkError,
+    false
+  )
 
-  const buttonDisabled = releasing
-  // switch (true) {
-  //   // if there are no versions, we can publish
-  //   case dataset.versions.length === 0:
-  //     buttonMessage = 'Release dataset'
-  //     buttonDisabled = false
-  //     break
-  //   // if we're looking at an old version, it's published
-  //   case dataset.activeVersion < dataset.versions.length - 1:
-  //     buttonMessage = 'Dataset released'
-  //     buttonDisabled = true
-  //     break
-  //   case dataset.highestVersion > dataset.activeVersion:
-  //     buttonMessage = 'Release dataset'
-  //     buttonDisabled = false
-  //     break
-  //   default:
-  //     buttonMessage = 'Dataset released'
-  //     buttonDisabled = true
-  //     break
-  // }
+  let buttonDisabled
+  let buttonMessage
+  switch (true) {
+    case releasing === true:
+      buttonMessage = 'Validating...'
+      buttonDisabled = true
+      break
+    case offline:
+      buttonMessage = 'Offline'
+      buttonDisabled = true
+      break
+    case datasets.status === NodeStatus.Loading ||
+      register.status === NodeStatus.Loading:
+      buttonMessage = 'Loading...'
+      buttonDisabled = true
+      break
+    case Object.values(messageStack).filter(
+      message => message.target === 'remote'
+    ).length > 0:
+      buttonMessage = 'Syncing...'
+      buttonDisabled = true
+      break
+    case dataset.releaseStatus === DatasetReleaseStatus.Unreleased:
+      buttonMessage = 'Release dataset'
+      buttonDisabled = false
+      break
+    case dataset.releaseStatus === DatasetReleaseStatus.Released:
+      buttonMessage = 'Dataset released'
+      buttonDisabled = true
+      break
+    case dataset.releaseStatus === DatasetReleaseStatus.Published:
+      buttonMessage = 'Dataset published'
+      buttonDisabled = true
+      break
+    default:
+      buttonMessage = 'Offline'
+      buttonDisabled = true
+      break
+  }
 
   const onClickRelease = async (e: React.SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -100,19 +114,6 @@ const ReleaseButton = () => {
     )
 
     setReleasing(false)
-
-    // const lastUpdated = getTimestamp()
-
-    // projectDispatch({
-    //   type: StateActions.CreateVersion,
-    //   payload: {
-    //     datasetID,
-    //     version: {
-    //       date: String(new Date().toUTCString()),
-    //       name: String(new Date().toUTCString()),
-    //     },
-    //   },
-    // })
   }
 
   return (
