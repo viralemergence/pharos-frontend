@@ -30,15 +30,15 @@
     },
     "Collection day": {
       "type": "string",
-      "definition": "(Required) The day of the month on which the speciman was collected, e.g. '3' for the third day of the month. If unknown, use '1' for the first day of the month."
+      "definition": "(Required) The day of the month on which the speciman was collected, e.g. '3' for the third day of the month."
     },
     "Collection month": {
       "type": "string",
-      "definition": "(Required) The month in which the speciman was collected, in numeric form. E.g. '12' for December."
+      "definition": "(Required) The month in which the speciman was collected, in numeric form, e.g. '12' for December."
     },
     "Collection year": {
       "type": "string",
-      "definition": "(Required) The year in which the speciman was collected, written in four digit form, e.g. '2021'"
+      "definition": "(Required) The year in which the speciman was collected, written in four digit form, e.g. '2021'."
     },
     "Collection method or tissue": {
       "type": "string",
@@ -78,7 +78,7 @@
     },
     "Pathogen": {
       "type": "string",
-      "definition": "(Required) The pathogen detected by the test, if any, e.g. 'SARS-CoV-2'. May be different from the detection target. If no pathogen detected, enter 'none'."
+      "definition": "The pathogen detected by the test, if any, e.g. 'SARS-CoV-2'. May be different from the detection target."
     },
     "Pathogen NCBI tax ID": {
       "type": "string",
