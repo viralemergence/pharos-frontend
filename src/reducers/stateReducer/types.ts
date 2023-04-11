@@ -51,22 +51,11 @@ export interface User {
 // the overall Project object
 // representing everything the frontend
 // currently knows about each project
-
-// project is implemented in the frontend
-// but not in the API yet.
 export interface Project {
   projectID: string
   name: string
-  status: ProjectStatus
   datasetIDs: string[]
-  // datasets: {
-  //   // dataset keys are the datasetID
-  //   // to allow O(1) access to update
-  //   // individual datasets in reducer
-  //   // functions.
-  //   [key: string]: Dataset
-  // }
-  lastUpdated?: string
+  lastUpdated: string
   // metadata the user enters when they
   // fill out the new project form
   description?: string
@@ -90,25 +79,21 @@ export interface Project {
 }
 
 // a single dataset
+/** The Dataset object contains all
+ * the metadata about the dataset. */
 export interface Dataset {
-  // frontend sets the id now
-  datasetID: string
+  /** frontend sets the id now */
+  datasetID: DatasetID
+  // the projectID to which
+  // the dataset belongs.
+  projectID: ProjectID
+  name: string
   // the user-facing "status" of the
   // dataset which reflects released
   // and published status
   releaseStatus?: DatasetReleaseStatus
-  // the array of version metadata
-  versions: Version[]
-  // the version number which the user
-  // is looking at in the table interface
-  activeVersion: string
-  // whether or not the most recent state
-  // of the register is a published version
-  highestVersion: string
-  // name of the dataset
-  name: string
   // lastUpdated timestamp
-  lastUpdated?: string
+  lastUpdated: string
   // earliest and latest date in the dataset
   earliestDate?: string
   latestDate?: string
@@ -213,18 +198,6 @@ export enum PortfolioStatus {
   Loading,
   Loaded,
   NetworkError,
-}
-
-// the status states of the overall
-// datasets object
-export enum ProjectStatus {
-  Initial = 'Initial',
-  Unsaved = 'Unsaved',
-  Saving = 'Saving',
-  Saved = 'Saved',
-  Loading = 'Loading',
-  Loaded = 'Loaded',
-  Error = 'Error',
 }
 
 export enum ProjectPublishStatus {

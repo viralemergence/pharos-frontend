@@ -4,6 +4,7 @@ import MintButton from 'components/ui/MintButton'
 
 import useModal from 'hooks/useModal/useModal'
 import useDatasetID from 'hooks/dataset/useDatasetID'
+import useProjectID from 'hooks/project/useProjectID'
 import useUser from 'hooks/useUser'
 import useDispatch from 'hooks/useDispatch'
 import { StateActions } from 'reducers/stateReducer/stateReducer'
@@ -20,6 +21,7 @@ const ReleaseButton = () => {
   const { researcherID } = useUser()
   const dataset = useDataset()
   const datasetID = useDatasetID()
+  const projectID = useProjectID()
   const setModal = useModal()
   const projectDispatch = useDispatch()
   const { datasets, register, messageStack } = useAppState()
@@ -82,6 +84,7 @@ const ReleaseButton = () => {
         method: 'POST',
         body: JSON.stringify({
           researcherID,
+          projectID,
           datasetID,
         }),
       }

@@ -26,17 +26,11 @@ const DatasetsTable = () => {
   const sorted =
     Object.keys(datasets).length > 0
       ? // if there are datasets, sort them
-        Object.values(datasets).sort((a, b) => {
-          if (!a.versions || !b.versions) return 0
-          if (a.versions.length !== 0 || b.versions.length !== 0) return 0
-          if (!a.versions.slice(-1)[0]?.date) return 0
-          if (!b.versions.slice(-1)[0]?.date) return 0
-
-          return (
-            new Date(b.versions.slice(-1)[0].date!).getTime() -
-            new Date(a.versions.slice(-1)[0].date!).getTime()
-          )
-        })
+        Object.values(datasets).sort(
+          (a, b) =>
+            new Date(b.lastUpdated).getTime() -
+            new Date(a.lastUpdated).getTime()
+        )
       : // if there are no datasets, return placeholder
         project.datasetIDs.map(id => ({
           ...datasetPlaceholder,

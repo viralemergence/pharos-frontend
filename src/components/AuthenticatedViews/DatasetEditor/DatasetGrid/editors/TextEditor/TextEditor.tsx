@@ -10,8 +10,7 @@ import {
 
 import useDataset from 'hooks/dataset/useDataset'
 import useModal from 'hooks/useModal/useModal'
-import { useEffect } from 'react'
-import { IDMustBeUnique, OnlyEditMostRecent } from './textEditorMessages'
+import { IDMustBeUnique } from './textEditorMessages'
 import useRegister from 'hooks/register/useRegister'
 import useUser from 'hooks/useUser'
 import getTimestamp from 'utilities/getTimestamp'
@@ -108,20 +107,23 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
     }
   }
 
-  const editable =
-    Number(dataset.activeVersion) === dataset.versions.length - 1 ||
-    dataset.versions.length === 0
+  // leaving this commented out because I know I'll need to
+  // write super similar logic and modal once the dataset is
+  // published.
+  // const editable =
+  //   Number(dataset.activeVersion) === dataset.versions.length - 1 ||
+  //   dataset.versions.length === 0
 
-  useEffect(() => {
-    if (!editable)
-      setModal(
-        <OnlyEditMostRecent latestVersion={dataset.versions.length - 1} />
-      )
-  }, [editable, setModal, dataset.versions.length])
+  // useEffect(() => {
+  //   if (!editable)
+  //     setModal(
+  //       <OnlyEditMostRecent latestVersion={dataset.versions.length - 1} />
+  //     )
+  // }, [editable, setModal, dataset.versions.length])
 
-  if (!editable) {
-    return <></>
-  }
+  // if (!editable) {
+  //   return <></>
+  // }
 
   return (
     <TextInput

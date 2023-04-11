@@ -3,7 +3,6 @@ import {
   Dataset,
   Project,
   ProjectPublishStatus,
-  ProjectStatus,
   NodeStatus,
   UserStatus,
 } from './types'
@@ -11,17 +10,16 @@ import {
 export const projectInitialValue: Project = {
   name: '',
   projectID: '0',
+  lastUpdated: '0',
   datasetIDs: [],
-  status: ProjectStatus.Initial,
   publishStatus: ProjectPublishStatus.Unpublished,
 }
 
 export const datasetInitialValue: Dataset = {
   name: 'Loading dataset',
   datasetID: '',
-  activeVersion: '0',
-  highestVersion: '0',
-  versions: [],
+  projectID: '',
+  lastUpdated: '0',
 }
 
 const metadataObjInitialValue = {

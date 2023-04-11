@@ -9,10 +9,12 @@ import { StateActions } from 'reducers/stateReducer/stateReducer'
 
 import useAppState from 'hooks/useAppState'
 import useDatasetID from 'hooks/dataset/useDatasetID'
+import useProjectID from 'hooks/project/useProjectID'
 
 const useLoadRegister = () => {
   const { researcherID } = useUser()
   const datasetID = useDatasetID()
+  const projectID = useProjectID()
   const dispatch = useDispatch()
 
   const {
@@ -87,7 +89,7 @@ const useLoadRegister = () => {
         `${process.env.GATSBY_API_URL}/load-register`,
         {
           method: 'POST',
-          body: JSON.stringify({ researcherID, datasetID }),
+          body: JSON.stringify({ researcherID, datasetID, projectID }),
         }
       ).catch(() =>
         dispatch({
