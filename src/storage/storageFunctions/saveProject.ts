@@ -36,7 +36,7 @@ const saveProject: StorageFunction<SaveProject> = async (
       `${process.env.GATSBY_API_URL}/${message.route}`,
       {
         method: 'POST',
-        body: JSON.stringify({ ...message.data, researcherID }),
+        body: JSON.stringify({ project: message.data, researcherID }),
       }
     ).catch(() =>
       dispatch({
