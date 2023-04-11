@@ -49,8 +49,8 @@ export interface FormData {
   name: string
   description: string
   citation: string
-  projectType: typeof projectTypes[0]['label']
-  surveillanceStatus: typeof surveillanceStatuses[0]['label']
+  projectType: (typeof projectTypes)[number]['label']
+  surveillanceStatus: (typeof surveillanceStatuses)[number]['label']
   relatedMaterials: string[]
   projectPublications: string[]
   othersCiting: string[]
