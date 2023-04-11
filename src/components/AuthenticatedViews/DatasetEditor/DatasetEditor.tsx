@@ -6,7 +6,6 @@ import DatasetGrid from './DatasetGrid/DatasetsGrid'
 import CSVUploader from './CSVParser/CSVUploader'
 import { TopBar } from '../ViewComponents'
 
-import VersionSwitcher from './VersionSwitcher/VersionSwitcher'
 import DownloadButton from './DownloadButton/DownloadButton'
 import ReleaseButton from './ReleaseButton/ReleaseButton'
 import ReleaseHelpMessage from './ReleaseHelpMessage/ReleaseHelpMessage'
@@ -73,7 +72,6 @@ const DatasetEditor = () => {
             <H1>{dataset ? dataset.name : 'Loading dataset'}</H1>
           </div>
           <ButtonSection>
-            <VersionSwitcher />
             <ReleaseButton />
             <DownloadButton />
           </ButtonSection>
