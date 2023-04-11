@@ -87,22 +87,13 @@ export interface Dataset {
   // the projectID to which
   // the dataset belongs.
   projectID: ProjectID
+  name: string
   // the user-facing "status" of the
   // dataset which reflects released
   // and published status
   releaseStatus?: DatasetReleaseStatus
-  // the array of version metadata
-  versions: Version[]
-  // the version number which the user
-  // is looking at in the table interface
-  activeVersion: string
-  // whether or not the most recent state
-  // of the register is a published version
-  highestVersion: string
-  // name of the dataset
-  name: string
   // lastUpdated timestamp
-  lastUpdated?: string
+  lastUpdated: string
   // earliest and latest date in the dataset
   earliestDate?: string
   latestDate?: string
