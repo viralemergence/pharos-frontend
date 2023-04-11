@@ -1,7 +1,7 @@
 import useUser from 'hooks/useUser'
 
 import { FormData } from 'components/AuthenticatedViews/PortfolioPage/CreateProjectForm/CreateProjectForm'
-import { ProjectPublishStatus, ProjectStatus } from '../types'
+import { ProjectPublishStatus } from '../types'
 import { StateActions } from '../stateReducer'
 
 import { useNavigate } from 'react-router-dom'
@@ -19,7 +19,6 @@ const useDoCreateProject = () => {
 
     const projectData = {
       ...formData,
-      status: ProjectStatus.Saving,
       projectID,
       authors: [
         {

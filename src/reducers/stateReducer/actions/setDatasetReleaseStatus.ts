@@ -7,7 +7,6 @@ import { DatasetReleaseStatus } from '../types'
 
 export interface SetDatasetReleaseStatusPayload {
   datasetID: string
-  lastUpdated: string
   releaseStatus: DatasetReleaseStatus
 }
 
@@ -18,11 +17,10 @@ export interface SetDatasetReleaseStatusAction {
 
 const setDatasetReleaseStatus: ActionFunction<
   SetDatasetReleaseStatusPayload
-> = (state, { datasetID, lastUpdated, releaseStatus }) => {
+> = (state, { datasetID, releaseStatus }) => {
   const nextDataset = {
     ...state.datasets.data[datasetID],
     releaseStatus,
-    lastUpdated,
   }
 
   return {
@@ -38,12 +36,6 @@ const setDatasetReleaseStatus: ActionFunction<
       [`${APIRoutes.saveDataset}_${datasetID}_local`]: {
         route: APIRoutes.saveDataset,
         target: 'local',
-        status: StorageMessageStatus.Initial,
-        data: nextDataset,
-      },
-      [`${APIRoutes.saveDataset}_${datasetID}_remote`]: {
-        route: APIRoutes.saveDataset,
-        target: 'remote',
         status: StorageMessageStatus.Initial,
         data: nextDataset,
       },

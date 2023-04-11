@@ -40,7 +40,7 @@ const SimpleFormatter = ({
 
   datapoint = datapoint as Datapoint
 
-  if (!datapoint || !datapoint.displayValue) return <span />
+  if (!datapoint || !datapoint.dataValue) return <span />
 
   const backgroundColor = datapoint.report?.status
     ? cellHighlightColors[datapoint.report.status]
@@ -48,7 +48,7 @@ const SimpleFormatter = ({
 
   return (
     <CellContainer style={{ backgroundColor }}>
-      <span>{datapoint.displayValue}</span>
+      <span>{datapoint.dataValue}</span>
       <ExpandButton onClick={() => setOpen(true)}>+</ExpandButton>
       <SimpleCellModal
         {...{ datapointID: column.key, datapoint, open, setOpen }}

@@ -19,7 +19,6 @@ const updateUser: ActionFunction<UpdateUserActionPayload> = (
   state,
   { source, user }
 ) => {
-  console.log({ source, user })
   const nextState = { ...state }
   const nextUser = { ...state.user }
   nextUser.data = { ...state.user.data, ...user }

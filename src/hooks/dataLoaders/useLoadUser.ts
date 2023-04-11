@@ -9,7 +9,6 @@ const useLoadUser = (dispatch: React.Dispatch<StateAction>) => {
     const loadUser = async () => {
       const localUser = (await localforage.getItem('user')) as User | null
 
-      console.log({ localUser })
       if (localUser) {
         // set local data in state
         dispatch({

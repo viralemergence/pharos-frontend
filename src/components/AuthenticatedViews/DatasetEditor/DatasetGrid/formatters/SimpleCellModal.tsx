@@ -104,12 +104,11 @@ const SimpleCellModal = ({
         onClick={e => {
           e.preventDefault()
           e.stopPropagation()
-          console.log(e)
         }}
       >
         <Data>
           <Header>{datapointID}</Header>
-          <ValueContainer>{datapoint.displayValue}</ValueContainer>
+          <ValueContainer>{datapoint.dataValue}</ValueContainer>
           <SectionHeader>Validation Report</SectionHeader>
           <ReportContainer score={datapoint.report?.status}>
             <Report>{datapoint.report?.message}</Report>
@@ -134,7 +133,7 @@ const SimpleCellModal = ({
                 </HistoryModified>
                 <HistoryBlock>
                   <HistoryModified>{datapointID}</HistoryModified>
-                  <HistoryName>{datapoint.displayValue}</HistoryName>
+                  <HistoryName>{datapoint.dataValue}</HistoryName>
                 </HistoryBlock>
               </div>
             ))}
