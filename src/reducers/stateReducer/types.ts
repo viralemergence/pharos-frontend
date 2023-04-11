@@ -55,7 +55,7 @@ export interface Project {
   projectID: string
   name: string
   datasetIDs: string[]
-  lastUpdated?: string
+  lastUpdated: string
   // metadata the user enters when they
   // fill out the new project form
   description?: string

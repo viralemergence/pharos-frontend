@@ -10,6 +10,7 @@ import {
 export const projectInitialValue: Project = {
   name: '',
   projectID: '0',
+  lastUpdated: '0',
   datasetIDs: [],
   publishStatus: ProjectPublishStatus.Unpublished,
 }
