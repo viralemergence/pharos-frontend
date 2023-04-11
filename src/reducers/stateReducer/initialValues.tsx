@@ -19,6 +19,7 @@ export const projectInitialValue: Project = {
 export const datasetInitialValue: Dataset = {
   name: 'Loading dataset',
   datasetID: '',
+  projectID: '',
   activeVersion: '0',
   highestVersion: '0',
   versions: [],

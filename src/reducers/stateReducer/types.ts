@@ -51,9 +51,6 @@ export interface User {
 // the overall Project object
 // representing everything the frontend
 // currently knows about each project
-
-// project is implemented in the frontend
-// but not in the API yet.
 export interface Project {
   projectID: string
   name: string
@@ -90,9 +87,14 @@ export interface Project {
 }
 
 // a single dataset
+/** The Dataset object contains all
+ * the metadata about the dataset. */
 export interface Dataset {
-  // frontend sets the id now
-  datasetID: string
+  /** frontend sets the id now */
+  datasetID: DatasetID
+  // the projectID to which
+  // the dataset belongs.
+  projectID: ProjectID
   // the user-facing "status" of the
   // dataset which reflects released
   // and published status
