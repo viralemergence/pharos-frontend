@@ -115,23 +115,6 @@ const CreateProjectForm = () => {
     })
   }
 
-  // let buttonMessage
-  // let submitDisabled
-  // switch (true) {
-  //   case project.status === ProjectStatus.Saving:
-  //     buttonMessage = 'Saving...'
-  //     submitDisabled = true
-  //     break
-  //   case project.status === ProjectStatus.Saved:
-  //     buttonMessage = 'Saved'
-  //     submitDisabled = true
-  //     break
-  //   default:
-  //     buttonMessage = 'Create project'
-  //     submitDisabled = false
-  //     break
-  // }
-
   return (
     <Section>
       <H1>Create Project</H1>

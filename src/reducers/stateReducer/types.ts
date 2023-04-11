@@ -54,15 +54,7 @@ export interface User {
 export interface Project {
   projectID: string
   name: string
-  status: ProjectStatus
   datasetIDs: string[]
-  // datasets: {
-  //   // dataset keys are the datasetID
-  //   // to allow O(1) access to update
-  //   // individual datasets in reducer
-  //   // functions.
-  //   [key: string]: Dataset
-  // }
   lastUpdated?: string
   // metadata the user enters when they
   // fill out the new project form
@@ -215,18 +207,6 @@ export enum PortfolioStatus {
   Loading,
   Loaded,
   NetworkError,
-}
-
-// the status states of the overall
-// datasets object
-export enum ProjectStatus {
-  Initial = 'Initial',
-  Unsaved = 'Unsaved',
-  Saving = 'Saving',
-  Saved = 'Saved',
-  Loading = 'Loading',
-  Loaded = 'Loaded',
-  Error = 'Error',
 }
 
 export enum ProjectPublishStatus {

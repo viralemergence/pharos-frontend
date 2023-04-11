@@ -3,7 +3,6 @@ import {
   Dataset,
   Project,
   ProjectPublishStatus,
-  ProjectStatus,
   NodeStatus,
   UserStatus,
 } from './types'
@@ -12,7 +11,6 @@ export const projectInitialValue: Project = {
   name: '',
   projectID: '0',
   datasetIDs: [],
-  status: ProjectStatus.Initial,
   publishStatus: ProjectPublishStatus.Unpublished,
 }
 
