@@ -3,7 +3,13 @@ import {
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
 import { ActionFunction, StateActions } from '../stateReducer'
-import { Datapoint, DatasetID, ProjectID, RecordID } from '../types'
+import {
+  Datapoint,
+  DatasetID,
+  DatasetReleaseStatus,
+  ProjectID,
+  RecordID,
+} from '../types'
 
 export interface SetDatapointPayload {
   projectID: ProjectID
@@ -12,7 +18,6 @@ export interface SetDatapointPayload {
   datapointID: string
   lastUpdated: string
   datapoint: {
-    displayValue: Datapoint['displayValue']
     dataValue: Datapoint['dataValue']
     modifiedBy: Datapoint['modifiedBy']
   }
@@ -33,8 +38,8 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
   // get previous datapoint
   const previous = prevRecord[datapointID]
 
-  // short circuit if the display value is unchanged
-  if (previous?.displayValue === next.displayValue) return state
+  // short circuit if the data value is unchanged
+  if (previous?.dataValue === next.dataValue) return state
 
   // update lastUpdated
   const nextProject = {
@@ -46,6 +51,7 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
   const nextDataset = {
     ...state.datasets.data[datasetID],
     lastUpdated,
+    releaseStatus: DatasetReleaseStatus.Unreleased,
   }
 
   // next datapoint is all the previous data, overwritten with
@@ -82,6 +88,13 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
     register: {
       ...state.register,
       data: nextRegister,
+    },
+    datasets: {
+      ...state.datasets,
+      data: {
+        ...state.datasets.data,
+        [datasetID]: nextDataset,
+      },
     },
     messageStack: {
       ...state.messageStack,

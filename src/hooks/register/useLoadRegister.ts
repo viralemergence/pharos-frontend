@@ -9,10 +9,12 @@ import { StateActions } from 'reducers/stateReducer/stateReducer'
 
 import useAppState from 'hooks/useAppState'
 import useDatasetID from 'hooks/dataset/useDatasetID'
+import useProjectID from 'hooks/project/useProjectID'
 
 const useLoadRegister = () => {
   const { researcherID } = useUser()
   const datasetID = useDatasetID()
+  const projectID = useProjectID()
   const dispatch = useDispatch()
 
   const {
@@ -74,12 +76,20 @@ const useLoadRegister = () => {
       )
         return
 
+      dispatch({
+        type: StateActions.SetMetadataObjStatus,
+        payload: {
+          key: 'register',
+          status: NodeStatus.Loading,
+        },
+      })
+
       console.log(`${'[API]'.padEnd(15)} Request:  /load-register`)
       const response = await fetch(
         `${process.env.GATSBY_API_URL}/load-register`,
         {
           method: 'POST',
-          body: JSON.stringify({ researcherID, datasetID }),
+          body: JSON.stringify({ researcherID, datasetID, projectID }),
         }
       ).catch(() =>
         dispatch({
@@ -132,7 +142,6 @@ const useLoadRegister = () => {
             },
           })
         }
-
         dispatch({
           type: StateActions.SetMetadataObjStatus,
           payload: {

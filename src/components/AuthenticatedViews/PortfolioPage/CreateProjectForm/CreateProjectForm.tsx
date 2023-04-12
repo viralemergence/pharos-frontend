@@ -49,8 +49,8 @@ export interface FormData {
   name: string
   description: string
   citation: string
-  projectType: typeof projectTypes[0]['label']
-  surveillanceStatus: typeof surveillanceStatuses[0]['label']
+  projectType: (typeof projectTypes)[number]['label']
+  surveillanceStatus: (typeof surveillanceStatuses)[number]['label']
   relatedMaterials: string[]
   projectPublications: string[]
   othersCiting: string[]
@@ -114,23 +114,6 @@ const CreateProjectForm = () => {
       }
     })
   }
-
-  // let buttonMessage
-  // let submitDisabled
-  // switch (true) {
-  //   case project.status === ProjectStatus.Saving:
-  //     buttonMessage = 'Saving...'
-  //     submitDisabled = true
-  //     break
-  //   case project.status === ProjectStatus.Saved:
-  //     buttonMessage = 'Saved'
-  //     submitDisabled = true
-  //     break
-  //   default:
-  //     buttonMessage = 'Create project'
-  //     submitDisabled = false
-  //     break
-  // }
 
   return (
     <Section>

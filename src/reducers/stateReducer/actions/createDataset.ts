@@ -3,7 +3,7 @@ import {
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
 import { ActionFunction, StateActions } from '../stateReducer'
-import { Project, ProjectStatus, Dataset, DatasetReleaseStatus } from '../types'
+import { Project, Dataset, DatasetReleaseStatus } from '../types'
 
 interface CreateDatasetPayload {
   timestamp: string
@@ -23,7 +23,6 @@ const createDataset: ActionFunction<CreateDatasetPayload> = (
   const nextProject: Project = {
     ...state.projects.data[payload.projectID],
     lastUpdated: payload.timestamp,
-    status: ProjectStatus.Unsaved,
     datasetIDs: [
       ...state.projects.data[payload.projectID].datasetIDs,
       payload.dataset.datasetID,

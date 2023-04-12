@@ -8,7 +8,6 @@ import Input from 'components/ui/Input'
 import useDispatch from 'hooks/useDispatch'
 import { StateActions } from 'reducers/stateReducer/stateReducer'
 import getTimestamp from 'utilities/getTimestamp'
-import useUser from 'hooks/useUser'
 import useModal from 'hooks/useModal/useModal'
 import useProjectID from 'hooks/project/useProjectID'
 import { useNavigate } from 'react-router-dom'
@@ -28,7 +27,6 @@ const H1 = styled.h1`
 `
 
 const CreateDatasetForm = () => {
-  const { researcherID } = useUser()
   const dispatch = useDispatch()
   const setModal = useModal()
   const projectID = useProjectID()
@@ -58,7 +56,7 @@ const CreateDatasetForm = () => {
         dataset: {
           ...datasetInitialValue,
           datasetID,
-          researcherID,
+          projectID,
           name: target.name.value,
         },
       },

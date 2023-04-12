@@ -40,7 +40,6 @@ const saveRegister: StorageFunction<SaveRegister> = async (
       )
     dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
   } else {
-    console.log({ ...message.data, researcherID })
     const response = await fetch(
       `${process.env.GATSBY_API_URL}/${message.route}`,
       {

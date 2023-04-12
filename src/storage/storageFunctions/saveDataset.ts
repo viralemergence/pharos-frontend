@@ -36,7 +36,7 @@ const saveDataset: StorageFunction<SaveDataset> = async (
       `${process.env.GATSBY_API_URL}/${message.route}`,
       {
         method: 'POST',
-        body: JSON.stringify({ ...message.data, researcherID }),
+        body: JSON.stringify({ dataset: message.data, researcherID }),
       }
     ).catch(() =>
       dispatch({

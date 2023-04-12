@@ -11,6 +11,7 @@ import { UserStatus } from 'reducers/stateReducer/types'
 
 import useIndexPageData from 'cmsHooks/useIndexPageData'
 import useAppState from 'hooks/useAppState'
+import localforage from 'localforage'
 
 const Nav = styled.nav`
   background-color: ${({ theme }) => theme.darkPurple};
@@ -120,6 +121,15 @@ const NavBar = () => {
           {links.map(link => (
             <NavLink key={link.to} {...link} />
           ))}
+          <button
+            onClick={() => {
+              localforage.clear()
+              window.location.href = '/'
+              window.location.reload()
+            }}
+          >
+            log out
+          </button>
         </DesktopNav>
         <MobileMenu>
           <MobileLinkList>
