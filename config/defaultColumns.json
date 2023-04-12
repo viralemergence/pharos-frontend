@@ -4,7 +4,7 @@
       "type": "string",
       "definition": "The researcher generated unique ID of the sample collected."
     },
-    "Animal ID": {
+    "Organism ID": {
       "type": "string",
       "definition": "The researcher generated unique ID of the individual animal from which the sample was collected."
     },
@@ -26,19 +26,19 @@
     },
     "Spatial uncertainty": {
       "type": "string",
-      "definition": "NEED DEFINITION"
+      "definition": "Coordinate uncertainty from GPS recordings or post-hoc digitization, expressed in meters."
     },
     "Collection day": {
       "type": "string",
-      "definition": "(Required) The day of the month on which the speciman was collected, e.g. '3' for the third day of the month. If unknown, use '1' for the first day of the month."
+      "definition": "(Required) The day of the month on which the speciman was collected, e.g. '3' for the third day of the month."
     },
     "Collection month": {
       "type": "string",
-      "definition": "(Required) The month in which the speciman was collected, in numeric form. E.g. '12' for December."
+      "definition": "(Required) The month in which the speciman was collected, in numeric form, e.g. '12' for December."
     },
     "Collection year": {
       "type": "string",
-      "definition": "(Required) The year in which the speciman was collected, written in four digit form, e.g. '2021'"
+      "definition": "(Required) The year in which the speciman was collected, written in four digit form, e.g. '2021'."
     },
     "Collection method or tissue": {
       "type": "string",
@@ -50,7 +50,7 @@
     },
     "Primer sequence": {
       "type": "string",
-      "definition": "NEED DEFINITION"
+      "definition": "The sequence of both forward and reverse primers used to identify the sample (e.g., forward CDCAYGARTTYTGYTCNCARC 3' ; reverse RHGGRTANGCRTCWATDGC 3')."
     },
     "Primer citation": {
       "type": "string",
@@ -70,15 +70,15 @@
     },
     "Detection measurement": {
       "type": "string",
-      "definition": "NEED DEFINITION"
+      "definition": "Any quantitative information on pathogen detection that is more detailed than simple positive or negative results (e.g., viral titer, parasite counts)."
     },
     "Detection measurement units": {
       "type": "string",
-      "definition": "NEED DEFINITION"
+      "definition": "Units for quantitative measurements of pathogen intensity or test results (e.g., Ct, TCID50/mL, or parasite count)."
     },
     "Pathogen": {
       "type": "string",
-      "definition": "(Required) The pathogen detected by the test, if any, e.g. 'SARS-CoV-2' (may be different from the detection target). If no pathogen detected, enter 'none'."
+      "definition": "The pathogen detected by the test, if any, e.g. 'SARS-CoV-2'. May be different from the detection target."
     },
     "Pathogen NCBI tax ID": {
       "type": "string",
@@ -110,15 +110,15 @@
     },
     "Age": {
       "type": "string",
-      "definition": "The numeric age of the animal from which the sample was collected, at the time of sample collection. Age must be expressed in seconds. Units can be configured in the dataset settings (coming soon)."
+      "definition": "The numeric age of the animal from which the sample was collected, at the time of sample collection. For now, age must be expressed in seconds. Units will eventually be configured in the dataset settings."
     },
     "Mass": {
       "type": "string",
-      "definition": "The numeric mass of the animal from which the sample was collected, at the time of sample collection. Mass must be expressed in kilograms. Units can be configured in the dataset settings (coming soon)."
+      "definition": "The numeric mass of the animal from which the sample was collected, at the time of sample collection. Mass must be expressed in kilograms. Units will eventually be configured in the dataset settings."
     },
     "Length": {
       "type": "string",
-      "definition": "The numeric length of the animal from which the sample was collected, at the time of sample collection. Length must be expressed in meters. Units can be configured in the dataset settings (coming soon)."
+      "definition": "The numeric length of the animal from which the sample was collected, at the time of sample collection. Length must be expressed in meters. Units will eventually be configured in the dataset settings."
     }
   }
 }
