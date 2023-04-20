@@ -73,6 +73,58 @@ const ProjectPage = () => {
   const project = useProject()
   const setModal = useModal()
 
+  const publish = async () => {
+    setModal(<pre style={{ margin: 40 }}>Publishing project...</pre>, {
+      closeable: true,
+    })
+
+    const response = await fetch(
+      `${process.env.GATSBY_API_URL}/publish-project`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          projectID: project.projectID,
+          researcherID: user.researcherID,
+        }),
+      }
+    )
+
+    console.log(response)
+
+    const json = await response.json()
+
+    setModal(
+      <pre style={{ margin: '20px' }}>{JSON.stringify(json, null, 4)}</pre>,
+      { closeable: true }
+    )
+  }
+
+  const unpublish = async () => {
+    setModal(<pre style={{ margin: 40 }}>Unpublishing project...</pre>, {
+      closeable: true,
+    })
+
+    const response = await fetch(
+      `${process.env.GATSBY_API_URL}/unpublish-project`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          projectID: project.projectID,
+          researcherID: user.researcherID,
+        }),
+      }
+    )
+
+    console.log(response)
+
+    const json = await response.json()
+
+    setModal(
+      <pre style={{ margin: 20 }}>{JSON.stringify(json, null, 4)}</pre>,
+      { closeable: true }
+    )
+  }
+
   return (
     <Main>
       <TopBar>
@@ -86,9 +138,10 @@ const ProjectPage = () => {
       </TopBar>
       <TopBar>
         <H1>{project.name}</H1>
-        <MintButton onClick={() => setModal(<PublishProjectModal />)}>
-          Publish project
-        </MintButton>
+        <div style={{ display: 'flex', gap: 5 }}>
+          <MintButton onClick={publish}>Publish project</MintButton>
+          <MintButton onClick={unpublish}>Unpublish project</MintButton>
+        </div>
       </TopBar>
       <MainSection>
         <Left>
