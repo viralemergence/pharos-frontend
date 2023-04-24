@@ -183,7 +183,12 @@ const ProjectPage = () => {
           researcherID: user.researcherID,
         }),
       }
-    )
+    ).catch(e => {
+      console.log(e)
+      setModal(
+        <pre style={{ margin: 20 }}>{project.name} unpublish failed</pre>
+      )
+    })
 
     dispatch({
       type: StateActions.SetMetadataObjStatus,
@@ -199,6 +204,8 @@ const ProjectPage = () => {
         status: NodeStatus.Initial,
       },
     })
+
+    if (!response) return
 
     const json = await response.json()
 
