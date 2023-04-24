@@ -4,7 +4,7 @@
       "type": "string",
       "definition": "The researcher generated unique ID of the sample collected."
     },
-    "Organism ID": {
+    "Animal ID": {
       "type": "string",
       "definition": "The researcher generated unique ID of the individual animal from which the sample was collected."
     },
