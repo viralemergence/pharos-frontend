@@ -13,7 +13,11 @@ const MapContainer = styled.div`
 
 mapboxgl.accessToken = process.env.GATSBY_MAPBOX_API_KEY!
 
-const MapPage = () => {
+interface MapPageProps {
+  style?: React.CSSProperties
+}
+
+const MapPage = ({ style }: MapPageProps) => {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<null | mapboxgl.Map>(null)
 
@@ -86,7 +90,7 @@ const MapPage = () => {
   }, [mapProjection])
 
   return (
-    <>
+    <div style={style}>
       <MapContainer ref={mapContainer} />
       <button
         style={{
@@ -107,7 +111,7 @@ const MapPage = () => {
       >
         {mapProjection === 'naturalEarth' ? 'View globe' : 'View flat'}
       </button>
-    </>
+    </div>
   )
 }
 
