@@ -5,7 +5,7 @@ import CMS from '@talus-analytics/library.airtable-cms'
 import Providers from 'components/layout/Providers'
 
 import NavBar from 'components/layout/NavBar/NavBar'
-import MapPage from 'components/MapPage/MapPage'
+import MapPage from 'components/MapView/MapView'
 
 const DataViewSelectorContainer = styled.div`
   position: absolute;
@@ -52,7 +52,14 @@ const Map = (): JSX.Element => {
 
   useEffect(() => {
     const hash = window.location.hash.replace('#', '')
-    if (hash) setView(View.table)
+
+    function hashIsView(hash: string): hash is View {
+      return Object.values(View).includes(hash)
+    }
+
+    if (hashIsView(hash)) {
+      setView(hash)
+    }
   }, [])
 
   return (
