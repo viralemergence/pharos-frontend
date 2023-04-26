@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 
 import CMS from '@talus-analytics/library.airtable-cms'
@@ -33,16 +33,27 @@ const DataViewSelector = styled.button<{ selected: boolean }>`
   &:last-child {
     border-top-right-radius: 5em;
     border-bottom-right-radius: 5em;
+    border-left: 0px;
   }
 `
 
 enum View {
-  table,
-  map,
+  table = 'table',
+  map = 'map',
 }
 
 const Map = (): JSX.Element => {
   const [view, setView] = React.useState<View>(View.map)
+
+  const changeView = (view: View) => {
+    window.location.hash = view
+    setView(view)
+  }
+
+  useEffect(() => {
+    const hash = window.location.hash.replace('#', '')
+    if (hash) setView(View.table)
+  }, [])
 
   return (
     <Providers>
@@ -51,13 +62,13 @@ const Map = (): JSX.Element => {
       <DataViewSelectorContainer>
         <DataViewSelector
           selected={view === View.map}
-          onClick={() => setView(View.map)}
+          onClick={() => changeView(View.map)}
         >
           Map
         </DataViewSelector>
         <DataViewSelector
           selected={view === View.table}
-          onClick={() => setView(View.table)}
+          onClick={() => changeView(View.table)}
         >
           Table
         </DataViewSelector>
