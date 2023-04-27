@@ -6,6 +6,7 @@ import Providers from 'components/layout/Providers'
 
 import NavBar from 'components/layout/NavBar/NavBar'
 import MapView from 'components/DataPage/MapView/MapView'
+import TableView from 'components/DataPage/TableView/TableView'
 
 const DataViewSelectorContainer = styled.div`
   position: absolute;
@@ -83,6 +84,7 @@ const Map = (): JSX.Element => {
         </DataViewSelector>
       </DataViewSelectorContainer>
       <MapView style={{ display: view === View.map ? 'block' : 'none' }} />
+      <TableView style={{ display: view === View.table ? 'block' : 'none' }} />
     </Providers>
   )
 }
