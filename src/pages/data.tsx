@@ -5,7 +5,7 @@ import CMS from '@talus-analytics/library.airtable-cms'
 import Providers from 'components/layout/Providers'
 
 import NavBar from 'components/layout/NavBar/NavBar'
-import MapView from 'components/MapView/MapView'
+import MapView from 'components/DataPage/MapView/MapView'
 
 const DataViewSelectorContainer = styled.div`
   position: absolute;
