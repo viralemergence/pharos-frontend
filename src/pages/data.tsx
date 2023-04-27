@@ -21,6 +21,8 @@ const DataViewSelector = styled.button<{ selected: boolean }>`
   border: 1px solid ${({ theme }) => theme.white};
   color: ${({ selected, theme }) => (selected ? theme.black : theme.white)};
 
+  min-width: 7em;
+
   padding: 10px 35px;
   background-color: ${({ selected, theme }) =>
     selected ? theme.mint : theme.black};
