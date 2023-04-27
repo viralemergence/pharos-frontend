@@ -17,7 +17,7 @@ interface MapPageProps {
   style?: React.CSSProperties
 }
 
-const MapPage = ({ style }: MapPageProps) => {
+const MapView = ({ style }: MapPageProps) => {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<null | mapboxgl.Map>(null)
 
@@ -115,4 +115,4 @@ const MapPage = ({ style }: MapPageProps) => {
   )
 }
 
-export default MapPage
+export default MapView

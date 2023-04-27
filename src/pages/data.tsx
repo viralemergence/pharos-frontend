@@ -5,7 +5,7 @@ import CMS from '@talus-analytics/library.airtable-cms'
 import Providers from 'components/layout/Providers'
 
 import NavBar from 'components/layout/NavBar/NavBar'
-import MapPage from 'components/MapView/MapView'
+import MapView from 'components/MapView/MapView'
 
 const DataViewSelectorContainer = styled.div`
   position: absolute;
@@ -82,7 +82,7 @@ const Map = (): JSX.Element => {
           Table
         </DataViewSelector>
       </DataViewSelectorContainer>
-      <MapPage style={{ display: view === View.map ? 'block' : 'none' }} />
+      <MapView style={{ display: view === View.map ? 'block' : 'none' }} />
     </Providers>
   )
 }
