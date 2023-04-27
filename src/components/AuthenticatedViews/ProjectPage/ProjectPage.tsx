@@ -1,8 +1,7 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
 import CreateDatasetForm from './CreateDatasetForm/CreateDatasetForm'
-import PublishProjectModal from './PublishProjectModal/PublishProjectModal'
 import MintButton from 'components/ui/MintButton'
 import DatasetsTable from './DatasetsTable/DatasetsTable'
 import { TopBar } from '../ViewComponents'
@@ -17,6 +16,9 @@ import useModal from 'hooks/useModal/useModal'
 import ProjectInfoPanel from './ProjectInfoPanel/ProjectInfoPanel'
 import TextButton from 'components/ui/TextButton'
 import PublishingHelpMessage from './PublishingHelpMessage/PublishingHelpMessage'
+import { NodeStatus, ProjectPublishStatus } from 'reducers/stateReducer/types'
+import useDispatch from 'hooks/useDispatch'
+import { StateActions } from 'reducers/stateReducer/stateReducer'
 
 const H1 = styled.h1`
   ${({ theme }) => theme.h1}
@@ -72,6 +74,169 @@ const ProjectPage = () => {
   const user = useUser()
   const project = useProject()
   const setModal = useModal()
+  const dispatch = useDispatch()
+
+  // if the project is in "Publishing" status, poll for updates
+  const { publishStatus } = project
+  // useRef to prevent starting multiple pollers
+  const publishingPoller = useRef<NodeJS.Timeout | null>(null)
+
+  const [requestedPublishing, setRequestedPublishing] = React.useState(false)
+
+  useEffect(() => {
+    const invalidateProjectsAndDatasets = () => {
+      dispatch({
+        type: StateActions.SetMetadataObjStatus,
+        payload: {
+          key: 'projects',
+          status: NodeStatus.Initial,
+        },
+      })
+      dispatch({
+        type: StateActions.SetMetadataObjStatus,
+        payload: {
+          key: 'datasets',
+          status: NodeStatus.Initial,
+        },
+      })
+
+      if (publishStatus === ProjectPublishStatus.Publishing)
+        publishingPoller.current = setTimeout(
+          invalidateProjectsAndDatasets,
+          1000
+        )
+    }
+
+    if (
+      !publishingPoller.current &&
+      publishStatus === ProjectPublishStatus.Publishing
+    ) {
+      publishingPoller.current = setTimeout(invalidateProjectsAndDatasets, 1000)
+    }
+
+    return () => {
+      if (publishingPoller.current) {
+        clearTimeout(publishingPoller.current)
+        publishingPoller.current = null
+      }
+    }
+  }, [dispatch, publishStatus])
+
+  const publish = async () => {
+    setRequestedPublishing(true)
+
+    try {
+      const response = await fetch(
+        `${process.env.GATSBY_API_URL}/publish-project`,
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            projectID: project.projectID,
+            researcherID: user.researcherID,
+          }),
+        }
+      )
+
+      const json = await response.json()
+
+      console.log(json)
+
+      dispatch({
+        type: StateActions.SetProjectPublishingStatus,
+        payload: {
+          projectID: project.projectID,
+          publishStatus: ProjectPublishStatus.Publishing,
+        },
+      })
+
+      setModal(
+        <pre style={{ margin: '20px' }}>
+          {project.name}: {JSON.stringify(json, null, 4)}
+        </pre>,
+        { closeable: true }
+      )
+
+      setRequestedPublishing(false)
+    } catch (e) {
+      console.log(e)
+      setModal(
+        <pre style={{ margin: '20px' }}>
+          {project.name} publish status update:
+          {JSON.stringify(e, null, 4)}
+        </pre>,
+        { closeable: true }
+      )
+    }
+  }
+
+  const unpublish = async () => {
+    setModal(<pre style={{ margin: 40 }}>Unpublishing project...</pre>, {
+      closeable: true,
+    })
+
+    const response = await fetch(
+      `${process.env.GATSBY_API_URL}/unpublish-project`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          projectID: project.projectID,
+          researcherID: user.researcherID,
+        }),
+      }
+    ).catch(e => {
+      console.log(e)
+      setModal(
+        <pre style={{ margin: 20 }}>{project.name} unpublish failed</pre>
+      )
+    })
+
+    dispatch({
+      type: StateActions.SetMetadataObjStatus,
+      payload: {
+        key: 'projects',
+        status: NodeStatus.Initial,
+      },
+    })
+    dispatch({
+      type: StateActions.SetMetadataObjStatus,
+      payload: {
+        key: 'datasets',
+        status: NodeStatus.Initial,
+      },
+    })
+
+    if (!response) return
+
+    const json = await response.json()
+
+    setModal(
+      <pre style={{ margin: 20 }}>{JSON.stringify(json, null, 4)}</pre>,
+      { closeable: true }
+    )
+  }
+
+  let publishButton: React.ReactNode
+  if (requestedPublishing) {
+    publishButton = <MintButton disabled>Loading...</MintButton>
+  } else {
+    switch (project.publishStatus) {
+      case ProjectPublishStatus.Unpublished:
+        publishButton = <MintButton onClick={publish}>Publish</MintButton>
+        break
+      case ProjectPublishStatus.Published:
+        publishButton = (
+          <MintButton onClick={unpublish} disabled>
+            Publish
+          </MintButton>
+        )
+        break
+      case ProjectPublishStatus.Publishing:
+        publishButton = <MintButton disabled>Publishing...</MintButton>
+        break
+      default:
+        publishButton = <MintButton disabled>Unknown status</MintButton>
+    }
+  }
 
   return (
     <Main>
@@ -86,9 +251,19 @@ const ProjectPage = () => {
       </TopBar>
       <TopBar>
         <H1>{project.name}</H1>
-        <MintButton onClick={() => setModal(<PublishProjectModal />)}>
-          Publish project
-        </MintButton>
+        <div style={{ display: 'flex', gap: 5 }}>
+          {publishButton}
+          {
+            <MintButton
+              onClick={unpublish}
+              disabled={
+                project.publishStatus !== ProjectPublishStatus.Published
+              }
+            >
+              Unpublish
+            </MintButton>
+          }
+        </div>
       </TopBar>
       <MainSection>
         <Left>

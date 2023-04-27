@@ -8,6 +8,7 @@ import generateID from 'utilities/generateID'
 import { StateActions } from 'reducers/stateReducer/stateReducer'
 import { Register } from 'reducers/stateReducer/types'
 import useProjectID from 'hooks/project/useProjectID'
+import getTimestamp from 'utilities/getTimestamp'
 
 type Rows = { [key: string]: string }[]
 
@@ -69,7 +70,7 @@ const useUpdateRegisterFromCSV = () => {
           }
         })
 
-        const lastUpdated = String(new Date().getTime())
+        const lastUpdated = getTimestamp()
 
         dispatch({
           type: StateActions.ExtendRegister,

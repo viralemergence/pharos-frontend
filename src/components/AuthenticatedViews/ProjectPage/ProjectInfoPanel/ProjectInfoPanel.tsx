@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import useProject from 'hooks/project/useProject'
 import { commaSeparatedList } from 'utilities/grammar'
+import { ProjectPublishStatusChip } from '../PublishingStatusChip'
 
 const H2 = styled.h2`
   margin: 0;
@@ -35,7 +36,11 @@ const ProjectInfoPanel = (): JSX.Element => {
   return (
     <>
       <H2>Project status</H2>
-      <P>{'Unpublished'}</P>
+      <P>
+        <ProjectPublishStatusChip status={project.publishStatus}>
+          {project.publishStatus}
+        </ProjectPublishStatusChip>
+      </P>
       <H2>DOI</H2>
       <P>Not yet available</P>
       <H2>How to cite this project</H2>

@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import useDispatch from 'hooks/useDispatch'
 
 import generateID from 'utilities/generateID'
+import getTimestamp from 'utilities/getTimestamp'
 
 const useDoCreateProject = () => {
   const user = useUser()
@@ -27,7 +28,7 @@ const useDoCreateProject = () => {
         },
       ],
       datasetIDs: [],
-      lastUpdated: new Date().toUTCString(),
+      lastUpdated: getTimestamp(),
       publishStatus: ProjectPublishStatus.Unpublished,
     }
 
