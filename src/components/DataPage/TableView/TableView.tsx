@@ -102,8 +102,8 @@ const TableView = ({ style }: TableViewProps) => {
     name: '',
     frozen: true,
     resizable: false,
-    minWidth: 45,
-    width: 45,
+    minWidth: 55,
+    width: 55,
   }
 
   const columns: readonly Column<Row>[] = [
@@ -113,7 +113,7 @@ const TableView = ({ style }: TableViewProps) => {
       .map(key => ({
         key: key,
         name: key,
-        width: key.length * 9 + 15 + 'px',
+        width: key.length * 7.5 + 15 + 'px',
         resizable: true,
       })),
   ]
@@ -132,6 +132,7 @@ const TableView = ({ style }: TableViewProps) => {
           // but it doesn't look like their type definitions work
           <FillDatasetGrid
             className={'rdg-dark'}
+            style={{ fontFamily: 'Inconsolata' }}
             columns={columns}
             rows={publishedRecords}
             onScroll={handleScroll}
