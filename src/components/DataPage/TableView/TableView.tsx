@@ -74,8 +74,8 @@ const TableView = ({ style }: TableViewProps) => {
     name: '',
     frozen: true,
     resizable: false,
-    minWidth: 35,
-    width: 35,
+    minWidth: 45,
+    width: 45,
   }
 
   const columns: readonly Column<Row>[] = [
@@ -85,7 +85,8 @@ const TableView = ({ style }: TableViewProps) => {
       .map(key => ({
         key: key,
         name: key,
-        maxWidth: 200,
+        width: key.length * 9 + 15 + 'px',
+        resizable: true,
       })),
   ]
 
