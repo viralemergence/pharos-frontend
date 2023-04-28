@@ -73,7 +73,6 @@ const TableView = ({ style }: TableViewProps) => {
 
   const loadPublishedRecords = async (page: number) => {
     setLoading(true)
-    console.log(page.toString())
     const response = await fetch(
       `${process.env.GATSBY_API_URL}/published-records?` +
         new URLSearchParams({
@@ -86,7 +85,6 @@ const TableView = ({ style }: TableViewProps) => {
       const data = await response.json()
 
       if (dataIsPublishedRecordsResponse(data)) {
-        console.log(data.publishedRecords)
         setPublishedRecords(prev =>
           prev ? [...prev, ...data.publishedRecords] : data.publishedRecords
         )
