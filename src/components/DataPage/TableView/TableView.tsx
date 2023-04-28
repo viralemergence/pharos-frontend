@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
 import DataGrid, { Column } from 'react-data-grid'
+import LoadingSpinner from './LoadingSpinner'
 
 const TableViewContainer = styled.div`
   background-color: ${({ theme }) => theme.lightBlack};
@@ -9,16 +10,33 @@ const TableViewContainer = styled.div`
   height: calc(100vh - 87px);
   padding-top: 63px;
 `
-
 const TableContaier = styled.div`
+  position: relative;
   width: 100%;
   height: 100%;
   padding: 15px;
 `
-
 const FillDatasetGrid = styled(DataGrid)`
   block-size: 100%;
   height: 100%;
+`
+const LoadingMessage = styled.div`
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  color: ${({ theme }) => theme.white};
+  margin: 0;
+  padding: 15px 30px;
+  text-align: center;
+  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0.5);
+  border-top-left-radius: 5px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 10px;
 `
 
 interface TableViewProps {
@@ -42,31 +60,43 @@ function dataIsPublishedRecordsResponse(
   return true
 }
 
+const divIsAtBottom = ({ currentTarget }: React.UIEvent<HTMLDivElement>) =>
+  currentTarget.scrollTop + 10 >=
+  currentTarget.scrollHeight - currentTarget.clientHeight
+
 const rowKeyGetter = (row: Row) => row.pharosID
 
 const TableView = ({ style }: TableViewProps) => {
+  const [loading, setLoading] = useState<boolean>(true)
   const [publishedRecords, setPublishedRecords] = useState<Row[] | null>(null)
+  const page = useRef(1)
+
+  const loadPublishedRecords = async (page: number) => {
+    setLoading(true)
+    console.log(page.toString())
+    const response = await fetch(
+      `${process.env.GATSBY_API_URL}/published-records?` +
+        new URLSearchParams({
+          page: page.toString(),
+          pageSize: '50',
+        })
+    )
+
+    if (response.ok) {
+      const data = await response.json()
+
+      if (dataIsPublishedRecordsResponse(data)) {
+        console.log(data.publishedRecords)
+        setPublishedRecords(prev =>
+          prev ? [...prev, ...data.publishedRecords] : data.publishedRecords
+        )
+        setLoading(false)
+      } else console.log('GET /published-records: malformed response')
+    }
+  }
 
   useEffect(() => {
-    const loadPublishedRecords = async () => {
-      const response = await fetch(
-        `${process.env.GATSBY_API_URL}/published-records?` +
-          new URLSearchParams({
-            page: '1',
-            pageSize: '50',
-          })
-      )
-
-      if (response.ok) {
-        const data = await response.json()
-
-        if (dataIsPublishedRecordsResponse(data))
-          setPublishedRecords(data.publishedRecords)
-        else console.log('GET /published-records: malformed response')
-      }
-    }
-
-    loadPublishedRecords()
+    loadPublishedRecords(1)
   }, [])
 
   const rowNumberColumn = {
@@ -90,6 +120,12 @@ const TableView = ({ style }: TableViewProps) => {
       })),
   ]
 
+  const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
+    if (loading || !divIsAtBottom(event)) return
+    page.current += 1
+    loadPublishedRecords(page.current)
+  }
+
   return (
     <TableViewContainer style={style}>
       <TableContaier>
@@ -100,10 +136,16 @@ const TableView = ({ style }: TableViewProps) => {
             className={'rdg-dark'}
             columns={columns}
             rows={publishedRecords}
+            onScroll={handleScroll}
             rowKeyGetter={rowKeyGetter}
           />
         ) : (
           <p style={{ color: 'white', margin: 0 }}>Loading records...</p>
+        )}
+        {loading && (
+          <LoadingMessage>
+            <LoadingSpinner /> Loading more rows
+          </LoadingMessage>
         )}
       </TableContaier>
     </TableViewContainer>
