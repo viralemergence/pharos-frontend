@@ -115,9 +115,7 @@ const MapView = ({ style }: MapPageProps) => {
         .setLngLat(feature.geometry.coordinates)
         .setHTML(
           Object.entries(feature.properties)
-            .filter(
-              ([key, value]) => !['pharos_id', 'dataset_id'].includes(key)
-            )
+            .filter(([key, _]) => !['pharos_id', 'dataset_id'].includes(key))
             .map(
               ([key, value]) =>
                 `<h3 style="margin-bottom: 0; margin-top: 0; font-size: 12px;">${(key =>
