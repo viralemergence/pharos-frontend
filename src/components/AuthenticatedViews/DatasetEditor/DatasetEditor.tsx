@@ -18,6 +18,9 @@ import BreadcrumbLink, {
 
 import useProject from 'hooks/project/useProject'
 import DatasetStatusMessage from './DatasetStatusMessage/DatasetStatusMessage'
+import MintButton from 'components/ui/MintButton'
+import PreReleaseModal from './ReleaseButton/PreReleaseModal'
+import useModal from 'hooks/useModal/useModal'
 
 const TopSection = styled.section`
   padding: 20px 40px;
@@ -47,6 +50,7 @@ const ProjectName = styled.div`
 const DatasetEditor = () => {
   const dataset = useDataset()
   const project = useProject()
+  const setModal = useModal()
 
   return (
     <>
@@ -73,6 +77,9 @@ const DatasetEditor = () => {
           </div>
           <ButtonSection>
             <ReleaseButton />
+            <MintButton onClick={() => setModal(<PreReleaseModal />)}>
+              Release dataset
+            </MintButton>
             <DownloadButton />
           </ButtonSection>
         </TopBar>
