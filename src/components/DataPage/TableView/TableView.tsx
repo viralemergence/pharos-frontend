@@ -57,6 +57,7 @@ function dataIsPublishedRecordsResponse(
   if (!data || typeof data !== 'object') return false
   if (!('publishedRecords' in data)) return false
   if (!Array.isArray(data.publishedRecords)) return false
+  if (!data.publishedRecords.every(row => typeof row === 'object')) return false
   return true
 }
 
