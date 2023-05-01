@@ -72,6 +72,17 @@ const MapView = ({ style }: MapPageProps) => {
           'circle-stroke-color': 'black',
         },
       })
+
+      // map.current.addLayer({
+      //   id: 'pharos-polygon-layer',
+      //   type: 'fill',
+      //   source: 'pharos-points',
+      //   paint: {
+      //     // 'fill-extrusion-color': 'hsl(170, 56%, 79%)',
+      //     'fill-color': 'hsl(170, 56%, 79%)',
+      //     'fill-opacity': ['/', ['get', 'count'], 155],
+      //   },
+      // })
     })
 
     map.current.on('click', event => {
