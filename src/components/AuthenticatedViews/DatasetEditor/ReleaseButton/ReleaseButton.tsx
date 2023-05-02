@@ -12,6 +12,7 @@ import {
   ReleaseReport,
 } from 'reducers/stateReducer/types'
 import useReleaseButtonStatus from './useReleaseButtonStatus'
+import ReleaseReportModal from './ReleaseReportModal'
 
 const ReleaseButton = () => {
   const { researcherID } = useUser()
@@ -41,7 +42,7 @@ const ReleaseButton = () => {
     if (!response) return
     const report = await response.json()
 
-    function reportIsReport(report: unknown): report is Partial<ReleaseReport> {
+    function reportIsReport(report: unknown): report is ReleaseReport {
       if (typeof report !== 'object') return false
       if (!report) return false
       if (!('releaseStatus' in report)) return false
@@ -50,7 +51,7 @@ const ReleaseButton = () => {
       return true
     }
 
-    if (reportIsReport(report) && report.releaseStatus)
+    if (reportIsReport(report) && report.releaseStatus) {
       projectDispatch({
         type: StateActions.SetDatasetReleaseStatus,
         payload: {
@@ -59,10 +60,12 @@ const ReleaseButton = () => {
         },
       })
 
-    setModal(
-      <pre style={{ margin: '20px' }}>{JSON.stringify(report, null, 4)}</pre>,
-      { closeable: true }
-    )
+      setModal(<ReleaseReportModal report={report} />, { closeable: true })
+    } else
+      setModal(
+        <pre style={{ margin: '20px' }}>Error parsing release report</pre>,
+        { closeable: true }
+      )
 
     setReleasing(false)
   }
