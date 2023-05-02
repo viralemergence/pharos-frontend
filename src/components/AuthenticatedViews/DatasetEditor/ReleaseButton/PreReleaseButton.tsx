@@ -8,11 +8,13 @@ import useReleaseButtonStatus from './useReleaseButtonStatus'
 const PreReleaseButton = () => {
   const setModal = useModal()
 
-  const { buttonDisabled, buttonMessage } = useReleaseButtonStatus()
+  const { buttonDisabled, buttonInProgress, buttonMessage } =
+    useReleaseButtonStatus()
 
   return (
     <MintButton
       disabled={buttonDisabled}
+      inProgress={buttonInProgress}
       onClick={() => setModal(<PreReleaseModal />, { closeable: true })}
     >
       {buttonMessage}
