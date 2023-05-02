@@ -25,7 +25,7 @@ export const RowLink = styled(Link)<{ $columnTemplate?: string }>`
   color: ${({ theme }) => theme.black};
   text-decoration: none;
 
-  ${({ theme }) => theme.gridText};
+  ${({ theme }) => theme.smallParagraph};
 
   > div {
     padding: 15px;
