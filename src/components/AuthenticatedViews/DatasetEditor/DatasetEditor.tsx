@@ -77,9 +77,6 @@ const DatasetEditor = () => {
           </ButtonSection>
         </TopBar>
         <TopBar>
-          <ProjectName>
-            Project: <span>{project.name}</span>
-          </ProjectName>
           <CSVUploader />
         </TopBar>
       </TopSection>
