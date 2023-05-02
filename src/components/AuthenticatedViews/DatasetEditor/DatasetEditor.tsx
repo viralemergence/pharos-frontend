@@ -7,7 +7,6 @@ import CSVUploader from './CSVParser/CSVUploader'
 import { TopBar } from '../ViewComponents'
 
 import DownloadButton from './DownloadButton/DownloadButton'
-import ReleaseButton from './ReleaseButton/ReleaseButton'
 import ReleaseHelpMessage from './ReleaseHelpMessage/ReleaseHelpMessage'
 
 import useDataset from 'hooks/dataset/useDataset'
@@ -18,9 +17,6 @@ import BreadcrumbLink, {
 
 import useProject from 'hooks/project/useProject'
 import DatasetStatusMessage from './DatasetStatusMessage/DatasetStatusMessage'
-import MintButton from 'components/ui/MintButton'
-import PreReleaseModal from './ReleaseButton/PreReleaseModal'
-import useModal from 'hooks/useModal/useModal'
 import PreReleaseButton from './ReleaseButton/PreReleaseButton'
 
 const TopSection = styled.section`
