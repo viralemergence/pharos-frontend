@@ -34,15 +34,6 @@ const H1 = styled.h1`
   margin: 0;
   margin: 15px 0;
 `
-const ProjectName = styled.div`
-  ${({ theme }) => theme.smallParagraph};
-  color: ${({ theme }) => theme.darkGray};
-  align-self: flex-start;
-
-  > span {
-    color: ${({ theme }) => theme.link};
-  }
-`
 
 const DatasetEditor = () => {
   const dataset = useDataset()
