@@ -149,19 +149,19 @@ const ProjectPage = () => {
         },
       })
 
-      setModal(
-        <pre style={{ margin: '20px' }}>
-          {project.name}: {JSON.stringify(json, null, 4)}
-        </pre>,
-        { closeable: true }
-      )
+      // setModal(
+      //   <pre style={{ margin: '20px' }}>
+      //     {project.name}: {JSON.stringify(json, null, 4)}
+      //   </pre>,
+      //   { closeable: true }
+      // )
 
       setRequestedPublishing(false)
     } catch (e) {
       console.log(e)
       setModal(
         <pre style={{ margin: '20px' }}>
-          {project.name} publish status update:
+          {project.name} Publishing Error
           {JSON.stringify(e, null, 4)}
         </pre>,
         { closeable: true }
