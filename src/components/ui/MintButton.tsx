@@ -50,7 +50,8 @@ const buttonStyle = css<{
   }
 
   &:disabled {
-    background: ${({ theme }) => lighten(0.1, theme.mint)};
+    background: ${({ theme }) => theme.veryLightGray};
+    border-color: ${({ theme }) => theme.veryLightGray};
     color: ${({ theme }) => theme.darkGray};
 
     ${({ theme, secondary, warning, inProgress }) => {
