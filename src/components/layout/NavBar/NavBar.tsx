@@ -114,7 +114,6 @@ const NavBar = () => {
         <LinkList>
           <HomeLink to="/" reactRouterLink={false}>
             <NavLogo name="Site logo" data={data} />
-            <CMS.Text name="Navbar title" data={data} />
           </HomeLink>
         </LinkList>
         <DesktopNav>
