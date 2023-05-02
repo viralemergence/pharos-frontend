@@ -222,7 +222,11 @@ const ProjectPage = () => {
 
   let publishButton: React.ReactNode
   if (requestedPublishing) {
-    publishButton = <MintButton disabled>Loading...</MintButton>
+    publishButton = (
+      <MintButton disabled inProgress>
+        Loading...
+      </MintButton>
+    )
   } else {
     switch (project.publishStatus) {
       case ProjectPublishStatus.Unpublished:
@@ -258,18 +262,19 @@ const ProjectPage = () => {
         <H1>{project.name}</H1>
         <div style={{ display: 'flex', gap: 5 }}>
           {publishButton}
-          {
-            <MintButton
-              onClick={unpublish}
-              inProgress={unPublishing}
-              disabled={[
+          <MintButton
+            warning
+            onClick={unpublish}
+            inProgress={unPublishing}
+            disabled={
+              [
                 ProjectPublishStatus.Unpublished,
                 ProjectPublishStatus.Publishing,
-              ].includes(project.publishStatus)}
-            >
-              {unPublishing ? 'Unpublishing...' : 'Unpublish'}
-            </MintButton>
-          }
+              ].includes(project.publishStatus) || unPublishing
+            }
+          >
+            {unPublishing ? 'Unpublishing...' : 'Unpublish'}
+          </MintButton>
         </div>
       </TopBar>
       <MainSection>
