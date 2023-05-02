@@ -21,7 +21,7 @@ const ReleaseButton = () => {
   const setModal = useModal()
   const projectDispatch = useDispatch()
 
-  const { buttonDisabled, buttonMessage, setReleasing } =
+  const { buttonDisabled, buttonInProgress, buttonMessage, setReleasing } =
     useReleaseButtonStatus()
 
   const onClickRelease = async (e: React.SyntheticEvent<HTMLButtonElement>) => {
@@ -71,7 +71,11 @@ const ReleaseButton = () => {
   }
 
   return (
-    <MintButton onClick={e => onClickRelease(e)} disabled={buttonDisabled}>
+    <MintButton
+      onClick={e => onClickRelease(e)}
+      disabled={buttonDisabled}
+      inProgress={buttonInProgress}
+    >
       {buttonMessage}
     </MintButton>
   )

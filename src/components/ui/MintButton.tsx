@@ -59,14 +59,17 @@ const buttonStyle = css<{
         switch (true) {
           case secondary:
             return `
+              color: ${theme.black};
               border-color: ${theme.mint};
               background-color: ${theme.hoverMint};`
           case warning:
             return `
+              color: ${theme.black};
               border-color: ${theme.orange};
               background-color: ${theme.hoverOrange};`
           default:
             return `
+              color: ${theme.black};
               border-color: ${theme.mint};
               background-color: ${theme.hoverMint};`
         }

@@ -18,10 +18,12 @@ const useReleaseButtonStatus = () => {
 
   let buttonDisabled
   let buttonMessage
+  let buttonInProgress
   switch (true) {
     case releasing === true:
       buttonMessage = 'Validating...'
       buttonDisabled = true
+      buttonInProgress = true
       break
     case offline:
       buttonMessage = 'Offline'
@@ -45,10 +47,12 @@ const useReleaseButtonStatus = () => {
     case dataset.releaseStatus === DatasetReleaseStatus.Released:
       buttonMessage = 'Dataset released'
       buttonDisabled = true
+      buttonInProgress = true
       break
     case dataset.releaseStatus === DatasetReleaseStatus.Published:
       buttonMessage = 'Dataset published'
       buttonDisabled = true
+      buttonInProgress = true
       break
     default:
       buttonMessage = 'Offline'
@@ -56,7 +60,7 @@ const useReleaseButtonStatus = () => {
       break
   }
 
-  return { buttonDisabled, buttonMessage, setReleasing }
+  return { buttonDisabled, buttonInProgress, buttonMessage, setReleasing }
 }
 
 export default useReleaseButtonStatus
