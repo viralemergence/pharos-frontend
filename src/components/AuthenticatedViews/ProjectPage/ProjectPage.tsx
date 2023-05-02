@@ -82,6 +82,7 @@ const ProjectPage = () => {
   const publishingPoller = useRef<NodeJS.Timeout | null>(null)
 
   const [requestedPublishing, setRequestedPublishing] = React.useState(false)
+  const [unPublishing, setUnPublishing] = React.useState(false)
 
   useEffect(() => {
     const invalidateProjectsAndDatasets = () => {
@@ -170,6 +171,8 @@ const ProjectPage = () => {
   }
 
   const unpublish = async () => {
+    setUnPublishing(true)
+
     setModal(<pre style={{ margin: 40 }}>Unpublishing project...</pre>, {
       closeable: true,
     })
@@ -209,6 +212,8 @@ const ProjectPage = () => {
 
     const json = await response.json()
 
+    setUnPublishing(false)
+
     setModal(
       <pre style={{ margin: 20 }}>{JSON.stringify(json, null, 4)}</pre>,
       { closeable: true }
@@ -217,21 +222,25 @@ const ProjectPage = () => {
 
   let publishButton: React.ReactNode
   if (requestedPublishing) {
-    publishButton = <MintButton disabled>Loading...</MintButton>
+    publishButton = (
+      <MintButton disabled inProgress>
+        Loading...
+      </MintButton>
+    )
   } else {
     switch (project.publishStatus) {
       case ProjectPublishStatus.Unpublished:
         publishButton = <MintButton onClick={publish}>Publish</MintButton>
         break
       case ProjectPublishStatus.Published:
-        publishButton = (
-          <MintButton onClick={unpublish} disabled>
-            Publish
-          </MintButton>
-        )
+        publishButton = <MintButton disabled>Publish</MintButton>
         break
       case ProjectPublishStatus.Publishing:
-        publishButton = <MintButton disabled>Publishing...</MintButton>
+        publishButton = (
+          <MintButton disabled inProgress>
+            Publishing...
+          </MintButton>
+        )
         break
       default:
         publishButton = <MintButton disabled>Unknown status</MintButton>
@@ -253,16 +262,19 @@ const ProjectPage = () => {
         <H1>{project.name}</H1>
         <div style={{ display: 'flex', gap: 5 }}>
           {publishButton}
-          {
-            <MintButton
-              onClick={unpublish}
-              disabled={
-                project.publishStatus !== ProjectPublishStatus.Published
-              }
-            >
-              Unpublish
-            </MintButton>
-          }
+          <MintButton
+            warning
+            onClick={unpublish}
+            inProgress={unPublishing}
+            disabled={
+              [
+                ProjectPublishStatus.Unpublished,
+                ProjectPublishStatus.Publishing,
+              ].includes(project.publishStatus) || unPublishing
+            }
+          >
+            {unPublishing ? 'Unpublishing...' : 'Unpublish'}
+          </MintButton>
         </div>
       </TopBar>
       <MainSection>
