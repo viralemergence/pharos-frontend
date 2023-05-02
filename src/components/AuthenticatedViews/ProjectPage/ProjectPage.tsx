@@ -82,6 +82,7 @@ const ProjectPage = () => {
   const publishingPoller = useRef<NodeJS.Timeout | null>(null)
 
   const [requestedPublishing, setRequestedPublishing] = React.useState(false)
+  const [unPublishing, setUnPublishing] = React.useState(false)
 
   useEffect(() => {
     const invalidateProjectsAndDatasets = () => {
@@ -170,6 +171,8 @@ const ProjectPage = () => {
   }
 
   const unpublish = async () => {
+    setUnPublishing(true)
+
     setModal(<pre style={{ margin: 40 }}>Unpublishing project...</pre>, {
       closeable: true,
     })
@@ -209,6 +212,8 @@ const ProjectPage = () => {
 
     const json = await response.json()
 
+    setUnPublishing(false)
+
     setModal(
       <pre style={{ margin: 20 }}>{JSON.stringify(json, null, 4)}</pre>,
       { closeable: true }
@@ -224,14 +229,14 @@ const ProjectPage = () => {
         publishButton = <MintButton onClick={publish}>Publish</MintButton>
         break
       case ProjectPublishStatus.Published:
-        publishButton = (
-          <MintButton onClick={unpublish} disabled>
-            Publish
-          </MintButton>
-        )
+        publishButton = <MintButton disabled>Publish</MintButton>
         break
       case ProjectPublishStatus.Publishing:
-        publishButton = <MintButton disabled>Publishing...</MintButton>
+        publishButton = (
+          <MintButton disabled inProgress>
+            Publishing...
+          </MintButton>
+        )
         break
       default:
         publishButton = <MintButton disabled>Unknown status</MintButton>
@@ -256,11 +261,13 @@ const ProjectPage = () => {
           {
             <MintButton
               onClick={unpublish}
-              disabled={
-                project.publishStatus !== ProjectPublishStatus.Published
-              }
+              inProgress={unPublishing}
+              disabled={[
+                ProjectPublishStatus.Unpublished,
+                ProjectPublishStatus.Publishing,
+              ].includes(project.publishStatus)}
             >
-              Unpublish
+              {unPublishing ? 'Unpublishing...' : 'Unpublish'}
             </MintButton>
           }
         </div>
