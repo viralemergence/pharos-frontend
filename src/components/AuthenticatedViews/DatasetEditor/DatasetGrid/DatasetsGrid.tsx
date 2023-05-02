@@ -18,6 +18,7 @@ const FillDatasetGrid = styled(DataGrid)`
   block-size: 100%;
   height: calc(100vh - 300px);
   margin: 0 40px;
+  ${({ theme }) => theme.gridText}
 `
 
 const DatasetGrid = () => {
@@ -42,7 +43,7 @@ const DatasetGrid = () => {
       name,
       editor: TextEditor,
       formatter: SimpleFormatter,
-      width: 150,
+      width: name.length * 10 + 15 + 'px',
       resizable: true,
       sortable: true,
     })),
