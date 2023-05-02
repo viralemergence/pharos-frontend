@@ -27,8 +27,8 @@ export default {
 	text-transform: none;
 `,
   bigParagraph: `
-	font-size: 22px;
-	font-family: "Overpass", helvetica, arial, sans-serif;
+	font-size: 20px;
+	font-family: "Open Sans", helvetica, arial, sans-serif;
 	font-weight: 300;
 	font-style: normal;
 	line-height: 30px;
@@ -36,8 +36,8 @@ export default {
 	text-transform: none;
 `,
   bigParagraphSemibold: `
-	font-size: 22px;
-	font-family: "Overpass", helvetica, arial, sans-serif;
+	font-size: 20px;
+	font-family: "Open Sans", helvetica, arial, sans-serif;
 	font-weight: 500;
 	font-style: normal;
 	line-height: 30px;
@@ -45,8 +45,8 @@ export default {
 	text-transform: none;
 `,
   smallParagraph: `
-	font-size: 18px;
-	font-family: "Overpass", helvetica, arial, sans-serif;
+	font-size: 16px;
+	font-family: "Open Sans", helvetica, arial, sans-serif;
 	font-weight: 300;
 	font-style: normal;
 	line-height: 28px;
@@ -54,8 +54,8 @@ export default {
 	text-transform: none;
 `,
   smallParagraphSemibold: `
-	font-size: 18px;
-	font-family: "Overpass", helvetica, arial, sans-serif;
+	font-size: 16px;
+	font-family: "Open Sans", helvetica, arial, sans-serif;
 	font-weight: 500;
 	font-style: normal;
 	line-height: 28px;
@@ -63,8 +63,8 @@ export default {
 	text-transform: none;
 `,
   extraSmallParagraph: `
-	font-size: 16px;
-	font-family: "Overpass", helvetica, arial, sans-serif;
+	font-size: 14px;
+	font-family: "Open Sans", helvetica, arial, sans-serif;
 	font-weight: 300;
 	font-style: normal;
 	line-height: 24px;
