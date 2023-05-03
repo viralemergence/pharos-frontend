@@ -150,13 +150,6 @@ const ProjectPage = () => {
         },
       })
 
-      // setModal(
-      //   <pre style={{ margin: '20px' }}>
-      //     {project.name}: {JSON.stringify(json, null, 4)}
-      //   </pre>,
-      //   { closeable: true }
-      // )
-
       setRequestedPublishing(false)
     } catch (e) {
       console.log(e)
