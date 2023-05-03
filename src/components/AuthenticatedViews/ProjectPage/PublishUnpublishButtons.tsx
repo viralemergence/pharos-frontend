@@ -90,8 +90,7 @@ const PublishUnpublishButtons = () => {
         setRequestedPublishing(false)
         setModal(
           <pre style={{ margin: '20px' }}>
-            {project.name} Publishing Error
-            {JSON.stringify(json, null, 4)}
+            Publishing Error {json as string}
           </pre>,
           { closeable: true }
         )
@@ -111,8 +110,7 @@ const PublishUnpublishButtons = () => {
       console.log(e)
       setModal(
         <pre style={{ margin: '20px' }}>
-          {project.name} Publishing Error
-          {JSON.stringify(e, null, 4)}
+          {project.name} Publishing Error {JSON.stringify(e, null, 4)}
         </pre>,
         { closeable: true }
       )
