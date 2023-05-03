@@ -59,6 +59,7 @@ const MobileLinkList = styled(LinkList)`
 const NavLogo = styled(CMS.Image)`
   height: 70px;
   margin-right: 30px;
+  margin-left: 12px;
 `
 
 const NavBar = () => {
@@ -81,7 +82,7 @@ const NavBar = () => {
   // these links are always the same, and always reach-router
   const links = [
     { to: '/about/', children: 'About', reactRouterLink: false },
-    { to: '/map/', children: 'Map', reactRouterLink: false },
+    { to: '/data/', children: 'Data', reactRouterLink: false },
     { to: '/user-guide/', children: 'User guide', reactRouterLink: false },
   ]
 
@@ -114,7 +115,6 @@ const NavBar = () => {
         <LinkList>
           <HomeLink to="/" reactRouterLink={false}>
             <NavLogo name="Site logo" data={data} />
-            <CMS.Text name="Navbar title" data={data} />
           </HomeLink>
         </LinkList>
         <DesktopNav>

@@ -24,6 +24,9 @@ import updateDatasets, { UpdateDatasetsAction } from './actions/updateDatasets'
 import updateRegister, { UpdateRegisterAction } from './actions/updateRegister'
 import setUserStatus, { SetUserStatusAction } from './actions/setUserStatus'
 import extendRegister, { ExtendRegisterAction } from './actions/extendRegister'
+import setProjectPublishingStatus, {
+  SetProjectPublishingStatusAction,
+} from './actions/setProjectPublishing'
 
 // reducer actions
 export enum StateActions {
@@ -42,6 +45,7 @@ export enum StateActions {
   // project actions
   UpdateProjects,
   CreateProject,
+  SetProjectPublishingStatus,
 
   // dataset actions
   CreateDataset,
@@ -70,6 +74,7 @@ export type StateAction =
   // project actions
   | UpdateProjectsAction
   | CreateProjectAction
+  | SetProjectPublishingStatusAction
 
   // dataset actions
   | CreateDatasetAction
@@ -117,6 +122,8 @@ const stateReducer = (state: AppState, action: StateAction) => {
       return createProject(state, action.payload)
     case StateActions.UpdateProjects:
       return updateProjects(state, action.payload)
+    case StateActions.SetProjectPublishingStatus:
+      return setProjectPublishingStatus(state, action.payload)
 
     // dataset actions
     case StateActions.UpdateDatasets:

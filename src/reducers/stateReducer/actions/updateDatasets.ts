@@ -28,7 +28,7 @@ const updateDatasets: ActionFunction<UpdateDatasetsAction['payload']> = (
       const prevData = state.datasets.data[nextData.datasetID]
 
       // if the project already exists in state
-      if (state.projects.data[key]) {
+      if (prevData) {
         const prevDate = new Date(prevData.lastUpdated ?? 0)
         const nextDate = new Date(nextData.lastUpdated ?? 0)
 

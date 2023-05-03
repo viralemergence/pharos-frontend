@@ -25,7 +25,7 @@ export const RowLink = styled(Link)<{ $columnTemplate?: string }>`
   color: ${({ theme }) => theme.black};
   text-decoration: none;
 
-  ${({ theme }) => theme.gridText};
+  ${({ theme }) => theme.smallParagraph};
 
   > div {
     padding: 15px;
@@ -48,6 +48,7 @@ export const HeaderRow = styled.div<{ $columnTemplate?: string }>`
   display: grid;
   grid-template-columns: ${({ $columnTemplate }) => $columnTemplate};
   // grid-template-columns: 1.5fr 2.5fr repeat(4, 1.5fr);
+  ${({ theme }) => theme.smallParagraphSemibold};
   align-items: center;
   > div {
     padding: 15px;

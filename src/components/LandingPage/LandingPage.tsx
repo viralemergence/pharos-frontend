@@ -74,7 +74,7 @@ const LoggedOutLanding = () => {
                 <CMS.Text name="CTA" data={cmsData} />
               )}
             </MintButtonLink>
-            <MintButtonLink to="/map/">View map</MintButtonLink>
+            <MintButtonLink to="/data#map">View map</MintButtonLink>
           </ButtonBox>
         </Header>
         <Main>
