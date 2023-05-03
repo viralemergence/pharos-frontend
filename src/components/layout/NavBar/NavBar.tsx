@@ -36,10 +36,6 @@ const LinkList = styled.ol`
   margin: 0;
 `
 const HomeLink = styled(NavLink)`
-  font-family: 'Overpass', sans-serif !important;
-  font-weight: 500 !important;
-  font-size: 24px !important;
-  color: white;
   padding: 0;
   display: flex;
   align-items: center;
@@ -114,7 +110,7 @@ const NavBar = () => {
       <Container>
         <LinkList>
           <HomeLink to="/" reactRouterLink={false}>
-            <NavLogo name="Site logo" data={data} />
+            <NavLogo name="Pharos" data={data} />
           </HomeLink>
         </LinkList>
         <DesktopNav>
