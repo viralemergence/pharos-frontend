@@ -1,17 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { EditorProps } from 'react-data-grid'
 
 import {
   Datapoint,
-  DatasetReleaseStatus,
   RecordMeta,
   RecordWithID,
 } from 'reducers/stateReducer/types'
 
 import useDataset from 'hooks/dataset/useDataset'
-import useModal from 'hooks/useModal/useModal'
-import { CantEditPublished } from './textEditorMessages'
 import useUser from 'hooks/useUser'
 import getTimestamp from 'utilities/getTimestamp'
 import { StateActions } from 'reducers/stateReducer/stateReducer'
@@ -51,7 +48,6 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
   const projectID = useProjectID()
   const { researcherID: modifiedBy } = useUser()
 
-  const setModal = useModal()
   const projectDispatch = useDispatch()
 
   const datapoint = row[column.key] as Datapoint | undefined
@@ -84,15 +80,15 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
     }
   }
 
-  const editable = dataset.releaseStatus !== DatasetReleaseStatus.Published
+  // const editable = dataset.releaseStatus !== DatasetReleaseStatus.Published
 
-  useEffect(() => {
-    if (!editable) setModal(<CantEditPublished />)
-  }, [editable, setModal])
+  // useEffect(() => {
+  //   if (!editable) setModal(<CantEditPublished />)
+  // }, [editable, setModal])
 
-  if (!editable) {
-    return <></>
-  }
+  // if (!editable) {
+  //   return <></>
+  // }
 
   return (
     <TextInput
