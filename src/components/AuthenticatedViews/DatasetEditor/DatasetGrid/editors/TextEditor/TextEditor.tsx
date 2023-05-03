@@ -84,10 +84,6 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
     }
   }
 
-  // leaving this commented out because I know I'll need to
-  // write super similar logic and modal once the dataset is
-  // published.
-
   const editable = dataset.releaseStatus !== DatasetReleaseStatus.Published
 
   useEffect(() => {
