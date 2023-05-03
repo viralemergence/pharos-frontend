@@ -27,7 +27,7 @@ const ProjectsTable = () => {
         <div>Last updated</div>
         <div>Project type</div>
         <div>Surveillance status</div>
-        <div># of datasets</div>
+        <div>Datasets</div>
       </HeaderRow>
       {sorted &&
         sorted.map(project => (
