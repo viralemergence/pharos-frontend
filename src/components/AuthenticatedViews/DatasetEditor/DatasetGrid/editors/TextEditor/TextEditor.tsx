@@ -11,8 +11,7 @@ import {
 
 import useDataset from 'hooks/dataset/useDataset'
 import useModal from 'hooks/useModal/useModal'
-import { CantEditPublished, IDMustBeUnique } from './textEditorMessages'
-import useRegister from 'hooks/register/useRegister'
+import { CantEditPublished } from './textEditorMessages'
 import useUser from 'hooks/useUser'
 import getTimestamp from 'utilities/getTimestamp'
 import { StateActions } from 'reducers/stateReducer/stateReducer'
@@ -47,11 +46,8 @@ const autoFocusAndSelect = (input: HTMLInputElement | null) => {
   input?.select()
 }
 
-const recordIDColumn = 'SampleID'
-
 const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
   const dataset = useDataset()
-  const register = useRegister()
   const projectID = useProjectID()
   const { researcherID: modifiedBy } = useUser()
 
@@ -63,26 +59,6 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
   const [editValue, setEditValue] = useState(datapoint?.dataValue ?? '')
 
   const dispatchValue = () => {
-    // special case for handling the ID column
-    if (column.key === recordIDColumn) {
-      // get all current SampleID values
-      const idMap = Object.entries(register).reduce(
-        (acc, [recordID, row]) => ({
-          ...acc,
-          [row[recordIDColumn]?.dataValue]: recordID,
-        }),
-        {} as { [key: string]: string }
-      )
-
-      if (
-        idMap[editValue] &&
-        idMap[editValue] !== (row._meta as RecordMeta).recordID
-      ) {
-        setModal(<IDMustBeUnique {...{ recordIDColumn }} />)
-        return
-      }
-    }
-
     const lastUpdated = getTimestamp()
 
     projectDispatch({
