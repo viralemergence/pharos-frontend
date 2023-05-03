@@ -96,6 +96,10 @@ jobs:
           command: yarn install --network-timeout 1000000
 
       - run:
+          name: Typescript Checks
+          command: yarn tsc
+
+      - run:
           name: Gatsby build
           command: yarn build --api <<parameters.api>>
 

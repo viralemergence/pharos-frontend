@@ -84,9 +84,18 @@ const PublishUnpublishButtons = () => {
         }
       )
 
-      const json = await response.json()
-
-      console.log(json)
+      if (!response.ok || response.status !== 200) {
+        const json = await response.json()
+        console.log(json)
+        setRequestedPublishing(false)
+        setModal(
+          <pre style={{ margin: '20px' }}>
+            Publishing Error {json as string}
+          </pre>,
+          { closeable: true }
+        )
+        return
+      }
 
       dispatch({
         type: StateActions.SetProjectPublishingStatus,
@@ -101,8 +110,7 @@ const PublishUnpublishButtons = () => {
       console.log(e)
       setModal(
         <pre style={{ margin: '20px' }}>
-          {project.name} Publishing Error
-          {JSON.stringify(e, null, 4)}
+          {project.name} Publishing Error {JSON.stringify(e, null, 4)}
         </pre>,
         { closeable: true }
       )
