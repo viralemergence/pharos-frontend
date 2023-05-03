@@ -2,7 +2,11 @@ import React from 'react'
 
 import ListTable, { HeaderRow, RowLink } from 'components/ListTable/ListTable'
 
+import { ProjectPublishStatusChip } from 'components/AuthenticatedViews/ProjectPage/PublishingStatusChip'
+
 import useProjects from 'hooks/project/useProjects'
+
+import formatDate from 'utilities/formatDate'
 
 const ProjectsTable = () => {
   const projects = useProjects()
@@ -19,11 +23,11 @@ const ProjectsTable = () => {
     <ListTable columnTemplate="repeat(6, 1fr)">
       <HeaderRow>
         <div>Project name</div>
+        <div>Project status</div>
+        <div>Last updated</div>
         <div>Project type</div>
         <div>Surveillance status</div>
         <div># of datasets</div>
-        <div>Last updated</div>
-        <div>Project status</div>
       </HeaderRow>
       {sorted &&
         sorted.map(project => (
@@ -32,15 +36,19 @@ const ProjectsTable = () => {
             to={`/projects/${project.projectID}`}
           >
             <div>{project.name}</div>
+            <div>
+              {(
+                <ProjectPublishStatusChip status={project.publishStatus}>
+                  {project.publishStatus}
+                </ProjectPublishStatusChip>
+              ) || 'Unpublished'}
+            </div>
+            <div>
+              {project.lastUpdated ? formatDate(project.lastUpdated) : '—'}
+            </div>
             <div>{project.projectType || '—'}</div>
             <div>{project.surveillanceStatus || '—'}</div>
-            <div>datasets {project.datasetIDs?.length || 0}</div>
-            <div>
-              {project.lastUpdated
-                ? new Date(project.lastUpdated).toLocaleString()
-                : '—'}
-            </div>
-            <div>{project.publishStatus || 'Unpublished'}</div>
+            <div>{project.datasetIDs?.length || 0}</div>
           </RowLink>
         ))}
     </ListTable>
