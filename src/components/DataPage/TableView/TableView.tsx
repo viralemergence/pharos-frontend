@@ -128,7 +128,7 @@ const TableView = ({ style }: TableViewProps) => {
   return (
     <TableViewContainer style={style}>
       <TableContaier>
-        {publishedRecords && publishedRecords.length > 1 ? (
+        {publishedRecords && publishedRecords.length > 1 && (
           // @ts-expect-error: I'm copying this from the docs,
           // but it doesn't look like their type definitions work
           <FillDatasetGrid
@@ -139,8 +139,6 @@ const TableView = ({ style }: TableViewProps) => {
             onScroll={handleScroll}
             rowKeyGetter={rowKeyGetter}
           />
-        ) : (
-          <p style={{ color: 'white', margin: 0 }}>Loading records...</p>
         )}
         {loading && (
           <LoadingMessage>
