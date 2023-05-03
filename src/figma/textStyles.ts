@@ -29,7 +29,7 @@ export default {
   bigParagraph: `
 	font-size: 20px;
 	font-family: "Open Sans", helvetica, arial, sans-serif;
-	font-weight: 300;
+	font-weight: 400;
 	font-style: normal;
 	line-height: 30px;
 	text-decoration: none;
@@ -38,7 +38,7 @@ export default {
   bigParagraphSemibold: `
 	font-size: 20px;
 	font-family: "Open Sans", helvetica, arial, sans-serif;
-	font-weight: 500;
+	font-weight: 600;
 	font-style: normal;
 	line-height: 30px;
 	text-decoration: none;
@@ -47,27 +47,27 @@ export default {
   smallParagraph: `
 	font-size: 16px;
 	font-family: "Open Sans", helvetica, arial, sans-serif;
-	font-weight: 300;
+	font-weight: 400;
 	font-style: normal;
-	line-height: 28px;
+	line-height: 25px;
 	text-decoration: none;
 	text-transform: none;
 `,
   smallParagraphSemibold: `
 	font-size: 16px;
 	font-family: "Open Sans", helvetica, arial, sans-serif;
-	font-weight: 500;
+	font-weight: 600;
 	font-style: normal;
-	line-height: 28px;
+	line-height: 25px;
 	text-decoration: none;
 	text-transform: none;
 `,
   extraSmallParagraph: `
 	font-size: 14px;
 	font-family: "Open Sans", helvetica, arial, sans-serif;
-	font-weight: 300;
+	font-weight: 400;
 	font-style: normal;
-	line-height: 24px;
+	line-height: 22px;
 	text-decoration: none;
 	text-transform: none;
 `,
@@ -82,7 +82,7 @@ export default {
 `,
   medMarketing: `
 	font-size: 50px;
-	font-family: "Poppins";
+	font-family: "Poppins", helvetica, arial, sans-serif;
 	font-weight: 400;
 	font-style: normal;
 	text-decoration: none;
@@ -99,7 +99,7 @@ export default {
   gridTextBold: `
 	font-size: 16px;
 	font-family: "Inconsolata", menlo, monospace;
-	font-weight: 700;
+	font-weight: 600;
 	font-style: normal;
 	text-decoration: none;
 	text-transform: none;

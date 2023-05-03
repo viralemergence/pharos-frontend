@@ -21,7 +21,7 @@ export default {
   lightPurple: 'rgba(204,208,234,1)',
   veryLightPurple: 'rgba(246,247,255,1)',
   hoverRed: 'rgba(254,230,229,1)',
-  orange: 'rgba(207, 109, 13, 1)',
+  orange: 'rgba(207,109,13,1)',
   red: 'rgba(176,33,24,1)',
   yellow: 'rgba(245,207,8,1)',
   green: 'rgba(12,172,57,1)',
