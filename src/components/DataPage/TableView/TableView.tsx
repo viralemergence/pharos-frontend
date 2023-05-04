@@ -5,10 +5,13 @@ import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
 
 const TableViewContainer = styled.div`
-  background-color: ${({ theme }) => theme.lightBlack};
+  position: relative;
+  background-color: rgba(51, 51, 51, 0.25);
+  backdrop-filter: blur(20px);
   width: 100%;
   height: calc(100vh - 87px);
   padding-top: 63px;
+  z-index: 3;
 `
 const TableContaier = styled.div`
   position: relative;

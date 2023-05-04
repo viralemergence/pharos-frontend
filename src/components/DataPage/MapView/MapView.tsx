@@ -136,7 +136,7 @@ const MapView = ({ style }: MapPageProps) => {
   }, [mapProjection])
 
   return (
-    <div style={style}>
+    <div style={{ ...style, position: 'absolute' }}>
       <MapContainer ref={mapContainer} />
       <button
         style={{

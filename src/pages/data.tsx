@@ -83,7 +83,7 @@ const Map = (): JSX.Element => {
           Table
         </DataViewSelector>
       </DataViewSelectorContainer>
-      <MapView style={{ display: view === View.map ? 'block' : 'none' }} />
+      <MapView style={{ display: view === View.map ? 'block' : 'block' }} />
       <TableView style={{ display: view === View.table ? 'block' : 'none' }} />
     </Providers>
   )
