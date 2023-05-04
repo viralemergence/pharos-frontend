@@ -10,7 +10,7 @@ const TableViewContainer = styled.div`
   backdrop-filter: blur(20px);
   width: 100%;
   height: calc(100vh - 87px);
-  padding-top: 63px;
+  padding-top: 53px;
   z-index: 3;
 `
 const TableContaier = styled.div`
