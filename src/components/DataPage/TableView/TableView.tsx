@@ -60,18 +60,6 @@ const NoRecordsFound = styled.div`
   justify-content: center;
 `
 
-const NoRecordsFound = styled.div`
-  ${({ theme }) => theme.bigParagraphSemibold};
-  margin: 30px auto;
-  color: ${({ theme }) => theme.white};
-  background-color: rgba(0, 0, 0, 0.5);
-  border-radius: 5px;
-  padding: 30px;
-  width: 90%;
-  display: flex;
-  justify-content: center;
-`
-
 interface TableViewProps {
   style?: React.CSSProperties
 }
