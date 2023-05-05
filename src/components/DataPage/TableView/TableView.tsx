@@ -2,12 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
-import SearchIcon from './SearchIcon'
-import Input from '../../ui/Input'
-import InputLabel from '../../ui/InputLabel'
-
-// After the user types in a filter input, wait this many milliseconds before filtering.
-const filterWait = 3000
+import FilterDrawer from './FilterDrawer'
 
 // TODO: Fix, should be 432px, with the textfields 350px wide. I don't
 // understand why it needs to be set so wide to achieve that textfield width.
@@ -22,19 +17,6 @@ const TableViewContainer = styled.div`
   z-index: 3;
   display: flex;
   flex-flow: row nowrap;
-`
-const FilterDrawer = styled.div`
-  padding: 34px 40px;
-  width: ${drawerWidth}px;
-  flex: 1;
-  background-color: rgba(51, 51, 51, 0.5);
-  color: #fff;
-`
-const DrawerHeader = styled.div`
-  ${({ theme }) => theme.bigParagraph};
-`
-const FilterContainer = styled.div`
-  margin-top: 20px;
 `
 const TableContaier = styled.div`
   position: relative;
@@ -65,16 +47,6 @@ const LoadingMessage = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-`
-const FilterInput = styled(Input)`
-  background-color: transparent;
-  border-color: #fff;
-  font-size: 14px;
-  font-family: Open Sans;
-  padding-right: 36px;
-  padding-left: 10px;
-  margin-top: 0px;
-  color: #fff;
 `
 
 interface TableViewProps {
@@ -108,10 +80,9 @@ const rowKeyGetter = (row: Row) => row.pharosID
 const TableView = ({ style }: TableViewProps) => {
   const [loading, setLoading] = useState<boolean>(true)
   const [publishedRecords, setPublishedRecords] = useState<Row[] | null>(null)
-  const [filters, setFilters] = useState<Record<string, string>>({})
   const page = useRef(1)
 
-  const loadPublishedRecords = async (page: number, extraSearchParams = {}) => {
+  const loadPublishedRecords = async (page: number, extraSearchParams: Record<string, string> = {}) => {
     setLoading(true)
     const response = await fetch(
       `${process.env.GATSBY_API_URL}/published-records?` +
@@ -126,14 +97,7 @@ const TableView = ({ style }: TableViewProps) => {
       const data = await response.json()
 
       if (dataIsPublishedRecordsResponse(data)) {
-        setPublishedRecords(data.publishedRecords)
-        const originalParams = data.event.query_string_parameters;
-        const filters = {
-          hostSpecies: originalParams.filter_by_host_species,
-          pathogen: originalParams.filter_by_pathogen,
-          detectionTarget: originalParams.filter_by_detection_target,
-        };
-        setFilters(filters);
+        setPublishedRecords(prev => prev ? [...prev, ...data.publishedRecords]: data.publishedRecords)
         setLoading(false)
       } else console.log('GET /published-records: malformed response')
     }
@@ -173,71 +137,9 @@ const TableView = ({ style }: TableViewProps) => {
   // temporary
   if (style.display === 'block') style.display = 'flex'
 
-  type TimeoutsType = Record<string, ReturnType<typeof setTimeout>>
-  const timeoutsForFilterInputs = useRef<TimeoutsType>({} as TimeoutsType)
-
-  const handleFilterInput = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    filterName: string
-  ) => {
-    clearTimeout(timeoutsForFilterInputs.current[filterName])
-    timeoutsForFilterInputs.current[filterName] = setTimeout(
-      () => {
-        loadPublishedRecords(1, { [filterName]: e.target.value })
-      },
-      filterWait
-    )
-  }
-
-  type FilterNameAndChildren = {
-    name: string
-    children: React.ReactNode | null
-  }
-  const FilterInputLabel = ({ name, children }: FilterNameAndChildren) => (
-    <InputLabel htmlFor={`filter-by-${name}`} style={{ marginBottom: '5px' }}>
-      {children}
-    </InputLabel>
-  )
-
-  const FilterInputWithIcon = ({ name }) => (
-    <div style={{ position: 'relative' }}>
-      <FilterInput
-        id={`filter-by-${name}`}
-        onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
-          handleFilterInput(e, name)
-        }
-        // value={filters[name] || ''}
-      />
-      <SearchIcon />
-    </div>
-  )
-
   return (
     <TableViewContainer style={style}>
-      <FilterDrawer>
-        <DrawerHeader>Filters</DrawerHeader>
-
-        <FilterContainer>
-          <FilterInputLabel name="hostSpecies">
-            Search by host species
-          </FilterInputLabel>
-          <FilterInputWithIcon name="hostSpecies" />
-        </FilterContainer>
-
-        <FilterContainer>
-          <FilterInputLabel name="pathogen">
-            Search by pathogen
-          </FilterInputLabel>
-          <FilterInputWithIcon name="pathogen" />
-        </FilterContainer>
-
-        <FilterContainer>
-          <FilterInputLabel name="detectionTarget">
-            Search by detection target
-          </FilterInputLabel>
-          <FilterInputWithIcon name="detectionTarget" />
-        </FilterContainer>
-      </FilterDrawer>
+      <FilterDrawer />
       <TableContaier>
         {publishedRecords && publishedRecords.length > 1 && (
           // @ts-expect-error: I'm copying this from the docs,
