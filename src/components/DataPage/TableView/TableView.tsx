@@ -1,6 +1,45 @@
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
+const dummyData = {
+  publishedRecords: [
+    {
+      pharosID: 'prjhYdBAyzZkM-setrYHn1bUq9e-recJEgdeMnq20',
+      rowNumber: 1,
+      'Project name': 'test',
+      Authors: 'Raphael Krut-Landau',
+      'Collection date': '2020-01-01',
+      Latitude: 51.605671213229094,
+      Longitude: -0.1836275557121708,
+      'Sample ID': '1',
+      'Animal ID': '01',
+      'Host species': 'Vicugna pacos',
+      'Host species NCBI tax ID': 0,
+      'Collection method or tissue': null,
+      'Detection method': null,
+      'Primer sequence': null,
+      'Primer citation': null,
+      'Detection target': null,
+      'Detection target NCBI tax ID': null,
+      'Detection outcome': 'positive',
+      'Detection measurement': null,
+      'Detection measurement units': null,
+      Pathogen: null,
+      'Pathogen NCBI tax ID': null,
+      'GenBank accession': null,
+      'Detection comments': null,
+      'Organism sex': null,
+      'Dead or alive': null,
+      'Health notes': null,
+      'Life stage': null,
+      Age: null,
+      Mass: null,
+      Length: null,
+      'Spatial uncertainty': null,
+    },
+  ],
+}
+
 import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
 
@@ -10,14 +49,30 @@ const TableViewContainer = styled.div`
   backdrop-filter: blur(20px);
   width: 100%;
   height: calc(100vh - 87px);
-  padding-top: 53px;
   z-index: 3;
+  display: flex;
+  flex-flow: row nowrap;
 `
+
+const Drawer = styled.div`
+  padding: 1rem;
+  width: 30%;
+  flex: 1;
+  background-color: rgba(51, 51, 51, 0.5);
+  color: #fff;
+`
+
+const DrawerHeader = styled.div`
+  ${({ theme }) => theme.bigParagraph};
+  `
+
 const TableContaier = styled.div`
   position: relative;
-  width: 100%;
+  width: 70%;
   height: 100%;
   padding: 15px;
+  padding-top: 73px;
+  flex-grow: 1;
 `
 const FillDatasetGrid = styled(DataGrid)`
   block-size: 100%;
@@ -57,10 +112,23 @@ interface PublishedRecordsResponse {
 function dataIsPublishedRecordsResponse(
   data: unknown
 ): data is PublishedRecordsResponse {
-  if (!data || typeof data !== 'object') return false
-  if (!('publishedRecords' in data)) return false
-  if (!Array.isArray(data.publishedRecords)) return false
-  if (!data.publishedRecords.every(row => typeof row === 'object')) return false
+  if (!data || typeof data !== 'object') {
+    console.log(1)
+    return false
+  }
+  if (!('publishedRecords' in data)) {
+    console.log(2)
+    return false
+  }
+
+  if (!Array.isArray(data.publishedRecords)) {
+    console.log(3)
+    return false
+  }
+  if (!data.publishedRecords.every(row => typeof row === 'object')) {
+    console.log(4)
+    return false
+  }
   return true
 }
 
@@ -75,24 +143,32 @@ const TableView = ({ style }: TableViewProps) => {
   const [publishedRecords, setPublishedRecords] = useState<Row[] | null>(null)
   const page = useRef(1)
 
+  console.log('publishedRecords', publishedRecords)
+
   const loadPublishedRecords = async (page: number) => {
     setLoading(true)
     const response = await fetch(
       `${process.env.GATSBY_API_URL}/published-records?` +
         new URLSearchParams({
+          // add filters here
           page: page.toString(),
           pageSize: '50',
         })
     )
 
     if (response.ok) {
-      const data = await response.json()
+      let data = await response.json()
 
+      // temporary measure
+      if (!data?.publishedRecords?.length) data = dummyData
+
+      // TODO: Discuss with Ryan: why append and not overwrite? I'm seeing
+      // multiple copies of the same data when I refresh.
       if (dataIsPublishedRecordsResponse(data)) {
         setPublishedRecords(prev =>
           prev ? [...prev, ...data.publishedRecords] : data.publishedRecords
         )
-        setLoading(false)
+        setLoading(true)
       } else console.log('GET /published-records: malformed response')
     }
   }
@@ -128,8 +204,18 @@ const TableView = ({ style }: TableViewProps) => {
     loadPublishedRecords(page.current)
   }
 
+
+  // temporary
+  if (style.display === 'block') style.display = 'flex'
+
   return (
     <TableViewContainer style={style}>
+      <Drawer>
+        <DrawerHeader>Filters</DrawerHeader>
+        Search by host species
+        Search by pathogen
+        Search by detection target
+      </Drawer>
       <TableContaier>
         {publishedRecords && publishedRecords.length > 1 && (
           // @ts-expect-error: I'm copying this from the docs,
