@@ -49,6 +49,18 @@ const LoadingMessage = styled.div`
   gap: 10px;
 `
 
+const NoRecordsFound = styled.div`
+  ${({ theme }) => theme.bigParagraphSemibold};
+  margin: 30px auto;
+  color: ${({ theme }) => theme.white};
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+  padding: 30px;
+  width: 90%;
+  display: flex;
+  justify-content: center;
+`
+
 interface TableViewProps {
   style?: React.CSSProperties
 }
@@ -59,7 +71,7 @@ interface Row {
 
 interface PublishedRecordsResponse {
   publishedRecords: Row[]
-  totalRowCount: number
+  additionalPageExists: number
 }
 
 function dataIsPublishedRecordsResponse(
@@ -67,7 +79,7 @@ function dataIsPublishedRecordsResponse(
 ): data is PublishedRecordsResponse {
   if (!data || typeof data !== 'object') return false
   if (!('publishedRecords' in data)) return false
-  if (!('totalRowCount' in data)) return false
+  if (!('additionalPageExists' in data)) return false
   if (!Array.isArray(data.publishedRecords)) return false
   if (!data.publishedRecords.every(row => typeof row === 'object')) return false
   return true
@@ -82,8 +94,10 @@ const rowKeyGetter = (row: Row) => row.pharosID
 const TableView = ({ style }: TableViewProps) => {
   const [loading, setLoading] = useState<boolean>(true)
   const [publishedRecords, setPublishedRecords] = useState<Row[]>([])
-  const [options, setOptions] = useState<TableViewOptions>({ appendResults: true })
-  const [totalRowCount, setTotalRowCount] = useState<number>(0)
+  const [options, setOptions] = useState<TableViewOptions>({
+    appendResults: true,
+  })
+  const [additionalPageExists, setAdditionalPageExists] = useState<number>(0)
   const page = useRef(1)
 
   const loadPublishedRecords = async (page: number) => {
@@ -92,7 +106,7 @@ const TableView = ({ style }: TableViewProps) => {
       `${process.env.GATSBY_API_URL}/published-records?` +
         new URLSearchParams({
           page: page.toString(),
-          pageSize: '50',
+          pageSize: '20',
           ...options.filters,
         })
     )
@@ -109,7 +123,7 @@ const TableView = ({ style }: TableViewProps) => {
           setPublishedRecords(data.publishedRecords)
           setOptions(options => ({ ...options, appendResults: true }))
         }
-        setTotalRowCount(data.totalRowCount)
+        setAdditionalPageExists(data.additionalPageExists)
         setLoading(false)
       } else console.log('GET /published-records: malformed response')
     }
@@ -142,7 +156,7 @@ const TableView = ({ style }: TableViewProps) => {
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     if (loading || !divIsAtBottom(event)) return
-    if (publishedRecords?.length === totalRowCount) return
+    if (!additionalPageExists) return
     page.current += 1
     loadPublishedRecords(page.current)
   }
@@ -151,20 +165,9 @@ const TableView = ({ style }: TableViewProps) => {
   style ||= {}
   if (style.display === 'block') style.display = 'grid'
 
-  const NoRecordsFound = styled.div`
-    ${({ theme }) => theme.bigParagraphSemibold};
-    margin: 30px auto;
-    color: ${({ theme }) => theme.white};
-    background-color: rgba(0, 0, 0, 0.5);
-    border-radius: 5px;
-    padding: 30px;
-    width: 90%;
-    display: flex;
-    justify-content: center;
-  `
+  const areFiltersUsed = Object.keys(options.filters ?? {}).length > 0
 
-  const areFiltersUsed =
-    Object.keys(options.filters ?? {}).length > 0
+  const gridRef = useRef<HTMLElement>(null)
 
   return (
     <TableViewContainer style={style}>
@@ -172,11 +175,9 @@ const TableView = ({ style }: TableViewProps) => {
       <TableContaier>
         {!loading && publishedRecords?.length === 0 ? (
           <NoRecordsFound>
-            {areFiltersUsed ? (
-              'No matching records found'
-            ) : (
-              'No records published'
-            )}
+            {areFiltersUsed
+              ? 'No matching records found'
+              : 'No records published'}
           </NoRecordsFound>
         ) : (
           // @ts-expect-error: I'm copying this from the docs,
@@ -188,6 +189,7 @@ const TableView = ({ style }: TableViewProps) => {
             rows={publishedRecords}
             onScroll={handleScroll}
             rowKeyGetter={rowKeyGetter}
+            ref={gridRef}
           />
         )}
         {loading && (

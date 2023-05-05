@@ -36,6 +36,13 @@ const FilterInputLabel = ({ name, children }: FilterNameAndChildren) => (
   </InputLabel>
 )
 
+const Drawer = styled.div`
+    background-color: rgba(33, 33, 33, .5);
+    backdrop-filter: 100px;
+    color: #fff;
+    padding: 34px 40px;
+  `
+
 type FilterDrawerProps = {
   setOptions: React.Dispatch<React.SetStateAction<TableViewOptions>>
 }
@@ -76,15 +83,8 @@ const FilterDrawer = memo(({ setOptions }: FilterDrawerProps) => {
     )
   }
 
-  const Div = styled.div`
-    background-color: rgba(33, 33, 33, .5);
-    backdrop-filter: 100px;
-    color: #fff;
-    padding: 34px 40px;
-  `
-
   return (
-    <Div>
+    <Drawer>
       <DrawerHeader>Filters</DrawerHeader>
 
       <FilterContainer>
@@ -105,7 +105,7 @@ const FilterDrawer = memo(({ setOptions }: FilterDrawerProps) => {
         </FilterInputLabel>
         <FilterInputWithIcon name="detectionTarget" />
       </FilterContainer>
-    </Div>
+    </Drawer>
   )
 })
 export default FilterDrawer

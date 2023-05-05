@@ -1,14 +1,15 @@
 import React from 'react'
 import styled from 'styled-components'
 
+const Div = styled.div`
+  position: absolute;
+  right: 10px;
+  width: 18px;
+  top: 12px;
+  z-index: 0;
+`
+
 const SearchIcon = () => {
-  const Div = styled.div`
-    position: absolute;
-    right: 10px;
-    width: 18px;
-    top: 12px;
-    z-index: 0;
-  `
   return (
     <Div>
       <svg
