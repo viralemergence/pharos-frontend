@@ -4,11 +4,6 @@ import SearchIcon from './SearchIcon'
 import InputLabel from '../../ui/InputLabel'
 import type { TableViewOptions } from './TableView'
 
-const FilterDrawerDiv = styled.div`
-  background-color: rgba(51, 51, 51, 0.5);
-  color: #fff;
-  padding: 34px 40px;
-`
 const DrawerHeader = styled.div`
   ${({ theme }) => theme.bigParagraph};
 `
@@ -81,8 +76,15 @@ const FilterDrawer = memo(({ setOptions }: FilterDrawerProps) => {
     )
   }
 
+  const Div = styled.div`
+    background-color: rgba(33, 33, 33, 0);
+    backdrop-filter: 100px;
+    color: #fff;
+    padding: 34px 40px;
+  `
+
   return (
-    <FilterDrawerDiv>
+    <Div>
       <DrawerHeader>Filters</DrawerHeader>
 
       <FilterContainer>
@@ -103,7 +105,7 @@ const FilterDrawer = memo(({ setOptions }: FilterDrawerProps) => {
         </FilterInputLabel>
         <FilterInputWithIcon name="detectionTarget" />
       </FilterContainer>
-    </FilterDrawerDiv>
+    </Div>
   )
 })
 export default FilterDrawer
