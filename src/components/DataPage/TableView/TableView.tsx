@@ -9,16 +9,6 @@ export type TableViewOptions = {
   extraSearchParams?: Record<string, string>
 }
 
-const TableViewContainer = styled.div`
-  position: relative;
-  background-color: rgba(51, 51, 51, 0.25);
-  backdrop-filter: blur(20px);
-  width: 100%;
-  height: calc(100vh - 87px);
-  z-index: 3;
-  display: grid;
-  grid-template-columns: 432px auto;
-`
 const TableContaier = styled.div`
   position: relative;
   height: 100%;
@@ -86,6 +76,8 @@ const TableView = ({ style }: TableViewProps) => {
   const [totalRowCount, setTotalRowCount] = useState<number>(0)
   const page = useRef(1)
 
+  const [filterDrawerIsOpen, setFilterDrawerIsOpen] = useState<boolean>(true)
+
   const loadPublishedRecords = async (page: number) => {
     setLoading(true)
     const response = await fetch(
@@ -149,9 +141,8 @@ const TableView = ({ style }: TableViewProps) => {
   }
 
   const EmptyRowsRenderer = () => {
-    const areSearchParamsUsed = Object.keys(
-      options.extraSearchParams ?? {}
-    ).length > 0
+    const areSearchParamsUsed =
+      Object.keys(options.extraSearchParams ?? {}).length > 0
     return (
       areSearchParamsUsed && (
         <div style={{ width: 600, padding: 10 }}>No matching rows</div>
@@ -163,9 +154,24 @@ const TableView = ({ style }: TableViewProps) => {
   style ||= {}
   if (style.display === 'block') style.display = 'grid'
 
+  const TableViewContainer = styled.div`
+    position: relative;
+    background-color: rgba(51, 51, 51, 0.25);
+    backdrop-filter: blur(20px);
+    width: 100%;
+    height: calc(100vh - 87px);
+    z-index: 3;
+    display: grid;
+    grid-template-columns: ${filterDrawerIsOpen ? '432px' : '0'} auto;
+  `
+
   return (
     <TableViewContainer style={style}>
-      <FilterDrawer setOptions={setOptions} />
+      <FilterDrawer
+        isOpen={filterDrawerIsOpen}
+        setOpen={setFilterDrawerIsOpen}
+        setOptions={setOptions}
+      />
       <TableContaier>
         {
           // @ts-expect-error: I'm copying this from the docs,
