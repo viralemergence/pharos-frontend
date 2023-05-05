@@ -5,8 +5,8 @@ import LoadingSpinner from './LoadingSpinner'
 import FilterDrawer from './FilterDrawer'
 
 export type TableViewOptions = {
-  append: boolean
-  extraSearchParams?: Record<string, string>
+  appendResults: boolean
+  filters?: Record<string, string>
 }
 
 const TableViewContainer = styled.div`
@@ -82,7 +82,7 @@ const rowKeyGetter = (row: Row) => row.pharosID
 const TableView = ({ style }: TableViewProps) => {
   const [loading, setLoading] = useState<boolean>(true)
   const [publishedRecords, setPublishedRecords] = useState<Row[]>([])
-  const [options, setOptions] = useState<TableViewOptions>({ append: true })
+  const [options, setOptions] = useState<TableViewOptions>({ appendResults: true })
   const [totalRowCount, setTotalRowCount] = useState<number>(0)
   const page = useRef(1)
 
@@ -93,7 +93,7 @@ const TableView = ({ style }: TableViewProps) => {
         new URLSearchParams({
           page: page.toString(),
           pageSize: '50',
-          ...options.extraSearchParams,
+          ...options.filters,
         })
     )
 
@@ -101,13 +101,13 @@ const TableView = ({ style }: TableViewProps) => {
       const data = await response.json()
 
       if (dataIsPublishedRecordsResponse(data)) {
-        if (options.append) {
+        if (options.appendResults) {
           setPublishedRecords(prev =>
             prev ? [...prev, ...data.publishedRecords] : data.publishedRecords
           )
         } else {
           setPublishedRecords(data.publishedRecords)
-          setOptions(options => ({ ...options, append: true }))
+          setOptions(options => ({ ...options, appendResults: true }))
         }
         setTotalRowCount(data.totalRowCount)
         setLoading(false)
@@ -115,10 +115,9 @@ const TableView = ({ style }: TableViewProps) => {
     }
   }
 
-  const stringifiedExtraSearchParams = JSON.stringify(options.extraSearchParams)
   useEffect(() => {
     loadPublishedRecords(1)
-  }, [stringifiedExtraSearchParams])
+  }, [JSON.stringify(options.filters)])
 
   const rowNumberColumn = {
     key: 'rowNumber',
@@ -164,8 +163,8 @@ const TableView = ({ style }: TableViewProps) => {
     justify-content: center;
   `
 
-  const areSearchParamsUsed =
-    Object.keys(options.extraSearchParams ?? {}).length > 0
+  const areFiltersUsed =
+    Object.keys(options.filters ?? {}).length > 0
 
   return (
     <TableViewContainer style={style}>
@@ -173,7 +172,7 @@ const TableView = ({ style }: TableViewProps) => {
       <TableContaier>
         {!loading && publishedRecords?.length === 0 ? (
           <NoRecordsFound>
-            {areSearchParamsUsed ? (
+            {areFiltersUsed ? (
               'No matching records found'
             ) : (
               'No records published'

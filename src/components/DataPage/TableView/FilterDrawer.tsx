@@ -52,9 +52,9 @@ const FilterDrawer = memo(({ setOptions }: FilterDrawerProps) => {
       setOptions((options: TableViewOptions) => {
         return {
           ...options,
-          append: false,
-          extraSearchParams: {
-            ...options?.extraSearchParams,
+          appendResults: false,
+          filters: {
+            ...options?.filters,
             [filterName]: e.target.value,
           },
         }
