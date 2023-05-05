@@ -76,7 +76,7 @@ const TableView = ({ style }: TableViewProps) => {
   const [totalRowCount, setTotalRowCount] = useState<number>(0)
   const page = useRef(1)
 
-  const [filterDrawerIsOpen, setFilterDrawerIsOpen] = useState<boolean>(true)
+  // const [filterDrawerIsOpen, setFilterDrawerIsOpen] = useState<boolean>(true)
 
   const loadPublishedRecords = async (page: number) => {
     setLoading(true)
@@ -140,13 +140,19 @@ const TableView = ({ style }: TableViewProps) => {
     loadPublishedRecords(page.current)
   }
 
+  const NoRecordsFound = styled.div`
+    ${({ theme }) => theme.bigParagraphSemibold};
+    color: ${({ theme }) => theme.white};
+    border-radius: 5px;
+    padding: 30px;
+    width: 600px;
+  `
+
   const EmptyRowsRenderer = () => {
     const areSearchParamsUsed =
       Object.keys(options.extraSearchParams ?? {}).length > 0
     return (
-      areSearchParamsUsed && (
-        <div style={{ width: 600, padding: 10 }}>No matching rows</div>
-      )
+      areSearchParamsUsed && <NoRecordsFound>No matching rows</NoRecordsFound>
     )
   }
 
@@ -162,14 +168,15 @@ const TableView = ({ style }: TableViewProps) => {
     height: calc(100vh - 87px);
     z-index: 3;
     display: grid;
+    transition: 1s;
     grid-template-columns: ${filterDrawerIsOpen ? '432px' : '0'} auto;
   `
 
   return (
     <TableViewContainer style={style}>
       <FilterDrawer
-        isOpen={filterDrawerIsOpen}
-        setOpen={setFilterDrawerIsOpen}
+        // isOpen={filterDrawerIsOpen}
+        // setOpen={setFilterDrawerIsOpen}
         setOptions={setOptions}
       />
       <TableContaier>

@@ -42,9 +42,11 @@ type FilterDrawerProps = {
   setOptions: React.Dispatch<React.SetStateAction<TableViewOptions>>
 }
 const FilterDrawer = memo(
-  ({ isOpen, setOpen, setOptions }: FilterDrawerProps) => {
+  ({ //isOpen = true, setOpen,
+    setOptions }: FilterDrawerProps) => {
     type TimeoutsType = Record<string, ReturnType<typeof setTimeout>>
     const timeoutsForFilterInputs = useRef<TimeoutsType>({} as TimeoutsType)
+      const isOpen = true;
 
     const handleFilterInput = (
       e: React.ChangeEvent<HTMLInputElement>,
