@@ -1,49 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
+import DataGrid, { Column } from 'react-data-grid'
+import LoadingSpinner from './LoadingSpinner'
+import SearchIcon from './SearchIcon'
 import Input from '../../ui/Input'
 import InputLabel from '../../ui/InputLabel'
 
-const dummyData = {
-  publishedRecords: [
-    {
-      pharosID: 'prjhYdBAyzZkM-setrYHn1bUq9e-recJEgdeMnq20',
-      rowNumber: 1,
-      'Project name': 'test',
-      Authors: 'Raphael Krut-Landau',
-      'Collection date': '2020-01-01',
-      Latitude: 51.605671213229094,
-      Longitude: -0.1836275557121708,
-      'Sample ID': '1',
-      'Animal ID': '01',
-      'Host species': 'Vicugna pacos',
-      'Host species NCBI tax ID': 0,
-      'Collection method or tissue': null,
-      'Detection method': null,
-      'Primer sequence': null,
-      'Primer citation': null,
-      'Detection target': null,
-      'Detection target NCBI tax ID': null,
-      'Detection outcome': 'positive',
-      'Detection measurement': null,
-      'Detection measurement units': null,
-      Pathogen: null,
-      'Pathogen NCBI tax ID': null,
-      'GenBank accession': null,
-      'Detection comments': null,
-      'Organism sex': null,
-      'Dead or alive': null,
-      'Health notes': null,
-      'Life stage': null,
-      Age: null,
-      Mass: null,
-      Length: null,
-      'Spatial uncertainty': null,
-    },
-  ],
-}
-
-import DataGrid, { Column } from 'react-data-grid'
-import LoadingSpinner from './LoadingSpinner'
+// After the user types in a filter input, wait this many milliseconds before filtering.
+const filterWait = 3000
 
 // TODO: Fix, should be 432px, with the textfields 350px wide. I don't
 // understand why it needs to be set so wide to achieve that textfield width.
@@ -128,23 +92,10 @@ interface PublishedRecordsResponse {
 function dataIsPublishedRecordsResponse(
   data: unknown
 ): data is PublishedRecordsResponse {
-  if (!data || typeof data !== 'object') {
-    console.log(1)
-    return false
-  }
-  if (!('publishedRecords' in data)) {
-    console.log(2)
-    return false
-  }
-
-  if (!Array.isArray(data.publishedRecords)) {
-    console.log(3)
-    return false
-  }
-  if (!data.publishedRecords.every(row => typeof row === 'object')) {
-    console.log(4)
-    return false
-  }
+  if (!data || typeof data !== 'object') return false
+  if (!('publishedRecords' in data)) return false
+  if (!Array.isArray(data.publishedRecords)) return false
+  if (!data.publishedRecords.every(row => typeof row === 'object')) return false
   return true
 }
 
@@ -157,34 +108,33 @@ const rowKeyGetter = (row: Row) => row.pharosID
 const TableView = ({ style }: TableViewProps) => {
   const [loading, setLoading] = useState<boolean>(true)
   const [publishedRecords, setPublishedRecords] = useState<Row[] | null>(null)
+  const [filters, setFilters] = useState<Record<string, string>>({})
   const page = useRef(1)
 
-  console.log('publishedRecords', publishedRecords)
-
-  const loadPublishedRecords = async (page: number) => {
+  const loadPublishedRecords = async (page: number, extraSearchParams = {}) => {
     setLoading(true)
     const response = await fetch(
       `${process.env.GATSBY_API_URL}/published-records?` +
         new URLSearchParams({
-          // add filters here
           page: page.toString(),
           pageSize: '50',
+          ...extraSearchParams,
         })
     )
 
     if (response.ok) {
-      let data = await response.json()
+      const data = await response.json()
 
-      // temporary measure
-      if (!data?.publishedRecords?.length) data = dummyData
-
-      // TODO: Discuss with Ryan: why append and not overwrite? I'm seeing
-      // multiple copies of the same data when I refresh.
       if (dataIsPublishedRecordsResponse(data)) {
-        setPublishedRecords(prev =>
-          prev ? [...prev, ...data.publishedRecords] : data.publishedRecords
-        )
-        setLoading(true)
+        setPublishedRecords(data.publishedRecords)
+        const originalParams = data.event.query_string_parameters;
+        const filters = {
+          hostSpecies: originalParams.filter_by_host_species,
+          pathogen: originalParams.filter_by_pathogen,
+          detectionTarget: originalParams.filter_by_detection_target,
+        };
+        setFilters(filters);
+        setLoading(false)
       } else console.log('GET /published-records: malformed response')
     }
   }
@@ -223,38 +173,41 @@ const TableView = ({ style }: TableViewProps) => {
   // temporary
   if (style.display === 'block') style.display = 'flex'
 
-  const SearchIcon = () => (
-    <div
-      style={{
-        position: 'absolute',
-        right: '10px',
-        width: '18px',
-        top: '12px',
-      }}
-    >
-      <svg
-        width="18"
-        height="18"
-        viewBox="0 0 18 18"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M12.5 11H11.71L11.43 10.73C12.41 9.59 13 8.11 13 6.5C13 2.91 10.09 0 6.5 0C2.91 0 0 2.91 0 6.5C0 10.09 2.91 13 6.5 13C8.11 13 9.59 12.41 10.73 11.43L11 11.71V12.5L16 17.49L17.49 16L12.5 11ZM6.5 11C4.01 11 2 8.99 2 6.5C2 4.01 4.01 2 6.5 2C8.99 2 11 4.01 11 6.5C11 8.99 8.99 11 6.5 11Z"
-          fill="white"
-        />
-      </svg>
-    </div>
-  )
+  type TimeoutsType = Record<string, ReturnType<typeof setTimeout>>
+  const timeoutsForFilterInputs = useRef<TimeoutsType>({} as TimeoutsType)
 
-  const FilterInputLabel = ({ htmlFor, children }) => (
-    <InputLabel htmlFor={htmlFor} style={{ 'margin-bottom': '5px' }}>
+  const handleFilterInput = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    filterName: string
+  ) => {
+    clearTimeout(timeoutsForFilterInputs.current[filterName])
+    timeoutsForFilterInputs.current[filterName] = setTimeout(
+      () => {
+        loadPublishedRecords(1, { [filterName]: e.target.value })
+      },
+      filterWait
+    )
+  }
+
+  type FilterNameAndChildren = {
+    name: string
+    children: React.ReactNode | null
+  }
+  const FilterInputLabel = ({ name, children }: FilterNameAndChildren) => (
+    <InputLabel htmlFor={`filter-by-${name}`} style={{ marginBottom: '5px' }}>
       {children}
     </InputLabel>
   )
-  const FilterInputWithIcon = ({ id, children = null }) => (
+
+  const FilterInputWithIcon = ({ name }) => (
     <div style={{ position: 'relative' }}>
-      <FilterInput id={id} />
+      <FilterInput
+        id={`filter-by-${name}`}
+        onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
+          handleFilterInput(e, name)
+        }
+        // value={filters[name] || ''}
+      />
       <SearchIcon />
     </div>
   )
@@ -265,24 +218,24 @@ const TableView = ({ style }: TableViewProps) => {
         <DrawerHeader>Filters</DrawerHeader>
 
         <FilterContainer>
-          <FilterInputLabel htmlFor="search-by-host-species">
+          <FilterInputLabel name="hostSpecies">
             Search by host species
           </FilterInputLabel>
-          <FilterInputWithIcon id="search-by-host-species" />
+          <FilterInputWithIcon name="hostSpecies" />
         </FilterContainer>
 
         <FilterContainer>
-          <FilterInputLabel htmlFor="search-by-pathogen">
+          <FilterInputLabel name="pathogen">
             Search by pathogen
           </FilterInputLabel>
-          <FilterInputWithIcon id="search-by-pathogen" />
+          <FilterInputWithIcon name="pathogen" />
         </FilterContainer>
 
         <FilterContainer>
-          <FilterInputLabel htmlFor="search-by-detection-target">
+          <FilterInputLabel name="detectionTarget">
             Search by detection target
           </FilterInputLabel>
-          <FilterInputWithIcon id="search-by-detection-target" />
+          <FilterInputWithIcon name="detectionTarget" />
         </FilterContainer>
       </FilterDrawer>
       <TableContaier>
