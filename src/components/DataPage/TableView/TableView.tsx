@@ -8,6 +8,11 @@ import FilterDrawer from './FilterDrawer'
 // understand why it needs to be set so wide to achieve that textfield width.
 const drawerWidth = '750'
 
+export type TableViewOptions = {
+  append: boolean
+  extraSearchParams?: Record<string, string>
+}
+
 const TableViewContainer = styled.div`
   position: relative;
   background-color: rgba(51, 51, 51, 0.25);
@@ -58,7 +63,8 @@ interface Row {
 }
 
 interface PublishedRecordsResponse {
-  publishedRecords: Row[]
+  publishedRecords: Row[],
+  totalRowCount: number,
 }
 
 function dataIsPublishedRecordsResponse(
@@ -66,6 +72,7 @@ function dataIsPublishedRecordsResponse(
 ): data is PublishedRecordsResponse {
   if (!data || typeof data !== 'object') return false
   if (!('publishedRecords' in data)) return false
+  if (!('totalRowCount' in data)) return false
   if (!Array.isArray(data.publishedRecords)) return false
   if (!data.publishedRecords.every(row => typeof row === 'object')) return false
   return true
@@ -80,16 +87,18 @@ const rowKeyGetter = (row: Row) => row.pharosID
 const TableView = ({ style }: TableViewProps) => {
   const [loading, setLoading] = useState<boolean>(true)
   const [publishedRecords, setPublishedRecords] = useState<Row[] | null>(null)
+  const [options, setOptions] = useState<TableViewOptions>({ append: true })
+  const [totalRowCount, setTotalRowCount] = useState<number>(0)
   const page = useRef(1)
 
-  const loadPublishedRecords = async (page: number, extraSearchParams: Record<string, string> = {}) => {
+  const loadPublishedRecords = async (page: number) => {
     setLoading(true)
     const response = await fetch(
       `${process.env.GATSBY_API_URL}/published-records?` +
         new URLSearchParams({
           page: page.toString(),
           pageSize: '50',
-          ...extraSearchParams,
+          ...options.extraSearchParams,
         })
     )
 
@@ -97,15 +106,24 @@ const TableView = ({ style }: TableViewProps) => {
       const data = await response.json()
 
       if (dataIsPublishedRecordsResponse(data)) {
-        setPublishedRecords(prev => prev ? [...prev, ...data.publishedRecords]: data.publishedRecords)
+        if (options.append) {
+          setPublishedRecords(prev =>
+            prev ? [...prev, ...data.publishedRecords] : data.publishedRecords
+          )
+        } else {
+          setPublishedRecords(data.publishedRecords)
+          setOptions(options => ({ ...options, append: true }))
+        }
+        setTotalRowCount(data.totalRowCount)
         setLoading(false)
       } else console.log('GET /published-records: malformed response')
     }
   }
 
+  const optionsStringified = JSON.stringify(options);
   useEffect(() => {
     loadPublishedRecords(1)
-  }, [])
+  }, [optionsStringified])
 
   const rowNumberColumn = {
     key: 'rowNumber',
@@ -131,15 +149,17 @@ const TableView = ({ style }: TableViewProps) => {
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     if (loading || !divIsAtBottom(event)) return
     page.current += 1
+    console.log('page.current ', page.current)
     loadPublishedRecords(page.current)
   }
 
   // temporary
+  style ||= {}
   if (style.display === 'block') style.display = 'flex'
 
   return (
     <TableViewContainer style={style}>
-      <FilterDrawer />
+      <FilterDrawer setOptions={setOptions} />
       <TableContaier>
         {publishedRecords && publishedRecords.length > 1 && (
           // @ts-expect-error: I'm copying this from the docs,
