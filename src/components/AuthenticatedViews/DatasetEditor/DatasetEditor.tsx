@@ -7,7 +7,6 @@ import CSVUploader from './CSVParser/CSVUploader'
 import { TopBar } from '../ViewComponents'
 
 import DownloadButton from './DownloadButton/DownloadButton'
-import ReleaseButton from './ReleaseButton/ReleaseButton'
 import ReleaseHelpMessage from './ReleaseHelpMessage/ReleaseHelpMessage'
 
 import useDataset from 'hooks/dataset/useDataset'
@@ -18,6 +17,7 @@ import BreadcrumbLink, {
 
 import useProject from 'hooks/project/useProject'
 import DatasetStatusMessage from './DatasetStatusMessage/DatasetStatusMessage'
+import PreReleaseButton from './ReleaseButton/PreReleaseButton'
 
 const TopSection = styled.section`
   padding: 20px 40px;
@@ -33,15 +33,6 @@ const H1 = styled.h1`
   ${({ theme }) => theme.h1};
   margin: 0;
   margin: 15px 0;
-`
-const ProjectName = styled.div`
-  ${({ theme }) => theme.smallParagraph};
-  color: ${({ theme }) => theme.darkGray};
-  align-self: flex-start;
-
-  > span {
-    color: ${({ theme }) => theme.link};
-  }
 `
 
 const DatasetEditor = () => {
@@ -72,14 +63,11 @@ const DatasetEditor = () => {
             <H1>{dataset ? dataset.name : 'Loading dataset'}</H1>
           </div>
           <ButtonSection>
-            <ReleaseButton />
+            <PreReleaseButton />
             <DownloadButton />
           </ButtonSection>
         </TopBar>
         <TopBar>
-          <ProjectName>
-            Project: <span>{project.name}</span>
-          </ProjectName>
           <CSVUploader />
         </TopBar>
       </TopSection>

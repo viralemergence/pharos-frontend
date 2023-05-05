@@ -13,6 +13,7 @@ const linkStyle = css`
   text-decoration: none;
   transition: 500ms ease;
   font-weight: 400;
+  ${({ theme }) => theme.smallParagraph};
 
   &:hover {
     transition: 150ms ease;
@@ -26,6 +27,14 @@ const StyledLink = styled(Link)`
   ${linkStyle}
 `
 const ReactRouterStyledLink = styled(ReactRouterLink)`
+  ${linkStyle}
+`
+
+export const LogoutButton = styled.button`
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: none;
   ${linkStyle}
 `
 

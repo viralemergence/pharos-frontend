@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import DataGrid, { Column } from 'react-data-grid'
 
-import { RecordWithID } from 'reducers/stateReducer/types'
+import { DatasetReleaseStatus, RecordWithID } from 'reducers/stateReducer/types'
 
 import TextEditor from './editors/TextEditor/TextEditor'
 
@@ -13,14 +13,18 @@ import generateID from 'utilities/generateID'
 
 import 'react-data-grid/lib/styles.css'
 import RowNumber from './formatters/RowNumber'
+import useDataset from 'hooks/dataset/useDataset'
+import EditingDisabledEditor from './editors/EditingDisabledEditor'
 
 const FillDatasetGrid = styled(DataGrid)`
   block-size: 100%;
   height: calc(100vh - 300px);
   margin: 0 40px;
+  ${({ theme }) => theme.gridText}
 `
 
 const DatasetGrid = () => {
+  const dataset = useDataset()
   // console.time('useVersionedRows')
   const { rows: versionedRows, colNames } = useVersionedRows()
   // console.timeEnd('useVersionedRows')
@@ -40,9 +44,12 @@ const DatasetGrid = () => {
     ...colNames.map(name => ({
       key: name,
       name,
-      editor: TextEditor,
+      editor:
+        dataset.releaseStatus === DatasetReleaseStatus.Published
+          ? EditingDisabledEditor
+          : TextEditor,
       formatter: SimpleFormatter,
-      width: 150,
+      width: name.length * 10 + 15 + 'px',
       resizable: true,
       sortable: true,
     })),

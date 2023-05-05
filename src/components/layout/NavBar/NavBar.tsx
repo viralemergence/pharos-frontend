@@ -4,7 +4,7 @@ import { useLocation as useReachLocation } from '@reach/router'
 
 import CMS from '@talus-analytics/library.airtable-cms'
 
-import NavLink from './NavLink'
+import NavLink, { LogoutButton } from './NavLink'
 import MobileMenu from './MobileMenu/MobileMenu'
 
 import { UserStatus } from 'reducers/stateReducer/types'
@@ -36,10 +36,6 @@ const LinkList = styled.ol`
   margin: 0;
 `
 const HomeLink = styled(NavLink)`
-  font-family: 'Overpass', sans-serif !important;
-  font-weight: 500 !important;
-  font-size: 24px !important;
-  color: white;
   padding: 0;
   display: flex;
   align-items: center;
@@ -59,6 +55,7 @@ const MobileLinkList = styled(LinkList)`
 const NavLogo = styled(CMS.Image)`
   height: 70px;
   margin-right: 30px;
+  margin-left: 12px;
 `
 
 const NavBar = () => {
@@ -80,9 +77,9 @@ const NavBar = () => {
 
   // these links are always the same, and always reach-router
   const links = [
+    { to: '/data/', children: 'Data', reactRouterLink: false },
     { to: '/about/', children: 'About', reactRouterLink: false },
-    { to: '/map/', children: 'Map', reactRouterLink: false },
-    { to: '/user-guide/', children: 'User guide', reactRouterLink: false },
+    // { to: '/user-guide/', children: 'User guide', reactRouterLink: false },
   ]
 
   // the last link in the navbar switches text, path, and component
@@ -114,22 +111,27 @@ const NavBar = () => {
         <LinkList>
           <HomeLink to="/" reactRouterLink={false}>
             <NavLogo name="Site logo" data={data} />
-            <CMS.Text name="Navbar title" data={data} />
           </HomeLink>
         </LinkList>
         <DesktopNav>
           {links.map(link => (
             <NavLink key={link.to} {...link} />
           ))}
-          <button
-            onClick={() => {
-              localforage.clear()
-              window.location.href = '/'
-              window.location.reload()
-            }}
-          >
-            log out
-          </button>
+          {user.status === UserStatus.loggedIn && (
+            <LogoutButton
+              onClick={() => {
+                // this is a very aggressive temporary implementation
+                // of "log out" because it deletes all the local data
+                // without warning the user; this way we can use it
+                // as a "reset" button if a bug traps the user.
+                localforage.clear()
+                window.location.href = '/'
+                window.location.reload()
+              }}
+            >
+              Logout
+            </LogoutButton>
+          )}
         </DesktopNav>
         <MobileMenu>
           <MobileLinkList>

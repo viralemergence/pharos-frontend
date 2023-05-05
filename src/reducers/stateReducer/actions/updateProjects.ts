@@ -25,7 +25,7 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
     const prevProject = state.projects.data[key]
 
     // if the project already exists in state
-    if (state.projects.data[key]) {
+    if (prevProject) {
       const prevDate = new Date(prevProject.lastUpdated ?? 0)
       const nextDate = new Date(nextProject.lastUpdated ?? 0)
 

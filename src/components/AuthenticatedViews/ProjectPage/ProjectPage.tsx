@@ -2,21 +2,21 @@ import React from 'react'
 import styled from 'styled-components'
 
 import CreateDatasetForm from './CreateDatasetForm/CreateDatasetForm'
-import PublishProjectModal from './PublishProjectModal/PublishProjectModal'
-import MintButton from 'components/ui/MintButton'
 import DatasetsTable from './DatasetsTable/DatasetsTable'
 import { TopBar } from '../ViewComponents'
-import useProject from 'hooks/project/useProject'
-import useUser from 'hooks/useUser'
 import Main from 'components/layout/Main'
 import BreadcrumbLink, {
   BreadcrumbContainer,
 } from 'components/ui/BreadcrumbLink'
 
-import useModal from 'hooks/useModal/useModal'
-import ProjectInfoPanel from './ProjectInfoPanel/ProjectInfoPanel'
 import TextButton from 'components/ui/TextButton'
+import PublishUnpublishButtons from './PublishUnpublishButtons'
+import ProjectInfoPanel from './ProjectInfoPanel/ProjectInfoPanel'
 import PublishingHelpMessage from './PublishingHelpMessage/PublishingHelpMessage'
+
+import useUser from 'hooks/useUser'
+import useProject from 'hooks/project/useProject'
+import useModal from 'hooks/useModal/useModal'
 
 const H1 = styled.h1`
   ${({ theme }) => theme.h1}
@@ -86,9 +86,7 @@ const ProjectPage = () => {
       </TopBar>
       <TopBar>
         <H1>{project.name}</H1>
-        <MintButton onClick={() => setModal(<PublishProjectModal />)}>
-          Publish project
-        </MintButton>
+        <PublishUnpublishButtons />
       </TopBar>
       <MainSection>
         <Left>

@@ -203,6 +203,7 @@ export enum PortfolioStatus {
 export enum ProjectPublishStatus {
   Unpublished = 'Unpublished',
   Published = 'Published',
+  Publishing = 'Publishing',
 }
 
 // all possible statuses for a
@@ -219,6 +220,7 @@ export enum DatasetReleaseStatus {
   Unreleased = 'Unreleased',
   Released = 'Released',
   Published = 'Published',
+  Publishing = 'Publishing',
 }
 
 // all possible statuses for a register
