@@ -1,6 +1,7 @@
+import React from 'react'
 import styled from 'styled-components'
 
-const Input = styled.input`
+const InputElement = styled.input`
   border: none;
   border: 1px solid ${({ theme }) => theme.darkPurple};
   border-radius: 5px;
@@ -11,5 +12,7 @@ const Input = styled.input`
   color: ${({ theme }) => theme.darkPurpleWhiter};
   font-size: 20px;
 `
+
+const Input = (props) => (<InputElement {...props} / >)
 
 export default Input

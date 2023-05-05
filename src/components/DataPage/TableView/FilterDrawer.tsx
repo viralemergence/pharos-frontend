@@ -1,20 +1,13 @@
 import React, { memo, useRef } from 'react'
 import styled from 'styled-components'
 import SearchIcon from './SearchIcon'
-import Input from '../../ui/Input'
 import InputLabel from '../../ui/InputLabel'
 import type { TableViewOptions } from './TableView'
-
-// TODO: Fix, should be 432px, with the textfields 350px wide. I don't
-// understand why it needs to be set so wide to achieve that textfield width.
-const drawerWidth = '750'
 
 const FilterDrawerDiv = styled.div`
   background-color: rgba(51, 51, 51, 0.5);
   color: #fff;
-  flex: 1;
   padding: 34px 40px;
-  width: ${drawerWidth}px;
 `
 const DrawerHeader = styled.div`
   ${({ theme }) => theme.bigParagraph};
@@ -22,16 +15,21 @@ const DrawerHeader = styled.div`
 const FilterContainer = styled.div`
   margin-top: 20px;
 `
-const FilterInput = styled(Input)`
+const FilterInputElement = styled.input`
+  border: 1px solid #fff;
+  border-radius: 5px;
   background-color: transparent;
   border-color: #fff;
   color: #fff;
   font-size: 14px;
   font-family: Open Sans;
   margin-top: 0px;
-  padding-right: 36px;
-  padding-left: 10px;
+  padding: 10px 36px 10px 10px;
+  width: 350px;
+  z-index: 1;
+  position: relative;
 `
+const FilterInput = props => <FilterInputElement {...props} />
 
 type FilterNameAndChildren = {
   name: string
@@ -69,17 +67,19 @@ const FilterDrawer = memo(({ setOptions }: FilterDrawerProps) => {
     }, 500)
   }
 
-  const FilterInputWithIcon = ({ name }: { name: string }) => (
-    <div style={{ position: 'relative' }}>
-      <FilterInput
-        id={`filter-by-${name}`}
-        onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-          handleFilterInput(e, name)
-        }}
-      />
-      <SearchIcon />
-    </div>
-  )
+  const FilterInputWithIcon = ({ name }: { name: string }) => {
+    return (
+      <div style={{ position: 'relative', width: 350 }}>
+        <FilterInput
+          id={`filter-by-${name}`}
+          onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+            handleFilterInput(e, name)
+          }}
+        />
+        <SearchIcon />
+      </div>
+    )
+  }
 
   return (
     <FilterDrawerDiv>
