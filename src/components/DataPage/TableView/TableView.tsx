@@ -194,7 +194,7 @@ const TableView = ({ style }: TableViewProps) => {
         )}
         {loading && (
           <LoadingMessage>
-            <LoadingSpinner /> Loading
+            <LoadingSpinner /> {options.appendResults ? 'Loading more rows' : 'Loading'}
           </LoadingMessage>
         )}
       </TableContaier>
