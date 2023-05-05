@@ -45,6 +45,10 @@ const dummyData = {
 import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
 
+// TODO: Fix, should be 432px, with the textfields 350px wide. I don't
+// understand why it needs to be set so wide to achieve that textfield width.
+const drawerWidth = "750";
+
 const TableViewContainer = styled.div`
   position: relative;
   background-color: rgba(51, 51, 51, 0.25);
@@ -55,28 +59,22 @@ const TableViewContainer = styled.div`
   display: flex;
   flex-flow: row nowrap;
 `
-
 const FilterDrawer = styled.div`
-  padding: 1rem;
-  width: 30%;
+  padding: 34px 40px;
+  width: ${drawerWidth}px;
   flex: 1;
   background-color: rgba(51, 51, 51, 0.5);
   color: #fff;
 `
-
 const DrawerHeader = styled.div`
   ${({ theme }) => theme.bigParagraph};
 `
-
-const FilterContainer = styled.fieldset`
-  border: 0;
-  padding: 0;
+const FilterContainer = styled.div`
   margin-top: 20px;
 `
-
 const TableContaier = styled.div`
   position: relative;
-  width: 70%;
+  width: calc( 100vw - ${drawerWidth}px );
   height: 100%;
   padding: 15px;
   padding-top: 73px;
@@ -215,21 +213,56 @@ const TableView = ({ style }: TableViewProps) => {
   // temporary
   if (style.display === 'block') style.display = 'flex'
 
-  const FilterInputLabel = ({ children }) => (
-    <InputLabel style={{ 'margin-bottom': '5px' }}>{children}</InputLabel>
-  )
-  const FilterInput = ({ children = null }) => (
-    <Input
+  const SearchIcon = () => (
+    <div
       style={{
-        'background-color': 'transparent',
-        'border-color': '#fff',
-        'font-size': '14px',
-        'font-family': 'Open Sans',
-        color: '#fff',
+        position: 'absolute',
+        right: '10px',
+        width: '18px',
+        top: '12px',
       }}
     >
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 18 18"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M12.5 11H11.71L11.43 10.73C12.41 9.59 13 8.11 13 6.5C13 2.91 10.09 0 6.5 0C2.91 0 0 2.91 0 6.5C0 10.09 2.91 13 6.5 13C8.11 13 9.59 12.41 10.73 11.43L11 11.71V12.5L16 17.49L17.49 16L12.5 11ZM6.5 11C4.01 11 2 8.99 2 6.5C2 4.01 4.01 2 6.5 2C8.99 2 11 4.01 11 6.5C11 8.99 8.99 11 6.5 11Z"
+          fill="white"
+        />
+      </svg>
+    </div>
+  )
+
+  const FilterInputLabel = ({ htmlFor, children }) => (
+    <InputLabel htmlFor={htmlFor} style={{ 'margin-bottom': '5px' }}>
       {children}
-    </Input>
+    </InputLabel>
+  )
+  const FilterInput = ({ id, children = null }) => (
+    <div style={{ position: 'relative' }}>
+      <Input
+        id={id}
+        style={{
+          'background-color': 'transparent',
+          'border-color': '#fff',
+          'font-size': '14px',
+          'font-family': 'Open Sans',
+          'padding-right': '36px',
+          'padding-left': '10px',
+          // 'padding-top': '8px',
+          // 'padding-bottom': '8px',
+          'margin-top': '0px',
+          color: '#fff',
+        }}
+      >
+        {children}
+      </Input>
+      <SearchIcon />
+    </div>
   )
 
   return (
@@ -238,18 +271,20 @@ const TableView = ({ style }: TableViewProps) => {
         <DrawerHeader>Filters</DrawerHeader>
 
         <FilterContainer>
-          <FilterInputLabel>Search by host species</FilterInputLabel>
-          <FilterInput />
+          <FilterInputLabel htmlFor="search-by-host-species">
+            Search by host species
+          </FilterInputLabel>
+          <FilterInput id="search-by-host-species" />
         </FilterContainer>
 
         <FilterContainer>
-          <FilterInputLabel>Search by pathogen</FilterInputLabel>
-          <FilterInput />
+          <FilterInputLabel htmlFor="search-by-pathogen">Search by pathogen</FilterInputLabel>
+          <FilterInput id="search-by-pathogen" />
         </FilterContainer>
 
         <FilterContainer>
-          <FilterInputLabel>Search by detection target</FilterInputLabel>
-          <FilterInput />
+          <FilterInputLabel htmlFor="search-by-detection-target">Search by detection target</FilterInputLabel>
+          <FilterInput id="search-by-detection-target" />
         </FilterContainer>
       </FilterDrawer>
       <TableContaier>
