@@ -161,7 +161,6 @@ const TableView = ({ style }: TableViewProps) => {
     loadPublishedRecords(page.current)
   }
 
-  // temporary
   style ||= {}
   if (style.display === 'block') style.display = 'grid'
 
