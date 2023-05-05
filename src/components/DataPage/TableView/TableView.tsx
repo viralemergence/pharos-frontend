@@ -148,16 +148,6 @@ const TableView = ({ style }: TableViewProps) => {
     loadPublishedRecords(page.current)
   }
 
-  const EmptyRowsRenderer = () => {
-    const areSearchParamsUsed =
-      Object.keys(options.extraSearchParams ?? {}).length > 0
-    return (
-      areSearchParamsUsed && (
-        <div style={{ width: 600, padding: 10 }}>No matching rows</div>
-      )
-    )
-  }
-
   // temporary
   style ||= {}
   if (style.display === 'block') style.display = 'grid'
@@ -199,7 +189,6 @@ const TableView = ({ style }: TableViewProps) => {
             rows={publishedRecords}
             onScroll={handleScroll}
             rowKeyGetter={rowKeyGetter}
-            renderers={{ noRowsFallback: <EmptyRowsRenderer /> }}
           />
         )}
         {loading && (
