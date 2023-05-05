@@ -166,8 +166,6 @@ const TableView = ({ style }: TableViewProps) => {
 
   const areFiltersUsed = Object.keys(options.filters ?? {}).length > 0
 
-  const gridRef = useRef<HTMLElement>(null)
-
   return (
     <TableViewContainer style={style}>
       <FilterDrawer setOptions={setOptions} />
@@ -188,7 +186,6 @@ const TableView = ({ style }: TableViewProps) => {
             rows={publishedRecords}
             onScroll={handleScroll}
             rowKeyGetter={rowKeyGetter}
-            ref={gridRef}
           />
         )}
         {loading && (
