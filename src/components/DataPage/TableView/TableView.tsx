@@ -1,53 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import Input from '../../ui/Input'
-import InputLabel from '../../ui/InputLabel'
-
-const dummyData = {
-  publishedRecords: [
-    {
-      pharosID: 'prjhYdBAyzZkM-setrYHn1bUq9e-recJEgdeMnq20',
-      rowNumber: 1,
-      'Project name': 'test',
-      Authors: 'Raphael Krut-Landau',
-      'Collection date': '2020-01-01',
-      Latitude: 51.605671213229094,
-      Longitude: -0.1836275557121708,
-      'Sample ID': '1',
-      'Animal ID': '01',
-      'Host species': 'Vicugna pacos',
-      'Host species NCBI tax ID': 0,
-      'Collection method or tissue': null,
-      'Detection method': null,
-      'Primer sequence': null,
-      'Primer citation': null,
-      'Detection target': null,
-      'Detection target NCBI tax ID': null,
-      'Detection outcome': 'positive',
-      'Detection measurement': null,
-      'Detection measurement units': null,
-      Pathogen: null,
-      'Pathogen NCBI tax ID': null,
-      'GenBank accession': null,
-      'Detection comments': null,
-      'Organism sex': null,
-      'Dead or alive': null,
-      'Health notes': null,
-      'Life stage': null,
-      Age: null,
-      Mass: null,
-      Length: null,
-      'Spatial uncertainty': null,
-    },
-  ],
-}
-
 import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
+import FilterDrawer from './FilterDrawer'
 
 // TODO: Fix, should be 432px, with the textfields 350px wide. I don't
 // understand why it needs to be set so wide to achieve that textfield width.
 const drawerWidth = '750'
+
+export type TableViewOptions = {
+  append: boolean
+  extraSearchParams?: Record<string, string>
+}
 
 const TableViewContainer = styled.div`
   position: relative;
@@ -58,19 +22,6 @@ const TableViewContainer = styled.div`
   z-index: 3;
   display: flex;
   flex-flow: row nowrap;
-`
-const FilterDrawer = styled.div`
-  padding: 34px 40px;
-  width: ${drawerWidth}px;
-  flex: 1;
-  background-color: rgba(51, 51, 51, 0.5);
-  color: #fff;
-`
-const DrawerHeader = styled.div`
-  ${({ theme }) => theme.bigParagraph};
-`
-const FilterContainer = styled.div`
-  margin-top: 20px;
 `
 const TableContaier = styled.div`
   position: relative;
@@ -102,16 +53,6 @@ const LoadingMessage = styled.div`
   align-items: center;
   gap: 10px;
 `
-const FilterInput = styled(Input)`
-  background-color: transparent;
-  border-color: #fff;
-  font-size: 14px;
-  font-family: Open Sans;
-  padding-right: 36px;
-  padding-left: 10px;
-  margin-top: 0px;
-  color: #fff;
-`
 
 interface TableViewProps {
   style?: React.CSSProperties
@@ -122,29 +63,18 @@ interface Row {
 }
 
 interface PublishedRecordsResponse {
-  publishedRecords: Row[]
+  publishedRecords: Row[],
+  totalRowCount: number,
 }
 
 function dataIsPublishedRecordsResponse(
   data: unknown
 ): data is PublishedRecordsResponse {
-  if (!data || typeof data !== 'object') {
-    console.log(1)
-    return false
-  }
-  if (!('publishedRecords' in data)) {
-    console.log(2)
-    return false
-  }
-
-  if (!Array.isArray(data.publishedRecords)) {
-    console.log(3)
-    return false
-  }
-  if (!data.publishedRecords.every(row => typeof row === 'object')) {
-    console.log(4)
-    return false
-  }
+  if (!data || typeof data !== 'object') return false
+  if (!('publishedRecords' in data)) return false
+  if (!('totalRowCount' in data)) return false
+  if (!Array.isArray(data.publishedRecords)) return false
+  if (!data.publishedRecords.every(row => typeof row === 'object')) return false
   return true
 }
 
@@ -157,41 +87,43 @@ const rowKeyGetter = (row: Row) => row.pharosID
 const TableView = ({ style }: TableViewProps) => {
   const [loading, setLoading] = useState<boolean>(true)
   const [publishedRecords, setPublishedRecords] = useState<Row[] | null>(null)
+  const [options, setOptions] = useState<TableViewOptions>({ append: true })
+  const [totalRowCount, setTotalRowCount] = useState<number>(0)
   const page = useRef(1)
-
-  console.log('publishedRecords', publishedRecords)
 
   const loadPublishedRecords = async (page: number) => {
     setLoading(true)
     const response = await fetch(
       `${process.env.GATSBY_API_URL}/published-records?` +
         new URLSearchParams({
-          // add filters here
           page: page.toString(),
           pageSize: '50',
+          ...options.extraSearchParams,
         })
     )
 
     if (response.ok) {
-      let data = await response.json()
+      const data = await response.json()
 
-      // temporary measure
-      if (!data?.publishedRecords?.length) data = dummyData
-
-      // TODO: Discuss with Ryan: why append and not overwrite? I'm seeing
-      // multiple copies of the same data when I refresh.
       if (dataIsPublishedRecordsResponse(data)) {
-        setPublishedRecords(prev =>
-          prev ? [...prev, ...data.publishedRecords] : data.publishedRecords
-        )
-        setLoading(true)
+        if (options.append) {
+          setPublishedRecords(prev =>
+            prev ? [...prev, ...data.publishedRecords] : data.publishedRecords
+          )
+        } else {
+          setPublishedRecords(data.publishedRecords)
+          setOptions(options => ({ ...options, append: true }))
+        }
+        setTotalRowCount(data.totalRowCount)
+        setLoading(false)
       } else console.log('GET /published-records: malformed response')
     }
   }
 
+  const optionsStringified = JSON.stringify(options);
   useEffect(() => {
     loadPublishedRecords(1)
-  }, [])
+  }, [optionsStringified])
 
   const rowNumberColumn = {
     key: 'rowNumber',
@@ -217,74 +149,17 @@ const TableView = ({ style }: TableViewProps) => {
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     if (loading || !divIsAtBottom(event)) return
     page.current += 1
+    console.log('page.current ', page.current)
     loadPublishedRecords(page.current)
   }
 
   // temporary
+  style ||= {}
   if (style.display === 'block') style.display = 'flex'
-
-  const SearchIcon = () => (
-    <div
-      style={{
-        position: 'absolute',
-        right: '10px',
-        width: '18px',
-        top: '12px',
-      }}
-    >
-      <svg
-        width="18"
-        height="18"
-        viewBox="0 0 18 18"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M12.5 11H11.71L11.43 10.73C12.41 9.59 13 8.11 13 6.5C13 2.91 10.09 0 6.5 0C2.91 0 0 2.91 0 6.5C0 10.09 2.91 13 6.5 13C8.11 13 9.59 12.41 10.73 11.43L11 11.71V12.5L16 17.49L17.49 16L12.5 11ZM6.5 11C4.01 11 2 8.99 2 6.5C2 4.01 4.01 2 6.5 2C8.99 2 11 4.01 11 6.5C11 8.99 8.99 11 6.5 11Z"
-          fill="white"
-        />
-      </svg>
-    </div>
-  )
-
-  const FilterInputLabel = ({ htmlFor, children }) => (
-    <InputLabel htmlFor={htmlFor} style={{ 'margin-bottom': '5px' }}>
-      {children}
-    </InputLabel>
-  )
-  const FilterInputWithIcon = ({ id, children = null }) => (
-    <div style={{ position: 'relative' }}>
-      <FilterInput id={id} />
-      <SearchIcon />
-    </div>
-  )
 
   return (
     <TableViewContainer style={style}>
-      <FilterDrawer>
-        <DrawerHeader>Filters</DrawerHeader>
-
-        <FilterContainer>
-          <FilterInputLabel htmlFor="search-by-host-species">
-            Search by host species
-          </FilterInputLabel>
-          <FilterInputWithIcon id="search-by-host-species" />
-        </FilterContainer>
-
-        <FilterContainer>
-          <FilterInputLabel htmlFor="search-by-pathogen">
-            Search by pathogen
-          </FilterInputLabel>
-          <FilterInputWithIcon id="search-by-pathogen" />
-        </FilterContainer>
-
-        <FilterContainer>
-          <FilterInputLabel htmlFor="search-by-detection-target">
-            Search by detection target
-          </FilterInputLabel>
-          <FilterInputWithIcon id="search-by-detection-target" />
-        </FilterContainer>
-      </FilterDrawer>
+      <FilterDrawer setOptions={setOptions} />
       <TableContaier>
         {publishedRecords && publishedRecords.length > 1 && (
           // @ts-expect-error: I'm copying this from the docs,
