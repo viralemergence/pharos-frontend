@@ -77,7 +77,7 @@ const FilterDrawer = memo(({ setOptions }: FilterDrawerProps) => {
   }
 
   const Div = styled.div`
-    background-color: rgba(33, 33, 33, 0);
+    background-color: rgba(33, 33, 33, .5);
     backdrop-filter: 100px;
     color: #fff;
     padding: 34px 40px;

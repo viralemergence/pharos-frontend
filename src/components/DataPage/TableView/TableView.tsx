@@ -149,9 +149,8 @@ const TableView = ({ style }: TableViewProps) => {
   }
 
   const EmptyRowsRenderer = () => {
-    const areSearchParamsUsed = Object.keys(
-      options.extraSearchParams ?? {}
-    ).length > 0
+    const areSearchParamsUsed =
+      Object.keys(options.extraSearchParams ?? {}).length > 0
     return (
       areSearchParamsUsed && (
         <div style={{ width: 600, padding: 10 }}>No matching rows</div>
@@ -163,23 +162,46 @@ const TableView = ({ style }: TableViewProps) => {
   style ||= {}
   if (style.display === 'block') style.display = 'grid'
 
+  const NoRecordsFound = styled.div`
+    ${({ theme }) => theme.bigParagraphSemibold};
+    margin: 30px auto;
+    color: ${({ theme }) => theme.white};
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    padding: 30px;
+    width: 90%;
+    display: flex;
+    justify-content: center;
+  `
+
+  const areSearchParamsUsed =
+    Object.keys(options.extraSearchParams ?? {}).length > 0
+
   return (
     <TableViewContainer style={style}>
       <FilterDrawer setOptions={setOptions} />
       <TableContaier>
-        {
+        {!loading && publishedRecords?.length === 0 ? (
+          <NoRecordsFound>
+            {areSearchParamsUsed ? (
+              'No matching records found'
+            ) : (
+              'No records published'
+            )}
+          </NoRecordsFound>
+        ) : (
           // @ts-expect-error: I'm copying this from the docs,
           // but it doesn't look like their type definitions work
-        }
-        <FillDatasetGrid
-          className={'rdg-dark'}
-          style={{ fontFamily: 'Inconsolata' }}
-          columns={columns}
-          rows={publishedRecords}
-          onScroll={handleScroll}
-          rowKeyGetter={rowKeyGetter}
-          renderers={{ noRowsFallback: <EmptyRowsRenderer /> }}
-        />
+          <FillDatasetGrid
+            className={'rdg-dark'}
+            style={{ fontFamily: 'Inconsolata' }}
+            columns={columns}
+            rows={publishedRecords}
+            onScroll={handleScroll}
+            rowKeyGetter={rowKeyGetter}
+            renderers={{ noRowsFallback: <EmptyRowsRenderer /> }}
+          />
+        )}
         {loading && (
           <LoadingMessage>
             <LoadingSpinner /> Loading
