@@ -4,10 +4,6 @@ import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
 import FilterDrawer from './FilterDrawer'
 
-// TODO: Fix, should be 432px, with the textfields 350px wide. I don't
-// understand why it needs to be set so wide to achieve that textfield width.
-const drawerWidth = '750'
-
 export type TableViewOptions = {
   append: boolean
   extraSearchParams?: Record<string, string>
@@ -20,16 +16,15 @@ const TableViewContainer = styled.div`
   width: 100%;
   height: calc(100vh - 87px);
   z-index: 3;
-  display: flex;
-  flex-flow: row nowrap;
+  display: grid;
+  grid-template-columns: 432px auto;
 `
 const TableContaier = styled.div`
   position: relative;
-  width: calc(100vw - ${drawerWidth}px);
   height: 100%;
   padding: 15px;
   padding-top: 73px;
-  flex-grow: 1;
+  overflow-x: hidden;
 `
 const FillDatasetGrid = styled(DataGrid)`
   block-size: 100%;
@@ -92,7 +87,6 @@ const TableView = ({ style }: TableViewProps) => {
   const page = useRef(1)
 
   const loadPublishedRecords = async (page: number) => {
-    console.log('loading published records')
     setLoading(true)
     const response = await fetch(
       `${process.env.GATSBY_API_URL}/published-records?` +
@@ -115,16 +109,16 @@ const TableView = ({ style }: TableViewProps) => {
           setPublishedRecords(data.publishedRecords)
           setOptions(options => ({ ...options, append: true }))
         }
-        console.log('data.totalRowCount', data.totalRowCount)
         setTotalRowCount(data.totalRowCount)
         setLoading(false)
       } else console.log('GET /published-records: malformed response')
     }
   }
 
+  const stringifiedExtraSearchParams = JSON.stringify(options.extraSearchParams)
   useEffect(() => {
     loadPublishedRecords(1)
-  }, [JSON.stringify(options.extraSearchParams)])
+  }, [stringifiedExtraSearchParams])
 
   const rowNumberColumn = {
     key: 'rowNumber',
@@ -150,7 +144,6 @@ const TableView = ({ style }: TableViewProps) => {
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     if (loading || !divIsAtBottom(event)) return
     if (publishedRecords?.length === totalRowCount) return
-    console.log('grabbing next page')
     page.current += 1
     loadPublishedRecords(page.current)
   }
@@ -168,7 +161,7 @@ const TableView = ({ style }: TableViewProps) => {
 
   // temporary
   style ||= {}
-  if (style.display === 'block') style.display = 'flex'
+  if (style.display === 'block') style.display = 'grid'
 
   return (
     <TableViewContainer style={style}>
