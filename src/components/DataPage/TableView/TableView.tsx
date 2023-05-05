@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
+import Input from '../../ui/Input'
+import InputLabel from '../../ui/InputLabel'
 
 const dummyData = {
   publishedRecords: [
@@ -54,7 +56,7 @@ const TableViewContainer = styled.div`
   flex-flow: row nowrap;
 `
 
-const Drawer = styled.div`
+const FilterDrawer = styled.div`
   padding: 1rem;
   width: 30%;
   flex: 1;
@@ -64,7 +66,13 @@ const Drawer = styled.div`
 
 const DrawerHeader = styled.div`
   ${({ theme }) => theme.bigParagraph};
-  `
+`
+
+const FilterContainer = styled.fieldset`
+  border: 0;
+  padding: 0;
+  margin-top: 20px;
+`
 
 const TableContaier = styled.div`
   position: relative;
@@ -204,18 +212,46 @@ const TableView = ({ style }: TableViewProps) => {
     loadPublishedRecords(page.current)
   }
 
-
   // temporary
   if (style.display === 'block') style.display = 'flex'
 
+  const FilterInputLabel = ({ children }) => (
+    <InputLabel style={{ 'margin-bottom': '5px' }}>{children}</InputLabel>
+  )
+  const FilterInput = ({ children = null }) => (
+    <Input
+      style={{
+        'background-color': 'transparent',
+        'border-color': '#fff',
+        'font-size': '14px',
+        'font-family': 'Open Sans',
+        color: '#fff',
+      }}
+    >
+      {children}
+    </Input>
+  )
+
   return (
     <TableViewContainer style={style}>
-      <Drawer>
+      <FilterDrawer>
         <DrawerHeader>Filters</DrawerHeader>
-        Search by host species
-        Search by pathogen
-        Search by detection target
-      </Drawer>
+
+        <FilterContainer>
+          <FilterInputLabel>Search by host species</FilterInputLabel>
+          <FilterInput />
+        </FilterContainer>
+
+        <FilterContainer>
+          <FilterInputLabel>Search by pathogen</FilterInputLabel>
+          <FilterInput />
+        </FilterContainer>
+
+        <FilterContainer>
+          <FilterInputLabel>Search by detection target</FilterInputLabel>
+          <FilterInput />
+        </FilterContainer>
+      </FilterDrawer>
       <TableContaier>
         {publishedRecords && publishedRecords.length > 1 && (
           // @ts-expect-error: I'm copying this from the docs,
