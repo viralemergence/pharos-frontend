@@ -47,7 +47,7 @@ import LoadingSpinner from './LoadingSpinner'
 
 // TODO: Fix, should be 432px, with the textfields 350px wide. I don't
 // understand why it needs to be set so wide to achieve that textfield width.
-const drawerWidth = "750";
+const drawerWidth = '750'
 
 const TableViewContainer = styled.div`
   position: relative;
@@ -74,7 +74,7 @@ const FilterContainer = styled.div`
 `
 const TableContaier = styled.div`
   position: relative;
-  width: calc( 100vw - ${drawerWidth}px );
+  width: calc(100vw - ${drawerWidth}px);
   height: 100%;
   padding: 15px;
   padding-top: 73px;
@@ -103,15 +103,15 @@ const LoadingMessage = styled.div`
   gap: 10px;
 `
 const FilterInput = styled(Input)`
-    background-color: transparent;
-    border-color: #fff;
-    font-size: 14px;
-    font-family: Open Sans;
-    padding-right: 36px;
-    padding-left: 10px;
-    margin-top: 0px;
-    color: #fff;
-    `
+  background-color: transparent;
+  border-color: #fff;
+  font-size: 14px;
+  font-family: Open Sans;
+  padding-right: 36px;
+  padding-left: 10px;
+  margin-top: 0px;
+  color: #fff;
+`
 
 interface TableViewProps {
   style?: React.CSSProperties
@@ -254,7 +254,7 @@ const TableView = ({ style }: TableViewProps) => {
   )
   const FilterInputWithIcon = ({ id, children = null }) => (
     <div style={{ position: 'relative' }}>
-      <FilterInput id={id}>{children}</FilterInput>
+      <FilterInput id={id} />
       <SearchIcon />
     </div>
   )
@@ -272,12 +272,16 @@ const TableView = ({ style }: TableViewProps) => {
         </FilterContainer>
 
         <FilterContainer>
-          <FilterInputLabel htmlFor="search-by-pathogen">Search by pathogen</FilterInputLabel>
+          <FilterInputLabel htmlFor="search-by-pathogen">
+            Search by pathogen
+          </FilterInputLabel>
           <FilterInputWithIcon id="search-by-pathogen" />
         </FilterContainer>
 
         <FilterContainer>
-          <FilterInputLabel htmlFor="search-by-detection-target">Search by detection target</FilterInputLabel>
+          <FilterInputLabel htmlFor="search-by-detection-target">
+            Search by detection target
+          </FilterInputLabel>
           <FilterInputWithIcon id="search-by-detection-target" />
         </FilterContainer>
       </FilterDrawer>
