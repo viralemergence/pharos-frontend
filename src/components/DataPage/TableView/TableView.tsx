@@ -41,6 +41,17 @@ const LoadingMessage = styled.div`
   align-items: center;
   gap: 10px;
 `
+const NoRecordsFound = styled.div`
+  ${({ theme }) => theme.bigParagraphSemibold};
+  margin: 30px auto;
+  color: ${({ theme }) => theme.white};
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+  padding: 30px;
+  width: 90%;
+  display: flex;
+  justify-content: center;
+`
 
 interface TableViewProps {
   style?: React.CSSProperties
@@ -131,6 +142,9 @@ const TableView = ({ style }: TableViewProps) => {
   return (
     <TableViewContainer style={style}>
       <TableContaier>
+        {!loading && publishedRecords?.length === 0 && (
+          <NoRecordsFound>No records have been published.</NoRecordsFound>
+        )}
         {publishedRecords && publishedRecords.length > 1 && (
           // @ts-expect-error: I'm copying this from the docs,
           // but it doesn't look like their type definitions work
