@@ -102,6 +102,16 @@ const LoadingMessage = styled.div`
   align-items: center;
   gap: 10px;
 `
+const FilterInput = styled(Input)`
+    background-color: transparent;
+    border-color: #fff;
+    font-size: 14px;
+    font-family: Open Sans;
+    padding-right: 36px;
+    padding-left: 10px;
+    margin-top: 0px;
+    color: #fff;
+    `
 
 interface TableViewProps {
   style?: React.CSSProperties
@@ -242,25 +252,9 @@ const TableView = ({ style }: TableViewProps) => {
       {children}
     </InputLabel>
   )
-  const FilterInput = ({ id, children = null }) => (
+  const FilterInputWithIcon = ({ id, children = null }) => (
     <div style={{ position: 'relative' }}>
-      <Input
-        id={id}
-        style={{
-          'background-color': 'transparent',
-          'border-color': '#fff',
-          'font-size': '14px',
-          'font-family': 'Open Sans',
-          'padding-right': '36px',
-          'padding-left': '10px',
-          // 'padding-top': '8px',
-          // 'padding-bottom': '8px',
-          'margin-top': '0px',
-          color: '#fff',
-        }}
-      >
-        {children}
-      </Input>
+      <FilterInput id={id}>{children}</FilterInput>
       <SearchIcon />
     </div>
   )
@@ -274,17 +268,17 @@ const TableView = ({ style }: TableViewProps) => {
           <FilterInputLabel htmlFor="search-by-host-species">
             Search by host species
           </FilterInputLabel>
-          <FilterInput id="search-by-host-species" />
+          <FilterInputWithIcon id="search-by-host-species" />
         </FilterContainer>
 
         <FilterContainer>
           <FilterInputLabel htmlFor="search-by-pathogen">Search by pathogen</FilterInputLabel>
-          <FilterInput id="search-by-pathogen" />
+          <FilterInputWithIcon id="search-by-pathogen" />
         </FilterContainer>
 
         <FilterContainer>
           <FilterInputLabel htmlFor="search-by-detection-target">Search by detection target</FilterInputLabel>
-          <FilterInput id="search-by-detection-target" />
+          <FilterInputWithIcon id="search-by-detection-target" />
         </FilterContainer>
       </FilterDrawer>
       <TableContaier>
