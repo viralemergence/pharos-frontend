@@ -106,7 +106,7 @@ const TableView = ({ style }: TableViewProps) => {
       `${process.env.GATSBY_API_URL}/published-records?` +
         new URLSearchParams({
           page: page.toString(),
-          pageSize: '20',
+          pageSize: '50',
           ...options.filters,
         })
     )
