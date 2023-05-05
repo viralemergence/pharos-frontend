@@ -63,8 +63,8 @@ interface Row {
 }
 
 interface PublishedRecordsResponse {
-  publishedRecords: Row[],
-  totalRowCount: number,
+  publishedRecords: Row[]
+  totalRowCount: number
 }
 
 function dataIsPublishedRecordsResponse(
@@ -86,12 +86,13 @@ const rowKeyGetter = (row: Row) => row.pharosID
 
 const TableView = ({ style }: TableViewProps) => {
   const [loading, setLoading] = useState<boolean>(true)
-  const [publishedRecords, setPublishedRecords] = useState<Row[] | null>(null)
+  const [publishedRecords, setPublishedRecords] = useState<Row[]>([])
   const [options, setOptions] = useState<TableViewOptions>({ append: true })
   const [totalRowCount, setTotalRowCount] = useState<number>(0)
   const page = useRef(1)
 
   const loadPublishedRecords = async (page: number) => {
+    console.log('loading published records')
     setLoading(true)
     const response = await fetch(
       `${process.env.GATSBY_API_URL}/published-records?` +
@@ -114,16 +115,16 @@ const TableView = ({ style }: TableViewProps) => {
           setPublishedRecords(data.publishedRecords)
           setOptions(options => ({ ...options, append: true }))
         }
+        console.log('data.totalRowCount', data.totalRowCount)
         setTotalRowCount(data.totalRowCount)
         setLoading(false)
       } else console.log('GET /published-records: malformed response')
     }
   }
 
-  const optionsStringified = JSON.stringify(options);
   useEffect(() => {
     loadPublishedRecords(1)
-  }, [optionsStringified])
+  }, [JSON.stringify(options.extraSearchParams)])
 
   const rowNumberColumn = {
     key: 'rowNumber',
@@ -148,9 +149,21 @@ const TableView = ({ style }: TableViewProps) => {
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     if (loading || !divIsAtBottom(event)) return
+    if (publishedRecords?.length === totalRowCount) return
+    console.log('grabbing next page')
     page.current += 1
-    console.log('page.current ', page.current)
     loadPublishedRecords(page.current)
+  }
+
+  const EmptyRowsRenderer = () => {
+    const areSearchParamsUsed = Object.keys(
+      options.extraSearchParams ?? {}
+    ).length > 0
+    return (
+      areSearchParamsUsed && (
+        <div style={{ width: 600, padding: 10 }}>No matching rows</div>
+      )
+    )
   }
 
   // temporary
@@ -161,21 +174,22 @@ const TableView = ({ style }: TableViewProps) => {
     <TableViewContainer style={style}>
       <FilterDrawer setOptions={setOptions} />
       <TableContaier>
-        {publishedRecords && publishedRecords.length > 1 && (
+        {
           // @ts-expect-error: I'm copying this from the docs,
           // but it doesn't look like their type definitions work
-          <FillDatasetGrid
-            className={'rdg-dark'}
-            style={{ fontFamily: 'Inconsolata' }}
-            columns={columns}
-            rows={publishedRecords}
-            onScroll={handleScroll}
-            rowKeyGetter={rowKeyGetter}
-          />
-        )}
+        }
+        <FillDatasetGrid
+          className={'rdg-dark'}
+          style={{ fontFamily: 'Inconsolata' }}
+          columns={columns}
+          rows={publishedRecords}
+          onScroll={handleScroll}
+          rowKeyGetter={rowKeyGetter}
+          renderers={{ noRowsFallback: <EmptyRowsRenderer /> }}
+        />
         {loading && (
           <LoadingMessage>
-            <LoadingSpinner /> Loading more rows
+            <LoadingSpinner /> Loading
           </LoadingMessage>
         )}
       </TableContaier>

@@ -66,7 +66,7 @@ const FilterDrawer = memo(({ setOptions }: FilterDrawerProps) => {
           },
         }
       })
-    }, 1500)
+    }, 500)
   }
 
   const FilterInputWithIcon = ({ name }: { name: string }) => (
