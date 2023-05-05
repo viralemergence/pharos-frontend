@@ -26,22 +26,24 @@ const FilterInputElement = styled.input`
 `
 const FilterInput = props => <FilterInputElement {...props} />
 
-type FilterNameAndChildren = {
+const FilterInputLabel = ({
+  name,
+  children,
+}: {
   name: string
   children: React.ReactNode
-}
-const FilterInputLabel = ({ name, children }: FilterNameAndChildren) => (
+}) => (
   <InputLabel htmlFor={`filter-by-${name}`} style={{ marginBottom: '5px' }}>
     {children}
   </InputLabel>
 )
 
 const Drawer = styled.div`
-    background-color: rgba(33, 33, 33, .5);
-    backdrop-filter: 100px;
-    color: #fff;
-    padding: 34px 40px;
-  `
+  background-color: rgba(33, 33, 33, 0.5);
+  backdrop-filter: 100px;
+  color: #fff;
+  padding: 34px 40px;
+`
 
 type FilterDrawerProps = {
   setOptions: React.Dispatch<React.SetStateAction<TableViewOptions>>
