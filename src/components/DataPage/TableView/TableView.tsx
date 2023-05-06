@@ -5,10 +5,20 @@ import LoadingSpinner from './LoadingSpinner'
 import FilterDrawer from './FilterDrawer'
 
 export type TableViewOptions = {
-  append: boolean
-  extraSearchParams?: Record<string, string>
+  appendResults: boolean
+  filters?: Record<string, string>
 }
 
+const TableViewContainer = styled.div`
+  position: relative;
+  background-color: rgba(51, 51, 51, 0.25);
+  backdrop-filter: blur(20px);
+  width: 100%;
+  height: calc(100vh - 87px);
+  z-index: 3;
+  display: grid;
+  grid-template-columns: auto;
+`
 const TableContaier = styled.div`
   position: relative;
   height: 100%;
@@ -38,6 +48,17 @@ const LoadingMessage = styled.div`
   align-items: center;
   gap: 10px;
 `
+const NoRecordsFound = styled.div`
+  ${({ theme }) => theme.bigParagraphSemibold};
+  margin: 30px auto;
+  color: ${({ theme }) => theme.white};
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+  padding: 30px;
+  width: 90%;
+  display: flex;
+  justify-content: center;
+`
 
 interface TableViewProps {
   style?: React.CSSProperties
@@ -49,7 +70,7 @@ interface Row {
 
 interface PublishedRecordsResponse {
   publishedRecords: Row[]
-  totalRowCount: number
+  isLastPage: boolean
 }
 
 function dataIsPublishedRecordsResponse(
@@ -57,7 +78,6 @@ function dataIsPublishedRecordsResponse(
 ): data is PublishedRecordsResponse {
   if (!data || typeof data !== 'object') return false
   if (!('publishedRecords' in data)) return false
-  if (!('totalRowCount' in data)) return false
   if (!Array.isArray(data.publishedRecords)) return false
   if (!data.publishedRecords.every(row => typeof row === 'object')) return false
   return true
@@ -72,11 +92,12 @@ const rowKeyGetter = (row: Row) => row.pharosID
 const TableView = ({ style }: TableViewProps) => {
   const [loading, setLoading] = useState<boolean>(true)
   const [publishedRecords, setPublishedRecords] = useState<Row[]>([])
-  const [options, setOptions] = useState<TableViewOptions>({ append: true })
-  const [totalRowCount, setTotalRowCount] = useState<number>(0)
+  const [options, setOptions] = useState<TableViewOptions>({
+    appendResults: true,
+  })
+  const [isLastPage, setIsLastPage] = useState<boolean>(false)
   const page = useRef(1)
-
-  // const [filterDrawerIsOpen, setFilterDrawerIsOpen] = useState<boolean>(true)
+  const isFilterDrawerOpen = useRef(true);
 
   const loadPublishedRecords = async (page: number) => {
     setLoading(true)
@@ -85,7 +106,7 @@ const TableView = ({ style }: TableViewProps) => {
         new URLSearchParams({
           page: page.toString(),
           pageSize: '50',
-          ...options.extraSearchParams,
+          ...options.filters,
         })
     )
 
@@ -93,24 +114,23 @@ const TableView = ({ style }: TableViewProps) => {
       const data = await response.json()
 
       if (dataIsPublishedRecordsResponse(data)) {
-        if (options.append) {
+        if (options.appendResults) {
           setPublishedRecords(prev =>
             prev ? [...prev, ...data.publishedRecords] : data.publishedRecords
           )
         } else {
           setPublishedRecords(data.publishedRecords)
-          setOptions(options => ({ ...options, append: true }))
+          setOptions(options => ({ ...options, appendResults: true }))
         }
-        setTotalRowCount(data.totalRowCount)
+        setIsLastPage(data.isLastPage)
         setLoading(false)
       } else console.log('GET /published-records: malformed response')
     }
   }
 
-  const stringifiedExtraSearchParams = JSON.stringify(options.extraSearchParams)
   useEffect(() => {
     loadPublishedRecords(1)
-  }, [stringifiedExtraSearchParams])
+  }, [JSON.stringify(options.filters)])
 
   const rowNumberColumn = {
     key: 'rowNumber',
@@ -134,68 +154,46 @@ const TableView = ({ style }: TableViewProps) => {
   ]
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
-    if (loading || !divIsAtBottom(event)) return
-    if (publishedRecords?.length === totalRowCount) return
+    if (loading || isLastPage || !divIsAtBottom(event)) return
     page.current += 1
     loadPublishedRecords(page.current)
   }
 
-  const NoRecordsFound = styled.div`
-    ${({ theme }) => theme.bigParagraphSemibold};
-    color: ${({ theme }) => theme.white};
-    border-radius: 5px;
-    padding: 30px;
-    width: 600px;
-  `
-
-  const EmptyRowsRenderer = () => {
-    const areSearchParamsUsed =
-      Object.keys(options.extraSearchParams ?? {}).length > 0
-    return (
-      areSearchParamsUsed && <NoRecordsFound>No matching rows</NoRecordsFound>
-    )
-  }
-
-  // temporary
   style ||= {}
   if (style.display === 'block') style.display = 'grid'
 
-  const TableViewContainer = styled.div`
-    position: relative;
-    background-color: rgba(51, 51, 51, 0.25);
-    backdrop-filter: blur(20px);
-    width: 100%;
-    height: calc(100vh - 87px);
-    z-index: 3;
-    display: grid;
-    transition: 1s;
-    grid-template-columns: ${filterDrawerIsOpen ? '432px' : '0'} auto;
-  `
+  const areFiltersUsed = Object.keys(options.filters ?? {}).length > 0
 
   return (
     <TableViewContainer style={style}>
       <FilterDrawer
-        // isOpen={filterDrawerIsOpen}
-        // setOpen={setFilterDrawerIsOpen}
+        isDrawerOpen={isFilterDrawerOpen}
+        setIsDrawerOpen={setIsFilterDrawerOpen}
         setOptions={setOptions}
       />
       <TableContaier>
-        {
+        {!loading && publishedRecords?.length === 0 ? (
+          <NoRecordsFound>
+            {areFiltersUsed
+              ? 'No matching records found'
+              : 'No records published'}
+          </NoRecordsFound>
+        ) : (
           // @ts-expect-error: I'm copying this from the docs,
           // but it doesn't look like their type definitions work
-        }
-        <FillDatasetGrid
-          className={'rdg-dark'}
-          style={{ fontFamily: 'Inconsolata' }}
-          columns={columns}
-          rows={publishedRecords}
-          onScroll={handleScroll}
-          rowKeyGetter={rowKeyGetter}
-          renderers={{ noRowsFallback: <EmptyRowsRenderer /> }}
-        />
+          <FillDatasetGrid
+            className={'rdg-dark'}
+            style={{ fontFamily: 'Inconsolata' }}
+            columns={columns}
+            rows={publishedRecords}
+            onScroll={handleScroll}
+            rowKeyGetter={rowKeyGetter}
+          />
+        )}
         {loading && (
           <LoadingMessage>
-            <LoadingSpinner /> Loading
+            <LoadingSpinner />{' '}
+            {options.appendResults ? 'Loading more rows' : 'Loading'}
           </LoadingMessage>
         )}
       </TableContaier>

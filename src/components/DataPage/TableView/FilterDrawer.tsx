@@ -1,4 +1,4 @@
-import React, { memo, useRef, useState } from 'react'
+import React, { memo, useRef } from 'react'
 import styled from 'styled-components'
 import SearchIcon from './SearchIcon'
 import InputLabel from '../../ui/InputLabel'
@@ -26,66 +26,65 @@ const FilterInputElement = styled.input`
 `
 const FilterInput = props => <FilterInputElement {...props} />
 
-type FilterNameAndChildren = {
+const FilterInputLabel = ({
+  name,
+  children,
+}: {
   name: string
   children: React.ReactNode
-}
-const FilterInputLabel = ({ name, children }: FilterNameAndChildren) => (
+}) => (
   <InputLabel htmlFor={`filter-by-${name}`} style={{ marginBottom: '5px' }}>
     {children}
   </InputLabel>
 )
 
 type FilterDrawerProps = {
-  isOpen: boolean
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
   setOptions: React.Dispatch<React.SetStateAction<TableViewOptions>>
+  isDrawerOpen: boolean;
+  setIsDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
-const FilterDrawer = memo(
-  ({ //isOpen = true, setOpen,
-    setOptions }: FilterDrawerProps) => {
-    type TimeoutsType = Record<string, ReturnType<typeof setTimeout>>
-    const timeoutsForFilterInputs = useRef<TimeoutsType>({} as TimeoutsType)
-      const isOpen = true;
+const FilterDrawer = memo(({ isDrawerOpen, setIsDrawerOpen, setOptions }: FilterDrawerProps) => {
+  type TimeoutsType = Record<string, ReturnType<typeof setTimeout>>
+  const timeoutsForFilterInputs = useRef<TimeoutsType>({} as TimeoutsType)
 
-    const handleFilterInput = (
-      e: React.ChangeEvent<HTMLInputElement>,
-      filterName: string
-    ) => {
-      clearTimeout(timeoutsForFilterInputs.current[filterName])
-      timeoutsForFilterInputs.current[filterName] = setTimeout(() => {
-        setOptions((options: TableViewOptions) => {
-          return {
-            ...options,
-            append: false,
-            extraSearchParams: {
-              ...options?.extraSearchParams,
-              [filterName]: e.target.value,
-            },
-          }
-        })
-      }, 500)
-    }
+  const handleFilterInput = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    filterName: string
+  ) => {
+    clearTimeout(timeoutsForFilterInputs.current[filterName])
+    timeoutsForFilterInputs.current[filterName] = setTimeout(() => {
+      setOptions((options: TableViewOptions) => {
+        return {
+          ...options,
+          appendResults: false,
+          filters: {
+            ...options?.filters,
+            [filterName]: e.target.value,
+          },
+        }
+      })
+    }, 500)
+  }
 
-    const FilterInputWithIcon = ({ name }: { name: string }) => {
-      return (
-        <div style={{ position: 'relative', width: 350 }}>
-          <FilterInput
-            id={`filter-by-${name}`}
-            onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-              handleFilterInput(e, name)
-            }}
-          />
-          <SearchIcon />
-        </div>
-      )
-    }
+  const FilterInputWithIcon = ({ name }: { name: string }) => {
+    return (
+      <div style={{ position: 'relative', width: 350 }}>
+        <FilterInput
+          id={`filter-by-${name}`}
+          onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+            handleFilterInput(e, name)
+          }}
+        />
+        <SearchIcon />
+      </div>
+    )
+  }
 
-    const DrawerToggle = ({ onClick }) => {
+    const DrawerToggleButton = ({ onClick }) => {
       const Button = styled.button`
         position: absolute;
         top: 28px;
-        right: ${isOpen ? '-17px' : '-50px'};
+        right: ${isDrawerOpen ? '-17px' : '-50px'};
         width: 34px;
         height: 44px;
         background: rgba(29, 28, 28, 0.8);
@@ -94,8 +93,8 @@ const FilterDrawer = memo(
         align-items: center;
         border-radius: 5px;
         cursor: pointer;
-        border: ${isOpen ? '0' : '1px solid #fff'};
-        ${!isOpen && 'transform: scaleX(-1);'};
+        border: ${isDrawerOpen ? '0' : '1px solid #fff'};
+        ${!isDrawerOpen && 'transform: scaleX(-1);'};
       `
       return (
         <Button onClick={onClick}>
@@ -116,28 +115,22 @@ const FilterDrawer = memo(
       )
     }
 
-    const Drawer = isOpen
-      ? styled.div`
-          background-color: rgba(51, 51, 51, 0.5);
-          color: #fff;
-          padding: 34px 40px;
-          position: relative;
-          z-index: 2;
-        `
-      : styled.div`
-          background-color: transparent;
-          position: relative;
-          z-index: 2;
-        `
+    const Drawer = styled.div`
+      background-color: ${isDrawerOpen ? "rgba(33, 33, 33, 0.5)": "transparent"};
+      color: #fff;
+      padding: ${isDrawerOpen? "34px 40px" : "0"};
+      position: relative;
+      z-index: 2;
+    `
 
     return (
       <Drawer>
-        <DrawerToggle
+        <DrawerToggleButton
           onClick={() => {
-            setOpen((open: boolean) => !open)
+            setIsDrawerOpen((open: boolean) => !open)
           }}
         />
-        {isOpen && (
+        {isDrawerOpen && (
           <content>
             <DrawerHeader>Filters</DrawerHeader>
 
@@ -168,3 +161,4 @@ const FilterDrawer = memo(
   }
 )
 export default FilterDrawer
+
