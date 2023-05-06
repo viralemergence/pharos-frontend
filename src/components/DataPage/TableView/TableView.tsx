@@ -70,7 +70,7 @@ interface Row {
 
 interface PublishedRecordsResponse {
   publishedRecords: Row[]
-  additionalPageExists: number
+  isLastPage: boolean
 }
 
 function dataIsPublishedRecordsResponse(
@@ -78,7 +78,6 @@ function dataIsPublishedRecordsResponse(
 ): data is PublishedRecordsResponse {
   if (!data || typeof data !== 'object') return false
   if (!('publishedRecords' in data)) return false
-  if (!('additionalPageExists' in data)) return false
   if (!Array.isArray(data.publishedRecords)) return false
   if (!data.publishedRecords.every(row => typeof row === 'object')) return false
   return true
@@ -96,7 +95,7 @@ const TableView = ({ style }: TableViewProps) => {
   const [options, setOptions] = useState<TableViewOptions>({
     appendResults: true,
   })
-  const [additionalPageExists, setAdditionalPageExists] = useState<number>(0)
+  const [isLastPage, setIsLastPage] = useState<number>(0)
   const page = useRef(1)
 
   const loadPublishedRecords = async (page: number) => {
@@ -122,7 +121,7 @@ const TableView = ({ style }: TableViewProps) => {
           setPublishedRecords(data.publishedRecords)
           setOptions(options => ({ ...options, appendResults: true }))
         }
-        setAdditionalPageExists(data.additionalPageExists)
+        setIsLastPage(data.isLastPage)
         setLoading(false)
       } else console.log('GET /published-records: malformed response')
     }
@@ -154,8 +153,7 @@ const TableView = ({ style }: TableViewProps) => {
   ]
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
-    if (loading || !divIsAtBottom(event)) return
-    if (!additionalPageExists) return
+    if (loading || isLastPage || !divIsAtBottom(event)) return
     page.current += 1
     loadPublishedRecords(page.current)
   }
