@@ -95,7 +95,7 @@ const TableView = ({ style }: TableViewProps) => {
   const [options, setOptions] = useState<TableViewOptions>({
     appendResults: true,
   })
-  const [isLastPage, setIsLastPage] = useState<number>(0)
+  const [isLastPage, setIsLastPage] = useState<boolean>(false)
   const page = useRef(1)
 
   const loadPublishedRecords = async (page: number) => {
