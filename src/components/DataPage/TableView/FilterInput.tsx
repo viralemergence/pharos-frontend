@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import InputLabel from '../../ui/InputLabel'
 import type { FilterInputEventHandler } from './FilterDrawer'
 
-const getFontFromTheme = ({ theme }) =>
+const getFontFromTheme = ({ theme }: { theme: Record<string, string> }) =>
   theme?.bigParagraph?.match?.(/font-family:([^;]*)/)?.[1] || 'inherit'
 
 const FilterInputElement = styled.input`
