@@ -17,7 +17,7 @@ const TableViewContainer = styled.div`
   height: calc(100vh - 87px);
   z-index: 3;
   display: grid;
-  grid-template-columns: 432px auto;
+  grid-template-columns: auto 1fr;
 `
 const TableContaier = styled.div`
   position: relative;
@@ -89,7 +89,7 @@ const divIsAtBottom = ({ currentTarget }: React.UIEvent<HTMLDivElement>) =>
 
 const rowKeyGetter = (row: Row) => row.pharosID
 
-const TableView = ({ style }: TableViewProps) => {
+const TableView = ({ style = {} }: TableViewProps) => {
   const [loading, setLoading] = useState<boolean>(true)
   const [publishedRecords, setPublishedRecords] = useState<Row[]>([])
   const [options, setOptions] = useState<TableViewOptions>({
@@ -158,14 +158,16 @@ const TableView = ({ style }: TableViewProps) => {
     loadPublishedRecords(page.current)
   }
 
-  style ||= {}
   if (style.display === 'block') style.display = 'grid'
 
-  const areFiltersUsed = Object.keys(options.filters ?? {}).length > 0
+  options.filters ??= {};
+  const areFiltersUsed = Object.keys(options.filters).length > 0
 
   return (
     <TableViewContainer style={style}>
-      <FilterDrawer setOptions={setOptions} />
+      <FilterDrawer
+        setOptions={setOptions}
+      />
       <TableContaier>
         {!loading && publishedRecords?.length === 0 ? (
           <NoRecordsFound>
@@ -187,7 +189,8 @@ const TableView = ({ style }: TableViewProps) => {
         )}
         {loading && (
           <LoadingMessage>
-            <LoadingSpinner /> {options.appendResults ? 'Loading more rows' : 'Loading'}
+            <LoadingSpinner />{' '}
+            {options.appendResults && page.current > 1 ? 'Loading more rows' : 'Loading'}
           </LoadingMessage>
         )}
       </TableContaier>
