@@ -1,8 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-
 import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
+import FilterDrawer from './FilterDrawer'
+
+export type TableViewOptions = {
+  appendResults: boolean
+  filters?: Record<string, string>
+}
 
 const TableViewContainer = styled.div`
   position: relative;
@@ -10,14 +15,16 @@ const TableViewContainer = styled.div`
   backdrop-filter: blur(20px);
   width: 100%;
   height: calc(100vh - 87px);
-  padding-top: 53px;
   z-index: 3;
+  display: grid;
+  grid-template-columns: 432px auto;
 `
 const TableContaier = styled.div`
   position: relative;
-  width: 100%;
   height: 100%;
   padding: 15px;
+  padding-top: 73px;
+  overflow-x: hidden;
 `
 const FillDatasetGrid = styled(DataGrid)`
   block-size: 100%;
@@ -63,6 +70,7 @@ interface Row {
 
 interface PublishedRecordsResponse {
   publishedRecords: Row[]
+  isLastPage: boolean
 }
 
 function dataIsPublishedRecordsResponse(
@@ -83,7 +91,11 @@ const rowKeyGetter = (row: Row) => row.pharosID
 
 const TableView = ({ style }: TableViewProps) => {
   const [loading, setLoading] = useState<boolean>(true)
-  const [publishedRecords, setPublishedRecords] = useState<Row[] | null>(null)
+  const [publishedRecords, setPublishedRecords] = useState<Row[]>([])
+  const [options, setOptions] = useState<TableViewOptions>({
+    appendResults: true,
+  })
+  const [isLastPage, setIsLastPage] = useState<boolean>(false)
   const page = useRef(1)
 
   const loadPublishedRecords = async (page: number) => {
@@ -93,6 +105,7 @@ const TableView = ({ style }: TableViewProps) => {
         new URLSearchParams({
           page: page.toString(),
           pageSize: '50',
+          ...options.filters,
         })
     )
 
@@ -100,9 +113,15 @@ const TableView = ({ style }: TableViewProps) => {
       const data = await response.json()
 
       if (dataIsPublishedRecordsResponse(data)) {
-        setPublishedRecords(prev =>
-          prev ? [...prev, ...data.publishedRecords] : data.publishedRecords
-        )
+        if (options.appendResults) {
+          setPublishedRecords(prev =>
+            prev ? [...prev, ...data.publishedRecords] : data.publishedRecords
+          )
+        } else {
+          setPublishedRecords(data.publishedRecords)
+          setOptions(options => ({ ...options, appendResults: true }))
+        }
+        setIsLastPage(data.isLastPage)
         setLoading(false)
       } else console.log('GET /published-records: malformed response')
     }
@@ -110,7 +129,7 @@ const TableView = ({ style }: TableViewProps) => {
 
   useEffect(() => {
     loadPublishedRecords(1)
-  }, [])
+  }, [JSON.stringify(options.filters)])
 
   const rowNumberColumn = {
     key: 'rowNumber',
@@ -134,18 +153,27 @@ const TableView = ({ style }: TableViewProps) => {
   ]
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
-    if (loading || !divIsAtBottom(event)) return
+    if (loading || isLastPage || !divIsAtBottom(event)) return
     page.current += 1
     loadPublishedRecords(page.current)
   }
 
+  style ||= {}
+  if (style.display === 'block') style.display = 'grid'
+
+  const areFiltersUsed = Object.keys(options.filters ?? {}).length > 0
+
   return (
     <TableViewContainer style={style}>
+      <FilterDrawer setOptions={setOptions} />
       <TableContaier>
-        {!loading && publishedRecords?.length === 0 && (
-          <NoRecordsFound>No records have been published.</NoRecordsFound>
-        )}
-        {publishedRecords && publishedRecords.length > 1 && (
+        {!loading && publishedRecords?.length === 0 ? (
+          <NoRecordsFound>
+            {areFiltersUsed
+              ? 'No matching records found'
+              : 'No records published'}
+          </NoRecordsFound>
+        ) : (
           // @ts-expect-error: I'm copying this from the docs,
           // but it doesn't look like their type definitions work
           <FillDatasetGrid
@@ -159,7 +187,7 @@ const TableView = ({ style }: TableViewProps) => {
         )}
         {loading && (
           <LoadingMessage>
-            <LoadingSpinner /> Loading more rows
+            <LoadingSpinner /> {options.appendResults ? 'Loading more rows' : 'Loading'}
           </LoadingMessage>
         )}
       </TableContaier>
