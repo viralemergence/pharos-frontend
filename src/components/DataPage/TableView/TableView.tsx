@@ -4,18 +4,18 @@ import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
 import FilterDrawer from './FilterDrawer'
 
-type Timeout = ReturnType<typeof setTimeout> | null
-type TimeoutsType = Record<string, Timeout>
-type Filter = { description: string; value: string }
-
 // After user finishes typing, how long to wait before applying a filter, in
 // milliseconds
 const FILTER_DELAY = 500
 
-export type TableViewOptions = {
-  appendResults: boolean
-  filters?: Record<string, string>
+export interface TableViewOptions {
+  appendResults: boolean;
+  filters?: Record<string, string>;
 }
+type Timeout = ReturnType<typeof setTimeout> | null
+type TimeoutsType = Record<string, Timeout>
+type Filter = { description: string; value: string }
+
 
 const TableViewContainer = styled.div`
   position: relative;
@@ -100,7 +100,7 @@ const rowKeyGetter = (row: Row) => row.pharosID
 export type FilterData = Map<string, Filter>
 
 const TableView = ({ style = {} }: TableViewProps) => {
-  const [loading, setLoading] = useState<boolean>(true)
+  const [loading, setLoading] = useState(true)
   const [publishedRecords, setPublishedRecords] = useState<Row[]>([])
 
   const timeoutsForFilterInputs = useRef<TimeoutsType>({})
@@ -113,7 +113,7 @@ const TableView = ({ style = {} }: TableViewProps) => {
     ])
   )
 
-  const [isLastPage, setIsLastPage] = useState<boolean>(false)
+  const [isLastPage, setIsLastPage] = useState(false)
   const pageRef = useRef(1)
 
   const loadPublishedRecords = useCallback(

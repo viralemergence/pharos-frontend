@@ -18,48 +18,44 @@ const DrawerContainer = styled.div<{ isFilterDrawerOpen: boolean }>`
   z-index: 2;
 `
 
-const FilterDrawer = memo(
-  ({
-    filterData,
-    filterOnInputHandler,
-  }: {
-    filterData: FilterData
-    filterOnInputHandler: (e: React.ChangeEvent<HTMLInputElement>) => void
-  }) => {
-    const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(true)
+const FilterDrawer = ({
+  filterData,
+  filterOnInputHandler,
+}: {
+  filterData: FilterData
+  filterOnInputHandler: (e: React.ChangeEvent<HTMLInputElement>) => void
+}) => {
+  const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(true)
 
-    return (
-      <DrawerContainer isFilterDrawerOpen={isFilterDrawerOpen}>
-        <FilterDrawerToggleButton
-          onClick={() => {
-            setIsFilterDrawerOpen(open => !open)
-          }}
-          isFilterDrawerOpen={isFilterDrawerOpen}
-        />
-        {isFilterDrawerOpen && (
-          <>
-            <DrawerHeader>Filters</DrawerHeader>
-            {Array.from(filterData).map(
-              ([filterId, { description, value }]) => (
-                <div key={filterId} style={{ marginTop: '20px' }}>
-                  <InputLabel>
-                    <div style={{ marginBottom: '5px' }}>
-                      Search by {description}
-                    </div>
-                    <FilterInput
-                      id={`filter-${filterId}`}
-                      onInput={filterOnInputHandler}
-                      defaultValue={value}
-                    />
-                  </InputLabel>
+  return (
+    <DrawerContainer isFilterDrawerOpen={isFilterDrawerOpen}>
+      <FilterDrawerToggleButton
+        onClick={() => {
+          setIsFilterDrawerOpen(open => !open)
+        }}
+        isFilterDrawerOpen={isFilterDrawerOpen}
+      />
+      {isFilterDrawerOpen && (
+        <>
+          <DrawerHeader>Filters</DrawerHeader>
+          {Array.from(filterData).map(([filterId, { description, value }]) => (
+            <div key={filterId} style={{ marginTop: '20px' }}>
+              <InputLabel>
+                <div style={{ marginBottom: '5px' }}>
+                  Search by {description}
                 </div>
-              )
-            )}
-          </>
-        )}
-      </DrawerContainer>
-    )
-  }
-)
+                <FilterInput
+                  id={`filter-${filterId}`}
+                  onInput={filterOnInputHandler}
+                  defaultValue={value}
+                />
+              </InputLabel>
+            </div>
+          ))}
+        </>
+      )}
+    </DrawerContainer>
+  )
+}
 
 export default FilterDrawer
