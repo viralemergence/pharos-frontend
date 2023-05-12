@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
 import FilterDrawer from './FilterDrawer'
-import { magnifyingGlassIconSvgUri, xIconSvgUri } from "./Icons"
+import './dataGrid.css'
 
 // After user finishes typing, how long to wait before applying a filter, in
 // milliseconds
@@ -15,7 +15,7 @@ export interface TableViewOptions {
 }
 type Timeout = ReturnType<typeof setTimeout> | null
 type TimeoutsType = Record<string, Timeout>
-type Filter = { description: string; value: string }
+type Filter = { description: string; dataGridKey: string; value: string }
 
 const TableViewContainer = styled.div`
   position: relative;
@@ -68,7 +68,6 @@ const NoRecordsFound = styled.div`
   justify-content: center;
 `
 
-
 interface TableViewProps {
   style?: React.CSSProperties
 }
@@ -103,48 +102,79 @@ export type FilterData = Map<string, Filter>
 const TableView = ({ style = {} }: TableViewProps) => {
   const [loading, setLoading] = useState(true)
   const [publishedRecords, setPublishedRecords] = useState<Row[]>([])
-  const [isLastPage, setIsLastPage] = useState(false)
+  const [reachedLastPage, setReachedLastPage] = useState(false)
 
   const initialFilterData = new Map([
-    ['hostSpecies', { description: 'host species', value: '' }],
-    ['pathogen', { description: 'pathogen', value: '' }],
-    ['detectionTarget', { description: 'detection target', value: '' }],
+    [
+      'hostSpecies',
+      {
+        description: 'host species',
+        dataGridKey: 'Host species',
+        value: '',
+      },
+    ],
+    [
+      'pathogen',
+      { description: 'pathogen', dataGridKey: 'Pathogen', value: '' },
+    ],
+    [
+      'detectionTarget',
+      {
+        description: 'detection target',
+        dataGridKey: 'Detection target',
+        value: '',
+      },
+    ],
   ])
   const [filterData, setFilterData] = useState<FilterData>(initialFilterData)
 
-  const pageRef = useRef(1)
-  const timeoutsForFilterInputs = useRef<TimeoutsType>({})
+  /** Ids of filters that have been successfully applied to the published
+   * records. That is, these filter ids have been sent to the server, and it
+   * responded with an appropriate subset of the records. This is used for
+   * color-coding the filtered columns. */
+  const [appliedFilters, setAppliedFilters] = useState<string[]>([])
+
+  const page = useRef(1)
+  const filterTimeouts = useRef<TimeoutsType>({})
 
   const loadPublishedRecords = useCallback(
     async ({ appendResults = true } = {}) => {
       setLoading(true)
       const params: Record<string, string> = {
-        page: pageRef.current.toString(),
+        page: page.current.toString(),
         pageSize: '50',
       }
-      for (const [filterId, { value }] of filterData) params[filterId] = value
+      const pendingFilters = []
+      for (const [filterId, { value }] of filterData) {
+        if (!value) continue
+        params[filterId] = value
+        pendingFilters.push(filterId)
+      }
       const response = await fetch(
         `${process.env.GATSBY_API_URL}/published-records?` +
           new URLSearchParams(params)
       )
 
-      if (response.ok) {
-        const data = await response.json()
-
-        if (dataIsPublishedRecordsResponse(data)) {
-          if (appendResults) {
-            setPublishedRecords(prev =>
-              prev ? [...prev, ...data.publishedRecords] : data.publishedRecords
-            )
-          } else {
-            setPublishedRecords(data.publishedRecords)
-          }
-          setIsLastPage(data.isLastPage)
-          setLoading(false)
-        } else console.log('GET /published-records: malformed response')
+      if (!response.ok) {
+        console.log('GET /published-records: error')
+        setLoading(false)
+        return
       }
+      const data = await response.json()
+      if (!dataIsPublishedRecordsResponse(data)) {
+        console.log('GET /published-records: malformed response')
+        setLoading(false)
+        return
+      }
+      setPublishedRecords(previousRecords => [
+        ...(appendResults ? previousRecords : []),
+        ...data.publishedRecords,
+      ])
+      setReachedLastPage(data.isLastPage)
+      setAppliedFilters(pendingFilters)
+      setLoading(false)
     },
-    [filterData, setPublishedRecords, setIsLastPage, setLoading]
+    [filterData, setPublishedRecords, setReachedLastPage, setLoading]
   )
 
   useEffect(() => {
@@ -160,6 +190,11 @@ const TableView = ({ style = {} }: TableViewProps) => {
     width: 55,
   }
 
+
+  const dataGridKeysForFilteredColumns = Array.from(filterData)
+    .filter(([filterId, _]) => appliedFilters.includes(filterId))
+    .map(([_, { dataGridKey }]) => dataGridKey)
+
   const columns: readonly Column<Row>[] = [
     rowNumberColumn,
     ...Object.keys(publishedRecords?.[0] ?? {})
@@ -169,12 +204,15 @@ const TableView = ({ style = {} }: TableViewProps) => {
         name: key,
         width: key.length * 7.5 + 15 + 'px',
         resizable: true,
+        cellClass: dataGridKeysForFilteredColumns.includes(key)
+          ? 'in-filtered-column'
+          : undefined,
       })),
   ]
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
-    if (loading || isLastPage || !divIsAtBottom(event)) return
-    pageRef.current += 1
+    if (loading || reachedLastPage || !divIsAtBottom(event)) return
+    page.current += 1
     loadPublishedRecords()
   }
 
@@ -182,32 +220,30 @@ const TableView = ({ style = {} }: TableViewProps) => {
     ([_filterId, { value }]) => value
   )
 
-  const filterOnInputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const filterId = e.target.id.match(/^filter-(.+)/)?.[1] || ''
+  const onFilterInput = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    filterId = ''
+  ) => {
     const newFilterValue = e.target.value
-
     setFilterData(filterData => {
       const filter = filterData.get(filterId)
       if (filter) filter.value = newFilterValue
       else console.error(`Filter not found: ${filterId}`)
       return filterData
     })
-    clearTimeout(timeoutsForFilterInputs.current?.[filterId] ?? undefined)
+    clearTimeout(filterTimeouts.current?.[filterId] ?? undefined)
     const timeout = setTimeout(
       () => loadPublishedRecords({ appendResults: false }),
       FILTER_DELAY
     )
 
-    // Store timeout so we can cancel it if the user types again
-    timeoutsForFilterInputs.current[filterId] = timeout
+    // Store timeout so we can restart it if the user types again
+    filterTimeouts.current[filterId] = timeout
   }
 
   return (
     <TableViewContainer style={style}>
-      <FilterDrawer
-        filterData={filterData}
-        filterOnInputHandler={filterOnInputHandler}
-      />
+      <FilterDrawer filterData={filterData} onFilterInput={onFilterInput} />
       <TableContaier>
         {!loading && publishedRecords?.length === 0 ? (
           <NoRecordsFound>
@@ -230,7 +266,7 @@ const TableView = ({ style = {} }: TableViewProps) => {
         {loading && (
           <LoadingMessage>
             <LoadingSpinner />{' '}
-            {pageRef.current > 1 ? 'Loading more rows' : 'Loading'}
+            {page.current > 1 ? 'Loading more rows' : 'Loading'}
           </LoadingMessage>
         )}
       </TableContaier>

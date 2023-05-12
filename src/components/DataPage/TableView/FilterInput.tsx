@@ -22,8 +22,9 @@ const FilterInputElement = styled.input<{
   padding: 10px 40px 10px 10px;
   position: relative;
   width: 350px;
-  // Hacky solution to remove autocomplete background-color
-  // https://stackoverflow.com/a/69364368/3891407
+
+  // Workaround to remove browser-added background-color on autocompleted
+  // inputs, see https://stackoverflow.com/a/69364368/3891407
   &:-webkit-autofill,
   &:-webkit-autofill:focus {
     transition: background-color 600000s 0s, color 600000s 0s;
@@ -53,14 +54,19 @@ const FilterInputClearButton = styled.button`
   }
 `
 
-const FilterInput = props => {
-  const [hasValue, setHasValue] = useState(props.defaultValue)
+interface FilterInputProps {
+  defaultValue: string;
+  onInput: (e: React.ChangeEvent<HTMLInputElement>) => void
+}
+
+const FilterInput = (props: FilterInputProps) => {
+  const [hasValue, setHasValue] = useState(!!props.defaultValue)
   const inputRef = useRef<HTMLInputElement>(null)
   return (
     <FilterInputContainer>
       <FilterInputElement
         {...props}
-        onChange={(e: any) => {
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           setHasValue(!!e.target.value)
         }}
         hasValue={hasValue}

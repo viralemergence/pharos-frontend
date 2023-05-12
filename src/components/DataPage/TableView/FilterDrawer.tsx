@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import InputLabel from '../../ui/InputLabel'
 import type { FilterData } from './TableView'
@@ -20,20 +20,18 @@ const DrawerContainer = styled.div<{ isFilterDrawerOpen: boolean }>`
 
 const FilterDrawer = ({
   filterData,
-  filterOnInputHandler,
+  onFilterInput,
 }: {
   filterData: FilterData
-  /** Event handler for when one of the filter <input>s receives new input */
-  filterOnInputHandler: (e: React.ChangeEvent<HTMLInputElement>) => void
+  /** Event handler for when one of the filter <input> elements receives new input */
+  onFilterInput: (e: React.ChangeEvent<HTMLInputElement>, filterId: string) => void
 }) => {
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(true)
 
   return (
     <DrawerContainer isFilterDrawerOpen={isFilterDrawerOpen}>
       <FilterDrawerToggleButton
-        onClick={() => {
-          setIsFilterDrawerOpen(open => !open)
-        }}
+        onClick={() => setIsFilterDrawerOpen(open => !open)}
         isFilterDrawerOpen={isFilterDrawerOpen}
       />
       {isFilterDrawerOpen && (
@@ -46,9 +44,8 @@ const FilterDrawer = ({
                   Search by {description}
                 </div>
                 <FilterInput
-                  id={`filter-${filterId}`}
-                  onInput={filterOnInputHandler}
                   defaultValue={value}
+                  onInput={(e) => onFilterInput(e, filterId)}
                 />
               </InputLabel>
             </div>
