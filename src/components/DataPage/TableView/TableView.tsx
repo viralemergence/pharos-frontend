@@ -3,19 +3,19 @@ import styled from 'styled-components'
 import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
 import FilterDrawer from './FilterDrawer'
+import { magnifyingGlassIconSvgUri, xIconSvgUri } from "./Icons"
 
 // After user finishes typing, how long to wait before applying a filter, in
 // milliseconds
-const FILTER_DELAY = 500
+const FILTER_DELAY = 300
 
 export interface TableViewOptions {
-  appendResults: boolean;
-  filters?: Record<string, string>;
+  appendResults: boolean
+  filters?: Record<string, string>
 }
 type Timeout = ReturnType<typeof setTimeout> | null
 type TimeoutsType = Record<string, Timeout>
 type Filter = { description: string; value: string }
-
 
 const TableViewContainer = styled.div`
   position: relative;
@@ -68,6 +68,7 @@ const NoRecordsFound = styled.div`
   justify-content: center;
 `
 
+
 interface TableViewProps {
   style?: React.CSSProperties
 }
@@ -102,19 +103,17 @@ export type FilterData = Map<string, Filter>
 const TableView = ({ style = {} }: TableViewProps) => {
   const [loading, setLoading] = useState(true)
   const [publishedRecords, setPublishedRecords] = useState<Row[]>([])
-
-  const timeoutsForFilterInputs = useRef<TimeoutsType>({})
-
-  const [filterData, setFilterData] = useState<FilterData>(
-    new Map([
-      ['hostSpecies', { description: 'host species', value: '' }],
-      ['pathogen', { description: 'pathogen', value: '' }],
-      ['detectionTarget', { description: 'detection target', value: '' }],
-    ])
-  )
-
   const [isLastPage, setIsLastPage] = useState(false)
+
+  const initialFilterData = new Map([
+    ['hostSpecies', { description: 'host species', value: '' }],
+    ['pathogen', { description: 'pathogen', value: '' }],
+    ['detectionTarget', { description: 'detection target', value: '' }],
+  ])
+  const [filterData, setFilterData] = useState<FilterData>(initialFilterData)
+
   const pageRef = useRef(1)
+  const timeoutsForFilterInputs = useRef<TimeoutsType>({})
 
   const loadPublishedRecords = useCallback(
     async ({ appendResults = true } = {}) => {
@@ -179,8 +178,6 @@ const TableView = ({ style = {} }: TableViewProps) => {
     loadPublishedRecords()
   }
 
-  if (style.display === 'block') style.display = 'grid'
-
   const areFiltersUsed = Array.from(filterData).some(
     ([_filterId, { value }]) => value
   )
@@ -188,6 +185,7 @@ const TableView = ({ style = {} }: TableViewProps) => {
   const filterOnInputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const filterId = e.target.id.match(/^filter-(.+)/)?.[1] || ''
     const newFilterValue = e.target.value
+
     setFilterData(filterData => {
       const filter = filterData.get(filterId)
       if (filter) filter.value = newFilterValue

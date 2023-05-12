@@ -1,17 +1,15 @@
+import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
+import { magnifyingGlassIconSvgUri, xIconSvgUri } from './Icons'
 
-const searchIconSvg = `
-<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" >
-  <path d="M12.5 11H11.71L11.43 10.73C12.41 9.59 13 8.11 13 6.5C13 2.91 10.09 0 6.5 0C2.91 0 0 2.91 0 6.5C0 10.09 2.91 13 6.5 13C8.11 13 9.59 12.41 10.73 11.43L11 11.71V12.5L16 17.49L17.49 16L12.5 11ZM6.5 11C4.01 11 2 8.99 2 6.5C2 4.01 4.01 2 6.5 2C8.99 2 11 4.01 11 6.5C11 8.99 8.99 11 6.5 11Z" fill="white" />
-</svg>`
-const searchIconSvgDataURL = `url("data:image/svg+xml,${encodeURIComponent(
-  searchIconSvg
-)}")`
-
-const FilterInput = styled.input`
+const FilterInputElement = styled.input<{
+  hasValue: boolean
+  defaultValue: string
+}>`
   ${({ theme }) => theme.bigParagraph};
   background-color: ${({ theme }) => theme.black80Transparent};
-  background-image: ${searchIconSvgDataURL};
+  background-image: ${props =>
+    props.hasValue ? 'unset' : magnifyingGlassIconSvgUri};
   background-position: right 10px center;
   background-repeat: no-repeat;
   border: 1px solid ${({ theme }) => theme.white};
@@ -21,9 +19,73 @@ const FilterInput = styled.input`
   line-height: unset;
   font-size: 14px;
   margin-top: 0;
-  padding: 10px 36px 10px 10px;
+  padding: 10px 40px 10px 10px;
   position: relative;
   width: 350px;
+  // Hacky solution to remove autocomplete background-color
+  // https://stackoverflow.com/a/69364368/3891407
+  &:-webkit-autofill,
+  &:-webkit-autofill:focus {
+    transition: background-color 600000s 0s, color 600000s 0s;
+  }
 `
+const FilterInputContainer = styled.div`
+  position: relative;
+`
+
+const FilterInputClearButton = styled.button`
+  background-color: transparent;
+  background-image: ${xIconSvgUri};
+  background-position: center center;
+  background-repeat: no-repeat;
+  border: 0;
+  content: '';
+  font-size: 14pt;
+  height: 100%;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  width: 38px;
+  z-index: 10;
+  cursor: pointer;
+  &:focus {
+    border: 3px solid rgba(255, 255, 255, 0.1);
+  }
+`
+
+const FilterInput = props => {
+  const [hasValue, setHasValue] = useState(props.defaultValue)
+  const inputRef = useRef<HTMLInputElement>(null)
+  return (
+    <FilterInputContainer>
+      <FilterInputElement
+        {...props}
+        onChange={(e: any) => {
+          setHasValue(!!e.target.value)
+        }}
+        hasValue={hasValue}
+        ref={inputRef}
+      />
+      {hasValue && (
+        <FilterInputClearButton
+          onClick={() => {
+            if (inputRef.current) {
+              setHasValue(false)
+              inputRef.current.value = ''
+              inputRef.current?.dispatchEvent(
+                new Event('input', {
+                  bubbles: true,
+                  cancelable: true,
+                })
+              )
+            } else {
+              console.error('No inputRef')
+            }
+          }}
+        />
+      )}
+    </FilterInputContainer>
+  )
+}
 
 export default FilterInput

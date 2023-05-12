@@ -23,6 +23,7 @@ const FilterDrawer = ({
   filterOnInputHandler,
 }: {
   filterData: FilterData
+  /** Event handler for when one of the filter <input>s receives new input */
   filterOnInputHandler: (e: React.ChangeEvent<HTMLInputElement>) => void
 }) => {
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(true)
