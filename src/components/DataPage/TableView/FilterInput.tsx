@@ -1,72 +1,100 @@
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
-import InputLabel from '../../ui/InputLabel'
-import type { FilterInputEventHandler } from './FilterDrawer'
+import { magnifyingGlassIconSvgUri, xIconSvgUri } from './Icons'
 
-const getFontFromTheme = ({ theme }: { theme: Record<string, string> }) =>
-  theme?.bigParagraph?.match?.(/font-family:([^;]*)/)?.[1] || 'inherit'
-
-const FilterInputElement = styled.input<{ svgDataUrl: string }>`
+const FilterInputElement = styled.input<{
+  hasValue: boolean
+  defaultValue: string
+}>`
+  ${({ theme }) => theme.bigParagraph};
   background-color: ${({ theme }) => theme.black80Transparent};
-  background-image: ${props => props.svgDataUrl};
+  background-image: ${props =>
+    props.hasValue ? 'unset' : magnifyingGlassIconSvgUri};
   background-position: right 10px center;
   background-repeat: no-repeat;
+  border: 1px solid ${({ theme }) => theme.white};
   border-color: ${({ theme }) => theme.white};
   border-radius: 5px;
-  border: 1px solid ${({ theme }) => theme.white};
   color: ${({ theme }) => theme.white};
-  font-family: ${getFontFromTheme};
+  line-height: unset;
   font-size: 14px;
   margin-top: 0;
-  padding: 10px 36px 10px 10px;
+  padding: 10px 40px 10px 10px;
   position: relative;
   width: 350px;
+
+  // Workaround to remove browser-added background-color on autocompleted
+  // inputs, see https://stackoverflow.com/a/69364368/3891407
+  &:-webkit-autofill,
+  &:-webkit-autofill:focus {
+    transition: background-color 600000s 0s, color 600000s 0s;
+  }
+`
+const FilterInputContainer = styled.div`
+  position: relative;
 `
 
-export const FilterInputLabel = ({
-  name,
-  children,
-}: {
-  name: string
-  children: React.ReactNode
-}) => (
-  <InputLabel htmlFor={`filter-by-${name}`} style={{ marginBottom: '5px' }}>
-    {children}
-  </InputLabel>
-)
+const FilterInputClearButton = styled.button`
+  background-color: transparent;
+  background-image: ${xIconSvgUri};
+  background-position: center center;
+  background-repeat: no-repeat;
+  border: 0;
+  content: '';
+  font-size: 14pt;
+  height: 100%;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  width: 38px;
+  z-index: 10;
+  cursor: pointer;
+  &:focus {
+    opacity: .85;
+  }
+`
 
-export const FilterInput = ({
-  name,
-  handleFilterInput,
-}: {
-  name: string
-  handleFilterInput: FilterInputEventHandler
-}) => {
-  const svg = `
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 18 18"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M12.5 11H11.71L11.43 10.73C12.41 9.59 13 8.11 13 6.5C13 2.91 10.09 0 6.5 0C2.91 0 0 2.91 0 6.5C0 10.09 2.91 13 6.5 13C8.11 13 9.59 12.41 10.73 11.43L11 11.71V12.5L16 17.49L17.49 16L12.5 11ZM6.5 11C4.01 11 2 8.99 2 6.5C2 4.01 4.01 2 6.5 2C8.99 2 11 4.01 11 6.5C11 8.99 8.99 11 6.5 11Z"
-            fill="white"
-          />
-        </svg>
-    `
+interface FilterInputProps {
+  defaultValue: string
+  onInput: (e: React.ChangeEvent<HTMLInputElement>) => void
+}
 
-  // Convert the SVG to a data URL
-  const svgDataUrl = `url("data:image/svg+xml,${encodeURIComponent(svg)}")`
-
+const FilterInput = (props: FilterInputProps) => {
+  const [hasValue, setHasValue] = useState(!!props.defaultValue)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setHasValue(!!e.target.value)
+  }
   return (
-    <FilterInputElement
-      id={`filter-by-${name}`}
-      onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-        handleFilterInput(e, name)
-      }}
-      svgDataUrl={svgDataUrl}
-    />
+    <FilterInputContainer>
+      <FilterInputElement
+        {...props}
+        onChange={onChange}
+        hasValue={hasValue}
+        ref={inputRef}
+      />
+      {hasValue && (
+        <FilterInputClearButton
+          onClick={() => {
+            if (!inputRef.current) {
+              console.error('No inputRef')
+              return
+            }
+            setHasValue(false)
+            inputRef.current.value = ''
+            // Trigger the onInput event, which will remove the filter from the
+            // table
+            inputRef.current.dispatchEvent(
+              new Event('input', {
+                bubbles: true,
+                cancelable: true,
+              })
+            )
+          }}
+        />
+      )}
+    </FilterInputContainer>
   )
 }
+
+export default FilterInput

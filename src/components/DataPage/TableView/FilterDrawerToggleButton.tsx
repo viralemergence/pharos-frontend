@@ -1,36 +1,32 @@
 import React from 'react'
 import styled from 'styled-components'
 
-type FilterDrawerToggleButtonProps = {
+interface Props {
   onClick: React.MouseEventHandler<HTMLButtonElement>
   isFilterDrawerOpen: boolean
 }
+
 const Button = styled.button`
   position: absolute;
   top: 28px;
-  right: ${(props: FilterDrawerToggleButtonProps) =>
-    props.isFilterDrawerOpen ? '-17px' : '-34px'};
+  right: ${(props: Props) => (props.isFilterDrawerOpen ? '-17px' : '-34px')};
   width: 34px;
   height: 44px;
   background: rgba(29, 29, 29, 0.8);
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: ${(props: FilterDrawerToggleButtonProps) =>
+  border-radius: ${(props: Props) =>
     props.isFilterDrawerOpen ? '5px' : '5px 0 0 5px'};
   cursor: pointer;
   border: 0;
   ${
     // flip horizontally when drawer is closed
-    (props: FilterDrawerToggleButtonProps) =>
-      !props.isFilterDrawerOpen && 'transform: scaleX(-1);'
+    (props: Props) => !props.isFilterDrawerOpen && 'transform: scaleX(-1);'
   };
 `
 
-const FilterDrawerToggleButton = ({
-  onClick,
-  isFilterDrawerOpen,
-}: FilterDrawerToggleButtonProps) => {
+const FilterDrawerToggleButton = ({ onClick, isFilterDrawerOpen }: Props) => {
   return (
     <Button onClick={onClick} isFilterDrawerOpen={isFilterDrawerOpen}>
       <svg
