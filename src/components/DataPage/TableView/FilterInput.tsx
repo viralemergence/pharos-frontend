@@ -50,43 +50,46 @@ const FilterInputClearButton = styled.button`
   z-index: 10;
   cursor: pointer;
   &:focus {
-    border: 3px solid rgba(255, 255, 255, 0.1);
+    opacity: .85;
   }
 `
 
 interface FilterInputProps {
-  defaultValue: string;
+  defaultValue: string
   onInput: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 const FilterInput = (props: FilterInputProps) => {
   const [hasValue, setHasValue] = useState(!!props.defaultValue)
   const inputRef = useRef<HTMLInputElement>(null)
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setHasValue(!!e.target.value)
+  }
   return (
     <FilterInputContainer>
       <FilterInputElement
         {...props}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          setHasValue(!!e.target.value)
-        }}
+        onChange={onChange}
         hasValue={hasValue}
         ref={inputRef}
       />
       {hasValue && (
         <FilterInputClearButton
           onClick={() => {
-            if (inputRef.current) {
-              setHasValue(false)
-              inputRef.current.value = ''
-              inputRef.current?.dispatchEvent(
-                new Event('input', {
-                  bubbles: true,
-                  cancelable: true,
-                })
-              )
-            } else {
+            if (!inputRef.current) {
               console.error('No inputRef')
+              return
             }
+            setHasValue(false)
+            inputRef.current.value = ''
+            // Trigger the onInput event, which will remove the filter from the
+            // table
+            inputRef.current.dispatchEvent(
+              new Event('input', {
+                bubbles: true,
+                cancelable: true,
+              })
+            )
           }}
         />
       )}
