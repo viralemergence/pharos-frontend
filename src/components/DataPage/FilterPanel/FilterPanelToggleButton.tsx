@@ -3,13 +3,13 @@ import styled from 'styled-components'
 
 interface Props {
   onClick: React.MouseEventHandler<HTMLButtonElement>
-  isFilterDrawerOpen: boolean
+  isFilterPanelOpen: boolean
 }
 
 const Button = styled.button`
   position: absolute;
   top: 28px;
-  right: ${(props: Props) => (props.isFilterDrawerOpen ? '-17px' : '-34px')};
+  right: ${(props: Props) => (props.isFilterPanelOpen ? '-17px' : '-34px')};
   width: 34px;
   height: 44px;
   background: rgba(29, 29, 29, 0.8);
@@ -17,18 +17,18 @@ const Button = styled.button`
   justify-content: center;
   align-items: center;
   border-radius: ${(props: Props) =>
-    props.isFilterDrawerOpen ? '5px' : '5px 0 0 5px'};
+    props.isFilterPanelOpen ? '5px' : '5px 0 0 5px'};
   cursor: pointer;
   border: 0;
   ${
     // flip horizontally when drawer is closed
-    (props: Props) => !props.isFilterDrawerOpen && 'transform: scaleX(-1);'
+    (props: Props) => !props.isFilterPanelOpen && 'transform: scaleX(-1);'
   };
 `
 
-const FilterDrawerToggleButton = ({ onClick, isFilterDrawerOpen }: Props) => {
+const FilterPanelToggleButton = ({ onClick, isFilterPanelOpen }: Props) => {
   return (
-    <Button onClick={onClick} isFilterDrawerOpen={isFilterDrawerOpen}>
+    <Button onClick={onClick} isFilterPanelOpen={isFilterPanelOpen}>
       <svg
         width="18"
         height="18"
@@ -46,4 +46,4 @@ const FilterDrawerToggleButton = ({ onClick, isFilterDrawerOpen }: Props) => {
   )
 }
 
-export default FilterDrawerToggleButton
+export default FilterPanelToggleButton

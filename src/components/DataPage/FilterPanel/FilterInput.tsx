@@ -2,18 +2,17 @@ import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
 import { magnifyingGlassIconSvgUri, xIconSvgUri } from './Icons'
 
-const FilterInputElement = styled.input<{
+export const FilterInputElement = styled.input<{
   hasValue: boolean
   defaultValue: string
 }>`
   ${({ theme }) => theme.bigParagraph};
-  background-color: ${({ theme }) => theme.black80Transparent};
+  background-color: transparent; //${({ theme }) => theme.black80Transparent};
   background-image: ${props =>
     props.hasValue ? 'unset' : magnifyingGlassIconSvgUri};
   background-position: right 10px center;
   background-repeat: no-repeat;
-  border: 1px solid ${({ theme }) => theme.white};
-  border-color: ${({ theme }) => theme.white};
+  border: 1px solid rgba(0, 0, 0, 1);
   border-radius: 5px;
   color: ${({ theme }) => theme.white};
   line-height: unset;

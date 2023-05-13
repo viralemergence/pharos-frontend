@@ -28,7 +28,7 @@ export default {
 `,
   bigParagraph: `
 	font-size: 20px;
-	font-family: "Open Sans", helvetica, arial, sans-serif;
+	font-family: "Noto Sans", system-ui, "Open Sans", helvetica, arial, sans-serif;
 	font-weight: 400;
 	font-style: normal;
 	line-height: 30px;
@@ -37,7 +37,7 @@ export default {
 `,
   bigParagraphSemibold: `
 	font-size: 20px;
-	font-family: "Open Sans", helvetica, arial, sans-serif;
+	font-family: "Noto Sans", system-ui, "Open Sans", helvetica, arial, sans-serif;
 	font-weight: 600;
 	font-style: normal;
 	line-height: 30px;
@@ -46,7 +46,7 @@ export default {
 `,
   smallParagraph: `
 	font-size: 16px;
-	font-family: "Open Sans", helvetica, arial, sans-serif;
+	font-family: "Noto Sans", system-ui, "Open Sans", helvetica, arial, sans-serif;
 	font-weight: 400;
 	font-style: normal;
 	line-height: 25px;
@@ -55,7 +55,7 @@ export default {
 `,
   smallParagraphSemibold: `
 	font-size: 16px;
-	font-family: "Open Sans", helvetica, arial, sans-serif;
+	font-family: "Noto Sans", system-ui, "Open Sans", helvetica, arial, sans-serif;
 	font-weight: 600;
 	font-style: normal;
 	line-height: 25px;
@@ -64,7 +64,7 @@ export default {
 `,
   extraSmallParagraph: `
 	font-size: 14px;
-	font-family: "Open Sans", helvetica, arial, sans-serif;
+	font-family: "Noto Sans", system-ui, "Open Sans", helvetica, arial, sans-serif;
 	font-weight: 400;
 	font-style: normal;
 	line-height: 22px;
@@ -82,7 +82,7 @@ export default {
 `,
   medMarketing: `
 	font-size: 50px;
-	font-family: "Poppins", helvetica, arial, sans-serif;
+	font-family: "Noto Sans", "Poppins", helvetica, arial, sans-serif;
 	font-weight: 400;
 	font-style: normal;
 	text-decoration: none;

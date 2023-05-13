@@ -20,7 +20,7 @@ const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
     padding: 0;
-    font-family: "Poppins", Arial, Helvetica, sans-serif;
+    font-family: "Noto Sans", "Poppins", Arial, Helvetica, sans-serif;
     color: ${({ theme }) => theme.black};
   }
 `

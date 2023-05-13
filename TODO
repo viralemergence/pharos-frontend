@@ -1,0 +1,1 @@
+Bug: if the page number has increased, adding a filter will return no results.
