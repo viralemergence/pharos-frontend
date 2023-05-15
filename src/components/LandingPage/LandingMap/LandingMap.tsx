@@ -10,7 +10,6 @@ const MapContainer = styled.div`
   height: calc(100vh - 60px);
   width: 100vw;
   background: #0b103b;
-  z-index: -1;
   filter: brightness(0.7);
 `
 
