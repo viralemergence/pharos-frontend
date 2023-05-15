@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import MintButton from 'components/ui/MintButton'
 import Modal from 'components/ui/Modal'
 
-import { TopBar } from '../../layout/ViewComponents'
+import { TopBar } from '../../layout/TopBar'
 import CreateProjectForm from './CreateProjectForm/CreateProjectForm'
 import ProjectsTable from './ProjectsTable/ProjectsTable'
 import Main from 'components/layout/Main'
