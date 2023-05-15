@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import DatasetGrid from './DatasetGrid/DatasetsGrid'
 
 import CSVUploader from './CSVParser/CSVUploader'
-import { TopBar } from '../ViewComponents'
+import { TopBar } from '../../layout/ViewComponents'
 
 import DownloadButton from './DownloadButton/DownloadButton'
 import ReleaseHelpMessage from './ReleaseHelpMessage/ReleaseHelpMessage'

@@ -5,5 +5,4 @@ export const TopBar = styled.div`
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  // margin-bottom: 15px;
 `

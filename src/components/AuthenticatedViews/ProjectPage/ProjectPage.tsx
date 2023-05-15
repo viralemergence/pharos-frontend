@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import CreateDatasetForm from './CreateDatasetForm/CreateDatasetForm'
 import DatasetsTable from './DatasetsTable/DatasetsTable'
-import { TopBar } from '../ViewComponents'
+import { TopBar } from '../../layout/ViewComponents'
 import Main from 'components/layout/Main'
 import BreadcrumbLink, {
   BreadcrumbContainer,
