@@ -1,11 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
 
-import MintButton from 'components/ui/MintButton'
-import Modal from 'components/ui/Modal'
-
-import CreateProjectForm from './CreateProjectForm/CreateProjectForm'
-import ProjectsTable from './ProjectsTable/ProjectsTable'
 import Main from 'components/layout/Main'
+import MintButton from 'components/ui/MintButton'
+import ProjectsTable from './ProjectsTable/ProjectsTable'
+import CreateProjectForm from './CreateProjectForm/CreateProjectForm'
 
 import TopBar, {
   Title,
@@ -14,8 +12,10 @@ import TopBar, {
   BreadcrumbLink,
 } from 'components/layout/TopBar'
 
+import useModal from 'hooks/useModal/useModal'
+
 const ProjectList = () => {
-  const [createModalOpen, setCreateModalOpen] = useState(false)
+  const setModal = useModal()
 
   return (
     <Main>
@@ -25,12 +25,11 @@ const ProjectList = () => {
         </Breadcrumbs>
         <Title>My Projects</Title>
         <Controls>
-          <MintButton onClick={() => setCreateModalOpen(true)}>
+          <MintButton
+            onClick={() => setModal(<CreateProjectForm />, { closeable: true })}
+          >
             + New Project
           </MintButton>
-          <Modal closeable open={createModalOpen} setOpen={setCreateModalOpen}>
-            <CreateProjectForm />
-          </Modal>
         </Controls>
       </TopBar>
       <ProjectsTable />
