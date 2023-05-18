@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { ProjectPageMain } from 'components/ProjectPage/ProjectPageLayout'
+import { ProjectPageLayout } from 'components/ProjectPage/ProjectPageLayout'
 
 import PublicViewBackground from '../PublicViewBackground'
 
@@ -12,9 +12,9 @@ const ProjectPage = () => {
   return (
     <>
       <PublicViewBackground />
-      <ProjectPageMain>
+      <ProjectPageLayout>
         <p>Project Page: projectID = {projectID}</p>
-      </ProjectPageMain>
+      </ProjectPageLayout>
     </>
   )
 }
