@@ -9,6 +9,9 @@ import ModalMessageProvider from 'hooks/useModal/ModalMessageProvider'
 import ProjectPage from 'components/PublicViews/ProjectPage/ProjectPage'
 
 const Projects = () => {
+  // on the build server, don't try to render client-side routes
+  if (typeof window === 'undefined') return <></>
+
   return (
     <Providers>
       <CMS.SEO />
