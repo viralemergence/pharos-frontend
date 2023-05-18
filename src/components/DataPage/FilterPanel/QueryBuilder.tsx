@@ -2,20 +2,33 @@ import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
 import InputLabel from '../../ui/InputLabel'
 
-type Field = {
+export type Field = {
   id: string
   type: string
   name: string
+  dataGridKey: string
 }
 
 type FieldBuilderProps = {
   allFields: Field[]
   onFilterInput: FilterInputHandler
+  // TODO: Perhaps just string[]?
+  value: string | string[]
 }
-const FieldBuilder = ({ allFields, onFilterInput }: FieldBuilderProps) => {
+const FieldBuilder = ({
+  allFields,
+  value,
+  onFilterInput,
+}: FieldBuilderProps) => {
   const [field, setField] = useState<Field | null>(null)
   if (field) {
-    return <FieldSetter field={field} onFilterInput={onFilterInput} />
+    return (
+      <FieldValueSetter
+        field={field}
+        value={value}
+        onFilterInput={onFilterInput}
+      />
+    )
   } else {
     return <FieldSelector fields={allFields} setField={setField} />
   }
@@ -29,13 +42,13 @@ type FilterInputHandler = (
   filterId: string
 ) => void
 
-const FieldSetter = ({
+const FieldValueSetter = ({
   field,
   value,
   onFilterInput,
 }: {
   field: Field
-  value: string
+  value: string | string[]
   onFilterInput: FilterInputHandler
 }) => {
   return (
@@ -45,7 +58,9 @@ const FieldSetter = ({
         <FieldInput
           type="text"
           defaultValue={value}
-          onInput={e => onFilterInput(e, field.id)}
+          onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
+            onFilterInput(e, field.id)
+          }
         />
       </InputLabel>
     </>
@@ -72,17 +87,25 @@ const FieldSelector = ({
   )
 }
 
-const AddFieldButton = () => {
-  return <button>Add Field</button>
+const AddFieldButton = ({ onClick }) => {
+  return <button onClick={onClick}>Add Field</button>
 }
 
-const QueryBuilder = ({ fields }) => {
-  const fieldCountRef = useRef(0)
+type QueryField = {
+  fieldId: string
+  fieldValue: string | string[] | null
+}
+
+type Query = QueryField[]
+
+const QueryBuilder = ({ fields }: { fields: Field[] }) => {
+  const [fieldCount, setFieldCount] = useState(0)
+  const [query, setQuery] = useState<Query>([])
   return (
     <>
-      <AddFieldButton />
+      <AddFieldButton onClick={() => setFieldCount(count => count + 1)} />
       <ul>
-        {[...Array(fieldCountRef.current)].map(i => {
+        {[...Array(fieldCount)].map(i => {
           return (
             <li>
               <FieldBuilder key={i} allFields={fields} />
@@ -93,3 +116,5 @@ const QueryBuilder = ({ fields }) => {
     </>
   )
 }
+
+export default QueryBuilder

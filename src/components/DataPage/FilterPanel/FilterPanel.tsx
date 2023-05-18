@@ -4,18 +4,13 @@ import InputLabel from '../../ui/InputLabel'
 import type { FilterData } from './constants'
 import FilterPanelToggleButton from './FilterPanelToggleButton'
 import FilterInput, { FilterInputElement } from './FilterInput'
-import type { Field, RuleGroupType, ValueEditorProps } from 'react-querybuilder'
-import {
-  formatQuery,
-  QueryBuilder,
-  parseJsonLogic,
-  RQBJsonLogic,
-} from 'react-querybuilder'
+import type {  RuleGroupType, ValueEditorProps } from 'react-querybuilder'
 import 'react-querybuilder/dist/query-builder.scss' // recommended
 import './filterPanel.scss'
 import './queryBuilder.scss'
 import Typeahead, { Item } from '@talus-analytics/library.ui.typeahead'
 import type { TypeaheadProps } from '@talus-analytics/library.ui.typeahead'
+import QueryBuilder, { Field } from './QueryBuilder'
 
 const fields: Field[] = [
   { name: 'host_species', label: 'Host species' },
@@ -184,17 +179,7 @@ const FilterPanel = ({
       {isFilterPanelOpen && (
         <>
           <PanelHeader>Filters</PanelHeader>
-          <QueryBuilder
-            fields={fields}
-            onQueryChange={q => setQuery(q)}
-            operators={operators}
-            query={query}
-            controlElements={{ valueEditor: QueryBuilderTypeahead }}
-            translations={{
-              addRule: { label: 'Add filter' },
-              addGroup: { label: 'Add condition group' },
-            }}
-          />
+          <QueryBuilder fields={fields} query={query} />
           {/* {Array.from(filterData).map(([filterId, { description, value }]) => ( */}
           {/*   <div key={filterId} style={{ marginTop: '20px' }}> */}
           {/*     <InputLabel> */}
