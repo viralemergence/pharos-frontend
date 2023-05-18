@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components'
+import wideMargins from 'components/layout/Margins'
 
 export const singleColumnBreakpoint = 1500
 
@@ -20,19 +21,7 @@ export const ProjectPageLayout = styled.div`
       'sidebar';
   }
 
-  padding: 0 120px 120px 120px;
-
-  @media (max-width: 1600px) {
-    padding: 0 60px 60px 60px;
-  }
-
-  @media (max-width: 1000px) {
-    padding: 0 30px 30px 30px;
-  }
-
-  @media (max-width: 800px) {
-    padding: 0 10px 10px 10px;
-  }
+  ${wideMargins}
 `
 
 export const ProjectPageMain = styled.div`

@@ -13,6 +13,9 @@ import TopBar, {
 } from 'components/layout/TopBar'
 
 import useModal from 'hooks/useModal/useModal'
+import styled from 'styled-components'
+
+const PortfolioPageLayout = styled.div``
 
 const ProjectList = () => {
   const setModal = useModal()
@@ -36,5 +39,4 @@ const ProjectList = () => {
     </Main>
   )
 }
-
 export default ProjectList
