@@ -7,7 +7,6 @@ import CSVUploader from './CSVParser/CSVUploader'
 import { TopBar } from '../../layout/TopBar'
 
 import DownloadButton from './DownloadButton/DownloadButton'
-import ReleaseHelpMessage from './ReleaseHelpMessage/ReleaseHelpMessage'
 
 import useDataset from 'hooks/dataset/useDataset'
 
@@ -56,7 +55,6 @@ const DatasetEditor = () => {
             </BreadcrumbLink>
             <DatasetStatusMessage />
           </BreadcrumbContainer>
-          <ReleaseHelpMessage />
         </TopBar>
         <TopBar>
           <div>
