@@ -15,7 +15,11 @@ const datasetPlaceholder = {
   name: 'Loading...',
 }
 
-const DatasetsTable = () => {
+interface DatasetsTableProps {
+  style?: React.CSSProperties
+}
+
+const DatasetsTable = ({ style }: DatasetsTableProps) => {
   const setModal = useModal()
   const project = useProject()
   const datasets = useDatasets()
@@ -38,7 +42,7 @@ const DatasetsTable = () => {
         }))
 
   return (
-    <ListTable columnTemplate="2fr repeat(3, 1fr)">
+    <ListTable columnTemplate="2fr repeat(3, 1fr)" style={style}>
       <HeaderRow>
         <div>Name</div>
         <div>Collection Dates</div>

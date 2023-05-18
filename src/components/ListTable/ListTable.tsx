@@ -7,7 +7,6 @@ import { Link } from 'react-router-dom'
 const Container = styled.div`
   max-width: 100%;
   overflow-x: scroll;
-  margin-top: 15px;
 `
 const TableGrid = styled.div`
   display: flex;
@@ -58,9 +57,10 @@ export const HeaderRow = styled.div<{ $columnTemplate?: string }>`
 interface ListTableProps {
   children: React.ReactNode
   columnTemplate: string
+  style?: React.CSSProperties
 }
 
-const ListTable = ({ children, columnTemplate }: ListTableProps) => {
+const ListTable = ({ children, columnTemplate, style }: ListTableProps) => {
   const childrenWithColumns = React.Children.map(children, child => {
     // Checking isValidElement is the safe way and avoids a typescript
     // error too.
@@ -78,7 +78,7 @@ const ListTable = ({ children, columnTemplate }: ListTableProps) => {
   })
 
   return (
-    <Container>
+    <Container style={style}>
       <TableGrid>{childrenWithColumns}</TableGrid>
     </Container>
   )
