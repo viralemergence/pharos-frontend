@@ -4,7 +4,7 @@ import InputLabel from '../../ui/InputLabel'
 import type { FilterData } from './constants'
 import FilterPanelToggleButton from './FilterPanelToggleButton'
 import FilterInput, { FilterInputElement } from './FilterInput'
-import type {  RuleGroupType, ValueEditorProps } from 'react-querybuilder'
+import type { RuleGroupType, ValueEditorProps } from 'react-querybuilder'
 import 'react-querybuilder/dist/query-builder.scss' // recommended
 import './filterPanel.scss'
 import './queryBuilder.scss'
@@ -13,13 +13,13 @@ import type { TypeaheadProps } from '@talus-analytics/library.ui.typeahead'
 import QueryBuilder, { Field } from './QueryBuilder'
 
 const fields: Field[] = [
-  { name: 'host_species', label: 'Host species' },
-  { name: 'pathogen', label: 'Pathogen' },
-  { name: 'latitude', label: 'Latitude' },
-  { name: 'longitude', label: 'Longitude' },
-  { name: 'collection_date', label: 'Collection date' },
-  { name: 'detection_target', label: 'Detection target' },
-  { name: 'region', label: 'Region' },
+  { id: 'host_species', label: 'Host species' },
+  { id: 'pathogen', label: 'Pathogen' },
+  { id: 'latitude', label: 'Latitude' },
+  { id: 'longitude', label: 'Longitude' },
+  { id: 'collection_date', label: 'Collection date' },
+  { id: 'detection_target', label: 'Detection target' },
+  { id: 'region', label: 'Region' },
 ]
 
 const operators = [

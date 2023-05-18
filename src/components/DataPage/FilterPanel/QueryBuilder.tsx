@@ -4,9 +4,8 @@ import InputLabel from '../../ui/InputLabel'
 
 export type Field = {
   id: string
-  type: string
-  name: string
-  dataGridKey: string
+  label: string
+  dataGridKey?: string
 }
 
 type FieldBuilderProps = {
@@ -54,7 +53,7 @@ const FieldValueSetter = ({
   return (
     <>
       <InputLabel>
-        <FieldName>{field.name}</FieldName>
+        <FieldName>{field.label}</FieldName>
         <FieldInput
           type="text"
           defaultValue={value}
@@ -67,6 +66,29 @@ const FieldValueSetter = ({
   )
 }
 
+const FieldSelectorDiv = styled.div`
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: flex-start;
+  background-color: #202020;
+  border-radius: 5px;
+  padding: 5px 0;
+`
+const FieldSelectorButton = styled.button`
+  ${props => props.theme.smallParagraph};
+  text-align: left;
+  padding: 10px 15px;
+  background-color: transparent;
+  flex: 1;
+  width: 100%;
+  color: #fff;
+  border: 0;
+  cursor: pointer;
+  &:hover {
+    background-color: #333;
+  }
+`
+
 const FieldSelector = ({
   fields,
   setField,
@@ -75,15 +97,15 @@ const FieldSelector = ({
   setField: (field: Field) => void
 }) => {
   return (
-    <>
+    <FieldSelectorDiv>
       {fields.map(field => {
         return (
-          <button value={field.id} onClick={e => setField(field)}>
-            {field.name}
-          </button>
+          <FieldSelectorButton value={field.id} onClick={e => setField(field)}>
+            {field.label}
+          </FieldSelectorButton>
         )
       })}
-    </>
+    </FieldSelectorDiv>
   )
 }
 
@@ -98,21 +120,30 @@ type QueryField = {
 
 type Query = QueryField[]
 
+const FieldListItem = styled.li`
+  list-style: none;
+  margin-top: 20px;
+`
+const FieldList = styled.ul`
+  margin: 0;
+  padding: 0;
+`
+
 const QueryBuilder = ({ fields }: { fields: Field[] }) => {
   const [fieldCount, setFieldCount] = useState(0)
   const [query, setQuery] = useState<Query>([])
   return (
     <>
       <AddFieldButton onClick={() => setFieldCount(count => count + 1)} />
-      <ul>
+      <FieldList>
         {[...Array(fieldCount)].map(i => {
           return (
-            <li>
+            <FieldListItem>
               <FieldBuilder key={i} allFields={fields} />
-            </li>
+            </FieldListItem>
           )
         })}
-      </ul>
+      </FieldList>
     </>
   )
 }
