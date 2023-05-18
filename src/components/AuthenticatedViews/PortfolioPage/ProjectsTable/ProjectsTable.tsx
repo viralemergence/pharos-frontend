@@ -19,8 +19,16 @@ const ProjectsTable = () => {
         new Date(a.lastUpdated ?? '').getTime()
     )
 
+  const columnTemplate = `
+    2.5fr
+    repeat(2, minmax(150px, 1fr))
+    minmax(130px, 1fr)
+    minmax(180px, 1fr)
+    7em
+  `
+
   return (
-    <ListTable columnTemplate="repeat(6, 1fr)">
+    <ListTable columnTemplate={columnTemplate} style={{ gridArea: 'projects' }}>
       <HeaderRow>
         <div>Project name</div>
         <div>Project status</div>
