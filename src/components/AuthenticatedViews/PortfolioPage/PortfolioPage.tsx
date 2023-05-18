@@ -1,6 +1,5 @@
 import React from 'react'
 
-import Main from 'components/layout/Main'
 import MintButton from 'components/ui/MintButton'
 import ProjectsTable from './ProjectsTable/ProjectsTable'
 import CreateProjectForm from './CreateProjectForm/CreateProjectForm'
@@ -19,10 +18,10 @@ import wideMargins from 'components/layout/Margins'
 const PortfolioPageLayout = styled.div`
   ${wideMargins}
   display: grid;
+  gap: 30px;
   grid-template-areas:
     'topbar'
     'projects';
-  gap: 30px;
 `
 
 const ProjectList = () => {
