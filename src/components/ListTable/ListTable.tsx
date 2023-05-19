@@ -86,6 +86,16 @@ export const HeaderRow = styled.div<{
   }
 `
 
+export const CardHeaderRow = styled.h3`
+  ${({ theme }) => theme.h3};
+  margin: 10px 0;
+
+  @media (min-width: ${cardsBreakpoint}px) {
+    display: none;
+    hidden: true;
+  }
+`
+
 export const TableCell = styled.div<{
   hideMobile?: boolean
   hideMedium?: boolean

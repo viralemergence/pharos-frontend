@@ -3,6 +3,7 @@ import React from 'react'
 import { DatasetsTableRow } from './DatasetsTableRow'
 
 import ListTable, {
+  CardHeaderRow,
   HeaderRow,
   RowLink,
   TableCell,
@@ -50,29 +51,33 @@ const DatasetsTable = ({ style }: DatasetsTableProps) => {
   const mediumColumnTemplate = '1fr 150px 200px'
 
   return (
-    <ListTable {...{ wideColumnTemplate, mediumColumnTemplate, style }}>
-      <HeaderRow>
-        <TableCell>Name</TableCell>
-        <TableCell hideMedium>Collection Dates</TableCell>
-        <TableCell>Status</TableCell>
-        <TableCell>Last updated</TableCell>
-      </HeaderRow>
-      {sorted.map(dataset => (
-        <RowLink
-          key={dataset.datasetID}
-          to={`/projects/${project.projectID}/${dataset.datasetID}`}
-          onClick={e => {
-            if (dataset.datasetID === datasetPlaceholder.datasetID) {
-              e.preventDefault()
-              setModal(<CreateDatasetForm />, { closeable: true })
-            }
-          }}
-        >
-          <DatasetsTableRow dataset={dataset} />
-        </RowLink>
-      ))}
-      <CreateNewDatasetRow />
-    </ListTable>
+    <>
+      <ListTable {...{ wideColumnTemplate, mediumColumnTemplate, style }}>
+        <HeaderRow>
+          <TableCell>Name</TableCell>
+          <TableCell hideMedium>Collection Dates</TableCell>
+          <TableCell>Status</TableCell>
+          <TableCell>Last updated</TableCell>
+        </HeaderRow>
+        <CardHeaderRow>Datasets</CardHeaderRow>
+        {sorted.map(dataset => (
+          <RowLink
+            key={dataset.datasetID}
+            to={`/projects/${project.projectID}/${dataset.datasetID}`}
+            onClick={e => {
+              if (dataset.datasetID === datasetPlaceholder.datasetID) {
+                e.preventDefault()
+                setModal(<CreateDatasetForm />, { closeable: true })
+              }
+            }}
+          >
+            <DatasetsTableRow dataset={dataset} />
+          </RowLink>
+        ))}
+        <CreateNewDatasetRow />
+      </ListTable>
+      <CardHeaderRow>Project Information</CardHeaderRow>
+    </>
   )
 }
 
