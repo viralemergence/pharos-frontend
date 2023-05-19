@@ -112,6 +112,10 @@ export const TableCell = styled.div<{
     order: ${({ cardOrder }) => cardOrder ?? 'initial'};
     display: ${({ hideMobile, hideMedium }) =>
       hideMobile || hideMedium ? 'none' : 'unset'};
+
+    &:nth-child(1) {
+      ${({ theme }) => theme.bigParagraphSemibold};
+    }
   }
 `
 
