@@ -96,11 +96,6 @@ const optionsForFields: Record<string, string[]> = {
   ],
 }
 
-const PanelHeader = styled.div`
-  ${({ theme }) => theme.bigParagraph};
-  margin-bottom: 20px;
-`
-
 const SearchButton = styled.button<{ type: string; disabled: boolean }>`
   ${({ theme }) => theme.smallParagraph};
   border: none;
@@ -119,16 +114,17 @@ const PanelContainer = styled.div<{
   height: string
 }>`
   overflow-y: auto;
-  background-color: ${({ theme }) => theme.black80Transparent};
+  background-color: rgba(51, 51, 51, 0.9);
   color: #fff;
   padding: ${props => (props.isFilterPanelOpen ? '34px 40px' : '0')};
   height: ${props => props.height};
   position: relative;
-  width: 400px;
-  top: 0px;
-  left: 0px;
+  width: 430px;
+  top: 73px;
+  left: 10px;
+  border-radius: 10px;
   margin-right: 20px;
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(2px);
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.4);
   z-index: 3;
 `
@@ -156,7 +152,6 @@ const FilterPanel = ({
     >
       {isFilterPanelOpen && (
         <>
-          <PanelHeader>Filters</PanelHeader>
           <QueryBuilder
             fields={fields}
             filterData={filterData}

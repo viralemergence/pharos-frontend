@@ -129,7 +129,7 @@ const DataView = (): JSX.Element => {
 		[filterData, setPublishedRecords, setReachedLastPage, setLoading]
 	)
 	const dataViewHeight = 'calc(100vh - 87px)'
-	const panelHeight = 'calc(100vh - 87px)'
+	const panelHeight = 'calc(100vh - 170px)'
 
 	return (
 		<Providers>

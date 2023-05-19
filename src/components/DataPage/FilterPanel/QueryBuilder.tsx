@@ -75,6 +75,7 @@ const QueryBuilderButton = styled.button`
 `
 const QueryBuilderToolbarButton = styled(QueryBuilderButton)`
   border-radius: 5px;
+  background-color: #202020;
 `
 
 const FieldSelectorDiv = styled.div`
@@ -118,6 +119,18 @@ const FieldList = styled.ul`
   padding: 0;
 `
 
+const PanelHeader = styled.div`
+  ${({ theme }) => theme.smallParagraph};
+  padding: 10px;
+  flex: 1;
+`
+const QueryBuilderToolbar = styled.nav`
+  display: flex;
+  flex-flow: row wrap;
+  margin-bottom: 20px;
+  gap: 10px;
+`
+
 const QueryBuilder = ({
   fields,
   filterData,
@@ -138,11 +151,17 @@ const QueryBuilder = ({
 
   return (
     <>
-      <QueryBuilderToolbarButton
-        onClick={() => setFieldCount(count => count + 1)}
-      >
-        + Add filter
-      </QueryBuilderToolbarButton>
+      <QueryBuilderToolbar>
+        <PanelHeader>Filters</PanelHeader>
+        <QueryBuilderToolbarButton
+          onClick={() => setFieldCount(count => count + 1)}
+        >
+          + Add filter
+        </QueryBuilderToolbarButton>
+        <QueryBuilderToolbarButton onClick={() => setFieldCount(0)}>
+          Clear all
+        </QueryBuilderToolbarButton>
+      </QueryBuilderToolbar>
       <FieldList>
         {[...Array(fieldCount)].map(i => {
           return (
