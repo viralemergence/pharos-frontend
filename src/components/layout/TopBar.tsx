@@ -17,14 +17,13 @@ export const Title = styled.h1`
   margin: 0;
   flex-grow: 1;
   min-width: min-content;
-  flex-basis: 60%;
 `
 
 export const Breadcrumbs = styled.div`
   flex-grow: 1;
   min-width: min-content;
   padding: 2px;
-  flex-basis: 60%;
+  flex-basis: 100%;
   display: flex;
   flex-wrap: wrap;
 `
