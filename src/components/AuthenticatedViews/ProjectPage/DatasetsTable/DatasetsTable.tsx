@@ -47,8 +47,8 @@ const DatasetsTable = ({ style }: DatasetsTableProps) => {
           datasetID: id,
         }))
 
-  const wideColumnTemplate = '1.5fr 1fr 150px 200px'
-  const mediumColumnTemplate = '1fr 150px 200px'
+  const wideColumnTemplate = '1.5fr 1fr 150px 220px'
+  const mediumColumnTemplate = '1fr 150px 220px'
 
   return (
     <>
