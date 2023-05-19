@@ -7,12 +7,8 @@ const wideMargins = css`
     margin: 0 60px 60px 60px;
   }
 
-  @media (max-width: 1000px) {
-    margin: 0 30px 30px 30px;
-  }
-
   @media (max-width: 800px) {
-    margin: 0 10px 10px 10px;
+    margin: 0 20px 20px 20px;
   }
 `
 export default wideMargins
