@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 import wideMargins from 'components/layout/Margins'
 
-export const singleColumnBreakpoint = 1500
+export const singleColumnBreakpoint = 1300
 
 export const ProjectPageLayout = styled.div`
   position: relative;
