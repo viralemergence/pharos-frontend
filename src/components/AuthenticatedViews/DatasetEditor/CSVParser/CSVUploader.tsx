@@ -13,7 +13,6 @@ const fileTypes = ['CSV']
 
 const Container = styled.div`
   filter: hue-rotate(309deg) brightness(1.75) saturate(0.25) contrast(1.5);
-  margin-left: auto;
 `
 
 const CSVUploader = () => {
