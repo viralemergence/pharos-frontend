@@ -1,12 +1,7 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import InputLabel from '../../ui/InputLabel'
-
-export type Field = {
-  id: string
-  label: string
-  dataGridKey?: string
-}
+import { Field, FilterData } from './constants'
 
 type FieldBuilderProps = {
   allFields: Field[]
@@ -66,6 +61,22 @@ const FieldValueSetter = ({
   )
 }
 
+const QueryBuilderButton = styled.button`
+  ${props => props.theme.smallParagraph};
+  text-align: left;
+  padding: 10px 15px;
+  background-color: transparent;
+  color: #fff;
+  border: 0;
+  cursor: pointer;
+  &:hover {
+    background-color: #333;
+  }
+`
+const QueryBuilderToolbarButton = styled(QueryBuilderButton)`
+  border-radius: 5px;
+`
+
 const FieldSelectorDiv = styled.div`
   display: flex;
   flex-flow: column nowrap;
@@ -74,19 +85,8 @@ const FieldSelectorDiv = styled.div`
   border-radius: 5px;
   padding: 5px 0;
 `
-const FieldSelectorButton = styled.button`
-  ${props => props.theme.smallParagraph};
-  text-align: left;
-  padding: 10px 15px;
-  background-color: transparent;
-  flex: 1;
+const FieldSelectorButton = styled(QueryBuilderButton)`
   width: 100%;
-  color: #fff;
-  border: 0;
-  cursor: pointer;
-  &:hover {
-    background-color: #333;
-  }
 `
 
 const FieldSelector = ({
@@ -100,7 +100,7 @@ const FieldSelector = ({
     <FieldSelectorDiv>
       {fields.map(field => {
         return (
-          <FieldSelectorButton value={field.id} onClick={e => setField(field)}>
+          <FieldSelectorButton value={field.id} onClick={_e => setField(field)}>
             {field.label}
           </FieldSelectorButton>
         )
@@ -108,17 +108,6 @@ const FieldSelector = ({
     </FieldSelectorDiv>
   )
 }
-
-const AddFieldButton = ({ onClick }) => {
-  return <button onClick={onClick}>Add Field</button>
-}
-
-type QueryField = {
-  fieldId: string
-  fieldValue: string | string[] | null
-}
-
-type Query = QueryField[]
 
 const FieldListItem = styled.li`
   list-style: none;
@@ -129,17 +118,41 @@ const FieldList = styled.ul`
   padding: 0;
 `
 
-const QueryBuilder = ({ fields }: { fields: Field[] }) => {
+const QueryBuilder = ({
+  fields,
+  filterData,
+  onFilterInput,
+}: {
+  fields: Field[]
+  filterData: FilterData
+  onFilterInput: FilterInputHandler
+}) => {
   const [fieldCount, setFieldCount] = useState(0)
-  const [query, setQuery] = useState<Query>([])
+
+  useEffect(() => {
+    setFieldCount(fieldCount =>
+      Math.max(fieldCount, Object.entries(filterData).length)
+    )
+  }, [])
+  // TODO: Change dependency array?
+
   return (
     <>
-      <AddFieldButton onClick={() => setFieldCount(count => count + 1)} />
+      <QueryBuilderToolbarButton
+        onClick={() => setFieldCount(count => count + 1)}
+      >
+        + Add filter
+      </QueryBuilderToolbarButton>
       <FieldList>
         {[...Array(fieldCount)].map(i => {
           return (
             <FieldListItem>
-              <FieldBuilder key={i} allFields={fields} />
+              <FieldBuilder
+                key={i}
+                allFields={fields}
+                onFilterInput={onFilterInput}
+                value={''}
+              />
             </FieldListItem>
           )
         })}

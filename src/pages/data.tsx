@@ -11,10 +11,7 @@ import type { Row } from 'components/DataPage/TableView/TableView'
 import DataToolbar, { View } from 'components/DataPage/Toolbar/Toolbar'
 
 import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
-import {
-	FILTER_DELAY,
-	initialFilterData,
-} from 'components/DataPage/FilterPanel/constants'
+import { FILTER_DELAY } from 'components/DataPage/FilterPanel/constants'
 import type {
 	FilterData,
 	TimeoutsType,
@@ -44,7 +41,7 @@ const DataView = (): JSX.Element => {
 	const [loading, setLoading] = useState(true)
 	const [publishedRecords, setPublishedRecords] = useState<Row[]>([])
 	const [reachedLastPage, setReachedLastPage] = useState(false)
-	const [filterData, setFilterData] = useState<FilterData>(initialFilterData)
+	const [filterData, setFilterData] = useState<FilterData>({})
 	const page = useRef(1)
 	const filterTimeouts = useRef<TimeoutsType>({})
 	const [view, setView] = useState<View>(View.globe)
@@ -76,15 +73,11 @@ const DataView = (): JSX.Element => {
 
 	const onFilterInput = (
 		e: React.ChangeEvent<HTMLInputElement>,
+		// TODO: Rename to fieldId?
 		filterId = ''
 	) => {
 		const newFilterValue = e.target.value
-		setFilterData(filterData => {
-			const filter = filterData.get(filterId)
-			if (filter) filter.value = newFilterValue
-			else console.error(`Filter not found: ${filterId}`)
-			return filterData
-		})
+		setFilterData(filterData => ({ ...filterData, [filterId]: newFilterValue }))
 		clearTimeout(filterTimeouts.current?.[filterId] ?? undefined)
 		const timeout = setTimeout(
 			() => loadPublishedRecords({ appendResults: false }),
@@ -103,9 +96,10 @@ const DataView = (): JSX.Element => {
 				pageSize: '50',
 			}
 			const pendingFilters = []
-			for (const [filterId, { value }] of filterData) {
-				if (!value) continue
-				params[filterId] = value
+			for (const [filterId, value] of Object.entries(filterData)) {
+				const formattedValue = Array.isArray(value) ? value.join(',') : value
+				if (!formattedValue) continue
+				params[filterId] = formattedValue
 				pendingFilters.push(filterId)
 			}
 			const response = await fetch(

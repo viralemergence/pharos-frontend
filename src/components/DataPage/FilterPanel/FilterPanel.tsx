@@ -100,12 +100,6 @@ const PanelHeader = styled.div`
   ${({ theme }) => theme.bigParagraph};
   margin-bottom: 20px;
 `
-const NaturalLanguageInput = styled(FilterInputElement)`
-  flex: 1;
-  width: auto;
-  color: #000;
-  ${({ theme }) => theme.smallParagraph};
-`
 
 const SearchButton = styled.button<{ type: string; disabled: boolean }>`
   ${({ theme }) => theme.smallParagraph};
@@ -118,10 +112,6 @@ const SearchButton = styled.button<{ type: string; disabled: boolean }>`
   border-radius: 5px;
   justify-content: center;
   align-items: center;
-`
-const NaturalLanguageSearchLabel = styled.label`
-  display: flex;
-  flex-flow: row wrap;
 `
 
 const PanelContainer = styled.div<{
@@ -143,16 +133,6 @@ const PanelContainer = styled.div<{
   z-index: 3;
 `
 
-interface ConditionsResponse {
-  text: string
-}
-
-const dataIsConditionsResponse = (
-  data: unknown
-): data is ConditionsResponse => {
-  return 'text' in data
-}
-
 const FilterPanel = ({
   isFilterPanelOpen,
   filterData,
@@ -161,15 +141,13 @@ const FilterPanel = ({
 }: {
   isFilterPanelOpen: boolean
   filterData: FilterData
-  /** Event handler for when one of the filter <input> elements receives new input */
+  /** Event handler for when one of the filter input elements receives new input */
   onFilterInput: (
     e: React.ChangeEvent<HTMLInputElement>,
     filterId: string
   ) => void
   height: string
 }) => {
-  const [query, setQuery] = useState(initialQuery)
-
   return (
     <PanelContainer
       className="pharos-panel"
@@ -179,7 +157,11 @@ const FilterPanel = ({
       {isFilterPanelOpen && (
         <>
           <PanelHeader>Filters</PanelHeader>
-          <QueryBuilder fields={fields} query={query} />
+          <QueryBuilder
+            fields={fields}
+            filterData={filterData}
+            onFilterInput={onFilterInput}
+          />
           {/* {Array.from(filterData).map(([filterId, { description, value }]) => ( */}
           {/*   <div key={filterId} style={{ marginTop: '20px' }}> */}
           {/*     <InputLabel> */}
@@ -197,35 +179,6 @@ const FilterPanel = ({
       )}
     </PanelContainer>
   )
-}
-
-const QueryBuilderTypeahead = (props: ValueEditorProps) => {
-  const options = optionsForFields[props.field] || []
-  const rqbValueToTypeaheadItem = (value: any) => ({
-    key: `${value}`,
-    label: `${value}`,
-  })
-  const typeaheadProps: TypeaheadProps = {
-    values: [rqbValueToTypeaheadItem(props.value)], // Selected option
-    items: options?.map(rqbValueToTypeaheadItem) || [], // Available options
-    onAdd: (item: Item) => {
-      props.handleOnChange(item.label)
-    },
-    style: { width: '100%' },
-  }
-
-  return <Typeahead {...typeaheadProps} />
-
-  // Typeahead props:
-  // multiselect, items, values, onAdd, onRemove, placeholder, RenderItem,
-  // searchKeys, iconSVG, iconLeft, backgroundColor, borderColor, fontColor,
-  // className, disabled, style, ariaLabel
-}
-
-const extractJSON = (str: string) => {
-  const json = str.replace(/\n/g, '').match(/\{.*\}/)
-  if (!json) return null
-  return JSON.parse(json[0])
 }
 
 export default FilterPanel
