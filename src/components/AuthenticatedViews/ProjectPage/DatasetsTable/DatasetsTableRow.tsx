@@ -42,14 +42,14 @@ export const DatasetsTableRow = ({ dataset }: { dataset: Dataset }) => {
 
   return (
     <>
-      <TableCell mobileOrder={2}>{dataset.name || '—'}</TableCell>
+      <TableCell cardOrder={2}>{dataset.name || '—'}</TableCell>
       <TableCell hideMedium>{datesString}</TableCell>
-      <TableCell mobileOrder={3}>
+      <TableCell cardOrder={3}>
         <DatasetReleaseStatusChip status={dataset.releaseStatus}>
           {releaseMessage || '—'}
         </DatasetReleaseStatusChip>
       </TableCell>
-      <TableCell mobileOrder={1}>{lastUpdated}</TableCell>
+      <TableCell cardOrder={1}>{lastUpdated}</TableCell>
     </>
   )
 }

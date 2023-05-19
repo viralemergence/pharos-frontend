@@ -57,15 +57,15 @@ const ProjectsTable = () => {
             key={project.projectID}
             to={`/projects/${project.projectID}`}
           >
-            <TableCell mobileOrder={2}>{project.name}</TableCell>
-            <TableCell mobileOrder={3}>
+            <TableCell cardOrder={2}>{project.name}</TableCell>
+            <TableCell cardOrder={3}>
               {(
                 <ProjectPublishStatusChip status={project.publishStatus}>
                   {project.publishStatus}
                 </ProjectPublishStatusChip>
               ) || 'Unpublished'}
             </TableCell>
-            <TableCell mobileOrder={1}>
+            <TableCell cardOrder={1}>
               {project.lastUpdated ? formatDate(project.lastUpdated) : '—'}
             </TableCell>
             <TableCell hideMedium>{project.projectType || '—'}</TableCell>

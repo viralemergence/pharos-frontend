@@ -89,7 +89,7 @@ export const HeaderRow = styled.div<{
 export const TableCell = styled.div<{
   hideMobile?: boolean
   hideMedium?: boolean
-  mobileOrder?: number
+  cardOrder?: number
 }>`
   padding: 15px;
 
@@ -99,7 +99,7 @@ export const TableCell = styled.div<{
 
   @media (max-width: ${cardsBreakpoint}px) {
     padding: 10px;
-    order: ${({ mobileOrder }) => mobileOrder ?? 'initial'};
+    order: ${({ cardOrder }) => cardOrder ?? 'initial'};
     display: ${({ hideMobile, hideMedium }) =>
       hideMobile || hideMedium ? 'none' : 'unset'};
   }
