@@ -1,7 +1,12 @@
 import React from 'react'
 
 import { DatasetsTableRow } from './DatasetsTableRow'
-import ListTable, { HeaderRow, RowLink } from 'components/ListTable/ListTable'
+
+import ListTable, {
+  HeaderRow,
+  RowLink,
+  TableCell,
+} from 'components/ListTable/ListTable'
 
 import useProject from 'hooks/project/useProject'
 import useModal from 'hooks/useModal/useModal'
@@ -41,13 +46,16 @@ const DatasetsTable = ({ style }: DatasetsTableProps) => {
           datasetID: id,
         }))
 
+  const wideColumnTemplate = '1.5fr 1fr 150px 200px'
+  const mediumColumnTemplate = '1fr 150px 200px'
+
   return (
-    <ListTable columnTemplate="2fr repeat(3, 1fr)" style={style}>
+    <ListTable {...{ wideColumnTemplate, mediumColumnTemplate, style }}>
       <HeaderRow>
-        <div>Name</div>
-        <div>Collection Dates</div>
-        <div>Status</div>
-        <div>Last updated</div>
+        <TableCell>Name</TableCell>
+        <TableCell hideMedium>Collection Dates</TableCell>
+        <TableCell>Status</TableCell>
+        <TableCell>Last updated</TableCell>
       </HeaderRow>
       {sorted.map(dataset => (
         <RowLink

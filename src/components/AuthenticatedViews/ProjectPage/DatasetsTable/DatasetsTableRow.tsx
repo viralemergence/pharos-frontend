@@ -1,3 +1,4 @@
+import { TableCell } from 'components/ListTable/ListTable'
 import React from 'react'
 
 import { Dataset, DatasetReleaseStatus } from 'reducers/stateReducer/types'
@@ -41,14 +42,14 @@ export const DatasetsTableRow = ({ dataset }: { dataset: Dataset }) => {
 
   return (
     <>
-      <div>{dataset.name || '—'}</div>
-      <div>{datesString}</div>
-      <div>
+      <TableCell mobileOrder={2}>{dataset.name || '—'}</TableCell>
+      <TableCell hideMedium>{datesString}</TableCell>
+      <TableCell mobileOrder={3}>
         <DatasetReleaseStatusChip status={dataset.releaseStatus}>
           {releaseMessage || '—'}
         </DatasetReleaseStatusChip>
-      </div>
-      <div>{lastUpdated}</div>
+      </TableCell>
+      <TableCell mobileOrder={1}>{lastUpdated}</TableCell>
     </>
   )
 }
