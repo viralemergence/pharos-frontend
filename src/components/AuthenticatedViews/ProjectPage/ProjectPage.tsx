@@ -97,7 +97,7 @@ const ProjectPage = () => {
         <MobileProjectStatus>
           <ProjectStatus />
         </MobileProjectStatus>
-        <DatasetsTable style={{}} />
+        <DatasetsTable />
         <LoggedInProjectPageContentBox style={{}}>
           <h2>Description</h2>
           <p>{project.description || '—'}</p>

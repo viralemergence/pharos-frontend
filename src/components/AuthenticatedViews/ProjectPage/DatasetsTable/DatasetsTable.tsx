@@ -1,7 +1,13 @@
 import React from 'react'
 
 import { DatasetsTableRow } from './DatasetsTableRow'
-import ListTable, { HeaderRow, RowLink } from 'components/ListTable/ListTable'
+
+import ListTable, {
+  CardHeaderRow,
+  HeaderRow,
+  RowLink,
+  TableCell,
+} from 'components/ListTable/ListTable'
 
 import useProject from 'hooks/project/useProject'
 import useModal from 'hooks/useModal/useModal'
@@ -41,30 +47,37 @@ const DatasetsTable = ({ style }: DatasetsTableProps) => {
           datasetID: id,
         }))
 
+  const wideColumnTemplate = '1.5fr 1fr 150px 220px'
+  const mediumColumnTemplate = '1fr 150px 220px'
+
   return (
-    <ListTable columnTemplate="2fr repeat(3, 1fr)" style={style}>
-      <HeaderRow>
-        <div>Name</div>
-        <div>Collection Dates</div>
-        <div>Status</div>
-        <div>Last updated</div>
-      </HeaderRow>
-      {sorted.map(dataset => (
-        <RowLink
-          key={dataset.datasetID}
-          to={`/projects/${project.projectID}/${dataset.datasetID}`}
-          onClick={e => {
-            if (dataset.datasetID === datasetPlaceholder.datasetID) {
-              e.preventDefault()
-              setModal(<CreateDatasetForm />, { closeable: true })
-            }
-          }}
-        >
-          <DatasetsTableRow dataset={dataset} />
-        </RowLink>
-      ))}
-      <CreateNewDatasetRow />
-    </ListTable>
+    <>
+      <ListTable {...{ wideColumnTemplate, mediumColumnTemplate, style }}>
+        <HeaderRow>
+          <TableCell>Name</TableCell>
+          <TableCell hideMedium>Collection Dates</TableCell>
+          <TableCell>Status</TableCell>
+          <TableCell>Last updated</TableCell>
+        </HeaderRow>
+        <CardHeaderRow>Datasets</CardHeaderRow>
+        {sorted.map(dataset => (
+          <RowLink
+            key={dataset.datasetID}
+            to={`/projects/${project.projectID}/${dataset.datasetID}`}
+            onClick={e => {
+              if (dataset.datasetID === datasetPlaceholder.datasetID) {
+                e.preventDefault()
+                setModal(<CreateDatasetForm />, { closeable: true })
+              }
+            }}
+          >
+            <DatasetsTableRow dataset={dataset} />
+          </RowLink>
+        ))}
+        <CreateNewDatasetRow />
+      </ListTable>
+      <CardHeaderRow>Project Information</CardHeaderRow>
+    </>
   )
 }
 

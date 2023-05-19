@@ -1,14 +1,14 @@
 import styled, { css } from 'styled-components'
 import wideMargins from 'components/layout/Margins'
 
-export const singleColumnBreakpoint = 1500
+export const singleColumnBreakpoint = 1300
 
 export const ProjectPageLayout = styled.div`
   position: relative;
   color: ${({ theme }) => theme.black};
   display: grid;
   gap: 30px;
-  grid-template-columns: minmax(10px, 3fr) minmax(350px, 1fr);
+  grid-template-columns: minmax(10px, 3fr) minmax(300px, 1fr);
   grid-template-areas:
     'topbar topbar'
     'main sidebar';
