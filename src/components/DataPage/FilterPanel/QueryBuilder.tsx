@@ -1,59 +1,53 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import InputLabel from '../../ui/InputLabel'
-import { Field, FilterData } from './constants'
+import { Field, FilterValue } from './constants'
+import type { Filter } from './constants'
 
-type FieldBuilderProps = {
-  allFields: Field[]
-  onFilterInput: FilterInputHandler
-  // TODO: Perhaps just string[]?
-  value: string | string[]
-}
-const FieldBuilder = ({
-  allFields,
-  value,
-  onFilterInput,
-}: FieldBuilderProps) => {
-  const [field, setField] = useState<Field | null>(null)
-  if (field) {
-    return (
-      <FieldValueSetter
-        field={field}
-        value={value}
-        onFilterInput={onFilterInput}
-      />
-    )
-  } else {
-    return <FieldSelector fields={allFields} setField={setField} />
+const FieldName = styled.div`
+  margin-bottom: 5px;
+`
+const FieldInput = styled.input`
+  ${({ theme }) => theme.smallParagraph};
+  padding: 8px 10px;
+  font-weight: 600;
+  background-color: #202020;
+  color: #fff;
+  border: 1px solid #fff;
+  border-radius: 5px;
+  &::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    opacity: 0.5;
   }
-}
-
-const FieldName = styled.div``
-const FieldInput = styled.input``
+`
 
 type FilterInputHandler = (
   e: React.ChangeEvent<HTMLInputElement>,
   filterId: string
 ) => void
 
-const FieldValueSetter = ({
-  field,
+const FilterValueSetter = ({
+  fieldId,
+  fieldLabel,
+  fieldType = 'text',
   value,
   onFilterInput,
 }: {
-  field: Field
-  value: string | string[]
+  fieldId: string
+  fieldLabel: string
+  fieldType: 'text' | 'date'
+  value: FilterValue
   onFilterInput: FilterInputHandler
 }) => {
   return (
     <>
       <InputLabel>
-        <FieldName>{field.label}</FieldName>
+        <FieldName>{fieldLabel}</FieldName>
         <FieldInput
-          type="text"
+          type={fieldType}
           defaultValue={value}
           onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
-            onFilterInput(e, field.id)
+            onFilterInput(e, fieldId)
           }
         />
       </InputLabel>
@@ -75,37 +69,60 @@ const QueryBuilderButton = styled.button`
 `
 const QueryBuilderToolbarButton = styled(QueryBuilderButton)`
   border-radius: 5px;
-  background-color: #202020;
+  background: transparent;
+  &:hover {
+    background-color: #202020;
+  }
+  &:active {
+    background-color: #1d1d1d;
+  }
 `
 
 const FieldSelectorDiv = styled.div`
+  position: absolute;
+  top: 90px;
+  width: calc(100% - 79px);
+  left: 39px;
   display: flex;
   flex-flow: column nowrap;
   align-items: flex-start;
   background-color: #202020;
   border-radius: 5px;
   padding: 5px 0;
+  z-index: 1;
 `
 const FieldSelectorButton = styled(QueryBuilderButton)`
   width: 100%;
+  &:hover {
+    background-color: #36a49d;
+  }
 `
 
 const FieldSelector = ({
   fields,
-  setField,
+  addFilterValueSetter,
 }: {
-  fields: Field[]
-  setField: (field: Field) => void
+  fields: Record<string, Field>
+  addFilterValueSetter: (fieldId: string) => void
 }) => {
   return (
-    <FieldSelectorDiv>
-      {fields.map(field => {
-        return (
-          <FieldSelectorButton value={field.id} onClick={_e => setField(field)}>
-            {field.label}
-          </FieldSelectorButton>
-        )
-      })}
+    <FieldSelectorDiv
+      onClick={e => {
+        // If this click event propagates, the panel's click handler will
+        // fire, closing the field selector.
+        e.stopPropagation()
+      }}
+    >
+      {Object.entries(fields).map(([fieldId, { label }]) => (
+        <FieldSelectorButton
+          value={fieldId}
+          onClick={_ => {
+            addFilterValueSetter(fieldId)
+          }}
+        >
+          {label}
+        </FieldSelectorButton>
+      ))}
     </FieldSelectorDiv>
   )
 }
@@ -119,56 +136,67 @@ const FieldList = styled.ul`
   padding: 0;
 `
 
-const PanelHeader = styled.div`
-  ${({ theme }) => theme.smallParagraph};
-  padding: 10px;
-  flex: 1;
-`
-const QueryBuilderToolbar = styled.nav`
+const QueryBuilderToolbar = styled.nav<{ filterCount: number }>`
   display: flex;
   flex-flow: row wrap;
+  justify-content: space-between;
   margin-bottom: 20px;
-  gap: 10px;
+  padding-bottom: 20px;
+  ${({ filterCount }) =>
+    filterCount > 0 ? 'border-bottom: 1px solid #fff;' : ''}
 `
 
 const QueryBuilder = ({
   fields,
-  filterData,
+  filters,
+  setFilters,
   onFilterInput,
+  isFieldSelectorOpen,
+  setIsFieldSelectorOpen,
 }: {
-  fields: Field[]
-  filterData: FilterData
+  fields: Record<string, Field>
+  filters: Filter[]
+  setFilters: React.Dispatch<React.SetStateAction<Filter[]>>
   onFilterInput: FilterInputHandler
+  isFieldSelectorOpen: boolean
+  setIsFieldSelectorOpen: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
-  const [fieldCount, setFieldCount] = useState(0)
-
-  useEffect(() => {
-    setFieldCount(fieldCount =>
-      Math.max(fieldCount, Object.entries(filterData).length)
-    )
-  }, [])
-  // TODO: Change dependency array?
-
   return (
     <>
-      <QueryBuilderToolbar>
-        <PanelHeader>Filters</PanelHeader>
+      <QueryBuilderToolbar filterCount={filters.length}>
         <QueryBuilderToolbarButton
-          onClick={() => setFieldCount(count => count + 1)}
+          onClick={e => {
+            setIsFieldSelectorOpen(open => !open)
+            // If this click event propagates, the panel's click handler will
+            // fire, closing the field selector.
+            e.stopPropagation()
+          }}
         >
           + Add filter
         </QueryBuilderToolbarButton>
-        <QueryBuilderToolbarButton onClick={() => setFieldCount(0)}>
+        <QueryBuilderToolbarButton onClick={() => setFilters([])}>
           Clear all
         </QueryBuilderToolbarButton>
       </QueryBuilderToolbar>
+      {isFieldSelectorOpen && (
+        <FieldSelector
+          addFilterValueSetter={fieldId => {
+            setFilters(filters => [...filters, { fieldId, value: '' }])
+            setIsFieldSelectorOpen(false)
+          }}
+          fields={fields}
+        />
+      )}
       <FieldList>
-        {[...Array(fieldCount)].map(i => {
+        {filters.map((filter, i) => {
+          const { label = '', type = 'text' } = fields[filter.fieldId]
           return (
             <FieldListItem>
-              <FieldBuilder
+              <FilterValueSetter
+                fieldId={filter.fieldId}
+                fieldLabel={label}
+                fieldType={type}
                 key={i}
-                allFields={fields}
                 onFilterInput={onFilterInput}
                 value={''}
               />

@@ -1,7 +1,8 @@
-import React, { useState, useRef } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import styled from 'styled-components'
 import InputLabel from '../../ui/InputLabel'
-import type { FilterData } from './constants'
+import type { Filter } from './constants'
+import { fields } from './constants'
 import FilterPanelToggleButton from './FilterPanelToggleButton'
 import FilterInput, { FilterInputElement } from './FilterInput'
 import type { RuleGroupType, ValueEditorProps } from 'react-querybuilder'
@@ -11,16 +12,6 @@ import './queryBuilder.scss'
 import Typeahead, { Item } from '@talus-analytics/library.ui.typeahead'
 import type { TypeaheadProps } from '@talus-analytics/library.ui.typeahead'
 import QueryBuilder, { Field } from './QueryBuilder'
-
-const fields: Field[] = [
-  { id: 'host_species', label: 'Host species' },
-  { id: 'pathogen', label: 'Pathogen' },
-  { id: 'latitude', label: 'Latitude' },
-  { id: 'longitude', label: 'Longitude' },
-  { id: 'collection_date', label: 'Collection date' },
-  { id: 'detection_target', label: 'Detection target' },
-  { id: 'region', label: 'Region' },
-]
 
 const operators = [
   { name: '=', label: 'is' },
@@ -109,10 +100,7 @@ const SearchButton = styled.button<{ type: string; disabled: boolean }>`
   align-items: center;
 `
 
-const PanelContainer = styled.div<{
-  isFilterPanelOpen: boolean
-  height: string
-}>`
+const Panel = styled.div<{ isFilterPanelOpen: boolean; height: string }>`
   overflow-y: auto;
   background-color: rgba(51, 51, 51, 0.9);
   color: #fff;
@@ -131,48 +119,51 @@ const PanelContainer = styled.div<{
 
 const FilterPanel = ({
   isFilterPanelOpen,
-  filterData,
+  filters,
+  setFilters,
   onFilterInput,
   height,
 }: {
   isFilterPanelOpen: boolean
-  filterData: FilterData
+  filters: Filter[]
+  setFilters: React.Dispatch<React.SetStateAction<Filter[]>>
   /** Event handler for when one of the filter input elements receives new input */
   onFilterInput: (
     e: React.ChangeEvent<HTMLInputElement>,
-    filterId: string
+    fieldId: string
   ) => void
   height: string
 }) => {
+  const [isFieldSelectorOpen, setIsFieldSelectorOpen] = useState(false)
+  const panelRef = useRef<HTMLDivElement>(null)
+
+  // Close field selector if panel is clicked
+  // useEffect(() => {
+  //   panelRef.current?.addEventListener('click', e => {
+  //     setIsFieldSelectorOpen(false)
+  //   });
+  // }, []);
   return (
-    <PanelContainer
+    <Panel
       className="pharos-panel"
       height={height}
       isFilterPanelOpen={isFilterPanelOpen}
+      ref={panelRef}
+      onClick={_ => {
+        setIsFieldSelectorOpen(false)
+      }}
     >
       {isFilterPanelOpen && (
-        <>
-          <QueryBuilder
-            fields={fields}
-            filterData={filterData}
-            onFilterInput={onFilterInput}
-          />
-          {/* {Array.from(filterData).map(([filterId, { description, value }]) => ( */}
-          {/*   <div key={filterId} style={{ marginTop: '20px' }}> */}
-          {/*     <InputLabel> */}
-          {/*       <div style={{ marginBottom: '5px' }}> */}
-          {/*         Search by {description} */}
-          {/*       </div> */}
-          {/*       <FilterInput */}
-          {/*         defaultValue={value} */}
-          {/*         onInput={e => onFilterInput(e, filterId)} */}
-          {/*       /> */}
-          {/*     </InputLabel> */}
-          {/*   </div> */}
-          {/* ))} */}
-        </>
+        <QueryBuilder
+          fields={fields}
+          filters={filters}
+          setFilters={setFilters}
+          onFilterInput={onFilterInput}
+          isFieldSelectorOpen={isFieldSelectorOpen}
+          setIsFieldSelectorOpen={setIsFieldSelectorOpen}
+        />
       )}
-    </PanelContainer>
+    </Panel>
   )
 }
 

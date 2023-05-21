@@ -55,13 +55,13 @@ const FilterInputClearButton = styled.button`
 
 interface FilterInputProps {
   defaultValue: string
-  onInput: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onInput: (e: React.ChangeEvent<fieldId>) => void
 }
 
 const FilterInput = (props: FilterInputProps) => {
   const [hasValue, setHasValue] = useState(!!props.defaultValue)
-  const inputRef = useRef<HTMLInputElement>(null)
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const inputRef = useRef<fieldId>(null)
+  const onChange = (e: React.ChangeEvent<fieldId>) => {
     setHasValue(!!e.target.value)
   }
   return (

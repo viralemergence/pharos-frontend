@@ -3,9 +3,10 @@ import styled from 'styled-components'
 import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
 import './dataGrid.css'
-import type { FilterData } from '../FilterPanel/constants'
+import type { Filter, FilterData } from '../FilterPanel/constants'
+import { fields } from '../FilterPanel/constants'
 
-const TableViewContainer = styled.div<{height: string}>`
+const TableViewContainer = styled.div<{ height: string }>`
   position: relative;
   // backdrop-filter: blur(20px);
   width: 100%;
@@ -25,7 +26,7 @@ const FillDatasetGrid = styled(DataGrid)`
   block-size: 100%;
   height: 100%;
   border: 0;
-  background-color: rgba(0,0,0,0.7);
+  background-color: rgba(0, 0, 0, 0.7);
 `
 const LoadingMessage = styled.div`
   position: absolute;
@@ -58,8 +59,8 @@ const NoRecordsFound = styled.div`
 `
 
 interface TableViewProps {
-  appliedFilters: string[]
-  filterData: FilterData
+  filters: Filter[]
+  appliedFilters: Filter[]
   height: string
   loadPublishedRecords: (options?: { appendResults: boolean }) => void
   loading: boolean
@@ -85,12 +86,11 @@ const TableView = ({
   loading,
   page,
   publishedRecords,
-  filterData,
+  filters,
   appliedFilters,
   loadPublishedRecords,
   reachedLastPage,
 }: TableViewProps) => {
-
   useEffect(() => {
     loadPublishedRecords()
   }, [loadPublishedRecords])
@@ -104,9 +104,9 @@ const TableView = ({
     width: 55,
   }
 
-  const dataGridKeysForFilteredColumns = Array.from(filterData)
-    .filter(([filterId, _]) => appliedFilters.includes(filterId))
-    .map(([_, { dataGridKey }]) => dataGridKey)
+  const dataGridKeysForFilteredColumns = appliedFilters.map(
+    ({ fieldId }) => fields[fieldId]?.dataGridKey
+  )
 
   const columns: readonly Column<Row>[] = [
     rowNumberColumn,
@@ -129,18 +129,17 @@ const TableView = ({
     loadPublishedRecords()
   }
 
-  const areFiltersUsed = Array.from(filterData).some(
-    ([_filterId, { value }]) => value
-  )
-
   return (
     <TableViewContainer style={style} height={height}>
       <TableContaier>
         {!loading && publishedRecords?.length === 0 ? (
           <NoRecordsFound>
-            {areFiltersUsed
-              ? 'No matching records found'
-              : 'No records published'}
+            {
+              // TODO: Perhaps use appliedFilters here
+              filters.length > 0
+                ? 'No matching records found'
+                : 'No records published'
+            }
           </NoRecordsFound>
         ) : (
           // @ts-expect-error: I'm copying this from the docs,

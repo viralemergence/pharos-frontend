@@ -13,7 +13,7 @@ import DataToolbar, { View } from 'components/DataPage/Toolbar/Toolbar'
 import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
 import { FILTER_DELAY } from 'components/DataPage/FilterPanel/constants'
 import type {
-	FilterData,
+	Filter,
 	TimeoutsType,
 } from 'components/DataPage/FilterPanel/constants'
 
@@ -41,16 +41,19 @@ const DataView = (): JSX.Element => {
 	const [loading, setLoading] = useState(true)
 	const [publishedRecords, setPublishedRecords] = useState<Row[]>([])
 	const [reachedLastPage, setReachedLastPage] = useState(false)
-	const [filterData, setFilterData] = useState<FilterData>({})
 	const page = useRef(1)
-	const filterTimeouts = useRef<TimeoutsType>({})
 	const [view, setView] = useState<View>(View.globe)
 
-	/** Ids of filters that have been successfully applied to the published
-	 * records. That is, these filter ids have been sent to the server, and it
+	/** The filters to be applied */
+	const [filters, setFilters] = useState<Filter[]>([])
+
+	const filterTimeouts = useRef<TimeoutsType>({})
+
+	/** Filters that have been successfully applied to the published
+	 * records. That is, these filters have been sent to the server, and it
 	 * responded with an appropriate subset of the records. This is used for
 	 * color-coding the filtered columns. */
-	const [appliedFilters, setAppliedFilters] = useState<string[]>([])
+	const [appliedFilters, setAppliedFilters] = useState<Filter[]>([])
 
 	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(true)
 
@@ -73,19 +76,25 @@ const DataView = (): JSX.Element => {
 
 	const onFilterInput = (
 		e: React.ChangeEvent<HTMLInputElement>,
-		// TODO: Rename to fieldId?
-		filterId = ''
+		fieldId = ''
 	) => {
 		const newFilterValue = e.target.value
-		setFilterData(filterData => ({ ...filterData, [filterId]: newFilterValue }))
-		clearTimeout(filterTimeouts.current?.[filterId] ?? undefined)
+
+		setFilters(filters =>
+			filters.reduce<Filter[]>((acc, filter) => {
+				if (filter.fieldId === fieldId) filter.value = newFilterValue
+				return [...acc, filter]
+			}, [])
+		)
+
+		clearTimeout(filterTimeouts.current?.[fieldId] ?? undefined)
 		const timeout = setTimeout(
 			() => loadPublishedRecords({ appendResults: false }),
 			FILTER_DELAY
 		)
 
 		// Store timeout so we can restart it if the user types again
-		filterTimeouts.current[filterId] = timeout
+		filterTimeouts.current[fieldId] = timeout
 	}
 
 	const loadPublishedRecords = useCallback(
@@ -96,11 +105,12 @@ const DataView = (): JSX.Element => {
 				pageSize: '50',
 			}
 			const pendingFilters = []
-			for (const [filterId, value] of Object.entries(filterData)) {
+			for (const filter of filters) {
+				const { fieldId, value } = filter
 				const formattedValue = Array.isArray(value) ? value.join(',') : value
 				if (!formattedValue) continue
-				params[filterId] = formattedValue
-				pendingFilters.push(filterId)
+				params[fieldId] = formattedValue
+				pendingFilters.push(filter)
 			}
 			const response = await fetch(
 				`${process.env.GATSBY_API_URL}/published-records?` +
@@ -126,7 +136,7 @@ const DataView = (): JSX.Element => {
 			setAppliedFilters(pendingFilters)
 			setLoading(false)
 		},
-		[filterData, setPublishedRecords, setReachedLastPage, setLoading]
+		[filters, setPublishedRecords, setReachedLastPage, setLoading]
 	)
 	const dataViewHeight = 'calc(100vh - 87px)'
 	const panelHeight = 'calc(100vh - 170px)'
@@ -140,13 +150,15 @@ const DataView = (): JSX.Element => {
 				changeView={changeView}
 				isFilterPanelOpen={isFilterPanelOpen}
 				setIsFilterPanelOpen={setIsFilterPanelOpen}
+				appliedFilters={appliedFilters}
 			/>
 			<ViewContainer>
 				{isFilterPanelOpen && (
 					<FilterPanel
 						isFilterPanelOpen={isFilterPanelOpen}
-						filterData={filterData}
+						filters={filters}
 						onFilterInput={onFilterInput}
+						setFilters={setFilters}
 						height={panelHeight}
 					/>
 				)}
@@ -156,8 +168,8 @@ const DataView = (): JSX.Element => {
 				/>
 				<TableView
 					height={dataViewHeight}
+					filters={filters}
 					appliedFilters={appliedFilters}
-					filterData={filterData}
 					loadPublishedRecords={loadPublishedRecords}
 					loading={loading}
 					page={page}
