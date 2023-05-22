@@ -132,9 +132,9 @@ const DataView = (): JSX.Element => {
 				...(appendResults ? previousRecords : []),
 				...data.publishedRecords,
 			])
-			setReachedLastPage(data.isLastPage)
 			setAppliedFilters(pendingFilters)
 			setLoading(false)
+			setReachedLastPage(data.isLastPage)
 		},
 		[filters, setPublishedRecords, setReachedLastPage, setLoading]
 	)

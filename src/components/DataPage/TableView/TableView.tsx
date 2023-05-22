@@ -2,13 +2,12 @@ import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
-import './dataGrid.css'
-import type { Filter, FilterData } from '../FilterPanel/constants'
+import type { Filter } from '../FilterPanel/constants'
 import { fields } from '../FilterPanel/constants'
+import './dataGrid.css'
 
 const TableViewContainer = styled.div<{ height: string }>`
   position: relative;
-  // backdrop-filter: blur(20px);
   width: 100%;
   height: ${props => props.height};
   z-index: 3;
@@ -134,12 +133,9 @@ const TableView = ({
       <TableContaier>
         {!loading && publishedRecords?.length === 0 ? (
           <NoRecordsFound>
-            {
-              // TODO: Perhaps use appliedFilters here
-              filters.length > 0
-                ? 'No matching records found'
-                : 'No records published'
-            }
+            {appliedFilters.length > 0
+              ? 'No matching records found'
+              : 'No records published'}
           </NoRecordsFound>
         ) : (
           // @ts-expect-error: I'm copying this from the docs,
