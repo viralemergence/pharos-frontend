@@ -37,6 +37,29 @@ const dataIsPublishedRecordsResponse = (
 	return true
 }
 
+const metadataFields = [
+	'hostSpecies',
+	'pathogen',
+	'detectionOutcome',
+	'detectionTarget',
+]
+
+const dataIsMetadataResponse = (data: unknown): data is MetadataResponse => {
+	if (!data || typeof data !== 'object') return false
+	for (const field of metadataFields) {
+		if (!('fieldValueOptions' in data)) return false
+		if (!(field in data.fieldValueOptions)) return false
+		if (!Array.isArray(data.fieldValueOptions[field])) return false
+		if (!data.fieldValueOptions[field].every(item => typeof item === 'string'))
+			return false
+	}
+	return true
+}
+
+interface MetadataResponse {
+	fieldValueOptions: Record<string, string[]>
+}
+
 const DataView = (): JSX.Element => {
 	const [loading, setLoading] = useState(true)
 	const [publishedRecords, setPublishedRecords] = useState<Row[]>([])
@@ -54,8 +77,11 @@ const DataView = (): JSX.Element => {
 	 * responded with an appropriate subset of the records. This is used for
 	 * color-coding the filtered columns. */
 	const [appliedFilters, setAppliedFilters] = useState<Filter[]>([])
+	const [fieldOptions, setFieldOptions] = useState<Record<string, string[]>>({})
 
 	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(true)
+
+	console.log('fieldOptions', fieldOptions)
 
 	const changeView = (view: View) => {
 		window.location.hash = view
@@ -72,6 +98,21 @@ const DataView = (): JSX.Element => {
 		if (hashIsView(hash)) {
 			setView(hash)
 		}
+	}, [])
+
+	useEffect(() => {
+		const getMetadata = async () => {
+			const response = await fetch(
+				`${process.env.GATSBY_API_URL}/metadata-for-published-records`
+			)
+			const data = await response.json()
+			if (!dataIsMetadataResponse(data)) {
+				console.error('GET /metadata-for-published-records: malformed response')
+				return
+			}
+			setFieldOptions(data.fieldValueOptions)
+		}
+		getMetadata()
 	}, [])
 
 	const onFilterInput = (
