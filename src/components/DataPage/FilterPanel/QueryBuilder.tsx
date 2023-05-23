@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import InputLabel from '../../ui/InputLabel'
 import { Field, FilterValue } from './constants'
@@ -31,14 +31,20 @@ const SelectedTypeaheadValues = styled.ul`
   gap: 5px;
 `
 const SelectedTypeaheadValue = styled.li`
+  ${props => props.theme.smallParagraph};
   padding: 5px 10px;
   border-radius: 5px;
   background-color: #58b7b1;
   color: #000;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: 5px;
 `
 const SelectedTypeaheadValueDeleteButton = styled.button`
   border: 0;
   background: transparent;
+  cursor: pointer;
 `
 
 const FilterValueSetter = ({
@@ -59,6 +65,30 @@ const FilterValueSetter = ({
   const [selectedTypeaheadItems, setSelectedTypeaheadItems] = useState<Item[]>(
     []
   )
+
+  // On first render, load the previously set filter values into the Typeahead
+  useEffect(() => {
+    let values = typeof value === 'string' ? value.split(',') : value
+    values = values.filter(value => value)
+    if (values.length > 0) {
+      setSelectedTypeaheadItems(
+        values.map(value => ({ key: value, label: value }))
+      )
+    }
+  }, [value])
+
+  /** Workaround for fixing colors */
+  const fixTypeaheadColors = () => {
+    const typeaheadIcon = document.querySelectorAll(
+      'form input[type=search] + div'
+    )?.[0]
+    if (typeaheadIcon) typeaheadIcon.style.filter = 'invert(1)'
+  }
+
+  useEffect(() => {
+    fixTypeaheadColors()
+  }, [])
+
   const removeItem = (itemToRemove: Item) => {
     const amendedItems = selectedTypeaheadItems.filter(
       ({ key }) => key !== itemToRemove.key
@@ -70,42 +100,30 @@ const FilterValueSetter = ({
     setSelectedTypeaheadItems(items)
     onFilterInput(items.map(({ label }) => label).join(','), fieldId)
   }
+  const useTypeahead = options?.length > 0
   return (
     <>
       <InputLabel>
         <FieldName>{fieldLabel}</FieldName>
-        {options?.length > 0 ? (
+        {useTypeahead ? (
           <>
             <Typeahead
               multiselect={true}
               items={options.map(option => ({ key: option, label: option }))}
               values={selectedTypeaheadItems}
               onAdd={(newItem: Item) => {
-                handleTypeaheadChange([...selectedTypeaheadItems, newItem])
+                const itemAlreadyAdded = selectedTypeaheadItems
+                  .map(({ key }) => key)
+                  .includes(newItem.key)
+                if (!itemAlreadyAdded)
+                  handleTypeaheadChange([...selectedTypeaheadItems, newItem])
               }}
               onRemove={removeItem}
               placeholder={`${selectedTypeaheadItems.length} selected`}
               backgroundColor="#000"
               fontColor="white"
               borderColor="white"
-              style={{ fontFamily: 'Open Sans' }}
             />
-            {selectedTypeaheadItems.length > 0 && (
-              <SelectedTypeaheadValues>
-                {selectedTypeaheadItems.map(item => (
-                  <SelectedTypeaheadValue>
-                    {item.label}{' '}
-                    <SelectedTypeaheadValueDeleteButton
-                      onClick={() => {
-                        removeItem(item)
-                      }}
-                    >
-                      x
-                    </SelectedTypeaheadValueDeleteButton>
-                  </SelectedTypeaheadValue>
-                ))}
-              </SelectedTypeaheadValues>
-            )}
           </>
         ) : (
           <FieldInput
@@ -117,6 +135,35 @@ const FilterValueSetter = ({
           />
         )}
       </InputLabel>
+      {useTypeahead && selectedTypeaheadItems.length > 0 && (
+        <SelectedTypeaheadValues>
+          {selectedTypeaheadItems.map(item => (
+            <SelectedTypeaheadValue>
+              {item.label}{' '}
+              <SelectedTypeaheadValueDeleteButton
+                onClick={() => {
+                  removeItem(item)
+                }}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </SelectedTypeaheadValueDeleteButton>
+            </SelectedTypeaheadValue>
+          ))}
+        </SelectedTypeaheadValues>
+      )}
     </>
   )
 }
@@ -267,7 +314,7 @@ const QueryBuilder = ({
                 options={optionsForFields[filter.fieldId]}
                 key={i}
                 onFilterInput={onFilterInput}
-                value={''}
+                value={filter.value}
               />
             </FieldListItem>
           )

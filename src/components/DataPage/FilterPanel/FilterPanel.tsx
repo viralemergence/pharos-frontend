@@ -14,11 +14,11 @@ const Panel = styled.div<{ isFilterPanelOpen: boolean; height: string }>`
   padding: ${props => (props.isFilterPanelOpen ? '34px 40px' : '0')};
   height: ${props => props.height};
   position: relative;
-  width: 430px;
+  width: 410px;
   top: 73px;
-  left: 10px;
+  left: 30px;
   border-radius: 10px;
-  margin-right: 20px;
+  margin-right: 50px;
   backdrop-filter: blur(2px);
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.4);
   z-index: 3;

@@ -177,7 +177,10 @@ const DataView = (): JSX.Element => {
 		[filters, setPublishedRecords, setReachedLastPage, setLoading]
 	)
 	const dataViewHeight = 'calc(100vh - 87px)'
-	const panelHeight = 'calc(100vh - 170px)'
+	const panelHeight = 'calc(100vh - 190px)'
+	const panelWidth = 410
+	const tableViewWidth = `calc(100vw - ${panelWidth}px - 60px)`
+	const tableViewHeight = 'calc(100vh - 103px)'
 
 	return (
 		<Providers>
@@ -214,7 +217,11 @@ const DataView = (): JSX.Element => {
 					page={page}
 					publishedRecords={publishedRecords}
 					reachedLastPage={reachedLastPage}
-					style={{ display: view === View.table ? 'grid' : 'none' }}
+					style={{
+						display: view === View.table ? 'grid' : 'none',
+						width: tableViewWidth,
+						height: tableViewHeight,
+					}}
 				/>
 			</ViewContainer>
 		</Providers>
