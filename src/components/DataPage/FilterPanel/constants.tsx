@@ -15,7 +15,7 @@ export type Filter = { fieldId: string; value: FilterValue }
 
 export const fields: Record<string, Field> = {
   projectName: { label: 'Project name', dataGridKey: 'Project name' },
-  researcher: { label: 'Researcher', dataGridKey: 'Researcher' },
+  researcherName: { label: 'Author', dataGridKey: 'Authors' },
   hostSpecies: { label: 'Host species', dataGridKey: 'Host species' },
   detectionTarget: {
     label: 'Detection target',
