@@ -17,7 +17,7 @@ const TableViewContainer = styled.div<{ height: string }>`
 const TableContaier = styled.div`
   position: relative;
   height: 100%;
-  padding: 15px;
+  padding: 30px;
   padding-top: 73px;
   overflow-x: hidden;
 `

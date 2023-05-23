@@ -181,8 +181,9 @@ const DataView = (): JSX.Element => {
 	)
 	const dataViewHeight = 'calc(100vh - 87px)'
 	const panelHeight = 'calc(100vh - 190px)'
-	const panelWidth = 410
-	const tableViewWidth = `calc(100vw - ${panelWidth}px - 60px)`
+	const panelWidth = isFilterPanelOpen ? 410 : 0
+	const tableViewWidthOffset = 0 // isFilterPanelOpen ? -60 : 10
+	const tableViewWidth = `calc(100vw - ${panelWidth}px + ${tableViewWidthOffset}px)`
 	const tableViewHeight = 'calc(100vh - 103px)'
 
 	return (
@@ -224,6 +225,7 @@ const DataView = (): JSX.Element => {
 						display: view === View.table ? 'grid' : 'none',
 						width: tableViewWidth,
 						height: tableViewHeight,
+						transition: isFilterPanelOpen ? 'width 0.1s ease-in-out' : '',
 					}}
 				/>
 			</ViewContainer>
