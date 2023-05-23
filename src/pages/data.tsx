@@ -77,6 +77,7 @@ const DataView = (): JSX.Element => {
 	 * responded with an appropriate subset of the records. This is used for
 	 * color-coding the filtered columns. */
 	const [appliedFilters, setAppliedFilters] = useState<Filter[]>([])
+
 	const [optionsForFields, setOptionsForFields] = useState<
 		Record<string, string[]>
 	>({})
@@ -138,6 +139,7 @@ const DataView = (): JSX.Element => {
 
 	const loadPublishedRecords = useCallback(
 		async ({ appendResults = true } = {}) => {
+			if (!appendResults) page.current = 1
 			setLoading(true)
 			const params: Record<string, string> = {
 				page: page.current.toString(),
