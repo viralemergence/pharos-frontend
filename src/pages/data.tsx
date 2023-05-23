@@ -83,8 +83,6 @@ const DataView = (): JSX.Element => {
 
 	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(true)
 
-	console.log('fieldOptions', optionsForFields)
-
 	const changeView = (view: View) => {
 		window.location.hash = view
 		setView(view)
@@ -140,7 +138,6 @@ const DataView = (): JSX.Element => {
 
 	const loadPublishedRecords = useCallback(
 		async ({ appendResults = true } = {}) => {
-			console.log('loadPublishedRecords')
 			setLoading(true)
 			const params: Record<string, string> = {
 				page: page.current.toString(),
