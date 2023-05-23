@@ -37,3 +37,8 @@ export const fields: Record<string, Field> = {
     type: 'date',
   },
 }
+
+export type FilterInputHandler = (
+  newFilterValue: string,
+  filterId: string
+) => void

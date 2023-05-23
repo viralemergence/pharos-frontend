@@ -117,12 +117,7 @@ const DataView = (): JSX.Element => {
 		getMetadata()
 	}, [])
 
-	const onFilterInput = (
-		e: React.ChangeEvent<HTMLInputElement>,
-		fieldId = ''
-	) => {
-		const newFilterValue = e.target.value
-
+	const onFilterInput = (newFilterValue: string, fieldId = '') => {
 		setFilters(filters =>
 			filters.reduce<Filter[]>((acc, filter) => {
 				if (filter.fieldId === fieldId) filter.value = newFilterValue

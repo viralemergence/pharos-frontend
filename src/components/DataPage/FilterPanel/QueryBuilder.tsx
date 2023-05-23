@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import InputLabel from '../../ui/InputLabel'
 import { Field, FilterValue } from './constants'
-import type { Filter } from './constants'
+import type { Filter, FilterInputHandler } from './constants'
 import Typeahead, { Item } from '@talus-analytics/library.ui.typeahead'
 
 const FieldName = styled.div`
@@ -21,11 +21,6 @@ const FieldInput = styled.input`
     opacity: 0.5;
   }
 `
-
-type FilterInputHandler = (
-  e: React.ChangeEvent<HTMLInputElement>,
-  filterId: string
-) => void
 
 const FilterValueSetter = ({
   fieldId,
@@ -54,6 +49,7 @@ const FilterValueSetter = ({
             values={typeaheadValues}
             onAdd={item => {
               setTypeaheadValues(values => [...values, item])
+              onFilterInput(item.label, fieldId)
             }}
             onRemove={item => {
               setTypeaheadValues(values =>
@@ -72,7 +68,7 @@ const FilterValueSetter = ({
             type={fieldType}
             defaultValue={value}
             onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
-              onFilterInput(e, fieldId)
+              onFilterInput(e.target.value, fieldId)
             }
           />
         )}
