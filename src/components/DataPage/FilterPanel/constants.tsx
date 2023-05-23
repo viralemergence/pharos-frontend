@@ -43,3 +43,5 @@ export type ApplyFilterFunction = (
   filterId: string,
   delay?: number
 ) => void
+
+export const VALUE_SEPARATOR = '[\0SEPARATOR\0]'

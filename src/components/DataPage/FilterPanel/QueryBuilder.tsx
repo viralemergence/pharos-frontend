@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import InputLabel from '../../ui/InputLabel'
-import { Field, FilterValue } from './constants'
-import type { Filter, ApplyFilterFunction } from './constants'
+import { VALUE_SEPARATOR } from './constants'
+import type {
+  Field,
+  FilterValue,
+  Filter,
+  ApplyFilterFunction,
+} from './constants'
 import Typeahead, { Item } from '@talus-analytics/library.ui.typeahead'
 
 const FieldName = styled.div`
@@ -68,7 +73,8 @@ const FilterValueSetter = ({
 
   // On first render, load the previously set filter values into the Typeahead
   useEffect(() => {
-    let values = typeof value === 'string' ? value.split(',') : value
+    let values =
+      typeof value === 'string' ? value.split(VALUE_SEPARATOR) : value
     values = values.filter(value => value)
     if (values.length > 0) {
       setSelectedTypeaheadItems(
@@ -98,7 +104,11 @@ const FilterValueSetter = ({
 
   const handleTypeaheadChange = (items: Item[]) => {
     setSelectedTypeaheadItems(items)
-    applyFilter(items.map(({ label }) => label).join(','), fieldId, 0)
+    applyFilter(
+      items.map(({ label }) => label).join(VALUE_SEPARATOR),
+      fieldId,
+      0
+    )
   }
   const useTypeahead = options?.length > 0
   return (
@@ -138,7 +148,7 @@ const FilterValueSetter = ({
       {useTypeahead && selectedTypeaheadItems.length > 0 && (
         <SelectedTypeaheadValues>
           {selectedTypeaheadItems.map(item => (
-            <SelectedTypeaheadValue>
+            <SelectedTypeaheadValue key={item.key}>
               {item.label}{' '}
               <SelectedTypeaheadValueDeleteButton
                 onClick={() => {
@@ -152,9 +162,9 @@ const FilterValueSetter = ({
                   viewBox="0 0 20 20"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 >
                   <line x1="18" y1="6" x2="6" y2="18"></line>
                   <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -228,6 +238,7 @@ const FieldSelector = ({
     >
       {Object.entries(fields).map(([fieldId, { label }]) => (
         <FieldSelectorButton
+          key={fieldId}
           value={fieldId}
           onClick={_ => {
             addFilterValueSetter(fieldId)
@@ -255,12 +266,12 @@ const FilterList = styled.ul<{ height: string }>`
 `
 
 const QueryBuilderToolbar = styled.nav<{ filterCount: number }>`
-  background-color: #222;
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
   padding-bottom: 20px;
   padding: 14px 40px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 `
 
 const QueryBuilder = ({
@@ -314,7 +325,7 @@ const QueryBuilder = ({
         {filters.map((filter, i) => {
           const { label = '', type = 'text' } = fields[filter.fieldId]
           return (
-            <FilterListItem>
+            <FilterListItem key={`${filter.fieldId}${i}`}>
               <FilterValueSetter
                 fieldId={filter.fieldId}
                 fieldLabel={label}

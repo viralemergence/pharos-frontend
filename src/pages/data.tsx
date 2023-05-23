@@ -11,7 +11,10 @@ import type { Row } from 'components/DataPage/TableView/TableView'
 import DataToolbar, { View } from 'components/DataPage/Toolbar/Toolbar'
 
 import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
-import { FILTER_DELAY } from 'components/DataPage/FilterPanel/constants'
+import {
+	FILTER_DELAY,
+	VALUE_SEPARATOR,
+} from 'components/DataPage/FilterPanel/constants'
 import type {
 	Filter,
 	TimeoutsType,
@@ -148,7 +151,9 @@ const DataView = (): JSX.Element => {
 			const pendingFilters = []
 			for (const filter of filters) {
 				const { fieldId, value } = filter
-				const formattedValue = Array.isArray(value) ? value.join(',') : value
+				const formattedValue = Array.isArray(value)
+					? value.join(VALUE_SEPARATOR)
+					: value
 				if (!formattedValue) continue
 				params[fieldId] = formattedValue
 				pendingFilters.push(filter)
