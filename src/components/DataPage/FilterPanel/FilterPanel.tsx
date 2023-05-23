@@ -6,10 +6,8 @@ import './filterPanel.scss'
 import QueryBuilder from './QueryBuilder'
 
 const Panel = styled.div<{ isFilterPanelOpen: boolean; height: string }>`
-  overflow-y: auto;
   background-color: rgba(51, 51, 51, 0.9);
   color: #fff;
-  padding: ${props => (props.isFilterPanelOpen ? '34px 40px' : '0')};
   height: ${props => props.height};
   position: relative;
   width: 410px;
@@ -41,12 +39,6 @@ const FilterPanel = ({
   const [isFieldSelectorOpen, setIsFieldSelectorOpen] = useState(false)
   const panelRef = useRef<HTMLDivElement>(null)
 
-  // Close field selector if panel is clicked
-  // useEffect(() => {
-  //   panelRef.current?.addEventListener('click', e => {
-  //     setIsFieldSelectorOpen(false)
-  //   });
-  // }, []);
   return (
     <Panel
       className="pharos-panel"
@@ -66,6 +58,7 @@ const FilterPanel = ({
           applyFilter={applyFilter}
           isFieldSelectorOpen={isFieldSelectorOpen}
           setIsFieldSelectorOpen={setIsFieldSelectorOpen}
+          panelHeight={height}
         />
       )}
     </Panel>

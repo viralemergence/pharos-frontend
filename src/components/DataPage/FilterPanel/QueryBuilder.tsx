@@ -240,23 +240,27 @@ const FieldSelector = ({
   )
 }
 
-const FieldListItem = styled.li`
+const FilterListItem = styled.li`
   list-style: none;
-  margin-top: 20px;
+  margin-bottom: 20px;
+  &:last-child {
+    margin-bottom: 0;
+  }
 `
-const FieldList = styled.ul`
+const FilterList = styled.ul<{ height: string }>`
   margin: 0;
-  padding: 0;
+  padding: 34px 40px;
+  overflow-y: auto;
+  height: ${props => props.height};
 `
 
 const QueryBuilderToolbar = styled.nav<{ filterCount: number }>`
+  background-color: #222;
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
-  margin-bottom: 20px;
   padding-bottom: 20px;
-  ${({ filterCount }) =>
-    filterCount > 0 ? 'border-bottom: 1px solid #fff;' : ''}
+  padding: 14px 40px;
 `
 
 const QueryBuilder = ({
@@ -267,6 +271,7 @@ const QueryBuilder = ({
   isFieldSelectorOpen,
   setIsFieldSelectorOpen,
   optionsForFields,
+  panelHeight,
 }: {
   fields: Record<string, Field>
   filters: Filter[]
@@ -275,7 +280,10 @@ const QueryBuilder = ({
   isFieldSelectorOpen: boolean
   setIsFieldSelectorOpen: React.Dispatch<React.SetStateAction<boolean>>
   optionsForFields: Record<string, string[]>
+  panelHeight: string
 }) => {
+  // panelHeight is a 'calc()' expression
+  const filterListHeight = panelHeight.replace(')', ' - 73px)')
   return (
     <>
       <QueryBuilderToolbar filterCount={filters.length}>
@@ -302,11 +310,11 @@ const QueryBuilder = ({
           fields={fields}
         />
       )}
-      <FieldList>
+      <FilterList height={filterListHeight}>
         {filters.map((filter, i) => {
           const { label = '', type = 'text' } = fields[filter.fieldId]
           return (
-            <FieldListItem>
+            <FilterListItem>
               <FilterValueSetter
                 fieldId={filter.fieldId}
                 fieldLabel={label}
@@ -316,10 +324,10 @@ const QueryBuilder = ({
                 applyFilter={applyFilter}
                 value={filter.value}
               />
-            </FieldListItem>
+            </FilterListItem>
           )
         })}
-      </FieldList>
+      </FilterList>
     </>
   )
 }
