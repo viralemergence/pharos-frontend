@@ -2,7 +2,6 @@ import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
 import type { Filter, FilterInputHandler } from './constants'
 import { fields } from './constants'
-import 'react-querybuilder/dist/query-builder.scss' // recommended
 import './filterPanel.scss'
 import './queryBuilder.scss'
 import QueryBuilder from './QueryBuilder'
