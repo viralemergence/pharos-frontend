@@ -206,6 +206,7 @@ const DataView = (): JSX.Element => {
 				{isFilterPanelOpen && (
 					<FilterPanel
 						isFilterPanelOpen={isFilterPanelOpen}
+						setIsFilterPanelOpen={setIsFilterPanelOpen}
 						filters={filters}
 						applyFilter={applyFilter}
 						setFilters={setFilters}

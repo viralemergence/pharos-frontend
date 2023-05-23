@@ -22,6 +22,7 @@ const Panel = styled.div<{ isFilterPanelOpen: boolean; height: string }>`
 
 const FilterPanel = ({
   isFilterPanelOpen,
+  setIsFilterPanelOpen,
   filters,
   setFilters,
   applyFilter,
@@ -29,6 +30,7 @@ const FilterPanel = ({
   optionsForFields,
 }: {
   isFilterPanelOpen: boolean
+  setIsFilterPanelOpen: React.Dispatch<React.SetStateAction<boolean>>
   filters: Filter[]
   setFilters: React.Dispatch<React.SetStateAction<Filter[]>>
   /** Event handler for when one of the filter input elements receives new input */
@@ -59,6 +61,7 @@ const FilterPanel = ({
           isFieldSelectorOpen={isFieldSelectorOpen}
           setIsFieldSelectorOpen={setIsFieldSelectorOpen}
           panelHeight={height}
+          setIsFilterPanelOpen={setIsFilterPanelOpen}
         />
       )}
     </Panel>
