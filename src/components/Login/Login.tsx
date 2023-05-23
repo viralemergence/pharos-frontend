@@ -45,7 +45,7 @@ const Login = () => {
 
   const [researcherID, setResearcherID] = useState('')
 
-  const firstInputRef = useRef<fieldId>(null)
+  const firstInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     firstInputRef.current?.focus()
