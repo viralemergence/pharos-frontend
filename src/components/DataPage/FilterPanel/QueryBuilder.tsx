@@ -21,6 +21,25 @@ const FieldInput = styled.input`
     opacity: 0.5;
   }
 `
+const SelectedTypeaheadValues = styled.ul`
+  margin-top: 10px;
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: flex-start;
+  gap: 5px;
+`
+const SelectedTypeaheadValue = styled.li`
+  padding: 5px 10px;
+  border-radius: 5px;
+  background-color: #58b7b1;
+  color: #000;
+`
+const SelectedTypeaheadValueDeleteButton = styled.button`
+  border: 0;
+  background: transparent;
+`
 
 const FilterValueSetter = ({
   fieldId,
@@ -37,32 +56,53 @@ const FilterValueSetter = ({
   onFilterInput: FilterInputHandler
   options: string[]
 }) => {
-  const [typeaheadValues, setTypeaheadValues] = useState<Item[]>([])
+  const [selectedTypeaheadItems, setSelectedTypeaheadItems] = useState<Item[]>(
+    []
+  )
+  const removeItem = (itemToRemove: Item) => {
+    setSelectedTypeaheadItems(items =>
+      items.filter(({ key }) => key !== itemToRemove.key)
+    )
+  }
   return (
     <>
       <InputLabel>
         <FieldName>{fieldLabel}</FieldName>
         {options?.length > 0 ? (
-          <Typeahead
-            multiselect={true}
-            items={options.map(option => ({ key: option, label: option }))}
-            values={typeaheadValues}
-            onAdd={item => {
-              setTypeaheadValues(values => [...values, item])
-              onFilterInput(item.label, fieldId)
-            }}
-            onRemove={item => {
-              setTypeaheadValues(values =>
-                values.filter(value => value.key !== item.key)
-              )
-            }}
-            placeholder={`${typeaheadValues.length} selected`}
-            onRemove={() => {}}
-            backgroundColor="#000"
-            fontColor="white"
-            borderColor="white"
-            style={{ fontFamily: 'Open Sans' }}
-          />
+          <>
+            <Typeahead
+              multiselect={true}
+              items={options.map(option => ({ key: option, label: option }))}
+              values={selectedTypeaheadItems}
+              onAdd={(item: Item) => {
+                setSelectedTypeaheadItems(values => [...values, item])
+                onFilterInput(item.label, fieldId)
+              }}
+              onRemove={removeItem}
+              placeholder={`${selectedTypeaheadItems.length} selected`}
+              onRemove={() => {}}
+              backgroundColor="#000"
+              fontColor="white"
+              borderColor="white"
+              style={{ fontFamily: 'Open Sans' }}
+            />
+            {selectedTypeaheadItems.length > 0 && (
+              <SelectedTypeaheadValues>
+                {selectedTypeaheadItems.map(item => (
+                  <SelectedTypeaheadValue>
+                    {item.label}{' '}
+                    <SelectedTypeaheadValueDeleteButton
+                      onClick={() => {
+                        removeItem(item)
+                      }}
+                    >
+                      x
+                    </SelectedTypeaheadValueDeleteButton>
+                  </SelectedTypeaheadValue>
+                ))}
+              </SelectedTypeaheadValues>
+            )}
+          </>
         ) : (
           <FieldInput
             type={fieldType}
