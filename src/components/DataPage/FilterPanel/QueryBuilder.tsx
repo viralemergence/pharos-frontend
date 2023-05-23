@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import InputLabel from '../../ui/InputLabel'
 import { Field, FilterValue } from './constants'
 import type { Filter } from './constants'
+import Typeahead, { Item } from '@talus-analytics/library.ui.typeahead'
 
 const FieldName = styled.div`
   margin-bottom: 5px;
@@ -32,24 +33,49 @@ const FilterValueSetter = ({
   fieldType = 'text',
   value,
   onFilterInput,
+  options,
 }: {
   fieldId: string
   fieldLabel: string
   fieldType: 'text' | 'date'
   value: FilterValue
   onFilterInput: FilterInputHandler
+  options: string[]
 }) => {
+  const [typeaheadValues, setTypeaheadValues] = useState<Item[]>([])
   return (
     <>
       <InputLabel>
         <FieldName>{fieldLabel}</FieldName>
-        <FieldInput
-          type={fieldType}
-          defaultValue={value}
-          onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
-            onFilterInput(e, fieldId)
-          }
-        />
+        {options?.length > 0 ? (
+          <Typeahead
+            multiselect={true}
+            items={options.map(option => ({ key: option, label: option }))}
+            values={typeaheadValues}
+            onAdd={item => {
+              setTypeaheadValues(values => [...values, item])
+            }}
+            onRemove={item => {
+              setTypeaheadValues(values =>
+                values.filter(value => value.key !== item.key)
+              )
+            }}
+            placeholder={`${typeaheadValues.length} selected`}
+            onRemove={() => {}}
+            backgroundColor="#000"
+            fontColor="white"
+            borderColor="white"
+            style={{ fontFamily: 'Open Sans' }}
+          />
+        ) : (
+          <FieldInput
+            type={fieldType}
+            defaultValue={value}
+            onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
+              onFilterInput(e, fieldId)
+            }
+          />
+        )}
       </InputLabel>
     </>
   )
@@ -153,6 +179,7 @@ const QueryBuilder = ({
   onFilterInput,
   isFieldSelectorOpen,
   setIsFieldSelectorOpen,
+  optionsForFields,
 }: {
   fields: Record<string, Field>
   filters: Filter[]
@@ -160,6 +187,7 @@ const QueryBuilder = ({
   onFilterInput: FilterInputHandler
   isFieldSelectorOpen: boolean
   setIsFieldSelectorOpen: React.Dispatch<React.SetStateAction<boolean>>
+  optionsForFields: Record<string, string[]>
 }) => {
   return (
     <>
@@ -196,6 +224,7 @@ const QueryBuilder = ({
                 fieldId={filter.fieldId}
                 fieldLabel={label}
                 fieldType={type}
+                options={optionsForFields[filter.fieldId]}
                 key={i}
                 onFilterInput={onFilterInput}
                 value={''}

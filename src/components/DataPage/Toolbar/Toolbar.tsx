@@ -8,6 +8,8 @@ export enum View {
 	table = 'table',
 }
 
+// TODO: Hover cover for buttons, and change the size of the Filters button.
+
 const DataToolbarButton = styled.button<{
 	selected?: boolean
 	width?: number

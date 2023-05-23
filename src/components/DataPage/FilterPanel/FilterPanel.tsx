@@ -123,6 +123,7 @@ const FilterPanel = ({
   setFilters,
   onFilterInput,
   height,
+  optionsForFields,
 }: {
   isFilterPanelOpen: boolean
   filters: Filter[]
@@ -133,6 +134,7 @@ const FilterPanel = ({
     fieldId: string
   ) => void
   height: string
+  optionsForFields: Record<string, string[]>
 }) => {
   const [isFieldSelectorOpen, setIsFieldSelectorOpen] = useState(false)
   const panelRef = useRef<HTMLDivElement>(null)
@@ -156,6 +158,7 @@ const FilterPanel = ({
       {isFilterPanelOpen && (
         <QueryBuilder
           fields={fields}
+          optionsForFields={optionsForFields}
           filters={filters}
           setFilters={setFilters}
           onFilterInput={onFilterInput}

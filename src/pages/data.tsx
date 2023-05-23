@@ -47,17 +47,17 @@ const metadataFields = [
 const dataIsMetadataResponse = (data: unknown): data is MetadataResponse => {
 	if (!data || typeof data !== 'object') return false
 	for (const field of metadataFields) {
-		if (!('fieldValueOptions' in data)) return false
-		if (!(field in data.fieldValueOptions)) return false
-		if (!Array.isArray(data.fieldValueOptions[field])) return false
-		if (!data.fieldValueOptions[field].every(item => typeof item === 'string'))
+		if (!('optionsForFields' in data)) return false
+		if (!(field in data.optionsForFields)) return false
+		if (!Array.isArray(data.optionsForFields[field])) return false
+		if (!data.optionsForFields[field].every(item => typeof item === 'string'))
 			return false
 	}
 	return true
 }
 
 interface MetadataResponse {
-	fieldValueOptions: Record<string, string[]>
+	optionsForFields: Record<string, string[]>
 }
 
 const DataView = (): JSX.Element => {
@@ -77,11 +77,13 @@ const DataView = (): JSX.Element => {
 	 * responded with an appropriate subset of the records. This is used for
 	 * color-coding the filtered columns. */
 	const [appliedFilters, setAppliedFilters] = useState<Filter[]>([])
-	const [fieldOptions, setFieldOptions] = useState<Record<string, string[]>>({})
+	const [optionsForFields, setOptionsForFields] = useState<
+		Record<string, string[]>
+	>({})
 
 	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(true)
 
-	console.log('fieldOptions', fieldOptions)
+	console.log('fieldOptions', optionsForFields)
 
 	const changeView = (view: View) => {
 		window.location.hash = view
@@ -110,7 +112,7 @@ const DataView = (): JSX.Element => {
 				console.error('GET /metadata-for-published-records: malformed response')
 				return
 			}
-			setFieldOptions(data.fieldValueOptions)
+			setOptionsForFields(data.optionsForFields)
 		}
 		getMetadata()
 	}, [])
@@ -201,6 +203,7 @@ const DataView = (): JSX.Element => {
 						onFilterInput={onFilterInput}
 						setFilters={setFilters}
 						height={panelHeight}
+						optionsForFields={optionsForFields}
 					/>
 				)}
 				<MapView
