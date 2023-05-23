@@ -60,9 +60,15 @@ const FilterValueSetter = ({
     []
   )
   const removeItem = (itemToRemove: Item) => {
-    setSelectedTypeaheadItems(items =>
-      items.filter(({ key }) => key !== itemToRemove.key)
+    const amendedItems = selectedTypeaheadItems.filter(
+      ({ key }) => key !== itemToRemove.key
     )
+    handleTypeaheadChange(amendedItems)
+  }
+
+  const handleTypeaheadChange = (items: Item[]) => {
+    setSelectedTypeaheadItems(items)
+    onFilterInput(items.map(({ label }) => label).join(','), fieldId)
   }
   return (
     <>
@@ -74,13 +80,11 @@ const FilterValueSetter = ({
               multiselect={true}
               items={options.map(option => ({ key: option, label: option }))}
               values={selectedTypeaheadItems}
-              onAdd={(item: Item) => {
-                setSelectedTypeaheadItems(values => [...values, item])
-                onFilterInput(item.label, fieldId)
+              onAdd={(newItem: Item) => {
+                handleTypeaheadChange([...selectedTypeaheadItems, newItem])
               }}
               onRemove={removeItem}
               placeholder={`${selectedTypeaheadItems.length} selected`}
-              onRemove={() => {}}
               backgroundColor="#000"
               fontColor="white"
               borderColor="white"
