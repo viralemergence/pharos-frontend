@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import type { Filter, ApplyFilterFunction } from './constants'
 import { fields } from './constants'
 import './filterPanel.scss'
-import './queryBuilder.scss'
 import QueryBuilder from './QueryBuilder'
 
 const Panel = styled.div<{ isFilterPanelOpen: boolean; height: string }>`
