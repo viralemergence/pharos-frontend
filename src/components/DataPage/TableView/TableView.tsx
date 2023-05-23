@@ -92,7 +92,7 @@ const TableView = ({
 }: TableViewProps) => {
   useEffect(() => {
     loadPublishedRecords()
-  }, [loadPublishedRecords])
+  }, [])
 
   const rowNumberColumn = {
     key: 'rowNumber',

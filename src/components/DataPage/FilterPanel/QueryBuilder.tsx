@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import InputLabel from '../../ui/InputLabel'
 import { Field, FilterValue } from './constants'
-import type { Filter, FilterInputHandler } from './constants'
+import type { Filter, ApplyFilterFunction } from './constants'
 import Typeahead, { Item } from '@talus-analytics/library.ui.typeahead'
 
 const FieldName = styled.div`
@@ -52,14 +52,14 @@ const FilterValueSetter = ({
   fieldLabel,
   fieldType = 'text',
   value,
-  onFilterInput,
+  applyFilter,
   options,
 }: {
   fieldId: string
   fieldLabel: string
   fieldType: 'text' | 'date'
   value: FilterValue
-  onFilterInput: FilterInputHandler
+  applyFilter: ApplyFilterFunction
   options: string[]
 }) => {
   const [selectedTypeaheadItems, setSelectedTypeaheadItems] = useState<Item[]>(
@@ -98,7 +98,7 @@ const FilterValueSetter = ({
 
   const handleTypeaheadChange = (items: Item[]) => {
     setSelectedTypeaheadItems(items)
-    onFilterInput(items.map(({ label }) => label).join(','), fieldId)
+    applyFilter(items.map(({ label }) => label).join(','), fieldId, 0)
   }
   const useTypeahead = options?.length > 0
   return (
@@ -130,7 +130,7 @@ const FilterValueSetter = ({
             type={fieldType}
             defaultValue={value}
             onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
-              onFilterInput(e.target.value, fieldId)
+              applyFilter(e.target.value, fieldId)
             }
           />
         )}
@@ -263,7 +263,7 @@ const QueryBuilder = ({
   fields,
   filters,
   setFilters,
-  onFilterInput,
+  applyFilter,
   isFieldSelectorOpen,
   setIsFieldSelectorOpen,
   optionsForFields,
@@ -271,7 +271,7 @@ const QueryBuilder = ({
   fields: Record<string, Field>
   filters: Filter[]
   setFilters: React.Dispatch<React.SetStateAction<Filter[]>>
-  onFilterInput: FilterInputHandler
+  applyFilter: ApplyFilterFunction
   isFieldSelectorOpen: boolean
   setIsFieldSelectorOpen: React.Dispatch<React.SetStateAction<boolean>>
   optionsForFields: Record<string, string[]>
@@ -313,7 +313,7 @@ const QueryBuilder = ({
                 fieldType={type}
                 options={optionsForFields[filter.fieldId]}
                 key={i}
-                onFilterInput={onFilterInput}
+                applyFilter={applyFilter}
                 value={filter.value}
               />
             </FieldListItem>

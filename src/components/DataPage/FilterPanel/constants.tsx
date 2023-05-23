@@ -1,6 +1,6 @@
 // After user finishes typing, how long to wait before applying a filter, in
 // milliseconds
-export const FILTER_DELAY = 300
+export const FILTER_DELAY = 3000
 
 type Timeout = ReturnType<typeof setTimeout> | null
 export type TimeoutsType = Record<string, Timeout>
@@ -38,7 +38,8 @@ export const fields: Record<string, Field> = {
   },
 }
 
-export type FilterInputHandler = (
+export type ApplyFilterFunction = (
   newFilterValue: string,
-  filterId: string
+  filterId: string,
+  delay?: number
 ) => void

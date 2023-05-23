@@ -117,7 +117,11 @@ const DataView = (): JSX.Element => {
 		getMetadata()
 	}, [])
 
-	const onFilterInput = (newFilterValue: string, fieldId = '') => {
+	const applyFilter = (
+		newFilterValue: string,
+		fieldId = '',
+		delay = FILTER_DELAY
+	) => {
 		setFilters(filters =>
 			filters.reduce<Filter[]>((acc, filter) => {
 				if (filter.fieldId === fieldId) filter.value = newFilterValue
@@ -126,10 +130,9 @@ const DataView = (): JSX.Element => {
 		)
 
 		clearTimeout(filterTimeouts.current?.[fieldId] ?? undefined)
-		const timeout = setTimeout(
-			() => loadPublishedRecords({ appendResults: false }),
-			FILTER_DELAY
-		)
+		const timeout = setTimeout(() => {
+			loadPublishedRecords({ appendResults: false })
+		}, delay)
 
 		// Store timeout so we can restart it if the user types again
 		filterTimeouts.current[fieldId] = timeout
@@ -137,6 +140,7 @@ const DataView = (): JSX.Element => {
 
 	const loadPublishedRecords = useCallback(
 		async ({ appendResults = true } = {}) => {
+			console.log('loadPublishedRecords')
 			setLoading(true)
 			const params: Record<string, string> = {
 				page: page.current.toString(),
@@ -198,7 +202,7 @@ const DataView = (): JSX.Element => {
 					<FilterPanel
 						isFilterPanelOpen={isFilterPanelOpen}
 						filters={filters}
-						onFilterInput={onFilterInput}
+						applyFilter={applyFilter}
 						setFilters={setFilters}
 						height={panelHeight}
 						optionsForFields={optionsForFields}

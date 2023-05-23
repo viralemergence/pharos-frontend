@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
-import type { Filter, FilterInputHandler } from './constants'
+import type { Filter, ApplyFilterFunction } from './constants'
 import { fields } from './constants'
 import './filterPanel.scss'
 import './queryBuilder.scss'
@@ -27,7 +27,7 @@ const FilterPanel = ({
   isFilterPanelOpen,
   filters,
   setFilters,
-  onFilterInput,
+  applyFilter,
   height,
   optionsForFields,
 }: {
@@ -35,7 +35,7 @@ const FilterPanel = ({
   filters: Filter[]
   setFilters: React.Dispatch<React.SetStateAction<Filter[]>>
   /** Event handler for when one of the filter input elements receives new input */
-  onFilterInput: FilterInputHandler
+  applyFilter: ApplyFilterFunction
   height: string
   optionsForFields: Record<string, string[]>
 }) => {
@@ -64,7 +64,7 @@ const FilterPanel = ({
           optionsForFields={optionsForFields}
           filters={filters}
           setFilters={setFilters}
-          onFilterInput={onFilterInput}
+          applyFilter={applyFilter}
           isFieldSelectorOpen={isFieldSelectorOpen}
           setIsFieldSelectorOpen={setIsFieldSelectorOpen}
         />
