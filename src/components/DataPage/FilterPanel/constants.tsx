@@ -5,9 +5,6 @@ import styled from 'styled-components'
 // milliseconds
 export const FILTER_DELAY = 300
 
-type Timeout = ReturnType<typeof setTimeout> | null
-export type TimeoutsType = Record<string, Timeout>
-
 export type Field = {
   label: string
   dataGridKey?: string
@@ -47,7 +44,7 @@ export type ApplyFilterFunction = (
   delay?: number
 ) => void
 
-export const VALUE_SEPARATOR = '[\0SEPARATOR\0]'
+export const VALUE_SEPARATOR = '|||'
 
 const XIconSvg = styled.svg<{ extraStyle?: string }>`
   ${({ extraStyle }) => extraStyle}

@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
+import { debounce } from 'lodash'
 
 import CMS from '@talus-analytics/library.airtable-cms'
 import Providers from 'components/layout/Providers'
@@ -17,7 +18,6 @@ import {
 } from 'components/DataPage/FilterPanel/constants'
 import type {
 	Filter,
-	TimeoutsType,
 } from 'components/DataPage/FilterPanel/constants'
 
 const ViewContainer = styled.main`
@@ -63,6 +63,60 @@ interface MetadataResponse {
 	optionsForFields: Record<string, string[]>
 }
 
+const loadPublishedRecords = debounce(
+	async ({
+		appendResults = true,
+		filters,
+		page,
+		setLoading,
+		setPublishedRecords,
+		setAppliedFilters,
+		setReachedLastPage,
+	}) => {
+		console.log('loading published records')
+		if (!appendResults) page.current = 1
+		setLoading(true)
+		const params: Record<string, string> = {
+			page: page.current.toString(),
+			pageSize: '50',
+		}
+		const pendingFilters = []
+		for (const filter of filters) {
+			const { fieldId, value } = filter
+			const formattedValue = Array.isArray(value)
+				? value.join(VALUE_SEPARATOR)
+				: value
+			if (!formattedValue) continue
+			params[fieldId] = formattedValue
+			pendingFilters.push(filter)
+		}
+		const response = await fetch(
+			`${process.env.GATSBY_API_URL}/published-records?` +
+				new URLSearchParams(params)
+		)
+
+		if (!response.ok) {
+			console.log('GET /published-records: error')
+			setLoading(false)
+			return
+		}
+		const data = await response.json()
+		if (!dataIsPublishedRecordsResponse(data)) {
+			console.log('GET /published-records: malformed response')
+			setLoading(false)
+			return
+		}
+		setPublishedRecords(previousRecords => [
+			...(appendResults ? previousRecords : []),
+			...data.publishedRecords,
+		])
+		setAppliedFilters(pendingFilters)
+		setLoading(false)
+		setReachedLastPage(data.isLastPage)
+	},
+	FILTER_DELAY
+)
+
 const DataView = (): JSX.Element => {
 	const [loading, setLoading] = useState(true)
 	const [publishedRecords, setPublishedRecords] = useState<Row[]>([])
@@ -72,8 +126,6 @@ const DataView = (): JSX.Element => {
 
 	/** The filters to be applied */
 	const [filters, setFilters] = useState<Filter[]>([])
-
-	const filterTimeouts = useRef<TimeoutsType>({})
 
 	/** Filters that have been successfully applied to the published
 	 * records. That is, these filters have been sent to the server, and it
@@ -119,11 +171,7 @@ const DataView = (): JSX.Element => {
 		getMetadata()
 	}, [])
 
-	const applyFilter = (
-		newFilterValue: string,
-		fieldId = '',
-		delay = FILTER_DELAY
-	) => {
+	const applyFilter = (newFilterValue: string, fieldId = '') => {
 		setFilters(filters =>
 			filters.reduce<Filter[]>((acc, filter) => {
 				if (filter.fieldId === fieldId) filter.value = newFilterValue
@@ -131,59 +179,17 @@ const DataView = (): JSX.Element => {
 			}, [])
 		)
 
-		clearTimeout(filterTimeouts.current?.[fieldId] ?? undefined)
-		const timeout = setTimeout(() => {
-			loadPublishedRecords({ appendResults: false })
-		}, delay)
-
-		// Store timeout so we can restart it if the user types again
-		filterTimeouts.current[fieldId] = timeout
+		loadPublishedRecords({
+			appendResults: false,
+			page,
+			filters,
+			setLoading,
+			setPublishedRecords,
+			setAppliedFilters,
+			setReachedLastPage,
+		})
 	}
 
-	const loadPublishedRecords = useCallback(
-		async ({ appendResults = true } = {}) => {
-			if (!appendResults) page.current = 1
-			setLoading(true)
-			const params: Record<string, string> = {
-				page: page.current.toString(),
-				pageSize: '50',
-			}
-			const pendingFilters = []
-			for (const filter of filters) {
-				const { fieldId, value } = filter
-				const formattedValue = Array.isArray(value)
-					? value.join(VALUE_SEPARATOR)
-					: value
-				if (!formattedValue) continue
-				params[fieldId] = formattedValue
-				pendingFilters.push(filter)
-			}
-			const response = await fetch(
-				`${process.env.GATSBY_API_URL}/published-records?` +
-					new URLSearchParams(params)
-			)
-
-			if (!response.ok) {
-				console.log('GET /published-records: error')
-				setLoading(false)
-				return
-			}
-			const data = await response.json()
-			if (!dataIsPublishedRecordsResponse(data)) {
-				console.log('GET /published-records: malformed response')
-				setLoading(false)
-				return
-			}
-			setPublishedRecords(previousRecords => [
-				...(appendResults ? previousRecords : []),
-				...data.publishedRecords,
-			])
-			setAppliedFilters(pendingFilters)
-			setLoading(false)
-			setReachedLastPage(data.isLastPage)
-		},
-		[filters, setPublishedRecords, setReachedLastPage, setLoading]
-	)
 	const dataViewHeight = 'calc(100vh - 87px)'
 	const panelHeight = 'calc(100vh - 190px)'
 	const panelWidth = isFilterPanelOpen ? 410 : 0
@@ -222,7 +228,16 @@ const DataView = (): JSX.Element => {
 					height={dataViewHeight}
 					filters={filters}
 					appliedFilters={appliedFilters}
-					loadPublishedRecords={loadPublishedRecords}
+					loadPublishedRecords={() => {
+						loadPublishedRecords({
+							page,
+							filters,
+							setLoading,
+							setPublishedRecords,
+							setAppliedFilters,
+							setReachedLastPage,
+						})
+					}}
 					loading={loading}
 					page={page}
 					publishedRecords={publishedRecords}

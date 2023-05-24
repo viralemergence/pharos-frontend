@@ -59,7 +59,7 @@ const SelectedTypeaheadValueDeleteButton = styled.button`
     background: rgba(0, 0, 0, 0.1);
   }
   &:active {
-    outline: 2px solid ${({ theme }) => theme.mint};
+    outline: 1px solid ${({ theme }) => theme.mint};
   }
 `
 
@@ -80,6 +80,14 @@ const FilterValueSetter = ({
 }) => {
   const [selectedTypeaheadItems, setSelectedTypeaheadItems] = useState<Item[]>(
     []
+  )
+  const selectedTypeaheadItemLabels = selectedTypeaheadItems.map(
+    ({ label }) => label
+  )
+
+  // Remove selected items from available options
+  options = options.filter(
+    option => !selectedTypeaheadItemLabels.includes(option)
   )
 
   // On first render, load the previously set filter values into the Typeahead
@@ -121,7 +129,7 @@ const FilterValueSetter = ({
       0
     )
   }
-  const useTypeahead = options?.length > 0
+  const useTypeahead = fieldType === 'text'
   return (
     <>
       <InputLabel>
