@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useEffect } from 'react'
 import styled from 'styled-components'
 import mapboxgl from 'mapbox-gl'
 
@@ -18,7 +18,11 @@ interface MapPageProps {
   height: string
 }
 
-const MapView = ({ style, projection = 'naturalEarth', height }: MapPageProps) => {
+const MapView = ({
+  style,
+  projection = 'naturalEarth',
+  height,
+}: MapPageProps) => {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<null | mapboxgl.Map>(null)
 

@@ -58,7 +58,6 @@ const NoRecordsFound = styled.div`
 `
 
 interface TableViewProps {
-  filters: Filter[]
   appliedFilters: Filter[]
   height: string
   loadPublishedRecords: (options?: { appendResults: boolean }) => void
@@ -85,7 +84,6 @@ const TableView = ({
   loading,
   page,
   publishedRecords,
-  filters,
   appliedFilters,
   loadPublishedRecords,
   reachedLastPage,

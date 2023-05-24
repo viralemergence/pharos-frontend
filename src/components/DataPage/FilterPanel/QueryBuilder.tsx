@@ -65,7 +65,6 @@ const SelectedTypeaheadValueDeleteButton = styled.button`
 
 const FilterValueSetter = ({
   filterIndex,
-  fieldId,
   fieldLabel,
   fieldType = 'text',
   value,
@@ -73,7 +72,6 @@ const FilterValueSetter = ({
   options = [],
 }: {
   filterIndex: number
-  fieldId: string
   fieldLabel: string
   fieldType: 'text' | 'date'
   value: FilterValue
@@ -106,8 +104,8 @@ const FilterValueSetter = ({
 
   /** Workaround for fixing colors */
   const fixTypeaheadColors = () => {
-    const typeaheadIcon = document.querySelectorAll(
-      'form input[type=search] + div'
+    const typeaheadIcon = Array.from(
+      document.querySelectorAll<HTMLElement>('form input[type=search] + div')
     )?.[0]
     if (typeaheadIcon) typeaheadIcon.style.filter = 'invert(1)'
   }
@@ -160,7 +158,7 @@ const FilterValueSetter = ({
             type={fieldType}
             defaultValue={value}
             onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
-              applyFilter(e.target.value, fieldId)
+              applyFilter(filterIndex, e.target.value)
             }
           />
         )}
@@ -198,7 +196,7 @@ const QueryBuilderButton = styled.button`
   }
 `
 const QueryBuilderToolbarButton = styled(QueryBuilderButton)<{
-  isFieldSelectorOpen: boolean
+  isFieldSelectorOpen?: boolean
 }>`
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
@@ -371,7 +369,6 @@ const QueryBuilder = ({
             <FilterListItem key={`${filter.fieldId}${filterIndex}`}>
               <FilterValueSetter
                 filterIndex={filterIndex}
-                fieldId={filter.fieldId}
                 fieldLabel={label}
                 fieldType={type}
                 options={optionsForFields[filter.fieldId]}

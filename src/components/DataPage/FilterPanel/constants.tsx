@@ -1,4 +1,4 @@
-import React from 'React'
+import React from 'react'
 import styled from 'styled-components'
 
 // After user finishes typing, how long to wait before applying a filter, in
@@ -67,7 +67,7 @@ export const XIcon = ({ extraStyle = '' }: { extraStyle?: string }) => (
   </XIconSvg>
 )
 
-export const PlusIcon = ({ style }) => (
+export const PlusIcon = ({ style = {} }: { style?: React.CSSProperties }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="18"

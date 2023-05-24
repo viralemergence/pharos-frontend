@@ -1,4 +1,11 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, {
+	useEffect,
+	useRef,
+	useState,
+	Dispatch,
+	SetStateAction,
+	MutableRefObject,
+} from 'react'
 import styled from 'styled-components'
 import { debounce } from 'lodash'
 
@@ -27,15 +34,16 @@ interface PublishedRecordsResponse {
 	isLastPage: boolean
 }
 
-const dataIsPublishedRecordsResponse = (
+const isPublishedRecordsResponse = (
 	data: unknown
 ): data is PublishedRecordsResponse => {
-	if (!data || typeof data !== 'object') return false
-	if (!('publishedRecords' in data)) return false
-	if (!('isLastPage' in data)) return false
-	if (!Array.isArray(data.publishedRecords)) return false
-	if (!data.publishedRecords.every(row => typeof row === 'object')) return false
-	return true
+	if (typeof data !== 'object' || data === null) return false
+	const { publishedRecords, isLastPage } =
+		data as Partial<PublishedRecordsResponse>
+	if (typeof publishedRecords !== 'object' || publishedRecords === null)
+		return false
+	if (typeof isLastPage !== 'boolean') return false
+	return publishedRecords.every(row => typeof row === 'object')
 }
 
 const metadataFields = [
@@ -45,16 +53,15 @@ const metadataFields = [
 	'detectionTarget',
 ]
 
-const dataIsMetadataResponse = (data: unknown): data is MetadataResponse => {
-	if (!data || typeof data !== 'object') return false
-	for (const field of metadataFields) {
-		if (!('optionsForFields' in data)) return false
-		if (!(field in data.optionsForFields)) return false
-		if (!Array.isArray(data.optionsForFields[field])) return false
-		if (!data.optionsForFields[field].every(item => typeof item === 'string'))
-			return false
-	}
-	return true
+const isMetadataResponse = (data: unknown): data is MetadataResponse => {
+	if (typeof data !== 'object' || data === null) return false
+	const options = (data as Partial<MetadataResponse>).optionsForFields
+	if (typeof options !== 'object' || options === null) return false
+	return metadataFields.every(field =>
+		(options as Record<string, unknown[]>)[field].every?.(
+			item => typeof item === 'string'
+		)
+	)
 }
 
 interface MetadataResponse {
@@ -70,6 +77,14 @@ const loadPublishedRecords = debounce(
 		setPublishedRecords,
 		setAppliedFilters,
 		setReachedLastPage,
+	}: {
+		appendResults?: boolean
+		filters: Filter[]
+		page: MutableRefObject<number>
+		setLoading: Dispatch<SetStateAction<boolean>>
+		setPublishedRecords: Dispatch<SetStateAction<Row[]>>
+		setAppliedFilters: Dispatch<SetStateAction<Filter[]>>
+		setReachedLastPage: Dispatch<SetStateAction<boolean>>
 	}) => {
 		console.log('loading published records')
 		if (!appendResults) page.current = 1
@@ -99,12 +114,12 @@ const loadPublishedRecords = debounce(
 			return
 		}
 		const data = await response.json()
-		if (!dataIsPublishedRecordsResponse(data)) {
+		if (!isPublishedRecordsResponse(data)) {
 			console.log('GET /published-records: malformed response')
 			setLoading(false)
 			return
 		}
-		setPublishedRecords(previousRecords => [
+		setPublishedRecords((previousRecords: Row[]) => [
 			...(appendResults ? previousRecords : []),
 			...data.publishedRecords,
 		])
@@ -160,7 +175,7 @@ const DataView = (): JSX.Element => {
 				`${process.env.GATSBY_API_URL}/metadata-for-published-records`
 			)
 			const data = await response.json()
-			if (!dataIsMetadataResponse(data)) {
+			if (!isMetadataResponse(data)) {
 				console.error('GET /metadata-for-published-records: malformed response')
 				return
 			}
@@ -222,7 +237,6 @@ const DataView = (): JSX.Element => {
 				/>
 				<TableView
 					height={dataViewHeight}
-					filters={filters}
 					appliedFilters={appliedFilters}
 					loadPublishedRecords={() => {
 						loadPublishedRecords({
