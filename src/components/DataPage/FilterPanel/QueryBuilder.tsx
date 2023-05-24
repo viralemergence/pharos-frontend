@@ -69,7 +69,7 @@ const FilterValueSetter = ({
   fieldType = 'text',
   value,
   applyFilter,
-  options,
+  options = [],
 }: {
   fieldId: string
   fieldLabel: string
@@ -214,6 +214,14 @@ const QueryBuilderToolbarButton = styled(QueryBuilderButton)<{
     outline: 2px solid rgba(60, 60, 60, 1);
   }
 `
+const FilterPanelCloseButton = styled(QueryBuilderToolbarButton)`
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 5px 10px;
+  border-radius: 10px;
+  background: transparent;
+`
 
 const FieldSelectorDiv = styled.div`
   position: absolute;
@@ -329,14 +337,14 @@ const QueryBuilder = ({
         <QueryBuilderToolbarButton onClick={() => setFilters([])}>
           Clear all
         </QueryBuilderToolbarButton>
-        <QueryBuilderToolbarButton onClick={() => setIsFilterPanelOpen(false)}>
+        <FilterPanelCloseButton onClick={() => setIsFilterPanelOpen(false)}>
           <XIcon />
-        </QueryBuilderToolbarButton>
+        </FilterPanelCloseButton>
       </QueryBuilderToolbar>
       {isFieldSelectorOpen && (
         <FieldSelector
           addFilterValueSetter={fieldId => {
-            setFilters(filters => [...filters, { fieldId, value: '' }])
+            setFilters(filters => [{ fieldId, value: '' }, ...filters])
             setIsFieldSelectorOpen(false)
           }}
           fields={fields}
