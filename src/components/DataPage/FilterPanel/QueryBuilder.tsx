@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import InputLabel from '../../ui/InputLabel'
-import { VALUE_SEPARATOR, XIcon } from './constants'
+import { VALUE_SEPARATOR, PlusIcon, XIcon } from './constants'
 import type {
   Field,
   FilterValue,
@@ -64,6 +64,7 @@ const SelectedTypeaheadValueDeleteButton = styled.button`
 `
 
 const FilterValueSetter = ({
+  filterIndex,
   fieldId,
   fieldLabel,
   fieldType = 'text',
@@ -71,6 +72,7 @@ const FilterValueSetter = ({
   applyFilter,
   options = [],
 }: {
+  filterIndex: number
   fieldId: string
   fieldLabel: string
   fieldType: 'text' | 'date'
@@ -124,9 +126,8 @@ const FilterValueSetter = ({
   const handleTypeaheadChange = (items: Item[]) => {
     setSelectedTypeaheadItems(items)
     applyFilter(
-      items.map(({ label }) => label).join(VALUE_SEPARATOR),
-      fieldId,
-      0
+      filterIndex,
+      items.map(({ label }) => label).join(VALUE_SEPARATOR)
     )
   }
   const useTypeahead = fieldType === 'text'
@@ -323,10 +324,12 @@ const QueryBuilder = ({
 }) => {
   // panelHeight is a 'calc()' expression
   const filterListHeight = panelHeight.replace(')', ' - 73px)')
+  const filterListRef = useRef<HTMLUListElement>(null)
   return (
     <>
       <QueryBuilderToolbar filterCount={filters.length}>
         <QueryBuilderToolbarButton
+          className="add-filter"
           isFieldSelectorOpen={isFieldSelectorOpen}
           onClick={e => {
             setIsFieldSelectorOpen(open => !open)
@@ -335,9 +338,9 @@ const QueryBuilder = ({
             e.stopPropagation()
           }}
         >
-          + Add filter
+          <PlusIcon style={{ marginRight: '5px' }} /> Add filter
         </QueryBuilderToolbarButton>
-        {!!filters.length && (
+        {filters.length > 0 && (
           <QueryBuilderToolbarButton onClick={() => setFilters([])}>
             Clear all
           </QueryBuilderToolbarButton>
@@ -349,23 +352,29 @@ const QueryBuilder = ({
       {isFieldSelectorOpen && (
         <FieldSelector
           addFilterValueSetter={fieldId => {
-            setFilters(filters => [{ fieldId, value: '' }, ...filters])
+            setFilters(filters => [...filters, { fieldId, value: '' }])
             setIsFieldSelectorOpen(false)
+            const filterList = filterListRef.current
+            setTimeout(() => {
+              if (filterList) {
+                filterList.scrollTop = filterList.scrollHeight
+              }
+            }, 0)
           }}
           fields={fields}
         />
       )}
-      <FilterList className="scrollable-area" height={filterListHeight}>
-        {filters.map((filter, i) => {
+      <FilterList ref={filterListRef} height={filterListHeight} style={{}}>
+        {filters.map((filter, filterIndex) => {
           const { label = '', type = 'text' } = fields[filter.fieldId]
           return (
-            <FilterListItem key={`${filter.fieldId}${i}`}>
+            <FilterListItem key={`${filter.fieldId}${filterIndex}`}>
               <FilterValueSetter
+                filterIndex={filterIndex}
                 fieldId={filter.fieldId}
                 fieldLabel={label}
                 fieldType={type}
                 options={optionsForFields[filter.fieldId]}
-                key={i}
                 applyFilter={applyFilter}
                 value={filter.value}
               />

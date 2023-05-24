@@ -16,9 +16,7 @@ import {
 	FILTER_DELAY,
 	VALUE_SEPARATOR,
 } from 'components/DataPage/FilterPanel/constants'
-import type {
-	Filter,
-} from 'components/DataPage/FilterPanel/constants'
+import type { Filter } from 'components/DataPage/FilterPanel/constants'
 
 const ViewContainer = styled.main`
 	display: flex;
@@ -171,13 +169,11 @@ const DataView = (): JSX.Element => {
 		getMetadata()
 	}, [])
 
-	const applyFilter = (newFilterValue: string, fieldId = '') => {
-		setFilters(filters =>
-			filters.reduce<Filter[]>((acc, filter) => {
-				if (filter.fieldId === fieldId) filter.value = newFilterValue
-				return [...acc, filter]
-			}, [])
-		)
+	const applyFilter = (filterIndex: number, newFilterValue: string) => {
+		setFilters(filters => {
+			filters[filterIndex].value = newFilterValue
+			return filters
+		})
 
 		loadPublishedRecords({
 			appendResults: false,
