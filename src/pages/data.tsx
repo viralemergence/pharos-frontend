@@ -86,7 +86,6 @@ const loadPublishedRecords = debounce(
 		setAppliedFilters: Dispatch<SetStateAction<Filter[]>>
 		setReachedLastPage: Dispatch<SetStateAction<boolean>>
 	}) => {
-		console.log('loading published records')
 		if (!appendResults) page.current = 1
 		setLoading(true)
 		const params: Record<string, string> = {

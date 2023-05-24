@@ -102,6 +102,7 @@ const FilterValueSetter = ({
     }
   }, [value])
 
+  // TODO: Use Typeahead component's svg prop
   /** Workaround for fixing colors */
   const fixTypeaheadColors = () => {
     const typeaheadIcon = Array.from(
@@ -121,6 +122,7 @@ const FilterValueSetter = ({
     handleTypeaheadChange(amendedItems)
   }
 
+  // TODO: remove VALUE_SEPARATOR
   const handleTypeaheadChange = (items: Item[]) => {
     setSelectedTypeaheadItems(items)
     applyFilter(
