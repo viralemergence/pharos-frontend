@@ -11,14 +11,13 @@ const TableViewContainer = styled.div<{ height: string }>`
   width: 100%;
   height: ${props => props.height};
   z-index: 3;
-  display: grid;
-  grid-template-columns: auto 1fr;
 `
 const TableContaier = styled.div`
   position: relative;
   height: 100%;
   padding: 30px;
   padding-top: 73px;
+  padding-bottom: 10px;
   overflow-x: hidden;
 `
 const FillDatasetGrid = styled(DataGrid)`

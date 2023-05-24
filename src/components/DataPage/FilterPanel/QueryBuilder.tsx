@@ -242,6 +242,9 @@ const FieldSelectorButton = styled(QueryBuilderButton)`
   &:hover {
     background-color: #36a49d;
   }
+  &:active {
+    outline: 1px solid ${({ theme }) => theme.mint};
+  }
 `
 
 const FieldSelector = ({
@@ -334,9 +337,11 @@ const QueryBuilder = ({
         >
           + Add filter
         </QueryBuilderToolbarButton>
-        <QueryBuilderToolbarButton onClick={() => setFilters([])}>
-          Clear all
-        </QueryBuilderToolbarButton>
+        {!!filters.length && (
+          <QueryBuilderToolbarButton onClick={() => setFilters([])}>
+            Clear all
+          </QueryBuilderToolbarButton>
+        )}
         <FilterPanelCloseButton onClick={() => setIsFilterPanelOpen(false)}>
           <XIcon />
         </FilterPanelCloseButton>
