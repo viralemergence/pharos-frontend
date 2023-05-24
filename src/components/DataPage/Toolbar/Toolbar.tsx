@@ -35,6 +35,9 @@ const DataToolbarButton = styled.button<{
 	width: ${({ width }) => (width ? width + 'px' : 'auto')};
 	height: 100%;
 	padding: 5px 10px;
+	&:active {
+		outline: 2px solid ${({ theme }) => 'rgba(255, 255, 255, .2)'};
+	}
 	${props => props.extraStyle}
 `
 
@@ -43,9 +46,9 @@ const DataToolbarButtonContainer = styled.div`
 	background-color: #202020;
 	border-radius: 10px;
 	position: relative;
-	box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
 `
 const DataToolbarRadioButtonContainer = styled(DataToolbarButtonContainer)`
+	box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
 	padding: 5px;
 `
 const DataToolbarDiv = styled.div<{ isFilterPanelOpen: boolean }>`

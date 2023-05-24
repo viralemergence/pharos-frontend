@@ -242,7 +242,6 @@ const DataView = (): JSX.Element => {
 						display: view === View.table ? 'grid' : 'none',
 						width: tableViewWidth,
 						height: tableViewHeight,
-						transition: isFilterPanelOpen ? 'width 0.1s ease-in-out' : '',
 					}}
 				/>
 			</ViewContainer>
