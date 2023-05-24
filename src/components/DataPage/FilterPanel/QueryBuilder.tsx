@@ -37,19 +37,30 @@ const SelectedTypeaheadValues = styled.ul`
 `
 const SelectedTypeaheadValue = styled.li`
   ${props => props.theme.smallParagraph};
-  padding: 5px 10px;
   border-radius: 5px;
   background-color: #58b7b1;
-  color: #000;
+  color: #101010;
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
   gap: 5px;
+  padding-left: 10px;
 `
 const SelectedTypeaheadValueDeleteButton = styled.button`
   border: 0;
   background: transparent;
   cursor: pointer;
+  padding: 0 10px 0 7px;
+  margin-left: 3px;
+  height: 30px;
+  border-bottom-right-radius: 5px;
+  border-top-right-radius: 5px;
+  &:hover {
+    background: rgba(0, 0, 0, 0.1);
+  }
+  &:active {
+    outline: 2px solid ${({ theme }) => theme.mint};
+  }
 `
 
 const FilterValueSetter = ({
@@ -155,7 +166,7 @@ const FilterValueSetter = ({
                   removeItem(item)
                 }}
               >
-                <XIcon />
+                <XIcon extraStyle="stroke: #101010" />
               </SelectedTypeaheadValueDeleteButton>
             </SelectedTypeaheadValue>
           ))}
@@ -177,27 +188,36 @@ const QueryBuilderButton = styled.button`
     background-color: #333;
   }
 `
-const QueryBuilderToolbarButton = styled(QueryBuilderButton)`
-  border-radius: 5px;
-  background: transparent;
+const QueryBuilderToolbarButton = styled(QueryBuilderButton)<{
+  isFieldSelectorOpen: boolean
+}>`
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  ${({ isFieldSelectorOpen }) =>
+    !isFieldSelectorOpen
+      ? 'border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;'
+      : ''}
   &:hover {
     background-color: #202020;
   }
+  background-color: ${({ isFieldSelectorOpen }) =>
+    isFieldSelectorOpen ? '#202020' : 'transparent'};
   &:active {
-    background-color: #1d1d1d;
+    outline: 2px solid rgba(60, 60, 60, 1);
   }
 `
 
 const FieldSelectorDiv = styled.div`
   position: absolute;
-  top: 90px;
+  top: 60px;
   width: calc(100% - 79px);
-  left: 39px;
+  left: 40px;
   display: flex;
   flex-flow: column nowrap;
   align-items: flex-start;
   background-color: #202020;
   border-radius: 5px;
+  border-top-left-radius: 0;
   padding: 5px 0;
   z-index: 1;
 `
@@ -288,6 +308,7 @@ const QueryBuilder = ({
     <>
       <QueryBuilderToolbar filterCount={filters.length}>
         <QueryBuilderToolbarButton
+          isFieldSelectorOpen={isFieldSelectorOpen}
           onClick={e => {
             setIsFieldSelectorOpen(open => !open)
             // If this click event propagates, the panel's click handler will
@@ -313,7 +334,7 @@ const QueryBuilder = ({
           fields={fields}
         />
       )}
-      <FilterList height={filterListHeight}>
+      <FilterList className="scrollable-area" height={filterListHeight}>
         {filters.map((filter, i) => {
           const { label = '', type = 'text' } = fields[filter.fieldId]
           return (

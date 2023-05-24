@@ -25,6 +25,7 @@ const FillDatasetGrid = styled(DataGrid)`
   block-size: 100%;
   height: 100%;
   border: 0;
+  min-width: 50vw;
   background-color: rgba(0, 0, 0, 0.7);
 `
 const LoadingMessage = styled.div`

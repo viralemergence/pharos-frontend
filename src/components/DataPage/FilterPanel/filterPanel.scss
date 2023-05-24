@@ -1,19 +1,7 @@
 .pharos-panel {
-  // &::-webkit-scrollbar {
-  //   background: transparent;
-  //   margin: 3px;
-  // }
-  // &::-webkit-scrollbar-thumb {
-  //   background: #222;
-  //   border-radius: 5px;
-  //   margin: 3px;
-  // }
-  // &::-webkit-scrollbar-thumb:hover {
-  //   background: #333;
-  // }
+  color-scheme: dark;
 }
 
-
-input[type="search"] ~ div {
+input[type='search'] ~ div {
   // TODO: Constrain height of expander
 }

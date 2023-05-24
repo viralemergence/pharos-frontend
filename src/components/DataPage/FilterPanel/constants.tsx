@@ -1,4 +1,5 @@
 import React from 'React'
+import styled from 'styled-components'
 
 // After user finishes typing, how long to wait before applying a filter, in
 // milliseconds
@@ -48,19 +49,24 @@ export type ApplyFilterFunction = (
 
 export const VALUE_SEPARATOR = '[\0SEPARATOR\0]'
 
-export const XIcon = () => (
-  <svg
+const XIconSvg = styled.svg<{ extraStyle?: string }>`
+  ${({ extraStyle }) => extraStyle}
+`
+
+export const XIcon = ({ extraStyle = '' }: { extraStyle?: string }) => (
+  <XIconSvg
     xmlns="http://www.w3.org/2000/svg"
     width="14"
     height="14"
     viewBox="0 0 20 20"
     fill="none"
-    stroke="currentColor"
+    stroke="#fff"
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
+    extraStyle={extraStyle}
   >
     <line x1="18" y1="6" x2="6" y2="18"></line>
     <line x1="6" y1="6" x2="18" y2="18"></line>
-  </svg>
+  </XIconSvg>
 )
