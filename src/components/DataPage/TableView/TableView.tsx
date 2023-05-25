@@ -101,9 +101,9 @@ const TableView = ({
     width: 55,
   }
 
-  const dataGridKeysForFilteredColumns = appliedFilters.map(
-    ({ fieldId }) => fields[fieldId]?.dataGridKey
-  )
+  const dataGridKeysForFilteredColumns = appliedFilters
+    .filter(({ values }) => values.length > 0)
+    .map(({ fieldId }) => fields[fieldId]?.dataGridKey)
 
   const columns: readonly Column<Row>[] = [
     rowNumberColumn,

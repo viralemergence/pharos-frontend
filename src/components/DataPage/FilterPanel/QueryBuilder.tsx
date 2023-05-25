@@ -1,14 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import InputLabel from '../../ui/InputLabel'
-import { VALUE_SEPARATOR, PlusIcon, XIcon } from './constants'
+import { PlusIcon, XIcon } from './constants'
 import type {
   Field,
-  FilterValue,
+  FilterValues,
   Filter,
   ApplyFilterFunction,
 } from './constants'
-import Typeahead, { Item } from '@talus-analytics/library.ui.typeahead'
+import { Item as TypeaheadItem } from '@talus-analytics/library.ui.typeahead'
+import FilterTypeahead from './FilterTypeahead'
 
 const FieldName = styled.div`
   margin-bottom: 5px;
@@ -26,165 +27,62 @@ const FieldInput = styled.input`
     opacity: 0.5;
   }
 `
-const SelectedTypeaheadValues = styled.ul`
-  margin-top: 10px;
-  list-style: none;
-  padding: 0;
-  display: flex;
-  flex-flow: column nowrap;
-  align-items: flex-start;
-  gap: 5px;
-`
-const SelectedTypeaheadValue = styled.li`
-  ${props => props.theme.smallParagraph};
-  border-radius: 5px;
-  background-color: #58b7b1;
-  color: #101010;
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  gap: 5px;
-  padding-left: 10px;
-`
-const SelectedTypeaheadValueDeleteButton = styled.button`
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-  padding: 0 10px 0 7px;
-  margin-left: 3px;
-  height: 30px;
-  border-bottom-right-radius: 5px;
-  border-top-right-radius: 5px;
-  &:hover {
-    background: rgba(0, 0, 0, 0.1);
-  }
-  &:active {
-    outline: 1px solid ${({ theme }) => theme.mint};
-  }
-`
-
 const FilterValueSetter = ({
   filterIndex,
   fieldLabel,
   fieldType = 'text',
-  value,
+  values,
   applyFilter,
   options = [],
 }: {
   filterIndex: number
   fieldLabel: string
   fieldType: 'text' | 'date'
-  value: FilterValue
+  values: FilterValues
   applyFilter: ApplyFilterFunction
   options: string[]
 }) => {
-  // TODO: Have this be set based on value rather than be a separate piece of set.
-  const [selectedTypeaheadItems, setSelectedTypeaheadItems] = useState<Item[]>(
-    []
-  )
-  const selectedTypeaheadItemLabels = selectedTypeaheadItems.map(
-    ({ label }) => label
-  )
+  const truthyValues = values.filter(value => value)
+  const useTypeahead = fieldType === 'text'
 
-  // Remove selected items from available options
-  options = options.filter(
-    option => !selectedTypeaheadItemLabels.includes(option)
-  )
-
-  // TODO: The problem here is that the state of 'value' which controls the
-  // component. Lift setSelectedTypeaheadItems into a higher component. Or
-  // perhaps try to avoid having so much state.
-
-  // On first render, load the previously set filter values into the Typeahead
   useEffect(() => {
-    let values =
-      typeof value === 'string' ? value.split(VALUE_SEPARATOR) : value
-    values = values.filter(value => value)
-    if (values.length > 0) {
-      setSelectedTypeaheadItems(
-        values.map(value => ({ key: value, label: value }))
-      )
-    }
-  }, [value])
-
-  // TODO: Use Typeahead component's svg prop
-  /** Workaround for fixing colors */
-  const fixTypeaheadColors = () => {
+    // TODO: Use Typeahead component's svg prop
+    /** Workaround for fixing colors */
     const typeaheadIcon = Array.from(
       document.querySelectorAll<HTMLElement>('form input[type=search] + div')
     )?.[0]
     if (typeaheadIcon) typeaheadIcon.style.filter = 'invert(1)'
-  }
-
-  useEffect(() => {
-    fixTypeaheadColors()
   }, [])
 
-  const removeItem = (itemToRemove: Item) => {
-    const amendedItems = selectedTypeaheadItems.filter(
-      ({ key }) => key !== itemToRemove.key
-    )
-    handleTypeaheadChange(amendedItems)
-  }
-
-  // TODO: remove VALUE_SEPARATOR
-  const handleTypeaheadChange = (items: Item[]) => {
-    setSelectedTypeaheadItems(items)
+  const handleTypeaheadChange = (items: TypeaheadItem[]) => {
     applyFilter(
       filterIndex,
-      items.map(({ label }) => label).join(VALUE_SEPARATOR)
+      items.map(({ label }) => label)
     )
   }
-  const useTypeahead = fieldType === 'text'
+
   return (
     <>
-      <InputLabel>
-        <FieldName>{fieldLabel}</FieldName>
-        {useTypeahead ? (
-          <>
-            <Typeahead
-              multiselect={true}
-              items={options.map(option => ({ key: option, label: option }))}
-              values={selectedTypeaheadItems}
-              onAdd={(newItem: Item) => {
-                const itemAlreadyAdded = selectedTypeaheadItems
-                  .map(({ key }) => key)
-                  .includes(newItem.key)
-                if (!itemAlreadyAdded)
-                  handleTypeaheadChange([...selectedTypeaheadItems, newItem])
-              }}
-              onRemove={removeItem}
-              placeholder={`${selectedTypeaheadItems.length} selected`}
-              backgroundColor="#000"
-              fontColor="white"
-              borderColor="white"
-            />
-          </>
-        ) : (
+      {useTypeahead ? (
+        <InputLabel>
+          <FieldName>{fieldLabel}</FieldName>
+          <FilterTypeahead
+            values={truthyValues}
+            options={options}
+            handleTypeaheadChange={handleTypeaheadChange}
+          />
+        </InputLabel>
+      ) : (
+        <InputLabel>
+          <FieldName>{fieldLabel}</FieldName>
           <FieldInput
             type={fieldType}
-            defaultValue={value}
+            defaultValue={values.join(',')}
             onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
-              applyFilter(filterIndex, e.target.value)
+              applyFilter(filterIndex, [e.target.value])
             }
           />
-        )}
-      </InputLabel>
-      {useTypeahead && selectedTypeaheadItems.length > 0 && (
-        <SelectedTypeaheadValues>
-          {selectedTypeaheadItems.map(item => (
-            <SelectedTypeaheadValue key={item.key}>
-              {item.label}{' '}
-              <SelectedTypeaheadValueDeleteButton
-                onClick={() => {
-                  removeItem(item)
-                }}
-              >
-                <XIcon extraStyle="stroke: #101010" />
-              </SelectedTypeaheadValueDeleteButton>
-            </SelectedTypeaheadValue>
-          ))}
-        </SelectedTypeaheadValues>
+        </InputLabel>
       )}
     </>
   )
@@ -310,6 +208,7 @@ const QueryBuilder = ({
   fields,
   filters,
   setFilters,
+  clearFilters,
   applyFilter,
   isFieldSelectorOpen,
   setIsFieldSelectorOpen,
@@ -320,6 +219,7 @@ const QueryBuilder = ({
   fields: Record<string, Field>
   filters: Filter[]
   setFilters: React.Dispatch<React.SetStateAction<Filter[]>>
+  clearFilters: () => void
   applyFilter: ApplyFilterFunction
   isFieldSelectorOpen: boolean
   setIsFieldSelectorOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -346,7 +246,7 @@ const QueryBuilder = ({
           <PlusIcon style={{ marginRight: '5px' }} /> Add filter
         </QueryBuilderToolbarButton>
         {filters.length > 0 && (
-          <QueryBuilderToolbarButton onClick={() => setFilters([])}>
+          <QueryBuilderToolbarButton onClick={() => clearFilters()}>
             Clear all
           </QueryBuilderToolbarButton>
         )}
@@ -357,7 +257,7 @@ const QueryBuilder = ({
       {isFieldSelectorOpen && (
         <FieldSelector
           addFilterValueSetter={fieldId => {
-            setFilters(filters => [...filters, { fieldId, value: '' }])
+            setFilters(filters => [...filters, { fieldId, values: [] }])
             setIsFieldSelectorOpen(false)
             const filterList = filterListRef.current
             setTimeout(() => {
@@ -380,7 +280,7 @@ const QueryBuilder = ({
                 fieldType={type}
                 options={optionsForFields[filter.fieldId]}
                 applyFilter={applyFilter}
-                value={filter.value}
+                values={filter.values}
               />
             </FilterListItem>
           )

@@ -1,7 +1,6 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, Dispatch, SetStateAction } from 'react'
 import styled from 'styled-components'
-import type { Filter, ApplyFilterFunction } from './constants'
-import { fields } from './constants'
+import { fields, Filter, ApplyFilterFunction } from './constants'
 import QueryBuilder from './QueryBuilder'
 
 const Panel = styled.div<{ isFilterPanelOpen: boolean; height: string }>`
@@ -24,14 +23,16 @@ const FilterPanel = ({
   setIsFilterPanelOpen,
   filters,
   setFilters,
+  clearFilters,
   applyFilter,
   height,
   optionsForFields,
 }: {
   isFilterPanelOpen: boolean
-  setIsFilterPanelOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
   filters: Filter[]
-  setFilters: React.Dispatch<React.SetStateAction<Filter[]>>
+  setFilters: Dispatch<SetStateAction<Filter[]>>
+  clearFilters: () => void
   /** Event handler for when one of the filter input elements receives new input */
   applyFilter: ApplyFilterFunction
   height: string
@@ -57,6 +58,7 @@ const FilterPanel = ({
           optionsForFields={optionsForFields}
           filters={filters}
           setFilters={setFilters}
+          clearFilters={clearFilters}
           applyFilter={applyFilter}
           isFieldSelectorOpen={isFieldSelectorOpen}
           setIsFieldSelectorOpen={setIsFieldSelectorOpen}

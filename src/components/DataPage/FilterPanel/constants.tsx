@@ -10,8 +10,8 @@ export type Field = {
   dataGridKey?: string
   type?: 'text' | 'date'
 }
-export type FilterValue = string | string[]
-export type Filter = { fieldId: string; value: FilterValue }
+export type FilterValues = string[]
+export type Filter = { fieldId: string; values: FilterValues }
 
 export const fields: Record<string, Field> = {
   projectName: { label: 'Project name', dataGridKey: 'Project name' },
@@ -28,22 +28,20 @@ export const fields: Record<string, Field> = {
   pathogen: { label: 'Pathogen', dataGridKey: 'Pathogen' },
   collectionStartDate: {
     label: 'Collection start date',
-    dataGridKey: 'Collection start date',
+    dataGridKey: 'Collection date',
     type: 'date',
   },
   collectionEndDate: {
     label: 'Collection end date',
-    dataGridKey: 'Collection end date',
+    dataGridKey: 'Collection date',
     type: 'date',
   },
 }
 
 export type ApplyFilterFunction = (
   filterIndex: number,
-  newFilterValue: string
+  newFilterValues: FilterValues
 ) => void
-
-export const VALUE_SEPARATOR = '|||'
 
 const XIconSvg = styled.svg<{ extraStyle?: string }>`
   ${({ extraStyle }) => extraStyle}

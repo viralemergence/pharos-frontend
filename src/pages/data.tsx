@@ -19,11 +19,11 @@ import type { Row } from 'components/DataPage/TableView/TableView'
 import DataToolbar, { View } from 'components/DataPage/Toolbar/Toolbar'
 
 import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
-import {
-	FILTER_DELAY,
-	VALUE_SEPARATOR,
+import { FILTER_DELAY } from 'components/DataPage/FilterPanel/constants'
+import type {
+	Filter,
+	FilterValues,
 } from 'components/DataPage/FilterPanel/constants'
-import type { Filter } from 'components/DataPage/FilterPanel/constants'
 
 const ViewContainer = styled.main`
 	display: flex;
@@ -88,23 +88,19 @@ const loadPublishedRecords = debounce(
 	}) => {
 		if (!appendResults) page.current = 1
 		setLoading(true)
-		const params: Record<string, string> = {
-			page: page.current.toString(),
-			pageSize: '50',
-		}
-		const pendingFilters = []
+		const params = new URLSearchParams()
+		const pendingFilters: Filter[] = []
 		for (const filter of filters) {
-			const { fieldId, value } = filter
-			const formattedValue = Array.isArray(value)
-				? value.join(VALUE_SEPARATOR)
-				: value
-			if (!formattedValue) continue
-			params[fieldId] = formattedValue
-			pendingFilters.push(filter)
+			const { fieldId, values } = filter
+			values.forEach(value => {
+				params.append(fieldId, value)
+			})
+			if (values.length > 0) pendingFilters.push(filter)
 		}
+		params.append('page', page.current.toString())
+		params.append('pageSize', '50')
 		const response = await fetch(
-			`${process.env.GATSBY_API_URL}/published-records?` +
-				new URLSearchParams(params)
+			`${process.env.GATSBY_API_URL}/published-records?` + params
 		)
 
 		if (!response.ok) {
@@ -122,9 +118,11 @@ const loadPublishedRecords = debounce(
 			...(appendResults ? previousRecords : []),
 			...data.publishedRecords,
 		])
-		setAppliedFilters(pendingFilters)
-		setLoading(false)
 		setReachedLastPage(data.isLastPage)
+		setTimeout(() => {
+			setAppliedFilters(pendingFilters)
+			setLoading(false)
+		}, 0)
 	},
 	FILTER_DELAY
 )
@@ -181,12 +179,7 @@ const DataView = (): JSX.Element => {
 		getMetadata()
 	}, [])
 
-	const applyFilter = (filterIndex: number, newFilterValue: string) => {
-		setFilters(filters => {
-			filters[filterIndex].value = newFilterValue
-			return filters
-		})
-
+	const loadFilteredRecords = (filters: Filter[]) => {
 		loadPublishedRecords({
 			appendResults: false,
 			page,
@@ -196,6 +189,16 @@ const DataView = (): JSX.Element => {
 			setAppliedFilters,
 			setReachedLastPage,
 		})
+	}
+
+	const applyFilter = (filterIndex: number, newFilterValues: FilterValues) => {
+		filters[filterIndex].values = newFilterValues
+		setFilters(filters)
+		loadFilteredRecords(filters)
+	}
+	const clearFilters = () => {
+		setFilters([])
+		loadFilteredRecords([])
 	}
 
 	const dataViewHeight = 'calc(100vh - 87px)'
@@ -223,6 +226,7 @@ const DataView = (): JSX.Element => {
 						setIsFilterPanelOpen={setIsFilterPanelOpen}
 						filters={filters}
 						applyFilter={applyFilter}
+						clearFilters={clearFilters}
 						setFilters={setFilters}
 						height={panelHeight}
 						optionsForFields={optionsForFields}
