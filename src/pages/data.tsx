@@ -166,9 +166,7 @@ const DataView = (): JSX.Element => {
 		if (hashIsView(hash)) {
 			setView(hash)
 		}
-	}, [])
 
-	useEffect(() => {
 		const getMetadata = async () => {
 			const response = await fetch(
 				`${process.env.GATSBY_API_URL}/metadata-for-published-records`

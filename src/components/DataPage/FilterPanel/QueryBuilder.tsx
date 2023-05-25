@@ -78,6 +78,7 @@ const FilterValueSetter = ({
   applyFilter: ApplyFilterFunction
   options: string[]
 }) => {
+  // TODO: Have this be set based on value rather than be a separate piece of set.
   const [selectedTypeaheadItems, setSelectedTypeaheadItems] = useState<Item[]>(
     []
   )
@@ -89,6 +90,10 @@ const FilterValueSetter = ({
   options = options.filter(
     option => !selectedTypeaheadItemLabels.includes(option)
   )
+
+  // TODO: The problem here is that the state of 'value' which controls the
+  // component. Lift setSelectedTypeaheadItems into a higher component. Or
+  // perhaps try to avoid having so much state.
 
   // On first render, load the previously set filter values into the Typeahead
   useEffect(() => {
