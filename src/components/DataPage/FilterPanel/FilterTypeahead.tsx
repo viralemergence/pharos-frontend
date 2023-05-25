@@ -52,6 +52,7 @@ const FilterTypeahead = ({
   options: string[]
   handleTypeaheadChange: (items: TypeaheadItem[]) => void
 }) => {
+  console.log(Date.now(), 'values in FilterTypehead', values.length, values)
   const selectedItems = values.map(value => ({
     key: value,
     label: value,

@@ -3,7 +3,9 @@ import styled from 'styled-components'
 
 // After user finishes typing, how long to wait before applying a filter, in
 // milliseconds
-export const FILTER_DELAY = 300
+export const LOAD_DEBOUNCE_DELAY = 1000
+// After the first load, debouncing is switched on for this many milliseconds
+export const DEBOUNCE_TIMEOUT = 3000
 
 export type Field = {
   label: string

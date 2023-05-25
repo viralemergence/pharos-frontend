@@ -19,7 +19,10 @@ import type { Row } from 'components/DataPage/TableView/TableView'
 import DataToolbar, { View } from 'components/DataPage/Toolbar/Toolbar'
 
 import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
-import { FILTER_DELAY } from 'components/DataPage/FilterPanel/constants'
+import {
+	LOAD_DEBOUNCE_DELAY,
+	DEBOUNCE_TIMEOUT,
+} from 'components/DataPage/FilterPanel/constants'
 import type {
 	Filter,
 	FilterValues,
@@ -68,63 +71,79 @@ interface MetadataResponse {
 	optionsForFields: Record<string, string[]>
 }
 
-const loadPublishedRecords = debounce(
-	async ({
-		appendResults = true,
-		filters,
-		page,
-		setLoading,
-		setPublishedRecords,
-		setAppliedFilters,
-		setReachedLastPage,
-	}: {
-		appendResults?: boolean
-		filters: Filter[]
-		page: MutableRefObject<number>
-		setLoading: Dispatch<SetStateAction<boolean>>
-		setPublishedRecords: Dispatch<SetStateAction<Row[]>>
-		setAppliedFilters: Dispatch<SetStateAction<Filter[]>>
-		setReachedLastPage: Dispatch<SetStateAction<boolean>>
-	}) => {
-		if (!appendResults) page.current = 1
-		setLoading(true)
-		const params = new URLSearchParams()
-		const pendingFilters: Filter[] = []
-		for (const filter of filters) {
-			const { fieldId, values } = filter
-			values.forEach(value => {
-				params.append(fieldId, value)
-			})
-			if (values.length > 0) pendingFilters.push(filter)
-		}
-		params.append('page', page.current.toString())
-		params.append('pageSize', '50')
-		const response = await fetch(
-			`${process.env.GATSBY_API_URL}/published-records?` + params
-		)
+interface Debouncing {
+	on: boolean
+	timeout: ReturnType<typeof setTimeout> | null
+}
 
-		if (!response.ok) {
-			console.log('GET /published-records: error')
-			setLoading(false)
-			return
-		}
-		const data = await response.json()
-		if (!isPublishedRecordsResponse(data)) {
-			console.log('GET /published-records: malformed response')
-			setLoading(false)
-			return
-		}
-		setPublishedRecords((previousRecords: Row[]) => [
-			...(appendResults ? previousRecords : []),
-			...data.publishedRecords,
-		])
-		setReachedLastPage(data.isLastPage)
-		setTimeout(() => {
-			setAppliedFilters(pendingFilters)
-			setLoading(false)
-		}, 0)
-	},
-	FILTER_DELAY
+const loadPublishedRecords = async ({
+	appendResults = true,
+	filters,
+	page,
+	setLoading,
+	setPublishedRecords,
+	setAppliedFilters,
+	setReachedLastPage,
+	debouncing,
+}: {
+	appendResults?: boolean
+	filters: Filter[]
+	page: MutableRefObject<number>
+	setLoading: Dispatch<SetStateAction<boolean>>
+	setPublishedRecords: Dispatch<SetStateAction<Row[]>>
+	setAppliedFilters: Dispatch<SetStateAction<Filter[]>>
+	setReachedLastPage: Dispatch<SetStateAction<boolean>>
+	debouncing: MutableRefObject<Debouncing>
+}) => {
+	// Switch on debouncing for DEBOUNCE_TIMEOUT milliseconds
+	debouncing.current.on = true
+	clearTimeout(debouncing.current.timeout ?? undefined)
+	debouncing.current.timeout = setTimeout(() => {
+		debouncing.current.on = false
+	}, DEBOUNCE_TIMEOUT)
+
+	if (!appendResults) page.current = 1
+	setLoading(true)
+	const params = new URLSearchParams()
+	const pendingFilters: Filter[] = []
+	for (const filter of filters) {
+		const { fieldId, values } = filter
+		values.forEach(value => {
+			params.append(fieldId, value)
+		})
+		if (values.length > 0) pendingFilters.push(filter)
+	}
+	params.append('page', page.current.toString())
+	params.append('pageSize', '50')
+	const response = await fetch(
+		`${process.env.GATSBY_API_URL}/published-records?` + params
+	)
+
+	if (!response.ok) {
+		console.log('GET /published-records: error')
+		setLoading(false)
+		return
+	}
+	const data = await response.json()
+	if (!isPublishedRecordsResponse(data)) {
+		console.log('GET /published-records: malformed response')
+		setLoading(false)
+		return
+	}
+	setPublishedRecords((previousRecords: Row[]) => [
+		...(appendResults ? previousRecords : []),
+		...data.publishedRecords,
+	])
+	setReachedLastPage(data.isLastPage)
+	setTimeout(() => {
+		setAppliedFilters(pendingFilters)
+		setLoading(false)
+	}, 0)
+}
+
+const loadPublishedRecordsDebounced = debounce(
+	loadPublishedRecords,
+	LOAD_DEBOUNCE_DELAY
 )
 
 const DataView = (): JSX.Element => {
@@ -132,6 +151,7 @@ const DataView = (): JSX.Element => {
 	const [publishedRecords, setPublishedRecords] = useState<Row[]>([])
 	const [reachedLastPage, setReachedLastPage] = useState(false)
 	const page = useRef(1)
+	const debouncing = useRef({ on: false, timeout: null })
 	const [view, setView] = useState<View>(View.globe)
 
 	/** The filters to be applied */
@@ -179,8 +199,12 @@ const DataView = (): JSX.Element => {
 		getMetadata()
 	}, [])
 
-	const loadFilteredRecords = (filters: Filter[]) => {
-		loadPublishedRecords({
+	const loadFilteredRecords = (filters: Filter[], useDebouncing = true) => {
+		const loadFunction =
+			useDebouncing && debouncing.current.on
+				? loadPublishedRecordsDebounced
+				: loadPublishedRecords
+		loadFunction({
 			appendResults: false,
 			page,
 			filters,
@@ -188,17 +212,22 @@ const DataView = (): JSX.Element => {
 			setPublishedRecords,
 			setAppliedFilters,
 			setReachedLastPage,
+			debouncing,
 		})
 	}
 
 	const applyFilter = (filterIndex: number, newFilterValues: FilterValues) => {
 		filters[filterIndex].values = newFilterValues
 		setFilters(filters)
+		console.log('in applyFilter, filters is', filters)
 		loadFilteredRecords(filters)
 	}
 	const clearFilters = () => {
 		setFilters([])
-		loadFilteredRecords([])
+		if (filters.some(({ values }) => values.length > 0)) {
+			// Don't debounce when clearing
+			loadFilteredRecords([], false)
+		}
 	}
 
 	const dataViewHeight = 'calc(100vh - 87px)'
@@ -240,14 +269,8 @@ const DataView = (): JSX.Element => {
 					height={dataViewHeight}
 					appliedFilters={appliedFilters}
 					loadPublishedRecords={() => {
-						loadPublishedRecords({
-							page,
-							filters,
-							setLoading,
-							setPublishedRecords,
-							setAppliedFilters,
-							setReachedLastPage,
-						})
+						loadFilteredRecords(filters, false)
+						debouncing.current.on = false
 					}}
 					loading={loading}
 					page={page}
