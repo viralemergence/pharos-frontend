@@ -11,35 +11,11 @@ export type Field = {
   label: string
   dataGridKey?: string
   type?: 'text' | 'date'
+  options?: string[]
   addedToPanel?: boolean
 }
 export type FilterValues = string[]
 export type Filter = { fieldId: string; values: FilterValues }
-
-export const fields: Record<string, Field> = {
-  projectName: { label: 'Project name', dataGridKey: 'Project name' },
-  researcherName: { label: 'Author', dataGridKey: 'Authors' },
-  hostSpecies: { label: 'Host species', dataGridKey: 'Host species' },
-  detectionTarget: {
-    label: 'Detection target',
-    dataGridKey: 'Detection target',
-  },
-  detectionOutcome: {
-    label: 'Detection outcome',
-    dataGridKey: 'Detection outcome',
-  },
-  pathogen: { label: 'Pathogen', dataGridKey: 'Pathogen' },
-  collectionStartDate: {
-    label: 'Collection start date',
-    dataGridKey: 'Collection date',
-    type: 'date',
-  },
-  collectionEndDate: {
-    label: 'Collection end date',
-    dataGridKey: 'Collection date',
-    type: 'date',
-  },
-}
 
 export type UpdateFilterFunction = (
   filterIndex: number,

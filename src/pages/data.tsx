@@ -22,13 +22,15 @@ import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
 import {
 	loadDebounceDelay,
 	debounceTimeout,
+	Field,
 	Filter,
 	FilterValues,
 } from 'components/DataPage/FilterPanel/constants'
 
 const ViewContainer = styled.main`
 	display: flex;
-	background-color: ${props => props.theme.black};
+	background-color: #3d434e;
+	padding-bottom: 1rem;
 `
 
 interface PublishedRecordsResponse {
@@ -36,43 +38,46 @@ interface PublishedRecordsResponse {
 	isLastPage: boolean
 }
 
-const isPublishedRecordsResponse = (
+const isTruthyObject = (value: unknown): value is Record<string, unknown> =>
+	typeof value === 'object' && !!value
+
+const isValidRecordsResponse = (
 	data: unknown
 ): data is PublishedRecordsResponse => {
-	if (typeof data !== 'object' || data === null) return false
+	if (!isTruthyObject(data)) return false
 	const { publishedRecords, isLastPage } =
 		data as Partial<PublishedRecordsResponse>
-	if (typeof publishedRecords !== 'object' || publishedRecords === null)
-		return false
+	if (!isTruthyObject(publishedRecords)) return false
 	if (typeof isLastPage !== 'boolean') return false
 	return publishedRecords.every(row => typeof row === 'object')
 }
 
-// TODO: Rely on API
-const metadataFields = [
-	'hostSpecies',
-	'pathogen',
-	'detectionTarget',
-	'detectionOutcome',
-	'researcherName',
-	'projectName',
-]
+const isValidFieldInMetadataResponse = (data: unknown): data is Field => {
+	if (!isTruthyObject(data)) return false
+	const {
+		label,
+		dataGridKey = '',
+		type = '',
+		options = [],
+	} = data as Partial<Field>
+	if (typeof label !== 'string') return false
+	if (typeof dataGridKey !== 'string') return false
+	if (typeof type !== 'string') return false
+	if (!options.every?.(option => typeof option === 'string')) return false
+	return true
+}
 
 const isValidMetadataResponse = (data: unknown): data is MetadataResponse => {
-	if (typeof data !== 'object' || data === null) return false
-	const options = (data as Partial<MetadataResponse>).optionsForFields
-	if (typeof options !== 'object' || options === null) return false
-	return (
-		metadataFields.every(field =>
-			(options as Record<string, unknown[]>)[field].every?.(
-				item => typeof item === 'string'
-			)
-		) && Object.keys(options).length === metadataFields.length
+	if (!isTruthyObject(data)) return false
+	const { fields } = data as Partial<MetadataResponse>
+	if (!isTruthyObject(fields)) return false
+	return Object.values(fields as Record<string, unknown>).every?.(field =>
+		isValidFieldInMetadataResponse(field)
 	)
 }
 
 interface MetadataResponse {
-	optionsForFields: Record<string, string[]>
+	fields: Record<string, Field>
 }
 
 interface Debouncing {
@@ -128,7 +133,7 @@ const loadPublishedRecords = async ({
 		return
 	}
 	const data = await response.json()
-	if (!isPublishedRecordsResponse(data)) {
+	if (!isValidRecordsResponse(data)) {
 		console.log('GET /published-records: malformed response')
 		setLoading(false)
 		return
@@ -166,9 +171,7 @@ const DataView = (): JSX.Element => {
 	 * color-coding the filtered columns. */
 	const [appliedFilters, setAppliedFilters] = useState<Filter[]>([])
 
-	const [optionsForFields, setOptionsForFields] = useState<
-		Record<string, string[]>
-	>({})
+	const [fields, setFields] = useState<Record<string, Field>>({})
 
 	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(true)
 
@@ -197,7 +200,7 @@ const DataView = (): JSX.Element => {
 				console.error('GET /metadata-for-published-records: malformed response')
 				return
 			}
-			setOptionsForFields(data.optionsForFields)
+			setFields(data.fields)
 		}
 		getMetadata()
 	}, [])
@@ -263,12 +266,12 @@ const DataView = (): JSX.Element => {
 					<FilterPanel
 						isFilterPanelOpen={isFilterPanelOpen}
 						setIsFilterPanelOpen={setIsFilterPanelOpen}
+						fields={fields}
 						filters={filters}
 						updateFilter={updateFilter}
 						setFilters={setFilters}
 						clearFilters={clearFilters}
 						height={panelHeight}
-						optionsForFields={optionsForFields}
 					/>
 				)}
 				<MapView
@@ -277,6 +280,7 @@ const DataView = (): JSX.Element => {
 					style={{ display: showEarth ? 'flex' : 'none' }}
 				/>
 				<TableView
+					fields={fields}
 					height={dataViewHeight}
 					appliedFilters={appliedFilters}
 					loadPublishedRecords={() => {

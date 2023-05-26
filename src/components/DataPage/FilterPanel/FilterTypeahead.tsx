@@ -69,11 +69,14 @@ const SelectedTypeaheadValueDeleteButton = styled.button`
   border: 0;
   background: transparent;
   cursor: pointer;
-  padding: 0 10px 0 7px;
+  padding: 0 7px;
   margin-left: 3px;
   height: 30px;
   border-bottom-right-radius: 5px;
   border-top-right-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   &:hover {
     background: rgba(0, 0, 0, 0.1);
   }
