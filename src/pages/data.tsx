@@ -7,7 +7,7 @@ import React, {
 	MutableRefObject,
 } from 'react'
 import styled from 'styled-components'
-import { debounce } from 'lodash'
+import debounce from 'lodash/debounce'
 
 import CMS from '@talus-analytics/library.airtable-cms'
 import Providers from 'components/layout/Providers'
@@ -48,21 +48,26 @@ const isPublishedRecordsResponse = (
 	return publishedRecords.every(row => typeof row === 'object')
 }
 
+// TODO: Rely on API
 const metadataFields = [
 	'hostSpecies',
 	'pathogen',
-	'detectionOutcome',
 	'detectionTarget',
+	'detectionOutcome',
+	'researcherName',
+	'projectName',
 ]
 
 const isValidMetadataResponse = (data: unknown): data is MetadataResponse => {
 	if (typeof data !== 'object' || data === null) return false
 	const options = (data as Partial<MetadataResponse>).optionsForFields
 	if (typeof options !== 'object' || options === null) return false
-	return metadataFields.every(field =>
-		(options as Record<string, unknown[]>)[field].every?.(
-			item => typeof item === 'string'
-		)
+	return (
+		metadataFields.every(field =>
+			(options as Record<string, unknown[]>)[field].every?.(
+				item => typeof item === 'string'
+			)
+		) && Object.keys(options).length === metadataFields.length
 	)
 }
 
