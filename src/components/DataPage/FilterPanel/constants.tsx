@@ -1,16 +1,17 @@
 import React from 'react'
 import styled from 'styled-components'
 
-// After user finishes typing, how long to wait before applying a filter, in
-// milliseconds
-export const LOAD_DEBOUNCE_DELAY = 1000
-// After the first load, debouncing is switched on for this many milliseconds
-export const DEBOUNCE_TIMEOUT = 3000
+/** After user finishes typing, how long to wait before applying a filter, in
+milliseconds */
+export const loadDebounceDelay = 300
+/** After the first load, debouncing is switched on for this many milliseconds */
+export const debounceTimeout = 3000
 
 export type Field = {
   label: string
   dataGridKey?: string
   type?: 'text' | 'date'
+  addedToPanel?: boolean
 }
 export type FilterValues = string[]
 export type Filter = { fieldId: string; values: FilterValues }
@@ -40,7 +41,7 @@ export const fields: Record<string, Field> = {
   },
 }
 
-export type ApplyFilterFunction = (
+export type UpdateFilterFunction = (
   filterIndex: number,
   newFilterValues: FilterValues
 ) => void
@@ -75,7 +76,11 @@ export const PlusIcon = ({ style = {} }: { style?: React.CSSProperties }) => (
     viewBox="0 0 20 18"
     style={style}
   >
-    <line x1="12" y1="5" x2="12" y2="19" stroke="white" stroke-width="2" />
-    <line x1="5" y1="12" x2="19" y2="12" stroke="white" stroke-width="2" />
+    <line x1="12" y1="5" x2="12" y2="19" stroke="white" strokeWidth="2" />
+    <line x1="5" y1="12" x2="19" y2="12" stroke="white" strokeWidth="2" />
   </svg>
 )
+
+export const FieldName = styled.div`
+  margin-bottom: 5px;
+`

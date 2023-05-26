@@ -3,8 +3,47 @@ import styled from 'styled-components'
 import Typeahead, {
   Item as TypeaheadItem,
 } from '@talus-analytics/library.ui.typeahead'
-import { FilterValues } from './constants'
-import { XIcon } from './constants'
+import { XIcon, FieldName, FilterValues } from './constants'
+import InputLabel from '../../ui/InputLabel'
+
+const TypeaheadResultContainer = styled.span<{ selected?: boolean }>`
+  ${({ theme }) => theme.smallParagraph};
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 16px;
+  text-align: left;
+  padding: 8px 12px;
+  background-color: rgba(0, 50, 100, 0);
+  transition: 150ms ease;
+
+  ${({ selected }) => selected && ` font-weight: 800; `}
+
+  &:hover {
+    background-color: #49515d
+      ${({ selected }) => selected && `background-color: #594141;`};
+  }
+`
+
+interface RenderItemProps {
+  item: TypeaheadItem
+  selected?: boolean
+}
+
+import removeSVG from '../../../assets/darkTypeaheadRemove.svg'
+
+const DarkTypeaheadResult = ({
+  item: { label },
+  selected,
+}: RenderItemProps) => (
+  <TypeaheadResultContainer selected={selected}>
+    {label}
+    {selected && (
+      <img src={removeSVG} style={{ flexShrink: 0 }} alt="Remove item" />
+    )}
+  </TypeaheadResultContainer>
+)
 
 const SelectedTypeaheadValues = styled.ul`
   margin-top: 10px;
@@ -44,15 +83,18 @@ const SelectedTypeaheadValueDeleteButton = styled.button`
 `
 
 const FilterTypeahead = ({
+  fieldLabel,
   values,
   options,
-  handleTypeaheadChange,
+  updateFilter,
+  filterIndex,
 }: {
+  fieldLabel: string
   values: FilterValues
   options: string[]
-  handleTypeaheadChange: (items: TypeaheadItem[]) => void
+  updateFilter: (filterIndex: number, values: FilterValues) => void
+  filterIndex: number
 }) => {
-  console.log(Date.now(), 'values in FilterTypehead', values.length, values)
   const selectedItems = values.map(value => ({
     key: value,
     label: value,
@@ -60,6 +102,13 @@ const FilterTypeahead = ({
   const labelsOfSelectedItems = selectedItems.map(({ label }) => label)
   // Remove selected items from available options
   options = options.filter(option => !labelsOfSelectedItems.includes(option))
+
+  const handleTypeaheadChange = (items: TypeaheadItem[]) => {
+    updateFilter(
+      filterIndex,
+      items.map(({ label }) => label)
+    )
+  }
   const addItem = (itemToAdd: TypeaheadItem) => {
     const itemAlreadyAdded = selectedItems
       .map(({ key }) => key)
@@ -72,28 +121,36 @@ const FilterTypeahead = ({
     )
     handleTypeaheadChange(amendedItems)
   }
+  // BUG: When you click the scrollbar in the Typeahead results, the results
+  // dropdown closes. This doesn't seem to be due to the label.
+
   return (
     <>
-      <Typeahead
-        multiselect={true}
-        items={options.map(option => ({ key: option, label: option }))}
-        values={selectedItems}
-        onAdd={addItem}
-        onRemove={removeItem}
-        placeholder={`${selectedItems.length} selected`}
-        backgroundColor="#000"
-        fontColor="white"
-        borderColor="white"
-      />
+      <InputLabel>
+        <FieldName>{fieldLabel}</FieldName>
+        <Typeahead
+          multiselect={true}
+          items={options.map(option => ({ key: option, label: option }))}
+          values={selectedItems}
+          onAdd={addItem}
+          onRemove={removeItem}
+          placeholder={`${selectedItems.length} selected`}
+          backgroundColor="#000"
+          fontColor="white"
+          borderColor="white"
+          RenderItem={({ item, selected }) => (
+            <DarkTypeaheadResult {...{ item, selected }} />
+          )}
+          iconSVG="%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9L12 15L18 9H6Z' fill='%23FFFFFF'/%3E%3C/svg%3E%0A"
+        />
+      </InputLabel>
       {values.length > 0 && (
         <SelectedTypeaheadValues>
           {values.map(value => (
             <SelectedTypeaheadValue key={value}>
               {value}
               <SelectedTypeaheadValueDeleteButton
-                onClick={() => {
-                  removeItem({ key: value, label: value })
-                }}
+                onClick={removeItem.bind(null, { key: value, label: value })}
               >
                 <XIcon extraStyle="stroke: #101010" />
               </SelectedTypeaheadValueDeleteButton>

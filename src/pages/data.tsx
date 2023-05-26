@@ -20,10 +20,8 @@ import DataToolbar, { View } from 'components/DataPage/Toolbar/Toolbar'
 
 import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
 import {
-	LOAD_DEBOUNCE_DELAY,
-	DEBOUNCE_TIMEOUT,
-} from 'components/DataPage/FilterPanel/constants'
-import type {
+	loadDebounceDelay,
+	debounceTimeout,
 	Filter,
 	FilterValues,
 } from 'components/DataPage/FilterPanel/constants'
@@ -56,7 +54,7 @@ const metadataFields = [
 	'detectionTarget',
 ]
 
-const isMetadataResponse = (data: unknown): data is MetadataResponse => {
+const isValidMetadataResponse = (data: unknown): data is MetadataResponse => {
 	if (typeof data !== 'object' || data === null) return false
 	const options = (data as Partial<MetadataResponse>).optionsForFields
 	if (typeof options !== 'object' || options === null) return false
@@ -95,30 +93,29 @@ const loadPublishedRecords = async ({
 	setReachedLastPage: Dispatch<SetStateAction<boolean>>
 	debouncing: MutableRefObject<Debouncing>
 }) => {
-	// Switch on debouncing for DEBOUNCE_TIMEOUT milliseconds
+	// Switch on debouncing for debounceTimeout milliseconds
 	debouncing.current.on = true
-	clearTimeout(debouncing.current.timeout ?? undefined)
+	if (debouncing.current.timeout) clearTimeout(debouncing.current.timeout)
 	debouncing.current.timeout = setTimeout(() => {
 		debouncing.current.on = false
-	}, DEBOUNCE_TIMEOUT)
+	}, debounceTimeout)
 
 	if (!appendResults) page.current = 1
 	setLoading(true)
 	const params = new URLSearchParams()
-	const pendingFilters: Filter[] = []
+	const filtersToApply: Filter[] = []
 	for (const filter of filters) {
 		const { fieldId, values } = filter
 		values.forEach(value => {
 			params.append(fieldId, value)
 		})
-		if (values.length > 0) pendingFilters.push(filter)
+		if (values.length > 0) filtersToApply.push(filter)
 	}
 	params.append('page', page.current.toString())
 	params.append('pageSize', '50')
 	const response = await fetch(
 		`${process.env.GATSBY_API_URL}/published-records?` + params
 	)
-
 	if (!response.ok) {
 		console.log('GET /published-records: error')
 		setLoading(false)
@@ -136,14 +133,14 @@ const loadPublishedRecords = async ({
 	])
 	setReachedLastPage(data.isLastPage)
 	setTimeout(() => {
-		setAppliedFilters(pendingFilters)
+		setAppliedFilters(filtersToApply)
 		setLoading(false)
 	}, 0)
 }
 
 const loadPublishedRecordsDebounced = debounce(
 	loadPublishedRecords,
-	LOAD_DEBOUNCE_DELAY
+	loadDebounceDelay
 )
 
 const DataView = (): JSX.Element => {
@@ -154,7 +151,7 @@ const DataView = (): JSX.Element => {
 	const debouncing = useRef({ on: false, timeout: null })
 	const [view, setView] = useState<View>(View.globe)
 
-	/** The filters to be applied */
+	/** Filters that will be applied to the published records */
 	const [filters, setFilters] = useState<Filter[]>([])
 
 	/** Filters that have been successfully applied to the published
@@ -190,7 +187,7 @@ const DataView = (): JSX.Element => {
 				`${process.env.GATSBY_API_URL}/metadata-for-published-records`
 			)
 			const data = await response.json()
-			if (!isMetadataResponse(data)) {
+			if (!isValidMetadataResponse(data)) {
 				console.error('GET /metadata-for-published-records: malformed response')
 				return
 			}
@@ -199,12 +196,8 @@ const DataView = (): JSX.Element => {
 		getMetadata()
 	}, [])
 
-	const loadFilteredRecords = (filters: Filter[], useDebouncing = true) => {
-		const loadFunction =
-			useDebouncing && debouncing.current.on
-				? loadPublishedRecordsDebounced
-				: loadPublishedRecords
-		loadFunction({
+	const loadFilteredRecords = (filters: Filter[], shouldDebounce = true) => {
+		const options = {
 			appendResults: false,
 			page,
 			filters,
@@ -213,19 +206,28 @@ const DataView = (): JSX.Element => {
 			setAppliedFilters,
 			setReachedLastPage,
 			debouncing,
-		})
+		}
+		if (shouldDebounce && debouncing.current.on) {
+			loadPublishedRecordsDebounced(options)
+		} else {
+			loadPublishedRecords(options)
+		}
 	}
 
-	const applyFilter = (filterIndex: number, newFilterValues: FilterValues) => {
-		filters[filterIndex].values = newFilterValues
-		setFilters(filters)
-		console.log('in applyFilter, filters is', filters)
-		loadFilteredRecords(filters)
+	const updateFilter = (
+		indexOfFilterToUpdate: number,
+		newValues: FilterValues
+	) => {
+		const newFilters = [...filters]
+		newFilters[indexOfFilterToUpdate].values = newValues
+		setFilters(newFilters)
+		loadFilteredRecords(newFilters)
 	}
+
 	const clearFilters = () => {
 		setFilters([])
 		if (filters.some(({ values }) => values.length > 0)) {
-			// Don't debounce when clearing
+			// Don't debounce when clearing filters
 			loadFilteredRecords([], false)
 		}
 	}
@@ -233,7 +235,7 @@ const DataView = (): JSX.Element => {
 	const dataViewHeight = 'calc(100vh - 87px)'
 	const panelHeight = 'calc(100vh - 190px)'
 	const panelWidth = isFilterPanelOpen ? 410 : 0
-	const tableViewWidthOffset = 0 // isFilterPanelOpen ? -60 : 10
+	const tableViewWidthOffset = 0
 	const tableViewWidth = `calc(100vw - ${panelWidth}px + ${tableViewWidthOffset}px)`
 	const tableViewHeight = 'calc(100vh - 103px)'
 
@@ -254,9 +256,9 @@ const DataView = (): JSX.Element => {
 						isFilterPanelOpen={isFilterPanelOpen}
 						setIsFilterPanelOpen={setIsFilterPanelOpen}
 						filters={filters}
-						applyFilter={applyFilter}
-						clearFilters={clearFilters}
+						updateFilter={updateFilter}
 						setFilters={setFilters}
+						clearFilters={clearFilters}
 						height={panelHeight}
 						optionsForFields={optionsForFields}
 					/>

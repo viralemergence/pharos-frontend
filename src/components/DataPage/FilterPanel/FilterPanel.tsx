@@ -1,22 +1,44 @@
-import React, {
-  useEffect,
-  useState,
-  useRef,
-  Dispatch,
-  SetStateAction,
-} from 'react'
+import React, { useState, useRef, Dispatch, SetStateAction } from 'react'
 import styled from 'styled-components'
 import {
   fields,
+  PlusIcon,
+  XIcon,
+  FieldName,
   Field,
   Filter,
   FilterValues,
-  ApplyFilterFunction,
+  UpdateFilterFunction,
 } from './constants'
 import InputLabel from '../../ui/InputLabel'
-import { PlusIcon, XIcon } from './constants'
-import { Item as TypeaheadItem } from '@talus-analytics/library.ui.typeahead'
 import FilterTypeahead from './FilterTypeahead'
+
+const FilterInput = ({
+  fieldLabel,
+  fieldType,
+  values,
+  updateFilter,
+  filterIndex,
+}: {
+  fieldLabel: string
+  fieldType: string
+  values: FilterValues
+  updateFilter: UpdateFilterFunction
+  filterIndex: number
+}) => {
+  return (
+    <InputLabel>
+      <FieldName>{fieldLabel}</FieldName>
+      <FieldInput
+        type={fieldType}
+        defaultValue={values.join(',')}
+        onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
+          updateFilter(filterIndex, [e.target.value])
+        }
+      />
+    </InputLabel>
+  )
+}
 
 const Panel = styled.div<{ isFilterPanelOpen: boolean; height: string }>`
   background-color: rgba(51, 51, 51, 0.9);
@@ -33,9 +55,6 @@ const Panel = styled.div<{ isFilterPanelOpen: boolean; height: string }>`
   z-index: 3;
 `
 
-const FieldName = styled.div`
-  margin-bottom: 5px;
-`
 const FieldInput = styled.input`
   ${({ theme }) => theme.smallParagraph};
   padding: 8px 10px;
@@ -55,62 +74,26 @@ const FilterValueSetter = ({
   fieldLabel,
   fieldType = 'text',
   values,
-  applyFilter,
+  updateFilter,
   options = [],
 }: {
   filterIndex: number
   fieldLabel: string
   fieldType: 'text' | 'date'
   values: FilterValues
-  applyFilter: ApplyFilterFunction
+  updateFilter: UpdateFilterFunction
   options: string[]
 }) => {
-  const truthyValues = values.filter(value => value)
   const useTypeahead = fieldType === 'text'
-
-  console.log(Date.now(), 'values in FilterPanel', values.length, values)
-
-  useEffect(() => {
-    // TODO: Use Typeahead component's svg prop
-    /** Workaround for fixing colors */
-    const typeaheadIcon = Array.from(
-      document.querySelectorAll<HTMLElement>('form input[type=search] + div')
-    )?.[0]
-    if (typeaheadIcon) typeaheadIcon.style.filter = 'invert(1)'
-  }, [])
-
-  const handleTypeaheadChange = (items: TypeaheadItem[]) => {
-    applyFilter(
-      filterIndex,
-      items.map(({ label }) => label)
-    )
+  const props = {
+    fieldLabel,
+    values: values.filter(value => value),
+    options,
+    updateFilter,
+    filterIndex,
   }
-
-  return (
-    <>
-      {useTypeahead ? (
-        <InputLabel>
-          <FieldName>{fieldLabel}</FieldName>
-          <FilterTypeahead
-            values={truthyValues}
-            options={options}
-            handleTypeaheadChange={handleTypeaheadChange}
-          />
-        </InputLabel>
-      ) : (
-        <InputLabel>
-          <FieldName>{fieldLabel}</FieldName>
-          <FieldInput
-            type={fieldType}
-            defaultValue={values.join(',')}
-            onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
-              applyFilter(filterIndex, [e.target.value])
-            }
-          />
-        </InputLabel>
-      )}
-    </>
-  )
+  if (useTypeahead) return <FilterTypeahead {...props} />
+  else return <FilterInput {...props} fieldType={fieldType} />
 }
 
 const FilterPanelButton = styled.button`
@@ -151,7 +134,6 @@ const FilterPanelCloseButton = styled(FilterPanelToolbarButton)`
   border-radius: 10px;
   background: transparent;
 `
-
 const FieldSelectorDiv = styled.div`
   position: absolute;
   top: 60px;
@@ -166,14 +148,15 @@ const FieldSelectorDiv = styled.div`
   padding: 5px 0;
   z-index: 1;
 `
-const FieldSelectorButton = styled(FilterPanelButton)`
+const FieldSelectorButton = styled(FilterPanelButton)<{ disabled: boolean }>`
   width: 100%;
-  &:hover {
-    background-color: #36a49d;
-  }
-  &:active {
-    outline: 1px solid ${({ theme }) => theme.mint};
-  }
+  ${({ disabled, theme }) =>
+    disabled
+      ? 'color: #777; cursor: unset; &:hover { background-color: inherit; }'
+      : `
+        &:hover { background-color: #36a49d; }
+        &:active { outline: 1px solid ${theme.mint}; }
+    `}
 `
 
 const FieldSelector = ({
@@ -191,17 +174,20 @@ const FieldSelector = ({
         e.stopPropagation()
       }}
     >
-      {Object.entries(fields).map(([fieldId, { label }]) => (
-        <FieldSelectorButton
-          key={fieldId}
-          value={fieldId}
-          onClick={_ => {
-            addFilterValueSetter(fieldId)
-          }}
-        >
-          {label}
-        </FieldSelectorButton>
-      ))}
+      {Object.entries(fields).map(
+        ([fieldId, { label, addedToPanel = false }]) => (
+          <FieldSelectorButton
+            key={fieldId}
+            value={fieldId}
+            onClick={_ => {
+              addFilterValueSetter(fieldId)
+            }}
+            disabled={addedToPanel}
+          >
+            {label}
+          </FieldSelectorButton>
+        )
+      )}
     </FieldSelectorDiv>
   )
 }
@@ -235,7 +221,7 @@ const FilterPanel = ({
   filters,
   setFilters,
   clearFilters,
-  applyFilter,
+  updateFilter,
   height,
   optionsForFields,
 }: {
@@ -245,7 +231,7 @@ const FilterPanel = ({
   setFilters: Dispatch<SetStateAction<Filter[]>>
   clearFilters: () => void
   /** Event handler for when one of the filter input elements receives new input */
-  applyFilter: ApplyFilterFunction
+  updateFilter: UpdateFilterFunction
   height: string
   optionsForFields: Record<string, string[]>
 }) => {
@@ -256,12 +242,10 @@ const FilterPanel = ({
   const filterListHeight = height.replace(')', ' - 73px)')
   const filterListRef = useRef<HTMLUListElement>(null)
 
-  console.log(
-    Date.now(),
-    'on FilterPanel render, filters =',
-    filters.map(filter => filter.values.length),
-    structuredClone(filters)
-  )
+  const idsOfAddedFields = filters.map(({ fieldId }) => fieldId)
+  for (const fieldId in fields) {
+    fields[fieldId].addedToPanel = idsOfAddedFields.includes(fieldId)
+  }
 
   return (
     <Panel
@@ -305,9 +289,7 @@ const FilterPanel = ({
                 setIsFieldSelectorOpen(false)
                 const filterList = filterListRef.current
                 setTimeout(() => {
-                  if (filterList) {
-                    filterList.scrollTop = filterList.scrollHeight
-                  }
+                  if (filterList) filterList.scrollTop = filterList.scrollHeight
                 }, 0)
               }}
               fields={fields}
@@ -317,13 +299,13 @@ const FilterPanel = ({
             {filters.map((filter, filterIndex) => {
               const { label = '', type = 'text' } = fields[filter.fieldId]
               return (
-                <FilterListItem key={`${filter.fieldId}${filterIndex}`}>
+                <FilterListItem key={`${filter.fieldId}-${filterIndex}`}>
                   <FilterValueSetter
                     filterIndex={filterIndex}
                     fieldLabel={label}
                     fieldType={type}
                     options={optionsForFields[filter.fieldId]}
-                    applyFilter={applyFilter}
+                    updateFilter={updateFilter}
                     values={filter.values}
                   />
                 </FilterListItem>
