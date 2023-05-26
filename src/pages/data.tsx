@@ -28,6 +28,7 @@ import {
 
 const ViewContainer = styled.main`
 	display: flex;
+	background-color: ${props => props.theme.black};
 `
 
 interface PublishedRecordsResponse {
@@ -239,6 +240,8 @@ const DataView = (): JSX.Element => {
 	const tableViewWidth = `calc(100vw - ${panelWidth}px + ${tableViewWidthOffset}px)`
 	const tableViewHeight = 'calc(100vh - 103px)'
 
+	const showEarth = [View.globe, View.map].includes(view)
+
 	return (
 		<Providers>
 			<CMS.SEO />
@@ -266,6 +269,7 @@ const DataView = (): JSX.Element => {
 				<MapView
 					projection={view === 'globe' ? 'globe' : 'naturalEarth'}
 					height={dataViewHeight}
+					style={{ display: showEarth ? 'flex' : 'none' }}
 				/>
 				<TableView
 					height={dataViewHeight}

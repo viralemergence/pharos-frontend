@@ -1,4 +1,10 @@
-import React, { useState, useRef, Dispatch, SetStateAction } from 'react'
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  Dispatch,
+  SetStateAction,
+} from 'react'
 import styled from 'styled-components'
 import {
   fields,
@@ -128,11 +134,17 @@ const FilterPanelToolbarButton = styled(FilterPanelButton)<{
 `
 const FilterPanelCloseButton = styled(FilterPanelToolbarButton)`
   position: absolute;
-  right: 0;
-  top: 0;
-  padding: 5px 10px;
-  border-radius: 10px;
+  right: 2px;
+  top: 2px;
+  border-radius: 50%;
   background: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  &:hover {
+    background: inherit;
+  }
 `
 const FieldSelectorDiv = styled.div`
   position: absolute;
@@ -192,13 +204,25 @@ const FieldSelector = ({
   )
 }
 
-const FilterListItem = styled.li`
+const FilterListItemElement = styled.li<{ opacity: number }>`
   list-style: none;
   margin-bottom: 20px;
+  opacity: ${({ opacity }) => opacity};
+  transition: opacity 0.25s;
   &:last-child {
     margin-bottom: 0;
   }
 `
+const FilterListItem = ({ children }: { children: React.ReactNode }) => {
+  const [opacity, setOpacity] = useState(0)
+  useEffect(() => {
+    setOpacity(1)
+  }, [])
+  return (
+    <FilterListItemElement opacity={opacity}>{children}</FilterListItemElement>
+  )
+}
+
 const FilterList = styled.ul<{ height: string }>`
   margin: 0;
   padding: 34px 40px;
@@ -279,7 +303,7 @@ const FilterPanel = ({
               </FilterPanelToolbarButton>
             )}
             <FilterPanelCloseButton onClick={() => setIsFilterPanelOpen(false)}>
-              <XIcon />
+              <XIcon extraStyle="width: 18px; height: 18px;" />
             </FilterPanelCloseButton>
           </FilterPanelToolbar>
           {isFieldSelectorOpen && (
