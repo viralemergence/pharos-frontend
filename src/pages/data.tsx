@@ -29,7 +29,7 @@ import {
 
 const ViewContainer = styled.main`
 	display: flex;
-	background-color: #3d434e;
+	background-color: rgb(5, 10, 55); //#3d434e;
 	padding-bottom: 1rem;
 `
 
@@ -277,7 +277,9 @@ const DataView = (): JSX.Element => {
 				<MapView
 					projection={view === 'globe' ? 'globe' : 'naturalEarth'}
 					height={dataViewHeight}
-					style={{ display: showEarth ? 'flex' : 'none' }}
+					style={{
+						filter: showEarth ? 'none' : 'blur(30px)',
+					}}
 				/>
 				<TableView
 					fields={fields}

@@ -45,7 +45,7 @@ const FilterInput = ({
 }
 
 const Panel = styled.aside<{ isFilterPanelOpen: boolean; height: string }>`
-  background-color: rgba(51, 51, 51, 0.9);
+  background-color: rgba(51, 51, 51, 0.8);
   color: #fff;
   height: ${props => props.height};
   position: relative;
@@ -53,7 +53,7 @@ const Panel = styled.aside<{ isFilterPanelOpen: boolean; height: string }>`
   top: 73px;
   left: 30px;
   margin-right: 30px;
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(12px);
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.4);
   z-index: 3;
 `
