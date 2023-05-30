@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import Typeahead, {
   Item as TypeaheadItem,
-} from '../../../../library/ui/typeahead';
+} from '@talus-analytics/library.ui.typeahead'
 import { XIcon, FieldName, FilterValues } from './constants'
 import InputLabel from '../../ui/InputLabel'
 
@@ -143,6 +143,7 @@ const FilterTypeahead = ({
             <DarkTypeaheadResult {...{ item, selected }} />
           )}
           iconSVG="%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9L12 15L18 9H6Z' fill='%23FFFFFF'/%3E%3C/svg%3E%0A"
+          expanderStyle={{ maxHeight: '300px' }}
         />
       </InputLabel>
       {values.length > 0 && (

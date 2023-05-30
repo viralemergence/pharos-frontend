@@ -7656,6 +7656,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expander-d820c2@workspace:library/ui/expander":
+  version: 0.0.0-use.local
+  resolution: "expander-d820c2@workspace:library/ui/expander"
+  languageName: unknown
+  linkType: soft
+
 "expect@npm:^29.0.0":
   version: 29.5.0
   resolution: "expect@npm:29.5.0::__archiveUrl=https%3A%2F%2Fregistry.npmjs.org%2Fexpect%2F-%2Fexpect-29.5.0.tgz"
@@ -13757,7 +13763,6 @@ __metadata:
     "@mdx-js/react": "npm:^2.1.5"
     "@talus-analytics/library.airtable-cms": "npm:^0.0.32"
     "@talus-analytics/library.ui.dropdown": "npm:^0.0.10"
-    "@talus-analytics/library.ui.expander": "npm:0.0.5"
     "@talus-analytics/library.ui.typeahead": "npm:^0.0.6"
     "@total-typescript/ts-reset": "npm:^0.4.2"
     "@types/jest": "npm:^26.0.0"
