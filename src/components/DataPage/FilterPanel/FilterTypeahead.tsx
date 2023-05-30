@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import Typeahead, {
   Item as TypeaheadItem,
-} from '@talus-analytics/library.ui.typeahead'
+} from '../../../../library/ui/typeahead';
 import { XIcon, FieldName, FilterValues } from './constants'
 import InputLabel from '../../ui/InputLabel'
 
@@ -124,8 +124,6 @@ const FilterTypeahead = ({
     )
     handleTypeaheadChange(amendedItems)
   }
-  // BUG: When you click the scrollbar in the Typeahead results, the results
-  // dropdown closes. This doesn't seem to be due to the label.
 
   return (
     <>
