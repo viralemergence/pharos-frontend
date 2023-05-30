@@ -85,6 +85,15 @@ const SelectedTypeaheadValueDeleteButton = styled.button`
   }
 `
 
+const TypeaheadInputLabel = styled(InputLabel)`
+  & input[type='search']::placeholder {
+    ${({ theme }) => theme.smallParagraph}
+    color: #fff !important;
+    opacity: 1 !important;
+    font-weight: bold;
+  }
+`
+
 const FilterTypeahead = ({
   fieldLabel,
   values,
@@ -127,7 +136,7 @@ const FilterTypeahead = ({
 
   return (
     <>
-      <InputLabel>
+      <TypeaheadInputLabel>
         <FieldName>{fieldLabel}</FieldName>
         <Typeahead
           multiselect={true}
@@ -135,17 +144,20 @@ const FilterTypeahead = ({
           values={selectedItems}
           onAdd={addItem}
           onRemove={removeItem}
-          placeholder={`${selectedItems.length} selected`}
+          placeholder={
+            selectedItems.length ? `${selectedItems.length} selected` : ''
+          }
           expanderHeight="300px"
           backgroundColor="#000"
           fontColor="white"
-          borderColor="white"
+          borderColor="#fff"
           RenderItem={({ item, selected }) => (
             <DarkTypeaheadResult {...{ item, selected }} />
           )}
           iconSVG="%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9L12 15L18 9H6Z' fill='%23FFFFFF'/%3E%3C/svg%3E%0A"
+          expanderStyle={{ borderBottom: '1px solid #fff' }}
         />
-      </InputLabel>
+      </TypeaheadInputLabel>
       {values.length > 0 && (
         <SelectedTypeaheadValues>
           {values.map(value => (
