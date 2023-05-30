@@ -7,9 +7,6 @@ import React, {
 } from 'react'
 import styled from 'styled-components'
 import {
-  fields,
-  PlusIcon,
-  XIcon,
   FieldName,
   Field,
   Filter,
@@ -18,6 +15,7 @@ import {
 } from './constants'
 import InputLabel from '../../ui/InputLabel'
 import FilterTypeahead from './FilterTypeahead'
+import FilterPanelToolbar from './FilterPanelToolbar'
 
 const FilterInput = ({
   fieldLabel,
@@ -46,17 +44,16 @@ const FilterInput = ({
   )
 }
 
-const Panel = styled.div<{ isFilterPanelOpen: boolean; height: string }>`
-  background-color: rgba(51, 51, 51, 0.9);
+const Panel = styled.aside<{ isFilterPanelOpen: boolean; height: string }>`
+  background-color: rgba(51, 51, 51, 0.8);
   color: #fff;
   height: ${props => props.height};
   position: relative;
   width: 410px;
   top: 73px;
   left: 30px;
-  border-radius: 10px;
   margin-right: 30px;
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(12px);
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.4);
   z-index: 3;
 `
@@ -88,7 +85,7 @@ const FilterValueSetter = ({
   fieldType: 'text' | 'date'
   values: FilterValues
   updateFilter: UpdateFilterFunction
-  options: string[]
+  options: string[] | undefined
 }) => {
   const useTypeahead = fieldType === 'text'
   const props = {
@@ -102,108 +99,6 @@ const FilterValueSetter = ({
   else return <FilterInput {...props} fieldType={fieldType} />
 }
 
-const FilterPanelButton = styled.button`
-  ${props => props.theme.smallParagraph};
-  text-align: left;
-  padding: 10px 15px;
-  background-color: transparent;
-  color: #fff;
-  border: 0;
-  cursor: pointer;
-  &:hover {
-    background-color: #333;
-  }
-`
-const FilterPanelToolbarButton = styled(FilterPanelButton)<{
-  isFieldSelectorOpen?: boolean
-}>`
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  ${({ isFieldSelectorOpen }) =>
-    !isFieldSelectorOpen
-      ? 'border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;'
-      : ''}
-  &:hover {
-    background-color: #202020;
-  }
-  background-color: ${({ isFieldSelectorOpen }) =>
-    isFieldSelectorOpen ? '#202020' : 'transparent'};
-  &:active {
-    outline: 2px solid rgba(60, 60, 60, 1);
-  }
-`
-const FilterPanelCloseButton = styled(FilterPanelToolbarButton)`
-  position: absolute;
-  right: 2px;
-  top: 2px;
-  border-radius: 50%;
-  background: transparent;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 5px;
-  &:hover {
-    background: inherit;
-  }
-`
-const FieldSelectorDiv = styled.div`
-  position: absolute;
-  top: 60px;
-  width: calc(100% - 79px);
-  left: 40px;
-  display: flex;
-  flex-flow: column nowrap;
-  align-items: flex-start;
-  background-color: #202020;
-  border-radius: 5px;
-  border-top-left-radius: 0;
-  padding: 5px 0;
-  z-index: 1;
-`
-const FieldSelectorButton = styled(FilterPanelButton)<{ disabled: boolean }>`
-  width: 100%;
-  ${({ disabled, theme }) =>
-    disabled
-      ? 'color: #777; cursor: unset; &:hover { background-color: inherit; }'
-      : `
-        &:hover { background-color: #36a49d; }
-        &:active { outline: 1px solid ${theme.mint}; }
-    `}
-`
-
-const FieldSelector = ({
-  fields,
-  addFilterValueSetter,
-}: {
-  fields: Record<string, Field>
-  addFilterValueSetter: (fieldId: string) => void
-}) => {
-  return (
-    <FieldSelectorDiv
-      onClick={e => {
-        // If this click event propagates, the panel's click handler will
-        // fire, closing the field selector.
-        e.stopPropagation()
-      }}
-    >
-      {Object.entries(fields).map(
-        ([fieldId, { label, addedToPanel = false }]) => (
-          <FieldSelectorButton
-            key={fieldId}
-            value={fieldId}
-            onClick={_ => {
-              addFilterValueSetter(fieldId)
-            }}
-            disabled={addedToPanel}
-          >
-            {label}
-          </FieldSelectorButton>
-        )
-      )}
-    </FieldSelectorDiv>
-  )
-}
-
 const FilterListItemElement = styled.li<{ opacity: number }>`
   list-style: none;
   margin-bottom: 20px;
@@ -213,8 +108,14 @@ const FilterListItemElement = styled.li<{ opacity: number }>`
     margin-bottom: 0;
   }
 `
-const FilterListItem = ({ children }: { children: React.ReactNode }) => {
-  const [opacity, setOpacity] = useState(0)
+const FilterListItem = ({
+  shouldAnimate,
+  children,
+}: {
+  shouldAnimate: boolean
+  children: React.ReactNode
+}) => {
+  const [opacity, setOpacity] = useState(shouldAnimate ? 0 : 1)
   useEffect(() => {
     setOpacity(1)
   }, [])
@@ -230,34 +131,25 @@ const FilterList = styled.ul<{ height: string }>`
   height: ${props => props.height};
 `
 
-const FilterPanelToolbar = styled.nav<{ filterCount: number }>`
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
-  padding-bottom: 20px;
-  padding: 14px 40px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-`
-
 const FilterPanel = ({
   isFilterPanelOpen,
   setIsFilterPanelOpen,
+  fields,
   filters,
   setFilters,
   clearFilters,
   updateFilter,
   height,
-  optionsForFields,
 }: {
   isFilterPanelOpen: boolean
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
+  fields: Record<string, Field>
   filters: Filter[]
   setFilters: Dispatch<SetStateAction<Filter[]>>
   clearFilters: () => void
   /** Event handler for when one of the filter input elements receives new input */
   updateFilter: UpdateFilterFunction
   height: string
-  optionsForFields: Record<string, string[]>
 }) => {
   const [isFieldSelectorOpen, setIsFieldSelectorOpen] = useState(false)
   const panelRef = useRef<HTMLDivElement>(null)
@@ -270,6 +162,16 @@ const FilterPanel = ({
   for (const fieldId in fields) {
     fields[fieldId].addedToPanel = idsOfAddedFields.includes(fieldId)
   }
+
+  // Disable filter animations when FilterPanel first renders
+  const shouldAnimateFilters = useRef(false)
+
+  useEffect(() => {
+    // Enable filter animations after FilterPanel first renders
+    setTimeout(() => {
+      shouldAnimateFilters.current = true
+    }, 500)
+  }, [])
 
   return (
     <Panel
@@ -284,51 +186,31 @@ const FilterPanel = ({
     >
       {isFilterPanelOpen && (
         <>
-          <FilterPanelToolbar filterCount={filters.length}>
-            <FilterPanelToolbarButton
-              className="add-filter"
-              isFieldSelectorOpen={isFieldSelectorOpen}
-              onClick={e => {
-                setIsFieldSelectorOpen(open => !open)
-                // If this click event propagates, the panel's click handler will
-                // fire, closing the field selector.
-                e.stopPropagation()
-              }}
-            >
-              <PlusIcon style={{ marginRight: '5px' }} /> Add filter
-            </FilterPanelToolbarButton>
-            {filters.length > 0 && (
-              <FilterPanelToolbarButton onClick={() => clearFilters()}>
-                Clear all
-              </FilterPanelToolbarButton>
-            )}
-            <FilterPanelCloseButton onClick={() => setIsFilterPanelOpen(false)}>
-              <XIcon extraStyle="width: 18px; height: 18px;" />
-            </FilterPanelCloseButton>
-          </FilterPanelToolbar>
-          {isFieldSelectorOpen && (
-            <FieldSelector
-              addFilterValueSetter={fieldId => {
-                setFilters(filters => [...filters, { fieldId, values: [] }])
-                setIsFieldSelectorOpen(false)
-                const filterList = filterListRef.current
-                setTimeout(() => {
-                  if (filterList) filterList.scrollTop = filterList.scrollHeight
-                }, 0)
-              }}
-              fields={fields}
-            />
-          )}
-          <FilterList ref={filterListRef} height={filterListHeight} style={{}}>
+          <FilterPanelToolbar
+            {...{
+              fields,
+              filters,
+              setFilters,
+              clearFilters,
+              isFieldSelectorOpen,
+              setIsFieldSelectorOpen,
+              setIsFilterPanelOpen,
+              filterListRef,
+            }}
+          />
+          <FilterList ref={filterListRef} height={filterListHeight}>
             {filters.map((filter, filterIndex) => {
               const { label = '', type = 'text' } = fields[filter.fieldId]
               return (
-                <FilterListItem key={`${filter.fieldId}-${filterIndex}`}>
+                <FilterListItem
+                  shouldAnimate={shouldAnimateFilters.current}
+                  key={`${filter.fieldId}-${filterIndex}`}
+                >
                   <FilterValueSetter
                     filterIndex={filterIndex}
                     fieldLabel={label}
                     fieldType={type}
-                    options={optionsForFields[filter.fieldId]}
+                    options={fields[filter.fieldId].options}
                     updateFilter={updateFilter}
                     values={filter.values}
                   />

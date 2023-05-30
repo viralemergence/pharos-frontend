@@ -37,6 +37,7 @@ const DataToolbarButton = styled.button<{
 	padding: 5px 10px;
 	&:active {
 		outline: 2px solid rgba(255, 255, 255, 0.2);
+		transform: scale(0.98);
 	}
 	${props => props.extraStyle}
 `

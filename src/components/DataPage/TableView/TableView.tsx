@@ -2,8 +2,7 @@ import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
-import type { Filter } from '../FilterPanel/constants'
-import { fields } from '../FilterPanel/constants'
+import type { Filter, Field } from '../FilterPanel/constants'
 import './dataGrid.css'
 
 const TableViewContainer = styled.div<{ height: string }>`
@@ -66,6 +65,7 @@ interface TableViewProps {
   publishedRecords: Row[]
   reachedLastPage: boolean
   style?: React.CSSProperties
+  fields: Record<string, Field>
 }
 
 export interface Row {
@@ -87,6 +87,7 @@ const TableView = ({
   appliedFilters,
   loadPublishedRecords,
   reachedLastPage,
+  fields,
 }: TableViewProps) => {
   useEffect(() => {
     loadPublishedRecords()

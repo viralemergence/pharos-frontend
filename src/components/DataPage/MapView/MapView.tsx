@@ -18,6 +18,10 @@ interface MapPageProps {
   height: string
 }
 
+const MapViewDiv = styled.div`
+  position: absolute;
+`
+
 const MapView = ({
   style,
   projection = 'naturalEarth',
@@ -137,9 +141,9 @@ const MapView = ({
   }, [projection])
 
   return (
-    <div style={{ ...style, position: 'absolute' }}>
+    <MapViewDiv style={style}>
       <MapContainer ref={mapContainer} height={height} />
-    </div>
+    </MapViewDiv>
   )
 }
 
