@@ -126,7 +126,7 @@ const Typeahead = ({
   if (!items) throw new Error('Item array in multiselect cannot be undefined')
 
   const [searchString, setSearchString] = useState('')
-  const [showResults, setShowResults] = useState(false)
+  const [showResults, setShowResults] = useState(true) // TODO: set back to false
   const inputRef = useRef<HTMLInputElement>(null)
 
   // compute fuzzy search
@@ -137,15 +137,21 @@ const Typeahead = ({
 
   const results = fuse.search(searchString).map(({ item }) => item)
 
-  // accept top result if enter is pressed
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      e.preventDefault()
+  const keydownHandlers: Record<string, (e: React.KeyboardEvent) => void> = {
+    // accept top result if enter is pressed
+    Enter: (e: React.KeyboardEvent) => {
       if (results[0] || items[0]) onAdd(results[0] || items[0])
       inputRef.current!.blur()
       setShowResults(false)
       setSearchString('')
-    }
+    },
+    Tab: (e: React.KeyboardEvent) => {
+      console.log('typeahead knows about the tab')
+    },
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    keydownHandlers[e.key]?.(e)
   }
 
   // close results onBlur, but
@@ -154,7 +160,7 @@ const Typeahead = ({
   const onBlurHandler = () => {
     // set it to close next tick
     blurTimeout = setTimeout(() => {
-      setShowResults(false)
+      //setShowResults(false)
       if (!values.length) setSearchString('')
     })
   }
@@ -164,7 +170,6 @@ const Typeahead = ({
   const onFocusHandler = () => {
     clearTimeout(blurTimeout)
     setShowResults(true)
-    inputRef.current!.focus()
   }
 
   useEffect(() => {
@@ -183,6 +188,9 @@ const Typeahead = ({
       onSubmit={e => e.preventDefault()}
       style={{ ...style, backgroundColor }}
       borderColor={borderColor}
+      onKeyDown={e => {
+        console.log('container keydown', e.key)
+      }}
     >
       <SearchBar
         disabled={disabled}
@@ -190,7 +198,7 @@ const Typeahead = ({
         autoComplete="off"
         name="special-auto-fill"
         ref={inputRef}
-        onKeyPress={handleKeyPress}
+        onKeyDown={handleKeyDown}
         value={searchString}
         onChange={e => setSearchString(e.target.value)}
         placeholder={placeholder}
@@ -219,17 +227,19 @@ const Typeahead = ({
                   key={item.key}
                   onClick={() => onRemove && onRemove(item)}
                   style={{ color: fontColor }}
+                  tabIndex={0}
                 >
                   <RenderItem selected key={item.key} {...{ item }} />
                 </ItemButton>
               ))}
             </Selected>
           )}
-          {(results.length > 0 && searchString !== values?.[0]?.label
+          {(results.length && searchString !== values?.[0]?.label
             ? results
             : items
           ).map(item => (
             <ItemButton
+              tabIndex={0}
               key={item.key}
               onClick={() => onAdd(item)}
               style={{ color: fontColor }}

@@ -183,6 +183,9 @@ const FilterPanel = ({
       onClick={_ => {
         setIsFieldSelectorOpen(false)
       }}
+      onKeyDown={e => {
+        console.log('panel keydown', e.key)
+      }}
     >
       {isFilterPanelOpen && (
         <>

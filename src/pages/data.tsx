@@ -261,7 +261,11 @@ const DataView = (): JSX.Element => {
 				setIsFilterPanelOpen={setIsFilterPanelOpen}
 				appliedFilters={appliedFilters}
 			/>
-			<ViewContainer>
+			<ViewContainer
+				onKeyDown={e => {
+					console.log('viewcontainer keydown', e)
+				}}
+			>
 				{isFilterPanelOpen && (
 					<FilterPanel
 						isFilterPanelOpen={isFilterPanelOpen}

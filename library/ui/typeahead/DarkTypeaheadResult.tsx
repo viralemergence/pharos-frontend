@@ -18,6 +18,9 @@ const TypeaheadResultContainer = styled.span<{ selected?: boolean }>`
 
   ${({ selected }) => selected && ` font-weight: 800; `}
 
+  &:focus {
+    background: magenta;
+  }
   &:hover {
     background-color: #49515d;
     ${({ selected }) => selected && `background-color: #594141;`}
@@ -28,7 +31,7 @@ const DarkTypeaheadResult = ({
   item: { label },
   selected,
 }: RenderItemProps) => (
-  <TypeaheadResultContainer selected={selected}>
+  <TypeaheadResultContainer tabIndex={0} selected={selected}>
     {label}
     {selected && (
       <img src={removeSVG} style={{ flexShrink: 0 }} alt="Remove item" />

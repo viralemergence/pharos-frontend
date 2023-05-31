@@ -142,6 +142,7 @@ const Expander = ({
     >
       <ContentContainer
         ref={contentContainer}
+        // TODO: Could this be simplified?
         style={{
           ...{
             ...(renderWhileClosed && {

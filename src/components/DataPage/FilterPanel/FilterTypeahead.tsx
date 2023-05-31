@@ -37,7 +37,12 @@ const DarkTypeaheadResult = ({
   item: { label },
   selected,
 }: RenderItemProps) => (
-  <TypeaheadResultContainer selected={selected}>
+  <TypeaheadResultContainer
+    selected={selected}
+    onFocus={() => {
+      console.log('result focused')
+    }}
+  >
     {label}
     {selected && (
       <img src={removeSVG} style={{ flexShrink: 0 }} alt="Remove item" />
@@ -95,7 +100,6 @@ const TypeaheadInputLabel = styled(InputLabel)`
     }
     padding: 10px 15px 8px 15px !important;
     line-height: 25px !important;
-    caret-color: transparent;
   }
 `
 
@@ -153,7 +157,6 @@ const FilterTypeahead = ({
           placeholder={
             selectedItems.length ? `${selectedItems.length} selected` : ''
           }
-          expanderHeight="300px"
           backgroundColor="#000"
           fontColor="white"
           borderColor="#fff"

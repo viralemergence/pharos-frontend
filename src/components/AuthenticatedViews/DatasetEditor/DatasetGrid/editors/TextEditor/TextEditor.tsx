@@ -75,6 +75,7 @@ const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' || e.key === 'Tab') {
+      console.log('event getting prevented')
       e.preventDefault()
       dispatchValue()
     }
