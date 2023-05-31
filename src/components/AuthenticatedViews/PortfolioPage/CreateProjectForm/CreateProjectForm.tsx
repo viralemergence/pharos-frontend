@@ -5,7 +5,7 @@ import MintButton from 'components/ui/MintButton'
 import Label from 'components/ui/InputLabel'
 import Input from 'components/ui/Input'
 import Textarea from 'components/ui/Textarea'
-import Typeahead from '../../../../../library/ui/typeahead/Typeahead'
+import Typeahead from '@talus-analytics/library.ui.typeahead'
 
 import useDoCreateProject from 'reducers/stateReducer/hooks/useDoCreateProject'
 import useModal from 'hooks/useModal/useModal'
