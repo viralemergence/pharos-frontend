@@ -225,4 +225,3 @@ const FilterPanel = ({
 }
 
 export default FilterPanel
-export default FilterPanel

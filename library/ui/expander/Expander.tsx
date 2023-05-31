@@ -22,6 +22,7 @@ export interface ExpanderProps {
   renderWhileClosed?: boolean
   /** Height when open */
   height?: string
+  style?: React.CSSProperties
 }
 
 const ContentContainer = styled.div`
@@ -31,16 +32,15 @@ const ContentContainer = styled.div`
   display: flow-root;
 `
 
-const Expander = (props: ExpanderProps) => {
-  const {
-    open,
-    children,
-    floating = false,
-    animDuration = 250,
-    renderWhileClosed = false,
-    height = 'auto',
-  } = props
-
+const Expander = ({
+  open,
+  children,
+  floating = false,
+  animDuration = 250,
+  renderWhileClosed = false,
+  height = 'auto',
+  style = {},
+}: ExpanderProps) => {
   // persist animation timer reference across renders to handle animation cancelling
   const animTimer = React.useRef<ReturnType<typeof setTimeout>>()
 
@@ -137,6 +137,7 @@ const Expander = (props: ExpanderProps) => {
           boxShadow: '0px 15px 30px -10px rgba(0, 0, 0, 0.25)',
           zIndex: 10,
         }),
+        ...style,
       }}
     >
       <ContentContainer
