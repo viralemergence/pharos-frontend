@@ -88,9 +88,10 @@ const FilterValueSetter = ({
   options: string[] | undefined
 }) => {
   const useTypeahead = fieldType === 'text'
+  const truthyValues = values.filter(value => value)
   const props = {
     fieldLabel,
-    values: values.filter(value => value),
+    values: truthyValues,
     options,
     updateFilter,
     filterIndex,
@@ -152,7 +153,6 @@ const FilterPanel = ({
   height: string
 }) => {
   const [isFieldSelectorOpen, setIsFieldSelectorOpen] = useState(false)
-  const panelRef = useRef<HTMLDivElement>(null)
 
   // height is a 'calc()' expression
   const filterListHeight = height.replace(')', ' - 73px)')
@@ -169,6 +169,8 @@ const FilterPanel = ({
   useEffect(() => {
     // Enable filter animations after FilterPanel first renders
     setTimeout(() => {
+      // TODO: Test removing the setTimeout because it might not be needed. Or
+      // use a requestAnimationFrame.
       shouldAnimateFilters.current = true
     }, 500)
   }, [])
@@ -176,10 +178,8 @@ const FilterPanel = ({
   return (
     <Panel
       style={{ colorScheme: 'dark' }}
-      className="pharos-panel"
       height={height}
       isFilterPanelOpen={isFilterPanelOpen}
-      ref={panelRef}
       onClick={_ => {
         setIsFieldSelectorOpen(false)
       }}
@@ -224,4 +224,5 @@ const FilterPanel = ({
   )
 }
 
+export default FilterPanel
 export default FilterPanel

@@ -32,6 +32,7 @@ interface RenderItemProps {
 
 import removeSVG from '../../../assets/darkTypeaheadRemove.svg'
 
+// TODO: Check whether I still need to deviate from the default
 const DarkTypeaheadResult = ({
   item: { label },
   selected,
@@ -98,6 +99,7 @@ const TypeaheadInputLabel = styled(InputLabel)`
   }
 `
 
+/** A typeahead component for setting the value of a filter */
 const FilterTypeahead = ({
   fieldLabel,
   values,

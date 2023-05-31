@@ -137,7 +137,7 @@ const Expander = (props: ExpanderProps) => {
       style={{
         maxHeight: hiderHeight,
         height: hiderHeight,
-        overflow: 'hidden', // TODO: Remove this comment hiderHeight === height ? 'visible' : 'hidden',
+        overflow: 'hidden',
         transition: `${animDuration}ms ease`,
         ...(floating && {
           borderBottomRightRadius: 5,
