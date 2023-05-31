@@ -1,12 +1,6 @@
 import React, { useLayoutEffect, useState } from 'react'
 import styled from 'styled-components'
 
-export type ExpanderStyleAsFunction = (
-  props: ExpanderProps
-) => React.CSSProperties
-
-export type ExpanderStyle = React.CSSProperties | ExpanderStyleAsFunction
-
 export interface ExpanderProps {
   /** child elements to render inside the expander */
   children: React.ReactNode
@@ -20,9 +14,6 @@ export interface ExpanderProps {
    * component which doesn't interefere with layout.
    */
   floating?: boolean
-  /** Styles object to pass on to the container. A function can be used to vary
-   * the style based on the props. */
-  style?: ExpanderStyle
   /**
    * Render children as "hidden" while closed mainly
    * for implementing tabbed sections without hiding
@@ -48,7 +39,6 @@ const Expander = (props: ExpanderProps) => {
     animDuration = 250,
     renderWhileClosed = false,
     height = 'auto',
-    style = {},
   } = props
 
   // persist animation timer reference across renders to handle animation cancelling
@@ -147,7 +137,6 @@ const Expander = (props: ExpanderProps) => {
           boxShadow: '0px 15px 30px -10px rgba(0, 0, 0, 0.25)',
           zIndex: 10,
         }),
-        ...(typeof style === 'function' ? style(props) : style),
       }}
     >
       <ContentContainer

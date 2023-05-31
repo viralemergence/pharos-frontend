@@ -105,7 +105,7 @@ export interface TypeaheadProps {
 const Typeahead = ({
   multiselect = false,
   items,
-  values,
+  values = [],
   onAdd,
   onRemove,
   placeholder = '',
@@ -155,7 +155,7 @@ const Typeahead = ({
     // set it to close next tick
     blurTimeout = setTimeout(() => {
       setShowResults(false)
-      if (!values) setSearchString('')
+      if (!values.length) setSearchString('')
     })
   }
 
@@ -168,12 +168,11 @@ const Typeahead = ({
   }
 
   useEffect(() => {
-    if (values && values.length > 0 && !multiselect)
-      setSearchString(values[0]?.label)
+    if (values.length && !multiselect) setSearchString(values[0]?.label)
   }, [values, multiselect])
 
   useEffect(() => {
-    if (disabled && !values) setSearchString('')
+    if (disabled && !values.length) setSearchString('')
   }, [disabled, values])
 
   return (
@@ -213,21 +212,20 @@ const Typeahead = ({
         animDuration={200}
       >
         <Results style={{ backgroundColor, borderColor }}>
-          {multiselect && values && values.length > 0 && (
+          {multiselect && values.length > 0 && (
             <Selected borderColor={borderColor}>
-              {values &&
-                values.map((item: Item) => (
-                  <ItemButton
-                    key={item.key}
-                    onClick={() => onRemove && onRemove(item)}
-                    style={{ color: fontColor }}
-                  >
-                    <RenderItem selected key={item.key} {...{ item }} />
-                  </ItemButton>
-                ))}
+              {values.map((item: Item) => (
+                <ItemButton
+                  key={item.key}
+                  onClick={() => onRemove && onRemove(item)}
+                  style={{ color: fontColor }}
+                >
+                  <RenderItem selected key={item.key} {...{ item }} />
+                </ItemButton>
+              ))}
             </Selected>
           )}
-          {(results.length > 0 && searchString !== (values && values[0]?.label)
+          {(results.length > 0 && searchString !== values?.[0]?.label
             ? results
             : items
           ).map(item => (

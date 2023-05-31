@@ -70,7 +70,7 @@ export const SearchBar = styled.input<{ iconLeft: boolean; fontColor: string }>`
 `
 export const Results = styled.div`
   display: flex;
-  max-height: 30rem;
+  max-height: 300px;
   overflow-y: scroll;
   flex-direction: column;
   border-radius: 10px;
