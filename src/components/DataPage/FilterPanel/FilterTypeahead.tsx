@@ -16,7 +16,6 @@ const TypeaheadResultContainer = styled.span<{ selected?: boolean }>`
   text-align: left;
   padding: 8px 12px;
   background-color: rgba(0, 50, 100, 0);
-  transition: 150ms ease;
 
   ${({ selected }) => selected && ` font-weight: 800; `}
 
@@ -33,16 +32,15 @@ interface RenderItemProps {
 
 import removeSVG from '../../../assets/darkTypeaheadRemove.svg'
 
-const DarkTypeaheadResult = ({
-  item: { label },
-  selected,
-}: RenderItemProps) => (
-  <TypeaheadResultContainer selected={selected}>
-    {label}
-    {selected && (
-      <img src={removeSVG} style={{ flexShrink: 0 }} alt="Remove item" />
-    )}
-  </TypeaheadResultContainer>
+const DarkTypeaheadResult = React.memo(
+  ({ item: { label }, selected }: RenderItemProps) => (
+    <TypeaheadResultContainer selected={selected}>
+      {label}
+      {selected && (
+        <img src={removeSVG} style={{ flexShrink: 0 }} alt="Remove item" />
+      )}
+    </TypeaheadResultContainer>
+  )
 )
 
 const SelectedTypeaheadValues = styled.ul`
@@ -86,11 +84,16 @@ const SelectedTypeaheadValueDeleteButton = styled.button`
 `
 
 const TypeaheadInputLabel = styled(InputLabel)`
-  & input[type='search']::placeholder {
-    ${({ theme }) => theme.smallParagraph}
-    color: #fff !important;
-    opacity: 1 !important;
-    font-weight: bold;
+  & input[type='search'] {
+    &::placeholder {
+      ${({ theme }) => theme.smallParagraph}
+      color: #fff !important;
+      opacity: 1 !important;
+      font-weight: bold;
+    }
+    padding: 10px 15px 8px 15px !important;
+    line-height: 25px !important;
+    caret-color: transparent;
   }
 `
 
@@ -156,9 +159,7 @@ const FilterTypeahead = ({
           )}
           iconSVG="%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9L12 15L18 9H6Z' fill='%23FFFFFF'/%3E%3C/svg%3E%0A"
           expanderStyle={({ open }) =>
-            open
-              ? { borderBottom: '1px solid #fff', backgroundColor: 'red' }
-              : {}
+            open ? { borderBottom: '1px solid #fff' } : {}
           }
         />
       </TypeaheadInputLabel>
