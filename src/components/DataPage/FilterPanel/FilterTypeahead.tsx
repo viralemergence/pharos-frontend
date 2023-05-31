@@ -32,15 +32,16 @@ interface RenderItemProps {
 
 import removeSVG from '../../../assets/darkTypeaheadRemove.svg'
 
-const DarkTypeaheadResult = React.memo(
-  ({ item: { label }, selected }: RenderItemProps) => (
-    <TypeaheadResultContainer selected={selected}>
-      {label}
-      {selected && (
-        <img src={removeSVG} style={{ flexShrink: 0 }} alt="Remove item" />
-      )}
-    </TypeaheadResultContainer>
-  )
+const DarkTypeaheadResult = ({
+  item: { label },
+  selected,
+}: RenderItemProps) => (
+  <TypeaheadResultContainer selected={selected}>
+    {label}
+    {selected && (
+      <img src={removeSVG} style={{ flexShrink: 0 }} alt="Remove item" />
+    )}
+  </TypeaheadResultContainer>
 )
 
 const SelectedTypeaheadValues = styled.ul`
