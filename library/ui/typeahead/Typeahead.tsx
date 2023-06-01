@@ -144,6 +144,7 @@ const Typeahead = ({
   const [searchString, setSearchString] = useState('')
   const [showResults, setShowResults] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+  const resultButtonsRef = useRef<(HTMLButtonElement | null)[]>([])
 
   // compute fuzzy search
   const fuse = useMemo(
@@ -199,23 +200,36 @@ const Typeahead = ({
   const handleKeyDownFromContainer: KeyboardEventHandler<
     HTMLFormElement
   > = e => {
-    console.log('ct', e.currentTarget)
-    let elementToFocus
+    const target = e.target as HTMLElement
+
+    /** Using the arrows will move up and down within this sequence */
+    const order = [
+      inputRef.current,
+      ...resultButtonsRef.current,
+    ] as HTMLElement[]
+
+    console.log('resultButtonsRef.current', resultButtonsRef.current)
+
+    const index = order.indexOf(target)
+    const previousItem = order[index - 1]
+    const nextItem = order[index + 1]
+    console.log('previousItem', previousItem)
+    console.log('nextItem', nextItem)
+
     switch (e.key) {
       case 'Enter':
         break
       case 'Space':
         break
       case 'ArrowDown':
-        elementToFocus = target.nextSibling as HTMLButtonElement
-        elementToFocus.focus()
+        nextItem?.focus()
+        e.preventDefault()
+        return false
         break
       case 'ArrowUp':
-        elementToFocus = target.previousSibling as HTMLButtonElement
-        if (!elementToFocus) {
-          //  TODO: Hide the results
-        }
-        elementToFocus.focus()
+        previousItem?.focus()
+        e.preventDefault()
+        return false
         break
     }
   }
@@ -265,6 +279,16 @@ const Typeahead = ({
                   key={item.key}
                   onClick={() => onRemove && onRemove(item)}
                   style={{ color: fontColor }}
+                  ref={buttonElement => {
+                    resultButtonsRef.current.push(buttonElement)
+                    console.log(
+                      'adding button for selected item to resultButtonsRef'
+                    )
+                    console.log(
+                      'resultButtonsRef 0:10',
+                      resultButtonsRef.current.slice(0, 10)
+                    )
+                  }}
                 >
                   <RenderItem selected key={item.key} {...{ item }} />
                 </ItemButton>
@@ -280,6 +304,9 @@ const Typeahead = ({
               key={item.key}
               onClick={() => onAdd(item)}
               style={{ color: fontColor }}
+              ref={buttonElement => {
+                resultButtonsRef.current.push(buttonElement)
+              }}
             >
               <RenderItem {...{ item }} />
             </ItemButton>
