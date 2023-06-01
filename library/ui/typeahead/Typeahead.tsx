@@ -1,5 +1,13 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react'
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useMemo,
+  FormEventHandler,
+  KeyboardEventHandler,
+} from 'react'
 import Fuse from 'fuse.js'
+import styled from 'styled-components'
 
 import {
   Container,
@@ -12,6 +20,8 @@ import {
 
 import TypeaheadResult from './TypeaheadResult'
 import Expander from '@talus-analytics/library.ui.expander'
+
+type ButtonEventHandler = KeyboardEventHandler<HTMLButtonElement>
 
 export interface Item {
   key: string
@@ -102,6 +112,12 @@ export interface TypeaheadProps {
   ariaLabel?: string
 }
 
+const ScreenReaderOnly = styled.div`
+  position: absolute;
+  left: -999em;
+  right: auto;
+`
+
 const Typeahead = ({
   multiselect = false,
   items,
@@ -126,7 +142,7 @@ const Typeahead = ({
   if (!items) throw new Error('Item array in multiselect cannot be undefined')
 
   const [searchString, setSearchString] = useState('')
-  const [showResults, setShowResults] = useState(true) // TODO: set back to false
+  const [showResults, setShowResults] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
   // compute fuzzy search
@@ -137,20 +153,20 @@ const Typeahead = ({
 
   const results = fuse.search(searchString).map(({ item }) => item)
 
-  const keydownHandlers: Record<string, (e: React.KeyboardEvent) => void> = {
+  const keydownHandlers: Record<string, KeyboardEventHandler> = {
     // accept top result if enter is pressed
-    Enter: (e: React.KeyboardEvent) => {
+    Enter: _e => {
       if (results[0] || items[0]) onAdd(results[0] || items[0])
       inputRef.current!.blur()
       setShowResults(false)
       setSearchString('')
     },
-    Tab: (e: React.KeyboardEvent) => {
+    Tab: _e => {
       console.log('typeahead knows about the tab')
     },
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown: KeyboardEventHandler = e => {
     keydownHandlers[e.key]?.(e)
   }
 
@@ -180,6 +196,30 @@ const Typeahead = ({
     if (disabled && !values.length) setSearchString('')
   }, [disabled, values])
 
+  const handleKeyDownFromContainer: KeyboardEventHandler<
+    HTMLFormElement
+  > = e => {
+    console.log('ct', e.currentTarget)
+    let elementToFocus
+    switch (e.key) {
+      case 'Enter':
+        break
+      case 'Space':
+        break
+      case 'ArrowDown':
+        elementToFocus = target.nextSibling as HTMLButtonElement
+        elementToFocus.focus()
+        break
+      case 'ArrowUp':
+        elementToFocus = target.previousSibling as HTMLButtonElement
+        if (!elementToFocus) {
+          //  TODO: Hide the results
+        }
+        elementToFocus.focus()
+        break
+    }
+  }
+
   return (
     <Container
       onFocus={onFocusHandler}
@@ -188,9 +228,7 @@ const Typeahead = ({
       onSubmit={e => e.preventDefault()}
       style={{ ...style, backgroundColor }}
       borderColor={borderColor}
-      onKeyDown={e => {
-        console.log('container keydown', e.key)
-      }}
+      onKeyDown={handleKeyDownFromContainer}
     >
       <SearchBar
         disabled={disabled}
@@ -227,7 +265,6 @@ const Typeahead = ({
                   key={item.key}
                   onClick={() => onRemove && onRemove(item)}
                   style={{ color: fontColor }}
-                  tabIndex={0}
                 >
                   <RenderItem selected key={item.key} {...{ item }} />
                 </ItemButton>
@@ -248,6 +285,10 @@ const Typeahead = ({
             </ItemButton>
           ))}
         </Results>
+        <ScreenReaderOnly>
+          When options are available, use the Up and Down arrows on your
+          keyboard to review them, and the Enter key to select one.
+        </ScreenReaderOnly>
       </Expander>
     </Container>
   )

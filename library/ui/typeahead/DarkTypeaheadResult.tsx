@@ -18,9 +18,6 @@ const TypeaheadResultContainer = styled.span<{ selected?: boolean }>`
 
   ${({ selected }) => selected && ` font-weight: 800; `}
 
-  &:focus {
-    background: magenta;
-  }
   &:hover {
     background-color: #49515d;
     ${({ selected }) => selected && `background-color: #594141;`}

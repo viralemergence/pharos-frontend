@@ -110,6 +110,9 @@ export const ItemButton = styled.button`
   padding: 0;
   display: flex;
   justify-content: space-between;
+  &:focus {
+    background-color: #49515d;
+  }
 `
 
 const clearButtonHeight = 18
