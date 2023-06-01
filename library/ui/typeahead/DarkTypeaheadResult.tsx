@@ -28,7 +28,7 @@ const DarkTypeaheadResult = ({
   item: { label },
   selected,
 }: RenderItemProps) => (
-  <TypeaheadResultContainer tabIndex={0} selected={selected}>
+  <TypeaheadResultContainer selected={selected}>
     {label}
     {selected && (
       <img src={removeSVG} style={{ flexShrink: 0 }} alt="Remove item" />
