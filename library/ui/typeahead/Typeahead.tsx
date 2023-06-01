@@ -1,9 +1,9 @@
 import React, {
-  useState,
-  useRef,
+  useCallback,
   useEffect,
   useMemo,
-  FormEventHandler,
+  useRef,
+  useState,
   KeyboardEventHandler,
 } from 'react'
 import Fuse from 'fuse.js'
@@ -20,8 +20,6 @@ import {
 
 import TypeaheadResult from './TypeaheadResult'
 import Expander from '@talus-analytics/library.ui.expander'
-
-type ButtonEventHandler = KeyboardEventHandler<HTMLButtonElement>
 
 export interface Item {
   key: string
@@ -177,7 +175,7 @@ const Typeahead = ({
   const onBlurHandler = () => {
     // set it to close next tick
     blurTimeout = setTimeout(() => {
-      //setShowResults(false)
+      setShowResults(false)
       if (!values.length) setSearchString('')
     })
   }
@@ -208,13 +206,9 @@ const Typeahead = ({
       ...resultButtonsRef.current,
     ] as HTMLElement[]
 
-    console.log('resultButtonsRef.current', resultButtonsRef.current)
-
     const index = order.indexOf(target)
     const previousItem = order[index - 1]
     const nextItem = order[index + 1]
-    console.log('previousItem', previousItem)
-    console.log('nextItem', nextItem)
 
     switch (e.key) {
       case 'Enter':
@@ -233,6 +227,24 @@ const Typeahead = ({
         break
     }
   }
+
+  const handleResultButtonRef = useCallback((buttonElement, item) => {
+    const resultButtons = resultButtonsRef.current
+    const index = resultButtons.findIndex(ref => {
+      return ref && ref.dataset.key === item.key
+    })
+    if (buttonElement) {
+      if (index > -1) {
+        resultButtons[index] = buttonElement
+      } else {
+        resultButtons.push(buttonElement)
+      }
+    } else {
+      if (index > -1) {
+        resultButtons.splice(index, 1)
+      }
+    }
+  }, [])
 
   return (
     <Container
@@ -276,19 +288,14 @@ const Typeahead = ({
             <Selected borderColor={borderColor}>
               {values.map((item: Item) => (
                 <ItemButton
+                  tabIndex={-1}
                   key={item.key}
+                  data-key={item.key}
                   onClick={() => onRemove && onRemove(item)}
                   style={{ color: fontColor }}
-                  ref={buttonElement => {
-                    resultButtonsRef.current.push(buttonElement)
-                    console.log(
-                      'adding button for selected item to resultButtonsRef'
-                    )
-                    console.log(
-                      'resultButtonsRef 0:10',
-                      resultButtonsRef.current.slice(0, 10)
-                    )
-                  }}
+                  ref={buttonElement =>
+                    handleResultButtonRef(buttonElement, item)
+                  }
                 >
                   <RenderItem selected key={item.key} {...{ item }} />
                 </ItemButton>
@@ -300,13 +307,12 @@ const Typeahead = ({
             : items
           ).map(item => (
             <ItemButton
-              tabIndex={0}
+              tabIndex={-1}
               key={item.key}
               onClick={() => onAdd(item)}
               style={{ color: fontColor }}
-              ref={buttonElement => {
-                resultButtonsRef.current.push(buttonElement)
-              }}
+              ref={buttonElement => handleResultButtonRef(buttonElement, item)}
+              data-key={item.key}
             >
               <RenderItem {...{ item }} />
             </ItemButton>
