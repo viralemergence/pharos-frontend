@@ -37,12 +37,7 @@ const DarkTypeaheadResult = ({
   item: { label },
   selected,
 }: RenderItemProps) => (
-  <TypeaheadResultContainer
-    selected={selected}
-    onFocus={() => {
-      console.log('result focused')
-    }}
-  >
+  <TypeaheadResultContainer selected={selected}>
     {label}
     {selected && (
       <img src={removeSVG} style={{ flexShrink: 0 }} alt="Remove item" />

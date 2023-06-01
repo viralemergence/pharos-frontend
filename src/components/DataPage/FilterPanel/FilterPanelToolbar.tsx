@@ -92,7 +92,6 @@ const FieldSelector = ({
   fields: Record<string, Field>
   addFilterValueSetter: (fieldId: string) => void
 }) => {
-  console.log('fields', fields)
   return (
     <FieldSelectorDiv
       onClick={e => {

@@ -157,11 +157,8 @@ const Typeahead = ({
     Enter: _e => {
       if (results[0] || items[0]) onAdd(results[0] || items[0])
       inputRef.current!.blur()
-      setShowResults(false)
+      //setShowResults(false)
       setSearchString('')
-    },
-    Tab: _e => {
-      console.log('typeahead knows about the tab')
     },
   }
 
