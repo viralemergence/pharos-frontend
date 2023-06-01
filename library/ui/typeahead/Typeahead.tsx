@@ -24,7 +24,7 @@ import TypeaheadResult from './TypeaheadResult'
 export interface Item {
   key: string
   label: string
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export interface RenderItemProps {
