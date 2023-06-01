@@ -75,7 +75,7 @@ export interface TypeaheadProps {
    * considered in the fuzzy search. Properties for search
    * must have string values.
    */
-  searchKeys?: Fuse.FuseOptionKey[]
+  searchKeys?: Fuse.FuseOptionKey<Item>[]
   /**
    * className; for supporting scss modules and
    * styled-components.
