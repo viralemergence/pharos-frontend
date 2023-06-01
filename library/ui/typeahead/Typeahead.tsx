@@ -150,7 +150,9 @@ const Typeahead = ({
     [items, searchKeys]
   )
 
-  const results = fuse.search(searchString).map(({ item }) => item)
+  const results = fuse
+    .search(searchString)
+    .map(({ item }: { item: Item }) => item)
 
   const keydownFromSearchBarHandlers: Record<string, KeyboardEventHandler> = {
     // accept top result if enter is pressed
@@ -241,16 +243,19 @@ const Typeahead = ({
     }
   }
 
-  const updateResultButtonsRef = useCallback((buttonElement, item) => {
-    const resultButtons = resultButtonsRef.current
-    const index = resultButtons.findIndex(
-      ref => ref && ref.dataset.key === item.key
-    )
-    if (buttonElement) {
-      if (index > -1) resultButtons[index] = buttonElement
-      else resultButtons.push(buttonElement)
-    } else if (index > -1) resultButtons.splice(index, 1)
-  }, [])
+  const updateResultButtonsRef = useCallback(
+    (buttonElement: HTMLButtonElement, item: Item) => {
+      const resultButtons = resultButtonsRef.current
+      const index = resultButtons.findIndex(
+        ref => ref && ref.dataset.key === item.key
+      )
+      if (buttonElement) {
+        if (index > -1) resultButtons[index] = buttonElement
+        else resultButtons.push(buttonElement)
+      } else if (index > -1) resultButtons.splice(index, 1)
+    },
+    []
+  )
 
   return (
     <Container
