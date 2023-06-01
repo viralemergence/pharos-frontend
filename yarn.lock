@@ -1428,6 +1428,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:7.12.18":
+  version: 7.12.18
+  resolution: "@babel/runtime@npm:7.12.18::__archiveUrl=https%3A%2F%2Fregistry.npmjs.org%2F%40babel%2Fruntime%2F-%2Fruntime-7.12.18.tgz"
+  dependencies:
+    regenerator-runtime: "npm:^0.13.4"
+  checksum: 52841509f41247841ebc1fec9c04a109bfb2907cb11893f6b037953835bb6842909e081452dd7cec437c4a4c77600e6bfbd1c33940e593e65445f2d0ad94883e
+  languageName: node
+  linkType: hard
+
 "@babel/runtime@npm:7.20.0":
   version: 7.20.0
   resolution: "@babel/runtime@npm:7.20.0::__archiveUrl=https%3A%2F%2Fregistry.npmjs.org%2F%40babel%2Fruntime%2F-%2Fruntime-7.20.0.tgz"
@@ -13758,7 +13767,7 @@ __metadata:
     "@babel/core": "npm:^7.21.0"
     "@babel/eslint-parser": "npm:^7.19.1"
     "@babel/preset-react": "npm:^7.18.6"
-    "@babel/runtime": "npm:7.20.0"
+    "@babel/runtime": "npm:7.12.18"
     "@mdx-js/mdx": "npm:^2.3.0"
     "@mdx-js/react": "npm:^2.1.5"
     "@talus-analytics/library.airtable-cms": "npm:^0.0.32"
@@ -14927,7 +14936,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"regenerator-runtime@npm:^0.13.10, regenerator-runtime@npm:^0.13.11, regenerator-runtime@npm:^0.13.7":
+"regenerator-runtime@npm:^0.13.10, regenerator-runtime@npm:^0.13.11, regenerator-runtime@npm:^0.13.4, regenerator-runtime@npm:^0.13.7":
   version: 0.13.11
   resolution: "regenerator-runtime@npm:0.13.11::__archiveUrl=https%3A%2F%2Fregistry.npmjs.org%2Fregenerator-runtime%2F-%2Fregenerator-runtime-0.13.11.tgz"
   checksum: 0485db63ce47760e28329590cb9f8b208365d076dbf2edaa32e551a7c0451fc6f7557b225268422c960ffa4fbc6ff86d63d6a747aacbf6b10ed6a747b432e3c8
@@ -16938,6 +16947,8 @@ __metadata:
 "typeahead-0d3df9@workspace:library/ui/typeahead":
   version: 0.0.0-use.local
   resolution: "typeahead-0d3df9@workspace:library/ui/typeahead"
+  dependencies:
+    "@babel/runtime": "npm:7.20.0"
   languageName: unknown
   linkType: soft
 
