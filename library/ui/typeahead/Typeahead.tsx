@@ -152,18 +152,22 @@ const Typeahead = ({
 
   const results = fuse.search(searchString).map(({ item }) => item)
 
-  const keydownHandlers: Record<string, KeyboardEventHandler> = {
+  const keydownFromSearchBarHandlers: Record<string, KeyboardEventHandler> = {
     // accept top result if enter is pressed
     Enter: _e => {
       if (results[0] || items[0]) onAdd(results[0] || items[0])
       inputRef.current!.blur()
+      // TODO: Should results list close? Commenting out for now
       //setShowResults(false)
       setSearchString('')
     },
+    Esc: _e => {
+      setShowResults(false)
+    },
   }
 
-  const handleKeyDown: KeyboardEventHandler = e => {
-    keydownHandlers[e.key]?.(e)
+  const handleKeyDownFromSearchBar: KeyboardEventHandler = e => {
+    keydownFromSearchBarHandlers[e.key]?.(e)
   }
 
   // close results onBlur, but
@@ -208,17 +212,23 @@ const Typeahead = ({
     const nextItem = order[index + 1]
 
     switch (e.key) {
-      case 'Enter':
-        break
-      case 'Space':
+      case 'Escape':
+        setTimeout(() => {
+          setShowResults(false)
+        }, 0)
+        inputRef.current?.focus()
         break
       case 'ArrowDown':
+        if (target === inputRef.current) {
+          setShowResults(true)
+        }
         nextItem?.focus()
         e.preventDefault()
         return false
         break
       case 'ArrowUp':
         previousItem?.focus()
+        if (previousItem === inputRef.current) setShowResults(false)
         e.preventDefault()
         return false
         break
@@ -259,7 +269,7 @@ const Typeahead = ({
         autoComplete="off"
         name="special-auto-fill"
         ref={inputRef}
-        onKeyDown={handleKeyDown}
+        onKeyDown={handleKeyDownFromSearchBar}
         value={searchString}
         onChange={e => setSearchString(e.target.value)}
         placeholder={placeholder}
@@ -267,6 +277,7 @@ const Typeahead = ({
         iconLeft={iconLeft}
         style={{ backgroundColor, borderColor }}
         fontColor={fontColor}
+        areResultsShown={showResults}
       />
       <SearchIcon searchString={searchString} {...{ iconSVG, iconLeft }} />
       <Expander
