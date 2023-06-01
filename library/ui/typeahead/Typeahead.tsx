@@ -244,7 +244,7 @@ const Typeahead = ({
   }
 
   const updateResultButtonsRef = useCallback(
-    (buttonElement: HTMLButtonElement, item: Item) => {
+    (buttonElement: HTMLButtonElement | null, item: Item) => {
       const resultButtons = resultButtonsRef.current
       const index = resultButtons.findIndex(
         ref => ref && ref.dataset.key === item.key
