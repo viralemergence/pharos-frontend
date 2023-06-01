@@ -110,6 +110,7 @@ export interface TypeaheadProps {
   ariaLabel?: string
 }
 
+// Following a pattern used by, for example, https://designsystem.digital.gov/components/combo-box/
 const ScreenReaderOnly = styled.div`
   position: absolute;
   left: -999em;
@@ -159,8 +160,6 @@ const Typeahead = ({
     Enter: _e => {
       if (results[0] || items[0]) onAdd(results[0] || items[0])
       inputRef.current!.blur()
-      // TODO: Should results list close? Commenting out for now
-      //setShowResults(false)
       setSearchString('')
     },
     Esc: _e => {

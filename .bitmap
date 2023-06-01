@@ -9,12 +9,6 @@
  */
 
 {
-    "ui/expander": {
-        "scope": "talus-analytics.library",
-        "version": "0.0.6",
-        "mainFile": "index.tsx",
-        "rootDir": "library/ui/expander"
-    },
     "ui/typeahead": {
         "scope": "talus-analytics.library",
         "version": "0.0.6",

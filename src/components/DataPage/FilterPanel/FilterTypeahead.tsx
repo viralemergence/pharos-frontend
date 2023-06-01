@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import Typeahead, {
   Item as TypeaheadItem,
-} from '../../../../library/ui/typeahead/Typeahead'
+} from '@talus-analytics/library.ui.typeahead'
 import FilterDarkTypeaheadResult from './FilterDarkTypeaheadResult'
 import { XIcon, FieldName, FilterValues } from './constants'
 import InputLabel from '../../ui/InputLabel'
