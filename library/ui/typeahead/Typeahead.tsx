@@ -173,12 +173,21 @@ const Typeahead = ({
   // close results onBlur, but
   // not if a button is clicked
   let blurTimeout: ReturnType<typeof global.setTimeout>
-  const onBlurHandler = () => {
-    // set it to close next tick
+  const onBlurHandler = e => {
+    console.log('blur handler')
     blurTimeout = setTimeout(() => {
-      setShowResults(false)
-      if (!values.length) setSearchString('')
-    })
+      console.log(
+        'on blur, isResultsListScrolling.current',
+        isResultsListScrolling.current
+      )
+      if (!isResultsListScrolling.current) {
+        setShowResults(false)
+        console.log('hiding results')
+        if (!values.length) setSearchString('')
+      }
+    }, 100)
+    // Delay so that the Results onScroll event will occur first, so that it
+    // can prevent the results list from closing
   }
 
   // if focus is inside the container,
@@ -253,6 +262,9 @@ const Typeahead = ({
     }
   }, [])
 
+  const isResultsListScrolling = useRef(false)
+
+  const containerRef = useRef<HTMLFormElement>(null)
   return (
     <Container
       onFocus={onFocusHandler}
@@ -262,6 +274,7 @@ const Typeahead = ({
       style={{ ...style, backgroundColor }}
       borderColor={borderColor}
       onKeyDown={handleKeyDownFromContainer}
+      ref={containerRef}
     >
       <SearchBar
         disabled={disabled}
@@ -291,7 +304,17 @@ const Typeahead = ({
         }}
         animDuration={200}
       >
-        <Results style={{ backgroundColor, borderColor }}>
+        <Results
+          style={{ backgroundColor, borderColor }}
+          onScroll={() => {
+            isResultsListScrolling.current = true
+            console.log('setting isResultsListScrolling to true')
+            setTimeout(() => {
+              isResultsListScrolling.current = false
+              console.log('setting isResultsListScrolling to false')
+            }, 1000)
+          }}
+        >
           {multiselect && values.length > 0 && (
             <Selected borderColor={borderColor}>
               {values.map((item: Item) => (

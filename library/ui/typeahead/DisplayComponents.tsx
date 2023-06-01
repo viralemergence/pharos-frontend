@@ -66,6 +66,8 @@ export const SearchBar = styled.input<{
   &:focus {
     outline: none;
     padding-bottom: 13px;
+    transition-duration: 0ms;
+    transition-delay: 0s;
   }
 
   ${({ areResultsShown }) =>
