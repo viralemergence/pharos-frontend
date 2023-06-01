@@ -6,7 +6,6 @@ import { RenderItemProps } from '.'
 import removeSVG from './assets/darkRemove.svg'
 
 const TypeaheadResultContainer = styled.span<{ selected?: boolean }>`
-  ${({ theme }) => theme.smallParagraph};
   box-sizing: border-box;
   display: flex;
   justify-content: space-between;
