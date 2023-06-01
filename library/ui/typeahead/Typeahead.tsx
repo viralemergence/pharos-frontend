@@ -314,7 +314,7 @@ const Typeahead = ({
               ))}
             </Selected>
           )}
-          {(results.length && searchString !== values?.[0]?.label
+          {(results.length && searchString !== values[0]?.label
             ? results
             : items
           ).map((item: Item) => (
