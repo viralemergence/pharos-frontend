@@ -203,7 +203,7 @@ const Typeahead = ({
     HTMLFormElement
   > = e => {
     const target = e.target as HTMLElement
-    const getSiblings = () => {
+    const getNeighbors = () => {
       /** Using the up and down arrow keys moves the focus up and down within
        * this array */
       const order = [
@@ -221,14 +221,14 @@ const Typeahead = ({
 
     switch (e.key) {
       case 'ArrowUp':
-        previousItem = getSiblings().previous
+        previousItem = getNeighbors().previous
         previousItem?.focus()
         if (previousItem === inputRef.current) setShowResults(false)
         e.preventDefault()
         return false
         break
       case 'ArrowDown':
-        nextItem = getSiblings().next
+        nextItem = getNeighbors().next
         if (target === inputRef.current) setShowResults(true)
         nextItem?.focus()
         e.preventDefault()
