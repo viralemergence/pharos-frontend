@@ -317,7 +317,7 @@ const Typeahead = ({
           {(results.length && searchString !== values?.[0]?.label
             ? results
             : items
-          ).map(item => (
+          ).map((item: Item) => (
             <ItemButton
               tabIndex={-1}
               key={item.key}
