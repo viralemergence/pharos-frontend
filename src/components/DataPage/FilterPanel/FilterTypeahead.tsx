@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import Typeahead, {
   Item as TypeaheadItem,
-} from '@talus-analytics/library.ui.typeahead'
+} from '../../../../library/ui/typeahead'
 import FilterDarkTypeaheadResult from './FilterDarkTypeaheadResult'
 import { XIcon, FieldName, FilterValues } from './constants'
 import InputLabel from '../../ui/InputLabel'
@@ -49,8 +49,8 @@ const SelectedTypeaheadValueDeleteButton = styled.button`
 
 const TypeaheadInputLabel = styled(InputLabel)`
   & input[type='search'] {
+    ${({ theme }) => theme.smallParagraph}
     &::placeholder {
-      ${({ theme }) => theme.smallParagraph}
       color: #fff !important;
       opacity: 1 !important;
       font-weight: bold;

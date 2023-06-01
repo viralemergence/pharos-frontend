@@ -110,6 +110,37 @@ export interface TypeaheadProps {
   ariaLabel?: string
 }
 
+const focusSmoothly = (
+  element: HTMLElement | undefined,
+  container: HTMLElement | null
+) => {
+  if (!element) return null
+  if (!container) {
+    element.focus()
+    return null
+  }
+  console.log('focusing smoothly')
+
+  element.scrollIntoView({
+    behavior: 'smooth',
+    block: 'center',
+  })
+
+  // Focus element when the parent stops scrolling
+  let lastScrollTop: number | undefined
+  let iterations = 1000
+  const focusInterval = setInterval(() => {
+    const currentScrollTop = container.scrollTop
+    if (lastScrollTop === currentScrollTop) {
+      clearInterval(focusInterval)
+      element.focus()
+    } else lastScrollTop = currentScrollTop
+    if (iterations === 0) clearInterval(focusInterval)
+    iterations--
+  }, 50)
+  return focusInterval
+}
+
 // Following a pattern used by, for example, https://designsystem.digital.gov/components/combo-box/
 const ScreenReaderOnly = styled.div`
   position: absolute;
@@ -198,47 +229,123 @@ const Typeahead = ({
     if (disabled && !values.length) setSearchString('')
   }, [disabled, values])
 
+  const smoothFocusingInterval = useRef<ReturnType<typeof setInterval> | null>(
+    null
+  )
+
   const handleKeyDownFromContainer: KeyboardEventHandler<
     HTMLFormElement
   > = e => {
-    const target = e.target as HTMLElement
-    const getNeighbors = () => {
+    if (e.key === 'Escape') {
+      setTimeout(() => {
+        setShowResults(false)
+      })
+      inputRef.current?.focus()
+      return
+    }
+    if (
+      ['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End'].includes(
+        e.key
+      )
+    ) {
+      const focusedItem = e.target as HTMLElement
+      const resultsContainer = resultsContainerRef.current
+
       /** Using the up and down arrow keys moves the focus up and down within
-       * this array */
-      const order = [
+       * this array. It's like tab order, but for the up and down arrow keys.
+       * The Page Up, Page Down, Home and End keys can also be used.
+       * */
+      const arrowOrder = [
         inputRef.current,
         ...resultButtonsRef.current,
       ] as HTMLElement[]
 
-      const index = order.indexOf(target)
-      return {
-        previous: order[index - 1],
-        next: order[index + 1],
-      }
-    }
-    let previousItem, nextItem
+      /** If the currently focused item is not visible, we'll use as the
+       * starting point for the upward or downward motion an item that is
+       * visible. This way, if you page down repeatedly and press an arrow key,
+       * the list won't send you back where you started. So let's keep track of
+       * whether the focused item is visible. */
+      let isFocusedItemVisible = true // Initial value
 
-    switch (e.key) {
-      case 'ArrowUp':
-        previousItem = getNeighbors().previous
+      let resultsContainerBottom: number
+      if (resultsContainer) {
+        const focusedItemTooHighUpToSee =
+          focusedItem.offsetTop < resultsContainer.scrollTop
+        resultsContainerBottom =
+          resultsContainer.scrollTop + resultsContainer.clientHeight
+        const focusedItemTooLowDownToSee =
+          focusedItem.offsetTop > resultsContainerBottom
+        if (focusedItemTooHighUpToSee || focusedItemTooLowDownToSee)
+          isFocusedItemVisible = false
+      }
+
+      const index = arrowOrder.indexOf(focusedItem)
+
+      const focusResultSmoothly = (elem: HTMLElement | undefined) => {
+        smoothFocusingInterval.current = focusSmoothly(
+          elem,
+          resultsContainerRef.current
+        )
+      }
+      clearInterval(smoothFocusingInterval.current || undefined)
+
+      if (e.key === 'ArrowUp') {
+        let previousItem = arrowOrder[index - 1]
+        if (!isFocusedItemVisible && resultsContainer)
+          previousItem =
+            arrowOrder.findLast(
+              item => item.offsetTop < resultsContainerBottom - 10
+            ) || previousItem
         previousItem?.focus()
         if (previousItem === inputRef.current) setShowResults(false)
         e.preventDefault()
         return false
-        break
-      case 'ArrowDown':
-        nextItem = getNeighbors().next
-        if (target === inputRef.current) setShowResults(true)
+      }
+      if (e.key === 'ArrowDown') {
+        let nextItem = arrowOrder[index + 1]
+        if (!isFocusedItemVisible && resultsContainer)
+          nextItem =
+            arrowOrder.find(
+              item => item.offsetTop >= resultsContainer?.scrollTop
+            ) || nextItem
+        nextItem?.focus()
+        if (focusedItem === inputRef.current) setShowResults(true)
         nextItem?.focus()
         e.preventDefault()
+
         return false
-        break
-      case 'Escape':
-        setTimeout(() => {
-          setShowResults(false)
-        })
-        inputRef.current?.focus()
-        break
+      }
+      //if (e.key === 'PageUp') {
+      //  const indexFurtherUp = Math.max(index - 10, 1)
+      //  const itemFurtherUp = arrowOrder[indexFurtherUp]
+      //  itemFurtherUp.focus()
+      //  //focusResultSmoothly(itemFurtherUp)
+      //  e.preventDefault()
+      //  return false
+      //}
+      // if (e.key === 'PageDown') {
+      //   console.log('pagedown')
+      //   const indexFurtherDown = Math.min(index + 10, arrowOrder.length - 1)
+      //   const itemFurtherDown = arrowOrder[indexFurtherDown]
+      //   itemFurtherDown.focus()
+      //   // focusResultSmoothly(itemFurtherDown)
+      //   e.preventDefault()
+      //   return false
+      // }
+      if (e.key === 'Home') {
+        console.log('home')
+        const firstResultItem = arrowOrder[1]
+        focusResultSmoothly(firstResultItem)
+        e.preventDefault()
+        return false
+      }
+      if (e.key === 'End') {
+        console.log('end')
+        const lastResultItem = arrowOrder.at(-1)
+        focusResultSmoothly(lastResultItem)
+        e.preventDefault()
+        return false
+      }
     }
   }
 
@@ -255,6 +362,7 @@ const Typeahead = ({
     },
     []
   )
+  const resultsContainerRef = useRef<HTMLDivElement>(null)
 
   return (
     <Container
@@ -294,7 +402,10 @@ const Typeahead = ({
         }}
         animDuration={200}
       >
-        <Results style={{ backgroundColor, borderColor }}>
+        <Results
+          style={{ backgroundColor, borderColor }}
+          ref={resultsContainerRef}
+        >
           {multiselect && values.length > 0 && (
             <Selected borderColor={borderColor}>
               {values.map((item: Item) => (
