@@ -8,6 +8,7 @@ import React, {
 } from 'react'
 import Fuse from 'fuse.js'
 import styled from 'styled-components'
+import Expander from '@talus-analytics/library.ui.expander'
 
 import {
   Container,
@@ -19,7 +20,6 @@ import {
 } from './DisplayComponents'
 
 import TypeaheadResult from './TypeaheadResult'
-import Expander from '@talus-analytics/library.ui.expander'
 
 export interface Item {
   key: string
@@ -172,26 +172,18 @@ const Typeahead = ({
 
   // close results onBlur, but
   // not if a button is clicked
+  // TODO: Perhaps remove this comment, since it doesn't describe what this bit
+  // of code does
   let blurTimeout: ReturnType<typeof global.setTimeout>
-  const onBlurHandler = e => {
-    console.log('blur handler')
+  const onBlurHandler = () => {
     blurTimeout = setTimeout(() => {
-      console.log(
-        'on blur, isResultsListScrolling.current',
-        isResultsListScrolling.current
-      )
-      if (!isResultsListScrolling.current) {
-        setShowResults(false)
-        console.log('hiding results')
-        if (!values.length) setSearchString('')
-      }
-    }, 100)
-    // Delay so that the Results onScroll event will occur first, so that it
-    // can prevent the results list from closing
+      setShowResults(false)
+      if (!values.length) setSearchString('')
+    })
   }
 
   // if focus is inside the container,
-  // cancel the timer, don't close it
+  // cancel the timer, don't hide the results
   const onFocusHandler = () => {
     clearTimeout(blurTimeout)
     setShowResults(true)
@@ -209,62 +201,57 @@ const Typeahead = ({
     HTMLFormElement
   > = e => {
     const target = e.target as HTMLElement
+    const getSiblings = () => {
+      /** Using the up and down arrow keys moves the focus up and down within
+       * this array */
+      const order = [
+        inputRef.current,
+        ...resultButtonsRef.current,
+      ] as HTMLElement[]
 
-    /** Using the arrows will move up and down within this sequence */
-    const order = [
-      inputRef.current,
-      ...resultButtonsRef.current,
-    ] as HTMLElement[]
-
-    const index = order.indexOf(target)
-    const previousItem = order[index - 1]
-    const nextItem = order[index + 1]
+      const index = order.indexOf(target)
+      return {
+        previous: order[index - 1],
+        next: order[index + 1],
+      }
+    }
+    let previousItem, nextItem
 
     switch (e.key) {
-      case 'Escape':
-        setTimeout(() => {
-          setShowResults(false)
-        }, 0)
-        inputRef.current?.focus()
-        break
-      case 'ArrowDown':
-        if (target === inputRef.current) {
-          setShowResults(true)
-        }
-        nextItem?.focus()
-        e.preventDefault()
-        return false
-        break
       case 'ArrowUp':
+        previousItem = getSiblings().previous
         previousItem?.focus()
         if (previousItem === inputRef.current) setShowResults(false)
         e.preventDefault()
         return false
         break
+      case 'ArrowDown':
+        nextItem = getSiblings().next
+        if (target === inputRef.current) setShowResults(true)
+        nextItem?.focus()
+        e.preventDefault()
+        return false
+        break
+      case 'Escape':
+        setTimeout(() => {
+          setShowResults(false)
+        })
+        inputRef.current?.focus()
+        break
     }
   }
 
-  const handleResultButtonRef = useCallback((buttonElement, item) => {
+  const updateResultButtonsRef = useCallback((buttonElement, item) => {
     const resultButtons = resultButtonsRef.current
-    const index = resultButtons.findIndex(ref => {
-      return ref && ref.dataset.key === item.key
-    })
+    const index = resultButtons.findIndex(
+      ref => ref && ref.dataset.key === item.key
+    )
     if (buttonElement) {
-      if (index > -1) {
-        resultButtons[index] = buttonElement
-      } else {
-        resultButtons.push(buttonElement)
-      }
-    } else {
-      if (index > -1) {
-        resultButtons.splice(index, 1)
-      }
-    }
+      if (index > -1) resultButtons[index] = buttonElement
+      else resultButtons.push(buttonElement)
+    } else if (index > -1) resultButtons.splice(index, 1)
   }, [])
 
-  const isResultsListScrolling = useRef(false)
-
-  const containerRef = useRef<HTMLFormElement>(null)
   return (
     <Container
       onFocus={onFocusHandler}
@@ -274,7 +261,6 @@ const Typeahead = ({
       style={{ ...style, backgroundColor }}
       borderColor={borderColor}
       onKeyDown={handleKeyDownFromContainer}
-      ref={containerRef}
     >
       <SearchBar
         disabled={disabled}
@@ -304,17 +290,7 @@ const Typeahead = ({
         }}
         animDuration={200}
       >
-        <Results
-          style={{ backgroundColor, borderColor }}
-          onScroll={() => {
-            isResultsListScrolling.current = true
-            console.log('setting isResultsListScrolling to true')
-            setTimeout(() => {
-              isResultsListScrolling.current = false
-              console.log('setting isResultsListScrolling to false')
-            }, 1000)
-          }}
-        >
+        <Results style={{ backgroundColor, borderColor }}>
           {multiselect && values.length > 0 && (
             <Selected borderColor={borderColor}>
               {values.map((item: Item) => (
@@ -325,7 +301,7 @@ const Typeahead = ({
                   onClick={() => onRemove && onRemove(item)}
                   style={{ color: fontColor }}
                   ref={buttonElement =>
-                    handleResultButtonRef(buttonElement, item)
+                    updateResultButtonsRef(buttonElement, item)
                   }
                 >
                   <RenderItem selected key={item.key} {...{ item }} />
@@ -342,18 +318,18 @@ const Typeahead = ({
               key={item.key}
               onClick={() => onAdd(item)}
               style={{ color: fontColor }}
-              ref={buttonElement => handleResultButtonRef(buttonElement, item)}
+              ref={buttonElement => updateResultButtonsRef(buttonElement, item)}
               data-key={item.key}
             >
               <RenderItem {...{ item }} />
             </ItemButton>
           ))}
         </Results>
-        <ScreenReaderOnly>
-          When options are available, use the Up and Down arrows on your
-          keyboard to review them, and the Enter key to select one.
-        </ScreenReaderOnly>
       </Expander>
+      <ScreenReaderOnly>
+        When options are available, use the Up and Down arrows on your keyboard
+        to review them, and the Enter key to select one.
+      </ScreenReaderOnly>
     </Container>
   )
 }

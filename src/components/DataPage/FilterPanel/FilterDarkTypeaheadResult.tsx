@@ -1,9 +1,9 @@
 import React from 'react'
 
 import styled from 'styled-components'
-import { RenderItemProps } from '.'
+import { RenderItemProps } from '../../library/ui/typeahead'
 
-import removeSVG from './assets/darkRemove.svg'
+import removeSVG from '../../../assets/darkTypeaheadRemove.svg'
 
 const TypeaheadResultContainer = styled.span<{ selected?: boolean }>`
   ${({ theme }) => theme.smallParagraph};
@@ -15,13 +15,12 @@ const TypeaheadResultContainer = styled.span<{ selected?: boolean }>`
   text-align: left;
   padding: 8px 12px;
   background-color: rgba(0, 50, 100, 0);
-  transition: 150ms ease;
 
   ${({ selected }) => selected && ` font-weight: 800; `}
 
   &:hover {
     background-color: #49515d;
-    ${({ selected }) => selected && `background-color: #594141;`}
+    ${({ selected }) => selected && `background-color: #594141;`};
   }
 `
 
