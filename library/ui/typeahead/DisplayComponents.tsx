@@ -58,6 +58,7 @@ export const SearchBar = styled.input<{ iconLeft: boolean; fontColor: string }>`
     opacity: 0.66;
   }
 
+  // TODO: Perhaps restore outline for accessibility's sake?
   &:focus {
     outline: none;
     padding-bottom: 13px;
