@@ -243,19 +243,21 @@ const Typeahead = ({
     }
   }
 
-  const updateResultButtonsRef = useCallback(
-    (buttonElement: HTMLButtonElement | null, item: Item) => {
-      const resultButtons = resultButtonsRef.current
-      const index = resultButtons.findIndex(
-        ref => ref && ref.dataset.key === item.key
-      )
-      if (buttonElement) {
-        if (index > -1) resultButtons[index] = buttonElement
-        else resultButtons.push(buttonElement)
-      } else if (index > -1) resultButtons.splice(index, 1)
-    },
-    []
-  )
+  // const updateResultButtonsRef = useCallback(
+  //   (buttonElement: HTMLButtonElement | null, item: Item) => {
+  //     console.time('updateResultButtonsRef')
+  //     const resultButtons = resultButtonsRef.current
+  //     const index = resultButtons.findIndex(
+  //       ref => ref && ref.dataset.key === item.key
+  //     )
+  //     if (buttonElement) {
+  //       if (index > -1) resultButtons[index] = buttonElement
+  //       else resultButtons.push(buttonElement)
+  //     } else if (index > -1) resultButtons.splice(index, 1)
+  //     console.timeEnd('updateResultButtonsRef')
+  //   },
+  //   []
+  // )
 
   return (
     <Container
@@ -298,16 +300,18 @@ const Typeahead = ({
         <Results style={{ backgroundColor, borderColor }}>
           {multiselect && values.length > 0 && (
             <Selected borderColor={borderColor}>
-              {values.map((item: Item) => (
+              {values.map((item, index) => (
                 <ItemButton
                   tabIndex={-1}
                   key={item.key}
                   data-key={item.key}
                   onClick={() => onRemove && onRemove(item)}
                   style={{ color: fontColor }}
-                  ref={buttonElement =>
-                    updateResultButtonsRef(buttonElement, item)
-                  }
+                  ref={resultButtonsRef.current[index]}
+
+                  // buttonElement =>
+                  //   updateResultButtonsRef(buttonElement, item)
+                  // }
                 >
                   <RenderItem selected key={item.key} {...{ item }} />
                 </ItemButton>
