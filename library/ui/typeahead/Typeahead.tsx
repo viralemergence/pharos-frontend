@@ -229,19 +229,19 @@ const Typeahead = ({
         previousItem?.focus()
         if (previousItem === inputRef.current) setShowResults(false)
         e.preventDefault()
-        break
+        return
       case 'ArrowDown':
         nextItem = getNeighbors().next
         if (target === inputRef.current) setShowResults(true)
         nextItem?.focus()
         e.preventDefault()
-        break
+        return
       case 'Escape':
         setTimeout(() => {
           setShowResults(false)
         })
         inputRef.current?.focus()
-        break
+        return
     }
   }
 
