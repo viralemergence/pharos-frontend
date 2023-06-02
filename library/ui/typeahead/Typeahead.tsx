@@ -419,7 +419,7 @@ const Typeahead = forwardRef<HTMLInputElement, TypeaheadProps>(
             {(results.length && searchString !== values[0]?.label
               ? results
               : items
-            ).map((item: Item, index) => (
+            ).map((item: Item, index: number) => (
               <ResultButton
                 item={item}
                 key={item.key}
