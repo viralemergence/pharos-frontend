@@ -141,7 +141,7 @@ const Typeahead = ({
   const [searchString, setSearchString] = useState('')
   const [showResults, setShowResults] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
-  const resultButtonRefs: HTMLFormElement[] = []
+  const arrowKeyOrderRefs: (HTMLInputElement | HTMLButtonElement)[] = []
 
   // compute fuzzy search
   const fuse = useMemo(
@@ -198,15 +198,22 @@ const Typeahead = ({
     if (disabled && !values.length) setSearchString('')
   }, [disabled, values])
 
-  const handleKeyDownFromContainer = (
-    e: React.KeyboardEvent<HTMLFormElement>
-  ) => {
-    const target = e.target as HTMLButtonElement | HTMLInputElement | null
+  const handleKeyDownFromContainer: KeyboardEventHandler = e => {
+    const target = e.target
+
+    if (
+      !(
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLButtonElement
+      )
+    )
+      return
+
     const getNeighbors = () => {
       /** Using the up and down arrow keys moves the focus up and down within
        * this array */
 
-      const order = [inputRef.current, ...resultButtonRefs]
+      const order = [inputRef.current, ...arrowKeyOrderRefs]
       const index = order.indexOf(target)
 
       return {
@@ -288,7 +295,7 @@ const Typeahead = ({
                   onClick={() => onRemove && onRemove(item)}
                   style={{ color: fontColor }}
                   ref={buttonElement => {
-                    buttonElement && resultButtonRefs.push(buttonElement)
+                    buttonElement && arrowKeyOrderRefs.push(buttonElement)
                   }}
                 >
                   <RenderItem selected key={item.key} {...{ item }} />
@@ -306,7 +313,7 @@ const Typeahead = ({
               onClick={() => onAdd(item)}
               style={{ color: fontColor }}
               ref={buttonElement => {
-                buttonElement && resultButtonRefs.push(buttonElement)
+                buttonElement && arrowKeyOrderRefs.push(buttonElement)
               }}
               data-key={item.key}
             >
