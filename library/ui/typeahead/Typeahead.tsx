@@ -1,5 +1,6 @@
 import React, {
   forwardRef,
+  useImperativeHandle,
   useCallback,
   useEffect,
   useMemo,
@@ -143,6 +144,8 @@ const ResultButton = ({
   updateResultButtonsRef,
   resultListRef,
   RenderItem,
+  isFocused = false,
+  indexOfLastItemAdded,
 }: {
   selected?: boolean
   item: Item
@@ -151,21 +154,35 @@ const ResultButton = ({
   updateResultButtonsRef: (button: HTMLButtonElement | null, item: Item) => void
   resultListRef: React.RefObject<HTMLDivElement>
   RenderItem: (props: RenderItemProps) => JSX.Element
-}) => (
-  <ItemButton
-    tabIndex={-1}
-    data-key={item.key}
-    onClick={onClick}
-    style={{ color: fontColor }}
-    ref={buttonElement => updateResultButtonsRef(buttonElement, item)}
-    onFocus={e => resultButtonFocusHandler(e, resultListRef)}
-  >
-    {/* Is key= needed here? */}
-    <RenderItem selected={selected} key={item.key} {...{ item }} />
-  </ItemButton>
-)
+  isFocused?: boolean
+  indexOfLastItemAdded: React.MutableRefObject<number | null>
+}) => {
+  const buttonRef: React.MutableRefObject<HTMLButtonElement | null> =
+    useRef(null)
+  useEffect(() => {
+    if (isFocused && buttonRef.current)
+      buttonRef.current.focus({ preventScroll: true })
+    indexOfLastItemAdded.current = null
+  })
+  return (
+    <ItemButton
+      tabIndex={-1}
+      data-key={item.key}
+      onClick={onClick}
+      style={{ color: fontColor }}
+      ref={buttonElement => {
+        updateResultButtonsRef(buttonElement, item)
+        buttonRef.current = buttonElement
+      }}
+      onFocus={e => resultButtonFocusHandler(e, resultListRef)}
+    >
+      {/* Is key= needed here? */}
+      <RenderItem selected={selected} key={item.key} {...{ item }} />
+    </ItemButton>
+  )
+}
 
-const Typeahead = forwardRef(
+const Typeahead = forwardRef<HTMLInputElement, TypeaheadProps>(
   (
     {
       multiselect = false,
@@ -188,14 +205,14 @@ const Typeahead = forwardRef(
       style = {},
       ariaLabel,
     }: TypeaheadProps,
-    inputRef: React.ForwardedRef<HTMLInputElement>
+    forwardedInputRef
   ) => {
     if (!items) throw new Error('Item array in multiselect cannot be undefined')
 
     const [searchString, setSearchString] = useState('')
     const [showResults, setShowResults] = useState(false)
-    const defaultInputRef = useRef<HTMLInputElement>(null)
-    inputRef ||= defaultInputRef
+    const inputRef: React.MutableRefObject<HTMLInputElement | null> =
+      useRef<HTMLInputElement>(null)
     const resultButtonsRef = useRef<HTMLButtonElement[]>([])
 
     // compute fuzzy search
@@ -213,7 +230,7 @@ const Typeahead = forwardRef(
       // accept top result if enter is pressed
       Enter: _e => {
         if (results[0] || items[0]) onAdd(results[0] || items[0])
-        inputRef.current!.blur()
+        inputRef?.current!.blur()
         setSearchString('')
       },
       Esc: _e => {
@@ -255,12 +272,13 @@ const Typeahead = forwardRef(
     const handleKeyDownFromContainer: KeyboardEventHandler<
       HTMLFormElement
     > = e => {
+      if (!inputRef) return
       const goingUp = e.key === 'ArrowUp'
       const goingDown = e.key === 'ArrowDown'
 
       if (e.key === 'Escape') {
         setTimeout(() => setShowResults(false))
-        inputRef.current?.focus()
+        inputRef?.current.focus()
       } else if (goingUp || goingDown) {
         const focusedItem = e.target as HTMLElement
         const list = resultListRef.current
@@ -307,24 +325,31 @@ const Typeahead = forwardRef(
 
     const updateResultButtonsRef = useCallback(
       (buttonElement: HTMLButtonElement | null, item: Item) => {
-        const resultButtons = resultButtonsRef.current
-        const index = resultButtons.findIndex(
+        // TODO: Perhaps use a Map?
+        const buttons = resultButtonsRef.current
+        const index = buttons.findIndex(
           ref => ref && ref.dataset.key === item.key
         )
         if (buttonElement) {
-          if (index > -1) resultButtons[index] = buttonElement
-          else resultButtons.push(buttonElement)
-        } else if (index > -1) resultButtons.splice(index, 1)
+          if (index > -1) buttons[index] = buttonElement
+          else buttons.push(buttonElement)
+        } else if (index > -1) {
+          buttons.splice(index, 1)
+        }
       },
       []
     )
     const resultListRef = useRef<HTMLDivElement>(null)
+
+    const indexOfLastItemAdded: React.MutableRefObject<number | null> =
+      useRef<number>(null)
 
     const resultButtonProps = {
       updateResultButtonsRef,
       resultListRef,
       RenderItem,
       fontColor,
+      indexOfLastItemAdded,
     }
 
     return (
@@ -342,7 +367,15 @@ const Typeahead = forwardRef(
           type="search"
           autoComplete="off"
           name="special-auto-fill"
-          ref={inputRef}
+          ref={input => {
+            // Assign element to a local ref and a forwarded ref
+            inputRef.current = input
+            if (typeof forwardedInputRef === 'function') {
+              forwardedInputRef(input)
+            } else {
+              if (forwardedInputRef) forwardedInputRef.current = input
+            }
+          }}
           onKeyDown={handleKeyDownFromSearchBar}
           value={searchString}
           onChange={e => setSearchString(e.target.value)}
@@ -382,11 +415,16 @@ const Typeahead = forwardRef(
             {(results.length && searchString !== values[0]?.label
               ? results
               : items
-            ).map((item: Item) => (
+            ).map((item: Item, index) => (
               <ResultButton
                 item={item}
                 key={item.key}
-                onClick={() => onAdd(item)}
+                // Temporary name for the element arrow keys will move from
+                isFocusPeg={index === indexOfLastItemAdded.current}
+                onClick={() => {
+                  onAdd(item)
+                  indexOfLastItemAdded.current = index
+                }}
                 {...resultButtonProps}
               />
             ))}
