@@ -9,17 +9,6 @@ import React, {
 import styled from 'styled-components'
 import { PlusIcon, BackIcon, XIcon, Field, Filter } from './constants'
 
-function getPreviousItemInMap(map: Map, key: string) {
-  const keys = map.keys()
-  return map.get(keys[Array.from(keys).indexOf(key) - 1])
-}
-
-function getNextItemInMap(map: Map, key: string) {
-  const index = Array.from(map.keys()).indexOf(key)
-  return
-  return null
-}
-
 const FilterPanelHeading = styled.div`
   ${props => props.theme.smallParagraph};
   display: none;
@@ -172,7 +161,7 @@ const FieldSelector = ({
         buttons.set(fieldId, buttonRef)
       }
     })
-    // TODO: Work in progress
+    // TODO: Work in progres
     setTimeout(() => {
       const firstButtonKey = Array.from(buttons.keys())?.[0]
       const firstButtonRef = buttons.get(firstButtonKey)
