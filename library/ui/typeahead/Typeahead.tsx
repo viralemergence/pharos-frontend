@@ -171,11 +171,10 @@ const Typeahead = ({
     keydownFromSearchBarHandlers[e.key]?.(e)
   }
 
-  // close results onBlur, but
-  // not if a button is clicked
-  // TODO: Perhaps remove this comment, since it doesn't describe what this bit
-  // of code does
-  let blurTimeout: ReturnType<typeof global.setTimeout>
+  // When a blur event fires, set results to hide next at the end
+  // of the event loop using a zero-duration timeout, which will
+  // be cancelled if focus bubbles up from a child element.
+  let blurTimeout: ReturnType<typeof global.setTimeout> | undefined
   const onBlurHandler = () => {
     blurTimeout = setTimeout(() => {
       setShowResults(false)
