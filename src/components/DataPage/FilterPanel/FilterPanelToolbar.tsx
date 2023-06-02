@@ -10,17 +10,6 @@ import React, {
 import styled from 'styled-components'
 import { PlusIcon, BackIcon, XIcon, Field, Filter } from './constants'
 
-const FilterPanelHeading = styled.div`
-  ${props => props.theme.smallParagraph};
-  display: none;
-  padding: 10px 0;
-  font-weight: bold;
-  margin-right: 20px;
-  @media (max-width: 768px) {
-    display: flex;
-  }
-`
-
 const FilterPanelToolbarNav = styled.nav`
   display: flex;
   flex-flow: row wrap;
@@ -69,11 +58,6 @@ const FilterPanelToolbarButton = styled(FilterPanelButton)<{
   }
   &.add-filter {
     margin-right: auto;
-    @media (min-width: 768px) {
-      &::after {
-        content: ' filter';
-      }
-    }
   }
   @media (max-width: 768px) {
     &.close-panel {
@@ -242,7 +226,6 @@ const FilterPanelToolbar = ({
         >
           <BackIcon />
         </FilterPanelCloseButton>
-        <FilterPanelHeading>Filters</FilterPanelHeading>
         <FilterPanelToolbarButton
           className="add-filter"
           isFieldSelectorOpen={isFieldSelectorOpen}
@@ -253,7 +236,7 @@ const FilterPanelToolbar = ({
             e.stopPropagation()
           }}
         >
-          <PlusIcon style={{ marginRight: '5px' }} /> Add
+          <PlusIcon style={{ marginRight: '5px' }} /> Add filter
         </FilterPanelToolbarButton>
         {filters.length > 0 && (
           <FilterPanelToolbarButton onClick={() => clearFilters()}>
