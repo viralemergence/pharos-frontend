@@ -1,5 +1,4 @@
 import React, {
-  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -142,9 +141,7 @@ const Typeahead = ({
   const [searchString, setSearchString] = useState('')
   const [showResults, setShowResults] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
-  // const resultButtonsRef = useRef<(HTMLButtonElement | null)[]>([])
-
-  const resultButtonRefs: HTMLButtonElement[] = []
+  const resultButtonRefs: HTMLFormElement[] = []
 
   // compute fuzzy search
   const fuse = useMemo(
@@ -201,28 +198,23 @@ const Typeahead = ({
     if (disabled && !values.length) setSearchString('')
   }, [disabled, values])
 
-  const handleKeyDownFromContainer: KeyboardEventHandler<
-    HTMLFormElement
-  > = e => {
-    const target = e.target as HTMLButtonElement
+  const handleKeyDownFromContainer = (
+    e: React.KeyboardEvent<HTMLFormElement>
+  ) => {
+    const target = e.target as HTMLButtonElement | HTMLInputElement | null
     const getNeighbors = () => {
       /** Using the up and down arrow keys moves the focus up and down within
        * this array */
 
-      const order = [
-        inputRef.current,
-        // ...resultButtonsRef.current,
-        ...resultButtonRefs,
-      ] as HTMLElement[]
-
-      // const order = resultButtonRefs
-
+      const order = [inputRef.current, ...resultButtonRefs]
       const index = order.indexOf(target)
+
       return {
         previous: order[index - 1],
         next: order[index + 1],
       }
     }
+
     let previousItem, nextItem
 
     switch (e.key) {
@@ -231,13 +223,13 @@ const Typeahead = ({
         previousItem?.focus()
         if (previousItem === inputRef.current) setShowResults(false)
         e.preventDefault()
-        return false
+        break
       case 'ArrowDown':
         nextItem = getNeighbors().next
         if (target === inputRef.current) setShowResults(true)
         nextItem?.focus()
         e.preventDefault()
-        return false
+        break
       case 'Escape':
         setTimeout(() => {
           setShowResults(false)
@@ -246,22 +238,6 @@ const Typeahead = ({
         break
     }
   }
-
-  // const updateResultButtonsRef = useCallback(
-  //   (buttonElement: HTMLButtonElement | null, item: Item) => {
-  //     console.time('updateResultButtonsRef')
-  //     const resultButtons = resultButtonsRef.current
-  //     const index = resultButtons.findIndex(
-  //       ref => ref && ref.dataset.key === item.key
-  //     )
-  //     if (buttonElement) {
-  //       if (index > -1) resultButtons[index] = buttonElement
-  //       else resultButtons.push(buttonElement)
-  //     } else if (index > -1) resultButtons.splice(index, 1)
-  //     console.timeEnd('updateResultButtonsRef')
-  //   },
-  //   []
-  // )
 
   return (
     <Container
@@ -314,10 +290,6 @@ const Typeahead = ({
                   ref={buttonElement => {
                     buttonElement && resultButtonRefs.push(buttonElement)
                   }}
-
-                  // buttonElement =>
-                  //   updateResultButtonsRef(buttonElement, item)
-                  // }
                 >
                   <RenderItem selected key={item.key} {...{ item }} />
                 </ItemButton>
@@ -333,7 +305,6 @@ const Typeahead = ({
               key={item.key}
               onClick={() => onAdd(item)}
               style={{ color: fontColor }}
-              // ref={buttonElement => updateResultButtonsRef(buttonElement, item)}
               ref={buttonElement => {
                 buttonElement && resultButtonRefs.push(buttonElement)
               }}
