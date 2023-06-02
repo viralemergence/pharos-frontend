@@ -142,7 +142,9 @@ const Typeahead = ({
   const [searchString, setSearchString] = useState('')
   const [showResults, setShowResults] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
-  const resultButtonsRef = useRef<(HTMLButtonElement | null)[]>([])
+  // const resultButtonsRef = useRef<(HTMLButtonElement | null)[]>([])
+
+  const resultButtonRefs: HTMLButtonElement[] = []
 
   // compute fuzzy search
   const fuse = useMemo(
@@ -202,14 +204,18 @@ const Typeahead = ({
   const handleKeyDownFromContainer: KeyboardEventHandler<
     HTMLFormElement
   > = e => {
-    const target = e.target as HTMLElement
+    const target = e.target as HTMLButtonElement
     const getNeighbors = () => {
       /** Using the up and down arrow keys moves the focus up and down within
        * this array */
+
       const order = [
         inputRef.current,
-        ...resultButtonsRef.current,
+        // ...resultButtonsRef.current,
+        ...resultButtonRefs,
       ] as HTMLElement[]
+
+      // const order = resultButtonRefs
 
       const index = order.indexOf(target)
       return {
@@ -226,14 +232,12 @@ const Typeahead = ({
         if (previousItem === inputRef.current) setShowResults(false)
         e.preventDefault()
         return false
-        break
       case 'ArrowDown':
         nextItem = getNeighbors().next
         if (target === inputRef.current) setShowResults(true)
         nextItem?.focus()
         e.preventDefault()
         return false
-        break
       case 'Escape':
         setTimeout(() => {
           setShowResults(false)
@@ -300,14 +304,16 @@ const Typeahead = ({
         <Results style={{ backgroundColor, borderColor }}>
           {multiselect && values.length > 0 && (
             <Selected borderColor={borderColor}>
-              {values.map((item, index) => (
+              {values.map(item => (
                 <ItemButton
                   tabIndex={-1}
                   key={item.key}
                   data-key={item.key}
                   onClick={() => onRemove && onRemove(item)}
                   style={{ color: fontColor }}
-                  ref={resultButtonsRef.current[index]}
+                  ref={buttonElement => {
+                    buttonElement && resultButtonRefs.push(buttonElement)
+                  }}
 
                   // buttonElement =>
                   //   updateResultButtonsRef(buttonElement, item)
@@ -321,13 +327,16 @@ const Typeahead = ({
           {(results.length && searchString !== values[0]?.label
             ? results
             : items
-          ).map((item: Item) => (
+          ).map(item => (
             <ItemButton
               tabIndex={-1}
               key={item.key}
               onClick={() => onAdd(item)}
               style={{ color: fontColor }}
-              ref={buttonElement => updateResultButtonsRef(buttonElement, item)}
+              // ref={buttonElement => updateResultButtonsRef(buttonElement, item)}
+              ref={buttonElement => {
+                buttonElement && resultButtonRefs.push(buttonElement)
+              }}
               data-key={item.key}
             >
               <RenderItem {...{ item }} />
