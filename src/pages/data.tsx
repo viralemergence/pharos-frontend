@@ -168,6 +168,20 @@ const DataView = (): JSX.Element => {
 	const debouncing = useRef({ on: false, timeout: null })
 	const [view, setView] = useState<View>(View.globe)
 
+	// To avoid the 100vw problem
+	// (https://destroytoday.com/blog/100vw-and-the-horizontal-overflow-you-probably-didnt-know-about)
+	useEffect(() => {
+		const recordScrollbarWidth = () => {
+			const scrollbarWidth = window.innerWidth - document.body.clientWidth
+			document.body.style.setProperty('--scrollbarWidth', `${scrollbarWidth}px`)
+		}
+		recordScrollbarWidth()
+		window.addEventListener('resize', recordScrollbarWidth)
+		return () => {
+			window.removeEventListener('resize', recordScrollbarWidth)
+		}
+	}, [])
+
 	/** Filters that will be applied to the published records */
 	const [filters, setFilters] = useState<Filter[]>([])
 

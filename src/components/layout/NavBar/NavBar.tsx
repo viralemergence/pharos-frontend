@@ -21,9 +21,6 @@ const Nav = styled.nav`
   z-index: 50;
   box-shadow: 0px 5px 30px rgba(0, 0, 0, 0.24);
   border-bottom: 1px solid black;
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
   @media (max-width: 768px) {
     // TODO: put in theme?
     height: 60px;
@@ -31,7 +28,7 @@ const Nav = styled.nav`
 `
 const Container = styled.div`
   display: flex;
-  flex: 1;
+  margin: 0 auto;
   align-items: center;
   justify-content: space-between;
   padding: 8px;

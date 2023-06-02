@@ -1,6 +1,24 @@
-import React, { Dispatch, MutableRefObject, SetStateAction } from 'react'
+import React, {
+  createRef,
+  useEffect,
+  useRef,
+  Dispatch,
+  MutableRefObject,
+  SetStateAction,
+} from 'react'
 import styled from 'styled-components'
 import { PlusIcon, BackIcon, XIcon, Field, Filter } from './constants'
+
+function getPreviousItemInMap(map: Map, key: string) {
+  const keys = map.keys()
+  return map.get(keys[Array.from(keys).indexOf(key) - 1])
+}
+
+function getNextItemInMap(map: Map, key: string) {
+  const index = Array.from(map.keys()).indexOf(key)
+  return
+  return null
+}
 
 const FilterPanelHeading = styled.div`
   ${props => props.theme.smallParagraph};
@@ -139,6 +157,29 @@ const FieldSelector = ({
   fields: Record<string, Field>
   addFilterValueSetter: (fieldId: string) => void
 }) => {
+  const buttons = useRef(
+    new Map<string, MutableRefObject<HTMLButtonElement | null>>()
+  ).current
+  const keyDownHandler = e => {
+    console.log(e.key)
+  }
+
+  useEffect(() => {
+    Object.entries(fields).forEach(([fieldId, _field]) => {
+      if (!buttons.has(fieldId)) {
+        const buttonRef: MutableRefObject<HTMLButtonElement | null> =
+          createRef()
+        buttons.set(fieldId, buttonRef)
+      }
+    })
+    // TODO: Work in progress
+    setTimeout(() => {
+      const firstButtonKey = Array.from(buttons.keys())?.[0]
+      const firstButtonRef = buttons.get(firstButtonKey)
+      firstButtonRef?.current?.focus()
+    })
+  }, [fields, buttons])
+
   return (
     <FieldSelectorDiv
       onClick={e => {
@@ -146,14 +187,28 @@ const FieldSelector = ({
         // fire, closing the field selector.
         e.stopPropagation()
       }}
+      onKeyDown={keyDownHandler}
     >
       {Object.entries(fields).map(
         ([fieldId, { label, addedToPanel = false }]) => (
           <FieldSelectorButton
+            ref={buttons.get(fieldId)}
             key={fieldId}
             value={fieldId}
             onClick={_ => {
               addFilterValueSetter(fieldId)
+            }}
+            tabIndex={-1}
+            onKeyDown={e => {
+              const keys = Array.from(buttons.keys())
+              const focusNeighbor = (delta: number) => {
+                const myIndex = keys.indexOf(fieldId)
+                const neighborKey = keys[myIndex + delta]
+                const neighbor = buttons.get(neighborKey)?.current
+                neighbor?.focus()
+              }
+              if (e.key === 'ArrowUp') focusNeighbor(-1)
+              if (e.key === 'ArrowDown') focusNeighbor(1)
             }}
             disabled={addedToPanel}
           >
@@ -187,6 +242,7 @@ const FilterPanelToolbar = ({
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
   filterListRef: MutableRefObject<HTMLUListElement | null>
 }) => {
+  // TODO: Remove invisible items from tab order
   return (
     <>
       <FilterPanelToolbarNav>

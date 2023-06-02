@@ -210,6 +210,7 @@ const Typeahead = forwardRef<HTMLInputElement, TypeaheadProps>(
     if (!items) throw new Error('Item array in multiselect cannot be undefined')
 
     const [searchString, setSearchString] = useState('')
+
     const [showResults, setShowResults] = useState(false)
     const inputRef: React.MutableRefObject<HTMLInputElement | null> =
       useRef<HTMLInputElement>(null)
@@ -272,7 +273,6 @@ const Typeahead = forwardRef<HTMLInputElement, TypeaheadProps>(
     const handleKeyDownFromContainer: KeyboardEventHandler<
       HTMLFormElement
     > = e => {
-      console.log('handle keydown from container')
       if (!inputRef) return
       const goingUp = e.key === 'ArrowUp'
       const goingDown = e.key === 'ArrowDown'
