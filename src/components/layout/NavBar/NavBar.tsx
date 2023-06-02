@@ -21,10 +21,17 @@ const Nav = styled.nav`
   z-index: 50;
   box-shadow: 0px 5px 30px rgba(0, 0, 0, 0.24);
   border-bottom: 1px solid black;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  @media (max-width: 768px) {
+    // TODO: put in theme?
+    height: 60px;
+  }
 `
 const Container = styled.div`
-  margin: 0 auto;
   display: flex;
+  flex: 1;
   align-items: center;
   justify-content: space-between;
   padding: 8px;
@@ -40,9 +47,12 @@ const HomeLink = styled(NavLink)`
   display: flex;
   align-items: center;
   margin-left: 20px;
+  @media (max-width: 768px) {
+    margin-left: 0;
+  }
 `
 const DesktopNav = styled(LinkList)`
-  @media (max-width: 599px) {
+  @media (max-width: 768px) {
     display: none;
   }
 `
@@ -51,9 +61,21 @@ const MobileLinkList = styled(LinkList)`
   background-color: ${({ theme }) => theme.darkPurple};
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
+  padding: 10px 25px 10px 25px;
 `
 const NavLogo = styled(CMS.Image)`
-  height: 70px;
+  vertical-align: middle;
+  @media (max-width: 768px) {
+    & div {
+      display: flex !important;
+      justify-content: center;
+      align-items: center;
+    }
+    & img {
+      height: 40px;
+      width: auto;
+    }
+  }
   margin-right: 30px;
   margin-left: 12px;
 `
@@ -105,6 +127,28 @@ const NavBar = () => {
       reactRouterLink: false,
     })
 
+  const LogoutButtonIfLoggedIn = () => {
+    return (
+      <>
+        {user.status === UserStatus.loggedIn && (
+          <LogoutButton
+            onClick={() => {
+              // this is a very aggressive temporary implementation
+              // of "log out" because it deletes all the local data
+              // without warning the user; this way we can use it
+              // as a "reset" button if a bug traps the user.
+              localforage.clear()
+              window.location.href = '/'
+              window.location.reload()
+            }}
+          >
+            Logout
+          </LogoutButton>
+        )}
+      </>
+    )
+  }
+
   return (
     <Nav>
       <Container>
@@ -117,27 +161,14 @@ const NavBar = () => {
           {links.map(link => (
             <NavLink key={link.to} {...link} />
           ))}
-          {user.status === UserStatus.loggedIn && (
-            <LogoutButton
-              onClick={() => {
-                // this is a very aggressive temporary implementation
-                // of "log out" because it deletes all the local data
-                // without warning the user; this way we can use it
-                // as a "reset" button if a bug traps the user.
-                localforage.clear()
-                window.location.href = '/'
-                window.location.reload()
-              }}
-            >
-              Logout
-            </LogoutButton>
-          )}
+          <LogoutButtonIfLoggedIn />
         </DesktopNav>
         <MobileMenu>
           <MobileLinkList>
             {links.map(link => (
               <NavLink key={link.to} {...link} />
             ))}
+            <LogoutButtonIfLoggedIn />
           </MobileLinkList>
         </MobileMenu>
       </Container>

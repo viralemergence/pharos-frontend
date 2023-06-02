@@ -31,6 +31,12 @@ const ViewContainer = styled.main`
 	display: flex;
 	background-color: rgb(5, 10, 55); //#3d434e;
 	padding-bottom: 1rem;
+	.map-container {
+		height: calc(100vh - 73px);
+		@media (max-width: 768px) {
+			height: calc(100vh - 60px);
+		}
+	}
 `
 
 interface PublishedRecordsResponse {
@@ -173,7 +179,8 @@ const DataView = (): JSX.Element => {
 
 	const [fields, setFields] = useState<Record<string, Field>>({})
 
-	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(true)
+	// NOTE: Setting to false to better support mobile
+	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
 
 	const changeView = (view: View) => {
 		window.location.hash = view
@@ -276,7 +283,6 @@ const DataView = (): JSX.Element => {
 				)}
 				<MapView
 					projection={view === 'globe' ? 'globe' : 'naturalEarth'}
-					height={dataViewHeight}
 					style={{
 						filter: showEarth ? 'none' : 'blur(30px)',
 					}}

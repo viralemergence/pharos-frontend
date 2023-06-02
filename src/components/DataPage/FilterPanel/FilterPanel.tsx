@@ -52,6 +52,17 @@ const Panel = styled.aside<{ isFilterPanelOpen: boolean; height: string }>`
   width: 410px;
   top: 73px;
   left: 30px;
+  @media (max-width: 768px) {
+    background-color: rgba(51, 51, 51, 1);
+    bottom: 0;
+    height: auto;
+    left: 0;
+    margin-right: 0;
+    position: absolute;
+    top: 60px;
+    width: 100vw;
+    z-index: 10;
+  }
   margin-right: 30px;
   backdrop-filter: blur(12px);
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.4);
@@ -130,6 +141,12 @@ const FilterList = styled.ul<{ height: string }>`
   padding: 34px 40px;
   overflow-y: auto;
   height: ${props => props.height};
+  @media (max-width: 768px) {
+    height: calc(100vh - 60px - 73px);
+  }
+  @media (max-width: 480px) {
+    padding: 34px 20px;
+  }
 `
 
 const FilterPanel = ({
@@ -204,7 +221,6 @@ const FilterPanel = ({
               return (
                 <FilterListItem
                   shouldAnimate={shouldAnimateFilters.current}
-                
                   key={`${filter.fieldId}-${filterIndex}`}
                 >
                   <FilterValueSetter

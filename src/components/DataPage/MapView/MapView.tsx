@@ -4,8 +4,7 @@ import mapboxgl from 'mapbox-gl'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
-const MapContainer = styled.div<{ height: string }>`
-  height: ${props => props.height};
+const MapContainer = styled.div`
   width: 100vw;
   background: #0b103b;
 `
@@ -15,18 +14,13 @@ mapboxgl.accessToken = process.env.GATSBY_MAPBOX_API_KEY!
 interface MapPageProps {
   style?: React.CSSProperties
   projection?: 'naturalEarth' | 'globe'
-  height: string
 }
 
 const MapViewDiv = styled.div`
   position: absolute;
 `
 
-const MapView = ({
-  style,
-  projection = 'naturalEarth',
-  height,
-}: MapPageProps) => {
+const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<null | mapboxgl.Map>(null)
 
@@ -142,7 +136,7 @@ const MapView = ({
 
   return (
     <MapViewDiv style={style}>
-      <MapContainer ref={mapContainer} height={height} />
+      <MapContainer className="map-container" ref={mapContainer} />
     </MapViewDiv>
   )
 }

@@ -56,6 +56,10 @@ const DataToolbarDiv = styled.div<{ isFilterPanelOpen: boolean }>`
 	position: absolute;
 	top: 97px;
 	left: 30px;
+	@media (max-width: 768px) {
+		top: 70px;
+		left: 10px;
+	}
 	z-index: 10;
 	display: flex;
 	flex-flow: row wrap;

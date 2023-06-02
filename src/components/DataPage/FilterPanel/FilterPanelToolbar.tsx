@@ -1,6 +1,17 @@
 import React, { Dispatch, MutableRefObject, SetStateAction } from 'react'
 import styled from 'styled-components'
-import { PlusIcon, XIcon, Field, Filter } from './constants'
+import { PlusIcon, BackIcon, XIcon, Field, Filter } from './constants'
+
+const FilterPanelHeading = styled.div`
+  ${props => props.theme.smallParagraph};
+  display: none;
+  padding: 10px 0;
+  font-weight: bold;
+  margin-right: 20px;
+  @media (max-width: 768px) {
+    display: flex;
+  }
+`
 
 const FilterPanelToolbarNav = styled.nav`
   display: flex;
@@ -9,6 +20,9 @@ const FilterPanelToolbarNav = styled.nav`
   padding-bottom: 20px;
   padding: 14px 40px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  @media (max-width: 768px) {
+    padding: 14px 20px;
+  }
 `
 const FieldSelectorMessage = styled.div`
   ${props => props.theme.smallParagraph};
@@ -45,11 +59,31 @@ const FilterPanelToolbarButton = styled(FilterPanelButton)<{
     outline: 2px solid rgba(100, 100, 100, 1);
     transform: scale(0.99);
   }
+  &.add-filter {
+    margin-right: auto;
+    @media (min-width: 768px) {
+      &::after {
+        content: ' filter';
+      }
+    }
+  }
+  @media (max-width: 768px) {
+    &.close-panel {
+      &:active {
+        transform: scale(0.92);
+      }
+    }
+  }
 `
 const FilterPanelCloseButton = styled(FilterPanelToolbarButton)`
-  position: absolute;
-  right: 2px;
-  top: 2px;
+  @media (min-width: 768px) {
+    position: absolute;
+    right: 2px;
+    top: 2px;
+  }
+  @media (max-width: 768px) {
+    margin-right: 20px;
+  }
   border-radius: 50%;
   background: transparent;
   display: flex;
@@ -58,6 +92,19 @@ const FilterPanelCloseButton = styled(FilterPanelToolbarButton)`
   padding: 5px;
   &:hover {
     background: inherit;
+  }
+  &.back-icon {
+    display: none !important;
+  }
+  @media (max-width: 768px) {
+    width: 45px;
+    height: 45px;
+    &.x-icon {
+      display: none;
+    }
+    &.back-icon {
+      display: flex !important;
+    }
   }
 `
 const FieldSelectorDiv = styled.div`
@@ -143,6 +190,13 @@ const FilterPanelToolbar = ({
   return (
     <>
       <FilterPanelToolbarNav>
+        <FilterPanelCloseButton
+          className="close-panel back-icon"
+          onClick={() => setIsFilterPanelOpen(false)}
+        >
+          <BackIcon />
+        </FilterPanelCloseButton>
+        <FilterPanelHeading>Filters</FilterPanelHeading>
         <FilterPanelToolbarButton
           className="add-filter"
           isFieldSelectorOpen={isFieldSelectorOpen}
@@ -153,14 +207,17 @@ const FilterPanelToolbar = ({
             e.stopPropagation()
           }}
         >
-          <PlusIcon style={{ marginRight: '5px' }} /> Add filter
+          <PlusIcon style={{ marginRight: '5px' }} /> Add
         </FilterPanelToolbarButton>
         {filters.length > 0 && (
           <FilterPanelToolbarButton onClick={() => clearFilters()}>
             Clear all
           </FilterPanelToolbarButton>
         )}
-        <FilterPanelCloseButton onClick={() => setIsFilterPanelOpen(false)}>
+        <FilterPanelCloseButton
+          className="close-panel x-icon"
+          onClick={() => setIsFilterPanelOpen(false)}
+        >
           <XIcon extraStyle="width: 18px; height: 18px;" />
         </FilterPanelCloseButton>
       </FilterPanelToolbarNav>

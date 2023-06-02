@@ -48,6 +48,9 @@ const SelectedTypeaheadValueDeleteButton = styled.button`
 `
 
 const TypeaheadContainer = styled.div`
+  & form {
+    max-width: 400px !important;
+  }
   & input[type='search'] {
     ${({ theme }) => theme.smallParagraph}
     &::placeholder {
@@ -58,6 +61,10 @@ const TypeaheadContainer = styled.div`
     padding: 10px 15px 8px 15px !important;
     line-height: 25px !important;
   }
+`
+const TypeaheadLabel = styled(InputLabel)`
+  ${({ theme }) => theme.smallParagraph}
+  width: fit-content;
 `
 
 /** A typeahead component for setting the value of a filter */
@@ -105,6 +112,7 @@ const FilterTypeahead = ({
   const typeaheadInputId = `typeahead-${filterIndex}`
 
   useEffect(() => {
+    // Set id of input to connect it with the label
     if (typeaheadInputRef.current) {
       typeaheadInputRef.current.id = typeaheadInputId
     }
@@ -112,9 +120,9 @@ const FilterTypeahead = ({
 
   return (
     <>
-      <InputLabel htmlFor={typeaheadInputId}>
+      <TypeaheadLabel htmlFor={typeaheadInputId}>
         <FieldName>{fieldLabel}</FieldName>
-      </InputLabel>
+      </TypeaheadLabel>
       <TypeaheadContainer>
         <Typeahead
           multiselect={true}
