@@ -1,6 +1,5 @@
 import React, {
   forwardRef,
-  useImperativeHandle,
   useCallback,
   useEffect,
   useMemo,
@@ -279,7 +278,7 @@ const Typeahead = forwardRef<HTMLInputElement, TypeaheadProps>(
 
       if (e.key === 'Escape') {
         setTimeout(() => setShowResults(false))
-        inputRef?.current.focus()
+        inputRef?.current?.focus()
       } else if (goingUp || goingDown) {
         const focusedItem = e.target as HTMLElement
         const list = resultListRef.current

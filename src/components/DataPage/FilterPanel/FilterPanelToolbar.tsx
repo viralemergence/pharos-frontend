@@ -5,6 +5,7 @@ import React, {
   Dispatch,
   MutableRefObject,
   SetStateAction,
+  KeyboardEvent,
 } from 'react'
 import styled from 'styled-components'
 import { PlusIcon, BackIcon, XIcon, Field, Filter } from './constants'
@@ -149,7 +150,7 @@ const FieldSelector = ({
   const buttons = useRef(
     new Map<string, MutableRefObject<HTMLButtonElement | null>>()
   ).current
-  const keyDownHandler = e => {
+  const keyDownHandler = (e: KeyboardEvent) => {
     console.log(e.key)
   }
 
@@ -161,7 +162,7 @@ const FieldSelector = ({
         buttons.set(fieldId, buttonRef)
       }
     })
-    // TODO: Work in progres
+    // TODO: Work in progress
     setTimeout(() => {
       const firstButtonKey = Array.from(buttons.keys())?.[0]
       const firstButtonRef = buttons.get(firstButtonKey)
