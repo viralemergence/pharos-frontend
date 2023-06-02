@@ -293,9 +293,9 @@ const Typeahead = ({
                   data-key={item.key}
                   onClick={() => onRemove && onRemove(item)}
                   style={{ color: fontColor }}
-                  ref={buttonElement => {
+                  ref={buttonElement =>
                     buttonElement && arrowKeyOrderRefs.push(buttonElement)
-                  }}
+                  }
                 >
                   <RenderItem selected key={item.key} {...{ item }} />
                 </ItemButton>
@@ -311,9 +311,9 @@ const Typeahead = ({
               key={item.key}
               onClick={() => onAdd(item)}
               style={{ color: fontColor }}
-              ref={buttonElement => {
+              ref={buttonElement =>
                 buttonElement && arrowKeyOrderRefs.push(buttonElement)
-              }}
+              }
               data-key={item.key}
             >
               <RenderItem {...{ item }} />
