@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import Typeahead, {
   Item as TypeaheadItem,
@@ -47,7 +47,7 @@ const SelectedTypeaheadValueDeleteButton = styled.button`
   }
 `
 
-const TypeaheadInputLabel = styled(InputLabel)`
+const TypeaheadContainer = styled.div`
   & input[type='search'] {
     ${({ theme }) => theme.smallParagraph}
     &::placeholder {
@@ -100,11 +100,22 @@ const FilterTypeahead = ({
     )
     handleTypeaheadChange(amendedItems)
   }
+  const typeaheadInputRef = React.useRef<HTMLInputElement>(null)
+
+  const typeaheadInputId = `typeahead-${filterIndex}`
+
+  useEffect(() => {
+    if (typeaheadInputRef.current) {
+      typeaheadInputRef.current.id = typeaheadInputId
+    }
+  })
 
   return (
     <>
-      <TypeaheadInputLabel>
+      <InputLabel htmlFor={typeaheadInputId}>
         <FieldName>{fieldLabel}</FieldName>
+      </InputLabel>
+      <TypeaheadContainer>
         <Typeahead
           multiselect={true}
           items={options.map(option => ({ key: option, label: option }))}
@@ -114,6 +125,7 @@ const FilterTypeahead = ({
           placeholder={
             selectedItems.length ? `${selectedItems.length} selected` : ''
           }
+          ref={typeaheadInputRef}
           backgroundColor="#000"
           fontColor="white"
           borderColor="#fff"
@@ -122,7 +134,7 @@ const FilterTypeahead = ({
           )}
           iconSVG="%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9L12 15L18 9H6Z' fill='%23FFFFFF'/%3E%3C/svg%3E%0A"
         />
-      </TypeaheadInputLabel>
+      </TypeaheadContainer>
       {values.length > 0 && (
         <SelectedTypeaheadValues>
           {values.map(value => (
