@@ -272,6 +272,7 @@ const Typeahead = forwardRef<HTMLInputElement, TypeaheadProps>(
     const handleKeyDownFromContainer: KeyboardEventHandler<
       HTMLFormElement
     > = e => {
+      console.log('handle keydown from container')
       if (!inputRef) return
       const goingUp = e.key === 'ArrowUp'
       const goingDown = e.key === 'ArrowDown'
@@ -401,11 +402,15 @@ const Typeahead = forwardRef<HTMLInputElement, TypeaheadProps>(
           <Results style={{ backgroundColor, borderColor }} ref={resultListRef}>
             {multiselect && values.length > 0 && (
               <Selected borderColor={borderColor}>
-                {values.map((item: Item) => (
+                {values.map((item: Item, index) => (
                   <ResultButton
                     selected={true}
                     key={item.key}
-                    onClick={() => onRemove?.(item)}
+                    onClick={() => {
+                      onRemove?.(item)
+                      indexOfLastItemAdded.current = index
+                    }}
+                    isFocused={index === indexOfLastItemAdded.current}
                     item={item}
                     {...resultButtonProps}
                   />
@@ -419,8 +424,7 @@ const Typeahead = forwardRef<HTMLInputElement, TypeaheadProps>(
               <ResultButton
                 item={item}
                 key={item.key}
-                // Temporary name for the element arrow keys will move from
-                isFocusPeg={index === indexOfLastItemAdded.current}
+                isFocused={index === indexOfLastItemAdded.current}
                 onClick={() => {
                   onAdd(item)
                   indexOfLastItemAdded.current = index
