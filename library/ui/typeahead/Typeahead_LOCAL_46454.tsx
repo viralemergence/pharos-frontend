@@ -1,14 +1,11 @@
 import React, {
   forwardRef,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
-  ForwardedRef,
-  MutableRefObject,
   KeyboardEventHandler,
-  MouseEventHandler,
-  FocusEvent,
 } from 'react'
 import Fuse from 'fuse.js'
 import styled from 'styled-components'
@@ -28,7 +25,7 @@ import TypeaheadResult from './TypeaheadResult'
 export interface Item {
   key: string
   label: string
-  [key: string]: unknown
+  [key: string]: any
 }
 
 export interface RenderItemProps {
@@ -114,48 +111,21 @@ export interface TypeaheadProps {
   ariaLabel?: string
 }
 
-type NullableMutableRef<T> = MutableRefObject<T | null>
-type NullableMutableRefCallback<T> = (value: T | null) => void
-type ButtonRef = NullableMutableRef<HTMLButtonElement>
-type DivRef = NullableMutableRef<HTMLDivElement>
-type InputRef = NullableMutableRef<HTMLInputElement>
-type NumberRef = NullableMutableRef<number>
-
-type Focusable = HTMLInputElement | HTMLButtonElement | null
-const isFocusable = (elem: unknown): elem is Focusable =>
-  elem instanceof HTMLInputElement || elem instanceof HTMLButtonElement
-
-function setRef<T>(
-  ref:
-    | NullableMutableRef<T>
-    | NullableMutableRefCallback<T>
-    | ForwardedRef<T>
-    | undefined,
-  value: T | null
-) {
-  if (!ref) return
-  if (typeof ref === 'function') ref(value)
-  else if (ref) ref.current = value
-}
-
-const isVisibleInContainer = (
-  container: HTMLElement | null,
-  elem: HTMLElement | null
-) =>
-  elem &&
-  container &&
-  elem.offsetTop >= container.scrollTop &&
-  elem.offsetTop <= container.scrollTop + container.clientHeight
+// Following a pattern used by, for example, https://designsystem.digital.gov/components/combo-box/
+const ScreenReaderOnly = styled.div`
+  position: absolute;
+  left: -999em;
+  right: auto;
+`
 
 /** Reduce list scrolling when button is focused */
 const resultButtonFocusHandler = (
-  e: FocusEvent<HTMLButtonElement>,
-  resultsDivRef?: DivRef
+  e: React.FocusEvent<HTMLButtonElement>,
+  resultListRef: React.RefObject<HTMLDivElement>
 ) => {
-  if (!resultsDivRef) return
-  const list = resultsDivRef.current
-  if (!list) return
   const button = e.target
+  const list = resultListRef.current
+  if (!list) return
   const { top: buttonTop, bottom: buttonBottom } =
     button.getBoundingClientRect()
   const { top: listTop, bottom: listBottom } = list.getBoundingClientRect()
@@ -165,75 +135,50 @@ const resultButtonFocusHandler = (
   list.scrollTop += delta
 }
 
-interface ResultButtonProps {
-  item: Item
-  RenderItem: (props: RenderItemProps) => JSX.Element
-  selected?: boolean
-  onClick?: MouseEventHandler<HTMLButtonElement>
-  fontColor?: string
-  isFocused?: boolean
-  buttonsRef?: MutableRefObject<Map<string, ButtonRef | null>>
-  resultsDivRef?: DivRef
-  indexOfLastItemAdded?: NumberRef
-}
-
 const ResultButton = ({
   selected = false,
   item,
   onClick,
   fontColor,
-  buttonsRef,
-  resultsDivRef,
+  updateResultButtonsRef,
+  resultListRef,
   RenderItem,
   isFocused = false,
   indexOfLastItemAdded,
-}: ResultButtonProps) => {
-  const buttonRef: ButtonRef = useRef(null)
+}: {
+  selected?: boolean
+  item: Item
+  onClick?: React.MouseEventHandler<HTMLButtonElement>
+  fontColor?: string
+  updateResultButtonsRef: (button: HTMLButtonElement | null, item: Item) => void
+  resultListRef: React.RefObject<HTMLDivElement>
+  RenderItem: (props: RenderItemProps) => JSX.Element
+  isFocused?: boolean
+  indexOfLastItemAdded: React.MutableRefObject<number | null>
+}) => {
+  const buttonRef: React.MutableRefObject<HTMLButtonElement | null> =
+    useRef(null)
   useEffect(() => {
-    if (isFocused) buttonRef.current?.focus({ preventScroll: true })
-    setRef(indexOfLastItemAdded, null)
+    if (isFocused && buttonRef.current)
+      buttonRef.current.focus({ preventScroll: true })
+    indexOfLastItemAdded.current = null
   })
   return (
     <ItemButton
       tabIndex={-1}
+      data-key={item.key}
       onClick={onClick}
       style={{ color: fontColor }}
-      ref={buttonsRef?.current?.get(item.key)}
-      onFocus={e => resultButtonFocusHandler(e, resultsDivRef)}
+      ref={buttonElement => {
+        updateResultButtonsRef(buttonElement, item)
+        buttonRef.current = buttonElement
+      }}
+      onFocus={e => resultButtonFocusHandler(e, resultListRef)}
     >
-      <RenderItem
-        selected={selected}
-        item={item}
-        /*key={item.key} TODO: Ensure this key can be removed */
-      />
+      {/* Is key= needed here? */}
+      <RenderItem selected={selected} key={item.key} {...{ item }} />
     </ItemButton>
   )
-}
-
-const getElementToFocus = (
-  /** The element that presently has the focus */
-  focusedElement: Focusable,
-  isInputFocused: boolean,
-  /** True if the up arrow was pressed, false if the down arrow was pressed */
-  up: boolean,
-  buttons: (HTMLButtonElement | null)[],
-  order: Focusable[],
-  resultsDiv: HTMLElement | null
-): Focusable | null | undefined => {
-  const isVisibleInDiv = isVisibleInContainer.bind(null, resultsDiv)
-
-  if (isInputFocused || isVisibleInDiv(focusedElement) || !resultsDiv) {
-    const focusedIndex: number = order.indexOf(focusedElement)
-    return order[focusedIndex + (up ? -1 : 1)]
-  } else {
-    // If the focusedElement is not visible, to avoid unexpected scrolling of
-    // the results div, move focus to an already visible button
-    return up
-      ? // If moving up, focus the last visible button
-        buttons.findLast(isVisibleInDiv)
-      : // If moving down, focus the first visible button
-        buttons.find(isVisibleInDiv)
-  }
 }
 
 const Typeahead = forwardRef<HTMLInputElement, TypeaheadProps>(
@@ -245,7 +190,9 @@ const Typeahead = forwardRef<HTMLInputElement, TypeaheadProps>(
       onAdd,
       onRemove,
       placeholder = '',
-      RenderItem = props => <TypeaheadResult {...props} />,
+      RenderItem = ({ item, selected }) => (
+        <TypeaheadResult {...{ item, selected }} />
+      ),
       searchKeys = ['key', 'label'],
       iconSVG,
       iconLeft = false,
@@ -264,9 +211,9 @@ const Typeahead = forwardRef<HTMLInputElement, TypeaheadProps>(
     const [searchString, setSearchString] = useState('')
 
     const [showResults, setShowResults] = useState(false)
-
-    const inputRef: InputRef = useRef(null)
-    const buttonsRef = useRef(new Map<string, ButtonRef>())
+    const inputRef: React.MutableRefObject<HTMLInputElement | null> =
+      useRef<HTMLInputElement>(null)
+    const resultButtonsRef = useRef<HTMLButtonElement[]>([])
 
     // compute fuzzy search
     const fuse = useMemo(
@@ -279,6 +226,7 @@ const Typeahead = forwardRef<HTMLInputElement, TypeaheadProps>(
       .map(({ item }: { item: Item }) => item)
 
     const keydownFromSearchBarHandlers: Record<string, KeyboardEventHandler> = {
+      // TODO: Is accepting the top result on enter desired?
       // accept top result if enter is pressed
       Enter: _e => {
         if (results[0] || items[0]) onAdd(results[0] || items[0])
@@ -294,10 +242,11 @@ const Typeahead = forwardRef<HTMLInputElement, TypeaheadProps>(
       keydownFromSearchBarHandlers[e.key]?.(e)
     }
 
-    // When a blur event fires, set results to hide next at the end
-    // of the event loop using a zero-duration timeout, which will
-    // be cancelled if focus bubbles up from a child element.
-    let blurTimeout: ReturnType<typeof global.setTimeout> | undefined
+    // close results onBlur, but
+    // not if a button is clicked
+    // TODO: Perhaps remove this comment, since it doesn't describe what this bit
+    // of code does
+    let blurTimeout: ReturnType<typeof global.setTimeout>
     const onBlurHandler = () => {
       blurTimeout = setTimeout(() => {
         setShowResults(false)
@@ -324,49 +273,81 @@ const Typeahead = forwardRef<HTMLInputElement, TypeaheadProps>(
       HTMLFormElement
     > = e => {
       if (!inputRef) return
-      if (!isFocusable(e.target)) return
-
-      const up = e.key === 'ArrowUp'
-      const down = e.key === 'ArrowDown'
+      const goingUp = e.key === 'ArrowUp'
+      const goingDown = e.key === 'ArrowDown'
 
       if (e.key === 'Escape') {
         setTimeout(() => setShowResults(false))
-        inputRef.current?.focus()
-      } else if (up || down) {
-        const focusedElement = e.target
-        const div = resultsDivRef.current
-        // buttonsRef points to a map of refs. Each of these refs points to a
-        // HTMLButtonElement (or null)
-        const buttons = Array.from(buttonsRef.current.values()).map(
-          b => b?.current
-        )
+        inputRef?.current?.focus()
+      } else if (goingUp || goingDown) {
+        const focusedItem = e.target as HTMLElement
+        const list = resultListRef.current
+        const buttons = resultButtonsRef.current
 
         /** Arrow keys move the focus up and down through this array, like a tab order. */
-        const order = [inputRef.current, ...buttons]
-        const isInputFocused = focusedElement === inputRef.current
-        const elementToFocus = getElementToFocus(
-          focusedElement,
-          isInputFocused,
-          up,
-          buttons,
-          order,
-          div
-        )
+        const order = [inputRef.current, ...buttons] as HTMLElement[]
 
-        elementToFocus?.focus({
-          // Scrolling of the list is handled in the button's onFocus handler
+        let itemToFocus: HTMLElement | undefined
+
+        const inputIsFocused = focusedItem === inputRef.current
+
+        // Avoid unexpected scrolling of the results list after Page Up/Down, Home, or End key use
+        const isButtonVisible = (button: HTMLElement) =>
+          button &&
+          list &&
+          button.offsetTop >= list.scrollTop &&
+          button.offsetTop <= list.scrollTop + list.clientHeight
+        if (inputIsFocused || isButtonVisible(focusedItem)) {
+          const focusedIndex = order.indexOf(focusedItem)
+          itemToFocus = order[focusedIndex + (goingDown ? 1 : -1)]
+        } else {
+          itemToFocus = goingUp
+            ? // If moving up, focus the last visible button
+              buttons.findLast(isButtonVisible)
+            : // If moving down, focus the first visible button
+              buttons.find(isButtonVisible)
+        }
+
+        itemToFocus?.focus({
+          // Scrolling of list is handled in the button's onFocus handler
           preventScroll: true,
         })
-        if (down && isInputFocused) setShowResults(true)
-        if (up && elementToFocus === inputRef.current) setShowResults(false)
+
+        if (goingDown && inputIsFocused) {
+          setShowResults(true)
+        }
+        if (goingUp && itemToFocus === inputRef.current) {
+          setShowResults(false)
+        }
         e.preventDefault()
       }
     }
-    const resultsDivRef: DivRef = useRef(null)
-    const indexOfLastItemAdded: NumberRef = useRef<number>(null)
-    const resultButtonProps: Partial<ResultButtonProps> = {
-      buttonsRef,
-      resultsDivRef,
+
+    const updateResultButtonsRef = useCallback(
+      (buttonElement: HTMLButtonElement | null, item: Item) => {
+        // TODO: Perhaps use a Map?
+        const buttons = resultButtonsRef.current
+        const index = buttons.findIndex(
+          ref => ref && ref.dataset.key === item.key
+        )
+        if (buttonElement) {
+          if (index > -1) buttons[index] = buttonElement
+          else buttons.push(buttonElement)
+        } else if (index > -1) {
+          buttons.splice(index, 1)
+        }
+      },
+      []
+    )
+    const resultListRef = useRef<HTMLDivElement>(null)
+
+    const indexOfLastItemAdded: React.MutableRefObject<number | null> =
+      useRef<number>(null)
+
+    const resultButtonProps = {
+      updateResultButtonsRef,
+      resultListRef,
+      RenderItem,
       fontColor,
       indexOfLastItemAdded,
     }
@@ -387,8 +368,13 @@ const Typeahead = forwardRef<HTMLInputElement, TypeaheadProps>(
           autoComplete="off"
           name="special-auto-fill"
           ref={input => {
-            setRef(inputRef, input)
-            setRef(forwardedInputRef, input)
+            // Assign element to a local ref and a forwarded ref
+            inputRef.current = input
+            if (typeof forwardedInputRef === 'function') {
+              forwardedInputRef(input)
+            } else {
+              if (forwardedInputRef) forwardedInputRef.current = input
+            }
           }}
           onKeyDown={handleKeyDownFromSearchBar}
           value={searchString}
@@ -412,7 +398,7 @@ const Typeahead = forwardRef<HTMLInputElement, TypeaheadProps>(
           }}
           animDuration={200}
         >
-          <Results style={{ backgroundColor, borderColor }} ref={resultsDivRef}>
+          <Results style={{ backgroundColor, borderColor }} ref={resultListRef}>
             {multiselect && values.length > 0 && (
               <Selected borderColor={borderColor}>
                 {values.map((item: Item, index) => (
@@ -425,7 +411,6 @@ const Typeahead = forwardRef<HTMLInputElement, TypeaheadProps>(
                     }}
                     isFocused={index === indexOfLastItemAdded.current}
                     item={item}
-                    RenderItem={RenderItem}
                     {...resultButtonProps}
                   />
                 ))}
@@ -443,7 +428,6 @@ const Typeahead = forwardRef<HTMLInputElement, TypeaheadProps>(
                   onAdd(item)
                   indexOfLastItemAdded.current = index
                 }}
-                RenderItem={RenderItem}
                 {...resultButtonProps}
               />
             ))}
@@ -457,12 +441,5 @@ const Typeahead = forwardRef<HTMLInputElement, TypeaheadProps>(
     )
   }
 )
-
-// Following a pattern used by, for example, https://designsystem.digital.gov/components/combo-box/
-const ScreenReaderOnly = styled.div`
-  position: absolute;
-  left: -999em;
-  right: auto;
-`
 
 export default Typeahead
