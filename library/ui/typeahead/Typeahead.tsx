@@ -151,26 +151,6 @@ const isVisibleInContainer = (
   elem.offsetTop >= container.scrollTop &&
   elem.offsetTop <= container.scrollTop + container.clientHeight
 
-const getButtons = (buttonsMap: Map<string, ButtonRef>) => {
-  // buttonsRef points to a map of refs. Each of these refs points to a
-  // HTMLButtonElement (or null).
-  const buttonEntries = Array.from(buttonsMap.entries())
-  // The keys of the map, e.g. 'Adenovirus-0', 'Alphacoronavirus-1', contain
-  // indexes we use to put the buttons in the right order.
-  const buttonEntriesSorted = buttonEntries.sort(([keyA, _], [keyB, __]) => {
-    const getIndex = (key: string) => Number(key.split('-').at(-1) ?? 0)
-    return getIndex(keyA) - getIndex(keyB)
-  })
-  const buttons = buttonEntriesSorted.reduce(
-    (acc: HTMLButtonElement[], [_, buttonRef]) => {
-      const button = buttonRef?.current
-      return button ? [...acc, button] : acc
-    },
-    []
-  )
-  return buttons
-}
-
 /** Reduce list scrolling when button is focused */
 const resultButtonFocusHandler = (
   e: FocusEvent<HTMLButtonElement>,
@@ -192,11 +172,11 @@ const resultButtonFocusHandler = (
 interface ResultButtonProps {
   item: Item
   RenderItem: (props: RenderItemProps) => JSX.Element
+  buttonRefs: (ButtonRef | null)[]
   selected?: boolean
   onClick?: MouseEventHandler<HTMLButtonElement>
   fontColor?: string
   isFocused?: boolean
-  buttonsRef?: MutableRefObject<Map<string, ButtonRef | null>>
   resultsDivRef?: DivRef
   indexOfLastItemAdded?: NumberRef
   index?: number
@@ -207,19 +187,18 @@ const ResultButton = ({
   item,
   onClick,
   fontColor,
-  buttonsRef,
+  buttonRefs,
   resultsDivRef,
   RenderItem,
   isFocused = false,
   indexOfLastItemAdded,
-  index,
 }: ResultButtonProps) => {
   const buttonRef: ButtonRef = useRef(null)
   useEffect(() => {
     if (isFocused) buttonRef.current?.focus({ preventScroll: true })
     setRef(indexOfLastItemAdded, null)
   })
-  buttonsRef?.current?.set(`${item.key}-${index}`, buttonRef)
+  buttonRefs.push(buttonRef)
 
   return (
     <ItemButton
@@ -287,7 +266,7 @@ const Typeahead = ({
   const [showResults, setShowResults] = useState(false)
 
   const inputRef: InputRef = useRef(null)
-  const buttonsRef = useRef(new Map<string, ButtonRef>())
+  const buttonRefs: (ButtonRef | null)[] = []
 
   // compute fuzzy search
   const fuse = useMemo(
@@ -347,7 +326,11 @@ const Typeahead = ({
     if (!inputRef) return
     if (!isFocusable(e.target)) return
 
-    const buttons = getButtons(buttonsRef.current)
+    const buttons = buttonRefs.reduce<HTMLButtonElement[]>(
+      (buttons, ref) =>
+        ref && ref.current ? [...buttons, ref.current] : buttons,
+      []
+    )
     const up = e.key === 'ArrowUp'
     const down = e.key === 'ArrowDown'
 
@@ -382,7 +365,7 @@ const Typeahead = ({
   const resultsDivRef: DivRef = useRef(null)
   const indexOfLastItemAdded: NumberRef = useRef<number>(null)
   const resultButtonProps: Partial<ResultButtonProps> = {
-    buttonsRef,
+    buttonRefs,
     resultsDivRef,
     fontColor,
     indexOfLastItemAdded,
@@ -439,7 +422,6 @@ const Typeahead = ({
                   onClick={() => {
                     onRemove?.(item)
                     indexOfLastItemAdded.current = index
-                    buttonsRef.current.delete(`${item.key}-${index}`)
                   }}
                   isFocused={index === indexOfLastItemAdded.current}
                   item={item}
@@ -461,7 +443,6 @@ const Typeahead = ({
               onClick={() => {
                 onAdd(item)
                 indexOfLastItemAdded.current = index
-                buttonsRef.current.delete(`${item.key}-${index}`)
               }}
               RenderItem={RenderItem}
               index={index + values.length}
