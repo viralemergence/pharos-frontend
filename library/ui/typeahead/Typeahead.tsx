@@ -143,12 +143,17 @@ function setRef<T>(
 
 const isVisibleInContainer = (
   container: HTMLElement | null,
+  percentageVisible = 1,
   elem: HTMLElement | null
 ) =>
   elem &&
   container &&
-  elem.offsetTop >= container.scrollTop &&
-  elem.offsetTop <= container.scrollTop + container.clientHeight
+  elem.offsetTop + elem.clientHeight * (1 - percentageVisible) >=
+    container.scrollTop &&
+  elem.offsetTop <=
+    container.scrollTop +
+      container.clientHeight -
+      elem.clientHeight * (1 - percentageVisible)
 
 /** Reduce list scrolling when button is focused */
 const resultButtonFocusHandler = (
@@ -171,7 +176,7 @@ const resultButtonFocusHandler = (
 interface ResultButtonProps {
   item: Item
   RenderItem: (props: RenderItemProps) => JSX.Element
-  buttonRefs: (ButtonRef | null)[]
+  buttonRefs: ButtonRef[]
   selected?: boolean
   onClick?: MouseEventHandler<HTMLButtonElement>
   fontColor?: string
@@ -193,8 +198,6 @@ const ResultButton = ({
 }: ResultButtonProps) => {
   const buttonRef: ButtonRef = useRef(null)
   useEffect(() => {
-    // TODO: To fix jumpiness (after the component renders, focus sometimes
-    // jumps), perhaps put focus entirely within react, and not use '.focus()'
     if (isFocused) buttonRef.current?.focus({ preventScroll: true })
     setRef(indexOfLastItemAdded, null)
   })
@@ -223,19 +226,21 @@ const getElementToFocus = (
   order: Focusable[],
   resultsDiv: HTMLElement | null
 ): Focusable | null | undefined => {
-  const isVisibleInDiv = isVisibleInContainer.bind(null, resultsDiv)
-
-  if (isInputFocused || isVisibleInDiv(focusedElement) || !resultsDiv) {
-    const focusedIndex: number = order.indexOf(focusedElement)
+  if (
+    isInputFocused ||
+    isVisibleInContainer(resultsDiv, 1, focusedElement) ||
+    !resultsDiv
+  ) {
+    const focusedIndex = order.indexOf(focusedElement)
     return order[focusedIndex + (up ? -1 : 1)]
   } else {
     // If the focusedElement is not visible, to avoid unexpected scrolling of
     // the results div, move focus to a button that is already visible
     return up
       ? // If moving up, focus the last visible button
-        buttons.findLast(isVisibleInDiv)
+        buttons.findLast(elem => isVisibleInContainer(resultsDiv, 0.5, elem))
       : // If moving down, focus the first visible button
-        buttons.find(isVisibleInDiv)
+        buttons.find(elem => isVisibleInContainer(resultsDiv, 0.5, elem))
   }
 }
 
@@ -266,22 +271,24 @@ const Typeahead = ({
   const [showResults, setShowResults] = useState(false)
 
   // The index of the focused item in the typeahead. This is either the input
-  // (whose index is 0) or a button.
-  const [focusedItemIndex, setFocusedItemIndex] = useState(0)
+  // (whose index is 0) or a button. If the index is null, no item is focused
+  const [focusedElementIndex, setFocusedElementIndex] = useState<number | null>(
+    0
+  )
 
-  console.log('focusedItemIndex', focusedItemIndex)
-
+  /** Move focus to the correct place after an item is selected or deselected */
+  // TODO: rename this function
   const focusNextItem = (
     indexOfLastFocusedItem: number,
-    itemsCount: number,
-    increment: number
+    increment: number,
+    itemsCount: number
   ) => {
     const nextIndex = Math.min(indexOfLastFocusedItem + increment, itemsCount)
-    setFocusedItemIndex(nextIndex)
+    setFocusedElementIndex(nextIndex)
   }
 
   const inputRef: InputRef = useRef(null)
-  const buttonRefs: (ButtonRef | null)[] = []
+  const buttonRefs: ButtonRef[] = []
 
   // compute fuzzy search
   const fuse = useMemo(
@@ -315,6 +322,7 @@ const Typeahead = ({
   let blurTimeout: ReturnType<typeof global.setTimeout> | undefined
   const onBlurHandler = () => {
     blurTimeout = setTimeout(() => {
+      setFocusedElementIndex(null)
       setShowResults(false)
       if (!values.length) setSearchString('')
     })
@@ -335,24 +343,29 @@ const Typeahead = ({
     if (disabled && !values.length) setSearchString('')
   }, [disabled, values])
 
+  // TODO: Find out how to avoid focusing this input on first render, causing
+  // the results div to open. The results div should not be open on first
+  // render.
+
+  useEffect(() => {
+    if (focusedElementIndex === 0) inputRef.current?.focus()
+  })
+
   const handleKeyDownFromContainer: KeyboardEventHandler<
     HTMLFormElement
   > = e => {
     if (!inputRef) return
     if (!isFocusable(e.target)) return
 
-    const buttons = buttonRefs.reduce<HTMLButtonElement[]>(
-      (buttons, ref) =>
-        ref && ref.current ? [...buttons, ref.current] : buttons,
-      []
-    )
+    const buttons = buttonRefs.map(b => b.current)
     const up = e.key === 'ArrowUp'
     const down = e.key === 'ArrowDown'
 
     if (e.key === 'Escape') {
       setTimeout(() => setShowResults(false))
-      inputRef.current?.focus()
+      setFocusedElementIndex(0)
     } else if (up || down) {
+      e.preventDefault()
       const focusedElement = e.target
       const div = resultsDivRef.current
 
@@ -367,16 +380,16 @@ const Typeahead = ({
         order,
         div
       )
+      const indexOfElementToFocus = order.indexOf(elementToFocus || null) || 0
+      setFocusedElementIndex(indexOfElementToFocus)
 
-      elementToFocus?.focus({
-        // Scrolling of the list is handled in the button's onFocus handler
-        preventScroll: true,
-      })
       if (down && isInputFocused) setShowResults(true)
-      if (up && elementToFocus === inputRef.current) setShowResults(false)
-      e.preventDefault()
+      // TODO: When closing the results, focus is going into the input and then
+      // the results are opening. Perhaps remove this next line
+      if (up && indexOfElementToFocus === 0) setShowResults(false)
     }
   }
+
   const resultsDivRef: DivRef = useRef(null)
   const resultButtonProps: Partial<ResultButtonProps> & {
     buttonRefs: ResultButtonProps['buttonRefs']
@@ -412,7 +425,7 @@ const Typeahead = ({
         type="search"
         autoComplete="off"
         name="special-auto-fill"
-        ref={input => {
+        ref={(input: HTMLInputElement) => {
           setRef(inputRef, input)
         }}
         onKeyDown={handleKeyDownFromSearchBar}
@@ -442,17 +455,17 @@ const Typeahead = ({
             <Selected borderColor={borderColor}>
               {values.map((item: Item) => {
                 index++
-                const myIndex = index
+                const myIndex = index // Create a locally scoped variable
                 return (
                   <ResultButton
                     selected={true}
+                    item={item}
                     key={item.key}
+                    isFocused={index === focusedElementIndex}
                     onClick={() => {
                       onRemove?.(item)
-                      focusNextItem(myIndex, itemsCount, 0)
+                      focusNextItem(myIndex, 0, itemsCount)
                     }}
-                    isFocused={index === focusedItemIndex}
-                    item={{ ...item, label: `${index}: ${item.label}` }}
                     {...resultButtonProps}
                   />
                 )
@@ -461,16 +474,15 @@ const Typeahead = ({
           )}
           {unselectedItems.map((item: Item) => {
             index++
-            const myIndex = index
+            const myIndex = index // Create a locally scoped variable
             return (
               <ResultButton
-                item={{ ...item, label: `${index}: ${item.label}` }}
+                item={item}
                 key={item.key}
-                isFocused={myIndex === focusedItemIndex}
+                isFocused={index === focusedElementIndex}
                 onClick={() => {
                   onAdd(item)
-                  console.log('in result onclick, myIndex=', myIndex)
-                  focusNextItem(myIndex, itemsCount, 1)
+                  focusNextItem(myIndex, 1, itemsCount)
                 }}
                 {...resultButtonProps}
               />

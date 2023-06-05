@@ -252,6 +252,9 @@ const DataView = (): JSX.Element => {
 	const panelWidth = isFilterPanelOpen ? 410 : 0
 	const tableViewWidthOffset = 0
 
+	// TODO: Use flexbox or grid layout than hardcoding the pixel values.
+	// TODO: Check out Ryan's PR to see how he does styled components
+
 	const showEarth = [View.globe, View.map].includes(view)
 
 	return (
