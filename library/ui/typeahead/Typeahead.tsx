@@ -193,6 +193,8 @@ const ResultButton = ({
 }: ResultButtonProps) => {
   const buttonRef: ButtonRef = useRef(null)
   useEffect(() => {
+    // TODO: To fix jumpiness (after the component renders, focus sometimes
+    // jumps), perhaps put focus entirely within react, and not use '.focus()'
     if (isFocused) buttonRef.current?.focus({ preventScroll: true })
     setRef(indexOfLastItemAdded, null)
   })
@@ -263,7 +265,20 @@ const Typeahead = ({
 
   const [showResults, setShowResults] = useState(false)
 
+  // The index of the focused item in the typeahead. This is either the input
+  // (whose index is 0) or a button.
   const [focusedItemIndex, setFocusedItemIndex] = useState(0)
+
+  console.log('focusedItemIndex', focusedItemIndex)
+
+  const focusNextItem = (
+    indexOfLastFocusedItem: number,
+    itemsCount: number,
+    increment: number
+  ) => {
+    const nextIndex = Math.min(indexOfLastFocusedItem + increment, itemsCount)
+    setFocusedItemIndex(nextIndex)
+  }
 
   const inputRef: InputRef = useRef(null)
   const buttonRefs: (ButtonRef | null)[] = []
@@ -373,6 +388,14 @@ const Typeahead = ({
     fontColor,
   }
 
+  // Counter used across both the values and the results loop
+  let index = 0
+
+  const unselectedItems =
+    results.length && searchString !== values[0]?.label ? results : items
+
+  const itemsCount = values.length + unselectedItems.length
+
   return (
     <Container
       onFocus={onFocusHandler}
@@ -417,37 +440,42 @@ const Typeahead = ({
         <Results style={{ backgroundColor, borderColor }} ref={resultsDivRef}>
           {multiselect && values.length > 0 && (
             <Selected borderColor={borderColor}>
-              {values.map((item: Item, index: number) => (
-                <ResultButton
-                  selected={true}
-                  key={item.key}
-                  onClick={() => {
-                    onRemove?.(item)
-                    if (index === values.length + results.length - 1) index--
-                    setFocusedItemIndex(index)
-                  }}
-                  isFocused={index === focusedItemIndex}
-                  item={item}
-                  {...resultButtonProps}
-                />
-              ))}
+              {values.map((item: Item) => {
+                index++
+                const myIndex = index
+                return (
+                  <ResultButton
+                    selected={true}
+                    key={item.key}
+                    onClick={() => {
+                      onRemove?.(item)
+                      focusNextItem(myIndex, itemsCount, 0)
+                    }}
+                    isFocused={index === focusedItemIndex}
+                    item={{ ...item, label: `${index}: ${item.label}` }}
+                    {...resultButtonProps}
+                  />
+                )
+              })}
             </Selected>
           )}
-          {(results.length && searchString !== values[0]?.label
-            ? results
-            : items
-          ).map((item: Item, index: number) => (
-            <ResultButton
-              item={item}
-              key={item.key}
-              isFocused={index === indexOfLastItemAdded.current}
-              onClick={() => {
-                onAdd(item)
-                indexOfLastItemAdded.current = index
-              }}
-              {...resultButtonProps}
-            />
-          ))}
+          {unselectedItems.map((item: Item) => {
+            index++
+            const myIndex = index
+            return (
+              <ResultButton
+                item={{ ...item, label: `${index}: ${item.label}` }}
+                key={item.key}
+                isFocused={myIndex === focusedItemIndex}
+                onClick={() => {
+                  onAdd(item)
+                  console.log('in result onclick, myIndex=', myIndex)
+                  focusNextItem(myIndex, itemsCount, 1)
+                }}
+                {...resultButtonProps}
+              />
+            )
+          })}
         </Results>
       </Expander>
       <ScreenReaderOnly>
