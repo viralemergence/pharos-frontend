@@ -13,7 +13,6 @@ import Fuse from 'fuse.js'
 import styled from 'styled-components'
 import Expander from '@talus-analytics/library.ui.expander'
 
-// TODO: I don't remember what the purpose of indexOfLastItemAdded is.
 // TODO: Make the results list open when the user does a search
 
 import {
@@ -179,7 +178,6 @@ interface ResultButtonProps {
   isFocused?: boolean
   resultsDivRef?: DivRef
   indexOfLastItemAdded?: NumberRef
-  index?: number
 }
 
 const ResultButton = ({
@@ -264,6 +262,8 @@ const Typeahead = ({
   const [searchString, setSearchString] = useState('')
 
   const [showResults, setShowResults] = useState(false)
+
+  const [focusedItemIndex, setFocusedItemIndex] = useState(0)
 
   const inputRef: InputRef = useRef(null)
   const buttonRefs: (ButtonRef | null)[] = []
@@ -363,12 +363,14 @@ const Typeahead = ({
     }
   }
   const resultsDivRef: DivRef = useRef(null)
-  const indexOfLastItemAdded: NumberRef = useRef<number>(null)
-  const resultButtonProps: Partial<ResultButtonProps> = {
+  const resultButtonProps: Partial<ResultButtonProps> & {
+    buttonRefs: ResultButtonProps['buttonRefs']
+    RenderItem: ResultButtonProps['RenderItem']
+  } = {
     buttonRefs,
+    RenderItem,
     resultsDivRef,
     fontColor,
-    indexOfLastItemAdded,
   }
 
   return (
@@ -421,12 +423,11 @@ const Typeahead = ({
                   key={item.key}
                   onClick={() => {
                     onRemove?.(item)
-                    indexOfLastItemAdded.current = index
+                    if (index === values.length + results.length - 1) index--
+                    setFocusedItemIndex(index)
                   }}
-                  isFocused={index === indexOfLastItemAdded.current}
+                  isFocused={index === focusedItemIndex}
                   item={item}
-                  RenderItem={RenderItem}
-                  index={index}
                   {...resultButtonProps}
                 />
               ))}
@@ -444,8 +445,6 @@ const Typeahead = ({
                 onAdd(item)
                 indexOfLastItemAdded.current = index
               }}
-              RenderItem={RenderItem}
-              index={index + values.length}
               {...resultButtonProps}
             />
           ))}
