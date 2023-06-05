@@ -1,8 +1,8 @@
-import React, { forwardRef, useEffect, useRef } from 'react'
+import React, { forwardRef, useEffect, useRef, Ref } from 'react'
 import styled from 'styled-components'
 import Typeahead, {
   Item as TypeaheadItem,
-  TypeaheadRefGetters,
+  TypeaheadRefs,
 } from '../../../../library/ui/typeahead/Typeahead'
 import FilterDarkTypeaheadResult from './FilterDarkTypeaheadResult'
 import { XIcon, FieldName, FilterValues } from './constants'
@@ -85,7 +85,7 @@ const FilterTypeahead = (
     updateFilter,
     filterIndex,
   }: FilterTypeaheadProps,
-  typeaheadRefGetters: TypeaheadRefGetters
+  typeaheadRefs: Ref<TypeaheadRefs>
 ) => {
   const selectedItems = values.map(value => ({
     key: value,
@@ -116,13 +116,16 @@ const FilterTypeahead = (
 
   const typeaheadInputId = `typeahead-${filterIndex}`
 
-  useEffect(() => {
-    // Set id of input to connect it with the label
-    if (!typeaheadRefGetters?.current) return
-    const input = typeaheadRefGetters?.current?.getInput()
-    if (!input) return
-    input.id = typeaheadInputId
-  })
+  useEffect(
+    /** Set id of input to connect it with the label */
+    () => {
+      if (typeof typeaheadRefs === 'function') return // Don't support ref callbacks
+      if (!typeaheadRefs?.current) return
+      const input = typeaheadRefs?.current?.getInput()
+      if (!input) return
+      input.id = typeaheadInputId
+    }
+  )
 
   return (
     <>
@@ -139,7 +142,7 @@ const FilterTypeahead = (
           placeholder={
             selectedItems.length ? `${selectedItems.length} selected` : ''
           }
-          ref={typeaheadRefGetters}
+          ref={typeaheadRefs}
           backgroundColor="#000"
           fontColor="white"
           borderColor="#fff"
@@ -167,6 +170,4 @@ const FilterTypeahead = (
   )
 }
 
-export default forwardRef<TypeaheadRefGetters, FilterTypeaheadProps>(
-  FilterTypeahead
-)
+export default forwardRef(FilterTypeahead)

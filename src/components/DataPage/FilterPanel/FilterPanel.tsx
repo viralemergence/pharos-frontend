@@ -1,6 +1,6 @@
 import React, {
-  MutableRefObject,
   Dispatch,
+  Ref,
   SetStateAction,
   useEffect,
   useRef,
@@ -17,7 +17,7 @@ import {
 import InputLabel from '../../ui/InputLabel'
 import FilterTypeahead from './FilterTypeahead'
 import FilterPanelToolbar from './FilterPanelToolbar'
-import { TypeaheadRefGetters } from '../../../../library/ui/typeahead/Typeahead'
+import { TypeaheadRefs } from '../../../../library/ui/typeahead/Typeahead'
 
 const FilterInput = ({
   fieldLabel,
@@ -92,7 +92,7 @@ const FilterValueSetter = ({
   values,
   updateFilter,
   options = [],
-  typeaheadRefGetters,
+  typeaheadRefs,
 }: {
   filterIndex: number
   fieldLabel: string
@@ -100,7 +100,7 @@ const FilterValueSetter = ({
   values: FilterValues
   updateFilter: UpdateFilterFunction
   options: string[] | undefined
-  typeaheadRefGetters: MutableRefObject<TypeaheadRefGetters>
+  typeaheadRefs: Ref<TypeaheadRefs> | null
 }) => {
   const useTypeahead = fieldType === 'text'
   const truthyValues = values.filter(value => value)
@@ -112,7 +112,7 @@ const FilterValueSetter = ({
     filterIndex,
   }
   if (useTypeahead)
-    return <FilterTypeahead {...props} ref={typeaheadRefGetters} />
+    return <FilterTypeahead {...props} ref={typeaheadRefs} />
   else return <FilterInput {...props} fieldType={fieldType} />
 }
 
@@ -193,13 +193,11 @@ const FilterPanel = ({
     }, 500)
   }, [])
 
-  useEffect(() => {
-    setInterval(() => {
-      //
-    }, 100)
-  }, [])
+  // TODO: perhaps `| null` can be removed
+  const typeaheadRefs = useRef<TypeaheadRefs | null>(null)
 
-  const typeaheadRefGetters = null as TypeaheadRefGetters | null
+  /** On scroll, adjust the height of the typeahead results */
+  const adjustTypeaheadResultsHeight = () => {}
 
   return (
     <Panel
@@ -223,7 +221,10 @@ const FilterPanel = ({
               filterListRef,
             }}
           />
-          <FilterList ref={filterListRef}>
+          <FilterList
+            ref={filterListRef}
+            onScroll={adjustTypeaheadResultsHeight}
+          >
             {filters.map((filter, filterIndex) => {
               const { label = '', type = 'text' } = fields[filter.fieldId]
               return (
@@ -238,7 +239,7 @@ const FilterPanel = ({
                     options={fields[filter.fieldId].options}
                     updateFilter={updateFilter}
                     values={filter.values}
-                    typeaheadRefGetters={typeaheadRefGetters}
+                    typeaheadRefs={typeaheadRefs}
                   />
                 </FilterListItem>
               )

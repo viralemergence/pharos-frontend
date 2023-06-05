@@ -203,11 +203,7 @@ const ResultButton = ({
       ref={buttonsRef?.current?.get(item.key)}
       onFocus={e => resultButtonFocusHandler(e, resultsDivRef)}
     >
-      <RenderItem
-        selected={selected}
-        item={item}
-        /*key={item.key} TODO: Ensure this key can be removed */
-      />
+      <RenderItem selected={selected} item={item} />
     </ItemButton>
   )
 }
@@ -229,7 +225,7 @@ const getElementToFocus = (
     return order[focusedIndex + (up ? -1 : 1)]
   } else {
     // If the focusedElement is not visible, to avoid unexpected scrolling of
-    // the results div, move focus to an already visible button
+    // the results div, move focus to a button that is already visible
     return up
       ? // If moving up, focus the last visible button
         buttons.findLast(isVisibleInDiv)
@@ -238,9 +234,9 @@ const getElementToFocus = (
   }
 }
 
-export interface TypeaheadRefGetters {
-  getInput: () => void
-  getResultsDiv: () => void
+export interface TypeaheadRefs {
+  getInput: () => HTMLInputElement | null
+  getResultsDiv: () => HTMLDivElement | null
 }
 
 const Typeahead = (
@@ -262,8 +258,9 @@ const Typeahead = (
     disabled = false,
     style = {},
     ariaLabel,
+    inputId,
   }: TypeaheadProps,
-  forwardedRef: Ref<TypeaheadRefGetters>
+  typeaheadRefs: Ref<TypeaheadRefs>
 ) => {
   if (!items) throw new Error('Item array in multiselect cannot be undefined')
 
@@ -284,7 +281,7 @@ const Typeahead = (
     .search(searchString)
     .map(({ item }: { item: Item }) => item)
 
-  useImperativeHandle(forwardedRef, () => ({
+  useImperativeHandle(typeaheadRefs, () => ({
     getInput: () => inputRef.current,
     getResultsDiv: () => resultsDivRef.current,
   }))
