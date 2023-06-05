@@ -4,10 +4,7 @@ import React, {
   KeyboardEventHandler,
   MouseEventHandler,
   MutableRefObject,
-  Ref,
-  forwardRef,
   useEffect,
-  useImperativeHandle,
   useMemo,
   useRef,
   useState,
@@ -114,6 +111,8 @@ export interface TypeaheadProps {
   borderColor?: string
   /** Aria-label attribute for the text input */
   ariaLabel?: string
+  /** id attribute for the text input */
+  inputId?: string
 }
 
 type NullableMutableRef<T> = MutableRefObject<T | null>
@@ -234,34 +233,26 @@ const getElementToFocus = (
   }
 }
 
-export interface TypeaheadRefs {
-  getInput: () => HTMLInputElement | null
-  getResultsDiv: () => HTMLDivElement | null
-}
-
-const Typeahead = (
-  {
-    multiselect = false,
-    items,
-    values = [],
-    onAdd,
-    onRemove,
-    placeholder = '',
-    RenderItem = props => <TypeaheadResult {...props} />,
-    searchKeys = ['key', 'label'],
-    iconSVG,
-    iconLeft = false,
-    backgroundColor = 'white',
-    borderColor = '#aaa',
-    fontColor = 'rgba(51, 51, 51, 1)',
-    className,
-    disabled = false,
-    style = {},
-    ariaLabel,
-    inputId,
-  }: TypeaheadProps,
-  typeaheadRefs: Ref<TypeaheadRefs>
-) => {
+const Typeahead = ({
+  multiselect = false,
+  items,
+  values = [],
+  onAdd,
+  onRemove,
+  placeholder = '',
+  RenderItem = props => <TypeaheadResult {...props} />,
+  searchKeys = ['key', 'label'],
+  iconSVG,
+  iconLeft = false,
+  backgroundColor = 'white',
+  borderColor = '#aaa',
+  fontColor = 'rgba(51, 51, 51, 1)',
+  className,
+  disabled = false,
+  style = {},
+  ariaLabel,
+  inputId,
+}: TypeaheadProps) => {
   if (!items) throw new Error('Item array in multiselect cannot be undefined')
 
   const [searchString, setSearchString] = useState('')
@@ -280,11 +271,6 @@ const Typeahead = (
   const results = fuse
     .search(searchString)
     .map(({ item }: { item: Item }) => item)
-
-  useImperativeHandle(typeaheadRefs, () => ({
-    getInput: () => inputRef.current,
-    getResultsDiv: () => resultsDivRef.current,
-  }))
 
   const keydownFromSearchBarHandlers: Record<string, KeyboardEventHandler> = {
     // accept top result if enter is pressed
@@ -390,6 +376,7 @@ const Typeahead = (
       onKeyDown={handleKeyDownFromContainer}
     >
       <SearchBar
+        id={inputId}
         disabled={disabled}
         type="search"
         autoComplete="off"
@@ -471,4 +458,4 @@ const ScreenReaderOnly = styled.div`
   right: auto;
 `
 
-export default forwardRef(Typeahead)
+export default Typeahead

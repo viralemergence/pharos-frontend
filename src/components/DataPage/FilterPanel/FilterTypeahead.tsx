@@ -1,8 +1,7 @@
-import React, { forwardRef, useEffect, useRef, Ref } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import Typeahead, {
   Item as TypeaheadItem,
-  TypeaheadRefs,
 } from '../../../../library/ui/typeahead/Typeahead'
 import FilterDarkTypeaheadResult from './FilterDarkTypeaheadResult'
 import { XIcon, FieldName, FilterValues } from './constants'
@@ -77,16 +76,13 @@ interface FilterTypeaheadProps {
 }
 
 /** A typeahead component for setting the value of a filter */
-const FilterTypeahead = (
-  {
-    fieldLabel,
-    values,
-    options,
-    updateFilter,
-    filterIndex,
-  }: FilterTypeaheadProps,
-  typeaheadRefs: Ref<TypeaheadRefs>
-) => {
+const FilterTypeahead = ({
+  fieldLabel,
+  values,
+  options,
+  updateFilter,
+  filterIndex,
+}: FilterTypeaheadProps) => {
   const selectedItems = values.map(value => ({
     key: value,
     label: value,
@@ -116,17 +112,6 @@ const FilterTypeahead = (
 
   const typeaheadInputId = `typeahead-${filterIndex}`
 
-  useEffect(
-    /** Set id of input to connect it with the label */
-    () => {
-      if (typeof typeaheadRefs === 'function') return // Don't support ref callbacks
-      if (!typeaheadRefs?.current) return
-      const input = typeaheadRefs?.current?.getInput()
-      if (!input) return
-      input.id = typeaheadInputId
-    }
-  )
-
   return (
     <>
       <TypeaheadLabel htmlFor={typeaheadInputId}>
@@ -142,7 +127,6 @@ const FilterTypeahead = (
           placeholder={
             selectedItems.length ? `${selectedItems.length} selected` : ''
           }
-          ref={typeaheadRefs}
           backgroundColor="#000"
           fontColor="white"
           borderColor="#fff"
@@ -150,6 +134,7 @@ const FilterTypeahead = (
             <FilterDarkTypeaheadResult {...{ item, selected }} />
           )}
           iconSVG="%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9L12 15L18 9H6Z' fill='%23FFFFFF'/%3E%3C/svg%3E%0A"
+          inputId={`typeahead-${filterIndex}`}
         />
       </TypeaheadContainer>
       {values.length > 0 && (
@@ -170,4 +155,4 @@ const FilterTypeahead = (
   )
 }
 
-export default forwardRef(FilterTypeahead)
+export default FilterTypeahead
