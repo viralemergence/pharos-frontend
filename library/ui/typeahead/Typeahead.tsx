@@ -1,14 +1,16 @@
 import React, {
+  FocusEvent,
+  ForwardedRef,
+  KeyboardEventHandler,
+  MouseEventHandler,
+  MutableRefObject,
+  Ref,
   forwardRef,
   useEffect,
+  useImperativeHandle,
   useMemo,
   useRef,
   useState,
-  ForwardedRef,
-  MutableRefObject,
-  KeyboardEventHandler,
-  MouseEventHandler,
-  FocusEvent,
 } from 'react'
 import Fuse from 'fuse.js'
 import styled from 'styled-components'
@@ -236,227 +238,234 @@ const getElementToFocus = (
   }
 }
 
-const Typeahead = forwardRef<HTMLInputElement, TypeaheadProps>(
-  (
-    {
-      multiselect = false,
-      items,
-      values = [],
-      onAdd,
-      onRemove,
-      placeholder = '',
-      RenderItem = props => <TypeaheadResult {...props} />,
-      searchKeys = ['key', 'label'],
-      iconSVG,
-      iconLeft = false,
-      backgroundColor = 'white',
-      borderColor = '#aaa',
-      fontColor = 'rgba(51, 51, 51, 1)',
-      className,
-      disabled = false,
-      style = {},
-      ariaLabel,
-    }: TypeaheadProps,
-    forwardedInputRef
-  ) => {
-    if (!items) throw new Error('Item array in multiselect cannot be undefined')
+export interface TypeaheadRefGetters {
+  getInput: () => void
+  getResultsDiv: () => void
+}
 
-    const [searchString, setSearchString] = useState('')
+const Typeahead = (
+  {
+    multiselect = false,
+    items,
+    values = [],
+    onAdd,
+    onRemove,
+    placeholder = '',
+    RenderItem = props => <TypeaheadResult {...props} />,
+    searchKeys = ['key', 'label'],
+    iconSVG,
+    iconLeft = false,
+    backgroundColor = 'white',
+    borderColor = '#aaa',
+    fontColor = 'rgba(51, 51, 51, 1)',
+    className,
+    disabled = false,
+    style = {},
+    ariaLabel,
+  }: TypeaheadProps,
+  forwardedRef: Ref<TypeaheadRefGetters>
+) => {
+  if (!items) throw new Error('Item array in multiselect cannot be undefined')
 
-    const [showResults, setShowResults] = useState(false)
+  const [searchString, setSearchString] = useState('')
 
-    const inputRef: InputRef = useRef(null)
-    const buttonsRef = useRef(new Map<string, ButtonRef>())
+  const [showResults, setShowResults] = useState(false)
 
-    // compute fuzzy search
-    const fuse = useMemo(
-      () => new Fuse(items, { keys: searchKeys }),
-      [items, searchKeys]
-    )
+  const inputRef: InputRef = useRef(null)
+  const buttonsRef = useRef(new Map<string, ButtonRef>())
 
-    const results = fuse
-      .search(searchString)
-      .map(({ item }: { item: Item }) => item)
+  // compute fuzzy search
+  const fuse = useMemo(
+    () => new Fuse(items, { keys: searchKeys }),
+    [items, searchKeys]
+  )
 
-    const keydownFromSearchBarHandlers: Record<string, KeyboardEventHandler> = {
-      // accept top result if enter is pressed
-      Enter: _e => {
-        if (results[0] || items[0]) onAdd(results[0] || items[0])
-        inputRef?.current!.blur()
-        setSearchString('')
-      },
-      Esc: _e => {
-        setShowResults(false)
-      },
-    }
+  const results = fuse
+    .search(searchString)
+    .map(({ item }: { item: Item }) => item)
 
-    const handleKeyDownFromSearchBar: KeyboardEventHandler = e => {
-      keydownFromSearchBarHandlers[e.key]?.(e)
-    }
+  useImperativeHandle(forwardedRef, () => ({
+    getInput: () => inputRef.current,
+    getResultsDiv: () => resultsDivRef.current,
+  }))
 
-    // When a blur event fires, set results to hide next at the end
-    // of the event loop using a zero-duration timeout, which will
-    // be cancelled if focus bubbles up from a child element.
-    let blurTimeout: ReturnType<typeof global.setTimeout> | undefined
-    const onBlurHandler = () => {
-      blurTimeout = setTimeout(() => {
-        setShowResults(false)
-        if (!values.length) setSearchString('')
-      })
-    }
-
-    // if focus is inside the container,
-    // cancel the timer, don't hide the results
-    const onFocusHandler = () => {
-      clearTimeout(blurTimeout)
-      setShowResults(true)
-    }
-
-    useEffect(() => {
-      if (values.length && !multiselect) setSearchString(values[0]?.label)
-    }, [values, multiselect])
-
-    useEffect(() => {
-      if (disabled && !values.length) setSearchString('')
-    }, [disabled, values])
-
-    const handleKeyDownFromContainer: KeyboardEventHandler<
-      HTMLFormElement
-    > = e => {
-      if (!inputRef) return
-      if (!isFocusable(e.target)) return
-
-      const up = e.key === 'ArrowUp'
-      const down = e.key === 'ArrowDown'
-
-      if (e.key === 'Escape') {
-        setTimeout(() => setShowResults(false))
-        inputRef.current?.focus()
-      } else if (up || down) {
-        const focusedElement = e.target
-        const div = resultsDivRef.current
-        // buttonsRef points to a map of refs. Each of these refs points to a
-        // HTMLButtonElement (or null)
-        const buttons = Array.from(buttonsRef.current.values()).map(
-          b => b?.current
-        )
-
-        /** Arrow keys move the focus up and down through this array, like a tab order. */
-        const order = [inputRef.current, ...buttons]
-        const isInputFocused = focusedElement === inputRef.current
-        const elementToFocus = getElementToFocus(
-          focusedElement,
-          isInputFocused,
-          up,
-          buttons,
-          order,
-          div
-        )
-
-        elementToFocus?.focus({
-          // Scrolling of the list is handled in the button's onFocus handler
-          preventScroll: true,
-        })
-        if (down && isInputFocused) setShowResults(true)
-        if (up && elementToFocus === inputRef.current) setShowResults(false)
-        e.preventDefault()
-      }
-    }
-    const resultsDivRef: DivRef = useRef(null)
-    const indexOfLastItemAdded: NumberRef = useRef<number>(null)
-    const resultButtonProps: Partial<ResultButtonProps> = {
-      buttonsRef,
-      resultsDivRef,
-      fontColor,
-      indexOfLastItemAdded,
-    }
-
-    return (
-      <Container
-        onFocus={onFocusHandler}
-        onBlur={onBlurHandler}
-        className={className}
-        onSubmit={e => e.preventDefault()}
-        style={{ ...style, backgroundColor }}
-        borderColor={borderColor}
-        onKeyDown={handleKeyDownFromContainer}
-      >
-        <SearchBar
-          disabled={disabled}
-          type="search"
-          autoComplete="off"
-          name="special-auto-fill"
-          ref={input => {
-            setRef(inputRef, input)
-            setRef(forwardedInputRef, input)
-          }}
-          onKeyDown={handleKeyDownFromSearchBar}
-          value={searchString}
-          onChange={e => setSearchString(e.target.value)}
-          placeholder={placeholder}
-          aria-label={ariaLabel}
-          iconLeft={iconLeft}
-          style={{ backgroundColor, borderColor }}
-          fontColor={fontColor}
-          areResultsShown={showResults}
-        />
-        <SearchIcon searchString={searchString} {...{ iconSVG, iconLeft }} />
-        <Expander
-          floating
-          open={showResults}
-          style={{
-            width: '100%',
-            borderBottomRightRadius: 10,
-            borderBottomLeftRadius: 10,
-            background: 'none',
-          }}
-          animDuration={200}
-        >
-          <Results style={{ backgroundColor, borderColor }} ref={resultsDivRef}>
-            {multiselect && values.length > 0 && (
-              <Selected borderColor={borderColor}>
-                {values.map((item: Item, index) => (
-                  <ResultButton
-                    selected={true}
-                    key={item.key}
-                    onClick={() => {
-                      onRemove?.(item)
-                      indexOfLastItemAdded.current = index
-                    }}
-                    isFocused={index === indexOfLastItemAdded.current}
-                    item={item}
-                    RenderItem={RenderItem}
-                    {...resultButtonProps}
-                  />
-                ))}
-              </Selected>
-            )}
-            {(results.length && searchString !== values[0]?.label
-              ? results
-              : items
-            ).map((item: Item, index: number) => (
-              <ResultButton
-                item={item}
-                key={item.key}
-                isFocused={index === indexOfLastItemAdded.current}
-                onClick={() => {
-                  onAdd(item)
-                  indexOfLastItemAdded.current = index
-                }}
-                RenderItem={RenderItem}
-                {...resultButtonProps}
-              />
-            ))}
-          </Results>
-        </Expander>
-        <ScreenReaderOnly>
-          When options are available, use the Up and Down arrows on your
-          keyboard to review them, and the Enter key to select one.
-        </ScreenReaderOnly>
-      </Container>
-    )
+  const keydownFromSearchBarHandlers: Record<string, KeyboardEventHandler> = {
+    // accept top result if enter is pressed
+    Enter: _e => {
+      if (results[0] || items[0]) onAdd(results[0] || items[0])
+      inputRef?.current!.blur()
+      setSearchString('')
+    },
+    Esc: _e => {
+      setShowResults(false)
+    },
   }
-)
+
+  const handleKeyDownFromSearchBar: KeyboardEventHandler = e => {
+    keydownFromSearchBarHandlers[e.key]?.(e)
+  }
+
+  // When a blur event fires, set results to hide next at the end
+  // of the event loop using a zero-duration timeout, which will
+  // be cancelled if focus bubbles up from a child element.
+  let blurTimeout: ReturnType<typeof global.setTimeout> | undefined
+  const onBlurHandler = () => {
+    blurTimeout = setTimeout(() => {
+      setShowResults(false)
+      if (!values.length) setSearchString('')
+    })
+  }
+
+  // if focus is inside the container,
+  // cancel the timer, don't hide the results
+  const onFocusHandler = () => {
+    clearTimeout(blurTimeout)
+    setShowResults(true)
+  }
+
+  useEffect(() => {
+    if (values.length && !multiselect) setSearchString(values[0]?.label)
+  }, [values, multiselect])
+
+  useEffect(() => {
+    if (disabled && !values.length) setSearchString('')
+  }, [disabled, values])
+
+  const handleKeyDownFromContainer: KeyboardEventHandler<
+    HTMLFormElement
+  > = e => {
+    if (!inputRef) return
+    if (!isFocusable(e.target)) return
+
+    const up = e.key === 'ArrowUp'
+    const down = e.key === 'ArrowDown'
+
+    if (e.key === 'Escape') {
+      setTimeout(() => setShowResults(false))
+      inputRef.current?.focus()
+    } else if (up || down) {
+      const focusedElement = e.target
+      const div = resultsDivRef.current
+      // buttonsRef points to a map of refs. Each of these refs points to a
+      // HTMLButtonElement (or null)
+      const buttons = Array.from(buttonsRef.current.values()).map(
+        b => b?.current
+      )
+
+      /** Arrow keys move the focus up and down through this array, like a tab order. */
+      const order = [inputRef.current, ...buttons]
+      const isInputFocused = focusedElement === inputRef.current
+      const elementToFocus = getElementToFocus(
+        focusedElement,
+        isInputFocused,
+        up,
+        buttons,
+        order,
+        div
+      )
+
+      elementToFocus?.focus({
+        // Scrolling of the list is handled in the button's onFocus handler
+        preventScroll: true,
+      })
+      if (down && isInputFocused) setShowResults(true)
+      if (up && elementToFocus === inputRef.current) setShowResults(false)
+      e.preventDefault()
+    }
+  }
+  const resultsDivRef: DivRef = useRef(null)
+  const indexOfLastItemAdded: NumberRef = useRef<number>(null)
+  const resultButtonProps: Partial<ResultButtonProps> = {
+    buttonsRef,
+    resultsDivRef,
+    fontColor,
+    indexOfLastItemAdded,
+  }
+
+  return (
+    <Container
+      onFocus={onFocusHandler}
+      onBlur={onBlurHandler}
+      className={className}
+      onSubmit={e => e.preventDefault()}
+      style={{ ...style, backgroundColor }}
+      borderColor={borderColor}
+      onKeyDown={handleKeyDownFromContainer}
+    >
+      <SearchBar
+        disabled={disabled}
+        type="search"
+        autoComplete="off"
+        name="special-auto-fill"
+        ref={input => {
+          setRef(inputRef, input)
+        }}
+        onKeyDown={handleKeyDownFromSearchBar}
+        value={searchString}
+        onChange={e => setSearchString(e.target.value)}
+        placeholder={placeholder}
+        aria-label={ariaLabel}
+        iconLeft={iconLeft}
+        style={{ backgroundColor, borderColor }}
+        fontColor={fontColor}
+        areResultsShown={showResults}
+      />
+      <SearchIcon searchString={searchString} {...{ iconSVG, iconLeft }} />
+      <Expander
+        floating
+        open={showResults}
+        style={{
+          width: '100%',
+          borderBottomRightRadius: 10,
+          borderBottomLeftRadius: 10,
+          background: 'none',
+        }}
+        animDuration={200}
+      >
+        <Results style={{ backgroundColor, borderColor }} ref={resultsDivRef}>
+          {multiselect && values.length > 0 && (
+            <Selected borderColor={borderColor}>
+              {values.map((item: Item, index) => (
+                <ResultButton
+                  selected={true}
+                  key={item.key}
+                  onClick={() => {
+                    onRemove?.(item)
+                    indexOfLastItemAdded.current = index
+                  }}
+                  isFocused={index === indexOfLastItemAdded.current}
+                  item={item}
+                  RenderItem={RenderItem}
+                  {...resultButtonProps}
+                />
+              ))}
+            </Selected>
+          )}
+          {(results.length && searchString !== values[0]?.label
+            ? results
+            : items
+          ).map((item: Item, index: number) => (
+            <ResultButton
+              item={item}
+              key={item.key}
+              isFocused={index === indexOfLastItemAdded.current}
+              onClick={() => {
+                onAdd(item)
+                indexOfLastItemAdded.current = index
+              }}
+              RenderItem={RenderItem}
+              {...resultButtonProps}
+            />
+          ))}
+        </Results>
+      </Expander>
+      <ScreenReaderOnly>
+        When options are available, use the Up and Down arrows on your keyboard
+        to review them, and the Enter key to select one.
+      </ScreenReaderOnly>
+    </Container>
+  )
+}
 
 // Following a pattern used by, for example, https://designsystem.digital.gov/components/combo-box/
 const ScreenReaderOnly = styled.div`
@@ -465,4 +474,4 @@ const ScreenReaderOnly = styled.div`
   right: auto;
 `
 
-export default Typeahead
+export default forwardRef(Typeahead)

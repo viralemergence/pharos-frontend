@@ -1,4 +1,5 @@
 import React, {
+  MutableRefObject,
   Dispatch,
   SetStateAction,
   useEffect,
@@ -16,6 +17,7 @@ import {
 import InputLabel from '../../ui/InputLabel'
 import FilterTypeahead from './FilterTypeahead'
 import FilterPanelToolbar from './FilterPanelToolbar'
+import { TypeaheadRefGetters } from '../../../../library/ui/typeahead/Typeahead'
 
 const FilterInput = ({
   fieldLabel,
@@ -90,6 +92,7 @@ const FilterValueSetter = ({
   values,
   updateFilter,
   options = [],
+  typeaheadRefGetters,
 }: {
   filterIndex: number
   fieldLabel: string
@@ -97,6 +100,7 @@ const FilterValueSetter = ({
   values: FilterValues
   updateFilter: UpdateFilterFunction
   options: string[] | undefined
+  typeaheadRefGetters: MutableRefObject<TypeaheadRefGetters>
 }) => {
   const useTypeahead = fieldType === 'text'
   const truthyValues = values.filter(value => value)
@@ -107,7 +111,8 @@ const FilterValueSetter = ({
     updateFilter,
     filterIndex,
   }
-  if (useTypeahead) return <FilterTypeahead {...props} />
+  if (useTypeahead)
+    return <FilterTypeahead {...props} ref={typeaheadRefGetters} />
   else return <FilterInput {...props} fieldType={fieldType} />
 }
 
@@ -169,7 +174,7 @@ const FilterPanel = ({
 }) => {
   const [isFieldSelectorOpen, setIsFieldSelectorOpen] = useState(false)
 
-  const filterListRef = useRef<HTMLUListElement>(null)
+  const filterListRef = useRef<HTMLUListElement | null>(null)
 
   const idsOfAddedFields = filters.map(({ fieldId }) => fieldId)
   for (const fieldId in fields) {
@@ -187,6 +192,14 @@ const FilterPanel = ({
       shouldAnimateFilters.current = true
     }, 500)
   }, [])
+
+  useEffect(() => {
+    setInterval(() => {
+      //
+    }, 100)
+  }, [])
+
+  const typeaheadRefGetters = null as TypeaheadRefGetters | null
 
   return (
     <Panel
@@ -207,6 +220,7 @@ const FilterPanel = ({
               isFieldSelectorOpen,
               setIsFieldSelectorOpen,
               setIsFilterPanelOpen,
+              filterListRef,
             }}
           />
           <FilterList ref={filterListRef}>
@@ -224,6 +238,7 @@ const FilterPanel = ({
                     options={fields[filter.fieldId].options}
                     updateFilter={updateFilter}
                     values={filter.values}
+                    typeaheadRefGetters={typeaheadRefGetters}
                   />
                 </FilterListItem>
               )
