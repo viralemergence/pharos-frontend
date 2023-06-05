@@ -1,14 +1,14 @@
 import React, {
-  useEffect,
-  useState,
-  useRef,
   Dispatch,
   SetStateAction,
+  useEffect,
+  useRef,
+  useState,
 } from 'react'
 import styled from 'styled-components'
 import {
-  FieldName,
   Field,
+  FieldName,
   Filter,
   FilterValues,
   UpdateFilterFunction,
@@ -44,16 +44,20 @@ const FilterInput = ({
   )
 }
 
-const Panel = styled.aside<{ isFilterPanelOpen: boolean; height: string }>`
-  background-color: rgba(51, 51, 51, 0.8);
+const Panel = styled.aside<{ isFilterPanelOpen: boolean }>`
+  backdrop-filter: blur(12px);
+  background-color: ${({ theme }) => theme.lightBlack};
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.4);
   color: #fff;
-  height: ${props => props.height};
-  position: relative;
-  width: 410px;
-  top: 73px;
+  height: calc(100vh - 210px);
   left: 30px;
+  margin-right: 30px;
+  position: relative;
+  top: 73px;
+  width: 400px;
+  z-index: 3;
   @media (max-width: 768px) {
-    background-color: rgba(51, 51, 51, 1);
+    background-color: ${({ theme }) => theme.lightBlack};
     bottom: 0;
     height: auto;
     left: 0;
@@ -63,20 +67,16 @@ const Panel = styled.aside<{ isFilterPanelOpen: boolean; height: string }>`
     width: 100vw;
     z-index: 10;
   }
-  margin-right: 30px;
-  backdrop-filter: blur(12px);
-  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.4);
-  z-index: 3;
 `
 
 const FieldInput = styled.input`
   ${({ theme }) => theme.smallParagraph};
-  padding: 8px 10px;
-  font-weight: 600;
   background-color: #202020;
-  color: #fff;
-  border: 1px solid #fff;
   border-radius: 5px;
+  border: 1px solid #fff;
+  color: #fff;
+  font-weight: 600;
+  padding: 8px 10px;
   &::-webkit-calendar-picker-indicator {
     filter: invert(1);
     opacity: 0.5;
@@ -136,11 +136,11 @@ const FilterListItem = ({
   )
 }
 
-const FilterList = styled.ul<{ height: string }>`
+const FilterList = styled.ul`
+  height: calc(100vh - 190px - 73px);
   margin: 0;
-  padding: 34px 40px;
   overflow-y: auto;
-  height: ${props => props.height};
+  padding: 34px 40px;
   @media (max-width: 768px) {
     height: calc(100vh - 60px - 73px);
   }
@@ -157,7 +157,6 @@ const FilterPanel = ({
   setFilters,
   clearFilters,
   updateFilter,
-  height,
 }: {
   isFilterPanelOpen: boolean
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
@@ -167,12 +166,9 @@ const FilterPanel = ({
   clearFilters: () => void
   /** Event handler for when one of the filter input elements receives new input */
   updateFilter: UpdateFilterFunction
-  height: string
 }) => {
   const [isFieldSelectorOpen, setIsFieldSelectorOpen] = useState(false)
 
-  // height is a 'calc()' expression
-  const filterListHeight = height.replace(')', ' - 73px)')
   const filterListRef = useRef<HTMLUListElement>(null)
 
   const idsOfAddedFields = filters.map(({ fieldId }) => fieldId)
@@ -195,7 +191,6 @@ const FilterPanel = ({
   return (
     <Panel
       style={{ colorScheme: 'dark' }}
-      height={height}
       isFilterPanelOpen={isFilterPanelOpen}
       onClick={_ => {
         setIsFieldSelectorOpen(false)
@@ -212,10 +207,9 @@ const FilterPanel = ({
               isFieldSelectorOpen,
               setIsFieldSelectorOpen,
               setIsFilterPanelOpen,
-              filterListRef,
             }}
           />
-          <FilterList ref={filterListRef} height={filterListHeight}>
+          <FilterList ref={filterListRef}>
             {filters.map((filter, filterIndex) => {
               const { label = '', type = 'text' } = fields[filter.fieldId]
               return (

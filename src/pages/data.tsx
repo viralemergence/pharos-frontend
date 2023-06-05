@@ -32,7 +32,7 @@ const ViewContainer = styled.main`
 	background-color: rgb(5, 10, 55); //#3d434e;
 	padding-bottom: 1rem;
 	.map-container {
-		height: calc(100vh - 73px);
+		height: calc(100vh - 87px);
 		@media (max-width: 768px) {
 			height: calc(100vh - 60px);
 		}
@@ -249,11 +249,8 @@ const DataView = (): JSX.Element => {
 	}
 
 	const dataViewHeight = 'calc(100vh - 87px)'
-	const panelHeight = 'calc(100vh - 190px)'
 	const panelWidth = isFilterPanelOpen ? 410 : 0
 	const tableViewWidthOffset = 0
-	const tableViewWidth = `calc(100vw - ${panelWidth}px + ${tableViewWidthOffset}px)`
-	const tableViewHeight = 'calc(100vh - 103px)'
 
 	const showEarth = [View.globe, View.map].includes(view)
 
@@ -278,7 +275,6 @@ const DataView = (): JSX.Element => {
 						updateFilter={updateFilter}
 						setFilters={setFilters}
 						clearFilters={clearFilters}
-						height={panelHeight}
 					/>
 				)}
 				<MapView
@@ -301,8 +297,6 @@ const DataView = (): JSX.Element => {
 					reachedLastPage={reachedLastPage}
 					style={{
 						display: view === View.table ? 'grid' : 'none',
-						width: tableViewWidth,
-						height: tableViewHeight,
 					}}
 				/>
 			</ViewContainer>

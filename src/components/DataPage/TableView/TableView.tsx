@@ -5,11 +5,11 @@ import LoadingSpinner from './LoadingSpinner'
 import type { Filter, Field } from '../FilterPanel/constants'
 import './dataGrid.css'
 
-const TableViewContainer = styled.div<{ height: string }>`
+const TableViewContainer = styled.div`
   position: relative;
-  width: 100%;
-  height: ${props => props.height};
   z-index: 3;
+  width: calc(100vw - 430px);
+  height: calc(100vh - 103px);
 `
 const TableContaier = styled.div`
   position: relative;
