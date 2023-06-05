@@ -14,6 +14,7 @@ import styled from 'styled-components'
 import Expander from '@talus-analytics/library.ui.expander'
 
 // TODO: I don't remember what the purpose of indexOfLastItemAdded is.
+// TODO: Make the results list open when the user does a search
 
 import {
   Container,
@@ -484,5 +485,4 @@ const ScreenReaderOnly = styled.div`
   right: auto;
 `
 
-export default Typeahead
 export default Typeahead
