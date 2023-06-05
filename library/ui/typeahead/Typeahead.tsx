@@ -13,6 +13,8 @@ import Fuse from 'fuse.js'
 import styled from 'styled-components'
 import Expander from '@talus-analytics/library.ui.expander'
 
+// TODO: I don't remember what the purpose of indexOfLastItemAdded is.
+
 import {
   Container,
   SearchBar,
@@ -148,6 +150,26 @@ const isVisibleInContainer = (
   elem.offsetTop >= container.scrollTop &&
   elem.offsetTop <= container.scrollTop + container.clientHeight
 
+const getButtons = (buttonsMap: Map<string, ButtonRef>) => {
+  // buttonsRef points to a map of refs. Each of these refs points to a
+  // HTMLButtonElement (or null).
+  const buttonEntries = Array.from(buttonsMap.entries())
+  // The keys of the map, e.g. 'Adenovirus-0', 'Alphacoronavirus-1', contain
+  // indexes we use to put the buttons in the right order.
+  const buttonEntriesSorted = buttonEntries.sort(([keyA, _], [keyB, __]) => {
+    const getIndex = (key: string) => Number(key.split('-').at(-1) ?? 0)
+    return getIndex(keyA) - getIndex(keyB)
+  })
+  const buttons = buttonEntriesSorted.reduce(
+    (acc: HTMLButtonElement[], [_, buttonRef]) => {
+      const button = buttonRef?.current
+      return button ? [...acc, button] : acc
+    },
+    []
+  )
+  return buttons
+}
+
 /** Reduce list scrolling when button is focused */
 const resultButtonFocusHandler = (
   e: FocusEvent<HTMLButtonElement>,
@@ -176,6 +198,7 @@ interface ResultButtonProps {
   buttonsRef?: MutableRefObject<Map<string, ButtonRef | null>>
   resultsDivRef?: DivRef
   indexOfLastItemAdded?: NumberRef
+  index?: number
 }
 
 const ResultButton = ({
@@ -188,18 +211,21 @@ const ResultButton = ({
   RenderItem,
   isFocused = false,
   indexOfLastItemAdded,
+  index,
 }: ResultButtonProps) => {
   const buttonRef: ButtonRef = useRef(null)
   useEffect(() => {
     if (isFocused) buttonRef.current?.focus({ preventScroll: true })
     setRef(indexOfLastItemAdded, null)
   })
+  buttonsRef?.current?.set(`${item.key}-${index}`, buttonRef)
+
   return (
     <ItemButton
       tabIndex={-1}
       onClick={onClick}
       style={{ color: fontColor }}
-      ref={buttonsRef?.current?.get(item.key)}
+      ref={buttonRef}
       onFocus={e => resultButtonFocusHandler(e, resultsDivRef)}
     >
       <RenderItem selected={selected} item={item} />
@@ -320,6 +346,7 @@ const Typeahead = ({
     if (!inputRef) return
     if (!isFocusable(e.target)) return
 
+    const buttons = getButtons(buttonsRef.current)
     const up = e.key === 'ArrowUp'
     const down = e.key === 'ArrowDown'
 
@@ -329,11 +356,6 @@ const Typeahead = ({
     } else if (up || down) {
       const focusedElement = e.target
       const div = resultsDivRef.current
-      // buttonsRef points to a map of refs. Each of these refs points to a
-      // HTMLButtonElement (or null)
-      const buttons = Array.from(buttonsRef.current.values()).map(
-        b => b?.current
-      )
 
       /** Arrow keys move the focus up and down through this array, like a tab order. */
       const order = [inputRef.current, ...buttons]
@@ -409,17 +431,19 @@ const Typeahead = ({
         <Results style={{ backgroundColor, borderColor }} ref={resultsDivRef}>
           {multiselect && values.length > 0 && (
             <Selected borderColor={borderColor}>
-              {values.map((item: Item, index) => (
+              {values.map((item: Item, index: number) => (
                 <ResultButton
                   selected={true}
                   key={item.key}
                   onClick={() => {
                     onRemove?.(item)
                     indexOfLastItemAdded.current = index
+                    buttonsRef.current.delete(`${item.key}-${index}`)
                   }}
                   isFocused={index === indexOfLastItemAdded.current}
                   item={item}
                   RenderItem={RenderItem}
+                  index={index}
                   {...resultButtonProps}
                 />
               ))}
@@ -436,8 +460,10 @@ const Typeahead = ({
               onClick={() => {
                 onAdd(item)
                 indexOfLastItemAdded.current = index
+                buttonsRef.current.delete(`${item.key}-${index}`)
               }}
               RenderItem={RenderItem}
+              index={index + values.length}
               {...resultButtonProps}
             />
           ))}
@@ -458,4 +484,5 @@ const ScreenReaderOnly = styled.div`
   right: auto;
 `
 
+export default Typeahead
 export default Typeahead
