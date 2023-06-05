@@ -253,7 +253,7 @@ const DataView = (): JSX.Element => {
 	const tableViewWidthOffset = 0
 
 	// TODO: Use flexbox or grid layout than hardcoding the pixel values.
-	// TODO: Check out Ryan's PR to see how he does styled components
+	// TODO: Check out Ryan's PR (for project pages) to see how he does styled components
 
 	const showEarth = [View.globe, View.map].includes(view)
 
