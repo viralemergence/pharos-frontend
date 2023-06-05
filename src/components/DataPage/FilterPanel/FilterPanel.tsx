@@ -1,6 +1,5 @@
 import React, {
   Dispatch,
-  Ref,
   SetStateAction,
   useEffect,
   useRef,
@@ -17,7 +16,6 @@ import {
 import InputLabel from '../../ui/InputLabel'
 import FilterTypeahead from './FilterTypeahead'
 import FilterPanelToolbar from './FilterPanelToolbar'
-import { TypeaheadRefs } from '../../../../library/ui/typeahead/Typeahead'
 
 const FilterInput = ({
   fieldLabel,
@@ -92,7 +90,6 @@ const FilterValueSetter = ({
   values,
   updateFilter,
   options = [],
-  typeaheadRefs,
 }: {
   filterIndex: number
   fieldLabel: string
@@ -100,7 +97,6 @@ const FilterValueSetter = ({
   values: FilterValues
   updateFilter: UpdateFilterFunction
   options: string[] | undefined
-  typeaheadRefs: Ref<TypeaheadRefs> | null
 }) => {
   const useTypeahead = fieldType === 'text'
   const truthyValues = values.filter(value => value)
@@ -111,8 +107,7 @@ const FilterValueSetter = ({
     updateFilter,
     filterIndex,
   }
-  if (useTypeahead)
-    return <FilterTypeahead {...props} ref={typeaheadRefs} />
+  if (useTypeahead) return <FilterTypeahead {...props} />
   else return <FilterInput {...props} fieldType={fieldType} />
 }
 
@@ -193,9 +188,6 @@ const FilterPanel = ({
     }, 500)
   }, [])
 
-  // TODO: perhaps `| null` can be removed
-  const typeaheadRefs = useRef<TypeaheadRefs | null>(null)
-
   /** On scroll, adjust the height of the typeahead results */
   const adjustTypeaheadResultsHeight = () => {}
 
@@ -239,7 +231,6 @@ const FilterPanel = ({
                     options={fields[filter.fieldId].options}
                     updateFilter={updateFilter}
                     values={filter.values}
-                    typeaheadRefs={typeaheadRefs}
                   />
                 </FilterListItem>
               )
