@@ -179,7 +179,6 @@ const FilterPanelToolbar = ({
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
   filterListRef: MutableRefObject<HTMLUListElement | null>
 }) => {
-  // TODO: Remove invisible items from tab order
   return (
     <>
       <FilterPanelToolbarNav>
