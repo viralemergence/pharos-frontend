@@ -4,7 +4,9 @@
   "private": true,
   "description": "talus-gatsby-starter",
   "author": "Ryan",
-  "keywords": ["gatsby"],
+  "keywords": [
+    "gatsby"
+  ],
   "scripts": {
     "develop": "scripts/start.sh",
     "start": "scripts/start.sh",
@@ -28,6 +30,7 @@
     "@talus-analytics/library.ui.dropdown": "^0.0.10",
     "@talus-analytics/library.ui.typeahead": "file:library/ui/typeahead",
     "babel-plugin-styled-components": "^2.0.7",
+    "fuse.js": "^6.6.2",
     "gatsby": "^5.7.0",
     "gatsby-plugin-gtag": "^1.0.13",
     "gatsby-plugin-image": "^3.2.0",
@@ -50,7 +53,7 @@
     "papaparse": "^5.3.2",
     "polished": "^4.2.2",
     "react": "^18.2.0",
-    "react-data-grid": "^7.0.0-beta.19",
+    "react-data-grid": "7.0.0-beta.31",
     "react-dom": "^18.2.0",
     "react-drag-drop-files": "^2.3.7",
     "react-helmet": "^6.1.0",
