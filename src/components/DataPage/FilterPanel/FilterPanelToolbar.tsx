@@ -131,28 +131,9 @@ const FieldSelector = ({
   fields: Record<string, Field>
   addFilterValueSetter: (fieldId: string) => void
 }) => {
-  const buttons = useRef(
-    new Map<string, MutableRefObject<HTMLButtonElement | null>>()
-  ).current
   const keyDownHandler = (e: KeyboardEvent) => {
     console.log(e.key)
   }
-
-  useEffect(() => {
-    Object.entries(fields).forEach(([fieldId, _field]) => {
-      if (!buttons.has(fieldId)) {
-        const buttonRef: MutableRefObject<HTMLButtonElement | null> =
-          createRef()
-        buttons.set(fieldId, buttonRef)
-      }
-    })
-    // TODO: Work in progress
-    setTimeout(() => {
-      const firstButtonKey = Array.from(buttons.keys())?.[0]
-      const firstButtonRef = buttons.get(firstButtonKey)
-      firstButtonRef?.current?.focus()
-    })
-  }, [fields, buttons])
 
   return (
     <FieldSelectorDiv
@@ -166,23 +147,10 @@ const FieldSelector = ({
       {Object.entries(fields).map(
         ([fieldId, { label, addedToPanel = false }]) => (
           <FieldSelectorButton
-            ref={buttons.get(fieldId)}
             key={fieldId}
             value={fieldId}
             onClick={_ => {
               addFilterValueSetter(fieldId)
-            }}
-            tabIndex={-1}
-            onKeyDown={e => {
-              const keys = Array.from(buttons.keys())
-              const focusNeighbor = (delta: number) => {
-                const myIndex = keys.indexOf(fieldId)
-                const neighborKey = keys[myIndex + delta]
-                const neighbor = buttons.get(neighborKey)?.current
-                neighbor?.focus()
-              }
-              if (e.key === 'ArrowUp') focusNeighbor(-1)
-              if (e.key === 'ArrowDown') focusNeighbor(1)
             }}
             disabled={addedToPanel}
           >
