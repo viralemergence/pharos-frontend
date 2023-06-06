@@ -48,7 +48,7 @@ const FilterInput = ({
   )
 }
 
-const Panel = styled.aside<{ open: boolean; opacity: number }>`
+const Panel = styled.aside<{ open: boolean }>`
   backdrop-filter: blur(12px);
   margin-left: ${({ open }) => (open ? '30px' : '-400px')};
   transition: margin-left ${({ open }) => (open ? '300ms' : '300ms')}
@@ -175,12 +175,6 @@ const FilterPanel = ({
 }) => {
   const [isFieldSelectorOpen, setIsFieldSelectorOpen] = useState(false)
 
-  const [opacity, setOpacity] = useState(0)
-
-  useEffect(() => {
-    setOpacity(1)
-  }, [])
-
   const filterListRef = useRef<HTMLUListElement | null>(null)
 
   const idsOfAddedFields = filters.map(({ fieldId }) => fieldId)
@@ -207,7 +201,6 @@ const FilterPanel = ({
     <Panel
       open={isFilterPanelOpen}
       className="pharos-panel"
-      opacity={opacity}
       style={{ colorScheme: 'dark' }}
       onClick={_ => {
         setIsFieldSelectorOpen(false)
