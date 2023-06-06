@@ -35,7 +35,11 @@ export const Container = styled.form<{ borderColor: string }>`
     }
   }
 `
-export const SearchBar = styled.input<{ iconLeft: boolean; fontColor: string }>`
+export const SearchBar = styled.input<{
+  iconLeft: boolean
+  fontColor: string
+  areResultsShown: boolean
+}>`
   border: none;
   width: 100%;
   border-radius: 5px;
@@ -58,19 +62,23 @@ export const SearchBar = styled.input<{ iconLeft: boolean; fontColor: string }>`
     opacity: 0.66;
   }
 
+  // TODO: Perhaps restore outline for accessibility's sake?
   &:focus {
     outline: none;
     padding-bottom: 13px;
-    border-bottom: 0px solid #aaaaaa00;
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
     transition-duration: 0ms;
     transition-delay: 0s;
   }
+
+  ${({ areResultsShown }) =>
+    areResultsShown &&
+    `border-bottom: 0px solid #aaaaaa00;
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;`}
 `
 export const Results = styled.div`
   display: flex;
-  max-height: 30rem;
+  max-height: 300px;
   overflow-y: scroll;
   flex-direction: column;
   border-radius: 10px;
@@ -102,7 +110,7 @@ export const Selected = styled.div<{ borderColor: string }>`
   }
 `
 
-export const ItemButton = styled.button`
+export const ItemButton = styled.button<{ selected: boolean }>`
   background: none;
   border: none;
   width: 100%;
@@ -110,6 +118,9 @@ export const ItemButton = styled.button`
   padding: 0;
   display: flex;
   justify-content: space-between;
+  &:focus {
+    background-color: ${({ selected }) => (selected ? '#594141' : '#49515d')};
+  }
 `
 
 const clearButtonHeight = 18
