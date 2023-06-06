@@ -2200,7 +2200,7 @@
 
 "@talus-analytics/library.airtable-cms@^0.0.32":
   version "0.0.32"
-  resolved "https://node.bit.cloud/@talus-analytics/library.airtable-cms/-/@talus-analytics-library.airtable-cms-0.0.32.tgz#6b77fa5c6bbe182f0b386104aec1f85bd52a2311"
+  resolved "https://node.bit.dev/@talus-analytics/library.airtable-cms/-/@talus-analytics-library.airtable-cms-0.0.32.tgz#6b77fa5c6bbe182f0b386104aec1f85bd52a2311"
   integrity sha1-a3f6XGu+GC8LOGEErsH4W9UqIxE=
   dependencies:
     "@talus-analytics/library.airtable.cms-download" "0.0.4"
@@ -2215,7 +2215,7 @@
 
 "@talus-analytics/library.airtable.cms-download@0.0.4":
   version "0.0.4"
-  resolved "https://node.bit.cloud/@talus-analytics/library.airtable.cms-download/-/@talus-analytics-library.airtable.cms-download-0.0.4.tgz#94ac4f12cf5195fa0e906766eb79c869b4816491"
+  resolved "https://node.bit.dev/@talus-analytics/library.airtable.cms-download/-/@talus-analytics-library.airtable.cms-download-0.0.4.tgz#94ac4f12cf5195fa0e906766eb79c869b4816491"
   integrity sha1-lKxPEs9RlfoOkGdm63nIabSBZJE=
   dependencies:
     "@talus-analytics/library.airtable.cms-types" "0.0.9"
@@ -2223,7 +2223,7 @@
 
 "@talus-analytics/library.airtable.cms-icon@0.0.15":
   version "0.0.15"
-  resolved "https://node.bit.cloud/@talus-analytics/library.airtable.cms-icon/-/@talus-analytics-library.airtable.cms-icon-0.0.15.tgz#ff0177f6ba9ce6366c38f64b146cbf36b872150b"
+  resolved "https://node.bit.dev/@talus-analytics/library.airtable.cms-icon/-/@talus-analytics-library.airtable.cms-icon-0.0.15.tgz#ff0177f6ba9ce6366c38f64b146cbf36b872150b"
   integrity sha1-/wF39rqc5jZsOPZLFGy/NrhyFQs=
   dependencies:
     "@talus-analytics/library.airtable.cms-types" "0.0.9"
@@ -2233,7 +2233,7 @@
 
 "@talus-analytics/library.airtable.cms-image@0.0.11":
   version "0.0.11"
-  resolved "https://node.bit.cloud/@talus-analytics/library.airtable.cms-image/-/@talus-analytics-library.airtable.cms-image-0.0.11.tgz#7dc25548a80e5c128071d959a2709a966233cb59"
+  resolved "https://node.bit.dev/@talus-analytics/library.airtable.cms-image/-/@talus-analytics-library.airtable.cms-image-0.0.11.tgz#7dc25548a80e5c128071d959a2709a966233cb59"
   integrity sha1-fcJVSKgOXBKAcdlZonCalmIzy1k=
   dependencies:
     "@talus-analytics/library.airtable.cms-types" "0.0.9"
@@ -2242,7 +2242,7 @@
 
 "@talus-analytics/library.airtable.cms-plot-icon@0.0.10":
   version "0.0.10"
-  resolved "https://node.bit.cloud/@talus-analytics/library.airtable.cms-plot-icon/-/@talus-analytics-library.airtable.cms-plot-icon-0.0.10.tgz#81975a5779c0c46525b39d23bdb5f16eb1943040"
+  resolved "https://node.bit.dev/@talus-analytics/library.airtable.cms-plot-icon/-/@talus-analytics-library.airtable.cms-plot-icon-0.0.10.tgz#81975a5779c0c46525b39d23bdb5f16eb1943040"
   integrity sha1-gZdaV3nAxGUls50jvbXxbrGUMEA=
   dependencies:
     "@talus-analytics/library.airtable.cms-icon" "0.0.15"
@@ -2251,7 +2251,7 @@
 
 "@talus-analytics/library.airtable.cms-rich-text@0.0.8":
   version "0.0.8"
-  resolved "https://node.bit.cloud/@talus-analytics/library.airtable.cms-rich-text/-/@talus-analytics-library.airtable.cms-rich-text-0.0.8.tgz#6ccab644ff0be2e86a599dc1e66822de82813702"
+  resolved "https://node.bit.dev/@talus-analytics/library.airtable.cms-rich-text/-/@talus-analytics-library.airtable.cms-rich-text-0.0.8.tgz#6ccab644ff0be2e86a599dc1e66822de82813702"
   integrity sha1-bMq2RP8L4uhqWZ3B5mgi3oKBNwI=
   dependencies:
     "@talus-analytics/library.airtable.cms-text" "0.0.8"
@@ -2263,7 +2263,7 @@
 
 "@talus-analytics/library.airtable.cms-seo@0.0.8":
   version "0.0.8"
-  resolved "https://node.bit.cloud/@talus-analytics/library.airtable.cms-seo/-/@talus-analytics-library.airtable.cms-seo-0.0.8.tgz#4a72bd98b06b82e475e6823dc24e89d92c0fa2a9"
+  resolved "https://node.bit.dev/@talus-analytics/library.airtable.cms-seo/-/@talus-analytics-library.airtable.cms-seo-0.0.8.tgz#4a72bd98b06b82e475e6823dc24e89d92c0fa2a9"
   integrity sha1-SnK9mLBrguR15oI9wk6J2SwPoqk=
   dependencies:
     "@reach/router" "^1.3.4"
@@ -2275,7 +2275,7 @@
 
 "@talus-analytics/library.airtable.cms-text@0.0.8":
   version "0.0.8"
-  resolved "https://node.bit.cloud/@talus-analytics/library.airtable.cms-text/-/@talus-analytics-library.airtable.cms-text-0.0.8.tgz#d2b2a0cfb102c0e29789494f775acb8a02f71907"
+  resolved "https://node.bit.dev/@talus-analytics/library.airtable.cms-text/-/@talus-analytics-library.airtable.cms-text-0.0.8.tgz#d2b2a0cfb102c0e29789494f775acb8a02f71907"
   integrity sha1-0rKgz7ECwOKXiUlPd1rLigL3GQc=
   dependencies:
     "@talus-analytics/library.airtable.cms-types" "0.0.9"
@@ -2283,7 +2283,7 @@
 
 "@talus-analytics/library.airtable.cms-types@0.0.9":
   version "0.0.9"
-  resolved "https://node.bit.cloud/@talus-analytics/library.airtable.cms-types/-/@talus-analytics-library.airtable.cms-types-0.0.9.tgz#5e7e93e5a5a12016a73cbff3ddbac5fd0aad2719"
+  resolved "https://node.bit.dev/@talus-analytics/library.airtable.cms-types/-/@talus-analytics-library.airtable.cms-types-0.0.9.tgz#5e7e93e5a5a12016a73cbff3ddbac5fd0aad2719"
   integrity sha1-Xn6T5aWhIBanPL/z3brF/QqtJxk=
   dependencies:
     core-js "^3.0.0"
@@ -2291,7 +2291,7 @@
 
 "@talus-analytics/library.ui.dropdown@^0.0.10":
   version "0.0.10"
-  resolved "https://node.bit.cloud/@talus-analytics/library.ui.dropdown/-/@talus-analytics-library.ui.dropdown-0.0.10.tgz#4ca64b30df78549188de852fadda68fa7928a4ae"
+  resolved "https://node.bit.dev/@talus-analytics/library.ui.dropdown/-/@talus-analytics-library.ui.dropdown-0.0.10.tgz#4ca64b30df78549188de852fadda68fa7928a4ae"
   integrity sha1-TKZLMN94VJGI3oUvrdpo+nkopK4=
   dependencies:
     "@talus-analytics/library.ui.expander" "0.0.6"
@@ -2300,7 +2300,7 @@
 
 "@talus-analytics/library.ui.expander@0.0.6":
   version "0.0.6"
-  resolved "https://node.bit.cloud/@talus-analytics/library.ui.expander/-/@talus-analytics-library.ui.expander-0.0.6.tgz#a209e94f85a8132fc0f67aa48ce7287a4e054889"
+  resolved "https://node.bit.dev/@talus-analytics/library.ui.expander/-/@talus-analytics-library.ui.expander-0.0.6.tgz#a209e94f85a8132fc0f67aa48ce7287a4e054889"
   integrity sha1-ognpT4WoEy/A9nqkjOcoek4FSIk=
   dependencies:
     core-js "^3.0.0"
