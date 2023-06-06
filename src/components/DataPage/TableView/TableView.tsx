@@ -18,7 +18,13 @@ const FillDatasetGrid = styled(DataGrid)`
   block-size: 100%;
   height: 100%;
   border: 0;
-  background-color: rgba(0, 0, 0, 0.7);
+  .rdg-cell {
+    background-color: ${({ theme }) => theme.lightBlack};
+    &[aria-colindex='1'],
+    &[role='columnheader'] {
+      background: ${({ theme }) => theme.medBlack};
+    }
+  }
 `
 const LoadingMessage = styled.div`
   position: absolute;
