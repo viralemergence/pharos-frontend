@@ -4,55 +4,39 @@ import { lighten } from 'polished'
 
 import { Link } from 'react-router-dom'
 
-const cardsBreakpoint = 650
-const mediumBreakpoint = 1000
-
 const Container = styled.div`
   max-width: 100%;
   overflow-x: scroll;
+  margin-top: 15px;
 `
 const TableGrid = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 15px;
-
-  @media (min-width: ${cardsBreakpoint - 1}px) {
-    border: 1px solid ${({ theme }) => theme.medGray};
-    gap: 0px;
-  }
+  min-width: 800px;
+  border: 1px solid ${({ theme }) => theme.medGray};
 `
-export const RowLink = styled(Link)<{
-  $wideColumnTemplate?: string
-  $mediumColumnTemplate?: string
-}>`
+export const RowLink = styled(Link)<{ $columnTemplate?: string }>`
+  display: grid;
+  grid-template-columns: ${({ $columnTemplate }) => $columnTemplate};
+  // grid-template-columns: 1.5fr 2.5fr repeat(4, 1.5fr);
+  align-items: center;
   transition: 150ms ease;
-  display: flex;
-  flex-direction: column;
-  background-color: ${({ theme }) => theme.veryLightMint};
+
   color: ${({ theme }) => theme.black};
   text-decoration: none;
-  padding: 15px;
 
   ${({ theme }) => theme.smallParagraph};
 
-  @media (min-width: ${cardsBreakpoint - 1}px) {
-    padding: 0;
-    align-items: center;
-    display: grid;
-    grid-template-columns: ${({ $mediumColumnTemplate }) =>
-      $mediumColumnTemplate};
-
-    &:nth-child(2n) {
-      background: ${({ theme }) => theme.veryLightGray};
-    }
-
-    &:nth-of-type(1) {
-      box-shadow: inset 0px 4px 4px #e0eae8;
-    }
+  > div {
+    padding: 15px;
   }
 
-  @media (min-width: ${mediumBreakpoint - 1}px) {
-    grid-template-columns: ${({ $wideColumnTemplate }) => $wideColumnTemplate};
+  &:nth-child(2n) {
+    background: ${({ theme }) => theme.veryLightGray};
+  }
+
+  &:nth-of-type(1) {
+    box-shadow: inset 0px 4px 4px #e0eae8;
   }
 
   &:hover {
@@ -60,78 +44,23 @@ export const RowLink = styled(Link)<{
   }
 `
 
-export const HeaderRow = styled.div<{
-  $wideColumnTemplate?: string
-  $mediumColumnTemplate?: string
-}>`
+export const HeaderRow = styled.div<{ $columnTemplate?: string }>`
   display: grid;
-
-  grid-template-columns: ${({ $mediumColumnTemplate }) =>
-    $mediumColumnTemplate};
-
-  @media (min-width: ${mediumBreakpoint - 1}px) {
-    grid-template-columns: ${({ $wideColumnTemplate }) => $wideColumnTemplate};
-  }
-
+  grid-template-columns: ${({ $columnTemplate }) => $columnTemplate};
+  // grid-template-columns: 1.5fr 2.5fr repeat(4, 1.5fr);
   ${({ theme }) => theme.smallParagraphSemibold};
   align-items: center;
-
   > div {
     padding: 15px;
-  }
-
-  @media (max-width: ${cardsBreakpoint}px) {
-    display: none;
-    hidden: true;
-  }
-`
-
-export const CardHeaderRow = styled.h3`
-  ${({ theme }) => theme.h3};
-  margin: 10px 0;
-
-  @media (min-width: ${cardsBreakpoint}px) {
-    display: none;
-    hidden: true;
-  }
-`
-
-export const TableCell = styled.div<{
-  hideMobile?: boolean
-  hideMedium?: boolean
-  cardOrder?: number
-}>`
-  padding: 15px;
-
-  @media (max-width: ${mediumBreakpoint}px) {
-    display: ${({ hideMedium }) => (hideMedium ? 'none' : 'unset')};
-  }
-
-  @media (max-width: ${cardsBreakpoint}px) {
-    padding: 10px;
-    order: ${({ cardOrder }) => cardOrder ?? 'initial'};
-    display: ${({ hideMobile, hideMedium }) =>
-      hideMobile || hideMedium ? 'none' : 'unset'};
-
-    &:nth-child(1) {
-      ${({ theme }) => theme.bigParagraphSemibold};
-    }
   }
 `
 
 interface ListTableProps {
   children: React.ReactNode
-  wideColumnTemplate: string
-  mediumColumnTemplate?: string
-  style?: React.CSSProperties
+  columnTemplate: string
 }
 
-const ListTable = ({
-  children,
-  wideColumnTemplate,
-  mediumColumnTemplate,
-  style,
-}: ListTableProps) => {
+const ListTable = ({ children, columnTemplate }: ListTableProps) => {
   const childrenWithColumns = React.Children.map(children, child => {
     // Checking isValidElement is the safe way and avoids a typescript
     // error too.
@@ -139,13 +68,9 @@ const ListTable = ({
       return React.cloneElement(
         // coercing child here to be a component that accepts the
         // columnTemplate prop since typescript 4 yells about it
-        child as React.ReactElement<{
-          $wideColumnTemplate: string
-          $mediumColumnTemplate: string
-        }>,
+        child as React.ReactElement<{ $columnTemplate: string }>,
         {
-          $wideColumnTemplate: wideColumnTemplate,
-          $mediumColumnTemplate: mediumColumnTemplate ?? wideColumnTemplate,
+          $columnTemplate: columnTemplate,
         }
       )
     }
@@ -153,7 +78,7 @@ const ListTable = ({
   })
 
   return (
-    <Container style={style}>
+    <Container>
       <TableGrid>{childrenWithColumns}</TableGrid>
     </Container>
   )

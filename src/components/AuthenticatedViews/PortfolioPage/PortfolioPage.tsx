@@ -1,49 +1,44 @@
-import React from 'react'
+import React, { useState } from 'react'
+import styled from 'styled-components'
 
 import MintButton from 'components/ui/MintButton'
-import ProjectsTable from './ProjectsTable/ProjectsTable'
+import Modal from 'components/ui/Modal'
+
+import { TopBar } from '../ViewComponents'
 import CreateProjectForm from './CreateProjectForm/CreateProjectForm'
+import ProjectsTable from './ProjectsTable/ProjectsTable'
+import Main from 'components/layout/Main'
+import BreadcrumbLink, {
+  BreadcrumbContainer,
+} from 'components/ui/BreadcrumbLink'
 
-import TopBar, {
-  Title,
-  Controls,
-  Breadcrumbs,
-  BreadcrumbLink,
-} from 'components/layout/TopBar'
-
-import useModal from 'hooks/useModal/useModal'
-import styled from 'styled-components'
-import wideMargins from 'components/layout/Margins'
-
-const PortfolioPageLayout = styled.div`
-  ${wideMargins}
-  display: grid;
-  gap: 30px;
-  grid-template-areas:
-    'topbar'
-    'projects';
+const H1 = styled.h1`
+  ${({ theme }) => theme.h1}
+  margin: 15px 0;
 `
 
 const ProjectList = () => {
-  const setModal = useModal()
+  const [createModalOpen, setCreateModalOpen] = useState(false)
 
   return (
-    <PortfolioPageLayout>
+    <Main>
       <TopBar>
-        <Breadcrumbs>
+        <BreadcrumbContainer>
           <BreadcrumbLink to={`/projects/`}>All projects</BreadcrumbLink>
-        </Breadcrumbs>
-        <Title>My Projects</Title>
-        <Controls>
-          <MintButton
-            onClick={() => setModal(<CreateProjectForm />, { closeable: true })}
-          >
-            + New Project
-          </MintButton>
-        </Controls>
+        </BreadcrumbContainer>
+      </TopBar>
+      <TopBar>
+        <H1>My Projects</H1>
+        <MintButton onClick={() => setCreateModalOpen(true)}>
+          + New Project
+        </MintButton>
+        <Modal closeable open={createModalOpen} setOpen={setCreateModalOpen}>
+          <CreateProjectForm />
+        </Modal>
       </TopBar>
       <ProjectsTable />
-    </PortfolioPageLayout>
+    </Main>
   )
 }
+
 export default ProjectList
