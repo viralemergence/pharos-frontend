@@ -56,7 +56,6 @@ const Panel = styled.aside<{ open: boolean }>`
   background-color: ${({ theme }) => theme.lightBlack};
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.4);
   color: #fff;
-  grid-area: panel;
   z-index: ${({ theme }) => theme.zIndexes.dataPanel};
   display: flex;
   flex-flow: column nowrap;

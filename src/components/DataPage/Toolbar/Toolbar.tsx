@@ -53,7 +53,6 @@ const DataToolbarRadioButtonContainer = styled(DataToolbarButtonContainer)`
 	padding: 5px;
 `
 const DataToolbarDiv = styled.div<{ isFilterPanelOpen: boolean }>`
-	grid-area: nav;
 	padding: 20px 0px 0 30px;
 	z-index: ${({ theme }) => theme.zIndexes.dataToolbar};
 	display: flex;
