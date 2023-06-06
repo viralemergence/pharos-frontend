@@ -44,15 +44,15 @@ const FilterInput = ({
   )
 }
 
-const Panel = styled.aside<{ opacity: number }>`
+const Panel = styled.aside<{ open: boolean; opacity: number }>`
   backdrop-filter: blur(12px);
   transition: opacity 300ms;
+  margin-left: ${({ open }) => (open ? '30px' : '-400px')};
+  transition: margin-left 300ms cubic-bezier(0.4, 0, 0.2, 1);
   background-color: ${({ theme }) => theme.lightBlack};
   opacity: ${({ opacity }) => opacity};
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.4);
   color: #fff;
-  //height: calc(100vh - 210px);
-  margin-left: 30px;
   grid-area: panel;
   z-index: 3;
   @media (max-width: 768px) {
@@ -198,6 +198,8 @@ const FilterPanel = ({
 
   return (
     <Panel
+      open={isFilterPanelOpen}
+      className="pharos-panel"
       opacity={opacity}
       style={{ colorScheme: 'dark' }}
       onClick={_ => {

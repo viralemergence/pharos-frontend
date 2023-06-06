@@ -92,7 +92,10 @@ const DataToolbar = ({
 	)
 
 	return (
-		<DataToolbarDiv isFilterPanelOpen={isFilterPanelOpen}>
+		<DataToolbarDiv
+			className="pharos-data-toolbar"
+			isFilterPanelOpen={isFilterPanelOpen}
+		>
 			<DataToolbarButtonContainer>
 				<DataToolbarButton
 					selected={isFilterPanelOpen}

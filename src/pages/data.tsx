@@ -30,25 +30,24 @@ import {
 const ViewContainer = styled.main<{ isFilterPanelOpen: boolean }>`
 	flex: 1;
 	position: relative;
-	border: 5px solid red;
-	display: grid;
-	grid-template-areas:
-		'nav  nav'
-		'panel table';
-	grid-gap: 20px;
-	grid-template-rows: 60px 1fr;
-	grid-template-columns:
-		${({ isFilterPanelOpen }) => (isFilterPanelOpen ? '400px' : '0')}
-		1fr;
-	transition: grid-template-columns 300ms cubic-bezier(0.4, 0, 0.2, 1);
+	width: 100%;
+	display: flex;
+	flex-flow: column nowrap;
+	gap: 20px;
+	.pharos-data-toolbar {
+		flex-basis: 60px;
+	}
+	.pharos-panel {
+		min-width: 400px;
+	}
+	main {
+		display: flex;
+		flex-flow: row nowrap;
+		width: 100%;
+		height: calc(100vh - 197px);
+	}
 	background-color: rgb(5, 10, 55); //#3d434e;
 	padding-bottom: 1rem;
-	.map-container {
-		//height: calc(100vh - 87px);
-		@media (max-width: 768px) {
-			//height: calc(100vh - 60px);
-		}
-	}
 `
 
 const DataPage = styled.div`
@@ -285,7 +284,7 @@ const DataView = (): JSX.Element => {
 						setIsFilterPanelOpen={setIsFilterPanelOpen}
 						appliedFilters={appliedFilters}
 					/>
-					{isFilterPanelOpen && (
+					<main>
 						<FilterPanel
 							isFilterPanelOpen={isFilterPanelOpen}
 							setIsFilterPanelOpen={setIsFilterPanelOpen}
@@ -295,28 +294,28 @@ const DataView = (): JSX.Element => {
 							setFilters={setFilters}
 							clearFilters={clearFilters}
 						/>
-					)}
-					<MapView
-						projection={view === 'globe' ? 'globe' : 'naturalEarth'}
-						style={{
-							filter: showEarth ? 'none' : 'blur(30px)',
-						}}
-					/>
-					<TableView
-						fields={fields}
-						appliedFilters={appliedFilters}
-						loadPublishedRecords={() => {
-							loadFilteredRecords(filters, false)
-							debouncing.current.on = false
-						}}
-						loading={loading}
-						page={page}
-						publishedRecords={publishedRecords}
-						reachedLastPage={reachedLastPage}
-						style={{
-							display: view === View.table ? 'grid' : 'none',
-						}}
-					/>
+						<MapView
+							projection={view === 'globe' ? 'globe' : 'naturalEarth'}
+							style={{
+								filter: showEarth ? 'none' : 'blur(30px)',
+							}}
+						/>
+						<TableView
+							fields={fields}
+							appliedFilters={appliedFilters}
+							loadPublishedRecords={() => {
+								loadFilteredRecords(filters, false)
+								debouncing.current.on = false
+							}}
+							loading={loading}
+							page={page}
+							publishedRecords={publishedRecords}
+							reachedLastPage={reachedLastPage}
+							style={{
+								display: view === View.table ? 'grid' : 'none',
+							}}
+						/>
+					</main>
 				</ViewContainer>
 			</DataPage>
 		</Providers>

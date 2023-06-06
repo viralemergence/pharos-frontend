@@ -6,8 +6,9 @@ import type { Filter, Field } from '../FilterPanel/constants'
 import './dataGrid.css'
 
 const TableViewContainer = styled.div`
+  padding: 0 30px;
   z-index: 3;
-  grid-area: table;
+  flex: 1;
 `
 const TableContaier = styled.div`
   padding-bottom: 10px;
@@ -17,7 +18,6 @@ const FillDatasetGrid = styled(DataGrid)`
   block-size: 100%;
   height: 100%;
   border: 0;
-  min-width: 50vw;
   background-color: rgba(0, 0, 0, 0.7);
 `
 const LoadingMessage = styled.div`
@@ -52,7 +52,6 @@ const NoRecordsFound = styled.div`
 
 interface TableViewProps {
   appliedFilters: Filter[]
-  height: string
   loadPublishedRecords: (options?: { appendResults: boolean }) => void
   loading: boolean
   page: React.MutableRefObject<number>
