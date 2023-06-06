@@ -131,10 +131,6 @@ const FieldSelector = ({
   fields: Record<string, Field>
   addFilterValueSetter: (fieldId: string) => void
 }) => {
-  const keyDownHandler = (e: KeyboardEvent) => {
-    console.log(e.key)
-  }
-
   return (
     <FieldSelectorDiv
       onClick={e => {
@@ -142,7 +138,6 @@ const FieldSelector = ({
         // fire, closing the field selector.
         e.stopPropagation()
       }}
-      onKeyDown={keyDownHandler}
     >
       {Object.entries(fields).map(
         ([fieldId, { label, addedToPanel = false }]) => (
