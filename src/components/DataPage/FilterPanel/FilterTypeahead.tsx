@@ -2,48 +2,10 @@ import React from 'react'
 import styled from 'styled-components'
 import Typeahead, {
   Item as TypeaheadItem,
-} from '@talus-analytics/library.ui.typeahead'
+} from '../../../../library/ui/typeahead/Typeahead'
+import FilterDarkTypeaheadResult from './FilterDarkTypeaheadResult'
 import { XIcon, FieldName, FilterValues } from './constants'
 import InputLabel from '../../ui/InputLabel'
-
-const TypeaheadResultContainer = styled.span<{ selected?: boolean }>`
-  ${({ theme }) => theme.smallParagraph};
-  box-sizing: border-box;
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  font-size: 16px;
-  text-align: left;
-  padding: 8px 12px;
-  background-color: rgba(0, 50, 100, 0);
-  transition: 150ms ease;
-
-  ${({ selected }) => selected && ` font-weight: 800; `}
-
-  &:hover {
-    background-color: #49515d
-      ${({ selected }) => selected && `background-color: #594141;`};
-  }
-`
-
-interface RenderItemProps {
-  item: TypeaheadItem
-  selected?: boolean
-}
-
-import removeSVG from '../../../assets/darkTypeaheadRemove.svg'
-
-const DarkTypeaheadResult = ({
-  item: { label },
-  selected,
-}: RenderItemProps) => (
-  <TypeaheadResultContainer selected={selected}>
-    {label}
-    {selected && (
-      <img src={removeSVG} style={{ flexShrink: 0 }} alt="Remove item" />
-    )}
-  </TypeaheadResultContainer>
-)
 
 const SelectedTypeaheadValues = styled.ul`
   margin-top: 10px;
@@ -85,19 +47,47 @@ const SelectedTypeaheadValueDeleteButton = styled.button`
   }
 `
 
+const TypeaheadContainer = styled.div`
+  & form {
+    max-width: 400px !important;
+    margin-bottom: 10px;
+  }
+  & .pharos-typeahead-results {
+    margin-bottom: 20px;
+  }
+  & input[type='search'] {
+    ${({ theme }) => theme.smallParagraph}
+    &::placeholder {
+      color: #fff !important;
+      opacity: 1 !important;
+      font-weight: bold;
+    }
+    padding: 10px 15px 8px 15px !important;
+    line-height: 25px !important;
+  }
+`
+const TypeaheadLabel = styled(InputLabel)`
+  ${({ theme }) => theme.smallParagraph}
+  margin-bottom: 10px;
+  width: fit-content;
+`
+
+interface FilterTypeaheadProps {
+  fieldLabel: string
+  values: FilterValues
+  options: string[]
+  updateFilter: (filterIndex: number, values: FilterValues) => void
+  filterIndex: number
+}
+
+/** A typeahead component for setting the value of a filter */
 const FilterTypeahead = ({
   fieldLabel,
   values,
   options,
   updateFilter,
   filterIndex,
-}: {
-  fieldLabel: string
-  values: FilterValues
-  options: string[]
-  updateFilter: (filterIndex: number, values: FilterValues) => void
-  filterIndex: number
-}) => {
+}: FilterTypeaheadProps) => {
   const selectedItems = values.map(value => ({
     key: value,
     label: value,
@@ -124,29 +114,34 @@ const FilterTypeahead = ({
     )
     handleTypeaheadChange(amendedItems)
   }
-  // BUG: When you click the scrollbar in the Typeahead results, the results
-  // dropdown closes. This doesn't seem to be due to the label.
+
+  const typeaheadInputId = `typeahead-${filterIndex}`
 
   return (
     <>
-      <InputLabel>
+      <TypeaheadLabel htmlFor={typeaheadInputId}>
         <FieldName>{fieldLabel}</FieldName>
+      </TypeaheadLabel>
+      <TypeaheadContainer>
         <Typeahead
           multiselect={true}
           items={options.map(option => ({ key: option, label: option }))}
           values={selectedItems}
           onAdd={addItem}
           onRemove={removeItem}
-          placeholder={`${selectedItems.length} selected`}
+          placeholder={
+            selectedItems.length ? `${selectedItems.length} selected` : ''
+          }
           backgroundColor="#000"
           fontColor="white"
-          borderColor="white"
+          borderColor="#fff"
           RenderItem={({ item, selected }) => (
-            <DarkTypeaheadResult {...{ item, selected }} />
+            <FilterDarkTypeaheadResult {...{ item, selected }} />
           )}
           iconSVG="%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9L12 15L18 9H6Z' fill='%23FFFFFF'/%3E%3C/svg%3E%0A"
+          inputId={typeaheadInputId}
         />
-      </InputLabel>
+      </TypeaheadContainer>
       {values.length > 0 && (
         <SelectedTypeaheadValues>
           {values.map(value => (
@@ -164,4 +159,5 @@ const FilterTypeahead = ({
     </>
   )
 }
+
 export default FilterTypeahead

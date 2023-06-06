@@ -44,6 +44,28 @@ export const XIcon = ({ extraStyle = '' }: { extraStyle?: string }) => (
   </XIconSvg>
 )
 
+const BackIconSvg = styled.svg`
+  display: block;
+  fill: none;
+  height: 24px;
+  width: 24px;
+  stroke: #fff;
+  stroke-width: 1.6;
+  overflow: visible;
+`
+
+export const BackIcon = () => (
+  <BackIconSvg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 32 32"
+    aria-hidden="true"
+    role="presentation"
+    focusable="false"
+  >
+    <path fill="none" d="M20 28 8.7 16.7a1 1 0 0 1 0-1.4L20 4"></path>
+  </BackIconSvg>
+)
+
 export const PlusIcon = ({ style = {} }: { style?: React.CSSProperties }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"

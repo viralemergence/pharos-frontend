@@ -27,10 +27,44 @@ import {
 	FilterValues,
 } from 'components/DataPage/FilterPanel/constants'
 
-const ViewContainer = styled.main`
+const ViewContainer = styled.main<{ isFilterPanelOpen: boolean }>`
+	flex: 1;
+	position: relative;
+	width: 100%;
 	display: flex;
+	flex-flow: column nowrap;
+	gap: 20px;
+	.pharos-data-toolbar {
+		flex-basis: 60px;
+		@media (max-width: 768px) {
+			${({ isFilterPanelOpen }) => (isFilterPanelOpen ? 'display: none' : '')}
+		}
+	}
+	.pharos-panel {
+		min-width: 400px;
+	}
+	main {
+		display: flex;
+		flex-flow: row nowrap;
+		width: 100%;
+		height: calc(100vh - 197px);
+		@media (max-width: 768px) {
+			height: calc(100vh - 73px);
+		}
+	}
 	background-color: rgb(5, 10, 55); //#3d434e;
 	padding-bottom: 1rem;
+`
+
+const ViewMain = styled.main`
+	position: relative;
+`
+
+const DataPage = styled.div`
+	display: flex;
+	flex-flow: column nowrap;
+	height: 100vh;
+	width: 100vw;
 `
 
 interface PublishedRecordsResponse {
@@ -173,7 +207,8 @@ const DataView = (): JSX.Element => {
 
 	const [fields, setFields] = useState<Record<string, Field>>({})
 
-	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(true)
+	// NOTE: Setting to false to better support mobile
+	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
 
 	const changeView = (view: View) => {
 		window.location.hash = view
@@ -241,65 +276,57 @@ const DataView = (): JSX.Element => {
 		}
 	}
 
-	const dataViewHeight = 'calc(100vh - 87px)'
-	const panelHeight = 'calc(100vh - 190px)'
-	const panelWidth = isFilterPanelOpen ? 410 : 0
-	const tableViewWidthOffset = 0
-	const tableViewWidth = `calc(100vw - ${panelWidth}px + ${tableViewWidthOffset}px)`
-	const tableViewHeight = 'calc(100vh - 103px)'
+	// TODO: Check out Ryan's PR (for project pages) to see how he does styled components
 
 	const showEarth = [View.globe, View.map].includes(view)
 
 	return (
 		<Providers>
 			<CMS.SEO />
-			<NavBar />
-			<DataToolbar
-				view={view}
-				changeView={changeView}
-				isFilterPanelOpen={isFilterPanelOpen}
-				setIsFilterPanelOpen={setIsFilterPanelOpen}
-				appliedFilters={appliedFilters}
-			/>
-			<ViewContainer>
-				{isFilterPanelOpen && (
-					<FilterPanel
+			<DataPage>
+				<NavBar />
+				<ViewContainer isFilterPanelOpen={isFilterPanelOpen}>
+					<DataToolbar
+						view={view}
+						changeView={changeView}
 						isFilterPanelOpen={isFilterPanelOpen}
 						setIsFilterPanelOpen={setIsFilterPanelOpen}
-						fields={fields}
-						filters={filters}
-						updateFilter={updateFilter}
-						setFilters={setFilters}
-						clearFilters={clearFilters}
-						height={panelHeight}
+						appliedFilters={appliedFilters}
 					/>
-				)}
-				<MapView
-					projection={view === 'globe' ? 'globe' : 'naturalEarth'}
-					height={dataViewHeight}
-					style={{
-						filter: showEarth ? 'none' : 'blur(30px)',
-					}}
-				/>
-				<TableView
-					fields={fields}
-					height={dataViewHeight}
-					appliedFilters={appliedFilters}
-					loadPublishedRecords={() => {
-						loadFilteredRecords(filters, false)
-						debouncing.current.on = false
-					}}
-					loading={loading}
-					page={page}
-					publishedRecords={publishedRecords}
-					reachedLastPage={reachedLastPage}
-					style={{
-						display: view === View.table ? 'grid' : 'none',
-						width: tableViewWidth,
-						height: tableViewHeight,
-					}}
-				/>
-			</ViewContainer>
+					<MapView
+						projection={view === 'globe' ? 'globe' : 'naturalEarth'}
+						style={{
+							filter: showEarth ? 'none' : 'blur(30px)',
+						}}
+					/>
+					<ViewMain>
+						<FilterPanel
+							isFilterPanelOpen={isFilterPanelOpen}
+							setIsFilterPanelOpen={setIsFilterPanelOpen}
+							fields={fields}
+							filters={filters}
+							updateFilter={updateFilter}
+							setFilters={setFilters}
+							clearFilters={clearFilters}
+						/>
+						<TableView
+							fields={fields}
+							appliedFilters={appliedFilters}
+							loadPublishedRecords={() => {
+								loadFilteredRecords(filters, false)
+								debouncing.current.on = false
+							}}
+							loading={loading}
+							page={page}
+							publishedRecords={publishedRecords}
+							reachedLastPage={reachedLastPage}
+							style={{
+								display: view === View.table ? 'grid' : 'none',
+							}}
+						/>
+					</ViewMain>
+				</ViewContainer>
+			</DataPage>
 		</Providers>
 	)
 }

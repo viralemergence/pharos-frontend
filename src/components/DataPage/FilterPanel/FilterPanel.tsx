@@ -1,21 +1,25 @@
 import React, {
-  useEffect,
-  useState,
-  useRef,
   Dispatch,
   SetStateAction,
+  useEffect,
+  useRef,
+  useState,
 } from 'react'
 import styled from 'styled-components'
 import {
-  FieldName,
   Field,
+  FieldName,
   Filter,
   FilterValues,
   UpdateFilterFunction,
 } from './constants'
-import InputLabel from '../../ui/InputLabel'
 import FilterTypeahead from './FilterTypeahead'
 import FilterPanelToolbar from './FilterPanelToolbar'
+
+const Label = styled.label`
+  ${({ theme }) => theme.smallParagraph}
+  display: block;
+`
 
 const FilterInput = ({
   fieldLabel,
@@ -31,7 +35,7 @@ const FilterInput = ({
   filterIndex: number
 }) => {
   return (
-    <InputLabel>
+    <Label>
       <FieldName>{fieldLabel}</FieldName>
       <FieldInput
         type={fieldType}
@@ -40,32 +44,44 @@ const FilterInput = ({
           updateFilter(filterIndex, [e.target.value])
         }
       />
-    </InputLabel>
+    </Label>
   )
 }
 
-const Panel = styled.aside<{ isFilterPanelOpen: boolean; height: string }>`
-  background-color: rgba(51, 51, 51, 0.8);
-  color: #fff;
-  height: ${props => props.height};
-  position: relative;
-  width: 410px;
-  top: 73px;
-  left: 30px;
-  margin-right: 30px;
+const Panel = styled.aside<{ open: boolean }>`
   backdrop-filter: blur(12px);
+  margin-left: ${({ open }) => (open ? '30px' : '-400px')};
+  transition: margin-left ${({ open }) => (open ? '300ms' : '300ms')}
+    cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: ${({ theme }) => theme.lightBlack};
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.4);
-  z-index: 3;
+  color: #fff;
+  z-index: ${({ theme }) => theme.zIndexes.dataPanel};
+  display: flex;
+  flex-flow: column nowrap;
+  @media (max-width: 768px) {
+    background-color: ${({ theme }) => theme.lightBlack};
+    display: ${({ open }) => (open ? 'block' : 'none')};
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    height: 100%;
+    margin-right: 0;
+    position: absolute;
+    width: 100vw;
+  }
 `
 
 const FieldInput = styled.input`
   ${({ theme }) => theme.smallParagraph};
-  padding: 8px 10px;
-  font-weight: 600;
   background-color: #202020;
-  color: #fff;
-  border: 1px solid #fff;
   border-radius: 5px;
+  border: 1px solid #fff;
+  color: #fff;
+  font-weight: 600;
+  padding: 8px 10px;
   &::-webkit-calendar-picker-indicator {
     filter: invert(1);
     opacity: 0.5;
@@ -88,9 +104,10 @@ const FilterValueSetter = ({
   options: string[] | undefined
 }) => {
   const useTypeahead = fieldType === 'text'
+  const truthyValues = values.filter(value => value)
   const props = {
     fieldLabel,
-    values: values.filter(value => value),
+    values: truthyValues,
     options,
     updateFilter,
     filterIndex,
@@ -124,11 +141,17 @@ const FilterListItem = ({
   )
 }
 
-const FilterList = styled.ul<{ height: string }>`
+const FilterList = styled.ul`
   margin: 0;
-  padding: 34px 40px;
   overflow-y: auto;
-  height: ${props => props.height};
+  padding: 34px 40px;
+  flex: 1;
+  @media (max-width: 768px) {
+    height: calc(100vh - 60px - 73px);
+  }
+  @media (max-width: 480px) {
+    padding: 34px 20px;
+  }
 `
 
 const FilterPanel = ({
@@ -139,7 +162,6 @@ const FilterPanel = ({
   setFilters,
   clearFilters,
   updateFilter,
-  height,
 }: {
   isFilterPanelOpen: boolean
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
@@ -149,14 +171,10 @@ const FilterPanel = ({
   clearFilters: () => void
   /** Event handler for when one of the filter input elements receives new input */
   updateFilter: UpdateFilterFunction
-  height: string
 }) => {
   const [isFieldSelectorOpen, setIsFieldSelectorOpen] = useState(false)
-  const panelRef = useRef<HTMLDivElement>(null)
 
-  // height is a 'calc()' expression
-  const filterListHeight = height.replace(')', ' - 73px)')
-  const filterListRef = useRef<HTMLUListElement>(null)
+  const filterListRef = useRef<HTMLUListElement | null>(null)
 
   const idsOfAddedFields = filters.map(({ fieldId }) => fieldId)
   for (const fieldId in fields) {
@@ -169,57 +187,56 @@ const FilterPanel = ({
   useEffect(() => {
     // Enable filter animations after FilterPanel first renders
     setTimeout(() => {
+      // TODO: Test removing the setTimeout because it might not be needed. Or
+      // use a requestAnimationFrame.
       shouldAnimateFilters.current = true
     }, 500)
   }, [])
 
+  /** On scroll, adjust the height of the typeahead results */
+  const adjustTypeaheadResultsHeight = () => {}
+
   return (
     <Panel
-      style={{ colorScheme: 'dark' }}
+      open={isFilterPanelOpen}
       className="pharos-panel"
-      height={height}
-      isFilterPanelOpen={isFilterPanelOpen}
-      ref={panelRef}
+      style={{ colorScheme: 'dark' }}
       onClick={_ => {
         setIsFieldSelectorOpen(false)
       }}
     >
-      {isFilterPanelOpen && (
-        <>
-          <FilterPanelToolbar
-            {...{
-              fields,
-              filters,
-              setFilters,
-              clearFilters,
-              isFieldSelectorOpen,
-              setIsFieldSelectorOpen,
-              setIsFilterPanelOpen,
-              filterListRef,
-            }}
-          />
-          <FilterList ref={filterListRef} height={filterListHeight}>
-            {filters.map((filter, filterIndex) => {
-              const { label = '', type = 'text' } = fields[filter.fieldId]
-              return (
-                <FilterListItem
-                  shouldAnimate={shouldAnimateFilters.current}
-                  key={`${filter.fieldId}-${filterIndex}`}
-                >
-                  <FilterValueSetter
-                    filterIndex={filterIndex}
-                    fieldLabel={label}
-                    fieldType={type}
-                    options={fields[filter.fieldId].options}
-                    updateFilter={updateFilter}
-                    values={filter.values}
-                  />
-                </FilterListItem>
-              )
-            })}
-          </FilterList>
-        </>
-      )}
+      <FilterPanelToolbar
+        {...{
+          fields,
+          filters,
+          setFilters,
+          clearFilters,
+          isFieldSelectorOpen,
+          setIsFieldSelectorOpen,
+          setIsFilterPanelOpen,
+          filterListRef,
+        }}
+      />
+      <FilterList ref={filterListRef} onScroll={adjustTypeaheadResultsHeight}>
+        {filters.map((filter, filterIndex) => {
+          const { label = '', type = 'text' } = fields[filter.fieldId]
+          return (
+            <FilterListItem
+              shouldAnimate={shouldAnimateFilters.current}
+              key={`${filter.fieldId}-${filterIndex}`}
+            >
+              <FilterValueSetter
+                filterIndex={filterIndex}
+                fieldLabel={label}
+                fieldType={type}
+                options={fields[filter.fieldId].options}
+                updateFilter={updateFilter}
+                values={filter.values}
+              />
+            </FilterListItem>
+          )
+        })}
+      </FilterList>
     </Panel>
   )
 }

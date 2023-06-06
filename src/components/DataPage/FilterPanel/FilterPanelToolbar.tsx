@@ -1,6 +1,14 @@
-import React, { Dispatch, MutableRefObject, SetStateAction } from 'react'
+import React, {
+  createRef,
+  useEffect,
+  useRef,
+  Dispatch,
+  MutableRefObject,
+  SetStateAction,
+  KeyboardEvent,
+} from 'react'
 import styled from 'styled-components'
-import { PlusIcon, XIcon, Field, Filter } from './constants'
+import { PlusIcon, BackIcon, XIcon, Field, Filter } from './constants'
 
 const FilterPanelToolbarNav = styled.nav`
   display: flex;
@@ -9,6 +17,9 @@ const FilterPanelToolbarNav = styled.nav`
   padding-bottom: 20px;
   padding: 14px 40px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  @media (max-width: 768px) {
+    padding: 14px 20px;
+  }
 `
 const FieldSelectorMessage = styled.div`
   ${props => props.theme.smallParagraph};
@@ -45,11 +56,26 @@ const FilterPanelToolbarButton = styled(FilterPanelButton)<{
     outline: 2px solid rgba(100, 100, 100, 1);
     transform: scale(0.99);
   }
+  &.add-filter {
+    margin-right: auto;
+  }
+  @media (max-width: 768px) {
+    &.close-panel {
+      &:active {
+        transform: scale(0.92);
+      }
+    }
+  }
 `
 const FilterPanelCloseButton = styled(FilterPanelToolbarButton)`
-  position: absolute;
-  right: 2px;
-  top: 2px;
+  @media (min-width: 768px) {
+    position: absolute;
+    right: 2px;
+    top: 2px;
+  }
+  @media (max-width: 768px) {
+    margin-right: 20px;
+  }
   border-radius: 50%;
   background: transparent;
   display: flex;
@@ -58,6 +84,19 @@ const FilterPanelCloseButton = styled(FilterPanelToolbarButton)`
   padding: 5px;
   &:hover {
     background: inherit;
+  }
+  &.back-icon {
+    display: none !important;
+  }
+  @media (max-width: 768px) {
+    width: 45px;
+    height: 45px;
+    &.x-icon {
+      display: none;
+    }
+    &.back-icon {
+      display: flex !important;
+    }
   }
 `
 const FieldSelectorDiv = styled.div`
@@ -72,7 +111,7 @@ const FieldSelectorDiv = styled.div`
   border-radius: 5px;
   border-top-left-radius: 0;
   padding: 5px 0;
-  z-index: 1;
+  z-index: ${({ theme }) => theme.zIndexes.dataPanelFieldSelector};
 `
 const FieldSelectorButton = styled(FilterPanelButton)<{ disabled: boolean }>`
   width: 100%;
@@ -92,7 +131,29 @@ const FieldSelector = ({
   fields: Record<string, Field>
   addFilterValueSetter: (fieldId: string) => void
 }) => {
-  console.log('fields', fields)
+  const buttons = useRef(
+    new Map<string, MutableRefObject<HTMLButtonElement | null>>()
+  ).current
+  const keyDownHandler = (e: KeyboardEvent) => {
+    console.log(e.key)
+  }
+
+  useEffect(() => {
+    Object.entries(fields).forEach(([fieldId, _field]) => {
+      if (!buttons.has(fieldId)) {
+        const buttonRef: MutableRefObject<HTMLButtonElement | null> =
+          createRef()
+        buttons.set(fieldId, buttonRef)
+      }
+    })
+    // TODO: Work in progress
+    setTimeout(() => {
+      const firstButtonKey = Array.from(buttons.keys())?.[0]
+      const firstButtonRef = buttons.get(firstButtonKey)
+      firstButtonRef?.current?.focus()
+    })
+  }, [fields, buttons])
+
   return (
     <FieldSelectorDiv
       onClick={e => {
@@ -100,14 +161,28 @@ const FieldSelector = ({
         // fire, closing the field selector.
         e.stopPropagation()
       }}
+      onKeyDown={keyDownHandler}
     >
       {Object.entries(fields).map(
         ([fieldId, { label, addedToPanel = false }]) => (
           <FieldSelectorButton
+            ref={buttons.get(fieldId)}
             key={fieldId}
             value={fieldId}
             onClick={_ => {
               addFilterValueSetter(fieldId)
+            }}
+            tabIndex={-1}
+            onKeyDown={e => {
+              const keys = Array.from(buttons.keys())
+              const focusNeighbor = (delta: number) => {
+                const myIndex = keys.indexOf(fieldId)
+                const neighborKey = keys[myIndex + delta]
+                const neighbor = buttons.get(neighborKey)?.current
+                neighbor?.focus()
+              }
+              if (e.key === 'ArrowUp') focusNeighbor(-1)
+              if (e.key === 'ArrowDown') focusNeighbor(1)
             }}
             disabled={addedToPanel}
           >
@@ -141,9 +216,16 @@ const FilterPanelToolbar = ({
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
   filterListRef: MutableRefObject<HTMLUListElement | null>
 }) => {
+  // TODO: Remove invisible items from tab order
   return (
     <>
       <FilterPanelToolbarNav>
+        <FilterPanelCloseButton
+          className="close-panel back-icon"
+          onClick={() => setIsFilterPanelOpen(false)}
+        >
+          <BackIcon />
+        </FilterPanelCloseButton>
         <FilterPanelToolbarButton
           className="add-filter"
           isFieldSelectorOpen={isFieldSelectorOpen}
@@ -161,7 +243,10 @@ const FilterPanelToolbar = ({
             Clear all
           </FilterPanelToolbarButton>
         )}
-        <FilterPanelCloseButton onClick={() => setIsFilterPanelOpen(false)}>
+        <FilterPanelCloseButton
+          className="close-panel x-icon"
+          onClick={() => setIsFilterPanelOpen(false)}
+        >
           <XIcon extraStyle="width: 18px; height: 18px;" />
         </FilterPanelCloseButton>
       </FilterPanelToolbarNav>

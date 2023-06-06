@@ -5,17 +5,12 @@ import LoadingSpinner from './LoadingSpinner'
 import type { Filter, Field } from '../FilterPanel/constants'
 import './dataGrid.css'
 
-const TableViewContainer = styled.div<{ height: string }>`
-  position: relative;
-  width: 100%;
-  height: ${props => props.height};
-  z-index: 3;
+const TableViewContainer = styled.div`
+  padding: 0 30px;
+  z-index: ${({ theme }) => theme.zIndexes.dataTable};
+  flex: 1;
 `
 const TableContaier = styled.div`
-  position: relative;
-  height: 100%;
-  padding: 30px;
-  padding-top: 73px;
   padding-bottom: 10px;
   overflow-x: hidden;
 `
@@ -23,7 +18,6 @@ const FillDatasetGrid = styled(DataGrid)`
   block-size: 100%;
   height: 100%;
   border: 0;
-  min-width: 50vw;
   background-color: rgba(0, 0, 0, 0.7);
 `
 const LoadingMessage = styled.div`
@@ -58,7 +52,6 @@ const NoRecordsFound = styled.div`
 
 interface TableViewProps {
   appliedFilters: Filter[]
-  height: string
   loadPublishedRecords: (options?: { appendResults: boolean }) => void
   loading: boolean
   page: React.MutableRefObject<number>
@@ -80,7 +73,6 @@ const rowKeyGetter = (row: Row) => row.pharosID
 
 const TableView = ({
   style = {},
-  height,
   loading,
   page,
   publishedRecords,
@@ -128,7 +120,7 @@ const TableView = ({
   }
 
   return (
-    <TableViewContainer style={style} height={height}>
+    <TableViewContainer style={style}>
       <TableContaier>
         {!loading && publishedRecords?.length === 0 ? (
           <NoRecordsFound>

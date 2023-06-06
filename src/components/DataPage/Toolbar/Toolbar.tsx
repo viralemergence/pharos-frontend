@@ -14,7 +14,7 @@ const DataToolbarButton = styled.button<{
 	extraStyle?: string
 }>`
 	${({ theme }) => theme.bigParagraph};
-	z-index: 14;
+	z-index: ${({ theme }) => theme.zIndexes.dataToolbarButton};
 	text-shadow: ${({ selected }) => (selected ? 'none' : '0 0 2px #000')};
 	position: relative;
 	font-size: 16px;
@@ -53,10 +53,8 @@ const DataToolbarRadioButtonContainer = styled(DataToolbarButtonContainer)`
 	padding: 5px;
 `
 const DataToolbarDiv = styled.div<{ isFilterPanelOpen: boolean }>`
-	position: absolute;
-	top: 97px;
-	left: 30px;
-	z-index: 10;
+	padding: 20px 0px 0 30px;
+	z-index: ${({ theme }) => theme.zIndexes.dataToolbar};
 	display: flex;
 	flex-flow: row wrap;
 	gap: 1rem;
@@ -91,7 +89,10 @@ const DataToolbar = ({
 	)
 
 	return (
-		<DataToolbarDiv isFilterPanelOpen={isFilterPanelOpen}>
+		<DataToolbarDiv
+			className="pharos-data-toolbar"
+			isFilterPanelOpen={isFilterPanelOpen}
+		>
 			<DataToolbarButtonContainer>
 				<DataToolbarButton
 					selected={isFilterPanelOpen}
@@ -114,4 +115,5 @@ const DataToolbar = ({
 		</DataToolbarDiv>
 	)
 }
+
 export default DataToolbar
