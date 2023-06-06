@@ -427,6 +427,7 @@ const Typeahead = ({
           setRef(inputRef, input)
         }}
         onKeyDown={handleKeyDownFromSearchBar}
+        onFocus={() => focusedElementIndex !== 0 && setFocusedElementIndex(0)}
         value={searchString}
         onChange={e => setSearchString(e.target.value)}
         placeholder={placeholder}
