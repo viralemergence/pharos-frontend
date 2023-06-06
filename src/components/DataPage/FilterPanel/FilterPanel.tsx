@@ -51,13 +51,13 @@ const FilterInput = ({
 const Panel = styled.aside<{ open: boolean; opacity: number }>`
   backdrop-filter: blur(12px);
   margin-left: ${({ open }) => (open ? '30px' : '-400px')};
-  transition: margin-left ${({ open }) => (open ? '500ms' : '200ms')}
+  transition: margin-left ${({ open }) => (open ? '300ms' : '300ms')}
     cubic-bezier(0.4, 0, 0.2, 1);
   background-color: ${({ theme }) => theme.lightBlack};
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.4);
   color: #fff;
   grid-area: panel;
-  z-index: 11;
+  z-index: ${({ theme }) => theme.zIndexes.dataPanel};
   display: flex;
   flex-flow: column nowrap;
   @media (max-width: 768px) {
@@ -72,7 +72,6 @@ const Panel = styled.aside<{ open: boolean; opacity: number }>`
     margin-right: 0;
     position: absolute;
     width: 100vw;
-    z-index: 10;
   }
 `
 

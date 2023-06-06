@@ -210,6 +210,7 @@ const ResultButton = ({
       style={{ color: fontColor }}
       ref={buttonRef}
       onFocus={e => resultButtonFocusHandler(e, resultsDivRef)}
+      selected={selected}
     >
       <RenderItem selected={selected} item={item} />
     </ItemButton>

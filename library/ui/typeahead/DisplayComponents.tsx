@@ -110,7 +110,7 @@ export const Selected = styled.div<{ borderColor: string }>`
   }
 `
 
-export const ItemButton = styled.button`
+export const ItemButton = styled.button<{ selected: boolean }>`
   background: none;
   border: none;
   width: 100%;
@@ -119,7 +119,7 @@ export const ItemButton = styled.button`
   display: flex;
   justify-content: space-between;
   &:focus {
-    background-color: #49515d;
+    background-color: ${({ selected }) => (selected ? '#594141' : '#49515d')};
   }
 `
 

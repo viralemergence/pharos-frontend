@@ -14,7 +14,7 @@ const DataToolbarButton = styled.button<{
 	extraStyle?: string
 }>`
 	${({ theme }) => theme.bigParagraph};
-	z-index: 14;
+	z-index: ${({ theme }) => theme.zIndexes.dataToolbarButton};
 	text-shadow: ${({ selected }) => (selected ? 'none' : '0 0 2px #000')};
 	position: relative;
 	font-size: 16px;
@@ -55,7 +55,7 @@ const DataToolbarRadioButtonContainer = styled(DataToolbarButtonContainer)`
 const DataToolbarDiv = styled.div<{ isFilterPanelOpen: boolean }>`
 	grid-area: nav;
 	padding: 20px 0px 0 30px;
-	z-index: 10;
+	z-index: ${({ theme }) => theme.zIndexes.dataToolbar};
 	display: flex;
 	flex-flow: row wrap;
 	gap: 1rem;
@@ -116,4 +116,5 @@ const DataToolbar = ({
 		</DataToolbarDiv>
 	)
 }
+
 export default DataToolbar

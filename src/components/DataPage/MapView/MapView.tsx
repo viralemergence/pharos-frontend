@@ -24,7 +24,7 @@ interface MapPageProps {
 }
 
 const MapViewDiv = styled.div`
-  z-index: 9;
+  z-index: ${({ theme }) => theme.zIndexes.dataMap};
   position: absolute;
   left: 0;
   top: 0;

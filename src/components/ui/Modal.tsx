@@ -14,7 +14,7 @@ const ModalContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 99;
+  z-index: ${({ theme }) => theme.zIndexes.modalContainer};
 `
 const ModalBackgroundButton = styled.button`
   position: fixed;
@@ -36,7 +36,7 @@ const ModalBackground = styled.div`
   border-radius: 0px;
   box-shadow: 3px 3px 20px rgba(0, 0, 0, 0.25);
   overflow: scroll;
-  z-index: 10;
+  z-index: ${({ theme }) => theme.zIndexes.modalBackground};
 `
 const CloseModalButton = styled.button`
   position: absolute;
