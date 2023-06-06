@@ -46,23 +46,25 @@ const FilterInput = ({
 
 const Panel = styled.aside<{ open: boolean; opacity: number }>`
   backdrop-filter: blur(12px);
-  transition: opacity 300ms;
   margin-left: ${({ open }) => (open ? '30px' : '-400px')};
-  transition: margin-left 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: margin-left ${({ open }) => (open ? '500ms' : '200ms')}
+    cubic-bezier(0.4, 0, 0.2, 1);
   background-color: ${({ theme }) => theme.lightBlack};
-  opacity: ${({ opacity }) => opacity};
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.4);
   color: #fff;
   grid-area: panel;
   z-index: 3;
   @media (max-width: 768px) {
     background-color: ${({ theme }) => theme.lightBlack};
+    display: ${({ open }) => (open ? 'block' : 'none')};
+    top: 0;
     bottom: 0;
-    height: auto;
     left: 0;
+    right: 0;
+    margin: 0;
+    height: 100%;
     margin-right: 0;
     position: absolute;
-    top: 60px;
     width: 100vw;
     z-index: 10;
   }

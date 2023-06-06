@@ -36,6 +36,9 @@ const ViewContainer = styled.main<{ isFilterPanelOpen: boolean }>`
 	gap: 20px;
 	.pharos-data-toolbar {
 		flex-basis: 60px;
+		@media (max-width: 768px) {
+			${({ isFilterPanelOpen }) => (isFilterPanelOpen ? 'display: none' : '')}
+		}
 	}
 	.pharos-panel {
 		min-width: 400px;
@@ -45,9 +48,16 @@ const ViewContainer = styled.main<{ isFilterPanelOpen: boolean }>`
 		flex-flow: row nowrap;
 		width: 100%;
 		height: calc(100vh - 197px);
+		@media (max-width: 768px) {
+			height: calc(100vh - 73px);
+		}
 	}
 	background-color: rgb(5, 10, 55); //#3d434e;
 	padding-bottom: 1rem;
+`
+
+const ViewMain = styled.main`
+	position: relative;
 `
 
 const DataPage = styled.div`
@@ -284,7 +294,13 @@ const DataView = (): JSX.Element => {
 						setIsFilterPanelOpen={setIsFilterPanelOpen}
 						appliedFilters={appliedFilters}
 					/>
-					<main>
+					<MapView
+						projection={view === 'globe' ? 'globe' : 'naturalEarth'}
+						style={{
+							filter: showEarth ? 'none' : 'blur(30px)',
+						}}
+					/>
+					<ViewMain>
 						<FilterPanel
 							isFilterPanelOpen={isFilterPanelOpen}
 							setIsFilterPanelOpen={setIsFilterPanelOpen}
@@ -293,12 +309,6 @@ const DataView = (): JSX.Element => {
 							updateFilter={updateFilter}
 							setFilters={setFilters}
 							clearFilters={clearFilters}
-						/>
-						<MapView
-							projection={view === 'globe' ? 'globe' : 'naturalEarth'}
-							style={{
-								filter: showEarth ? 'none' : 'blur(30px)',
-							}}
 						/>
 						<TableView
 							fields={fields}
@@ -315,7 +325,7 @@ const DataView = (): JSX.Element => {
 								display: view === View.table ? 'grid' : 'none',
 							}}
 						/>
-					</main>
+					</ViewMain>
 				</ViewContainer>
 			</DataPage>
 		</Providers>

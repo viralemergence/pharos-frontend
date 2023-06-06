@@ -7,6 +7,13 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 const MapContainer = styled.div`
   width: 100vw;
   background: #0b103b;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
 `
 
 mapboxgl.accessToken = process.env.GATSBY_MAPBOX_API_KEY!
@@ -18,6 +25,12 @@ interface MapPageProps {
 
 const MapViewDiv = styled.div`
   position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
 `
 
 const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
