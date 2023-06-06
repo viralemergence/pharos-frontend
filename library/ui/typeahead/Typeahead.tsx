@@ -122,7 +122,6 @@ type NullableMutableRefCallback<T> = (value: T | null) => void
 type ButtonRef = NullableMutableRef<HTMLButtonElement>
 type DivRef = NullableMutableRef<HTMLDivElement>
 type InputRef = NullableMutableRef<HTMLInputElement>
-type NumberRef = NullableMutableRef<number>
 
 type Focusable = HTMLInputElement | HTMLButtonElement | null
 const isFocusable = (elem: unknown): elem is Focusable =>
