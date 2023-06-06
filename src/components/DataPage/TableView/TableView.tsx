@@ -7,7 +7,7 @@ import './dataGrid.css'
 
 const TableViewContainer = styled.div`
   padding: 0 30px;
-  z-index: 3;
+  z-index: 11;
   flex: 1;
 `
 const TableContaier = styled.div`

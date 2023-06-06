@@ -13,9 +13,13 @@ import {
   FilterValues,
   UpdateFilterFunction,
 } from './constants'
-import InputLabel from '../../ui/InputLabel'
 import FilterTypeahead from './FilterTypeahead'
 import FilterPanelToolbar from './FilterPanelToolbar'
+
+const Label = styled.label`
+  ${({ theme }) => theme.smallParagraph}
+  display: block;
+`
 
 const FilterInput = ({
   fieldLabel,
@@ -31,7 +35,7 @@ const FilterInput = ({
   filterIndex: number
 }) => {
   return (
-    <InputLabel>
+    <Label>
       <FieldName>{fieldLabel}</FieldName>
       <FieldInput
         type={fieldType}
@@ -40,7 +44,7 @@ const FilterInput = ({
           updateFilter(filterIndex, [e.target.value])
         }
       />
-    </InputLabel>
+    </Label>
   )
 }
 
@@ -53,7 +57,9 @@ const Panel = styled.aside<{ open: boolean; opacity: number }>`
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.4);
   color: #fff;
   grid-area: panel;
-  z-index: 3;
+  z-index: 11;
+  display: flex;
+  flex-flow: column nowrap;
   @media (max-width: 768px) {
     background-color: ${({ theme }) => theme.lightBlack};
     display: ${({ open }) => (open ? 'block' : 'none')};
@@ -138,10 +144,10 @@ const FilterListItem = ({
 }
 
 const FilterList = styled.ul`
-  height: calc(100vh - 190px - 73px);
   margin: 0;
   overflow-y: auto;
   padding: 34px 40px;
+  flex: 1;
   @media (max-width: 768px) {
     height: calc(100vh - 60px - 73px);
   }

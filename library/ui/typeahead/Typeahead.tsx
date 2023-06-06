@@ -450,7 +450,11 @@ const Typeahead = ({
         }}
         animDuration={200}
       >
-        <Results style={{ backgroundColor, borderColor }} ref={resultsDivRef}>
+        <Results
+          style={{ backgroundColor, borderColor }}
+          className="pharos-typeahead-results"
+          ref={resultsDivRef}
+        >
           {multiselect && values.length > 0 && (
             <Selected borderColor={borderColor}>
               {values.map((item: Item) => {

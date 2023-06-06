@@ -50,6 +50,10 @@ const SelectedTypeaheadValueDeleteButton = styled.button`
 const TypeaheadContainer = styled.div`
   & form {
     max-width: 400px !important;
+    margin-bottom: 10px;
+  }
+  & .pharos-typeahead-results {
+    margin-bottom: 20px;
   }
   & input[type='search'] {
     ${({ theme }) => theme.smallParagraph}
@@ -64,6 +68,7 @@ const TypeaheadContainer = styled.div`
 `
 const TypeaheadLabel = styled(InputLabel)`
   ${({ theme }) => theme.smallParagraph}
+  margin-bottom: 10px;
   width: fit-content;
 `
 
