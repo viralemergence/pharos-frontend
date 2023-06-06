@@ -44,17 +44,16 @@ const FilterInput = ({
   )
 }
 
-const Panel = styled.aside<{ isFilterPanelOpen: boolean }>`
+const Panel = styled.aside<{ opacity: number }>`
   backdrop-filter: blur(12px);
+  transition: opacity 300ms;
   background-color: ${({ theme }) => theme.lightBlack};
+  opacity: ${({ opacity }) => opacity};
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.4);
   color: #fff;
-  height: calc(100vh - 210px);
-  left: 30px;
-  margin-right: 30px;
-  position: relative;
-  top: 73px;
-  width: 400px;
+  //height: calc(100vh - 210px);
+  margin-left: 30px;
+  grid-area: panel;
   z-index: 3;
   @media (max-width: 768px) {
     background-color: ${({ theme }) => theme.lightBlack};
@@ -169,6 +168,12 @@ const FilterPanel = ({
 }) => {
   const [isFieldSelectorOpen, setIsFieldSelectorOpen] = useState(false)
 
+  const [opacity, setOpacity] = useState(0)
+
+  useEffect(() => {
+    setOpacity(1)
+  }, [])
+
   const filterListRef = useRef<HTMLUListElement | null>(null)
 
   const idsOfAddedFields = filters.map(({ fieldId }) => fieldId)
@@ -193,51 +198,44 @@ const FilterPanel = ({
 
   return (
     <Panel
+      opacity={opacity}
       style={{ colorScheme: 'dark' }}
-      isFilterPanelOpen={isFilterPanelOpen}
       onClick={_ => {
         setIsFieldSelectorOpen(false)
       }}
     >
-      {isFilterPanelOpen && (
-        <>
-          <FilterPanelToolbar
-            {...{
-              fields,
-              filters,
-              setFilters,
-              clearFilters,
-              isFieldSelectorOpen,
-              setIsFieldSelectorOpen,
-              setIsFilterPanelOpen,
-              filterListRef,
-            }}
-          />
-          <FilterList
-            ref={filterListRef}
-            onScroll={adjustTypeaheadResultsHeight}
-          >
-            {filters.map((filter, filterIndex) => {
-              const { label = '', type = 'text' } = fields[filter.fieldId]
-              return (
-                <FilterListItem
-                  shouldAnimate={shouldAnimateFilters.current}
-                  key={`${filter.fieldId}-${filterIndex}`}
-                >
-                  <FilterValueSetter
-                    filterIndex={filterIndex}
-                    fieldLabel={label}
-                    fieldType={type}
-                    options={fields[filter.fieldId].options}
-                    updateFilter={updateFilter}
-                    values={filter.values}
-                  />
-                </FilterListItem>
-              )
-            })}
-          </FilterList>
-        </>
-      )}
+      <FilterPanelToolbar
+        {...{
+          fields,
+          filters,
+          setFilters,
+          clearFilters,
+          isFieldSelectorOpen,
+          setIsFieldSelectorOpen,
+          setIsFilterPanelOpen,
+          filterListRef,
+        }}
+      />
+      <FilterList ref={filterListRef} onScroll={adjustTypeaheadResultsHeight}>
+        {filters.map((filter, filterIndex) => {
+          const { label = '', type = 'text' } = fields[filter.fieldId]
+          return (
+            <FilterListItem
+              shouldAnimate={shouldAnimateFilters.current}
+              key={`${filter.fieldId}-${filterIndex}`}
+            >
+              <FilterValueSetter
+                filterIndex={filterIndex}
+                fieldLabel={label}
+                fieldType={type}
+                options={fields[filter.fieldId].options}
+                updateFilter={updateFilter}
+                values={filter.values}
+              />
+            </FilterListItem>
+          )
+        })}
+      </FilterList>
     </Panel>
   )
 }

@@ -6,16 +6,10 @@ import type { Filter, Field } from '../FilterPanel/constants'
 import './dataGrid.css'
 
 const TableViewContainer = styled.div`
-  position: relative;
   z-index: 3;
-  width: calc(100vw - 430px);
-  height: calc(100vh - 103px);
+  grid-area: table;
 `
 const TableContaier = styled.div`
-  position: relative;
-  height: 100%;
-  padding: 30px;
-  padding-top: 73px;
   padding-bottom: 10px;
   overflow-x: hidden;
 `
@@ -80,7 +74,6 @@ const rowKeyGetter = (row: Row) => row.pharosID
 
 const TableView = ({
   style = {},
-  height,
   loading,
   page,
   publishedRecords,
@@ -128,7 +121,7 @@ const TableView = ({
   }
 
   return (
-    <TableViewContainer style={style} height={height}>
+    <TableViewContainer style={style}>
       <TableContaier>
         {!loading && publishedRecords?.length === 0 ? (
           <NoRecordsFound>

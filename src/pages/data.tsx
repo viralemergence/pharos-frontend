@@ -27,16 +27,35 @@ import {
 	FilterValues,
 } from 'components/DataPage/FilterPanel/constants'
 
-const ViewContainer = styled.main`
-	display: flex;
+const ViewContainer = styled.main<{ isFilterPanelOpen: boolean }>`
+	flex: 1;
+	position: relative;
+	border: 5px solid red;
+	display: grid;
+	grid-template-areas:
+		'nav  nav'
+		'panel table';
+	grid-gap: 20px;
+	grid-template-rows: 60px 1fr;
+	grid-template-columns:
+		${({ isFilterPanelOpen }) => (isFilterPanelOpen ? '400px' : '0')}
+		1fr;
+	transition: grid-template-columns 300ms cubic-bezier(0.4, 0, 0.2, 1);
 	background-color: rgb(5, 10, 55); //#3d434e;
 	padding-bottom: 1rem;
 	.map-container {
-		height: calc(100vh - 87px);
+		//height: calc(100vh - 87px);
 		@media (max-width: 768px) {
-			height: calc(100vh - 60px);
+			//height: calc(100vh - 60px);
 		}
 	}
+`
+
+const DataPage = styled.div`
+	display: flex;
+	flex-flow: column nowrap;
+	height: 100vh;
+	width: 100vw;
 `
 
 interface PublishedRecordsResponse {
@@ -248,10 +267,6 @@ const DataView = (): JSX.Element => {
 		}
 	}
 
-	const dataViewHeight = 'calc(100vh - 87px)'
-	const panelWidth = isFilterPanelOpen ? 410 : 0
-	const tableViewWidthOffset = 0
-
 	// TODO: Use flexbox or grid layout than hardcoding the pixel values.
 	// TODO: Check out Ryan's PR (for project pages) to see how he does styled components
 
@@ -260,49 +275,50 @@ const DataView = (): JSX.Element => {
 	return (
 		<Providers>
 			<CMS.SEO />
-			<NavBar />
-			<DataToolbar
-				view={view}
-				changeView={changeView}
-				isFilterPanelOpen={isFilterPanelOpen}
-				setIsFilterPanelOpen={setIsFilterPanelOpen}
-				appliedFilters={appliedFilters}
-			/>
-			<ViewContainer>
-				{isFilterPanelOpen && (
-					<FilterPanel
+			<DataPage>
+				<NavBar />
+				<ViewContainer isFilterPanelOpen={isFilterPanelOpen}>
+					<DataToolbar
+						view={view}
+						changeView={changeView}
 						isFilterPanelOpen={isFilterPanelOpen}
 						setIsFilterPanelOpen={setIsFilterPanelOpen}
-						fields={fields}
-						filters={filters}
-						updateFilter={updateFilter}
-						setFilters={setFilters}
-						clearFilters={clearFilters}
+						appliedFilters={appliedFilters}
 					/>
-				)}
-				<MapView
-					projection={view === 'globe' ? 'globe' : 'naturalEarth'}
-					style={{
-						filter: showEarth ? 'none' : 'blur(30px)',
-					}}
-				/>
-				<TableView
-					fields={fields}
-					height={dataViewHeight}
-					appliedFilters={appliedFilters}
-					loadPublishedRecords={() => {
-						loadFilteredRecords(filters, false)
-						debouncing.current.on = false
-					}}
-					loading={loading}
-					page={page}
-					publishedRecords={publishedRecords}
-					reachedLastPage={reachedLastPage}
-					style={{
-						display: view === View.table ? 'grid' : 'none',
-					}}
-				/>
-			</ViewContainer>
+					{isFilterPanelOpen && (
+						<FilterPanel
+							isFilterPanelOpen={isFilterPanelOpen}
+							setIsFilterPanelOpen={setIsFilterPanelOpen}
+							fields={fields}
+							filters={filters}
+							updateFilter={updateFilter}
+							setFilters={setFilters}
+							clearFilters={clearFilters}
+						/>
+					)}
+					<MapView
+						projection={view === 'globe' ? 'globe' : 'naturalEarth'}
+						style={{
+							filter: showEarth ? 'none' : 'blur(30px)',
+						}}
+					/>
+					<TableView
+						fields={fields}
+						appliedFilters={appliedFilters}
+						loadPublishedRecords={() => {
+							loadFilteredRecords(filters, false)
+							debouncing.current.on = false
+						}}
+						loading={loading}
+						page={page}
+						publishedRecords={publishedRecords}
+						reachedLastPage={reachedLastPage}
+						style={{
+							display: view === View.table ? 'grid' : 'none',
+						}}
+					/>
+				</ViewContainer>
+			</DataPage>
 		</Providers>
 	)
 }

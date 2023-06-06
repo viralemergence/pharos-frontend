@@ -53,13 +53,9 @@ const DataToolbarRadioButtonContainer = styled(DataToolbarButtonContainer)`
 	padding: 5px;
 `
 const DataToolbarDiv = styled.div<{ isFilterPanelOpen: boolean }>`
-	position: absolute;
-	top: 97px;
-	left: 30px;
+	grid-area: nav;
+	padding: 20px 0px 0 30px;
 	@media (max-width: 768px) {
-		// TODO: Remove from tab order
-		top: 70px;
-		left: 10px;
 	}
 	z-index: 10;
 	display: flex;
