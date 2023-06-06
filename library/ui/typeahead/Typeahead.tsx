@@ -182,7 +182,6 @@ interface ResultButtonProps {
   fontColor?: string
   isFocused?: boolean
   resultsDivRef?: DivRef
-  indexOfLastItemAdded?: NumberRef
 }
 
 const ResultButton = ({
@@ -194,12 +193,10 @@ const ResultButton = ({
   resultsDivRef,
   RenderItem,
   isFocused = false,
-  indexOfLastItemAdded,
 }: ResultButtonProps) => {
   const buttonRef: ButtonRef = useRef(null)
   useEffect(() => {
     if (isFocused) buttonRef.current?.focus({ preventScroll: true })
-    setRef(indexOfLastItemAdded, null)
   })
   buttonRefs.push(buttonRef)
 
