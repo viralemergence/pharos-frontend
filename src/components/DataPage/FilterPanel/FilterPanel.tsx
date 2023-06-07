@@ -191,9 +191,6 @@ const FilterPanel = ({
     }, 500)
   }, [])
 
-  /** On scroll, adjust the height of the typeahead results */
-  const adjustTypeaheadResultsHeight = () => {}
-
   return (
     <Panel
       open={isFilterPanelOpen}
@@ -215,7 +212,7 @@ const FilterPanel = ({
           filterListRef,
         }}
       />
-      <FilterList ref={filterListRef} onScroll={adjustTypeaheadResultsHeight}>
+      <FilterList ref={filterListRef}>
         {filters.map((filter, filterIndex) => {
           const { label = '', type = 'text' } = fields[filter.fieldId]
           return (
