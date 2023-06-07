@@ -26,6 +26,16 @@ export const Container = styled.form<{ borderColor: string }>`
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
 
+    input {
+      outline: none;
+      padding-bottom: 13px;
+      transition-duration: 0ms;
+      transition-delay: 0s;
+      border-bottom: 0px solid #aaaaaa00;
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
     &:after {
       /* background-color: rgba(211, 211, 211, 255); */
       background-color: ${({ borderColor }) =>
@@ -35,11 +45,7 @@ export const Container = styled.form<{ borderColor: string }>`
     }
   }
 `
-export const SearchBar = styled.input<{
-  iconLeft: boolean
-  fontColor: string
-  areResultsShown: boolean
-}>`
+export const SearchBar = styled.input<{ iconLeft: boolean; fontColor: string }>`
   border: none;
   width: 100%;
   border-radius: 5px;
@@ -61,20 +67,6 @@ export const SearchBar = styled.input<{
     color: ${({ fontColor }) => fontColor};
     opacity: 0.66;
   }
-
-  // TODO: Perhaps restore outline for accessibility's sake?
-  &:focus {
-    outline: none;
-    padding-bottom: 13px;
-    transition-duration: 0ms;
-    transition-delay: 0s;
-  }
-
-  ${({ areResultsShown }) =>
-    areResultsShown &&
-    `border-bottom: 0px solid #aaaaaa00;
-      border-bottom-right-radius: 0;
-      border-bottom-left-radius: 0;`}
 `
 export const Results = styled.div`
   display: flex;

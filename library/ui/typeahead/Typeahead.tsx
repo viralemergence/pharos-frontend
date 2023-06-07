@@ -434,7 +434,6 @@ const Typeahead = ({
         iconLeft={iconLeft}
         style={{ backgroundColor, borderColor }}
         fontColor={fontColor}
-        areResultsShown={showResults}
       />
       <SearchIcon searchString={searchString} {...{ iconSVG, iconLeft }} />
       <Expander
