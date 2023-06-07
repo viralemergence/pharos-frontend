@@ -333,10 +333,6 @@ const Typeahead = ({
   }
 
   useEffect(() => {
-    if (values.length && !multiselect) setSearchString(values[0]?.label)
-  }, [values, multiselect])
-
-  useEffect(() => {
     if (disabled && !values.length) setSearchString('')
   }, [disabled, values])
 
@@ -484,7 +480,12 @@ const Typeahead = ({
                 isFocused={index === focusedElementIndex}
                 onClick={() => {
                   onAdd(item)
-                  focusNextItem(myIndex, 1, itemsCount)
+                  if (multiselect) {
+                    focusNextItem(myIndex, 1, itemsCount)
+                  } else {
+                    setSearchString(item.label)
+                    setShowResults(false)
+                  }
                 }}
                 {...resultButtonProps}
               />
