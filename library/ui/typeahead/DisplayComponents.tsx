@@ -37,7 +37,6 @@ export const Container = styled.form<{ borderColor: string }>`
     }
 
     &:after {
-      /* background-color: rgba(211, 211, 211, 255); */
       background-color: ${({ borderColor }) =>
         borderColor ? borderColor : `rgb(211, 211, 211)`};
       opacity: 0.33;
