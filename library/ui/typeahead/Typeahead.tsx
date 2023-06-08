@@ -1,9 +1,9 @@
 import React, {
-  FocusEvent,
-  ForwardedRef,
+  // FocusEvent,
+  // ForwardedRef,
   KeyboardEventHandler,
-  MouseEventHandler,
-  MutableRefObject,
+  // MouseEventHandler,
+  // MutableRefObject,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -129,14 +129,14 @@ export interface TypeaheadProps {
   inputId?: string
 }
 
-type NullableMutableRef<T> = MutableRefObject<T | null>
-type NullableMutableRefCallback<T> = (value: T | null) => void
-type ButtonRef = NullableMutableRef<HTMLButtonElement>
-type DivRef = NullableMutableRef<HTMLDivElement>
+// type NullableMutableRef<T> = MutableRefObject<T | null>
+// type NullableMutableRefCallback<T> = (value: T | null) => void
+// type ButtonRef = NullableMutableRef<HTMLButtonElement>
+// type DivRef = NullableMutableRef<HTMLDivElement>
 
-type Focusable = HTMLInputElement | HTMLButtonElement | null
-const isFocusable = (elem: unknown): elem is Focusable =>
-  elem instanceof HTMLInputElement || elem instanceof HTMLButtonElement
+// type Focusable = HTMLInputElement | HTMLButtonElement | null
+// const isFocusable = (elem: unknown): elem is Focusable =>
+//   elem instanceof HTMLInputElement || elem instanceof HTMLButtonElement
 
 const isVisibleInContainer = (
   container: HTMLElement | null,
