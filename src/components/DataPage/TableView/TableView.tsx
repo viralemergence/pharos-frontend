@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
 import type { Filter, Field } from '../FilterPanel/constants'
-import './dataGrid.css'
 
 const TableViewContainer = styled.div`
   padding: 0 30px;
@@ -22,7 +21,10 @@ const FillDatasetGrid = styled(DataGrid)`
     background-color: ${({ theme }) => theme.lightBlack};
     &[aria-colindex='1'],
     &[role='columnheader'] {
-      background: ${({ theme }) => theme.medBlack};
+      background-color: ${({ theme }) => theme.medBlack};
+    }
+    &.in-filtered-column {
+      background-color: #384f4d;
     }
   }
 `
