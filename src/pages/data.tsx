@@ -179,6 +179,27 @@ const loadPublishedRecordsDebounced = debounce(
 	loadDebounceDelay
 )
 
+const getHashData = () =>
+	new URLSearchParams(window.location.hash.slice(1))
+		.entries()
+		.reduce((acc, [key, value]) => {
+			// Key might be like "host_species[]"
+			key = key.replace(/\[\]$/, '')
+			if (!acc[key]) acc[key] = []
+			acc[key].push(value)
+			return acc
+		})
+
+// .reduce<Record<string, string>>((acc, part) => {
+// 	if (!/=/.test(part)) part = `view=${part}`
+// 	const [key, value] = part.split('=')
+// 	return { ...acc, [key]: value }
+// }, {})
+
+const updateHashData = (data: Record<string, string>) => {
+	window.location.hash = new URLSearchParams(data).toString()
+}
+
 const DataView = (): JSX.Element => {
 	const [loading, setLoading] = useState(true)
 	const [publishedRecords, setPublishedRecords] = useState<Row[]>([])
@@ -190,6 +211,8 @@ const DataView = (): JSX.Element => {
 	/** Filters that will be applied to the published records */
 	const [filters, setFilters] = useState<Filter[]>([])
 
+	console.log('filters', filters)
+
 	/** Filters that have been successfully applied to the published
 	 * records. That is, these filters have been sent to the server, and it
 	 * responded with an appropriate subset of the records. This is used for
@@ -200,20 +223,28 @@ const DataView = (): JSX.Element => {
 	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
 
 	const changeView = (view: View) => {
-		window.location.hash = view
+		updateHashData({ ...getHashData(), view })
 		setView(view)
 	}
 
 	useEffect(() => {
-		const hash = window.location.hash.replace('#', '')
+		const hashData = getHashData()
 
-		function hashIsView(hash: string): hash is View {
-			return Object.values(View).includes(hash)
+		const isValidView = (str: string): str is View => {
+			return Object.values(View).includes(str)
 		}
 
-		if (hashIsView(hash)) {
-			setView(hash)
-		}
+		const { viewInHash, ...unprocessedFilterDataInHash } = hashData
+
+		if (isValidView(viewInHash)) setView(viewInHash)
+
+		const filterDataInHash = Object.entries(unprocessedFilterDataInHash).map(
+			([fieldId, valuesString]) => ({
+				fieldId,
+				values: valuesString.split(/,/),
+			})
+		)
+		setFilters(filterDataInHash)
 
 		const getMetadata = async () => {
 			const response = await fetch(
