@@ -248,7 +248,8 @@ const DataView = (): JSX.Element => {
 	const [appliedFilters, setAppliedFilters] = useState<Filter[]>([])
 
 	const [fields, setFields] = useState<Record<string, Field>>({})
-	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
+	// TODO: Open on mobile by default only if filters are set through hash
+	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(true)
 
 	const changeView = (view: View) => {
 		updateHash({ newView: view })
