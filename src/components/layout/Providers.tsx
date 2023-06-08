@@ -34,14 +34,16 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
   const trackingId = getTrackingId()
 
   return (
-    <CMS.IconProvider data={icons}>
-      <CMS.SiteMetadataProvider data={siteMetadata} trackingId={trackingId}>
-        <ThemeProvider theme={{ ...textStyles, ...colorPalette, zIndexes }}>
-          <GlobalStyle />
-          {children}
-        </ThemeProvider>
-      </CMS.SiteMetadataProvider>
-    </CMS.IconProvider>
+    <React.StrictMode>
+      <CMS.IconProvider data={icons}>
+        <CMS.SiteMetadataProvider data={siteMetadata} trackingId={trackingId}>
+          <ThemeProvider theme={{ ...textStyles, ...colorPalette, zIndexes }}>
+            <GlobalStyle />
+            {children}
+          </ThemeProvider>
+        </CMS.SiteMetadataProvider>
+      </CMS.IconProvider>
+    </React.StrictMode>
   )
 }
 
