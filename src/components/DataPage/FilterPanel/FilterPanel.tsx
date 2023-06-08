@@ -198,7 +198,13 @@ const FilterPanel = ({
       />
       <FilterList ref={filterListRef}>
         {filters.map((filter, filterIndex) => {
-          const { label = '', type = 'text' } = fields[filter.fieldId] || {}
+          const field = fields[filter.fieldId]
+
+          // There will be no matching field if a filter in the hash doesn't
+          // correspond to any fields in the metadata
+          if (!field) return
+
+          const { label = '', type = 'text' } = field || {}
           return (
             <FilterListItem key={`${filter.fieldId}-${filterIndex}`}>
               <FilterValueSetter

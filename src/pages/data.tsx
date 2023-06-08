@@ -184,8 +184,6 @@ const getHashData = () =>
 		new URLSearchParams(window.location.hash.slice(1)).entries()
 	).reduce<Record<string, string | string[]>>((acc, [key, value]) => {
 		if (key === 'view') return { ...acc, view: value }
-		// Key might be like "host_species[]"
-		key = key.replace(/\[\]$/, '')
 		acc[key] ||= []
 		acc[key] = [...(acc[key] as string[]), value]
 		return acc
@@ -256,6 +254,7 @@ const DataView = (): JSX.Element => {
 		setView(view)
 	}
 
+	// TODO: Perhaps debounce to prevent flash of different hash
 	const updateHash = ({
 		newView = view,
 		newFilters = filters,
@@ -266,7 +265,7 @@ const DataView = (): JSX.Element => {
 		const data = [
 			['view', newView],
 			...newFilters.flatMap(({ fieldId, values }) =>
-				values.map(value => [`${fieldId}[]`, value])
+				values.sort().map(value => [fieldId, value])
 			),
 		]
 		window.location.hash = new URLSearchParams(data).toString()
