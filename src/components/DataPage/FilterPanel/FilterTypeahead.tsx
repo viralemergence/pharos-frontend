@@ -48,23 +48,23 @@ const SelectedTypeaheadValueDeleteButton = styled.button`
 `
 
 const TypeaheadContainer = styled.div`
-  & form {
-    max-width: 400px !important;
-    margin-bottom: 10px;
-  }
-  & .pharos-typeahead-results {
-    margin-bottom: 20px;
-  }
-  & input[type='search'] {
-    ${({ theme }) => theme.smallParagraph}
-    &::placeholder {
-      color: #fff !important;
-      opacity: 1 !important;
-      font-weight: bold;
-    }
-    padding: 10px 15px 8px 15px !important;
-    line-height: 25px !important;
-  }
+  // & form {
+  //   max-width: 400px !important;
+  //   margin-bottom: 10px;
+  // }
+  // & .pharos-typeahead-results {
+  //   margin-bottom: 20px;
+  // }
+  // & input[type='search'] {
+  //   ${({ theme }) => theme.smallParagraph}
+  //   &::placeholder {
+  //     color: #fff !important;
+  //     opacity: 1 !important;
+  //     font-weight: bold;
+  //   }
+  //   padding: 10px 15px 8px 15px !important;
+  //   line-height: 25px !important;
+  // }
 `
 const TypeaheadLabel = styled(InputLabel)`
   ${({ theme }) => theme.smallParagraph}
