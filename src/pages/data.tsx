@@ -180,24 +180,54 @@ const loadPublishedRecordsDebounced = debounce(
 )
 
 const getHashData = () =>
-	new URLSearchParams(window.location.hash.slice(1))
-		.entries()
-		.reduce((acc, [key, value]) => {
-			// Key might be like "host_species[]"
-			key = key.replace(/\[\]$/, '')
-			if (!acc[key]) acc[key] = []
-			acc[key].push(value)
-			return acc
+	Array.from(
+		new URLSearchParams(window.location.hash.slice(1)).entries()
+	).reduce<Record<string, string | string[]>>((acc, [key, value]) => {
+		if (key === 'view') return { ...acc, view: value }
+		// Key might be like "host_species[]"
+		key = key.replace(/\[\]$/, '')
+		acc[key] ||= []
+		acc[key] = [...(acc[key] as string[]), value]
+		return acc
+	}, {})
+
+const updatePageFromHash = (
+	setView: Dispatch<SetStateAction<View>>,
+	setFilters: Dispatch<SetStateAction<Filter[]>>
+) => {
+	const hashData = getHashData()
+
+	const isValidView = (maybeView: unknown): maybeView is View => {
+		if (typeof maybeView !== 'string') return false
+		return Object.values(View).includes(maybeView)
+	}
+	/** This checks that the filter data extracted from window.location.hash is
+	 * an array of objects with a fieldId and an array of values. It doesn't
+	 * use the metadata to check that the fieldIds correspond to supported
+	 * fields. */
+	const isValidFilterData = (
+		maybeFilterData: unknown
+	): maybeFilterData is Filter[] => {
+		if (!Array.isArray(maybeFilterData)) return false
+		return maybeFilterData.every?.(maybeFilter => {
+			const { fieldId, values } = maybeFilter as Partial<Filter>
+			if (typeof fieldId !== 'string') return false
+			if (!Array.isArray(values)) return false
+			return values.every?.(value => typeof value === 'string')
 		})
+	}
 
-// .reduce<Record<string, string>>((acc, part) => {
-// 	if (!/=/.test(part)) part = `view=${part}`
-// 	const [key, value] = part.split('=')
-// 	return { ...acc, [key]: value }
-// }, {})
+	const { view, ...filterDataInHashAsTuples } = hashData
 
-const updateHashData = (data: Record<string, string>) => {
-	window.location.hash = new URLSearchParams(data).toString()
+	const filterDataInHash = Object.entries(filterDataInHashAsTuples).map(
+		([fieldId, values]) => ({ fieldId, values })
+	)
+
+	if (isValidView(view)) setView(view)
+	else console.error('Invalid view in hash')
+
+	if (isValidFilterData(filterDataInHash)) setFilters(filterDataInHash)
+	else console.error('Invalid filter data in hash')
 }
 
 const DataView = (): JSX.Element => {
@@ -211,8 +241,6 @@ const DataView = (): JSX.Element => {
 	/** Filters that will be applied to the published records */
 	const [filters, setFilters] = useState<Filter[]>([])
 
-	console.log('filters', filters)
-
 	/** Filters that have been successfully applied to the published
 	 * records. That is, these filters have been sent to the server, and it
 	 * responded with an appropriate subset of the records. This is used for
@@ -223,28 +251,28 @@ const DataView = (): JSX.Element => {
 	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
 
 	const changeView = (view: View) => {
-		updateHashData({ ...getHashData(), view })
+		updateHash({ newView: view })
 		setView(view)
 	}
 
+	const updateHash = ({
+		newView = view,
+		newFilters = filters,
+	}: {
+		newView?: View
+		newFilters?: Filter[]
+	}) => {
+		const data = [
+			['view', newView],
+			...newFilters.flatMap(({ fieldId, values }) =>
+				values.map(value => [`${fieldId}[]`, value])
+			),
+		]
+		window.location.hash = new URLSearchParams(data).toString()
+	}
+
 	useEffect(() => {
-		const hashData = getHashData()
-
-		const isValidView = (str: string): str is View => {
-			return Object.values(View).includes(str)
-		}
-
-		const { viewInHash, ...unprocessedFilterDataInHash } = hashData
-
-		if (isValidView(viewInHash)) setView(viewInHash)
-
-		const filterDataInHash = Object.entries(unprocessedFilterDataInHash).map(
-			([fieldId, valuesString]) => ({
-				fieldId,
-				values: valuesString.split(/,/),
-			})
-		)
-		setFilters(filterDataInHash)
+		updatePageFromHash(setView, setFilters)
 
 		const getMetadata = async () => {
 			const response = await fetch(
@@ -278,18 +306,23 @@ const DataView = (): JSX.Element => {
 		}
 	}
 
+	const setFiltersAndUpdateHash = (newFilters: Filter[]) => {
+		setFilters(newFilters)
+		updateHash({ newFilters })
+	}
+
 	const updateFilter = (
 		indexOfFilterToUpdate: number,
 		newValues: FilterValues
 	) => {
 		const newFilters = [...filters]
 		newFilters[indexOfFilterToUpdate].values = newValues
-		setFilters(newFilters)
+		setFiltersAndUpdateHash(newFilters)
 		loadFilteredRecords(newFilters)
 	}
 
 	const clearFilters = () => {
-		setFilters([])
+		setFiltersAndUpdateHash([])
 		if (filters.some(({ values }) => values.length > 0)) {
 			// Don't debounce when clearing filters
 			loadFilteredRecords([], false)

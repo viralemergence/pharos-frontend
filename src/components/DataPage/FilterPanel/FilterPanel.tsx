@@ -198,14 +198,14 @@ const FilterPanel = ({
       />
       <FilterList ref={filterListRef}>
         {filters.map((filter, filterIndex) => {
-          const { label = '', type = 'text' } = fields[filter.fieldId]
+          const { label = '', type = 'text' } = fields[filter.fieldId] || {}
           return (
             <FilterListItem key={`${filter.fieldId}-${filterIndex}`}>
               <FilterValueSetter
                 filterIndex={filterIndex}
                 fieldLabel={label}
                 fieldType={type}
-                options={fields[filter.fieldId].options}
+                options={fields[filter.fieldId]?.options}
                 updateFilter={updateFilter}
                 values={filter.values}
               />
