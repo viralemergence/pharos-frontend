@@ -294,7 +294,7 @@ const Typeahead = ({
     switch (e.key) {
       case 'Enter':
         e.preventDefault()
-        onAdd(results[0] || items[0])
+        if (results[0] || items[0]) onAdd(results[0] || items[0])
         return
     }
   }
