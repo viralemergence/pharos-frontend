@@ -137,19 +137,6 @@ type Focusable = HTMLInputElement | HTMLButtonElement | null
 const isFocusable = (elem: unknown): elem is Focusable =>
   elem instanceof HTMLInputElement || elem instanceof HTMLButtonElement
 
-function setRef<T>(
-  ref:
-    | NullableMutableRef<T>
-    | NullableMutableRefCallback<T>
-    | ForwardedRef<T>
-    | undefined,
-  value: T | null
-) {
-  if (!ref) return
-  if (typeof ref === 'function') ref(value)
-  else if (ref) ref.current = value
-}
-
 const isVisibleInContainer = (
   container: HTMLElement | null,
   percentageVisible = 1,
@@ -301,7 +288,7 @@ const Typeahead = ({
     setFocusedElementIndex(nextIndex)
   }
 
-  const inputRef: InputRef = useRef(null)
+  const inputRef = useRef<HTMLInputElement>(null)
   const buttonRefs: ButtonRef[] = []
 
   // compute fuzzy search
@@ -439,9 +426,7 @@ const Typeahead = ({
         type="search"
         autoComplete="off"
         name="special-auto-fill"
-        ref={(input: HTMLInputElement) => {
-          setRef(inputRef, input)
-        }}
+        ref={inputRef}
         onKeyDown={handleKeyDownFromSearchBar}
         onFocus={() => focusedElementIndex !== 0 && setFocusedElementIndex(0)}
         value={searchString}
