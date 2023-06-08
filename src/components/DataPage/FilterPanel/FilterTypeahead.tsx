@@ -135,6 +135,8 @@ const FilterTypeahead = ({
           backgroundColor="#000"
           fontColor="white"
           borderColor="#fff"
+          selectedHoverColor="#594141"
+          hoverColor="#49515d"
           RenderItem={({ item, selected }) => (
             <FilterDarkTypeaheadResult {...{ item, selected }} />
           )}
