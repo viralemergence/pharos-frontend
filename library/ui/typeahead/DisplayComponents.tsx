@@ -101,7 +101,9 @@ export const Selected = styled.div<{ borderColor: string }>`
   }
 `
 
-export const ItemButton = styled.button<{ selected: boolean }>`
+export const ItemButton = styled.button<{
+  focusHoverColor: string
+}>`
   background: none;
   border: none;
   width: 100%;
@@ -109,8 +111,10 @@ export const ItemButton = styled.button<{ selected: boolean }>`
   padding: 0;
   display: flex;
   justify-content: space-between;
-  &:focus {
-    background-color: ${({ selected }) => (selected ? '#594141' : '#49515d')};
+
+  &:focus,
+  &:hover {
+    background-color: ${({ focusHoverColor }) => focusHoverColor};
   }
 `
 

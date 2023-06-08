@@ -111,6 +111,16 @@ export interface TypeaheadProps {
   fontColor?: string
   /** border color for the control */
   borderColor?: string
+  /**
+   * background color for the items
+   * in the results when hovered or active
+   */
+  hoverColor?: string
+  /**
+   * background color for the selected values
+   * in the results when hovered or active
+   */
+  selectedHoverColor?: string
   /** Aria-label attribute for the text input */
   ariaLabel?: string
   /** id attribute for the text input */
@@ -181,6 +191,8 @@ interface ResultButtonProps {
   fontColor?: string
   isFocused?: boolean
   resultsDivRef?: DivRef
+  hoverColor: string
+  selectedHoverColor: string
 }
 
 const ResultButton = ({
@@ -191,6 +203,8 @@ const ResultButton = ({
   buttonRefs,
   resultsDivRef,
   RenderItem,
+  hoverColor,
+  selectedHoverColor,
   isFocused = false,
 }: ResultButtonProps) => {
   const buttonRef: ButtonRef = useRef(null)
@@ -206,7 +220,7 @@ const ResultButton = ({
       style={{ color: fontColor }}
       ref={buttonRef}
       onFocus={e => resultButtonFocusHandler(e, resultsDivRef)}
-      selected={selected}
+      focusHoverColor={selected ? selectedHoverColor : hoverColor}
     >
       <RenderItem selected={selected} item={item} />
     </ItemButton>
@@ -233,6 +247,7 @@ const getElementToFocus = (
   } else {
     // If the focusedElement is not visible, to avoid unexpected scrolling of
     // the results div, move focus to a button that is already visible
+
     return up
       ? // If moving up, focus the last visible button
         buttons.findLast(elem => isVisibleInContainer(resultsDiv, 0.5, elem))
@@ -255,6 +270,8 @@ const Typeahead = ({
   backgroundColor = 'white',
   borderColor = '#aaa',
   fontColor = 'rgba(51, 51, 51, 1)',
+  hoverColor = 'rgba(0, 50, 100, 0.08)',
+  selectedHoverColor = 'rgba(100, 0, 50, 0.08)',
   className,
   disabled = false,
   style = {},
@@ -463,6 +480,8 @@ const Typeahead = ({
                     item={item}
                     key={item.key}
                     isFocused={index === focusedElementIndex}
+                    hoverColor={hoverColor}
+                    selectedHoverColor={selectedHoverColor}
                     onClick={() => {
                       onRemove?.(item)
                       focusNextItem(myIndex, 0, itemsCount)
@@ -481,6 +500,8 @@ const Typeahead = ({
                 item={item}
                 key={item.key}
                 isFocused={index === focusedElementIndex}
+                hoverColor={hoverColor}
+                selectedHoverColor={selectedHoverColor}
                 onClick={() => {
                   onAdd(item)
                   focusNextItem(myIndex, 1, itemsCount)
