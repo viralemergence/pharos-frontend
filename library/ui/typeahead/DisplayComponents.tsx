@@ -82,12 +82,14 @@ export const Results = styled.div`
   padding-top: none;
 `
 
-export const Selected = styled.div<{ borderColor: string }>`
+export const Items = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
+`
 
+export const Values = styled(Items)<{ borderColor: string }>`
   :after {
     content: '';
     position: absolute;

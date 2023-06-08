@@ -5,6 +5,7 @@ import React, {
   MouseEventHandler,
   MutableRefObject,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -21,7 +22,8 @@ import {
   Results,
   ItemButton,
   SearchIcon,
-  Selected,
+  Values as Values,
+  Items,
 } from './DisplayComponents'
 
 import TypeaheadResult from './TypeaheadResult'
@@ -131,7 +133,6 @@ type NullableMutableRef<T> = MutableRefObject<T | null>
 type NullableMutableRefCallback<T> = (value: T | null) => void
 type ButtonRef = NullableMutableRef<HTMLButtonElement>
 type DivRef = NullableMutableRef<HTMLDivElement>
-type InputRef = NullableMutableRef<HTMLInputElement>
 
 type Focusable = HTMLInputElement | HTMLButtonElement | null
 const isFocusable = (elem: unknown): elem is Focusable =>
@@ -151,97 +152,97 @@ const isVisibleInContainer = (
       container.clientHeight -
       elem.clientHeight * (1 - percentageVisible)
 
-/** Reduce list scrolling when button is focused */
-const resultButtonFocusHandler = (
-  e: FocusEvent<HTMLButtonElement>,
-  resultsDivRef?: DivRef
-) => {
-  if (!resultsDivRef) return
-  const list = resultsDivRef.current
-  if (!list) return
-  const button = e.target
-  const { top: buttonTop, bottom: buttonBottom } =
-    button.getBoundingClientRect()
-  const { top: listTop, bottom: listBottom } = list.getBoundingClientRect()
-  let delta = 0
-  if (buttonBottom > listBottom) delta = buttonBottom - listBottom
-  else if (buttonTop < listTop) delta = buttonTop - listTop
-  list.scrollTop += delta
-}
+// /** Reduce list scrolling when button is focused */
+// const resultButtonFocusHandler = (
+//   e: FocusEvent<HTMLButtonElement>,
+//   resultsDivRef?: DivRef
+// ) => {
+//   if (!resultsDivRef) return
+//   const list = resultsDivRef.current
+//   if (!list) return
+//   const button = e.target
+//   const { top: buttonTop, bottom: buttonBottom } =
+//     button.getBoundingClientRect()
+//   const { top: listTop, bottom: listBottom } = list.getBoundingClientRect()
+//   let delta = 0
+//   if (buttonBottom > listBottom) delta = buttonBottom - listBottom
+//   else if (buttonTop < listTop) delta = buttonTop - listTop
+//   list.scrollTop += delta
+// }
 
-interface ResultButtonProps {
-  item: Item
-  RenderItem: (props: RenderItemProps) => JSX.Element
-  buttonRefs: ButtonRef[]
-  selected?: boolean
-  onClick?: MouseEventHandler<HTMLButtonElement>
-  fontColor?: string
-  isFocused?: boolean
-  resultsDivRef?: DivRef
-  hoverColor: string
-  selectedHoverColor: string
-}
+// interface ResultButtonProps {
+//   item: Item
+//   RenderItem: (props: RenderItemProps) => JSX.Element
+//   // buttonRefs: ButtonRef[]
+//   selected?: boolean
+//   onClick?: MouseEventHandler<HTMLButtonElement>
+//   fontColor?: string
+//   // isFocused?: boolean
+//   // resultsDivRef?: DivRef
+//   hoverColor: string
+//   selectedHoverColor: string
+// }
 
-const ResultButton = ({
-  selected = false,
-  item,
-  onClick,
-  fontColor,
-  buttonRefs,
-  resultsDivRef,
-  RenderItem,
-  hoverColor,
-  selectedHoverColor,
-  isFocused = false,
-}: ResultButtonProps) => {
-  const buttonRef: ButtonRef = useRef(null)
-  useEffect(() => {
-    if (isFocused) buttonRef.current?.focus({ preventScroll: true })
-  })
-  buttonRefs.push(buttonRef)
+// const ResultButton = ({
+//   selected = false,
+//   item,
+//   onClick,
+//   fontColor,
+//   // buttonRefs,
+//   // resultsDivRef,
+//   RenderItem,
+//   hoverColor,
+//   selectedHoverColor,
+// }: // isFocused = false,
+// ResultButtonProps) => {
+//   // const buttonRef: ButtonRef = useRef(null)
+//   // useEffect(() => {
+//   //   if (isFocused) buttonRef.current?.focus({ preventScroll: true })
+//   // })
+//   // buttonRefs.push(buttonRef)
 
-  return (
-    <ItemButton
-      tabIndex={-1}
-      onClick={onClick}
-      style={{ color: fontColor }}
-      ref={buttonRef}
-      onFocus={e => resultButtonFocusHandler(e, resultsDivRef)}
-      focusHoverColor={selected ? selectedHoverColor : hoverColor}
-    >
-      <RenderItem selected={selected} item={item} />
-    </ItemButton>
-  )
-}
+// return (
+//   <ItemButton
+//     tabIndex={-1}
+//     onClick={onClick}
+//     style={{ color: fontColor }}
+//     // ref={buttonRef}
+//     // onFocus={e => resultButtonFocusHandler(e, resultsDivRef)}
+//     focusHoverColor={selected ? selectedHoverColor : hoverColor}
+//   >
+//     <RenderItem selected={selected} item={item} />
+//   </ItemButton>
+// )
+// }
 
-const getElementToFocus = (
-  /** The element that presently has the focus */
-  focusedElement: Focusable,
-  isInputFocused: boolean,
-  /** True if the up arrow was pressed, false if the down arrow was pressed */
-  up: boolean,
-  buttons: (HTMLButtonElement | null)[],
-  order: Focusable[],
-  resultsDiv: HTMLElement | null
-): Focusable | null | undefined => {
-  if (
-    isInputFocused ||
-    isVisibleInContainer(resultsDiv, 1, focusedElement) ||
-    !resultsDiv
-  ) {
-    const focusedIndex = order.indexOf(focusedElement)
-    return order[focusedIndex + (up ? -1 : 1)]
-  } else {
-    // If the focusedElement is not visible, to avoid unexpected scrolling of
-    // the results div, move focus to a button that is already visible
+// const getElementToFocus = (
+//   /** The element that presently has the focus */
+//   focusedElement: Focusable,
+//   isInputFocused: boolean,
+//   /** True if the up arrow was pressed, false if the down arrow was pressed */
+//   up: boolean,
+//   buttons: (HTMLButtonElement | null)[],
+//   order: Focusable[],
+//   resultsDiv: HTMLElement | null
+// ): Focusable | null | undefined => {
+//   if (
+//     isInputFocused ||
+//     isVisibleInContainer(resultsDiv, 1, focusedElement) ||
+//     !resultsDiv
+//   ) {
+//     const focusedIndex = order.indexOf(focusedElement)
+//     return order[focusedIndex + (up ? -1 : 1)]
+//   } else {
+//     // If the focusedElement is not visible, to avoid unexpected scrolling of
+//     // the results div, move focus to a button that is already visible
 
-    return up
-      ? // If moving up, focus the last visible button
-        buttons.findLast(elem => isVisibleInContainer(resultsDiv, 0.5, elem))
-      : // If moving down, focus the first visible button
-        buttons.find(elem => isVisibleInContainer(resultsDiv, 0.5, elem))
-  }
-}
+// return up
+//   ? // If moving up, focus the last visible button
+//     buttons.findLast(elem => isVisibleInContainer(resultsDiv, 0.5, elem))
+//   : // If moving down, focus the first visible button
+//     buttons.find(elem => isVisibleInContainer(resultsDiv, 0.5, elem))
+// }
+// }
 
 const Typeahead = ({
   multiselect = false,
@@ -268,28 +269,27 @@ const Typeahead = ({
   if (!items) throw new Error('Item array in multiselect cannot be undefined')
 
   const [searchString, setSearchString] = useState('')
-
   const [showResults, setShowResults] = useState(false)
 
   // The index of the focused item in the typeahead. This is either the input
-  // (whose index is 0) or a button. If the index is null, no item is focused
-  const [focusedElementIndex, setFocusedElementIndex] = useState<number | null>(
-    0
-  )
-
-  /** Move focus to the correct place after an item is selected or deselected */
-  // TODO: rename this function
-  const focusNextItem = (
-    indexOfLastFocusedItem: number,
-    increment: number,
-    itemsCount: number
-  ) => {
-    const nextIndex = Math.min(indexOfLastFocusedItem + increment, itemsCount)
-    setFocusedElementIndex(nextIndex)
-  }
+  // (whose index is -1) or a button.
+  const [focusedElementIndex, setFocusedElementIndex] = useState<number>(-1)
 
   const inputRef = useRef<HTMLInputElement>(null)
-  const buttonRefs: ButtonRef[] = []
+  const resultsRef = useRef<HTMLDivElement>(null)
+
+  // /** Move focus to the correct place after an item is selected or deselected */
+  // // TODO: rename this function
+  // const focusNextItem = (
+  //   indexOfLastFocusedItem: number,
+  //   increment: number,
+  //   itemsCount: number
+  // ) => {
+  //   const nextIndex = Math.min(indexOfLastFocusedItem + increment, itemsCount)
+  //   setFocusedElementIndex(nextIndex)
+  // }
+
+  // const buttonRefs: ButtonRef[] = []
 
   // compute fuzzy search
   const fuse = useMemo(
@@ -301,21 +301,21 @@ const Typeahead = ({
     .search(searchString)
     .map(({ item }: { item: Item }) => item)
 
-  const keydownFromSearchBarHandlers: Record<string, KeyboardEventHandler> = {
-    // accept top result if enter is pressed
-    Enter: _e => {
-      if (results[0] || items[0]) onAdd(results[0] || items[0])
-      inputRef?.current!.blur()
-      setSearchString('')
-    },
-    Esc: _e => {
-      setShowResults(false)
-    },
-  }
+  // const keydownFromSearchBarHandlers: Record<string, KeyboardEventHandler> = {
+  //   // accept top result if enter is pressed
+  //   Enter: _e => {
+  //     if (results[0] || items[0]) onAdd(results[0] || items[0])
+  //     inputRef?.current!.blur()
+  //     setSearchString('')
+  //   },
+  //   Esc: _e => {
+  //     setShowResults(false)
+  //   },
+  // }
 
-  const handleKeyDownFromSearchBar: KeyboardEventHandler = e => {
-    keydownFromSearchBarHandlers[e.key]?.(e)
-  }
+  // const handleKeyDownFromSearchBar: KeyboardEventHandler = e => {
+  //   keydownFromSearchBarHandlers[e.key]?.(e)
+  // }
 
   // When a blur event fires, set results to hide next at the end
   // of the event loop using a zero-duration timeout, which will
@@ -323,7 +323,6 @@ const Typeahead = ({
   let blurTimeout: ReturnType<typeof global.setTimeout> | undefined
   const onBlurHandler = () => {
     blurTimeout = setTimeout(() => {
-      setFocusedElementIndex(null)
       setShowResults(false)
       if (!values.length) setSearchString('')
     })
@@ -348,67 +347,138 @@ const Typeahead = ({
   // the results div to open. The results div should not be open on first
   // render.
 
-  useEffect(() => {
-    if (focusedElementIndex === 0) inputRef.current?.focus()
-  })
+  // useEffect(() => {
+  //   if (focusedElementIndex === 0) inputRef.current?.focus()
+  // })
+
+  // handle focus changes
+  useLayoutEffect(() => {
+    if (!showResults || !resultsRef.current) return
+
+    if (focusedElementIndex === -1) {
+      inputRef.current?.focus()
+      return
+    }
+
+    const [values, items] = [...(resultsRef.current?.children || [])]
+    const allButtons = [...(values?.children || []), ...(items?.children || [])]
+
+    const target = allButtons[focusedElementIndex]
+    if (!(target instanceof HTMLElement)) return
+
+    // scroll the list smoothly so that the focused element is
+    // exactly at the bottom, overriding default scrolling
+    const { top: buttonTop, bottom: buttonBottom } =
+      target.getBoundingClientRect()
+
+    const { top: listTop, bottom: listBottom } =
+      resultsRef.current.getBoundingClientRect()
+
+    let delta = 0
+    if (buttonBottom > listBottom) delta = buttonBottom - listBottom
+    else if (buttonTop < listTop) delta = buttonTop - listTop
+
+    // apply scroll offset
+    resultsRef.current.scrollTop += delta
+    // focus after scroll
+    target.focus()
+  }, [focusedElementIndex, values, showResults])
 
   const handleKeyDownFromContainer: KeyboardEventHandler<
     HTMLFormElement
   > = e => {
-    if (!inputRef) return
-    if (!isFocusable(e.target)) return
+    switch (e.key) {
+      case 'ArrowUp':
+        e.preventDefault()
+        setFocusedElementIndex(prev => {
+          // if we are in the input, stay there
+          if (prev === -1) return -1
+          // if we are in the results, go down one
+          return prev - 1
+        })
+        return
+      case 'ArrowDown':
+        e.preventDefault()
+        setFocusedElementIndex(prev => {
+          // if we are at the end of the list, stay there
+          if (prev === items.length + values.length) return prev
+          // if we are in the results, go down one
+          return prev + 1
+        })
+        return
+      case 'Escape':
+        inputRef.current?.blur()
+        onBlurHandler()
+        return
 
-    const buttons = buttonRefs.map(b => b.current)
-    const up = e.key === 'ArrowUp'
-    const down = e.key === 'ArrowDown'
+      // if (!inputRef) return
+      // if (!isFocusable(e.target)) return
 
-    if (e.key === 'Escape') {
-      setTimeout(() => setShowResults(false))
-      setFocusedElementIndex(0)
-    } else if (up || down) {
-      e.preventDefault()
-      const focusedElement = e.target
-      const div = resultsDivRef.current
+      // const buttons = buttonRefs.map(b => b.current)
+      // const up = e.key === 'ArrowUp'
+      // const down = e.key === 'ArrowDown'
 
-      /** Arrow keys move the focus up and down through this array, like a tab order. */
-      const order = [inputRef.current, ...buttons]
-      const isInputFocused = focusedElement === inputRef.current
-      const elementToFocus = getElementToFocus(
-        focusedElement,
-        isInputFocused,
-        up,
-        buttons,
-        order,
-        div
-      )
-      const indexOfElementToFocus = order.indexOf(elementToFocus || null) || 0
-      setFocusedElementIndex(indexOfElementToFocus)
+      // if (e.key === 'Escape') {
+      //   setTimeout(() => setShowResults(false))
+      //   setFocusedElementIndex(0)
+      // } else if (up || down) {
+      //   e.preventDefault()
+      // const focusedElement = e.target
+      // const div = resultsDivRef.current
 
-      if (down && isInputFocused) setShowResults(true)
-      // TODO: When closing the results, focus is going into the input and then
-      // the results are opening. Perhaps remove this next line
-      if (up && indexOfElementToFocus === 0) setShowResults(false)
+      // console.log(div)
+
+      // console.log(focusedElementIndex)
+
+      // /** Arrow keys move the focus up and down through this array, like a tab order. */
+      // const order = [inputRef.current, ...buttons]
+      // const isInputFocused = focusedElement === inputRef.current
+      // const elementToFocus = getElementToFocus(
+      //   focusedElement,
+      //   isInputFocused,
+      //   up,
+      //   buttons,
+      //   order,
+      //   div
+      // )
+      // const indexOfElementToFocus = order.indexOf(elementToFocus || null) || 0
+      // setFocusedElementIndex(indexOfElementToFocus)
+
+      // if (down && isInputFocused) setShowResults(true)
+      // // TODO: When closing the results, focus is going into the input and then
+      // // the results are opening. Perhaps remove this next line
+      // if (up && indexOfElementToFocus === 0) setShowResults(false)
     }
   }
 
-  const resultsDivRef: DivRef = useRef(null)
-  const resultButtonProps: Partial<ResultButtonProps> & {
-    buttonRefs: ResultButtonProps['buttonRefs']
-    RenderItem: ResultButtonProps['RenderItem']
-  } = {
-    buttonRefs,
-    RenderItem,
-    resultsDivRef,
-    fontColor,
+  const handleKeyDownFromSearchBar: KeyboardEventHandler<
+    HTMLInputElement
+  > = e => {
+    switch (e.key) {
+      case 'Enter':
+        e.preventDefault()
+        onAdd(results[0] || items[0])
+        return
+    }
   }
 
+  // const resultButtonProps: Partial<ResultButtonProps> & {
+  //   buttonRefs: ResultButtonProps['buttonRefs']
+  //   RenderItem: ResultButtonProps['RenderItem']
+  // } = {
+  //   buttonRefs,
+  //   RenderItem,
+  //   resultsDivRef,
+  //   fontColor,
+  // }
+
   // Counter used across both the values and the results loop
-  let index = 0
+  // let index = 0
 
   const unselectedItems =
     results.length && searchString !== values[0]?.label ? results : items
 
-  const itemsCount = values.length + unselectedItems.length
+  // const itemsCount = values.length + unselectedItems.length
 
   return (
     <Container
@@ -428,7 +498,7 @@ const Typeahead = ({
         name="special-auto-fill"
         ref={inputRef}
         onKeyDown={handleKeyDownFromSearchBar}
-        onFocus={() => focusedElementIndex !== 0 && setFocusedElementIndex(0)}
+        onFocus={() => setFocusedElementIndex(-1)}
         value={searchString}
         onChange={e => setSearchString(e.target.value)}
         placeholder={placeholder}
@@ -440,6 +510,7 @@ const Typeahead = ({
       <SearchIcon searchString={searchString} {...{ iconSVG, iconLeft }} />
       <Expander
         floating
+        // open={showResults || true}
         open={showResults}
         style={{
           width: '100%',
@@ -452,49 +523,89 @@ const Typeahead = ({
         <Results
           style={{ backgroundColor, borderColor }}
           className="pharos-typeahead-results"
-          ref={resultsDivRef}
+          ref={resultsRef}
         >
           {multiselect && values.length > 0 && (
-            <Selected borderColor={borderColor}>
-              {values.map((item: Item) => {
-                index++
-                const myIndex = index // Create a locally scoped variable
-                return (
-                  <ResultButton
-                    selected={true}
-                    item={item}
-                    key={item.key}
-                    isFocused={index === focusedElementIndex}
-                    hoverColor={hoverColor}
-                    selectedHoverColor={selectedHoverColor}
-                    onClick={() => {
-                      onRemove?.(item)
-                      focusNextItem(myIndex, 0, itemsCount)
-                    }}
-                    {...resultButtonProps}
-                  />
-                )
-              })}
-            </Selected>
+            <Values borderColor={borderColor}>
+              {values.map((item: Item) => (
+                <ItemButton
+                  key={item.key}
+                  tabIndex={-1}
+                  onClick={() => {
+                    onRemove?.(item)
+                    setFocusedElementIndex(prev => (prev >= 1 ? prev - 1 : 0))
+                  }}
+                  style={{ color: fontColor }}
+                  focusHoverColor={selectedHoverColor}
+                >
+                  <RenderItem selected item={item} />
+                </ItemButton>
+              ))}
+
+              {
+                // {
+                //   // index++
+                //   // const myIndex = index // Create a locally scoped variable
+                //   return (
+                //     <ResultButton
+                //       selected={true}
+                //       item={item}
+                //       key={item.key}
+                //       // isFocused={index === focusedElementIndex}
+                //       hoverColor={hoverColor}
+                //       selectedHoverColor={selectedHoverColor}
+                //       RenderItem={RenderItem}
+                //       onClick={() => {
+                //         onRemove?.(item)
+                //         setFocusedElementIndex(prev => prev - 1)
+                //         // focusNextItem(myIndex, 0, itemsCount)
+                //       }}
+                //       // {...resultButtonProps}
+                //     />
+                //   )
+                // })}
+              }
+            </Values>
           )}
-          {unselectedItems.map((item: Item) => {
-            index++
-            const myIndex = index // Create a locally scoped variable
-            return (
-              <ResultButton
-                item={item}
+          <Items>
+            {unselectedItems.map((item: Item) => (
+              <ItemButton
                 key={item.key}
-                isFocused={index === focusedElementIndex}
-                hoverColor={hoverColor}
-                selectedHoverColor={selectedHoverColor}
+                tabIndex={-1}
                 onClick={() => {
                   onAdd(item)
-                  focusNextItem(myIndex, 1, itemsCount)
+                  setFocusedElementIndex(prev => (prev === -1 ? 1 : prev + 1))
                 }}
-                {...resultButtonProps}
-              />
-            )
-          })}
+                style={{ color: fontColor }}
+                focusHoverColor={hoverColor}
+              >
+                <RenderItem item={item} />
+              </ItemButton>
+            ))}
+
+            {
+              // {
+              //   // index++
+              //   // const myIndex = index // Create a locally scoped variable
+              //   return (
+              //     <ResultButton
+              //       item={item}
+              //       key={item.key}
+              //       // isFocused={index === focusedElementIndex}
+              //       hoverColor={hoverColor}
+              //       selectedHoverColor={selectedHoverColor}
+              //       RenderItem={RenderItem}
+              //       onClick={() => {
+              //         onAdd(item)
+              //         setFocusedElementIndex(prev => prev + 1)
+              //         // focusNextItem(myIndex, 1, itemsCount)
+              //       }}
+              //       // {...resultButtonProps}
+              //     />
+              //   )
+              // })}
+            }
+          </Items>
         </Results>
       </Expander>
       <ScreenReaderOnly>
