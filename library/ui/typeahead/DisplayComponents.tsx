@@ -67,9 +67,9 @@ export const SearchBar = styled.input<{ iconLeft: boolean; fontColor: string }>`
     opacity: 0.66;
   }
 `
-export const Results = styled.div`
+export const Results = styled.div<{ resultsMaxHeight: string }>`
   display: flex;
-  max-height: 300px;
+  max-height: ${({ resultsMaxHeight }) => resultsMaxHeight};
   overflow-y: scroll;
   flex-direction: column;
   border-radius: 10px;

@@ -117,6 +117,8 @@ export interface TypeaheadProps {
    * in the results when hovered or active
    */
   selectedHoverColor?: string
+  /** max height for the results container */
+  resultsMaxHeight?: string
   /** Aria-label attribute for the text input */
   ariaLabel?: string
   /** id attribute for the text input */
@@ -157,6 +159,7 @@ const Typeahead = ({
   className,
   disabled = false,
   style = {},
+  resultsMaxHeight = '30em',
   ariaLabel,
   inputId,
 }: TypeaheadProps) => {
@@ -341,6 +344,7 @@ const Typeahead = ({
         <Results
           style={{ backgroundColor, borderColor }}
           className="pharos-typeahead-results"
+          resultsMaxHeight={resultsMaxHeight}
           ref={resultsRef}
         >
           {multiselect && values.length > 0 && (
