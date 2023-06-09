@@ -125,20 +125,19 @@ export interface TypeaheadProps {
   inputId?: string
 }
 
-// const isVisibleInContainer = (
-//   container: HTMLElement | null,
-//   percentageVisible = 1,
-//   elem: Element | null
-// ) =>
-//   elem &&
-//   container &&
-//   elem instanceof HTMLElement &&
-//   elem.offsetTop + elem.clientHeight * (1 - percentageVisible) >=
-//     container.scrollTop &&
-//   elem.offsetTop <=
-//     container.scrollTop +
-//       container.clientHeight -
-//       elem.clientHeight * (1 - percentageVisible)
+const isVisibleInContainer = (
+  container: HTMLElement | null,
+  percentageVisible = 1,
+  elem: Element
+) =>
+  container &&
+  elem instanceof HTMLElement &&
+  elem.offsetTop + elem.clientHeight * (1 - percentageVisible) >=
+    container.scrollTop &&
+  elem.offsetTop <=
+    container.scrollTop +
+      container.clientHeight -
+      elem.clientHeight * (1 - percentageVisible)
 
 const Typeahead = ({
   multiselect = false,
@@ -211,6 +210,13 @@ const Typeahead = ({
     if (disabled && !values.length) setSearchString('')
   }, [disabled, values])
 
+  const getResultsButtons = () => {
+    // The buttons are the children of the results div's children
+    return Array.from(resultsRef.current?.children || []).flatMap(
+      child => Array.from(child.children) || []
+    )
+  }
+
   // handle focus changes
   useLayoutEffect(() => {
     if (!showResults || !resultsRef.current) return
@@ -220,24 +226,8 @@ const Typeahead = ({
       return
     }
 
-    const [values, items] = [...(resultsRef.current?.children || [])]
-    const allButtons = [...(values?.children || []), ...(items?.children || [])]
-
-    const target = allButtons[focusedElementIndex]
-
-    // I think something like this will be the way to handle
-    // the pageup / pagedown keys jumping focus interaction
-    // it's not working right now though
-
-    // if (!isVisibleInContainer(resultsRef.current, 0.5, target)) {
-    //   const visibleButton = allButtons.find(elem =>
-    //     isVisibleInContainer(resultsRef.current, 0.5, elem)
-    //   )
-    //   if (!visibleButton) return
-
-    //   setFocusedElementIndex(allButtons.indexOf(visibleButton))
-    //   return
-    // }
+    const buttons = getResultsButtons()
+    const target = buttons[focusedElementIndex]
 
     if (!(target instanceof HTMLElement)) return
 
@@ -257,7 +247,35 @@ const Typeahead = ({
     resultsRef.current.scrollTop += delta
     // focus after scroll
     target.focus()
-  }, [focusedElementIndex, values, showResults])
+  }, [focusedElementIndex, showResults])
+
+  const isVisibleInResultsDiv = (button: Element) =>
+    isVisibleInContainer(resultsRef.current, 0.5, button)
+
+  /** Move the focus up or down the list by the given delta, ensuring that the focused element is visible */
+  const moveFocusToVisibleElement = (delta: -1 | 1) => {
+    setFocusedElementIndex(prev => {
+      const buttons = getResultsButtons()
+
+      // if we are in the input, stay there if moving up, or move to the first
+      // button if moving down
+      if (prev === -1) return delta < 0 ? -1 : 0
+
+      // The new index of the button we're planning to focus. Don't go beyond the end of the list.
+      const proposedIndexToFocus = Math.min(prev + delta, buttons.length - 1)
+
+      if (isVisibleInResultsDiv(buttons[prev])) {
+        return proposedIndexToFocus
+      } else {
+        return (
+          (delta > 0
+            ? buttons.findIndex(isVisibleInResultsDiv)
+            : buttons.findLastIndex(isVisibleInResultsDiv)) ??
+          proposedIndexToFocus
+        )
+      }
+    })
+  }
 
   const handleKeyDownFromContainer: KeyboardEventHandler<
     HTMLFormElement
@@ -265,21 +283,11 @@ const Typeahead = ({
     switch (e.key) {
       case 'ArrowUp':
         e.preventDefault()
-        setFocusedElementIndex(prev => {
-          // if we are in the input, stay there
-          if (prev === -1) return -1
-          // if we are in the results, go down one
-          return prev - 1
-        })
+        moveFocusToVisibleElement(-1)
         return
       case 'ArrowDown':
         e.preventDefault()
-        setFocusedElementIndex(prev => {
-          // if we are at the end of the list, stay there
-          if (prev === items.length + values.length) return prev
-          // if we are in the results, go down one
-          return prev + 1
-        })
+        moveFocusToVisibleElement(1)
         return
       case 'Escape':
         inputRef.current?.blur()
