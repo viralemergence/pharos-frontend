@@ -189,45 +189,6 @@ const getHashData = () =>
 		return acc
 	}, {})
 
-const updatePageFromHash = (
-	setView: Dispatch<SetStateAction<View>>,
-	setFilters: Dispatch<SetStateAction<Filter[]>>
-) => {
-	const hashData = getHashData()
-
-	const isValidView = (maybeView: unknown): maybeView is View => {
-		if (typeof maybeView !== 'string') return false
-		return Object.values(View).includes(maybeView)
-	}
-	/** This checks that the filter data extracted from window.location.hash is
-	 * an array of objects with a fieldId and an array of values. It doesn't
-	 * use the metadata to check that the fieldIds correspond to supported
-	 * fields. */
-	const isValidFilterData = (
-		maybeFilterData: unknown
-	): maybeFilterData is Filter[] => {
-		if (!Array.isArray(maybeFilterData)) return false
-		return maybeFilterData.every?.(maybeFilter => {
-			const { fieldId, values } = maybeFilter as Partial<Filter>
-			if (typeof fieldId !== 'string') return false
-			if (!Array.isArray(values)) return false
-			return values.every?.(value => typeof value === 'string')
-		})
-	}
-
-	const { view, ...filterDataInHashAsTuples } = hashData
-
-	const filterDataInHash = Object.entries(filterDataInHashAsTuples).map(
-		([fieldId, values]) => ({ fieldId, values })
-	)
-
-	if (isValidView(view)) setView(view)
-	else console.error('Invalid view in hash')
-
-	if (isValidFilterData(filterDataInHash)) setFilters(filterDataInHash)
-	else console.error('Invalid filter data in hash')
-}
-
 const DataView = (): JSX.Element => {
 	const [loading, setLoading] = useState(true)
 	const [publishedRecords, setPublishedRecords] = useState<Row[]>([])
@@ -271,9 +232,44 @@ const DataView = (): JSX.Element => {
 		window.location.hash = new URLSearchParams(data).toString()
 	}
 
-	useEffect(() => {
-		updatePageFromHash(setView, setFilters)
+	/** Update the view and filters based on the hash */
+	const updatePageFromHash = () => {
+		const hashData = getHashData()
 
+		const isValidView = (maybeView: unknown): maybeView is View => {
+			if (typeof maybeView !== 'string') return false
+			return Object.values(View).includes(maybeView)
+		}
+		/** This checks that the filter data extracted from window.location.hash is
+		 * an array of objects with a fieldId and an array of values. It doesn't
+		 * use the metadata to check that the fieldIds correspond to supported
+		 * fields. */
+		const isValidFilterData = (
+			maybeFilterData: unknown
+		): maybeFilterData is Filter[] => {
+			if (!Array.isArray(maybeFilterData)) return false
+			return maybeFilterData.every?.(maybeFilter => {
+				const { fieldId, values } = maybeFilter as Partial<Filter>
+				if (typeof fieldId !== 'string') return false
+				if (!Array.isArray(values)) return false
+				return values.every?.(value => typeof value === 'string')
+			})
+		}
+
+		const { view, ...filterDataInHashAsTuples } = hashData
+
+		const filterDataInHash = Object.entries(filterDataInHashAsTuples).map(
+			([fieldId, values]) => ({ fieldId, values })
+		)
+
+		if (isValidView(view)) setView(view)
+		else console.error('Invalid view in hash')
+
+		if (isValidFilterData(filterDataInHash)) setFilters(filterDataInHash)
+		else console.error('Invalid filter data in hash')
+	}
+
+	useEffect(() => {
 		const getMetadata = async () => {
 			const response = await fetch(
 				`${process.env.GATSBY_API_URL}/metadata-for-published-records`
@@ -286,6 +282,12 @@ const DataView = (): JSX.Element => {
 			setFields(data.fields)
 		}
 		getMetadata()
+
+		updatePageFromHash()
+		window.addEventListener('hashchange', updatePageFromHash)
+		return () => {
+			window.removeEventListener('hashchange', updatePageFromHash)
+		}
 	}, [])
 
 	const loadFilteredRecords = (filters: Filter[], shouldDebounce = true) => {
