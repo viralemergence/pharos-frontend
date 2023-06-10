@@ -1,4 +1,5 @@
 import React, {
+	useCallback,
 	useEffect,
 	useRef,
 	useState,
@@ -87,7 +88,7 @@ const isValidFieldInMetadataResponse = (data: unknown): data is Field => {
 	if (typeof label !== 'string') return false
 	if (typeof dataGridKey !== 'string') return false
 	if (typeof type !== 'string') return false
-	if (!options.every?.(option => typeof option === 'string')) return false
+	if (!options.every(option => typeof option === 'string')) return false
 	return true
 }
 
@@ -179,15 +180,20 @@ const loadPublishedRecordsDebounced = debounce(
 	loadDebounceDelay
 )
 
-const getHashData = () =>
-	Array.from(
+const getHashData = () => {
+	const fieldsInHash = Array.from(
 		new URLSearchParams(window.location.hash.slice(1)).entries()
-	).reduce<Record<string, string | string[]>>((acc, [key, value]) => {
-		if (key === 'view') return { ...acc, view: value }
-		acc[key] ||= []
-		acc[key] = [...(acc[key] as string[]), value]
-		return acc
-	}, {})
+	)
+	const hashData = fieldsInHash.reduce((hashData, [key, value]) => {
+		if (key === 'view') hashData.view = value
+		else {
+			// For filters, combine hash fields with the same key into an array
+			hashData[key] = [...(hashData[key] || []), value]
+		}
+		return hashData
+	}, {} as Record<string, string | string[]>)
+	return hashData
+}
 
 const DataView = (): JSX.Element => {
 	const [loading, setLoading] = useState(true)
@@ -233,7 +239,8 @@ const DataView = (): JSX.Element => {
 	}
 
 	/** Update the view and filters based on the hash */
-	const updatePageFromHash = () => {
+	const updatePageFromHash = useCallback(() => {
+		console.log('filters.length inside updatePageFromHash', filters.length)
 		const hashData = getHashData()
 
 		const isValidView = (maybeView: unknown): maybeView is View => {
@@ -248,7 +255,7 @@ const DataView = (): JSX.Element => {
 			maybeFilterData: unknown
 		): maybeFilterData is Filter[] => {
 			if (!Array.isArray(maybeFilterData)) return false
-			return maybeFilterData.every?.(maybeFilter => {
+			return maybeFilterData.every(maybeFilter => {
 				const { fieldId, values } = maybeFilter as Partial<Filter>
 				if (typeof fieldId !== 'string') return false
 				if (!Array.isArray(values)) return false
@@ -256,18 +263,37 @@ const DataView = (): JSX.Element => {
 			})
 		}
 
-		const { view, ...filterDataInHashAsTuples } = hashData
+		const { view: viewInHash, ...filterDataInHashAsTuples } = hashData
+
+		if (isValidView(viewInHash)) {
+			if (viewInHash !== view) setView(viewInHash)
+		} else {
+			console.error('Invalid view in hash')
+		}
 
 		const filterDataInHash = Object.entries(filterDataInHashAsTuples).map(
 			([fieldId, values]) => ({ fieldId, values })
 		)
 
-		if (isValidView(view)) setView(view)
-		else console.error('Invalid view in hash')
-
-		if (isValidFilterData(filterDataInHash)) setFilters(filterDataInHash)
-		else console.error('Invalid filter data in hash')
-	}
+		if (isValidFilterData(filterDataInHash)) {
+			const hashContainsNewFilterData =
+				JSON.stringify(filterDataInHash) !== JSON.stringify(filters)
+			console.log(
+				'JSON.stringify(filterDataInHash)',
+				JSON.stringify(filterDataInHash)
+			)
+			console.log('JSON.stringify(filters)', JSON.stringify(filters))
+			if (hashContainsNewFilterData) {
+				console.log('filter data in hash is new')
+				setFilters(filterDataInHash)
+				// The load function is debounced because the user might press the browser's back or
+				// forward button many times in a row
+				loadFilteredRecords(filterDataInHash)
+			}
+		} else {
+			console.error('Invalid filter data in hash')
+		}
+	}, [view, JSON.stringify(filters)])
 
 	useEffect(() => {
 		const getMetadata = async () => {
@@ -283,6 +309,7 @@ const DataView = (): JSX.Element => {
 		}
 		getMetadata()
 
+		console.log('filters.length outside updatePageFromHash', filters.length)
 		updatePageFromHash()
 		window.addEventListener('hashchange', updatePageFromHash)
 		return () => {
@@ -312,6 +339,8 @@ const DataView = (): JSX.Element => {
 		setFilters(newFilters)
 		updateHash({ newFilters })
 	}
+
+	console.log('filters', filters)
 
 	const updateFilter = (
 		indexOfFilterToUpdate: number,
@@ -367,6 +396,8 @@ const DataView = (): JSX.Element => {
 							fields={fields}
 							appliedFilters={appliedFilters}
 							loadPublishedRecords={() => {
+								// Filtered records are loaded immediately on TableReview
+								// render without debouncing
 								loadFilteredRecords(filters, false)
 								debouncing.current.on = false
 							}}
