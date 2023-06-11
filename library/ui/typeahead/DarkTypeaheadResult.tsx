@@ -16,12 +16,7 @@ const TypeaheadResultContainer = styled.span<{ selected?: boolean }>`
   background-color: rgba(0, 50, 100, 0);
   transition: 150ms ease;
 
-  ${({ selected }) => selected && ` font-weight: 800; `}
-
-  &:hover {
-    background-color: #49515d;
-    ${({ selected }) => selected && `background-color: #594141;`}
-  }
+  ${({ selected }) => selected && ` font-weight: 800; `};
 `
 
 const DarkTypeaheadResult = ({
