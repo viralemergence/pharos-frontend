@@ -238,9 +238,9 @@ const DataView = (): JSX.Element => {
 		window.location.hash = new URLSearchParams(data).toString()
 	}
 
+	const filtersSerialized = JSON.stringify(filters)
 	/** Update the view and filters based on the hash */
 	const updatePageFromHash = useCallback(() => {
-		console.log('filters.length inside updatePageFromHash', filters.length)
 		const hashData = getHashData()
 
 		const isValidView = (maybeView: unknown): maybeView is View => {
@@ -250,7 +250,7 @@ const DataView = (): JSX.Element => {
 		/** This checks that the filter data extracted from window.location.hash is
 		 * an array of objects with a fieldId and an array of values. It doesn't
 		 * use the metadata to check that the fieldIds correspond to supported
-		 * fields. */
+		 * fields. Note that a blank array counts as valid filter data. */
 		const isValidFilterData = (
 			maybeFilterData: unknown
 		): maybeFilterData is Filter[] => {
@@ -266,10 +266,8 @@ const DataView = (): JSX.Element => {
 		const { view: viewInHash, ...filterDataInHashAsTuples } = hashData
 
 		if (isValidView(viewInHash)) {
-			if (viewInHash !== view) setView(viewInHash)
-		} else {
-			console.error('Invalid view in hash')
-		}
+			setView(viewInHash)
+		} else console.error('Invalid view in hash')
 
 		const filterDataInHash = Object.entries(filterDataInHashAsTuples).map(
 			([fieldId, values]) => ({ fieldId, values })
@@ -277,23 +275,15 @@ const DataView = (): JSX.Element => {
 
 		if (isValidFilterData(filterDataInHash)) {
 			const hashContainsNewFilterData =
-				JSON.stringify(filterDataInHash) !== JSON.stringify(filters)
-			console.log(
-				'JSON.stringify(filterDataInHash)',
-				JSON.stringify(filterDataInHash)
-			)
-			console.log('JSON.stringify(filters)', JSON.stringify(filters))
-			if (hashContainsNewFilterData) {
-				console.log('filter data in hash is new')
+				JSON.stringify(filterDataInHash) !== filtersSerialized
+			if (hashContainsNewFilterData || filterDataInHash.length === 0) {
 				setFilters(filterDataInHash)
 				// The load function is debounced because the user might press the browser's back or
 				// forward button many times in a row
 				loadFilteredRecords(filterDataInHash)
 			}
-		} else {
-			console.error('Invalid filter data in hash')
-		}
-	}, [view, JSON.stringify(filters)])
+		} else console.error('Invalid filter data in hash')
+	}, [view, filtersSerialized])
 
 	useEffect(() => {
 		const getMetadata = async () => {
@@ -309,7 +299,6 @@ const DataView = (): JSX.Element => {
 		}
 		getMetadata()
 
-		console.log('filters.length outside updatePageFromHash', filters.length)
 		updatePageFromHash()
 		window.addEventListener('hashchange', updatePageFromHash)
 		return () => {
@@ -339,8 +328,6 @@ const DataView = (): JSX.Element => {
 		setFilters(newFilters)
 		updateHash({ newFilters })
 	}
-
-	console.log('filters', filters)
 
 	const updateFilter = (
 		indexOfFilterToUpdate: number,

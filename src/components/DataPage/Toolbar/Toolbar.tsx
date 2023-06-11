@@ -100,7 +100,7 @@ const DataToolbar = ({
 					onClick={() => {
 						setIsFilterPanelOpen(!isFilterPanelOpen)
 					}}
-					width={100}
+					width={110}
 				>
 					Filters
 					{appliedFilters.length > 0 && (

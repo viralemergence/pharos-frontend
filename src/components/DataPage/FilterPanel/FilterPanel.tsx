@@ -149,6 +149,11 @@ const FilterList = styled.ul`
   }
 `
 
+const PanelMessage = styled.div`
+  ${props => props.theme.smallParagraph};
+  color: rgba(255, 255, 255, 0.8);
+`
+
 const FilterPanel = ({
   isFilterPanelOpen,
   setIsFilterPanelOpen,
@@ -197,6 +202,13 @@ const FilterPanel = ({
         }}
       />
       <FilterList ref={filterListRef}>
+        {
+          // If there are filters but no fields, filters were added before
+          // the field metadata was available, perhaps via the hash
+          filters.length > 0 && Object.values(fields).length === 0 && (
+            <PanelMessage>Loading&hellip;</PanelMessage>
+          )
+        }
         {filters.map((filter, filterIndex) => {
           const field = fields[filter.fieldId]
 
