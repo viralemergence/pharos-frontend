@@ -77,6 +77,7 @@ const DataToolbar = ({
 	changeView: (view: View) => void
 	filters: Filter[]
 }) => {
+	const filtersWithValues = filters.filter(({ values }) => values.length)
 	const ViewRadioButton = ({
 		forView,
 		label,
@@ -103,8 +104,10 @@ const DataToolbar = ({
 					width={110}
 				>
 					Filters
-					{filters.length > 0 && (
-						<span style={{ marginLeft: '5px' }}>({filters.length})</span>
+					{filtersWithValues.length > 0 && (
+						<span style={{ marginLeft: '5px' }}>
+							({filtersWithValues.length})
+						</span>
 					)}
 				</DataToolbarButton>
 			</DataToolbarButtonContainer>
