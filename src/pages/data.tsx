@@ -184,10 +184,17 @@ const getViewAndFiltersFromHash = () => {
 		new URLSearchParams(window.location.hash.slice(1)).entries()
 	)
 	let view: string | null = null
+	let emptyFilters: Filter[] = []
 	const filtersObj: Record<string, string[]> = {}
 	for (const [key, value] of keyValuePairs) {
 		if (key === 'view') view = value
-		else {
+		else if (key === 'empty_filters') {
+			const emptyFilterIds = value.split(',')
+			emptyFilters = [
+				...emptyFilters,
+				...emptyFilterIds.map(fieldId => ({ fieldId, values: [] })),
+			]
+		} else {
 			// Combine hash fields with the same key into an array
 			filtersObj[key] ||= []
 			filtersObj[key].push(value)
@@ -200,7 +207,7 @@ const getViewAndFiltersFromHash = () => {
 			values,
 		})
 	)
-	return { view, filters }
+	return { view, filters: [...filters, ...emptyFilters] }
 }
 
 const isValidView = (maybeView: unknown): maybeView is View => {
@@ -258,12 +265,19 @@ const DataView = (): JSX.Element => {
 		newView?: View
 		newFilters?: Filter[]
 	}) => {
+		console.log('updating hash')
+		console.log('newFilters', newFilters)
 		const data = [
 			['view', newView],
 			...newFilters.flatMap(({ fieldId, values }) =>
 				values.sort().map(value => [fieldId, value])
 			),
 		]
+		const emptyFilters = newFilters
+			.filter(({ values }) => !values.length)
+			.map(({ fieldId }) => fieldId)
+			.join(',')
+		if (emptyFilters) data.push(['empty_filters', emptyFilters])
 		window.location.hash = new URLSearchParams(data).toString()
 	}
 
@@ -278,6 +292,7 @@ const DataView = (): JSX.Element => {
 		} else console.error('Invalid view in hash')
 
 		if (isValidFilterData(filtersInHash)) {
+			console.log('filtersInHash', filtersInHash)
 			setFilters(filtersInHash)
 			// The load function is debounced because the user might press the browser's back or
 			// forward button many times in a row
@@ -372,9 +387,10 @@ const DataView = (): JSX.Element => {
 							setIsFilterPanelOpen={setIsFilterPanelOpen}
 							fields={fields}
 							filters={filters}
-							updateFilter={updateFilter}
 							setFilters={setFilters}
 							clearFilters={clearFilters}
+							updateFilter={updateFilter}
+							updateHash={updateHash}
 						/>
 						<TableView
 							fields={fields}

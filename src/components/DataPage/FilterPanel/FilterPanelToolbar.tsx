@@ -5,6 +5,7 @@ import React, {
 } from 'react'
 import styled from 'styled-components'
 import { PlusIcon, BackIcon, XIcon, Field, Filter } from './constants'
+import { View } from 'components/DataPage/Toolbar/Toolbar'
 
 const FilterPanelToolbarNav = styled.nav`
   display: flex;
@@ -165,6 +166,7 @@ const FilterPanelToolbar = ({
   setIsFieldSelectorOpen,
   setIsFilterPanelOpen,
   filterListRef,
+  updateHash,
 }: {
   fields: Record<string, Field>
   filters: Filter[]
@@ -174,6 +176,7 @@ const FilterPanelToolbar = ({
   setIsFieldSelectorOpen: Dispatch<SetStateAction<boolean>>
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
   filterListRef: MutableRefObject<HTMLUListElement | null>
+  updateHash: (options: { newView?: View; newFilters?: Filter[] }) => void
 }) => {
   return (
     <>
@@ -211,7 +214,9 @@ const FilterPanelToolbar = ({
       {isFieldSelectorOpen && (
         <FieldSelector
           addFilterValueSetter={fieldId => {
-            setFilters(filters => [...filters, { fieldId, values: [] }])
+            const newFilter = { fieldId, values: [] }
+            setFilters(previousFilters => [...previousFilters, newFilter])
+            updateHash({ newFilters: [...filters, newFilter] })
             setIsFieldSelectorOpen(false)
             const filterList = filterListRef.current
             setTimeout(() => {

@@ -15,6 +15,7 @@ import {
 } from './constants'
 import FilterTypeahead from './FilterTypeahead'
 import FilterPanelToolbar from './FilterPanelToolbar'
+import { View } from 'components/DataPage/Toolbar/Toolbar'
 
 const mobileBreakpoint = 768
 
@@ -162,6 +163,7 @@ const FilterPanel = ({
   setFilters,
   clearFilters,
   updateFilter,
+  updateHash,
 }: {
   isFilterPanelOpen: boolean
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
@@ -171,6 +173,7 @@ const FilterPanel = ({
   clearFilters: () => void
   /** Event handler for when one of the filter input elements receives new input */
   updateFilter: UpdateFilterFunction
+  updateHash: (options: { newView?: View; newFilters?: Filter[] }) => void
 }) => {
   const [isFieldSelectorOpen, setIsFieldSelectorOpen] = useState(false)
 
@@ -199,6 +202,7 @@ const FilterPanel = ({
           setIsFieldSelectorOpen,
           setIsFilterPanelOpen,
           filterListRef,
+          updateHash,
         }}
       />
       <FilterList ref={filterListRef}>
