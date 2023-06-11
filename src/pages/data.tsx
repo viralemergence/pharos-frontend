@@ -1,5 +1,4 @@
 import React, {
-	useCallback,
 	useEffect,
 	useRef,
 	useState,
@@ -15,8 +14,7 @@ import Providers from 'components/layout/Providers'
 
 import NavBar from 'components/layout/NavBar/NavBar'
 import MapView from 'components/DataPage/MapView/MapView'
-import TableView from 'components/DataPage/TableView/TableView'
-import type { Row } from 'components/DataPage/TableView/TableView'
+import TableView, { Row } from 'components/DataPage/TableView/TableView'
 import DataToolbar, { View } from 'components/DataPage/Toolbar/Toolbar'
 
 import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
@@ -180,19 +178,50 @@ const loadPublishedRecordsDebounced = debounce(
 	loadDebounceDelay
 )
 
-const getHashData = () => {
-	const fieldsInHash = Array.from(
+const getViewAndFiltersFromHash = () => {
+	type keyValuePair = [string, string] // key, value
+	const keyValuePairs: keyValuePair[] = Array.from(
 		new URLSearchParams(window.location.hash.slice(1)).entries()
 	)
-	const hashData = fieldsInHash.reduce((hashData, [key, value]) => {
-		if (key === 'view') hashData.view = value
+	let view: string | null = null
+	const filtersObj: Record<string, string[]> = {}
+	for (const [key, value] of keyValuePairs) {
+		if (key === 'view') view = value
 		else {
-			// For filters, combine hash fields with the same key into an array
-			hashData[key] = [...(hashData[key] || []), value]
+			// Combine hash fields with the same key into an array
+			filtersObj[key] ||= []
+			filtersObj[key].push(value)
 		}
-		return hashData
-	}, {} as Record<string, string | string[]>)
-	return hashData
+	}
+	// Convert filters to array of Filter objects
+	const filters: Filter[] = Object.entries(filtersObj).map(
+		([fieldId, values]) => ({
+			fieldId,
+			values,
+		})
+	)
+	return { view, filters }
+}
+
+const isValidView = (maybeView: unknown): maybeView is View => {
+	if (typeof maybeView !== 'string') return false
+	return Object.values(View).includes(maybeView)
+}
+
+/** Check that the filter data extracted from window.location.hash is an array
+ * of objects with a fieldId and an array of values. Note that this function
+ * doesn't use the metadata to check that the fieldIds correspond to supported
+ * fields. A blank array is valid filter data. */
+const isValidFilterData = (
+	maybeFilterData: unknown
+): maybeFilterData is Filter[] => {
+	if (!Array.isArray(maybeFilterData)) return false
+	return maybeFilterData.every(maybeFilter => {
+		const { fieldId, values } = maybeFilter as Partial<Filter>
+		if (typeof fieldId !== 'string') return false
+		if (!Array.isArray(values)) return false
+		return values.every?.(value => typeof value === 'string')
+	})
 }
 
 const DataView = (): JSX.Element => {
@@ -238,52 +267,23 @@ const DataView = (): JSX.Element => {
 		window.location.hash = new URLSearchParams(data).toString()
 	}
 
-	const filtersSerialized = JSON.stringify(filters)
 	/** Update the view and filters based on the hash */
-	const updatePageFromHash = useCallback(() => {
-		const hashData = getHashData()
-
-		const isValidView = (maybeView: unknown): maybeView is View => {
-			if (typeof maybeView !== 'string') return false
-			return Object.values(View).includes(maybeView)
-		}
-		/** This checks that the filter data extracted from window.location.hash is
-		 * an array of objects with a fieldId and an array of values. It doesn't
-		 * use the metadata to check that the fieldIds correspond to supported
-		 * fields. Note that a blank array counts as valid filter data. */
-		const isValidFilterData = (
-			maybeFilterData: unknown
-		): maybeFilterData is Filter[] => {
-			if (!Array.isArray(maybeFilterData)) return false
-			return maybeFilterData.every(maybeFilter => {
-				const { fieldId, values } = maybeFilter as Partial<Filter>
-				if (typeof fieldId !== 'string') return false
-				if (!Array.isArray(values)) return false
-				return values.every?.(value => typeof value === 'string')
-			})
-		}
-
-		const { view: viewInHash, ...filterDataInHashAsTuples } = hashData
+	const updatePageFromHash = () => {
+		const hashData = getViewAndFiltersFromHash()
+		const viewInHash = hashData.view
+		const filtersInHash = hashData.filters
 
 		if (isValidView(viewInHash)) {
 			setView(viewInHash)
 		} else console.error('Invalid view in hash')
 
-		const filterDataInHash = Object.entries(filterDataInHashAsTuples).map(
-			([fieldId, values]) => ({ fieldId, values })
-		)
-
-		if (isValidFilterData(filterDataInHash)) {
-			const hashContainsNewFilterData =
-				JSON.stringify(filterDataInHash) !== filtersSerialized
-			if (hashContainsNewFilterData || filterDataInHash.length === 0) {
-				setFilters(filterDataInHash)
-				// The load function is debounced because the user might press the browser's back or
-				// forward button many times in a row
-				loadFilteredRecords(filterDataInHash)
-			}
+		if (isValidFilterData(filtersInHash)) {
+			setFilters(filtersInHash)
+			// The load function is debounced because the user might press the browser's back or
+			// forward button many times in a row
+			loadFilteredRecords(filtersInHash)
 		} else console.error('Invalid filter data in hash')
-	}, [view, filtersSerialized])
+	}
 
 	useEffect(() => {
 		const getMetadata = async () => {
@@ -324,23 +324,20 @@ const DataView = (): JSX.Element => {
 		}
 	}
 
-	const setFiltersAndUpdateHash = (newFilters: Filter[]) => {
-		setFilters(newFilters)
-		updateHash({ newFilters })
-	}
-
 	const updateFilter = (
 		indexOfFilterToUpdate: number,
 		newValues: FilterValues
 	) => {
 		const newFilters = [...filters]
 		newFilters[indexOfFilterToUpdate].values = newValues
-		setFiltersAndUpdateHash(newFilters)
+		setFilters(newFilters)
+		updateHash({ newFilters })
 		loadFilteredRecords(newFilters)
 	}
 
 	const clearFilters = () => {
-		setFiltersAndUpdateHash([])
+		setFilters([])
+		updateHash({ newFilters: [] })
 		if (filters.some(({ values }) => values.length > 0)) {
 			// Don't debounce when clearing filters
 			loadFilteredRecords([], false)
@@ -360,7 +357,7 @@ const DataView = (): JSX.Element => {
 						changeView={changeView}
 						isFilterPanelOpen={isFilterPanelOpen}
 						setIsFilterPanelOpen={setIsFilterPanelOpen}
-						appliedFilters={appliedFilters}
+						filters={filters}
 					/>
 					<MapView
 						projection={view === 'globe' ? 'globe' : 'naturalEarth'}

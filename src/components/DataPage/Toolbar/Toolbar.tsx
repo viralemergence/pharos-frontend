@@ -69,13 +69,13 @@ const DataToolbar = ({
 	setIsFilterPanelOpen,
 	view,
 	changeView,
-	appliedFilters = [],
+	filters = [],
 }: {
 	isFilterPanelOpen: boolean
 	setIsFilterPanelOpen: (open: boolean) => void
 	view: View
 	changeView: (view: View) => void
-	appliedFilters: Filter[]
+	filters: Filter[]
 }) => {
 	const ViewRadioButton = ({
 		forView,
@@ -103,8 +103,8 @@ const DataToolbar = ({
 					width={110}
 				>
 					Filters
-					{appliedFilters.length > 0 && (
-						<span style={{ marginLeft: '5px' }}>({appliedFilters.length})</span>
+					{filters.length > 0 && (
+						<span style={{ marginLeft: '5px' }}>({filters.length})</span>
 					)}
 				</DataToolbarButton>
 			</DataToolbarButtonContainer>
