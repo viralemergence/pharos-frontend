@@ -1,4 +1,5 @@
 import React, {
+	useCallback,
 	useEffect,
 	useRef,
 	useState,
@@ -24,6 +25,8 @@ import {
 	Filter,
 	FilterValues,
 } from 'components/DataPage/FilterPanel/constants'
+
+type hashKeyValuePair = [fieldId: string, value: string | null]
 
 const ViewContainer = styled.main`
 	flex: 1;
@@ -179,35 +182,32 @@ const loadPublishedRecordsDebounced = debounce(
 )
 
 const getViewAndFiltersFromHash = () => {
-	type keyValuePair = [string, string] // key, value
-	const keyValuePairs: keyValuePair[] = Array.from(
+	const keyValuePairs: hashKeyValuePair[] = Array.from(
 		new URLSearchParams(window.location.hash.slice(1)).entries()
 	)
 	let view: string | null = null
-	let emptyFilters: Filter[] = []
-	const filtersObj: Record<string, string[]> = {}
+	// First make a filters record eince this is easier to update
+	const filtersRecord: Record<string, string[]> = {}
 	for (const [key, value] of keyValuePairs) {
-		if (key === 'view') view = value
-		else if (key === 'empty_filters') {
-			const emptyFilterIds = value.split(',')
-			emptyFilters = [
-				...emptyFilters,
-				...emptyFilterIds.map(fieldId => ({ fieldId, values: [] })),
-			]
+		if (key === 'view') {
+			view = value
 		} else {
-			// Combine hash fields with the same key into an array
-			filtersObj[key] ||= []
-			filtersObj[key].push(value)
+			filtersRecord[key] ||= []
+			if (value) {
+				// Combine hash fields with the same key into an array
+				filtersRecord[key].push(value)
+			}
+			// NOTE: If value is '', the filter will have an empty array of values
 		}
 	}
-	// Convert filters to array of Filter objects
-	const filters: Filter[] = Object.entries(filtersObj).map(
+	// Convert filters object to an array of Filter objects
+	const filters: Filter[] = Object.entries(filtersRecord).map(
 		([fieldId, values]) => ({
 			fieldId,
 			values,
 		})
 	)
-	return { view, filters: [...filters, ...emptyFilters] }
+	return { view, filters }
 }
 
 const isValidView = (maybeView: unknown): maybeView is View => {
@@ -230,6 +230,19 @@ const isValidFilterData = (
 		return values.every?.(value => typeof value === 'string')
 	})
 }
+
+/**
+ * Convert an array of key-value pairs into a hash string like
+ * "key1=value1&key1=value2&key2&key3=value1"
+ * NOTE: Unlike `new URLSearchParams(data).toString()`, this function lets a key have no
+ * equals sign after it. We use this indicate that a filter is present in the
+ * panel but has no values. */
+const getHashFromKeyValuePairs = (pairs: hashKeyValuePair[]) =>
+	pairs
+		.map(([key, value]) =>
+			value ? new URLSearchParams({ [key]: value }) : key
+		)
+		.join('&')
 
 const DataView = (): JSX.Element => {
 	const [loading, setLoading] = useState(true)
@@ -265,24 +278,26 @@ const DataView = (): JSX.Element => {
 		newView?: View
 		newFilters?: Filter[]
 	}) => {
-		console.log('updating hash')
-		console.log('newFilters', newFilters)
-		const data = [
+		const data: hashKeyValuePair[] = [
 			['view', newView],
-			...newFilters.flatMap(({ fieldId, values }) =>
-				values.sort().map(value => [fieldId, value])
-			),
+			...newFilters.flatMap(({ fieldId, values }) => {
+				if (values.length) {
+					return values
+						.sort()
+						.map(value => [fieldId, value] as hashKeyValuePair)
+				} else {
+					return [[fieldId, null] as hashKeyValuePair]
+				}
+			}),
 		]
-		const emptyFilters = newFilters
-			.filter(({ values }) => !values.length)
-			.map(({ fieldId }) => fieldId)
-			.join(',')
-		if (emptyFilters) data.push(['empty_filters', emptyFilters])
-		window.location.hash = new URLSearchParams(data).toString()
+		window.location.hash = getHashFromKeyValuePairs(data)
 	}
 
 	/** Update the view and filters based on the hash */
-	const updatePageFromHash = () => {
+	const updatePageFromHash = useCallback(() => {
+		// Don't update page until metadata arrives
+		if (!Object.values(fields)) return
+
 		const hashData = getViewAndFiltersFromHash()
 		const viewInHash = hashData.view
 		const filtersInHash = hashData.filters
@@ -292,13 +307,12 @@ const DataView = (): JSX.Element => {
 		} else console.error('Invalid view in hash')
 
 		if (isValidFilterData(filtersInHash)) {
-			console.log('filtersInHash', filtersInHash)
 			setFilters(filtersInHash)
 			// The load function is debounced because the user might press the browser's back or
 			// forward button many times in a row
 			loadFilteredRecords(filtersInHash)
 		} else console.error('Invalid filter data in hash')
-	}
+	}, [])
 
 	useEffect(() => {
 		const getMetadata = async () => {
@@ -313,13 +327,12 @@ const DataView = (): JSX.Element => {
 			setFields(data.fields)
 		}
 		getMetadata()
-
 		updatePageFromHash()
 		window.addEventListener('hashchange', updatePageFromHash)
 		return () => {
 			window.removeEventListener('hashchange', updatePageFromHash)
 		}
-	}, [])
+	}, [updatePageFromHash])
 
 	const loadFilteredRecords = (filters: Filter[], shouldDebounce = true) => {
 		const options = {

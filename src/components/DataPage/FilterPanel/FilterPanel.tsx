@@ -61,6 +61,7 @@ const Panel = styled.aside<{ open: boolean }>`
   min-width: 400px;
   transition: margin-left 300ms cubic-bezier(0.4, 0, 0.2, 1);
   z-index: ${({ theme }) => theme.zIndexes.dataPanel};
+  max-width: 400px;
   @media (max-width: ${mobileBreakpoint}px) {
     background-color: ${({ theme }) => theme.lightBlack};
     display: ${({ open }) => (open ? 'block' : 'none')};
@@ -73,6 +74,7 @@ const Panel = styled.aside<{ open: boolean }>`
     margin-right: 0;
     position: absolute;
     width: 100vw;
+    max-width: unset;
   }
 `
 
