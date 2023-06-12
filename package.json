@@ -12,7 +12,8 @@
     "serve": "gatsby serve",
     "preinstall": "scripts/preinstall.sh",
     "postinstall": "scripts/postinstall.sh",
-    "test": "jest"
+    "test": "jest",
+    "coverage": "jest --coverage"
   },
   "browserslist": [
     ">0.2%",
