@@ -123,6 +123,10 @@ export interface TypeaheadProps {
   ariaLabel?: string
   /** id attribute for the text input */
   inputId?: string
+  /** Whether fixes should be added to counteract the
+   * tabindex=-1 issue that Reach Router adds. Note that
+   * Gatsby uses Reach Router at time of writing */
+  useReachRouterFixes?: boolean
 }
 
 // const isVisibleInContainer = (
@@ -162,6 +166,7 @@ const Typeahead = ({
   resultsMaxHeight = '30em',
   ariaLabel,
   inputId,
+  useReachRouterFixes = false,
 }: TypeaheadProps) => {
   if (!items) throw new Error('Item array in multiselect cannot be undefined')
 
@@ -272,6 +277,9 @@ const Typeahead = ({
         inputRef.current?.blur()
         reset()
         return
+      case 'Tab':
+        if (e.shiftKey) unprotectFocus()
+        return
     }
   }
 
@@ -291,6 +299,19 @@ const Typeahead = ({
 
   const containerRef = useRef<HTMLFormElement>(null)
 
+  // These two callbacks prevent Reach Router's <div tabindex=-1> from
+  // interfering with how focus moves. See https://jsfiddle.net/_rkl_/eu1L6k4p/11/
+  const protectFocus = () => {
+    if (!useReachRouterFixes) return
+    const container = containerRef.current
+    if (!container) return
+    if (container.getAttribute('tabindex') !== '0')
+      container.setAttribute('tabindex', '0')
+  }
+  const unprotectFocus = () => {
+    if (!useReachRouterFixes) return
+    containerRef.current?.removeAttribute('tabindex')
+  }
 
   return (
     <Container
@@ -302,6 +323,7 @@ const Typeahead = ({
         // Ignore bubbled blur events
         if (containerRef?.current?.contains(e.relatedTarget as Node)) return
         reset()
+        unprotectFocus()
       }}
       className={className}
       onSubmit={e => e.preventDefault()}
@@ -317,7 +339,10 @@ const Typeahead = ({
         name="special-auto-fill"
         ref={inputRef}
         onKeyDown={handleKeyDownFromSearchBar}
-        onFocus={() => setFocusedElementIndex(-1)}
+        onFocus={() => {
+          setFocusedElementIndex(-1)
+          protectFocus()
+        }}
         value={searchString}
         onChange={e => setSearchString(e.target.value)}
         placeholder={placeholder}
@@ -343,6 +368,15 @@ const Typeahead = ({
           className="pharos-typeahead-results"
           resultsMaxHeight={resultsMaxHeight}
           ref={resultsRef}
+          onFocus={e => {
+            // TODO: Is this check needed?
+            if (!containerRef?.current?.contains(e.relatedTarget))
+              protectFocus()
+          }}
+          onBlur={e => {
+            if (!containerRef?.current?.contains(e.relatedTarget))
+              unprotectFocus()
+          }}
         >
           {multiselect && values.length > 0 && (
             <Values borderColor={borderColor}>
