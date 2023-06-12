@@ -276,7 +276,7 @@ const Typeahead = ({
         e.preventDefault()
         setFocusedElementIndex(prev => {
           // if we are at the end of the list, stay there
-          if (prev === items.length + values.length) return prev
+          if (prev === items.length + values.length - 1) return prev
           // if we are in the results, go down one
           return prev + 1
         })
