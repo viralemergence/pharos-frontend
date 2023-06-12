@@ -48,23 +48,23 @@ const SelectedTypeaheadValueDeleteButton = styled.button`
 `
 
 const TypeaheadContainer = styled.div`
-  & form {
-    max-width: 400px !important;
-    margin-bottom: 10px;
-  }
-  & .pharos-typeahead-results {
-    margin-bottom: 20px;
-  }
-  & input[type='search'] {
-    ${({ theme }) => theme.smallParagraph}
-    &::placeholder {
-      color: #fff !important;
-      opacity: 1 !important;
-      font-weight: bold;
-    }
-    padding: 10px 15px 8px 15px !important;
-    line-height: 25px !important;
-  }
+  // & form {
+  //   max-width: 400px !important;
+  //   margin-bottom: 10px;
+  // }
+  // & .pharos-typeahead-results {
+  //   margin-bottom: 20px;
+  // }
+  // & input[type='search'] {
+  //   ${({ theme }) => theme.smallParagraph}
+  //   &::placeholder {
+  //     color: #fff !important;
+  //     opacity: 1 !important;
+  //     font-weight: bold;
+  //   }
+  //   padding: 10px 15px 8px 15px !important;
+  //   line-height: 25px !important;
+  // }
 `
 const TypeaheadLabel = styled(InputLabel)`
   ${({ theme }) => theme.smallParagraph}
@@ -135,10 +135,13 @@ const FilterTypeahead = ({
           backgroundColor="#000"
           fontColor="white"
           borderColor="#fff"
+          selectedHoverColor="#594141"
+          hoverColor="#49515d"
           RenderItem={({ item, selected }) => (
             <FilterDarkTypeaheadResult {...{ item, selected }} />
           )}
           iconSVG="%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9L12 15L18 9H6Z' fill='%23FFFFFF'/%3E%3C/svg%3E%0A"
+          resultsMaxHeight="300px"
           inputId={typeaheadInputId}
         />
       </TypeaheadContainer>
