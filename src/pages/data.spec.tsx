@@ -7,6 +7,16 @@ import zIndexes from '../components/layout/ZIndexes'
 
 import DataPage from './data'
 
+jest.mock('@talus-analytics/library.airtable-cms', () => {
+  return { Image: jest.fn(), IconProvider: jest.fn(), SEO: jest.fn() }
+})
+jest.mock('cmsHooks/useIconsQuery', () => {
+  return jest.fn()
+})
+jest.mock('cmsHooks/useSiteMetadataQuery', () => {
+  return jest.fn()
+})
+
 describe('DataPage', () => {
   it('renders', () => {
     render(
