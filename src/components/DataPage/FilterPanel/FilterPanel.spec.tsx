@@ -1,3 +1,4 @@
+import React from 'react'
 import FilterPanel from './FilterPanel'
 import { render } from '@testing-library/react'
 

@@ -2,7 +2,7 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "esnext",
-    "jsx": "react-jsx",
+    "jsx": "react",
     "lib": ["dom", "esnext", "dom.Iterable"],
     "strict": true,
     "noEmit": true,
