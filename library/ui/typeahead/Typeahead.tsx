@@ -185,22 +185,9 @@ const Typeahead = ({
     .search(searchString)
     .map(({ item }: { item: Item }) => item)
 
-  // When a blur event fires, set results to hide next at the end
-  // of the event loop using a zero-duration timeout, which will
-  // be cancelled if focus bubbles up from a child element.
-  let blurTimeout: ReturnType<typeof global.setTimeout> | undefined
-  const onBlurHandler = () => {
-    blurTimeout = setTimeout(() => {
-      setShowResults(false)
-      if (!values.length) setSearchString('')
-    })
-  }
-
-  // if focus is inside the container,
-  // cancel the timer, don't hide the results
-  const onFocusHandler = () => {
-    clearTimeout(blurTimeout)
-    setShowResults(true)
+  const reset = () => {
+    setShowResults(false)
+    if (!values.length) setSearchString('')
   }
 
   useEffect(() => {
@@ -283,7 +270,7 @@ const Typeahead = ({
         return
       case 'Escape':
         inputRef.current?.blur()
-        onBlurHandler()
+        reset()
         return
     }
   }
@@ -302,10 +289,20 @@ const Typeahead = ({
   const unselectedItems =
     results.length && searchString !== values[0]?.label ? results : items
 
+  const containerRef = useRef<HTMLFormElement>(null)
+
+
   return (
     <Container
-      onFocus={onFocusHandler}
-      onBlur={onBlurHandler}
+      ref={containerRef}
+      onFocus={() => {
+        setShowResults(true)
+      }}
+      onBlur={e => {
+        // Ignore bubbled blur events
+        if (containerRef?.current?.contains(e.relatedTarget as Node)) return
+        reset()
+      }}
       className={className}
       onSubmit={e => e.preventDefault()}
       style={{ ...style, backgroundColor }}
