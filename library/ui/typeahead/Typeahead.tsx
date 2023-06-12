@@ -354,7 +354,7 @@ const Typeahead = ({
                   key={item.key}
                   tabIndex={-1}
                   onClick={() => {
-                    onRemove?.(item)
+                    if (onRemove) onRemove(item)
                     setFocusedElementIndex(prev => (prev >= 1 ? prev - 1 : 0))
                   }}
                   style={{ color: fontColor }}
