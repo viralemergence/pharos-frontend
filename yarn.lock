@@ -11917,10 +11917,10 @@ rc@1.2.8, rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-data-grid@^7.0.0-beta.19:
-  version "7.0.0-beta.33"
-  resolved "https://registry.yarnpkg.com/react-data-grid/-/react-data-grid-7.0.0-beta.33.tgz#d586d9638ad7b544e997b24e1440661563d6acfc"
-  integrity sha512-ibUMa4UKO+a2wQ3rnyHIPUVGCETcVoJOLD71ULlLTKDn5+g2zB4FDik47Og6jJpSaWJmLL75TNbY1VpErreZ0A==
+react-data-grid@^7.0.0-beta.31:
+  version "7.0.0-beta.31"
+  resolved "https://registry.yarnpkg.com/react-data-grid/-/react-data-grid-7.0.0-beta.31.tgz#5977b48f03d562e3b86f8bf60f1402c411e403d0"
+  integrity sha512-gl1k6r+JnXGkdpnUuZY5qvj5YkM2glr8eyzsiCtTM+QCFer5BZ4o9tteW2HcZmutsLRd0fdzovuiyaK0SHKEOA==
   dependencies:
     clsx "^1.1.1"
 
