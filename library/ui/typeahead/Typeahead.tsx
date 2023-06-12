@@ -8,8 +8,7 @@ import React, {
 } from 'react'
 import Fuse from 'fuse.js'
 import styled from 'styled-components'
-//import Expander from '@talus-analytics/library.ui.expander'
-import Expander from '../expander/Expander'
+import Expander from '@talus-analytics/library.ui.expander'
 
 import {
   Container,
