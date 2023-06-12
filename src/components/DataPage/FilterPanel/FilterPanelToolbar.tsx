@@ -1,11 +1,7 @@
 import React, {
-  createRef,
-  useEffect,
-  useRef,
   Dispatch,
   MutableRefObject,
   SetStateAction,
-  KeyboardEvent,
 } from 'react'
 import styled from 'styled-components'
 import { PlusIcon, BackIcon, XIcon, Field, Filter } from './constants'
