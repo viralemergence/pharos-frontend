@@ -9,6 +9,35 @@
  */
 
 {
+    "airtable/cms-seo": {
+        "scope": "talus-analytics.library",
+        "version": "0.0.8",
+        "mainFile": "index.tsx",
+        "rootDir": "library/airtable/cms-seo",
+        "config": {
+            "teambit.component/dev-files": {},
+            "teambit.compositions/compositions": {},
+            "teambit.docs/docs": {},
+            "teambit.envs/envs": {},
+            "teambit.dependencies/dependency-resolver": {},
+            "teambit.pipelines/builder": {},
+            "teambit.react/react": {},
+            "teambit.compilation/compiler": {},
+            "teambit.component/forking": {
+                "forkedFrom": {
+                    "scope": "talus-analytics.library",
+                    "name": "airtable/cms-seo",
+                    "version": "0.0.8"
+                }
+            }
+        }
+    },
+    "ui/dropdown": {
+        "scope": "talus-analytics.library",
+        "version": "0.0.10",
+        "mainFile": "index.tsx",
+        "rootDir": "library/ui/dropdown"
+    },
     "ui/typeahead": {
         "scope": "talus-analytics.library",
         "version": "0.0.6",
