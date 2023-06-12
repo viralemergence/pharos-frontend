@@ -8,11 +8,7 @@ module.exports = {
   modulePaths: ['<rootDir>'],
   testEnvironment: 'jsdom',
   transform: {
-    '^.+\\.jsx?$': ['babel-jest'],
-  },
-  globals: {
-    'ts-jest': {
-      tsconfig: './tsconfig.test.json',
-    },
+    '^.+\\.jsx?$': 'babel-jest',
+    '^.+\\.tsx?$': ['ts-jest', { tsconfig: './tsconfig.test.json' }],
   },
 }
