@@ -26,8 +26,17 @@ export const Container = styled.form<{ borderColor: string }>`
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
 
+    input {
+      outline: none;
+      padding-bottom: 13px;
+      transition-duration: 0ms;
+      transition-delay: 0s;
+      border-bottom: 0px solid #aaaaaa00;
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
     &:after {
-      /* background-color: rgba(211, 211, 211, 255); */
       background-color: ${({ borderColor }) =>
         borderColor ? borderColor : `rgb(211, 211, 211)`};
       opacity: 0.33;
@@ -35,11 +44,7 @@ export const Container = styled.form<{ borderColor: string }>`
     }
   }
 `
-export const SearchBar = styled.input<{
-  iconLeft: boolean
-  fontColor: string
-  areResultsShown: boolean
-}>`
+export const SearchBar = styled.input<{ iconLeft: boolean; fontColor: string }>`
   border: none;
   width: 100%;
   border-radius: 5px;
@@ -61,24 +66,10 @@ export const SearchBar = styled.input<{
     color: ${({ fontColor }) => fontColor};
     opacity: 0.66;
   }
-
-  // TODO: Perhaps restore outline for accessibility's sake?
-  &:focus {
-    outline: none;
-    padding-bottom: 13px;
-    transition-duration: 0ms;
-    transition-delay: 0s;
-  }
-
-  ${({ areResultsShown }) =>
-    areResultsShown &&
-    `border-bottom: 0px solid #aaaaaa00;
-      border-bottom-right-radius: 0;
-      border-bottom-left-radius: 0;`}
 `
-export const Results = styled.div`
+export const Results = styled.div<{ resultsMaxHeight: string }>`
   display: flex;
-  max-height: 300px;
+  max-height: ${({ resultsMaxHeight }) => resultsMaxHeight};
   overflow-y: scroll;
   flex-direction: column;
   border-radius: 10px;
@@ -91,12 +82,14 @@ export const Results = styled.div`
   padding-top: none;
 `
 
-export const Selected = styled.div<{ borderColor: string }>`
+export const Items = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
+`
 
+export const Values = styled(Items)<{ borderColor: string }>`
   :after {
     content: '';
     position: absolute;
@@ -110,7 +103,9 @@ export const Selected = styled.div<{ borderColor: string }>`
   }
 `
 
-export const ItemButton = styled.button<{ selected: boolean }>`
+export const ItemButton = styled.button<{
+  focusHoverColor: string
+}>`
   background: none;
   border: none;
   width: 100%;
@@ -118,8 +113,10 @@ export const ItemButton = styled.button<{ selected: boolean }>`
   padding: 0;
   display: flex;
   justify-content: space-between;
-  &:focus {
-    background-color: ${({ selected }) => (selected ? '#594141' : '#49515d')};
+
+  &:focus,
+  &:hover {
+    background-color: ${({ focusHoverColor }) => focusHoverColor};
   }
 `
 
