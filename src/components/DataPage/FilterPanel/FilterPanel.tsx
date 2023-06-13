@@ -203,6 +203,7 @@ const FilterPanel = ({
         setIsFieldSelectorOpen(false)
       }}
       role='navigation'
+      aria-hidden={isFilterPanelOpen? 'false' : 'true'}
     >
       <FilterPanelToolbar
         {...{

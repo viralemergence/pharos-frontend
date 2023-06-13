@@ -100,12 +100,22 @@ describe('DataPage', () => {
     })
   })
 
-  it('has a button labeled Filter that closes/opens a panel', () => {
+  it('has a button labeled Filters that toggles the display of a button labeled Add filter', async () => {
+    render(<DataView />)
     // Initially the panel is displayed
-    expect(screen.getByRole('navigation')).toHaveTextContent('Add filter')
+    const addFilterButton = () => screen.getByLabelText('Add filter')
+    expect(addFilterButton()).toBeInTheDocument()
+
+    expect(addFilterButton()).toHaveAttribute('aria-hidden', 'false')
+
     const filterPanelButton = screen.getByRole('button', { name: /Filters/i })
+
+    // Clicking the button closes the panel
     fireEvent.click(filterPanelButton)
-    // Button closes panel
-    expect(screen.getByRole('navigation')).not.toBeInTheDocument()
+    expect(addFilterButton()).toHaveAttribute('aria-hidden', 'true')
+
+    // Clicking the button again opens the panel
+    fireEvent.click(filterPanelButton)
+    expect(addFilterButton()).toHaveAttribute('aria-hidden', 'false')
   })
 })

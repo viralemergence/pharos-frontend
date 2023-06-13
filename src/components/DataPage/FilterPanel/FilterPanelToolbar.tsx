@@ -1,8 +1,4 @@
-import React, {
-  Dispatch,
-  MutableRefObject,
-  SetStateAction,
-} from 'react'
+import React, { Dispatch, MutableRefObject, SetStateAction } from 'react'
 import styled from 'styled-components'
 import { PlusIcon, BackIcon, XIcon, Field, Filter } from './constants'
 
@@ -193,6 +189,7 @@ const FilterPanelToolbar = ({
             // fire, closing the field selector.
             e.stopPropagation()
           }}
+          aria-label="Add filter"
         >
           <PlusIcon style={{ marginRight: '5px' }} /> Add filter
         </FilterPanelToolbarButton>
