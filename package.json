@@ -4,7 +4,9 @@
   "private": true,
   "description": "talus-gatsby-starter",
   "author": "Ryan",
-  "keywords": ["gatsby"],
+  "keywords": [
+    "gatsby"
+  ],
   "scripts": {
     "develop": "scripts/start.sh",
     "start": "scripts/start.sh",
@@ -59,6 +61,7 @@
     "localforage": "^1.10.0",
     "localforage-getitems": "^1.4.2",
     "mapbox-gl": "^2.10.0",
+    "msw": "^1.2.2",
     "node-html-parser": "^6.1.5",
     "papaparse": "^5.3.2",
     "polished": "^4.2.2",
@@ -71,7 +74,8 @@
     "react-router-dom": "6",
     "sass": "^1.49.9",
     "styled-components": "^5.3.0",
-    "typescript-styled-plugin": "^0.18.1"
+    "typescript-styled-plugin": "^0.18.1",
+    "whatwg-fetch": "^3.6.2"
   },
   "devDependencies": {
     "@babel/core": "^7.22.5",

@@ -16,7 +16,7 @@ module.exports = {
     '^templates/(.*)$': '<rootDir>/src/templates/$1',
     '^utilities/(.*)$': '<rootDir>/src/utilities/$1',
   },
-  setupFilesAfterEnv: ['./setupTests.ts'],
+  setupFilesAfterEnv: ['./test/setupTests.ts', './test/setupEnv.ts'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   modulePaths: ['<rootDir>'],
   testEnvironment: 'jsdom',
