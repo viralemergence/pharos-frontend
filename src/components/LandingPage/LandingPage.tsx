@@ -48,12 +48,6 @@ const ButtonBox = styled.div`
   grid-template-columns: repeat(2, 1fr);
   gap: 15px;
 `
-const FooterHeaderText = styled.h3`
-  ${({ theme }) => theme.bigParagraph};
-  color: ${({ theme }) => theme.black};
-  margin-top: 150px;
-  text-align: center;
-`
 
 const LoggedOutLanding = () => {
   const cmsData = useIndexPageData()
