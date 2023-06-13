@@ -1,9 +1,5 @@
 import React from 'react'
-import { screen, render } from '@testing-library/react'
-// import { ThemeProvider } from 'styled-components'
-// import textStyles from 'figma/textStyles'
-// import colorPalette from 'figma/colorPalette'
-// import zIndexes from 'components/layout/ZIndexes'
+import { fireEvent, render, screen } from '@testing-library/react'
 
 import { stateInitialValue } from 'reducers/stateReducer/initialValues'
 import DataView from './data'
@@ -73,11 +69,15 @@ describe('DataPage', () => {
   })
 
   it('renders', () => {
-    render(
-      //<ThemeProvider theme={{ ...textStyles, ...colorPalette, zIndexes }}>
-      <DataView />
-      //</ThemeProvider>
-    )
-    screen.debug()
+    render(<DataView />)
+  })
+
+  it('has a button labeled Table that when clicked shows a grid', () => {
+    render(<DataView />)
+    const tableViewButton = screen.getByRole('button', { name: /Table/i })
+    expect(tableViewButton).toBeInTheDocument()
+    expect(screen.queryByRole('grid')).not.toBeInTheDocument()
+    fireEvent.click(tableViewButton)
+    expect(screen.queryByRole('grid')).toBeInTheDocument()
   })
 })

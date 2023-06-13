@@ -194,7 +194,7 @@ const DataView = (): JSX.Element => {
 	const [reachedLastPage, setReachedLastPage] = useState(false)
 	const page = useRef(1)
 	const debouncing = useRef({ on: false, timeout: null })
-	const [view, setView] = useState<View>(View.table)
+	const [view, setView] = useState<View>(View.globe)
 
 	/** Filters that will be applied to the published records */
 	const [filters, setFilters] = useState<Filter[]>([])
@@ -282,15 +282,11 @@ const DataView = (): JSX.Element => {
 
 	return (
 		<>
-			0
 			<Providers>
-				1
-				<CMS.SEO />2
+				<CMS.SEO />
 				<DataPage>
-					3
-					<NavBar />4
+					<NavBar />
 					<ViewContainer isFilterPanelOpen={isFilterPanelOpen}>
-						5
 						<DataToolbar
 							view={view}
 							changeView={changeView}
