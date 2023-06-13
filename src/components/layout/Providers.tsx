@@ -35,11 +35,13 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <React.StrictMode>
+      A
       <CMS.IconProvider data={icons}>
+        B
         <CMS.SiteMetadataProvider data={siteMetadata} trackingId={trackingId}>
           <ThemeProvider theme={{ ...textStyles, ...colorPalette, zIndexes }}>
-            <GlobalStyle />
-            {children}
+            C
+            <GlobalStyle />D{children}
           </ThemeProvider>
         </CMS.SiteMetadataProvider>
       </CMS.IconProvider>

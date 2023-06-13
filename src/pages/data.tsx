@@ -9,7 +9,7 @@ import React, {
 import styled from 'styled-components'
 import debounce from 'lodash/debounce'
 
-//import CMS from '@talus-analytics/library.airtable-cms'
+import CMS from '@talus-analytics/library.airtable-cms'
 import Providers from 'components/layout/Providers'
 
 import NavBar from 'components/layout/NavBar/NavBar'
@@ -194,7 +194,7 @@ const DataView = (): JSX.Element => {
 	const [reachedLastPage, setReachedLastPage] = useState(false)
 	const page = useRef(1)
 	const debouncing = useRef({ on: false, timeout: null })
-	const [view, setView] = useState<View>(View.globe)
+	const [view, setView] = useState<View>(View.table)
 
 	/** Filters that will be applied to the published records */
 	const [filters, setFilters] = useState<Filter[]>([])
@@ -280,56 +280,60 @@ const DataView = (): JSX.Element => {
 
 	const showEarth = [View.globe, View.map].includes(view)
 
-	console.log(1)
-
 	return (
-		<Providers>
-			{/*<CMS.SEO />*/}
-			<DataPage>
-				<NavBar />
-				<ViewContainer isFilterPanelOpen={isFilterPanelOpen}>
-					<DataToolbar
-						view={view}
-						changeView={changeView}
-						isFilterPanelOpen={isFilterPanelOpen}
-						setIsFilterPanelOpen={setIsFilterPanelOpen}
-						appliedFilters={appliedFilters}
-					/>
-					<MapView
-						projection={view === 'globe' ? 'globe' : 'naturalEarth'}
-						style={{
-							filter: showEarth ? 'none' : 'blur(30px)',
-						}}
-					/>
-					<ViewMain>
-						<FilterPanel
+		<>
+			0
+			<Providers>
+				1
+				<CMS.SEO />2
+				<DataPage>
+					3
+					<NavBar />4
+					<ViewContainer isFilterPanelOpen={isFilterPanelOpen}>
+						5
+						<DataToolbar
+							view={view}
+							changeView={changeView}
 							isFilterPanelOpen={isFilterPanelOpen}
 							setIsFilterPanelOpen={setIsFilterPanelOpen}
-							fields={fields}
-							filters={filters}
-							updateFilter={updateFilter}
-							setFilters={setFilters}
-							clearFilters={clearFilters}
-						/>
-						<TableView
-							fields={fields}
 							appliedFilters={appliedFilters}
-							loadPublishedRecords={() => {
-								loadFilteredRecords(filters, false)
-								debouncing.current.on = false
-							}}
-							loading={loading}
-							page={page}
-							publishedRecords={publishedRecords}
-							reachedLastPage={reachedLastPage}
+						/>
+						<MapView
+							projection={view === 'globe' ? 'globe' : 'naturalEarth'}
 							style={{
-								display: view === View.table ? 'grid' : 'none',
+								filter: showEarth ? 'none' : 'blur(30px)',
 							}}
 						/>
-					</ViewMain>
-				</ViewContainer>
-			</DataPage>
-		</Providers>
+						<ViewMain>
+							<FilterPanel
+								isFilterPanelOpen={isFilterPanelOpen}
+								setIsFilterPanelOpen={setIsFilterPanelOpen}
+								fields={fields}
+								filters={filters}
+								updateFilter={updateFilter}
+								setFilters={setFilters}
+								clearFilters={clearFilters}
+							/>
+							<TableView
+								fields={fields}
+								appliedFilters={appliedFilters}
+								loadPublishedRecords={() => {
+									loadFilteredRecords(filters, false)
+									debouncing.current.on = false
+								}}
+								loading={loading}
+								page={page}
+								publishedRecords={publishedRecords}
+								reachedLastPage={reachedLastPage}
+								style={{
+									display: view === View.table ? 'grid' : 'none',
+								}}
+							/>
+						</ViewMain>
+					</ViewContainer>
+				</DataPage>
+			</Providers>
+		</>
 	)
 }
 

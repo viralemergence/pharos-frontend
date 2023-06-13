@@ -3,8 +3,8 @@ module.exports = {
   moduleNameMapper: {
     '\\.(jpg|jpeg|png|gif|webp|svg|css)$': 'identity-obj-proxy',
 
-    // Workaround to enable imports relative to `src`, like `import Providers
-    // from 'components/layout/Providers'`
+    // Workaround to enable imports relative to `src`, like
+    // `import Providers from 'components/layout/Providers'`
     '^assets/(.*)$': '<rootDir>/src/assets/$1',
     '^components/(.*)$': '<rootDir>/src/components/$1',
     '^cmsHooks/(.*)$': '<rootDir>/src/cmsHooks/$1',
