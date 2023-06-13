@@ -9,7 +9,7 @@ import React, {
 import styled from 'styled-components'
 import debounce from 'lodash/debounce'
 
-import CMS from '@talus-analytics/library.airtable-cms'
+//import CMS from '@talus-analytics/library.airtable-cms'
 import Providers from 'components/layout/Providers'
 
 import NavBar from 'components/layout/NavBar/NavBar'
@@ -280,9 +280,11 @@ const DataView = (): JSX.Element => {
 
 	const showEarth = [View.globe, View.map].includes(view)
 
+	console.log(1)
+
 	return (
 		<Providers>
-			<CMS.SEO />
+			{/*<CMS.SEO />*/}
 			<DataPage>
 				<NavBar />
 				<ViewContainer isFilterPanelOpen={isFilterPanelOpen}>

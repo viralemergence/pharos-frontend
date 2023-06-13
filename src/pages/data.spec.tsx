@@ -1,11 +1,11 @@
 import React from 'react'
-import { render } from '@testing-library/react'
-import { ThemeProvider } from 'styled-components'
-import textStyles from '../figma/textStyles'
-import colorPalette from '../figma/colorPalette'
-import zIndexes from '../components/layout/ZIndexes'
+import { screen, render } from '@testing-library/react'
+// import { ThemeProvider } from 'styled-components'
+// import textStyles from '../figma/textStyles'
+// import colorPalette from '../figma/colorPalette'
+// import zIndexes from '../components/layout/ZIndexes'
 
-import DataPage from './data'
+import DataView from './data'
 
 jest.mock('@talus-analytics/library.airtable-cms', () => {
   return {
@@ -61,9 +61,10 @@ describe('DataPage', () => {
 
   it('renders', () => {
     render(
-      <ThemeProvider theme={{ ...textStyles, ...colorPalette, zIndexes }}>
-        <DataPage />
-      </ThemeProvider>
+      //<ThemeProvider theme={{ ...textStyles, ...colorPalette, zIndexes }}>
+      <DataView />
+      //</ThemeProvider>
     )
+    screen.debug()
   })
 })
