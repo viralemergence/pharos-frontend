@@ -99,4 +99,13 @@ describe('DataPage', () => {
       name: 'globe',
     })
   })
+
+  it('has a button labeled Filter that closes/opens a panel', () => {
+    // Initially the panel is displayed
+    expect(screen.getByRole('navigation')).toHaveTextContent('Add filter')
+    const filterPanelButton = screen.getByRole('button', { name: /Filters/i })
+    fireEvent.click(filterPanelButton)
+    // Button closes panel
+    expect(screen.getByRole('navigation')).not.toBeInTheDocument()
+  })
 })
