@@ -40,14 +40,16 @@ jest.mock('cmsHooks/useIndexPageData', () => jest.fn())
 jest.mock('cmsHooks/useSignInPageData', () => jest.fn())
 jest.mock('cmsHooks/useSiteMetadataQuery', () => jest.fn())
 
+const mockMapboxMap = {
+  on: jest.fn(),
+  addSource: jest.fn(),
+  addLayer: jest.fn(),
+  queryRenderedFeatures: jest.fn(),
+  setProjection: jest.fn(),
+}
+
 jest.mock('mapbox-gl', () => ({
-  Map: jest.fn(() => ({
-    on: jest.fn(),
-    addSource: jest.fn(),
-    addLayer: jest.fn(),
-    queryRenderedFeatures: jest.fn(),
-    setProjection: jest.fn(),
-  })),
+  Map: jest.fn(() => mockMapboxMap),
   Popup: jest.fn(() => ({
     setLngLat: jest.fn(),
     setHTML: jest.fn(),
@@ -72,12 +74,29 @@ describe('DataPage', () => {
     render(<DataView />)
   })
 
-  it('has a button labeled Table that when clicked shows a grid', () => {
+  it('has a button labeled Table that, when clicked, displays a previously undisplayed grid', () => {
     render(<DataView />)
     const tableViewButton = screen.getByRole('button', { name: /Table/i })
     expect(tableViewButton).toBeInTheDocument()
     expect(screen.queryByRole('grid')).not.toBeInTheDocument()
     fireEvent.click(tableViewButton)
     expect(screen.queryByRole('grid')).toBeInTheDocument()
+  })
+
+  it('has buttons labeled Map and Globe that change the projection of the map', () => {
+    render(<DataView />)
+    // Since globe is the default view, switch to table view first
+    const tableViewButton = screen.getByRole('button', { name: /Table/i })
+    fireEvent.click(tableViewButton)
+    const mapViewButton = screen.getByRole('button', { name: /Map/i })
+    const globeViewButton = screen.getByRole('button', { name: /Globe/i })
+    fireEvent.click(mapViewButton)
+    expect(mockMapboxMap.setProjection).toHaveBeenCalledWith({
+      name: 'naturalEarth',
+    })
+    fireEvent.click(globeViewButton)
+    expect(mockMapboxMap.setProjection).toHaveBeenCalledWith({
+      name: 'globe',
+    })
   })
 })
