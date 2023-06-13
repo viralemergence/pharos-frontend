@@ -82,9 +82,6 @@ const LoggedOutLanding = () => {
         </Main>
       </HeaderContainer>
       <LandingMap />
-      <FooterHeaderText>
-        <CMS.Text name="Above footer" data={cmsData} />
-      </FooterHeaderText>
       <Footer />
     </>
   )
