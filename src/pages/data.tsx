@@ -207,8 +207,7 @@ const DataView = (): JSX.Element => {
 
 	const [fields, setFields] = useState<Record<string, Field>>({})
 
-	// NOTE: Setting to false to better support mobile
-	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
+	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(true)
 
 	const changeView = (view: View) => {
 		window.location.hash = view
