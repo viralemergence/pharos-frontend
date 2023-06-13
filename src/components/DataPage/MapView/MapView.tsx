@@ -1,29 +1,42 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useEffect } from 'react'
 import styled from 'styled-components'
 import mapboxgl from 'mapbox-gl'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 const MapContainer = styled.div`
-  height: calc(100vh - 87px);
   width: 100vw;
-  background: #455868;
   background: #0b103b;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
 `
 
 mapboxgl.accessToken = process.env.GATSBY_MAPBOX_API_KEY!
 
 interface MapPageProps {
   style?: React.CSSProperties
+  projection?: 'naturalEarth' | 'globe'
 }
 
-const MapView = ({ style }: MapPageProps) => {
+const MapViewDiv = styled.div`
+  z-index: ${({ theme }) => theme.zIndexes.dataMap};
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+`
+
+const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<null | mapboxgl.Map>(null)
-
-  const [mapProjection, setMapProjection] = useState<'naturalEarth' | 'globe'>(
-    'naturalEarth'
-  )
 
   // const [lng, setLng] = React.useState(0)
   // const [lat, setLat] = React.useState(0)
@@ -38,7 +51,7 @@ const MapView = ({ style }: MapPageProps) => {
       // style: 'mapbox://styles/ryan-talus/cl7uqzqjh002215oxyz136ijf/draft',
       style: 'mapbox://styles/ryan-talus/clgzr609k00c901qr07gy1303/draft',
       // projection: { name: 'naturalEarth' },
-      projection: { name: mapProjection },
+      projection: { name: projection },
       // maxZoom: 12,
       maxZoom: 15,
       minZoom: 1.5,
@@ -132,32 +145,13 @@ const MapView = ({ style }: MapPageProps) => {
 
   useEffect(() => {
     if (!map.current) return
-    map.current.setProjection({ name: mapProjection })
-  }, [mapProjection])
+    map.current.setProjection({ name: projection })
+  }, [projection])
 
   return (
-    <div style={{ ...style, position: 'absolute' }}>
-      <MapContainer ref={mapContainer} />
-      <button
-        style={{
-          position: 'fixed',
-          top: '100px',
-          right: '10px',
-          background: '#050A3733',
-          border: '1px solid #050A37',
-          borderRadius: '5px',
-          color: 'white',
-        }}
-        onClick={() =>
-          setMapProjection(prev => {
-            console.log(prev === 'naturalEarth' ? 'globe' : 'naturalEarth')
-            return prev === 'naturalEarth' ? 'globe' : 'naturalEarth'
-          })
-        }
-      >
-        {mapProjection === 'naturalEarth' ? 'View globe' : 'View flat'}
-      </button>
-    </div>
+    <MapViewDiv style={style}>
+      <MapContainer className="map-container" ref={mapContainer} />
+    </MapViewDiv>
   )
 }
 
