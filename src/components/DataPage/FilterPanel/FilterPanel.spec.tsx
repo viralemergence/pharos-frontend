@@ -21,7 +21,6 @@ describe('FilterPanel', () => {
         />
       </ThemeProvider>
     )
-    screen.debug()
   })
 
   it('renders with fields', () => {

@@ -1,6 +1,13 @@
-import { rest } from 'msw' // msw supports graphql too!
+import { rest } from 'msw'
 
 const handlers = [
+  rest.get(
+    `${process.env.GATSBY_API_URL}/published-records`,
+    async (_req, res, ctx) => {
+      const data = { publishedRecords: [], isLastPage: true }
+      return res(ctx.json(data))
+    }
+  ),
   rest.get(
     `${process.env.GATSBY_API_URL}/metadata-for-published-records`,
     async (_req, res, ctx) => {

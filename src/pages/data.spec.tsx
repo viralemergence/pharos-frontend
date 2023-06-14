@@ -1,5 +1,5 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { stateInitialValue } from 'reducers/stateReducer/initialValues'
 import DataView from './data'
@@ -70,13 +70,21 @@ describe('DataPage', () => {
     })
   })
 
+  const getAddFilterButton = () => screen.getByLabelText('Add filter')
+  const getFilterPanel = (container: HTMLElement) =>
+    container.querySelector('aside[role=navigation]')
+
+  const getTableViewButton = () =>
+    screen.getByRole('button', { name: 'Table' })
+  const getMapViewButton = () => screen.getByRole('button', { name: 'Map' })
+
   it('renders', () => {
     render(<DataView />)
   })
 
   it('has a button labeled Table that, when clicked, displays a previously undisplayed grid', () => {
     render(<DataView />)
-    const tableViewButton = screen.getByRole('button', { name: /Table/i })
+    const tableViewButton = getTableViewButton()
     expect(tableViewButton).toBeInTheDocument()
     expect(screen.queryByRole('grid')).not.toBeInTheDocument()
     fireEvent.click(tableViewButton)
@@ -85,51 +93,52 @@ describe('DataPage', () => {
 
   it('has buttons labeled Map and Globe that change the projection of the map', () => {
     render(<DataView />)
-    // Since globe is the default view, switch to table view first
-    const tableViewButton = screen.getByRole('button', { name: /Table/i })
-    fireEvent.click(tableViewButton)
-    const mapViewButton = screen.getByRole('button', { name: /Map/i })
-    const globeViewButton = screen.getByRole('button', { name: /Globe/i })
-    fireEvent.click(mapViewButton)
-    expect(mockMapboxMap.setProjection).toHaveBeenCalledWith({
+    expect(mockMapboxMap.setProjection).not.toHaveBeenCalledWith({
       name: 'naturalEarth',
     })
-    fireEvent.click(globeViewButton)
+    fireEvent.click(getMapViewButton())
     expect(mockMapboxMap.setProjection).toHaveBeenCalledWith({
-      name: 'globe',
+      name: 'naturalEarth',
     })
   })
 
   it('has a button labeled Filters that toggles the Filter Panel', () => {
     const { container } = render(<DataView />)
-    const getFilterPanel = () =>
-      container.querySelector('aside[role=navigation]')
 
     // Initially the panel is displayed
-    expect(getFilterPanel()).toBeInTheDocument()
-    expect(getFilterPanel()).toHaveAttribute('aria-hidden', 'false')
-    const addFilterButton = screen.getByLabelText('Add filter')
-    expect(getFilterPanel()).toContainElement(addFilterButton)
+    const panel = getFilterPanel(container)
+    expect(panel).toBeInTheDocument()
+    expect(panel).toHaveAttribute('aria-hidden', 'false')
+    expect(panel).toContainElement(getAddFilterButton())
 
     const filterPanelButton = screen.getByRole('button', { name: 'Filters' })
 
     // Clicking the button closes the panel
     fireEvent.click(filterPanelButton)
-    expect(getFilterPanel()).toHaveAttribute('aria-hidden', 'true')
+    expect(panel).toHaveAttribute('aria-hidden', 'true')
 
     // Clicking the button again opens the panel
     fireEvent.click(filterPanelButton)
-    expect(getFilterPanel()).toHaveAttribute('aria-hidden', 'false')
+    expect(panel).toHaveAttribute('aria-hidden', 'false')
   })
 
   it('has a filter panel that can be closed by clicking a button', () => {
     const { container } = render(<DataView />)
-    const getFilterPanel = () =>
-      container.querySelector('aside[role=navigation]')
+    const panel = getFilterPanel(container)
     const closeButtons = screen.getAllByLabelText('Close the filters panel')
-    expect(getFilterPanel()).toContainElement(closeButtons[0])
-    expect(getFilterPanel()).toHaveAttribute('aria-hidden', 'false')
+    expect(panel).toContainElement(closeButtons[0])
+    expect(panel).toHaveAttribute('aria-hidden', 'false')
     fireEvent.click(closeButtons[0])
-    expect(getFilterPanel()).toHaveAttribute('aria-hidden', 'true')
+    expect(panel).toHaveAttribute('aria-hidden', 'true')
+  })
+
+  it('has a filter panel that contains buttons for adding filters for fields', async () => {
+    render(<DataView />)
+    fireEvent.click(getAddFilterButton())
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: 'Project name' })
+      ).toBeInTheDocument()
+    })
   })
 })

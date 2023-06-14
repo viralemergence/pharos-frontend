@@ -4,9 +4,7 @@
   "private": true,
   "description": "talus-gatsby-starter",
   "author": "Ryan",
-  "keywords": [
-    "gatsby"
-  ],
+  "keywords": ["gatsby"],
   "scripts": {
     "develop": "scripts/start.sh",
     "start": "scripts/start.sh",
@@ -14,8 +12,8 @@
     "serve": "gatsby serve",
     "preinstall": "scripts/preinstall.sh",
     "postinstall": "scripts/postinstall.sh",
-    "test": "jest",
-    "coverage": "jest --coverage"
+    "test": "GATSBY_API_URL='http://localhost:3000' jest",
+    "coverage": "GATSBY_API_URL='http://localhost:3000' jest --coverage"
   },
   "browserslist": [
     ">0.2%",
