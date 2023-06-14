@@ -40,7 +40,7 @@ jest.mock('cmsHooks/useIndexPageData', () => jest.fn())
 jest.mock('cmsHooks/useSignInPageData', () => jest.fn())
 jest.mock('cmsHooks/useSiteMetadataQuery', () => jest.fn())
 
-const mockMapboxMap = {
+const mockedMapboxMap = {
   on: jest.fn(),
   addSource: jest.fn(),
   addLayer: jest.fn(),
@@ -49,7 +49,7 @@ const mockMapboxMap = {
 }
 
 jest.mock('mapbox-gl', () => ({
-  Map: jest.fn(() => mockMapboxMap),
+  Map: jest.fn(() => mockedMapboxMap),
   Popup: jest.fn(() => ({
     setLngLat: jest.fn(),
     setHTML: jest.fn(),
@@ -70,12 +70,11 @@ describe('DataPage', () => {
     })
   })
 
+  // Helper functions for retrieving elements from the page
   const getAddFilterButton = () => screen.getByLabelText('Add filter')
   const getFilterPanel = (container: HTMLElement) =>
     container.querySelector('aside[role=navigation]')
-
-  const getTableViewButton = () =>
-    screen.getByRole('button', { name: 'Table' })
+  const getTableViewButton = () => screen.getByRole('button', { name: 'Table' })
   const getMapViewButton = () => screen.getByRole('button', { name: 'Map' })
 
   it('renders', () => {
@@ -93,11 +92,11 @@ describe('DataPage', () => {
 
   it('has buttons labeled Map and Globe that change the projection of the map', () => {
     render(<DataView />)
-    expect(mockMapboxMap.setProjection).not.toHaveBeenCalledWith({
+    expect(mockedMapboxMap.setProjection).not.toHaveBeenCalledWith({
       name: 'naturalEarth',
     })
     fireEvent.click(getMapViewButton())
-    expect(mockMapboxMap.setProjection).toHaveBeenCalledWith({
+    expect(mockedMapboxMap.setProjection).toHaveBeenCalledWith({
       name: 'naturalEarth',
     })
   })
@@ -105,7 +104,7 @@ describe('DataPage', () => {
   it('has a button labeled Filters that toggles the Filter Panel', () => {
     const { container } = render(<DataView />)
 
-    // Initially the panel is displayed
+    // Initially, the filter panel should be visible
     const panel = getFilterPanel(container)
     expect(panel).toBeInTheDocument()
     expect(panel).toHaveAttribute('aria-hidden', 'false')

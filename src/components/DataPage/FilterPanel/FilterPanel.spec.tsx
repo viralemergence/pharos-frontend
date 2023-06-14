@@ -1,6 +1,6 @@
 import React from 'react'
 import FilterPanel from './FilterPanel'
-import { screen, render } from '@testing-library/react'
+import { render } from '@testing-library/react'
 import { ThemeProvider } from 'styled-components'
 import textStyles from '../../../figma/textStyles'
 import colorPalette from '../../../figma/colorPalette'
