@@ -195,10 +195,6 @@ const Typeahead = ({
   }
 
   useEffect(() => {
-    if (values.length && !multiselect) setSearchString(values[0]?.label)
-  }, [values, multiselect])
-
-  useEffect(() => {
     if (disabled && !values.length) setSearchString('')
   }, [disabled, values])
 
@@ -411,7 +407,12 @@ const Typeahead = ({
                 tabIndex={-1}
                 onClick={() => {
                   onAdd(item)
-                  setFocusedElementIndex(prev => (prev === -1 ? 1 : prev + 1))
+                  if (multiselect) {
+                    setFocusedElementIndex(prev => (prev === -1 ? 1 : prev + 1))
+                  } else {
+                    setSearchString(item.label)
+                    setShowResults(false)
+                  }
                 }}
                 style={{ color: fontColor }}
                 focusHoverColor={hoverColor}
