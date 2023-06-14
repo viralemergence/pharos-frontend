@@ -12,6 +12,7 @@ import useAppState from 'hooks/useAppState'
 
 const HeaderContainer = styled.div`
   position: absolute;
+  top: 80px;
   width: 100vw;
   height: calc(100vh - 80px);
   display: flex;
@@ -58,6 +59,7 @@ const LoggedOutLanding = () => {
 
   return (
     <>
+      <LandingMap />
       <HeaderContainer>
         <Header>
           <H1>
@@ -78,7 +80,6 @@ const LoggedOutLanding = () => {
           <LandingText name="Intro paragraph" data={cmsData} />
         </Main>
       </HeaderContainer>
-      <LandingMap />
       <Footer />
     </>
   )
