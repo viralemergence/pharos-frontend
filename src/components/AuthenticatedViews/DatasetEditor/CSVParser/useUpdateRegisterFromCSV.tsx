@@ -9,14 +9,22 @@ import { StateActions } from 'reducers/stateReducer/stateReducer'
 import { Register } from 'reducers/stateReducer/types'
 import useProjectID from 'hooks/project/useProjectID'
 import getTimestamp from 'utilities/getTimestamp'
+import useModal from 'hooks/useModal/useModal'
+import useVersionedRows from 'hooks/register/useVersionedRows'
+import MintButton from 'components/ui/MintButton'
 
 type Rows = { [key: string]: string }[]
+
+const DATASET_LENGTH_LIMIT = 900
 
 const useUpdateRegisterFromCSV = () => {
   const { researcherID: modifiedBy } = useUser()
   const datasetID = useDatasetID()
   const projectID = useProjectID()
   const dispatch = useDispatch()
+
+  const currentRows = useVersionedRows()
+  const setModal = useModal()
 
   const updateRegisterFromCSV = (file: File) =>
     Papa.parse(file, {
@@ -25,6 +33,21 @@ const useUpdateRegisterFromCSV = () => {
         const version = String(new Date().getTime())
         const rows = results.data as Rows
         const columns = Object.keys(rows[0]).map(column => column.trim())
+
+        if (rows.length + currentRows.rows.length > DATASET_LENGTH_LIMIT) {
+          setModal(
+            <div>
+              <h2>Dataset length limit exceeded</h2>
+              <p>
+                Large projects need to be split up into separate datasets of $
+                {DATASET_LENGTH_LIMIT} records or less each.{' '}
+              </p>
+              <MintButton onClick={() => setModal(null)}>Ok</MintButton>
+            </div>,
+            { closeable: true }
+          )
+          return
+        }
 
         // const registerCopy = { ...register }
         const newRecords: Register = {}
