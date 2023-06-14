@@ -177,6 +177,7 @@ const FilterPanelToolbar = ({
         <FilterPanelCloseButton
           className="close-panel back-icon"
           onClick={() => setIsFilterPanelOpen(false)}
+          aria-label="Close the filters panel"
         >
           <BackIcon />
         </FilterPanelCloseButton>
@@ -201,6 +202,7 @@ const FilterPanelToolbar = ({
         <FilterPanelCloseButton
           className="close-panel x-icon"
           onClick={() => setIsFilterPanelOpen(false)}
+          aria-label="Close the filters panel"
         >
           <XIcon extraStyle="width: 18px; height: 18px;" />
         </FilterPanelCloseButton>

@@ -100,17 +100,18 @@ describe('DataPage', () => {
     })
   })
 
-  it('has a button labeled Filters that toggles the Filter Panel', async () => {
+  it('has a button labeled Filters that toggles the Filter Panel', () => {
     const { container } = render(<DataView />)
-    // Initially the panel is displayed
     const getFilterPanel = () =>
       container.querySelector('aside[role=navigation]')
+
+    // Initially the panel is displayed
     expect(getFilterPanel()).toBeInTheDocument()
     expect(getFilterPanel()).toHaveAttribute('aria-hidden', 'false')
     const addFilterButton = screen.getByLabelText('Add filter')
     expect(getFilterPanel()).toContainElement(addFilterButton)
 
-    const filterPanelButton = screen.getByRole('button', { name: /Filters/i })
+    const filterPanelButton = screen.getByRole('button', { name: 'Filters' })
 
     // Clicking the button closes the panel
     fireEvent.click(filterPanelButton)
@@ -121,22 +122,14 @@ describe('DataPage', () => {
     expect(getFilterPanel()).toHaveAttribute('aria-hidden', 'false')
   })
 
-  it('has a button', async () => {
+  it('has a filter panel that can be closed by clicking a button', () => {
     const { container } = render(<DataView />)
-    // Initially the panel is displayed
     const getFilterPanel = () =>
       container.querySelector('aside[role=navigation]')
-    expect(getFilterPanel()).toBeInTheDocument()
+    const closeButtons = screen.getAllByLabelText('Close the filters panel')
+    expect(getFilterPanel()).toContainElement(closeButtons[0])
     expect(getFilterPanel()).toHaveAttribute('aria-hidden', 'false')
-
-    const filterPanelButton = screen.getByRole('button', { name: /Filters/i })
-
-    // Clicking the button closes the panel
-    fireEvent.click(filterPanelButton)
+    fireEvent.click(closeButtons[0])
     expect(getFilterPanel()).toHaveAttribute('aria-hidden', 'true')
-
-    // Clicking the button again opens the panel
-    fireEvent.click(filterPanelButton)
-    expect(getFilterPanel()).toHaveAttribute('aria-hidden', 'false')
   })
 })
