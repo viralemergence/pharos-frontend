@@ -40,8 +40,8 @@ const useUpdateRegisterFromCSV = () => {
             <div>
               <h2>Dataset length limit exceeded</h2>
               <p>
-                Large projects need to be split up into separate datasets of{' '}
-                {DATASET_LENGTH_LIMIT} records or fewer.{' '}
+                Large uploads need to be split up into multiple datasets of
+                {DATASET_LENGTH_LIMIT} records or fewer.
               </p>
               <MintButton onClick={() => setModal(null)}>Ok</MintButton>
             </div>,
