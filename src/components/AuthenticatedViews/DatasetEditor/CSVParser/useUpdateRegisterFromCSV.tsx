@@ -1,3 +1,4 @@
+import React from 'react'
 import Papa from 'papaparse'
 
 import useUser from 'hooks/useUser'
@@ -39,7 +40,7 @@ const useUpdateRegisterFromCSV = () => {
             <div>
               <h2>Dataset length limit exceeded</h2>
               <p>
-                Large projects need to be split up into separate datasets of $
+                Large projects need to be split up into separate datasets of{' '}
                 {DATASET_LENGTH_LIMIT} records or less each.{' '}
               </p>
               <MintButton onClick={() => setModal(null)}>Ok</MintButton>
