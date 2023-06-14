@@ -31,6 +31,9 @@ const Header = styled.header`
 `
 const H1 = styled.h1`
   ${({ theme }) => theme.bigMarketing};
+  @media (max-width: 768px) {
+    ${({ theme }) => theme.bigMarketingMobile};
+  }
   color: ${({ theme }) => theme.darkPurple};
   // margin-top: 50px;
   color: white;
