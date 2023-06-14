@@ -110,7 +110,11 @@ const NavBar = () => {
       <Container>
         <LinkList>
           <HomeLink to="/" reactRouterLink={false}>
-            <NavLogo name="Site logo" data={data} />
+            <NavLogo
+              name="Site logo"
+              data={data}
+              style={{ height: 70, width: 200 }}
+            />
           </HomeLink>
         </LinkList>
         <DesktopNav>
