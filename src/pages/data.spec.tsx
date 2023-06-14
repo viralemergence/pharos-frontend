@@ -100,22 +100,43 @@ describe('DataPage', () => {
     })
   })
 
-  it('has a button labeled Filters that toggles the display of a button labeled Add filter', async () => {
-    render(<DataView />)
+  it('has a button labeled Filters that toggles the Filter Panel', async () => {
+    const { container } = render(<DataView />)
     // Initially the panel is displayed
-    const addFilterButton = () => screen.getByLabelText('Add filter')
-    expect(addFilterButton()).toBeInTheDocument()
-
-    expect(addFilterButton()).toHaveAttribute('aria-hidden', 'false')
+    const getFilterPanel = () =>
+      container.querySelector('aside[role=navigation]')
+    expect(getFilterPanel()).toBeInTheDocument()
+    expect(getFilterPanel()).toHaveAttribute('aria-hidden', 'false')
+    const addFilterButton = screen.getByLabelText('Add filter')
+    expect(getFilterPanel()).toContainElement(addFilterButton)
 
     const filterPanelButton = screen.getByRole('button', { name: /Filters/i })
 
     // Clicking the button closes the panel
     fireEvent.click(filterPanelButton)
-    expect(addFilterButton()).toHaveAttribute('aria-hidden', 'true')
+    expect(getFilterPanel()).toHaveAttribute('aria-hidden', 'true')
 
     // Clicking the button again opens the panel
     fireEvent.click(filterPanelButton)
-    expect(addFilterButton()).toHaveAttribute('aria-hidden', 'false')
+    expect(getFilterPanel()).toHaveAttribute('aria-hidden', 'false')
+  })
+
+  it('has a button', async () => {
+    const { container } = render(<DataView />)
+    // Initially the panel is displayed
+    const getFilterPanel = () =>
+      container.querySelector('aside[role=navigation]')
+    expect(getFilterPanel()).toBeInTheDocument()
+    expect(getFilterPanel()).toHaveAttribute('aria-hidden', 'false')
+
+    const filterPanelButton = screen.getByRole('button', { name: /Filters/i })
+
+    // Clicking the button closes the panel
+    fireEvent.click(filterPanelButton)
+    expect(getFilterPanel()).toHaveAttribute('aria-hidden', 'true')
+
+    // Clicking the button again opens the panel
+    fireEvent.click(filterPanelButton)
+    expect(getFilterPanel()).toHaveAttribute('aria-hidden', 'false')
   })
 })
