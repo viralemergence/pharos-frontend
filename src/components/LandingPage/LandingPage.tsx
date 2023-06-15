@@ -12,7 +12,7 @@ import useAppState from 'hooks/useAppState'
 
 const HeaderContainer = styled.div`
   position: absolute;
-  width: 100vw;
+  width: 100%;
   height: calc(100vh - 80px);
   display: flex;
   flex-direction: column;
