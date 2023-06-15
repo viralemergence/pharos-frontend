@@ -12,8 +12,8 @@ import useAppState from 'hooks/useAppState'
 
 const HeaderContainer = styled.div`
   position: absolute;
+  width: 100%;
   top: 80px;
-  width: 100vw;
   height: calc(100vh - 80px);
   display: flex;
   flex-direction: column;
@@ -27,11 +27,13 @@ const Header = styled.header`
   align-items: center;
   text-align: center;
   margin-bottom: 70px;
+  padding: 0 40px;
   color: white;
 `
 const H1 = styled.h1`
   ${({ theme }) => theme.bigMarketing};
-  @media (max-width: 1100px) {
+  transition: all 0.35s;
+  @media (max-width: 700px) {
     ${({ theme }) => theme.bigMarketingMobile};
   }
   color: white;
@@ -43,6 +45,11 @@ const LandingText = styled(CMS.RichText)`
   > p {
     ${({ theme }) => theme.h3};
     color: white;
+    @media (max-width: 400px) {
+      font-size: 16px;
+      line-height: 1.3;
+      font-weight: bold;
+    }
   }
 `
 const ButtonBox = styled.div`
