@@ -20,16 +20,41 @@ const FooterRow = styled.div`
   flex-flow: row wrap;
   justify-content: center;
   align-items: center;
+  text-align: center;
+  @media (max-width: 770px) {
+    &.pharos-supporting-orgs {
+      flex-flow: column nowrap;
+    }
+  }
 `
 
-const FooterLogo = styled(CMS.Image)``
+const FooterLogo = styled(CMS.Image)`
+  img {
+    max-width: calc(100vw - 75px);
+    object-fit: contain !important;
+  }
+  // Since the NSF logo has more whitespace in it, make the whitespace around
+  // each logo seem more even
+  @media (max-width: 770px) {
+    .pharos-supporting-orgs &:not(.pharos-nsf-logo) {
+      position: relative;
+      top: -30px;
+    }
+  }
+  @media (min-width: 771px) {
+    &.pharos-nsf-logo,
+    &.pharos-open-philanthropy-logo {
+      margin-right: 72px;
+    }
+  }
+`
 
 const Footer = () => {
   const cmsData = useIndexPageData()
 
   return (
     <Container>
-      <FooterRow style={{ gap: '30px' }}>
+      <FooterRow style={{ columnGap: '30px', rowGap: '10px' }}>
         Pharos is a
         <a href={CMS.getText(cmsData, 'Verena link')}>
           <FooterLogo
@@ -40,26 +65,29 @@ const Footer = () => {
         </a>
         project and is made possible with support from:
       </FooterRow>
-      <FooterRow style={{ gap: '70px' }}>
+      <FooterRow style={{ rowGap: '30px' }} className="pharos-supporting-orgs">
         <a href={CMS.getText(cmsData, 'NSF link')}>
           <FooterLogo
             name="NSF logo"
+            className="pharos-nsf-logo"
             data={cmsData}
-            style={{ width: 346, height: 100 }}
+            style={{ maxWidth: 346, maxHeight: 100 }}
           />
         </a>
         <a href={CMS.getText(cmsData, 'Open Philanthropy link')}>
           <FooterLogo
             name="Open Philanthropy logo"
+            className="pharos-open-philanthropy-logo"
             data={cmsData}
-            style={{ height: 70, width: 224 }}
+            style={{ maxHeight: 70, maxWidth: 224 }}
           />
         </a>
         <a href={CMS.getText(cmsData, 'GHSS link')}>
           <FooterLogo
             name="GHSS logo"
+            className="pharos-ghss-logo"
             data={cmsData}
-            style={{ width: 553, height: 60 }}
+            style={{ maxWidth: 553, maxHeight: 60 }}
           />
         </a>
       </FooterRow>
