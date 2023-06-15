@@ -9,5 +9,11 @@
  */
 
 {
+    "ui/typeahead": {
+        "scope": "talus-analytics.library",
+        "version": "0.0.6",
+        "mainFile": "index.tsx",
+        "rootDir": "library/ui/typeahead"
+    },
     "$schema-version": "15.0.0"
 }
