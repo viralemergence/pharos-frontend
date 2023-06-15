@@ -56,6 +56,8 @@ const updateRegister: ActionFunction<UpdateRegisterActionPayload> = (
 ) => {
   const { data: register, source, datasetID } = payload
 
+  console.log(register)
+
   // if we're loading from the indexedDB we can just set it directly
   if (source === 'local') {
     return {

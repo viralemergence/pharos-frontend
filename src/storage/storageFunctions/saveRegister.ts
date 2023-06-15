@@ -1,4 +1,5 @@
 import localforage from 'localforage'
+import pako from 'pako'
 
 import { DatasetID, Register } from 'reducers/stateReducer/types'
 import { StateActions } from 'reducers/stateReducer/stateReducer'
@@ -63,21 +64,41 @@ const saveRegister: StorageFunction<SaveRegister> = async (
 
       const remoteRegister = await response.json()
 
-      if (
-        remoteRegister &&
-        typeof remoteRegister === 'object' &&
-        'register' in remoteRegister &&
-        typeof remoteRegister?.register === 'object'
-      ) {
-        dispatch({
-          type: StateActions.UpdateRegister,
-          payload: {
-            source: 'remote',
-            datasetID: message.data.datasetID,
-            data: remoteRegister.register as Register,
-          },
-        })
-      }
+      console.log(remoteRegister)
+
+      console.log('before decompression')
+      const decodedBytes = atob(remoteRegister.register)
+      const charData = decodedBytes.split('').map(function (x) {
+        return x.charCodeAt(0)
+      })
+      console.log(charData)
+      const binData = new Uint8Array(charData)
+      const decompressedString = pako.inflate(binData, { to: 'string' })
+      // console.log(decompressedData)
+      // const decompressedString = String.fromCharCode.apply(
+      //   null,
+      //   new Uint16Array(decompressedData)
+      // )
+
+      const nextRegister = JSON.parse(decompressedString)
+
+      console.log(nextRegister.register)
+
+      // if (
+      //   remoteRegister &&
+      //   typeof remoteRegister === 'object' &&
+      //   'register' in remoteRegister &&
+      //   typeof remoteRegister?.register === 'object'
+      // ) {
+      dispatch({
+        type: StateActions.UpdateRegister,
+        payload: {
+          source: 'remote',
+          datasetID: message.data.datasetID,
+          data: nextRegister.register as Register,
+        },
+      })
+      // }
     }
   }
 }
