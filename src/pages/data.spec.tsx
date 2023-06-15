@@ -93,13 +93,15 @@ describe('DataPage', () => {
 
   it('has buttons labeled Map and Globe that change the projection of the map', () => {
     render(<DataView />)
-    expect(mockedMapboxMap.setProjection).not.toHaveBeenCalledWith({
-      name: 'naturalEarth',
-    })
+    const countSetProjectionCalls =
+      mockedMapboxMap.setProjection.mock.calls.length
     fireEvent.click(getMapViewButton())
-    expect(mockedMapboxMap.setProjection).toHaveBeenCalledWith({
-      name: 'naturalEarth',
-    })
+    // Check that the click caused setProjection to be called once more,
+    // with 'naturalEarth' as the projection
+    expect(mockedMapboxMap.setProjection).toHaveBeenNthCalledWith(
+      countSetProjectionCalls + 1,
+      { name: 'naturalEarth' }
+    )
   })
 
   it('has a button labeled Filters that toggles the Filter Panel', () => {
