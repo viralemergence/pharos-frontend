@@ -1,8 +1,9 @@
 import React from 'react'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 
 import { stateInitialValue } from 'reducers/stateReducer/initialValues'
 import DataView from './data'
+import { publishedRecordsMetadata } from '../../test/serverHandlers'
 
 jest.mock('reducers/stateReducer/stateContext', () => ({
   StateContext: React.createContext({ state: stateInitialValue }),
@@ -134,10 +135,11 @@ describe('DataPage', () => {
   it('has a filter panel that contains buttons for adding filters for fields', async () => {
     render(<DataView />)
     fireEvent.click(getAddFilterButton())
-    await waitFor(() => {
-      expect(
-        screen.getByRole('button', { name: 'Project name' })
-      ).toBeInTheDocument()
-    })
+    const expectedButtonLabels = Object.values(publishedRecordsMetadata.fields)
+    await Promise.all(
+      expectedButtonLabels.map(({ label }) =>
+        screen.findByRole('button', { name: label })
+      )
+    )
   })
 })
