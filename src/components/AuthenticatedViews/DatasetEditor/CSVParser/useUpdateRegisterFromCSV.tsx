@@ -14,9 +14,11 @@ import useModal from 'hooks/useModal/useModal'
 import useVersionedRows from 'hooks/register/useVersionedRows'
 import MintButton from 'components/ui/MintButton'
 
-type Rows = { [key: string]: string }[]
+import DatasetLengthExceededModal, {
+  DATASET_LENGTH_LIMIT,
+} from '../DatasetLengthExceededModal/DatasetLengthExceededModal'
 
-const DATASET_LENGTH_LIMIT = 900
+type Rows = { [key: string]: string }[]
 
 const useUpdateRegisterFromCSV = () => {
   const { researcherID: modifiedBy } = useUser()
@@ -36,17 +38,7 @@ const useUpdateRegisterFromCSV = () => {
         const columns = Object.keys(rows[0]).map(column => column.trim())
 
         if (rows.length + currentRows.rows.length > DATASET_LENGTH_LIMIT) {
-          setModal(
-            <div>
-              <h2>Dataset length limit exceeded</h2>
-              <p>
-                Large uploads need to be split up into multiple datasets of{' '}
-                {DATASET_LENGTH_LIMIT} records or fewer.
-              </p>
-              <MintButton onClick={() => setModal(null)}>Ok</MintButton>
-            </div>,
-            { closeable: true }
-          )
+          setModal(<DatasetLengthExceededModal />, { closeable: true })
           return
         }
 
