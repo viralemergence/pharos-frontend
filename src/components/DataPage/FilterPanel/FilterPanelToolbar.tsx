@@ -1,8 +1,4 @@
-import React, {
-  Dispatch,
-  MutableRefObject,
-  SetStateAction,
-} from 'react'
+import React, { Dispatch, MutableRefObject, SetStateAction } from 'react'
 import styled from 'styled-components'
 import { PlusIcon, BackIcon, XIcon, Field, Filter } from './constants'
 
@@ -181,6 +177,7 @@ const FilterPanelToolbar = ({
         <FilterPanelCloseButton
           className="close-panel back-icon"
           onClick={() => setIsFilterPanelOpen(false)}
+          aria-label="Close the filters panel"
         >
           <BackIcon />
         </FilterPanelCloseButton>
@@ -193,6 +190,7 @@ const FilterPanelToolbar = ({
             // fire, closing the field selector.
             e.stopPropagation()
           }}
+          aria-label="Add filter"
         >
           <PlusIcon style={{ marginRight: '5px' }} /> Add filter
         </FilterPanelToolbarButton>
@@ -204,6 +202,7 @@ const FilterPanelToolbar = ({
         <FilterPanelCloseButton
           className="close-panel x-icon"
           onClick={() => setIsFilterPanelOpen(false)}
+          aria-label="Close the filters panel"
         >
           <XIcon extraStyle="width: 18px; height: 18px;" />
         </FilterPanelCloseButton>

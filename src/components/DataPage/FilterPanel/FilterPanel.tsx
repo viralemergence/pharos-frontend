@@ -199,6 +199,9 @@ const FilterPanel = ({
       onClick={_ => {
         setIsFieldSelectorOpen(false)
       }}
+      role="navigation"
+      aria-hidden={isFilterPanelOpen ? 'false' : 'true'}
+      id="pharos-filter-panel"
     >
       <FilterPanelToolbar
         {...{
