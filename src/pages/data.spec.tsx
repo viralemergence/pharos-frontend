@@ -62,7 +62,7 @@ describe('DataPage', () => {
   // Make window.location available to tests
   const { location } = window
   beforeEach(() => {
-    global.window = Object.create(window)
+    global.window ??= Object.create(window)
     Object.defineProperty(window, 'location', {
       value: {
         ...location,
