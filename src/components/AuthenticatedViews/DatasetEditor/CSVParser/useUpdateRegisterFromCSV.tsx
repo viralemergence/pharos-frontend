@@ -12,7 +12,6 @@ import useProjectID from 'hooks/project/useProjectID'
 import getTimestamp from 'utilities/getTimestamp'
 import useModal from 'hooks/useModal/useModal'
 import useVersionedRows from 'hooks/register/useVersionedRows'
-import MintButton from 'components/ui/MintButton'
 
 import DatasetLengthExceededModal, {
   DATASET_LENGTH_LIMIT,
