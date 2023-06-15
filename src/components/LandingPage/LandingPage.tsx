@@ -31,8 +31,9 @@ const Header = styled.header`
 `
 const H1 = styled.h1`
   ${({ theme }) => theme.bigMarketing};
-  color: ${({ theme }) => theme.darkPurple};
-  // margin-top: 50px;
+  @media (max-width: 1100px) {
+    ${({ theme }) => theme.bigMarketingMobile};
+  }
   color: white;
 `
 const LandingText = styled(CMS.RichText)`
@@ -48,12 +49,6 @@ const ButtonBox = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 15px;
-`
-const FooterHeaderText = styled.h3`
-  ${({ theme }) => theme.bigParagraph};
-  color: ${({ theme }) => theme.black};
-  margin-top: 150px;
-  text-align: center;
 `
 
 const LoggedOutLanding = () => {
@@ -83,9 +78,6 @@ const LoggedOutLanding = () => {
           <LandingText name="Intro paragraph" data={cmsData} />
         </Main>
       </HeaderContainer>
-      <FooterHeaderText>
-        <CMS.Text name="Above footer" data={cmsData} />
-      </FooterHeaderText>
       <Footer />
     </>
   )
