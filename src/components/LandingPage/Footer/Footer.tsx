@@ -6,6 +6,7 @@ import CMS from '@talus-analytics/library.airtable-cms'
 
 const Container = styled.footer`
   display: flex;
+  flex-flow: column nowrap;
   justify-content: space-around;
   align-items: center;
   flex-wrap: wrap;

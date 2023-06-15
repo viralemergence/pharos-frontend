@@ -31,8 +31,9 @@ const Header = styled.header`
 `
 const H1 = styled.h1`
   ${({ theme }) => theme.bigMarketing};
-  color: ${({ theme }) => theme.darkPurple};
-  // margin-top: 50px;
+  @media (max-width: 1100px) {
+    ${({ theme }) => theme.bigMarketingMobile};
+  }
   color: white;
 `
 const LandingText = styled(CMS.RichText)`
