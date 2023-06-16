@@ -10,7 +10,7 @@ const Container = styled.footer`
   justify-content: space-around;
   align-items: center;
   flex-wrap: wrap;
-  padding: 40px;
+  padding: 30px;
   gap: 30px;
 `
 

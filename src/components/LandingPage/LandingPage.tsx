@@ -77,7 +77,7 @@ const LandingTextForSmallViewports = styled(LandingText)`
     display: flex;
   }
   background: ${({ theme }) => theme.black};
-  padding: 40px 64px;
+  padding: 30px 48px;
   p {
     margin: 0;
   }
