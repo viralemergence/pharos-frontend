@@ -43,7 +43,7 @@ export const RowLink = styled(Link)<{
       $mediumColumnTemplate};
 
     &:nth-child(2n) {
-      background: ${({ theme }) => theme.veryLightGray};
+      background: ${({ theme }) => theme.white};
     }
 
     &:nth-of-type(1) {
