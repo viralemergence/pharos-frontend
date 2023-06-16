@@ -141,7 +141,7 @@ export default {
 	`,
 	smallMarketingMobile: `
 	font-size: 16px;
-	font-family: "Open Sans";
+	font-family: "Open Sans", helvetica, arial, sans-serif;
 	font-weight: 600;
 	font-style: normal;
 	line-height: 25px;
