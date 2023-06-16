@@ -21,15 +21,17 @@ const FooterRow = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
+  @media (max-width: 400px) {
+    ${({ theme }) => theme.smallParagraph}
+  }
+`
+const SponsorsRow = styled(FooterRow)`
+  gap: 30px;
   @media (max-width: 770px) {
-    &.pharos-supporting-orgs {
-      flex-flow: column nowrap;
-    }
+    flex-flow: column nowrap;
   }
   @media (min-width: 771px) {
-    &.pharos-supporting-orgs {
-      column-gap: 72px;
-    }
+    column-gap: 72px;
   }
 `
 
@@ -38,13 +40,21 @@ const FooterLogo = styled(CMS.Image)`
     max-width: calc(100vw - 75px);
     object-fit: contain !important;
   }
-  // Since the NSF logo has more whitespace in it, make the whitespace around
-  // each logo seem more even
+`
+
+const NationalScienceFoundationLogo = styled(FooterLogo)``
+
+const OpenPhilanthropyLogo = styled(FooterLogo)`
   @media (max-width: 770px) {
-    .pharos-supporting-orgs &:not(.pharos-nsf-logo) {
-      position: relative;
-      top: -30px;
-    }
+    position: relative;
+    top: -20px;
+  }
+`
+
+const GeorgetownGlobalHealthLogo = styled(FooterLogo)`
+  @media (max-width: 770px) {
+    position: relative;
+    top: -20px;
   }
 `
 
@@ -64,32 +74,29 @@ const Footer = () => {
         </a>
         project and is made possible with support from:
       </FooterRow>
-      <FooterRow style={{ rowGap: '30px' }} className="pharos-supporting-orgs">
+      <SponsorsRow>
         <a href={CMS.getText(cmsData, 'NSF link')}>
-          <FooterLogo
+          <NationalScienceFoundationLogo
             name="NSF logo"
-            className="pharos-nsf-logo"
             data={cmsData}
             style={{ maxWidth: 346, maxHeight: 100 }}
           />
         </a>
         <a href={CMS.getText(cmsData, 'Open Philanthropy link')}>
-          <FooterLogo
+          <OpenPhilanthropyLogo
             name="Open Philanthropy logo"
-            className="pharos-open-philanthropy-logo"
             data={cmsData}
             style={{ maxHeight: 70, maxWidth: 224 }}
           />
         </a>
         <a href={CMS.getText(cmsData, 'GHSS link')}>
-          <FooterLogo
+          <GeorgetownGlobalHealthLogo
             name="GHSS logo"
-            className="pharos-ghss-logo"
             data={cmsData}
             style={{ maxWidth: 553, maxHeight: 60 }}
           />
         </a>
-      </FooterRow>
+      </SponsorsRow>
     </Container>
   )
 }

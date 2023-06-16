@@ -130,4 +130,22 @@ export default {
 	text-decoration: none;
 	text-transform: none;
 `,
+	smallMarketing: `
+	font-size: 24px;
+	font-family: "Open Sans", helvetica, arial, sans-serif;
+	font-weight: 600;
+	font-style: normal;
+	line-height: 32px;
+	text-decoration: none;
+	text-transform: none;
+	`,
+	smallMarketingMobile: `
+	font-size: 16px;
+	font-family: "Open Sans", helvetica, arial, sans-serif;
+	font-weight: 600;
+	font-style: normal;
+	line-height: 25px;
+	text-decoration: none;
+	text-transform: none;
+	`,
 }
