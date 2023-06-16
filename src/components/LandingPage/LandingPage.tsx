@@ -15,7 +15,6 @@ const heightBreakpointForLandingText = 800
 const HeaderContainer = styled.div`
   position: absolute;
   width: 100%;
-  top: 80px;
   height: calc(100vh - 80px);
   display: flex;
   flex-direction: column;
