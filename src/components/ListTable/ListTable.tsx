@@ -4,7 +4,7 @@ import { lighten } from 'polished'
 
 import { Link } from 'react-router-dom'
 
-const cardsBreakpoint = 650
+export const cardsBreakpoint = 650
 const mediumBreakpoint = 1000
 
 const Container = styled.div`
