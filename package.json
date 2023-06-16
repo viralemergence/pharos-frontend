@@ -4,9 +4,7 @@
   "private": true,
   "description": "talus-gatsby-starter",
   "author": "Ryan",
-  "keywords": [
-    "gatsby"
-  ],
+  "keywords": ["gatsby"],
   "scripts": {
     "develop": "scripts/start.sh",
     "start": "scripts/start.sh",

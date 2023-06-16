@@ -10,14 +10,25 @@ import LandingMap from './LandingMap/LandingMap'
 import Footer from './Footer/Footer'
 import useAppState from 'hooks/useAppState'
 
+const heightBreakpointForLandingText = 800
+
 const HeaderContainer = styled.div`
   position: absolute;
   width: 100%;
+<<<<<<< HEAD
+||||||| merged common ancestors
+>>>>>>>>> Temporary merge branch 2
+=======
+  top: 80px;
+>>>>>>> review
   height: calc(100vh - 80px);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  @media (max-height: ${heightBreakpointForLandingText}px) {
+    justify-content: center;
+  }
 `
 const Header = styled.header`
   max-width: 1000px;
@@ -27,12 +38,16 @@ const Header = styled.header`
   text-align: center;
   margin-bottom: 70px;
   padding: 0 40px;
-  color: white;
+  margin-top: 10vh;
+  color: ${({ theme }) => theme.white};
+  @media (max-height: ${heightBreakpointForLandingText}px) {
+    margin: 0 !important;
+  }
 `
 const H1 = styled.h1`
   ${({ theme }) => theme.bigMarketing};
   transition: all 0.35s;
-  @media (max-width: 700px) {
+  @media (max-width: 1000px) or (max-height: 600px) {
     ${({ theme }) => theme.bigMarketingMobile};
   }
   color: white;
@@ -50,7 +65,30 @@ const LandingText = styled(CMS.RichText)`
       font-weight: bold;
     }
   }
+
+  // For small-height viewports, LandingTextForSmallViewports is displayed,
+  // instead of this
+  @media (max-height: ${heightBreakpointForLandingText}px) {
+    display: none;
+  }
 `
+
+/** Text that displays only when viewport is too small to display the white
+ * text with the dark map behind it */
+const LandingTextForSmallViewports = styled(LandingText)`
+  display: none;
+  width: 100%;
+  max-width: unset;
+  @media (max-height: ${heightBreakpointForLandingText}px) {
+    display: flex;
+  }
+  background: ${({ theme }) => theme.black};
+  padding: 30px 48px;
+  p {
+    margin: 0;
+  }
+`
+
 const ButtonBox = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -83,7 +121,24 @@ const LoggedOutLanding = () => {
           <LandingText name="Intro paragraph" data={cmsData} />
         </Main>
       </HeaderContainer>
+<<<<<<< HEAD
       <LandingMap />
+||||||| merged common ancestors
+<<<<<<<<< Temporary merge branch 1
+      <FooterHeaderText>
+        <CMS.Text name="Above footer" data={cmsData} />
+      </FooterHeaderText>
+||||||||| eb469e8
+      <LandingMap />
+      <FooterHeaderText>
+        <CMS.Text name="Above footer" data={cmsData} />
+      </FooterHeaderText>
+=========
+      <LandingMap />
+>>>>>>>>> Temporary merge branch 2
+=======
+      <LandingTextForSmallViewports name="Intro paragraph" data={cmsData} />
+>>>>>>> review
       <Footer />
     </>
   )
