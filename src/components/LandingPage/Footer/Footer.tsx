@@ -26,6 +26,11 @@ const FooterRow = styled.div`
       flex-flow: column nowrap;
     }
   }
+  @media (min-width: 771px) {
+    &.pharos-supporting-orgs {
+      column-gap: 72px;
+    }
+  }
 `
 
 const FooterLogo = styled(CMS.Image)`
@@ -39,12 +44,6 @@ const FooterLogo = styled(CMS.Image)`
     .pharos-supporting-orgs &:not(.pharos-nsf-logo) {
       position: relative;
       top: -30px;
-    }
-  }
-  @media (min-width: 771px) {
-    &.pharos-nsf-logo,
-    &.pharos-open-philanthropy-logo {
-      margin-right: 72px;
     }
   }
 `
