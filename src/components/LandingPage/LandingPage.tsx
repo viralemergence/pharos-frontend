@@ -20,6 +20,7 @@ const HeaderContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  z-index: 1;
   @media (max-height: ${heightBreakpointForLandingText}px) {
     justify-content: center;
   }
