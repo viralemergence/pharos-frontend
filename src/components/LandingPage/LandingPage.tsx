@@ -10,15 +10,20 @@ import LandingMap from './LandingMap/LandingMap'
 import Footer from './Footer/Footer'
 import useAppState from 'hooks/useAppState'
 
+const heightBreakpointForLandingText = 800
+
 const HeaderContainer = styled.div`
   position: absolute;
-  top: 80px;
-  width: 100vw;
+  width: 100%;
   height: calc(100vh - 80px);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  z-index: 1;
+  @media (max-height: ${heightBreakpointForLandingText}px) {
+    justify-content: center;
+  }
 `
 const Header = styled.header`
   max-width: 1000px;
@@ -27,33 +32,78 @@ const Header = styled.header`
   align-items: center;
   text-align: center;
   margin-bottom: 70px;
-  color: white;
+  padding: 0 40px;
+  margin-top: 10vh;
+  color: ${({ theme }) => theme.white};
+  @media (max-height: ${heightBreakpointForLandingText}px) {
+    margin: 0 !important;
+  }
 `
 const H1 = styled.h1`
   ${({ theme }) => theme.bigMarketing};
-  color: ${({ theme }) => theme.darkPurple};
-  // margin-top: 50px;
-  color: white;
+  transition: all 0.35s;
+  @media (max-width: 1000px) {
+    ${({ theme }) => theme.bigMarketingMobile};
+  }
+  @media (max-height: 600px) {
+    ${({ theme }) => theme.bigMarketingMobile};
+  }
+  color: ${({ theme }) => theme.white};
 `
+
 const LandingText = styled(CMS.RichText)`
   max-width: 1000px;
   padding-bottom: 30px;
 
   > p {
-    ${({ theme }) => theme.h3};
-    color: white;
+    ${({ theme }) => theme.smallMarketing};
+    color: ${({ theme }) => theme.white};
+    transition: all 0.35s;
+    @media (max-width: 400px) {
+      ${({ theme }) => theme.smallMarketingMobile};
+    }
+    margin-top: 0;
+  }
+
+  // For small-height viewports, LandingTextForSmallViewports is displayed,
+  // instead of this
+  @media (max-height: ${heightBreakpointForLandingText}px) {
+    display: none;
   }
 `
+
+/** Text that displays only when viewport is too small to display the white
+ * text with the dark map behind it */
+const LandingTextForSmallViewports = styled.div`
+  display: none;
+  width: 100%;
+  max-width: unset;
+  @media (max-height: ${heightBreakpointForLandingText}px) {
+    display: flex;
+  }
+  background: #0e0f1f; // The dark purple of the map
+  ${({ theme }) => theme.smallMarketing};
+  color: ${({ theme }) => theme.white};
+  padding: 30px 40px;
+  p {
+    margin: 0;
+  }
+  & > div {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  p {
+    transition: all 0.35s;
+    @media (max-width: 400px) {
+      ${({ theme }) => theme.smallMarketingMobile};
+    }
+  }
+`
+
 const ButtonBox = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 15px;
-`
-const FooterHeaderText = styled.h3`
-  ${({ theme }) => theme.bigParagraph};
-  color: ${({ theme }) => theme.black};
-  margin-top: 150px;
-  text-align: center;
 `
 
 const LoggedOutLanding = () => {
@@ -62,7 +112,6 @@ const LoggedOutLanding = () => {
 
   return (
     <>
-      <LandingMap />
       <HeaderContainer>
         <Header>
           <H1>
@@ -79,13 +128,14 @@ const LoggedOutLanding = () => {
             <MintButtonLink to="/data#map">View map</MintButtonLink>
           </ButtonBox>
         </Header>
-        <Main>
+        <Main style={{ margin: 0, padding: '0 40px' }}>
           <LandingText name="Intro paragraph" data={cmsData} />
         </Main>
       </HeaderContainer>
-      <FooterHeaderText>
-        <CMS.Text name="Above footer" data={cmsData} />
-      </FooterHeaderText>
+      <LandingMap />
+      <LandingTextForSmallViewports>
+        <CMS.RichText name="Intro paragraph" data={cmsData} />
+      </LandingTextForSmallViewports>
       <Footer />
     </>
   )
