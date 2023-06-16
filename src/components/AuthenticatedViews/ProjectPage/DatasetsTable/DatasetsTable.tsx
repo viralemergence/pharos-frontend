@@ -1,13 +1,7 @@
 import React from 'react'
 
 import { DatasetsTableRow } from './DatasetsTableRow'
-
-import ListTable, {
-  CardHeaderRow,
-  HeaderRow,
-  RowLink,
-  TableCell,
-} from 'components/ListTable/ListTable'
+import ListTable, { HeaderRow, RowLink } from 'components/ListTable/ListTable'
 
 import useProject from 'hooks/project/useProject'
 import useModal from 'hooks/useModal/useModal'
@@ -21,11 +15,7 @@ const datasetPlaceholder = {
   name: 'Loading...',
 }
 
-interface DatasetsTableProps {
-  style?: React.CSSProperties
-}
-
-const DatasetsTable = ({ style }: DatasetsTableProps) => {
+const DatasetsTable = () => {
   const setModal = useModal()
   const project = useProject()
   const datasets = useDatasets()
@@ -46,9 +36,6 @@ const DatasetsTable = ({ style }: DatasetsTableProps) => {
           ...datasetPlaceholder,
           datasetID: id,
         }))
-
-  const wideColumnTemplate = '1.5fr 1fr 150px 220px'
-  const mediumColumnTemplate = '1fr 150px 220px'
 
   return (
     <>
