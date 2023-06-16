@@ -15,12 +15,6 @@ const heightBreakpointForLandingText = 800
 const HeaderContainer = styled.div`
   position: absolute;
   width: 100%;
-<<<<<<< HEAD
-||||||| merged common ancestors
->>>>>>>>> Temporary merge branch 2
-=======
-  top: 80px;
->>>>>>> review
   height: calc(100vh - 80px);
   display: flex;
   flex-direction: column;
@@ -101,6 +95,7 @@ const LoggedOutLanding = () => {
 
   return (
     <>
+      <LandingMap />
       <HeaderContainer>
         <Header>
           <H1>
@@ -121,24 +116,7 @@ const LoggedOutLanding = () => {
           <LandingText name="Intro paragraph" data={cmsData} />
         </Main>
       </HeaderContainer>
-<<<<<<< HEAD
-      <LandingMap />
-||||||| merged common ancestors
-<<<<<<<<< Temporary merge branch 1
-      <FooterHeaderText>
-        <CMS.Text name="Above footer" data={cmsData} />
-      </FooterHeaderText>
-||||||||| eb469e8
-      <LandingMap />
-      <FooterHeaderText>
-        <CMS.Text name="Above footer" data={cmsData} />
-      </FooterHeaderText>
-=========
-      <LandingMap />
->>>>>>>>> Temporary merge branch 2
-=======
       <LandingTextForSmallViewports name="Intro paragraph" data={cmsData} />
->>>>>>> review
       <Footer />
     </>
   )

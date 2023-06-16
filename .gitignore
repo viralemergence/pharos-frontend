@@ -2,12 +2,5 @@
 node_modules/
 .cache/
 public/
-<<<<<<< HEAD
-
-.vscode/
-||||||| ab06c6c
-.vscode/
-=======
 .vscode/
 coverage
->>>>>>> origin/dev
