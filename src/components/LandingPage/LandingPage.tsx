@@ -96,6 +96,7 @@ const LoggedOutLanding = () => {
 
   return (
     <>
+      <LandingMap />
       <HeaderContainer>
         <Header>
           <H1>
@@ -116,7 +117,6 @@ const LoggedOutLanding = () => {
           <LandingText name="Intro paragraph" data={cmsData} />
         </Main>
       </HeaderContainer>
-      <LandingMap />
       <LandingTextForSmallViewports name="Intro paragraph" data={cmsData} />
       <Footer />
     </>
