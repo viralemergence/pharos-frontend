@@ -112,7 +112,6 @@ const LoggedOutLanding = () => {
 
   return (
     <>
-      <LandingMap />
       <HeaderContainer>
         <Header>
           <H1>

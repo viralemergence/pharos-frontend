@@ -6,7 +6,6 @@ import mapboxgl from 'mapbox-gl'
 mapboxgl.accessToken = process.env.GATSBY_MAPBOX_API_KEY!
 
 const MapContainer = styled.div`
-  height: 650px;
   height: calc(100vh - 60px);
   width: 100%;
   background: #0b103b;
