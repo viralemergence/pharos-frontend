@@ -100,6 +100,7 @@ const DataToolbar = ({
 						setIsFilterPanelOpen(!isFilterPanelOpen)
 					}}
 					width={100}
+					aria-controls="pharos-filter-panel"
 				>
 					Filters
 					{appliedFilters.length > 0 && (

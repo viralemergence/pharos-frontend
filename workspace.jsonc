@@ -38,7 +38,9 @@
      */
     "packageManager": "teambit.dependencies/yarn",
     "policy": {
-      "dependencies": {},
+      "dependencies": {
+        "@talus-analytics/library.ui.expander": "^0.0.6"
+      },
       "peerDependencies": {}
     },
     "linkCoreAspects": true

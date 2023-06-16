@@ -1,134 +1,132 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import TopBar, {
-  Title,
-  Controls,
-  Breadcrumbs,
-  BreadcrumbLink,
-} from 'components/layout/TopBar'
-
-import {
-  ProjectPageMain,
-  ProjectPageLayout,
-  ProjectPageSidebar,
-  ProjectPageContentBox,
-  hideInWideView,
-  hideInNarrowView,
-} from 'components/ProjectPage/ProjectPageLayout'
-
-import PublishUnpublishButtons from './PublishUnpublishButtons'
+import CreateDatasetForm from './CreateDatasetForm/CreateDatasetForm'
 import DatasetsTable from './DatasetsTable/DatasetsTable'
-import { ProjectPublishStatusChip } from './PublishingStatusChip'
+import { TopBar } from '../ViewComponents'
+import Main from 'components/layout/Main'
+import BreadcrumbLink, {
+  BreadcrumbContainer,
+} from 'components/ui/BreadcrumbLink'
+
+import TextButton from 'components/ui/TextButton'
+import PublishUnpublishButtons from './PublishUnpublishButtons'
+import ProjectInfoPanel from './ProjectInfoPanel/ProjectInfoPanel'
+import PublishingHelpMessage from './PublishingHelpMessage/PublishingHelpMessage'
 
 import useUser from 'hooks/useUser'
 import useProject from 'hooks/project/useProject'
+import useModal from 'hooks/useModal/useModal'
 
-import { commaSeparatedList } from 'utilities/grammar'
-
-const LoggedInProjectPageContentBox = styled(ProjectPageContentBox)`
-  background-color: ${({ theme }) => theme.isThisGrayEvenHereItsSoLight};
-
-  > h2 {
-    color: ${({ theme }) => theme.darkGray};
+const H1 = styled.h1`
+  ${({ theme }) => theme.h1}
+  margin: 15px 0;
+`
+const MainSection = styled.section`
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+  margin-top: 20px;
+`
+const Left = styled.div`
+  flex-basis: 66%;
+  display: flex;
+  flex-direction: column;
+`
+const Right = styled.div`
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid ${({ theme }) => theme.medGray};
+  padding: 15px;
+`
+const H2 = styled.h2`
+  margin: 0;
+  font-weight: normal;
+  ${({ theme }) => theme.smallParagraph};
+  margin: 0;
+  color: ${({ theme }) => theme.darkGray};
+  text-transform: uppercase;
+  &:not(:first-child) {
+    margin-top: 40px;
   }
 `
-
-const MobileProjectStatus = styled(LoggedInProjectPageContentBox)`
-  ${hideInWideView};
+const Description = styled.p`
+  ${({ theme }) => theme.smallParagraph};
+  margin: 0;
+  color: ${({ theme }) => theme.black};
 `
-
-const WideProjectStatus = styled(LoggedInProjectPageContentBox)`
-  ${hideInNarrowView};
+const Author = styled.p`
+  ${({ theme }) => theme.smallParagraph};
+  margin: 0;
+  color: #13a69d;
 `
-
-const ProjectStatus = () => {
-  const project = useProject()
-
-  return (
-    <>
-      <h2>Project status</h2>
-      <p>
-        <ProjectPublishStatusChip status={project.publishStatus}>
-          {project.publishStatus}
-        </ProjectPublishStatusChip>
-      </p>
-    </>
-  )
-}
+const HorizontalBar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 40px;
+`
 
 const ProjectPage = () => {
   const user = useUser()
   const project = useProject()
-
-  const relatedMaterials = project.relatedMaterials
-    ? commaSeparatedList(project.relatedMaterials)
-    : '—'
-
-  const projectPublications =
-    !project.projectPublications || project.projectPublications[0] === '' ? (
-      <p>—</p>
-    ) : (
-      project?.projectPublications?.map(pub => <p>{pub}</p>)
-    )
-
-  const othersCiting =
-    !project.othersCiting || project.othersCiting[0] === '' ? (
-      <p>—</p>
-    ) : (
-      project?.othersCiting?.map(pub => <p>{pub}</p>)
-    )
+  const setModal = useModal()
 
   return (
-    <ProjectPageLayout>
+    <Main>
       <TopBar>
-        <Breadcrumbs>
+        <BreadcrumbContainer>
           <BreadcrumbLink to={`/projects/`}>All projects</BreadcrumbLink>
           <BreadcrumbLink $active to={`/projects/${project.projectID}`}>
             {project.name}
           </BreadcrumbLink>
-        </Breadcrumbs>
-        <Title>{project.name}</Title>
-        <Controls>
-          <PublishUnpublishButtons />
-        </Controls>
+        </BreadcrumbContainer>
+        <PublishingHelpMessage />
       </TopBar>
-      <ProjectPageMain>
-        <MobileProjectStatus>
-          <ProjectStatus />
-        </MobileProjectStatus>
-        <DatasetsTable />
-        <LoggedInProjectPageContentBox style={{}}>
-          <h2>Description</h2>
-          <p>{project.description || '—'}</p>
-          <h2>How to cite this project</h2>
-          <p>{project.citation || '—'}</p>
-          <h2>Project publications</h2>
-          {projectPublications}
-          <h2>Publications citing this project</h2>
-          {othersCiting}
-        </LoggedInProjectPageContentBox>
-      </ProjectPageMain>
-      <ProjectPageSidebar>
-        <WideProjectStatus>
-          <ProjectStatus />
-        </WideProjectStatus>
-        <LoggedInProjectPageContentBox>
-          <h2>Author</h2>
-          <p>{user.name}</p>
-        </LoggedInProjectPageContentBox>
-        <LoggedInProjectPageContentBox>
-          <h2>DOI</h2>
-          <p>Not yet available</p>
-          <h2>Project type</h2>
-          <p>{project.projectType || '—'}</p>
-          <h2>Surveillance status</h2>
-          <p>{project.surveillanceStatus || '—'}</p>
-          <h2>Related materials</h2>
-          <p>{relatedMaterials || '—'}</p>
-        </LoggedInProjectPageContentBox>
-      </ProjectPageSidebar>
-    </ProjectPageLayout>
+      <TopBar>
+        <H1>{project.name}</H1>
+        <PublishUnpublishButtons />
+      </TopBar>
+      <MainSection>
+        <Left>
+          <H2>Author</H2>
+          <Author>{user.name}</Author>
+          <H2>Description</H2>
+          <Description>{project.description}</Description>
+          <HorizontalBar>
+            <H2>Datasets</H2>
+            <TextButton
+              primary
+              onClick={() =>
+                setModal(<CreateDatasetForm />, { closeable: true })
+              }
+            >
+              + Add new Dataset
+            </TextButton>
+          </HorizontalBar>
+          <DatasetsTable />
+          <H2>Publications (this project)</H2>
+          {!project.projectPublications ||
+          project.projectPublications[0] === '' ? (
+            <Description>—</Description>
+          ) : (
+            project?.projectPublications?.map(pub => (
+              <Description>{pub}</Description>
+            ))
+          )}
+          <H2>Publications (other people)</H2>
+          {!project.othersCiting || project.othersCiting[0] === '' ? (
+            <Description>—</Description>
+          ) : (
+            project?.othersCiting?.map(pub => <Description>{pub}</Description>)
+          )}
+        </Left>
+        <Right>
+          <ProjectInfoPanel />
+        </Right>
+      </MainSection>
+    </Main>
   )
 }
 

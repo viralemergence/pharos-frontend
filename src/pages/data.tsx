@@ -207,8 +207,7 @@ const DataView = (): JSX.Element => {
 
 	const [fields, setFields] = useState<Record<string, Field>>({})
 
-	// NOTE: Setting to false to better support mobile
-	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
+	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(true)
 
 	const changeView = (view: View) => {
 		window.location.hash = view
@@ -281,53 +280,55 @@ const DataView = (): JSX.Element => {
 	const showEarth = [View.globe, View.map].includes(view)
 
 	return (
-		<Providers>
-			<CMS.SEO />
-			<DataPage>
-				<NavBar />
-				<ViewContainer isFilterPanelOpen={isFilterPanelOpen}>
-					<DataToolbar
-						view={view}
-						changeView={changeView}
-						isFilterPanelOpen={isFilterPanelOpen}
-						setIsFilterPanelOpen={setIsFilterPanelOpen}
-						appliedFilters={appliedFilters}
-					/>
-					<MapView
-						projection={view === 'globe' ? 'globe' : 'naturalEarth'}
-						style={{
-							filter: showEarth ? 'none' : 'blur(30px)',
-						}}
-					/>
-					<ViewMain>
-						<FilterPanel
+		<>
+			<Providers>
+				<CMS.SEO />
+				<DataPage>
+					<NavBar />
+					<ViewContainer isFilterPanelOpen={isFilterPanelOpen}>
+						<DataToolbar
+							view={view}
+							changeView={changeView}
 							isFilterPanelOpen={isFilterPanelOpen}
 							setIsFilterPanelOpen={setIsFilterPanelOpen}
-							fields={fields}
-							filters={filters}
-							updateFilter={updateFilter}
-							setFilters={setFilters}
-							clearFilters={clearFilters}
-						/>
-						<TableView
-							fields={fields}
 							appliedFilters={appliedFilters}
-							loadPublishedRecords={() => {
-								loadFilteredRecords(filters, false)
-								debouncing.current.on = false
-							}}
-							loading={loading}
-							page={page}
-							publishedRecords={publishedRecords}
-							reachedLastPage={reachedLastPage}
+						/>
+						<MapView
+							projection={view === 'globe' ? 'globe' : 'naturalEarth'}
 							style={{
-								display: view === View.table ? 'grid' : 'none',
+								filter: showEarth ? 'none' : 'blur(30px)',
 							}}
 						/>
-					</ViewMain>
-				</ViewContainer>
-			</DataPage>
-		</Providers>
+						<ViewMain>
+							<FilterPanel
+								isFilterPanelOpen={isFilterPanelOpen}
+								setIsFilterPanelOpen={setIsFilterPanelOpen}
+								fields={fields}
+								filters={filters}
+								updateFilter={updateFilter}
+								setFilters={setFilters}
+								clearFilters={clearFilters}
+							/>
+							<TableView
+								fields={fields}
+								appliedFilters={appliedFilters}
+								loadPublishedRecords={() => {
+									loadFilteredRecords(filters, false)
+									debouncing.current.on = false
+								}}
+								loading={loading}
+								page={page}
+								publishedRecords={publishedRecords}
+								reachedLastPage={reachedLastPage}
+								style={{
+									display: view === View.table ? 'grid' : 'none',
+								}}
+							/>
+						</ViewMain>
+					</ViewContainer>
+				</DataPage>
+			</Providers>
+		</>
 	)
 }
 

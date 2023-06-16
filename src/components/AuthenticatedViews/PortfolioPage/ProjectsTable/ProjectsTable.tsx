@@ -1,10 +1,6 @@
 import React from 'react'
 
-import ListTable, {
-  HeaderRow,
-  RowLink,
-  TableCell,
-} from 'components/ListTable/ListTable'
+import ListTable, { HeaderRow, RowLink } from 'components/ListTable/ListTable'
 
 import { ProjectPublishStatusChip } from 'components/AuthenticatedViews/ProjectPage/PublishingStatusChip'
 
@@ -23,33 +19,15 @@ const ProjectsTable = () => {
         new Date(a.lastUpdated ?? '').getTime()
     )
 
-  const wideColumnTemplate = `
-    2.5fr
-    repeat(2, minmax(150px, 1fr))
-    minmax(130px, 1fr)
-    minmax(180px, 1fr)
-    7em
-  `
-
-  const mediumColumnTemplate = `
-    2.5fr
-    repeat(2, minmax(150px, 1fr))
-    7em
-  `
-
   return (
-    <ListTable
-      wideColumnTemplate={wideColumnTemplate}
-      mediumColumnTemplate={mediumColumnTemplate}
-      style={{ gridArea: 'projects' }}
-    >
+    <ListTable columnTemplate="repeat(6, 1fr)">
       <HeaderRow>
-        <TableCell>Project name</TableCell>
-        <TableCell>Project status</TableCell>
-        <TableCell>Last updated</TableCell>
-        <TableCell hideMedium>Project type</TableCell>
-        <TableCell hideMedium>Surveillance status</TableCell>
-        <TableCell>Datasets</TableCell>
+        <div>Project name</div>
+        <div>Project status</div>
+        <div>Last updated</div>
+        <div>Project type</div>
+        <div>Surveillance status</div>
+        <div>Datasets</div>
       </HeaderRow>
       {sorted &&
         sorted.map(project => (
@@ -57,22 +35,20 @@ const ProjectsTable = () => {
             key={project.projectID}
             to={`/projects/${project.projectID}`}
           >
-            <TableCell cardOrder={2}>{project.name}</TableCell>
-            <TableCell cardOrder={3}>
+            <div>{project.name}</div>
+            <div>
               {(
                 <ProjectPublishStatusChip status={project.publishStatus}>
                   {project.publishStatus}
                 </ProjectPublishStatusChip>
               ) || 'Unpublished'}
-            </TableCell>
-            <TableCell cardOrder={1}>
+            </div>
+            <div>
               {project.lastUpdated ? formatDate(project.lastUpdated) : '—'}
-            </TableCell>
-            <TableCell hideMedium>{project.projectType || '—'}</TableCell>
-            <TableCell hideMedium>
-              {project.surveillanceStatus || '—'}
-            </TableCell>
-            <TableCell hideMobile>{project.datasetIDs?.length || 0}</TableCell>
+            </div>
+            <div>{project.projectType || '—'}</div>
+            <div>{project.surveillanceStatus || '—'}</div>
+            <div>{project.datasetIDs?.length || 0}</div>
           </RowLink>
         ))}
     </ListTable>
