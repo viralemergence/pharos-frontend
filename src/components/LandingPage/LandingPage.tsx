@@ -15,7 +15,6 @@ const heightBreakpointForLandingText = 800
 const HeaderContainer = styled.div`
   position: absolute;
   width: 100%;
-  top: 80px;
   height: calc(100vh - 80px);
   display: flex;
   flex-direction: column;
@@ -42,23 +41,28 @@ const Header = styled.header`
 const H1 = styled.h1`
   ${({ theme }) => theme.bigMarketing};
   transition: all 0.35s;
-  @media (max-width: 1000px) or (max-height: 600px) {
+  @media (max-width: 1000px) {
     ${({ theme }) => theme.bigMarketingMobile};
   }
-  color: white;
+  @media (max-height: 600px) {
+    ${({ theme }) => theme.bigMarketingMobile};
+  }
+  color: ${({ theme }) => theme.white};
 `
+
 const LandingText = styled(CMS.RichText)`
   max-width: 1000px;
   padding-bottom: 30px;
 
   > p {
-    ${({ theme }) => theme.h3};
-    color: white;
+    ${({ theme }) => theme.smallMarketing};
+    color: ${({ theme }) => theme.white};
+    transition: all 0.35s;
     @media (max-width: 400px) {
-      font-size: 16px;
-      line-height: 1.3;
-      font-weight: bold;
+      ${({ theme }) => theme.smallMarketingMobile};
     }
+    margin-top: 0;
+    margin-bottom: 0;
   }
 
   // For small-height viewports, LandingTextForSmallViewports is displayed,
@@ -70,7 +74,7 @@ const LandingText = styled(CMS.RichText)`
 
 /** Text that displays only when viewport is too small to display the white
  * text with the dark map behind it */
-const LandingTextForSmallViewports = styled(LandingText)`
+const LandingTextForSmallViewports = styled.div`
   display: none;
   width: 100%;
   max-width: unset;
@@ -78,9 +82,21 @@ const LandingTextForSmallViewports = styled(LandingText)`
     display: flex;
   }
   background: #0e0f1f; // The dark purple of the map
-  padding: 30px 48px;
+  ${({ theme }) => theme.smallMarketing};
+  color: ${({ theme }) => theme.white};
+  padding: 30px 40px;
   p {
     margin: 0;
+  }
+  & > div {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  p {
+    transition: all 0.35s;
+    @media (max-width: 400px) {
+      ${({ theme }) => theme.smallMarketingMobile};
+    }
   }
 `
 
@@ -113,11 +129,13 @@ const LoggedOutLanding = () => {
             <MintButtonLink to="/data#map">View map</MintButtonLink>
           </ButtonBox>
         </Header>
-        <Main>
+        <Main style={{ margin: 0, padding: '0 40px' }}>
           <LandingText name="Intro paragraph" data={cmsData} />
         </Main>
       </HeaderContainer>
-      <LandingTextForSmallViewports name="Intro paragraph" data={cmsData} />
+      <LandingTextForSmallViewports>
+        <CMS.RichText name="Intro paragraph" data={cmsData} />
+      </LandingTextForSmallViewports>
       <Footer />
     </>
   )
