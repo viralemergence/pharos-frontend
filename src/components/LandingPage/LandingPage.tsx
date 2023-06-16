@@ -41,22 +41,24 @@ const Header = styled.header`
 const H1 = styled.h1`
   ${({ theme }) => theme.bigMarketing};
   transition: all 0.35s;
-  @media (max-width: 1000px) or (max-height: 600px) {
+  @media (max-width: 1000px) {
+    ${({ theme }) => theme.bigMarketingMobile};
+  }
+  @media (max-height: 600px) {
     ${({ theme }) => theme.bigMarketingMobile};
   }
   color: white;
 `
+
 const LandingText = styled(CMS.RichText)`
   max-width: 1000px;
   padding-bottom: 30px;
 
   > p {
-    ${({ theme }) => theme.h3};
+    ${({ theme }) => theme.smallMarketing};
     color: white;
     @media (max-width: 400px) {
-      font-size: 16px;
-      line-height: 1.3;
-      font-weight: bold;
+      ${({ theme }) => theme.smallMarketingMobile};
     }
   }
 

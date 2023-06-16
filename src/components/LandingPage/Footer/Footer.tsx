@@ -21,6 +21,9 @@ const FooterRow = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
+  @media (max-width: 400px) {
+    ${({ theme }) => theme.smallParagraph}
+  }
   @media (max-width: 770px) {
     &.pharos-supporting-orgs {
       flex-flow: column nowrap;
@@ -47,6 +50,8 @@ const FooterLogo = styled(CMS.Image)`
     }
   }
 `
+// TODO: switch to styled components rather than classnames
+// TODO: add a smidge more whitespace between the NSF and Open Philanthopy
 
 const Footer = () => {
   const cmsData = useIndexPageData()
