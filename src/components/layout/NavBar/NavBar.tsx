@@ -56,6 +56,9 @@ const NavLogo = styled(CMS.Image)`
   height: 70px;
   margin-right: 30px;
   margin-left: 12px;
+  @media (max-width: 400px) {
+    margin-right: 0px;
+  }
 `
 
 const NavBar = () => {
