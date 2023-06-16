@@ -4,12 +4,11 @@ import { lighten } from 'polished'
 
 import { Link } from 'react-router-dom'
 
-const cardsBreakpoint = 650
+export const cardsBreakpoint = 650
 const mediumBreakpoint = 1000
 
 const Container = styled.div`
   max-width: 100%;
-  overflow-x: scroll;
 `
 const TableGrid = styled.div`
   display: flex;
@@ -42,8 +41,9 @@ export const RowLink = styled(Link)<{
     grid-template-columns: ${({ $mediumColumnTemplate }) =>
       $mediumColumnTemplate};
 
+    background-color: ${({ theme }) => theme.white};
     &:nth-child(2n) {
-      background: ${({ theme }) => theme.veryLightGray};
+      background: ${({ theme }) => theme.veryLightMint};
     }
 
     &:nth-of-type(1) {

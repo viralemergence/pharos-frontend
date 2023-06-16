@@ -52,6 +52,7 @@ const DatasetsTable = ({ style }: DatasetsTableProps) => {
 
   return (
     <>
+      <CardHeaderRow>Datasets</CardHeaderRow>
       <ListTable {...{ wideColumnTemplate, mediumColumnTemplate, style }}>
         <HeaderRow>
           <TableCell>Name</TableCell>
@@ -59,7 +60,6 @@ const DatasetsTable = ({ style }: DatasetsTableProps) => {
           <TableCell>Status</TableCell>
           <TableCell>Last updated</TableCell>
         </HeaderRow>
-        <CardHeaderRow>Datasets</CardHeaderRow>
         {sorted.map(dataset => (
           <RowLink
             key={dataset.datasetID}
