@@ -10,7 +10,6 @@ import { lighten } from 'polished'
 const Text = styled.div`
   ${({ theme }) => theme.extraSmallParagraph};
   color: ${({ theme }) => theme.black};
-  // font-style: italic;
   padding: 5px;
   transition: 200ms ease;
 `
@@ -19,7 +18,6 @@ const ButtonRow = styled.button`
   border: none;
   background-color: ${({ theme }) => theme.white};
   transition: 200ms ease;
-  // font-style: italic;
 
   &:hover {
     background-color: ${({ theme }) => lighten(0.05, theme.hoverMint)};
