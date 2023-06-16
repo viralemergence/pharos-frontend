@@ -9,17 +9,17 @@ import { lighten } from 'polished'
 
 const Text = styled.div`
   ${({ theme }) => theme.extraSmallParagraph};
-  color: ${({ theme }) => theme.darkGray};
-  font-style: italic;
-  padding: 15px;
+  color: ${({ theme }) => theme.black};
+  // font-style: italic;
+  padding: 5px;
   transition: 200ms ease;
 `
 const ButtonRow = styled.button`
   background: none;
   border: none;
-  // text-align: left;
-  background-color: ${({ theme }) => theme.lightMint};
+  background-color: ${({ theme }) => theme.white};
   transition: 200ms ease;
+  // font-style: italic;
 
   &:hover {
     background-color: ${({ theme }) => lighten(0.05, theme.hoverMint)};
@@ -29,10 +29,13 @@ const ButtonRow = styled.button`
       color: ${({ theme }) => theme.black};
     }
   }
+  border-top: 1px solid ${({ theme }) => theme.medGray};
 
-  // &:nth-child(2) {
-  border-top: 1px solid ${({ theme }) => theme.lightGray};
-  // }
+  @media (max-width: ${650 - 1}px) {
+    border: 1px solid ${({ theme }) => theme.mint};
+    background-color: ${({ theme }) => theme.mint};
+    padding: 15px;
+  }
 `
 
 const CreateNewDatasetRow = (): JSX.Element => {
