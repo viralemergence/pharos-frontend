@@ -58,9 +58,6 @@ const GeorgetownGlobalHealthLogo = styled(FooterLogo)`
   }
 `
 
-// TODO: switch to styled components rather than classnames
-// TODO: add a smidge more whitespace between the NSF and Open Philanthopy
-
 const Footer = () => {
   const cmsData = useIndexPageData()
 

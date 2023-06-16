@@ -20,6 +20,7 @@ const HeaderContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  z-index: 1;
   @media (max-height: ${heightBreakpointForLandingText}px) {
     justify-content: center;
   }
@@ -112,7 +113,6 @@ const LoggedOutLanding = () => {
 
   return (
     <>
-      <LandingMap />
       <HeaderContainer>
         <Header>
           <H1>
@@ -133,6 +133,7 @@ const LoggedOutLanding = () => {
           <LandingText name="Intro paragraph" data={cmsData} />
         </Main>
       </HeaderContainer>
+      <LandingMap />
       <LandingTextForSmallViewports>
         <CMS.RichText name="Intro paragraph" data={cmsData} />
       </LandingTextForSmallViewports>
