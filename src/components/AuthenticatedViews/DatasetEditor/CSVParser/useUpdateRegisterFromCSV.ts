@@ -1,4 +1,3 @@
-import React from 'react'
 import Papa from 'papaparse'
 
 import useUser from 'hooks/useUser'
@@ -10,12 +9,6 @@ import { StateActions } from 'reducers/stateReducer/stateReducer'
 import { Register } from 'reducers/stateReducer/types'
 import useProjectID from 'hooks/project/useProjectID'
 import getTimestamp from 'utilities/getTimestamp'
-import useModal from 'hooks/useModal/useModal'
-import useVersionedRows from 'hooks/register/useVersionedRows'
-
-import DatasetLengthExceededModal, {
-  DATASET_LENGTH_LIMIT,
-} from '../DatasetLengthExceededModal/DatasetLengthExceededModal'
 
 type Rows = { [key: string]: string }[]
 
@@ -25,9 +18,6 @@ const useUpdateRegisterFromCSV = () => {
   const projectID = useProjectID()
   const dispatch = useDispatch()
 
-  const currentRows = useVersionedRows()
-  const setModal = useModal()
-
   const updateRegisterFromCSV = (file: File) =>
     Papa.parse(file, {
       header: true,
@@ -35,11 +25,6 @@ const useUpdateRegisterFromCSV = () => {
         const version = String(new Date().getTime())
         const rows = results.data as Rows
         const columns = Object.keys(rows[0]).map(column => column.trim())
-
-        if (rows.length + currentRows.rows.length > DATASET_LENGTH_LIMIT) {
-          setModal(<DatasetLengthExceededModal />, { closeable: true })
-          return
-        }
 
         // const registerCopy = { ...register }
         const newRecords: Register = {}

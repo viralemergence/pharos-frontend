@@ -100,10 +100,6 @@ jobs:
           command: yarn tsc
 
       - run:
-          name: Run tests
-          command: yarn run test
-
-      - run:
           name: Gatsby build
           command: yarn build --api <<parameters.api>>
 

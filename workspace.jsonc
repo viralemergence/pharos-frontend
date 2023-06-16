@@ -38,12 +38,9 @@
      */
     "packageManager": "teambit.dependencies/yarn",
     "policy": {
-      "dependencies": {
-        "@talus-analytics/library.ui.expander": "^0.0.6"
-      },
+      "dependencies": {},
       "peerDependencies": {}
-    },
-    "linkCoreAspects": true
+    }
   },
   /**
    * workspace variants allow to set different subsets of configuration for components in your

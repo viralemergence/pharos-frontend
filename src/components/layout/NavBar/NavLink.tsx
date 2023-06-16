@@ -35,7 +35,6 @@ export const LogoutButton = styled.button`
   padding: 0;
   background: none;
   border: none;
-  text-align: left;
   ${linkStyle}
 `
 
