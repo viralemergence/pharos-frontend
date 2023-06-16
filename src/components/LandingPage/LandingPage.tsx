@@ -63,7 +63,6 @@ const LandingText = styled(CMS.RichText)`
       ${({ theme }) => theme.smallMarketingMobile};
     }
     margin-top: 0;
-    margin-bottom: 0;
   }
 
   // For small-height viewports, LandingTextForSmallViewports is displayed,
