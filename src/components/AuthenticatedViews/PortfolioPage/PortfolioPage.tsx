@@ -1,44 +1,49 @@
-import React, { useState } from 'react'
-import styled from 'styled-components'
+import React from 'react'
 
 import MintButton from 'components/ui/MintButton'
-import Modal from 'components/ui/Modal'
-
-import { TopBar } from '../ViewComponents'
-import CreateProjectForm from './CreateProjectForm/CreateProjectForm'
 import ProjectsTable from './ProjectsTable/ProjectsTable'
-import Main from 'components/layout/Main'
-import BreadcrumbLink, {
-  BreadcrumbContainer,
-} from 'components/ui/BreadcrumbLink'
+import CreateProjectForm from './CreateProjectForm/CreateProjectForm'
 
-const H1 = styled.h1`
-  ${({ theme }) => theme.h1}
-  margin: 15px 0;
+import TopBar, {
+  Title,
+  Controls,
+  Breadcrumbs,
+  BreadcrumbLink,
+} from 'components/layout/TopBar'
+
+import useModal from 'hooks/useModal/useModal'
+import styled from 'styled-components'
+import wideMargins from 'components/layout/Margins'
+
+const PortfolioPageLayout = styled.div`
+  ${wideMargins}
+  display: grid;
+  gap: 30px;
+  grid-template-areas:
+    'topbar'
+    'projects';
 `
 
 const ProjectList = () => {
-  const [createModalOpen, setCreateModalOpen] = useState(false)
+  const setModal = useModal()
 
   return (
-    <Main>
+    <PortfolioPageLayout>
       <TopBar>
-        <BreadcrumbContainer>
+        <Breadcrumbs>
           <BreadcrumbLink to={`/projects/`}>All projects</BreadcrumbLink>
-        </BreadcrumbContainer>
-      </TopBar>
-      <TopBar>
-        <H1>My Projects</H1>
-        <MintButton onClick={() => setCreateModalOpen(true)}>
-          + New Project
-        </MintButton>
-        <Modal closeable open={createModalOpen} setOpen={setCreateModalOpen}>
-          <CreateProjectForm />
-        </Modal>
+        </Breadcrumbs>
+        <Title>My Projects</Title>
+        <Controls>
+          <MintButton
+            onClick={() => setModal(<CreateProjectForm />, { closeable: true })}
+          >
+            + New Project
+          </MintButton>
+        </Controls>
       </TopBar>
       <ProjectsTable />
-    </Main>
+    </PortfolioPageLayout>
   )
 }
-
 export default ProjectList

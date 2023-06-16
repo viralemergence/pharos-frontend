@@ -5,9 +5,10 @@ import MintButton from 'components/ui/MintButton'
 import Label from 'components/ui/InputLabel'
 import Input from 'components/ui/Input'
 import Textarea from 'components/ui/Textarea'
-import Typeahead from '../../../../../library/ui/typeahead'
+import Typeahead from '@talus-analytics/library.ui.typeahead'
 
 import useDoCreateProject from 'reducers/stateReducer/hooks/useDoCreateProject'
+import useModal from 'hooks/useModal/useModal'
 
 const Section = styled.section`
   width: 800px;
@@ -61,6 +62,8 @@ const CreateProjectForm = () => {
   const [formMessage, setFormMessage] = useState('')
   const theme = useTheme()
 
+  const setModal = useModal()
+
   const [formData, setFormData] = useState<FormData>({
     name: '',
     description: '',
@@ -82,6 +85,8 @@ const CreateProjectForm = () => {
     }
 
     doCreateProject(formData)
+
+    setModal(null)
   }
 
   const updateProjectData = (

@@ -1,30 +1,27 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
+
 import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
-import type { Filter, Field } from '../FilterPanel/constants'
-import './dataGrid.css'
 
 const TableViewContainer = styled.div`
-  padding: 0 30px;
-  z-index: ${({ theme }) => theme.zIndexes.dataTable};
-  flex: 1;
+  position: relative;
+  background-color: rgba(51, 51, 51, 0.25);
+  backdrop-filter: blur(20px);
+  width: 100%;
+  height: calc(100vh - 87px);
+  padding-top: 53px;
+  z-index: 3;
 `
 const TableContaier = styled.div`
-  padding-bottom: 10px;
-  overflow-x: hidden;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 15px;
 `
 const FillDatasetGrid = styled(DataGrid)`
   block-size: 100%;
   height: 100%;
-  border: 0;
-  .rdg-cell {
-    background-color: ${({ theme }) => theme.lightBlack};
-    &[aria-colindex='1'],
-    &[role='columnheader'] {
-      background: ${({ theme }) => theme.medBlack};
-    }
-  }
 `
 const LoadingMessage = styled.div`
   position: absolute;
@@ -57,18 +54,25 @@ const NoRecordsFound = styled.div`
 `
 
 interface TableViewProps {
-  appliedFilters: Filter[]
-  loadPublishedRecords: (options?: { appendResults: boolean }) => void
-  loading: boolean
-  page: React.MutableRefObject<number>
-  publishedRecords: Row[]
-  reachedLastPage: boolean
   style?: React.CSSProperties
-  fields: Record<string, Field>
 }
 
-export interface Row {
+interface Row {
   [key: string]: string | number
+}
+
+interface PublishedRecordsResponse {
+  publishedRecords: Row[]
+}
+
+function dataIsPublishedRecordsResponse(
+  data: unknown
+): data is PublishedRecordsResponse {
+  if (!data || typeof data !== 'object') return false
+  if (!('publishedRecords' in data)) return false
+  if (!Array.isArray(data.publishedRecords)) return false
+  if (!data.publishedRecords.every(row => typeof row === 'object')) return false
+  return true
 }
 
 const divIsAtBottom = ({ currentTarget }: React.UIEvent<HTMLDivElement>) =>
@@ -77,18 +81,35 @@ const divIsAtBottom = ({ currentTarget }: React.UIEvent<HTMLDivElement>) =>
 
 const rowKeyGetter = (row: Row) => row.pharosID
 
-const TableView = ({
-  style = {},
-  loading,
-  page,
-  publishedRecords,
-  appliedFilters,
-  loadPublishedRecords,
-  reachedLastPage,
-  fields,
-}: TableViewProps) => {
+const TableView = ({ style }: TableViewProps) => {
+  const [loading, setLoading] = useState<boolean>(true)
+  const [publishedRecords, setPublishedRecords] = useState<Row[] | null>(null)
+  const page = useRef(1)
+
+  const loadPublishedRecords = async (page: number) => {
+    setLoading(true)
+    const response = await fetch(
+      `${process.env.GATSBY_API_URL}/published-records?` +
+        new URLSearchParams({
+          page: page.toString(),
+          pageSize: '50',
+        })
+    )
+
+    if (response.ok) {
+      const data = await response.json()
+
+      if (dataIsPublishedRecordsResponse(data)) {
+        setPublishedRecords(prev =>
+          prev ? [...prev, ...data.publishedRecords] : data.publishedRecords
+        )
+        setLoading(false)
+      } else console.log('GET /published-records: malformed response')
+    }
+  }
+
   useEffect(() => {
-    loadPublishedRecords()
+    loadPublishedRecords(1)
   }, [])
 
   const rowNumberColumn = {
@@ -100,10 +121,6 @@ const TableView = ({
     width: 55,
   }
 
-  const dataGridKeysForFilteredColumns = appliedFilters
-    .filter(({ values }) => values.length > 0)
-    .map(({ fieldId }) => fields[fieldId]?.dataGridKey)
-
   const columns: readonly Column<Row>[] = [
     rowNumberColumn,
     ...Object.keys(publishedRecords?.[0] ?? {})
@@ -113,28 +130,22 @@ const TableView = ({
         name: key,
         width: key.length * 7.5 + 15 + 'px',
         resizable: true,
-        cellClass: dataGridKeysForFilteredColumns.includes(key)
-          ? 'in-filtered-column'
-          : undefined,
       })),
   ]
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
-    if (loading || reachedLastPage || !divIsAtBottom(event)) return
+    if (loading || !divIsAtBottom(event)) return
     page.current += 1
-    loadPublishedRecords()
+    loadPublishedRecords(page.current)
   }
 
   return (
     <TableViewContainer style={style}>
       <TableContaier>
-        {!loading && publishedRecords?.length === 0 ? (
-          <NoRecordsFound>
-            {appliedFilters.length > 0
-              ? 'No matching records found'
-              : 'No records published'}
-          </NoRecordsFound>
-        ) : (
+        {!loading && publishedRecords?.length === 0 && (
+          <NoRecordsFound>No records have been published.</NoRecordsFound>
+        )}
+        {publishedRecords && publishedRecords.length > 1 && (
           // @ts-expect-error: I'm copying this from the docs,
           // but it doesn't look like their type definitions work
           <FillDatasetGrid
@@ -148,8 +159,7 @@ const TableView = ({
         )}
         {loading && (
           <LoadingMessage>
-            <LoadingSpinner />{' '}
-            {page.current > 1 ? 'Loading more rows' : 'Loading'}
+            <LoadingSpinner /> Loading more rows
           </LoadingMessage>
         )}
       </TableContaier>

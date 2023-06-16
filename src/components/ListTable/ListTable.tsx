@@ -13,18 +13,24 @@ const Container = styled.div`
 const TableGrid = styled.div`
   display: flex;
   flex-direction: column;
-  min-width: 800px;
-  border: 1px solid ${({ theme }) => theme.medGray};
-`
-export const RowLink = styled(Link)<{ $columnTemplate?: string }>`
-  display: grid;
-  grid-template-columns: ${({ $columnTemplate }) => $columnTemplate};
-  // grid-template-columns: 1.5fr 2.5fr repeat(4, 1.5fr);
-  align-items: center;
-  transition: 150ms ease;
+  gap: 15px;
 
+  @media (min-width: ${cardsBreakpoint - 1}px) {
+    border: 1px solid ${({ theme }) => theme.medGray};
+    gap: 0px;
+  }
+`
+export const RowLink = styled(Link)<{
+  $wideColumnTemplate?: string
+  $mediumColumnTemplate?: string
+}>`
+  transition: 150ms ease;
+  display: flex;
+  flex-direction: column;
+  background-color: ${({ theme }) => theme.veryLightMint};
   color: ${({ theme }) => theme.black};
   text-decoration: none;
+  padding: 15px;
 
   ${({ theme }) => theme.smallParagraph};
 
@@ -40,12 +46,13 @@ export const RowLink = styled(Link)<{ $columnTemplate?: string }>`
       background: ${({ theme }) => theme.veryLightMint};
     }
 
-  &:nth-child(2n) {
-    background: ${({ theme }) => theme.veryLightGray};
+    &:nth-of-type(1) {
+      box-shadow: inset 0px 4px 4px #e0eae8;
+    }
   }
 
-  &:nth-of-type(1) {
-    box-shadow: inset 0px 4px 4px #e0eae8;
+  @media (min-width: ${mediumBreakpoint - 1}px) {
+    grid-template-columns: ${({ $wideColumnTemplate }) => $wideColumnTemplate};
   }
 
   &:hover {
@@ -53,23 +60,78 @@ export const RowLink = styled(Link)<{ $columnTemplate?: string }>`
   }
 `
 
-export const HeaderRow = styled.div<{ $columnTemplate?: string }>`
+export const HeaderRow = styled.div<{
+  $wideColumnTemplate?: string
+  $mediumColumnTemplate?: string
+}>`
   display: grid;
-  grid-template-columns: ${({ $columnTemplate }) => $columnTemplate};
-  // grid-template-columns: 1.5fr 2.5fr repeat(4, 1.5fr);
+
+  grid-template-columns: ${({ $mediumColumnTemplate }) =>
+    $mediumColumnTemplate};
+
+  @media (min-width: ${mediumBreakpoint - 1}px) {
+    grid-template-columns: ${({ $wideColumnTemplate }) => $wideColumnTemplate};
+  }
+
   ${({ theme }) => theme.smallParagraphSemibold};
   align-items: center;
+
   > div {
     padding: 15px;
+  }
+
+  @media (max-width: ${cardsBreakpoint}px) {
+    display: none;
+    hidden: true;
+  }
+`
+
+export const CardHeaderRow = styled.h3`
+  ${({ theme }) => theme.h3};
+  margin: 10px 0;
+
+  @media (min-width: ${cardsBreakpoint}px) {
+    display: none;
+    hidden: true;
+  }
+`
+
+export const TableCell = styled.div<{
+  hideMobile?: boolean
+  hideMedium?: boolean
+  cardOrder?: number
+}>`
+  padding: 15px;
+
+  @media (max-width: ${mediumBreakpoint}px) {
+    display: ${({ hideMedium }) => (hideMedium ? 'none' : 'unset')};
+  }
+
+  @media (max-width: ${cardsBreakpoint}px) {
+    padding: 10px;
+    order: ${({ cardOrder }) => cardOrder ?? 'initial'};
+    display: ${({ hideMobile, hideMedium }) =>
+      hideMobile || hideMedium ? 'none' : 'unset'};
+
+    &:nth-child(1) {
+      ${({ theme }) => theme.bigParagraphSemibold};
+    }
   }
 `
 
 interface ListTableProps {
   children: React.ReactNode
-  columnTemplate: string
+  wideColumnTemplate: string
+  mediumColumnTemplate?: string
+  style?: React.CSSProperties
 }
 
-const ListTable = ({ children, columnTemplate }: ListTableProps) => {
+const ListTable = ({
+  children,
+  wideColumnTemplate,
+  mediumColumnTemplate,
+  style,
+}: ListTableProps) => {
   const childrenWithColumns = React.Children.map(children, child => {
     // Checking isValidElement is the safe way and avoids a typescript
     // error too.
@@ -77,9 +139,13 @@ const ListTable = ({ children, columnTemplate }: ListTableProps) => {
       return React.cloneElement(
         // coercing child here to be a component that accepts the
         // columnTemplate prop since typescript 4 yells about it
-        child as React.ReactElement<{ $columnTemplate: string }>,
+        child as React.ReactElement<{
+          $wideColumnTemplate: string
+          $mediumColumnTemplate: string
+        }>,
         {
-          $columnTemplate: columnTemplate,
+          $wideColumnTemplate: wideColumnTemplate,
+          $mediumColumnTemplate: mediumColumnTemplate ?? wideColumnTemplate,
         }
       )
     }
@@ -87,7 +153,7 @@ const ListTable = ({ children, columnTemplate }: ListTableProps) => {
   })
 
   return (
-    <Container>
+    <Container style={style}>
       <TableGrid>{childrenWithColumns}</TableGrid>
     </Container>
   )

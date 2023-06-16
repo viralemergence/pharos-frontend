@@ -15,7 +15,6 @@ import 'react-data-grid/lib/styles.css'
 import RowNumber from './formatters/RowNumber'
 import useDataset from 'hooks/dataset/useDataset'
 import EditingDisabledEditor from './editors/EditingDisabledEditor'
-import { DATASET_LENGTH_LIMIT } from '../DatasetLengthExceededModal/DatasetLengthExceededModal'
 
 const FillDatasetGrid = styled(DataGrid)`
   block-size: 100%;
@@ -56,16 +55,13 @@ const DatasetGrid = () => {
     })),
   ]
 
-  // only add new row for editing if
-  // the dataset is under the limit
-  if (versionedRows.length < DATASET_LENGTH_LIMIT) {
-    versionedRows.push({
-      _meta: {
-        recordID: generateID.recordID(),
-        rowNumber: versionedRows.length,
-      },
-    })
-  }
+  versionedRows.push({
+    _meta: {
+      recordID: generateID.recordID(),
+      rowNumber: versionedRows.length,
+    },
+  })
+
   return (
     <FillDatasetGrid
       className={'rdg-light'}
