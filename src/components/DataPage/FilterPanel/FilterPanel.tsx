@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { Dispatch, SetStateAction, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { Field, Filter } from './constants'
+import FilterPanelToolbar from './FilterPanelToolbar'
 
 const mobileBreakpoint = 768
 
@@ -30,13 +31,16 @@ const Panel = styled.aside<{ open: boolean }>`
 
 const FilterPanel = ({
   isFilterPanelOpen,
+  setIsFilterPanelOpen,
   fields,
   filters,
 }: {
   isFilterPanelOpen: boolean
+  setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
   fields: Record<string, Field>
   filters: Filter[]
 }) => {
+  const [isFieldSelectorOpen, setIsFieldSelectorOpen] = useState(false)
   const idsOfAddedFields = filters.map(({ fieldId }) => fieldId)
   for (const fieldId in fields) {
     fields[fieldId].addedToPanel = idsOfAddedFields.includes(fieldId)
@@ -47,7 +51,21 @@ const FilterPanel = ({
       open={isFilterPanelOpen}
       className="pharos-panel"
       style={{ colorScheme: 'dark' }}
-    ></Panel>
+      onClick={_ => {
+        setIsFilterPanelOpen(false)
+      }}
+    >
+      <FilterPanelToolbar
+        {...{
+          fields,
+          filters,
+          isFieldSelectorOpen,
+          setIsFieldSelectorOpen,
+          setIsFilterPanelOpen,
+        }}
+      />
+      {/* FilterList will go here */}
+    </Panel>
   )
 }
 
