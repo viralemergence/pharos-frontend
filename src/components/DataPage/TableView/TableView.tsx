@@ -1,9 +1,4 @@
-import React, {
-  Dispatch,
-  MutableRefObject,
-  SetStateAction,
-  useEffect,
-} from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
@@ -62,20 +57,8 @@ const NoRecordsFound = styled.div`
   justify-content: center;
 `
 
-interface LoadPublishedRecordsOptions {
-  appendResults?: boolean
-  page: MutableRefObject<number>
-  setLoading: Dispatch<SetStateAction<boolean>>
-  setPublishedRecords: Dispatch<SetStateAction<Row[]>>
-  setReachedLastPage: Dispatch<SetStateAction<boolean>>
-  debouncing: MutableRefObject<{
-    on: boolean
-    timeout: ReturnType<typeof setTimeout> | null
-  }>
-}
-
 interface TableViewProps {
-  loadPublishedRecords: (options?: LoadPublishedRecordsOptions) => Promise<void>
+  loadPublishedRecords: () => void
   loading: boolean
   page: React.MutableRefObject<number>
   publishedRecords: Row[]

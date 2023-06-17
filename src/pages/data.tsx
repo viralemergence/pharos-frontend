@@ -7,7 +7,6 @@ import React, {
 	MutableRefObject,
 } from 'react'
 import styled from 'styled-components'
-import debounce from 'lodash/debounce'
 
 import CMS from '@talus-analytics/library.airtable-cms'
 import Providers from 'components/layout/Providers'
@@ -19,12 +18,7 @@ import type { Row } from 'components/DataPage/TableView/TableView'
 import DataToolbar, { View } from 'components/DataPage/Toolbar/Toolbar'
 
 import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
-import {
-	loadDebounceDelay,
-	debounceTimeout,
-	Field,
-	Filter,
-} from 'components/DataPage/FilterPanel/constants'
+import { debounceTimeout } from 'components/DataPage/FilterPanel/constants'
 
 const ViewContainer = styled.main<{ isFilterPanelOpen: boolean }>`
 	flex: 1;
@@ -90,6 +84,15 @@ interface Debouncing {
 	timeout: ReturnType<typeof setTimeout> | null
 }
 
+interface LoadPublishedRecordsOptions {
+	appendResults?: boolean
+	page: MutableRefObject<number>
+	setLoading: Dispatch<SetStateAction<boolean>>
+	setPublishedRecords: Dispatch<SetStateAction<Row[]>>
+	setReachedLastPage: Dispatch<SetStateAction<boolean>>
+	debouncing: MutableRefObject<Debouncing>
+}
+
 const loadPublishedRecords = async ({
 	appendResults = true,
 	page,
@@ -97,16 +100,7 @@ const loadPublishedRecords = async ({
 	setPublishedRecords,
 	setReachedLastPage,
 	debouncing,
-}:
-	| {
-			appendResults?: boolean
-			page: MutableRefObject<number>
-			setLoading: Dispatch<SetStateAction<boolean>>
-			setPublishedRecords: Dispatch<SetStateAction<Row[]>>
-			setReachedLastPage: Dispatch<SetStateAction<boolean>>
-			debouncing: MutableRefObject<Debouncing>
-	  }
-	| undefined) => {
+}: LoadPublishedRecordsOptions) => {
 	// Switch on debouncing for debounceTimeout milliseconds
 	debouncing.current.on = true
 	if (debouncing.current.timeout) clearTimeout(debouncing.current.timeout)
@@ -143,11 +137,6 @@ const loadPublishedRecords = async ({
 	}, 0)
 }
 
-const loadPublishedRecordsDebounced = debounce(
-	loadPublishedRecords,
-	loadDebounceDelay
-)
-
 const DataView = (): JSX.Element => {
 	const [loading, setLoading] = useState(true)
 	const [publishedRecords, setPublishedRecords] = useState<Row[]>([])
@@ -155,11 +144,7 @@ const DataView = (): JSX.Element => {
 	const page = useRef(1)
 	const debouncing = useRef({ on: false, timeout: null })
 	const [view, setView] = useState<View>(View.globe)
-
-	const [fields, setFields] = useState<Record<string, Field>>({})
-
-	// NOTE: Setting to false to better support mobile
-	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
+	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(true)
 
 	const changeView = (view: View) => {
 		window.location.hash = view
@@ -176,38 +161,7 @@ const DataView = (): JSX.Element => {
 		if (hashIsView(hash)) {
 			setView(hash)
 		}
-
-		const getMetadata = async () => {
-			const response = await fetch(
-				`${process.env.GATSBY_API_URL}/metadata-for-published-records`
-			)
-			const data = await response.json()
-			if (!isValidMetadataResponse(data)) {
-				console.error('GET /metadata-for-published-records: malformed response')
-				return
-			}
-			setFields(data.fields)
-		}
-		getMetadata()
 	}, [])
-
-	const loadFilteredRecords = (filters: Filter[], shouldDebounce = true) => {
-		const options = {
-			appendResults: false,
-			page,
-			filters,
-			setLoading,
-			setPublishedRecords,
-			setAppliedFilters,
-			setReachedLastPage,
-			debouncing,
-		}
-		if (shouldDebounce && debouncing.current.on) {
-			loadPublishedRecordsDebounced(options)
-		} else {
-			loadPublishedRecords(options)
-		}
-	}
 
 	const showEarth = [View.globe, View.map].includes(view)
 
@@ -232,8 +186,15 @@ const DataView = (): JSX.Element => {
 					<ViewMain>
 						<FilterPanel isFilterPanelOpen={isFilterPanelOpen} />
 						<TableView
-							fields={fields}
-							loadPublishedRecords={loadPublishedRecords}
+							loadPublishedRecords={() =>
+								loadPublishedRecords({
+									setLoading,
+									setPublishedRecords,
+									setReachedLastPage,
+									page,
+									debouncing,
+								})
+							}
 							loading={loading}
 							page={page}
 							publishedRecords={publishedRecords}
