@@ -34,15 +34,6 @@ const ViewContainer = styled.main<{ isFilterPanelOpen: boolean }>`
 	display: flex;
 	flex-flow: column nowrap;
 	gap: 20px;
-	.pharos-data-toolbar {
-		flex-basis: 60px;
-		@media (max-width: 768px) {
-			${({ isFilterPanelOpen }) => (isFilterPanelOpen ? 'display: none' : '')}
-		}
-	}
-	.pharos-panel {
-		min-width: 400px;
-	}
 	main {
 		display: flex;
 		flex-flow: row nowrap;
@@ -75,17 +66,6 @@ interface PublishedRecordsResponse {
 const isTruthyObject = (value: unknown): value is Record<string, unknown> =>
 	typeof value === 'object' && !!value
 
-const isValidRecordsResponse = (
-	data: unknown
-): data is PublishedRecordsResponse => {
-	if (!isTruthyObject(data)) return false
-	const { publishedRecords, isLastPage } =
-		data as Partial<PublishedRecordsResponse>
-	if (!isTruthyObject(publishedRecords)) return false
-	if (typeof isLastPage !== 'boolean') return false
-	return publishedRecords.every(row => typeof row === 'object')
-}
-
 const isValidFieldInMetadataResponse = (data: unknown): data is Field => {
 	if (!isTruthyObject(data)) return false
 	const {
@@ -108,6 +88,17 @@ const isValidMetadataResponse = (data: unknown): data is MetadataResponse => {
 	return Object.values(fields as Record<string, unknown>).every?.(field =>
 		isValidFieldInMetadataResponse(field)
 	)
+}
+
+const isValidRecordsResponse = (
+	data: unknown
+): data is PublishedRecordsResponse => {
+	if (!isTruthyObject(data)) return false
+	const { publishedRecords, isLastPage } =
+		data as Partial<PublishedRecordsResponse>
+	if (!isTruthyObject(publishedRecords)) return false
+	if (typeof isLastPage !== 'boolean') return false
+	return publishedRecords.every(row => typeof row === 'object')
 }
 
 interface MetadataResponse {
