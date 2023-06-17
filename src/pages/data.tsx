@@ -24,7 +24,6 @@ import {
 	debounceTimeout,
 	Field,
 	Filter,
-	FilterValues,
 } from 'components/DataPage/FilterPanel/constants'
 
 const ViewContainer = styled.main<{ isFilterPanelOpen: boolean }>`
@@ -86,34 +85,6 @@ const isValidRecordsResponse = (
 	return publishedRecords.every(row => typeof row === 'object')
 }
 
-const isValidFieldInMetadataResponse = (data: unknown): data is Field => {
-	if (!isTruthyObject(data)) return false
-	const {
-		label,
-		dataGridKey = '',
-		type = '',
-		options = [],
-	} = data as Partial<Field>
-	if (typeof label !== 'string') return false
-	if (typeof dataGridKey !== 'string') return false
-	if (typeof type !== 'string') return false
-	if (!options.every?.(option => typeof option === 'string')) return false
-	return true
-}
-
-const isValidMetadataResponse = (data: unknown): data is MetadataResponse => {
-	if (!isTruthyObject(data)) return false
-	const { fields } = data as Partial<MetadataResponse>
-	if (!isTruthyObject(fields)) return false
-	return Object.values(fields as Record<string, unknown>).every?.(field =>
-		isValidFieldInMetadataResponse(field)
-	)
-}
-
-interface MetadataResponse {
-	fields: Record<string, Field>
-}
-
 interface Debouncing {
 	on: boolean
 	timeout: ReturnType<typeof setTimeout> | null
@@ -121,23 +92,21 @@ interface Debouncing {
 
 const loadPublishedRecords = async ({
 	appendResults = true,
-	filters,
 	page,
 	setLoading,
 	setPublishedRecords,
-	setAppliedFilters,
 	setReachedLastPage,
 	debouncing,
-}: {
-	appendResults?: boolean
-	filters: Filter[]
-	page: MutableRefObject<number>
-	setLoading: Dispatch<SetStateAction<boolean>>
-	setPublishedRecords: Dispatch<SetStateAction<Row[]>>
-	setAppliedFilters: Dispatch<SetStateAction<Filter[]>>
-	setReachedLastPage: Dispatch<SetStateAction<boolean>>
-	debouncing: MutableRefObject<Debouncing>
-}) => {
+}:
+	| {
+			appendResults?: boolean
+			page: MutableRefObject<number>
+			setLoading: Dispatch<SetStateAction<boolean>>
+			setPublishedRecords: Dispatch<SetStateAction<Row[]>>
+			setReachedLastPage: Dispatch<SetStateAction<boolean>>
+			debouncing: MutableRefObject<Debouncing>
+	  }
+	| undefined) => {
 	// Switch on debouncing for debounceTimeout milliseconds
 	debouncing.current.on = true
 	if (debouncing.current.timeout) clearTimeout(debouncing.current.timeout)
@@ -148,14 +117,6 @@ const loadPublishedRecords = async ({
 	if (!appendResults) page.current = 1
 	setLoading(true)
 	const params = new URLSearchParams()
-	const filtersToApply: Filter[] = []
-	for (const filter of filters) {
-		const { fieldId, values } = filter
-		values.forEach(value => {
-			params.append(fieldId, value)
-		})
-		if (values.length > 0) filtersToApply.push(filter)
-	}
 	params.append('page', page.current.toString())
 	params.append('pageSize', '50')
 	const response = await fetch(
@@ -178,7 +139,6 @@ const loadPublishedRecords = async ({
 	])
 	setReachedLastPage(data.isLastPage)
 	setTimeout(() => {
-		setAppliedFilters(filtersToApply)
 		setLoading(false)
 	}, 0)
 }
@@ -195,15 +155,6 @@ const DataView = (): JSX.Element => {
 	const page = useRef(1)
 	const debouncing = useRef({ on: false, timeout: null })
 	const [view, setView] = useState<View>(View.globe)
-
-	/** Filters that will be applied to the published records */
-	const [filters, setFilters] = useState<Filter[]>([])
-
-	/** Filters that have been successfully applied to the published
-	 * records. That is, these filters have been sent to the server, and it
-	 * responded with an appropriate subset of the records. This is used for
-	 * color-coding the filtered columns. */
-	const [appliedFilters, setAppliedFilters] = useState<Filter[]>([])
 
 	const [fields, setFields] = useState<Record<string, Field>>({})
 
@@ -258,26 +209,6 @@ const DataView = (): JSX.Element => {
 		}
 	}
 
-	const updateFilter = (
-		indexOfFilterToUpdate: number,
-		newValues: FilterValues
-	) => {
-		const newFilters = [...filters]
-		newFilters[indexOfFilterToUpdate].values = newValues
-		setFilters(newFilters)
-		loadFilteredRecords(newFilters)
-	}
-
-	const clearFilters = () => {
-		setFilters([])
-		if (filters.some(({ values }) => values.length > 0)) {
-			// Don't debounce when clearing filters
-			loadFilteredRecords([], false)
-		}
-	}
-
-	// TODO: Check out Ryan's PR (for project pages) to see how he does styled components
-
 	const showEarth = [View.globe, View.map].includes(view)
 
 	return (
@@ -291,7 +222,6 @@ const DataView = (): JSX.Element => {
 						changeView={changeView}
 						isFilterPanelOpen={isFilterPanelOpen}
 						setIsFilterPanelOpen={setIsFilterPanelOpen}
-						appliedFilters={appliedFilters}
 					/>
 					<MapView
 						projection={view === 'globe' ? 'globe' : 'naturalEarth'}
@@ -300,18 +230,10 @@ const DataView = (): JSX.Element => {
 						}}
 					/>
 					<ViewMain>
-						<FilterPanel
-							isFilterPanelOpen={isFilterPanelOpen}
-							fields={fields}
-							filters={filters}
-						/>
+						<FilterPanel isFilterPanelOpen={isFilterPanelOpen} />
 						<TableView
 							fields={fields}
-							appliedFilters={appliedFilters}
-							loadPublishedRecords={() => {
-								loadFilteredRecords(filters, false)
-								debouncing.current.on = false
-							}}
+							loadPublishedRecords={loadPublishedRecords}
 							loading={loading}
 							page={page}
 							publishedRecords={publishedRecords}

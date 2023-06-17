@@ -1,8 +1,12 @@
-import React, { useEffect } from 'react'
+import React, {
+  Dispatch,
+  MutableRefObject,
+  SetStateAction,
+  useEffect,
+} from 'react'
 import styled from 'styled-components'
 import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
-import type { Filter, Field } from '../FilterPanel/constants'
 
 const TableViewContainer = styled.div`
   padding: 0 30px;
@@ -58,15 +62,25 @@ const NoRecordsFound = styled.div`
   justify-content: center;
 `
 
+interface LoadPublishedRecordsOptions {
+  appendResults?: boolean
+  page: MutableRefObject<number>
+  setLoading: Dispatch<SetStateAction<boolean>>
+  setPublishedRecords: Dispatch<SetStateAction<Row[]>>
+  setReachedLastPage: Dispatch<SetStateAction<boolean>>
+  debouncing: MutableRefObject<{
+    on: boolean
+    timeout: ReturnType<typeof setTimeout> | null
+  }>
+}
+
 interface TableViewProps {
-  appliedFilters: Filter[]
-  loadPublishedRecords: (options?: { appendResults: boolean }) => void
+  loadPublishedRecords: (options?: LoadPublishedRecordsOptions) => Promise<void>
   loading: boolean
   page: React.MutableRefObject<number>
   publishedRecords: Row[]
   reachedLastPage: boolean
   style?: React.CSSProperties
-  fields: Record<string, Field>
 }
 
 export interface Row {
@@ -84,10 +98,8 @@ const TableView = ({
   loading,
   page,
   publishedRecords,
-  appliedFilters,
   loadPublishedRecords,
   reachedLastPage,
-  fields,
 }: TableViewProps) => {
   useEffect(() => {
     loadPublishedRecords()
@@ -102,10 +114,6 @@ const TableView = ({
     width: 55,
   }
 
-  const dataGridKeysForFilteredColumns = appliedFilters
-    .filter(({ values }) => values.length > 0)
-    .map(({ fieldId }) => fields[fieldId]?.dataGridKey)
-
   const columns: readonly Column<Row>[] = [
     rowNumberColumn,
     ...Object.keys(publishedRecords?.[0] ?? {})
@@ -115,9 +123,6 @@ const TableView = ({
         name: key,
         width: key.length * 7.5 + 15 + 'px',
         resizable: true,
-        cellClass: dataGridKeysForFilteredColumns.includes(key)
-          ? 'in-filtered-column'
-          : undefined,
       })),
   ]
 
@@ -131,11 +136,7 @@ const TableView = ({
     <TableViewContainer style={style}>
       <TableContaier>
         {!loading && publishedRecords?.length === 0 ? (
-          <NoRecordsFound>
-            {appliedFilters.length > 0
-              ? 'No matching records found'
-              : 'No records published'}
-          </NoRecordsFound>
+          <NoRecordsFound>No records published</NoRecordsFound>
         ) : (
           // @ts-expect-error: I'm copying this from the docs,
           // but it doesn't look like their type definitions work

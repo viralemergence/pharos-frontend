@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import type { Filter } from '../FilterPanel/constants'
 
 export enum View {
 	map = 'map',
@@ -65,13 +64,11 @@ const DataToolbar = ({
 	setIsFilterPanelOpen,
 	view,
 	changeView,
-	appliedFilters = [],
 }: {
 	isFilterPanelOpen: boolean
 	setIsFilterPanelOpen: (open: boolean) => void
 	view: View
 	changeView: (view: View) => void
-	appliedFilters: Filter[]
 }) => {
 	const ViewRadioButton = ({
 		forView,
@@ -102,9 +99,6 @@ const DataToolbar = ({
 					width={100}
 				>
 					Filters
-					{appliedFilters.length > 0 && (
-						<span style={{ marginLeft: '5px' }}>({appliedFilters.length})</span>
-					)}
 				</DataToolbarButton>
 			</DataToolbarButtonContainer>
 			<DataToolbarRadioButtonContainer>

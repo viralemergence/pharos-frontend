@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Field, Filter } from './constants'
 
 const mobileBreakpoint = 768
 
@@ -28,20 +27,7 @@ const Panel = styled.aside<{ open: boolean }>`
   }
 `
 
-const FilterPanel = ({
-  isFilterPanelOpen,
-  fields,
-  filters,
-}: {
-  isFilterPanelOpen: boolean
-  fields: Record<string, Field>
-  filters: Filter[]
-}) => {
-  const idsOfAddedFields = filters.map(({ fieldId }) => fieldId)
-  for (const fieldId in fields) {
-    fields[fieldId].addedToPanel = idsOfAddedFields.includes(fieldId)
-  }
-
+const FilterPanel = ({ isFilterPanelOpen }: { isFilterPanelOpen: boolean }) => {
   return (
     <Panel
       open={isFilterPanelOpen}
