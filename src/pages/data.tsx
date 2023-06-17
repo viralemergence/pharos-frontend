@@ -302,12 +302,8 @@ const DataView = (): JSX.Element => {
 					<ViewMain>
 						<FilterPanel
 							isFilterPanelOpen={isFilterPanelOpen}
-							setIsFilterPanelOpen={setIsFilterPanelOpen}
 							fields={fields}
 							filters={filters}
-							updateFilter={updateFilter}
-							setFilters={setFilters}
-							clearFilters={clearFilters}
 						/>
 						<TableView
 							fields={fields}
