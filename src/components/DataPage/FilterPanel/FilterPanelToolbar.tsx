@@ -154,15 +154,11 @@ const FieldSelector = ({
 
 const FilterPanelToolbar = ({
   fields,
-  filters,
-  clearFilters,
   isFieldSelectorOpen,
   setIsFieldSelectorOpen,
   setIsFilterPanelOpen,
 }: {
   fields: Record<string, Field>
-  filters: Filter[]
-  clearFilters: () => void
   isFieldSelectorOpen: boolean
   setIsFieldSelectorOpen: Dispatch<SetStateAction<boolean>>
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
@@ -188,11 +184,6 @@ const FilterPanelToolbar = ({
         >
           <PlusIcon style={{ marginRight: '5px' }} /> Add filter
         </FilterPanelToolbarButton>
-        {filters.length > 0 && (
-          <FilterPanelToolbarButton onClick={() => clearFilters()}>
-            Clear all
-          </FilterPanelToolbarButton>
-        )}
         <FilterPanelCloseButton
           className="close-panel x-icon"
           onClick={() => setIsFilterPanelOpen(false)}

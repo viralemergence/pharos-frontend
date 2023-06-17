@@ -65,6 +65,21 @@ interface PublishedRecordsResponse {
 const isTruthyObject = (value: unknown): value is Record<string, unknown> =>
 	typeof value === 'object' && !!value
 
+const isValidFieldInMetadataResponse = (data: unknown): data is Field => {
+	if (!isTruthyObject(data)) return false
+	const {
+		label,
+		dataGridKey = '',
+		type = '',
+		options = [],
+	} = data as Partial<Field>
+	if (typeof label !== 'string') return false
+	if (typeof dataGridKey !== 'string') return false
+	if (typeof type !== 'string') return false
+	if (!options.every?.(option => typeof option === 'string')) return false
+	return true
+}
+
 const isValidRecordsResponse = (
 	data: unknown
 ): data is PublishedRecordsResponse => {
@@ -130,6 +145,19 @@ const loadPublishedRecordsDebounced = debounce(
 	loadDebounceDelay
 )
 
+const isValidMetadataResponse = (data: unknown): data is MetadataResponse => {
+	if (!isTruthyObject(data)) return false
+	const { fields } = data as Partial<MetadataResponse>
+	if (!isTruthyObject(fields)) return false
+	return Object.values(fields as Record<string, unknown>).every?.(field =>
+		isValidFieldInMetadataResponse(field)
+	)
+}
+
+interface MetadataResponse {
+	fields: Record<string, Field>
+}
+
 const DataView = (): JSX.Element => {
 	const [loading, setLoading] = useState(true)
 	const [publishedRecords, setPublishedRecords] = useState<Row[]>([])
@@ -139,6 +167,7 @@ const DataView = (): JSX.Element => {
 	const [view, setView] = useState<View>(View.globe)
 
 	const [fields, setFields] = useState<Record<string, Field>>({})
+	const [filters, setFilters] = useState<Filter[]>([])
 
 	// NOTE: Setting to false to better support mobile
 	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
@@ -199,7 +228,6 @@ const DataView = (): JSX.Element => {
 							setIsFilterPanelOpen={setIsFilterPanelOpen}
 							fields={fields}
 							filters={filters}
-							clearFilters={clearFilters}
 						/>
 						<TableView
 							loadPublishedRecords={() =>
@@ -211,7 +239,6 @@ const DataView = (): JSX.Element => {
 									debouncing,
 								})
 							}
-							fields={fields}
 							loading={loading}
 							page={page}
 							publishedRecords={publishedRecords}

@@ -35,19 +35,13 @@ const FilterPanel = ({
   setIsFilterPanelOpen,
   fields,
   filters,
-  clearFilters
 }: {
   isFilterPanelOpen: boolean
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
   fields: Record<string, Field>
   filters: Filter[]
-  clearFilters
 }) => {
   const [isFieldSelectorOpen, setIsFieldSelectorOpen] = useState(false)
-  const idsOfAddedFields = filters.map(({ fieldId }) => fieldId)
-  for (const fieldId in fields) {
-    fields[fieldId].addedToPanel = idsOfAddedFields.includes(fieldId)
-  }
 
   return (
     <Panel
@@ -60,11 +54,9 @@ const FilterPanel = ({
       <FilterPanelToolbar
         {...{
           fields,
-          filters,
           isFieldSelectorOpen,
           setIsFieldSelectorOpen,
           setIsFilterPanelOpen,
-          clearFilters,
         }}
       />
       {/* FilterList will go here */}
