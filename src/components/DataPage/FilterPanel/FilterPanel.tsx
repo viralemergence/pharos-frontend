@@ -16,6 +16,8 @@ import {
 import FilterTypeahead from './FilterTypeahead'
 import FilterPanelToolbar from './FilterPanelToolbar'
 
+const mobileBreakpoint = 768
+
 const Label = styled.label`
   ${({ theme }) => theme.smallParagraph}
   display: block;
@@ -57,7 +59,7 @@ const Panel = styled.aside<{ open: boolean }>`
   margin-left: ${({ open }) => (open ? '30px' : '-400px')};
   transition: margin-left 300ms cubic-bezier(0.4, 0, 0.2, 1);
   z-index: ${({ theme }) => theme.zIndexes.dataPanel};
-  @media (max-width: 768px) {
+  @media (max-width: ${mobileBreakpoint}px) {
     background-color: ${({ theme }) => theme.lightBlack};
     display: ${({ open }) => (open ? 'block' : 'none')};
     top: 0;
@@ -123,14 +125,8 @@ const FilterListItemElement = styled.li<{ opacity: number }>`
     margin-bottom: 0;
   }
 `
-const FilterListItem = ({
-  shouldAnimate,
-  children,
-}: {
-  shouldAnimate: boolean
-  children: React.ReactNode
-}) => {
-  const [opacity, setOpacity] = useState(shouldAnimate ? 0 : 1)
+const FilterListItem = ({ children }: { children: React.ReactNode }) => {
+  const [opacity, setOpacity] = useState(0)
   useEffect(() => {
     setOpacity(1)
   }, [])
@@ -144,7 +140,7 @@ const FilterList = styled.ul`
   overflow-y: auto;
   padding: 34px 40px;
   flex: 1;
-  @media (max-width: 768px) {
+  @media (max-width: ${mobileBreakpoint}px) {
     height: calc(100vh - 60px - 73px);
   }
   @media (max-width: 480px) {
@@ -179,18 +175,6 @@ const FilterPanel = ({
     fields[fieldId].addedToPanel = idsOfAddedFields.includes(fieldId)
   }
 
-  // Disable filter animations when FilterPanel first renders
-  const shouldAnimateFilters = useRef(false)
-
-  useEffect(() => {
-    // Enable filter animations after FilterPanel first renders
-    setTimeout(() => {
-      // TODO: Test removing the setTimeout because it might not be needed. Or
-      // use a requestAnimationFrame.
-      shouldAnimateFilters.current = true
-    }, 500)
-  }, [])
-
   return (
     <Panel
       open={isFilterPanelOpen}
@@ -216,10 +200,7 @@ const FilterPanel = ({
         {filters.map((filter, filterIndex) => {
           const { label = '', type = 'text' } = fields[filter.fieldId]
           return (
-            <FilterListItem
-              shouldAnimate={shouldAnimateFilters.current}
-              key={`${filter.fieldId}-${filterIndex}`}
-            >
+            <FilterListItem key={`${filter.fieldId}-${filterIndex}`}>
               <FilterValueSetter
                 filterIndex={filterIndex}
                 fieldLabel={label}
