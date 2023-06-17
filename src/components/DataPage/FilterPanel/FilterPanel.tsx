@@ -10,6 +10,7 @@ const Panel = styled.aside<{ open: boolean }>`
   display: flex;
   flex-flow: column nowrap;
   margin-left: ${({ open }) => (open ? '30px' : '-400px')};
+  min-width: 400px;
   transition: margin-left 300ms cubic-bezier(0.4, 0, 0.2, 1);
   z-index: ${({ theme }) => theme.zIndexes.dataPanel};
   @media (max-width: ${mobileBreakpoint}px) {
@@ -28,13 +29,7 @@ const Panel = styled.aside<{ open: boolean }>`
 `
 
 const FilterPanel = ({ isFilterPanelOpen }: { isFilterPanelOpen: boolean }) => {
-  return (
-    <Panel
-      open={isFilterPanelOpen}
-      className="pharos-panel"
-      style={{ colorScheme: 'dark' }}
-    ></Panel>
-  )
+  return <Panel open={isFilterPanelOpen} style={{ colorScheme: 'dark' }} />
 }
 
 export default FilterPanel

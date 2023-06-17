@@ -1,10 +1,10 @@
 import React, {
+	Dispatch,
+	MutableRefObject,
+	SetStateAction,
 	useEffect,
 	useRef,
 	useState,
-	Dispatch,
-	SetStateAction,
-	MutableRefObject,
 } from 'react'
 import styled from 'styled-components'
 
@@ -27,15 +27,6 @@ const ViewContainer = styled.main<{ isFilterPanelOpen: boolean }>`
 	display: flex;
 	flex-flow: column nowrap;
 	gap: 20px;
-	.pharos-data-toolbar {
-		flex-basis: 60px;
-		@media (max-width: 768px) {
-			${({ isFilterPanelOpen }) => (isFilterPanelOpen ? 'display: none' : '')}
-		}
-	}
-	.pharos-panel {
-		min-width: 400px;
-	}
 	main {
 		display: flex;
 		flex-flow: row nowrap;
