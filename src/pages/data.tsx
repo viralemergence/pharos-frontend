@@ -1,13 +1,5 @@
-import React, {
-	Dispatch,
-	MutableRefObject,
-	SetStateAction,
-	useEffect,
-	useRef,
-	useState,
-} from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import debounce from 'lodash/debounce'
 
 import CMS from '@talus-analytics/library.airtable-cms'
 import Providers from 'components/layout/Providers'
@@ -20,7 +12,6 @@ import DataToolbar, { View } from 'components/DataPage/Toolbar/Toolbar'
 
 import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
 import {
-	loadDebounceDelay,
 	debounceTimeout,
 	Field,
 	Filter,
@@ -91,11 +82,6 @@ const isValidRecordsResponse = (
 	return publishedRecords.every(row => typeof row === 'object')
 }
 
-interface Debouncing {
-	on: boolean
-	timeout: ReturnType<typeof setTimeout> | null
-}
-
 const loadPublishedRecords = async ({
 	appendResults = true,
 	page,
@@ -139,11 +125,6 @@ const loadPublishedRecords = async ({
 		setLoading(false)
 	}, 0)
 }
-
-const loadPublishedRecordsDebounced = debounce(
-	loadPublishedRecords,
-	loadDebounceDelay
-)
 
 const isValidMetadataResponse = (data: unknown): data is MetadataResponse => {
 	if (!isTruthyObject(data)) return false

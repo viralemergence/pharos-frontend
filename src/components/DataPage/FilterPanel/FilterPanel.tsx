@@ -1,6 +1,6 @@
-import React, { Dispatch, SetStateAction, useRef, useState } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 import styled from 'styled-components'
-import { Field, Filter } from './constants'
+import { Field } from './constants'
 import FilterPanelToolbar from './FilterPanelToolbar'
 
 const mobileBreakpoint = 768
