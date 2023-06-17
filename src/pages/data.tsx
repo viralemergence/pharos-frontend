@@ -173,24 +173,6 @@ const DataView = (): JSX.Element => {
 		getMetadata()
 	}, [])
 
-	const loadFilteredRecords = (filters: Filter[], shouldDebounce = true) => {
-		const options = {
-			appendResults: false,
-			page,
-			filters,
-			setLoading,
-			setPublishedRecords,
-			setAppliedFilters,
-			setReachedLastPage,
-			debouncing,
-		}
-		if (shouldDebounce && debouncing.current.on) {
-			loadPublishedRecordsDebounced(options)
-		} else {
-			loadPublishedRecords(options)
-		}
-	}
-
 	const showEarth = [View.globe, View.map].includes(view)
 
 	return (
