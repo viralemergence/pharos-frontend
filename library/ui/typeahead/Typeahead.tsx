@@ -276,7 +276,7 @@ const Typeahead = ({
         e.preventDefault()
         setFocusedElementIndex(prev => {
           // if we are at the end of the list, stay there
-          if (prev === items.length + values.length) return prev
+          if (prev === items.length + values.length - 1) return prev
           // if we are in the results, go down one
           return prev + 1
         })
@@ -354,7 +354,7 @@ const Typeahead = ({
                   key={item.key}
                   tabIndex={-1}
                   onClick={() => {
-                    onRemove?.(item)
+                    if (onRemove) onRemove(item)
                     setFocusedElementIndex(prev => (prev >= 1 ? prev - 1 : 0))
                   }}
                   style={{ color: fontColor }}

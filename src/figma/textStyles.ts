@@ -1,5 +1,5 @@
 export default {
-  h1: `
+	h1: `
 	font-size: 37px;
 	font-family: "Overpass", helvetica, arial, sans-serif;
 	font-weight: 400;
@@ -8,7 +8,7 @@ export default {
 	text-decoration: none;
 	text-transform: none;
 `,
-  h2: `
+	h2: `
 	font-size: 30px;
 	font-family: "Overpass", helvetica, arial, sans-serif;
 	font-weight: 400;
@@ -17,7 +17,7 @@ export default {
 	text-decoration: none;
 	text-transform: none;
 `,
-  h3: `
+	h3: `
 	font-size: 26px;
 	font-family: "Overpass", helvetica, arial, sans-serif;
 	font-weight: 400;
@@ -26,7 +26,7 @@ export default {
 	text-decoration: none;
 	text-transform: none;
 `,
-  bigParagraph: `
+	bigParagraph: `
 	font-size: 20px;
 	font-family: "Open Sans", helvetica, arial, sans-serif;
 	font-weight: 400;
@@ -35,7 +35,7 @@ export default {
 	text-decoration: none;
 	text-transform: none;
 `,
-  bigParagraphSemibold: `
+	bigParagraphSemibold: `
 	font-size: 20px;
 	font-family: "Open Sans", helvetica, arial, sans-serif;
 	font-weight: 600;
@@ -44,7 +44,7 @@ export default {
 	text-decoration: none;
 	text-transform: none;
 `,
-  smallParagraph: `
+	smallParagraph: `
 	font-size: 16px;
 	font-family: "Open Sans", helvetica, arial, sans-serif;
 	font-weight: 400;
@@ -53,7 +53,7 @@ export default {
 	text-decoration: none;
 	text-transform: none;
 `,
-  smallParagraphSemibold: `
+	smallParagraphSemibold: `
 	font-size: 16px;
 	font-family: "Open Sans", helvetica, arial, sans-serif;
 	font-weight: 600;
@@ -62,7 +62,7 @@ export default {
 	text-decoration: none;
 	text-transform: none;
 `,
-  extraSmallParagraph: `
+	extraSmallParagraph: `
 	font-size: 14px;
 	font-family: "Open Sans", helvetica, arial, sans-serif;
 	font-weight: 400;
@@ -71,7 +71,7 @@ export default {
 	text-decoration: none;
 	text-transform: none;
 `,
-  bigMarketing: `
+	bigMarketing: `
 	font-size: 80px;
 	font-family: "Overpass", helvetica, arial, sans-serif;
 	font-weight: 400;
@@ -80,7 +80,7 @@ export default {
 	text-decoration: none;
 	text-transform: none;
 `,
-  medMarketing: `
+	medMarketing: `
 	font-size: 50px;
 	font-family: "Poppins", helvetica, arial, sans-serif;
 	font-weight: 400;
@@ -88,7 +88,7 @@ export default {
 	text-decoration: none;
 	text-transform: none;
 `,
-  gridText: `
+	gridText: `
 	font-size: 16px;
 	font-family: "Inconsolata", menlo, monospace;
 	font-weight: 400;
@@ -96,7 +96,7 @@ export default {
 	text-decoration: none;
 	text-transform: none;
 `,
-  gridTextBold: `
+	gridTextBold: `
 	font-size: 16px;
 	font-family: "Inconsolata", menlo, monospace;
 	font-weight: 600;
@@ -104,4 +104,48 @@ export default {
 	text-decoration: none;
 	text-transform: none;
 `,
+	pharosLogoText: `
+	font-size: 30px;
+	font-family: "Montserrat", helvetica, arial, sans-serif;
+	font-weight: 400;
+	font-style: normal;
+	text-decoration: none;
+	text-transform: none;
+`,
+	extraSmallParagraphUnderline: `
+	font-size: 14px;
+	font-family: "Open Sans", helvetica, arial, sans-serif;
+	font-weight: 400;
+	font-style: normal;
+	line-height: 22px;
+	text-decoration: underline;
+	text-transform: none;
+`,
+	bigMarketingMobile: `
+	font-size: 40px;
+	font-family: "Overpass", helvetica, arial, sans-serif;
+	font-weight: 400;
+	font-style: normal;
+	line-height: 50px;
+	text-decoration: none;
+	text-transform: none;
+`,
+	smallMarketing: `
+	font-size: 24px;
+	font-family: "Open Sans", helvetica, arial, sans-serif;
+	font-weight: 600;
+	font-style: normal;
+	line-height: 32px;
+	text-decoration: none;
+	text-transform: none;
+	`,
+	smallMarketingMobile: `
+	font-size: 16px;
+	font-family: "Open Sans", helvetica, arial, sans-serif;
+	font-weight: 600;
+	font-style: normal;
+	line-height: 25px;
+	text-decoration: none;
+	text-transform: none;
+	`,
 }
