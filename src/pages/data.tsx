@@ -1,4 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, {
+	Dispatch,
+	MutableRefObject,
+	SetStateAction,
+	useEffect,
+	useRef,
+	useState,
+} from 'react'
 import styled from 'styled-components'
 
 import CMS from '@talus-analytics/library.airtable-cms'
@@ -14,7 +21,6 @@ import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
 import {
 	debounceTimeout,
 	Field,
-	Filter,
 } from 'components/DataPage/FilterPanel/constants'
 
 const ViewContainer = styled.main<{ isFilterPanelOpen: boolean }>`
@@ -80,6 +86,20 @@ const isValidRecordsResponse = (
 	if (!isTruthyObject(publishedRecords)) return false
 	if (typeof isLastPage !== 'boolean') return false
 	return publishedRecords.every(row => typeof row === 'object')
+}
+
+interface LoadPublishedRecordsOptions {
+	appendResults?: boolean
+	page: MutableRefObject<number>
+	setLoading: Dispatch<SetStateAction<boolean>>
+	setPublishedRecords: Dispatch<SetStateAction<Row[]>>
+	setReachedLastPage: Dispatch<SetStateAction<boolean>>
+	debouncing: MutableRefObject<Debouncing>
+}
+
+interface Debouncing {
+	on: boolean
+	timeout: ReturnType<typeof setTimeout> | null
 }
 
 const loadPublishedRecords = async ({
@@ -148,7 +168,6 @@ const DataView = (): JSX.Element => {
 	const [view, setView] = useState<View>(View.globe)
 
 	const [fields, setFields] = useState<Record<string, Field>>({})
-	const [filters, setFilters] = useState<Filter[]>([])
 
 	// NOTE: Setting to false to better support mobile
 	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
@@ -208,7 +227,6 @@ const DataView = (): JSX.Element => {
 							isFilterPanelOpen={isFilterPanelOpen}
 							setIsFilterPanelOpen={setIsFilterPanelOpen}
 							fields={fields}
-							filters={filters}
 						/>
 						<TableView
 							loadPublishedRecords={() =>

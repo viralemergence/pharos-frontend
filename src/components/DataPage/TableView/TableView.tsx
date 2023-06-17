@@ -1,9 +1,4 @@
-import React, {
-  Dispatch,
-  MutableRefObject,
-  SetStateAction,
-  useEffect,
-} from 'react'
+import React, { MutableRefObject, useEffect } from 'react'
 import styled from 'styled-components'
 import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
@@ -65,7 +60,7 @@ const NoRecordsFound = styled.div`
 interface TableViewProps {
   loadPublishedRecords: () => void
   loading: boolean
-  page: React.MutableRefObject<number>
+  page: MutableRefObject<number>
   publishedRecords: Row[]
   reachedLastPage: boolean
   style?: React.CSSProperties

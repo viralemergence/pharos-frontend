@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction } from 'react'
 import styled from 'styled-components'
-import { PlusIcon, BackIcon, XIcon, Field, Filter } from './constants'
+import { PlusIcon, BackIcon, XIcon, Field } from './constants'
 
 const FilterPanelToolbarNav = styled.nav`
   display: flex;
