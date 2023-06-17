@@ -267,8 +267,6 @@ const DataView = (): JSX.Element => {
 		}
 	}
 
-	// TODO: Check out Ryan's PR (for project pages) to see how he does styled components
-
 	const showEarth = [View.globe, View.map].includes(view)
 
 	return (
