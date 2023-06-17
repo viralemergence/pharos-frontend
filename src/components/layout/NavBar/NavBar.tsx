@@ -75,6 +75,9 @@ const NavLogo = styled(CMS.Image)`
   }
   margin-right: 30px;
   margin-left: 12px;
+  @media (max-width: 400px) {
+    margin-right: 0px;
+  }
 `
 
 const NavBar = () => {
@@ -151,7 +154,11 @@ const NavBar = () => {
       <Container>
         <LinkList>
           <HomeLink to="/" reactRouterLink={false}>
-            <NavLogo name="Site logo" data={data} />
+            <NavLogo
+              name="Site logo"
+              data={data}
+              style={{ height: 70, width: 200 }}
+            />
           </HomeLink>
         </LinkList>
         <DesktopNav>

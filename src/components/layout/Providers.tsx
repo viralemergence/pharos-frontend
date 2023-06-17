@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { createGlobalStyle, ThemeProvider } from 'styled-components'
+import styled, { createGlobalStyle, ThemeProvider } from 'styled-components'
 
 import CMS from '@talus-analytics/library.airtable-cms'
 
@@ -26,6 +26,13 @@ const GlobalStyle = createGlobalStyle`
   }
 `
 
+const WhiteBackground = styled.div`
+  background-color: ${({ theme }) => theme.white};
+  min-height: 100vh;
+  min-width: 100%;
+  display: flow-root;
+`
+
 // site-wide contexts for themes, icons, and metadata
 const Providers = ({ children }: { children: React.ReactNode }) => {
   const icons = useIconsQuery()
@@ -39,7 +46,7 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
         <CMS.SiteMetadataProvider data={siteMetadata} trackingId={trackingId}>
           <ThemeProvider theme={{ ...textStyles, ...colorPalette, zIndexes }}>
             <GlobalStyle />
-            {children}
+            <WhiteBackground>{children}</WhiteBackground>
           </ThemeProvider>
         </CMS.SiteMetadataProvider>
       </CMS.IconProvider>
