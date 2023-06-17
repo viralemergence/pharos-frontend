@@ -12,6 +12,7 @@ const Panel = styled.aside<{ open: boolean }>`
   display: flex;
   flex-flow: column nowrap;
   margin-left: ${({ open }) => (open ? '30px' : '-400px')};
+  min-width: 400px;
   transition: margin-left 300ms cubic-bezier(0.4, 0, 0.2, 1);
   z-index: ${({ theme }) => theme.zIndexes.dataPanel};
   @media (max-width: ${mobileBreakpoint}px) {
@@ -34,11 +35,13 @@ const FilterPanel = ({
   setIsFilterPanelOpen,
   fields,
   filters,
+  clearFilters
 }: {
   isFilterPanelOpen: boolean
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
   fields: Record<string, Field>
   filters: Filter[]
+  clearFilters
 }) => {
   const [isFieldSelectorOpen, setIsFieldSelectorOpen] = useState(false)
   const idsOfAddedFields = filters.map(({ fieldId }) => fieldId)
@@ -49,7 +52,6 @@ const FilterPanel = ({
   return (
     <Panel
       open={isFilterPanelOpen}
-      className="pharos-panel"
       style={{ colorScheme: 'dark' }}
       onClick={_ => {
         setIsFilterPanelOpen(false)
@@ -62,6 +64,7 @@ const FilterPanel = ({
           isFieldSelectorOpen,
           setIsFieldSelectorOpen,
           setIsFilterPanelOpen,
+          clearFilters,
         }}
       />
       {/* FilterList will go here */}

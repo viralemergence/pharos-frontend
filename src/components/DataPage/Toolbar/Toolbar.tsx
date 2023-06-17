@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import type { Filter } from '../FilterPanel/constants'
 
 export enum View {
 	map = 'map',
@@ -58,6 +57,10 @@ const DataToolbarDiv = styled.div<{ isFilterPanelOpen: boolean }>`
 	display: flex;
 	flex-flow: row wrap;
 	gap: 1rem;
+	flex-basis: 60px;
+	@media (max-width: 768px) {
+		${({ isFilterPanelOpen }) => (isFilterPanelOpen ? 'display: none' : '')}
+	}
 `
 
 const DataToolbar = ({
@@ -65,13 +68,11 @@ const DataToolbar = ({
 	setIsFilterPanelOpen,
 	view,
 	changeView,
-	appliedFilters = [],
 }: {
 	isFilterPanelOpen: boolean
 	setIsFilterPanelOpen: (open: boolean) => void
 	view: View
 	changeView: (view: View) => void
-	appliedFilters: Filter[]
 }) => {
 	const ViewRadioButton = ({
 		forView,
@@ -89,10 +90,7 @@ const DataToolbar = ({
 	)
 
 	return (
-		<DataToolbarDiv
-			className="pharos-data-toolbar"
-			isFilterPanelOpen={isFilterPanelOpen}
-		>
+		<DataToolbarDiv isFilterPanelOpen={isFilterPanelOpen}>
 			<DataToolbarButtonContainer>
 				<DataToolbarButton
 					selected={isFilterPanelOpen}
@@ -102,9 +100,6 @@ const DataToolbar = ({
 					width={100}
 				>
 					Filters
-					{appliedFilters.length > 0 && (
-						<span style={{ marginLeft: '5px' }}>({appliedFilters.length})</span>
-					)}
 				</DataToolbarButton>
 			</DataToolbarButtonContainer>
 			<DataToolbarRadioButtonContainer>

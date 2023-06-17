@@ -150,7 +150,7 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
 
   return (
     <MapViewDiv style={style}>
-      <MapContainer className="map-container" ref={mapContainer} />
+      <MapContainer ref={mapContainer} />
     </MapViewDiv>
   )
 }
