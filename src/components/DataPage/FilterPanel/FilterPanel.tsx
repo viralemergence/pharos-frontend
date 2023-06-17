@@ -34,12 +34,10 @@ const FilterPanel = ({
   isFilterPanelOpen,
   setIsFilterPanelOpen,
   fields,
-  filters,
 }: {
   isFilterPanelOpen: boolean
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
   fields: Record<string, Field>
-  filters: Filter[]
 }) => {
   const [isFieldSelectorOpen, setIsFieldSelectorOpen] = useState(false)
 
@@ -48,7 +46,7 @@ const FilterPanel = ({
       open={isFilterPanelOpen}
       style={{ colorScheme: 'dark' }}
       onClick={_ => {
-        setIsFilterPanelOpen(false)
+        setIsFieldSelectorOpen(false)
       }}
     >
       <FilterPanelToolbar
