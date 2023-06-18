@@ -92,19 +92,6 @@ const isValidRecordsResponse = (
 	return publishedRecords.every(row => typeof row === 'object')
 }
 
-const isValidMetadataResponse = (data: unknown): data is MetadataResponse => {
-	if (!isTruthyObject(data)) return false
-	const { fields } = data as Partial<MetadataResponse>
-	if (!isTruthyObject(fields)) return false
-	return Object.values(fields as Record<string, unknown>).every?.(field =>
-		isValidFieldInMetadataResponse(field)
-	)
-}
-
-interface MetadataResponse {
-	fields: Record<string, Field>
-}
-
 interface Debouncing {
 	on: boolean
 	timeout: ReturnType<typeof setTimeout> | null
@@ -180,6 +167,19 @@ const loadPublishedRecordsDebounced = debounce(
 	loadPublishedRecords,
 	loadDebounceDelay
 )
+
+const isValidMetadataResponse = (data: unknown): data is MetadataResponse => {
+	if (!isTruthyObject(data)) return false
+	const { fields } = data as Partial<MetadataResponse>
+	if (!isTruthyObject(fields)) return false
+	return Object.values(fields as Record<string, unknown>).every?.(field =>
+		isValidFieldInMetadataResponse(field)
+	)
+}
+
+interface MetadataResponse {
+	fields: Record<string, Field>
+}
 
 const DataView = (): JSX.Element => {
 	const [loading, setLoading] = useState(true)
