@@ -1,12 +1,11 @@
 import React from 'react'
 
 import styled from 'styled-components'
-import { RenderItemProps } from '../../../../library/ui/typeahead'
+import { RenderItemProps } from '.'
 
-import removeSVG from '../../../assets/darkTypeaheadRemove.svg'
+import removeSVG from './assets/darkRemove.svg'
 
 const TypeaheadResultContainer = styled.span<{ selected?: boolean }>`
-  ${({ theme }) => theme.smallParagraph};
   box-sizing: border-box;
   display: flex;
   justify-content: space-between;
@@ -14,6 +13,8 @@ const TypeaheadResultContainer = styled.span<{ selected?: boolean }>`
   font-size: 16px;
   text-align: left;
   padding: 8px 12px;
+  background-color: rgba(0, 50, 100, 0);
+  transition: 150ms ease;
 
   ${({ selected }) => selected && ` font-weight: 800; `};
 `
