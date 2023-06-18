@@ -27,7 +27,7 @@ import {
 	FilterValues,
 } from 'components/DataPage/FilterPanel/constants'
 
-const ViewContainer = styled.main<{ isFilterPanelOpen: boolean }>`
+const ViewContainer = styled.main`
 	flex: 1;
 	position: relative;
 	width: 100%;
