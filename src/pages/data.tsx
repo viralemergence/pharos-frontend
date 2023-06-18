@@ -110,6 +110,17 @@ interface Debouncing {
 	timeout: ReturnType<typeof setTimeout> | null
 }
 
+interface LoadPublishedRecordsOptions {
+	appendResults?: boolean
+	filters: Filter[]
+	page: MutableRefObject<number>
+	setLoading: Dispatch<SetStateAction<boolean>>
+	setPublishedRecords: Dispatch<SetStateAction<Row[]>>
+	setAppliedFilters: Dispatch<SetStateAction<Filter[]>>
+	setReachedLastPage: Dispatch<SetStateAction<boolean>>
+	debouncing: MutableRefObject<Debouncing>
+}
+
 const loadPublishedRecords = async ({
 	appendResults = true,
 	filters,
@@ -119,16 +130,7 @@ const loadPublishedRecords = async ({
 	setAppliedFilters,
 	setReachedLastPage,
 	debouncing,
-}: {
-	appendResults?: boolean
-	filters: Filter[]
-	page: MutableRefObject<number>
-	setLoading: Dispatch<SetStateAction<boolean>>
-	setPublishedRecords: Dispatch<SetStateAction<Row[]>>
-	setAppliedFilters: Dispatch<SetStateAction<Filter[]>>
-	setReachedLastPage: Dispatch<SetStateAction<boolean>>
-	debouncing: MutableRefObject<Debouncing>
-}) => {
+}: LoadPublishedRecordsOptions) => {
 	// Switch on debouncing for debounceTimeout milliseconds
 	debouncing.current.on = true
 	if (debouncing.current.timeout) clearTimeout(debouncing.current.timeout)
