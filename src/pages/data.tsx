@@ -285,6 +285,7 @@ const DataView = (): JSX.Element => {
 						style={{
 							filter: showEarth ? 'none' : 'blur(30px)',
 						}}
+						disabled={!showEarth}
 					/>
 					<ViewMain>
 						<FilterPanel

@@ -18,9 +18,10 @@ const MapContainer = styled.div`
 
 mapboxgl.accessToken = process.env.GATSBY_MAPBOX_API_KEY!
 
-interface MapPageProps {
+interface MapViewProps {
   style?: React.CSSProperties
   projection?: 'naturalEarth' | 'globe'
+  disabled?: boolean
 }
 
 const MapViewDiv = styled.div`
@@ -34,9 +35,15 @@ const MapViewDiv = styled.div`
   height: 100%;
 `
 
-const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
+const MapView = ({
+  style,
+  projection = 'naturalEarth',
+  disabled = false,
+}: MapViewProps) => {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<null | mapboxgl.Map>(null)
+
+  const mapViewDiv = useRef<HTMLDivElement>(null)
 
   // const [lng, setLng] = React.useState(0)
   // const [lat, setLat] = React.useState(0)
@@ -148,8 +155,28 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
     map.current.setProjection({ name: projection })
   }, [projection])
 
+  useEffect(() => {
+    const interactions = [
+      map.current?.boxZoom,
+      map.current?.doubleClickZoom,
+      map.current?.dragPan,
+      map.current?.dragRotate,
+      map.current?.keyboard,
+      map.current?.scrollZoom,
+      map.current?.touchPitch,
+      map.current?.touchZoomRotate,
+    ]
+    // When the disabled prop changes, disable or enable map
+    // interactions accordingly
+    interactions.forEach(i => (disabled ? i?.disable() : i?.enable()))
+
+    mapViewDiv.current
+      ?.querySelectorAll('canvas, a')
+      .forEach(el => el.setAttribute('tabindex', disabled ? '-1' : '0'))
+  }, [disabled])
+
   return (
-    <MapViewDiv style={style}>
+    <MapViewDiv style={style} ref={mapViewDiv}>
       <MapContainer ref={mapContainer} />
     </MapViewDiv>
   )
