@@ -66,17 +66,6 @@ interface PublishedRecordsResponse {
 const isTruthyObject = (value: unknown): value is Record<string, unknown> =>
 	typeof value === 'object' && !!value
 
-const isValidRecordsResponse = (
-	data: unknown
-): data is PublishedRecordsResponse => {
-	if (!isTruthyObject(data)) return false
-	const { publishedRecords, isLastPage } =
-		data as Partial<PublishedRecordsResponse>
-	if (!isTruthyObject(publishedRecords)) return false
-	if (typeof isLastPage !== 'boolean') return false
-	return publishedRecords.every(row => typeof row === 'object')
-}
-
 const isValidFieldInMetadataResponse = (data: unknown): data is Field => {
 	if (!isTruthyObject(data)) return false
 	const {
@@ -90,6 +79,17 @@ const isValidFieldInMetadataResponse = (data: unknown): data is Field => {
 	if (typeof type !== 'string') return false
 	if (!options.every?.(option => typeof option === 'string')) return false
 	return true
+}
+
+const isValidRecordsResponse = (
+	data: unknown
+): data is PublishedRecordsResponse => {
+	if (!isTruthyObject(data)) return false
+	const { publishedRecords, isLastPage } =
+		data as Partial<PublishedRecordsResponse>
+	if (!isTruthyObject(publishedRecords)) return false
+	if (typeof isLastPage !== 'boolean') return false
+	return publishedRecords.every(row => typeof row === 'object')
 }
 
 const isValidMetadataResponse = (data: unknown): data is MetadataResponse => {
