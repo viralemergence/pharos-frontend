@@ -1,18 +1,13 @@
-/** Stacking order of elements, starting with the topmost */
-const order = [
-  'modalContainer',
-  'modalBackground',
-  'dataPanelFieldSelector',
-  'dataToolbarButton',
-  'dataPanel',
-  'dataTable',
-  'dataToolbar',
-  'dataMap',
-]
-
-const zIndexes = order.reduce<Record<string, number>>((acc, key, index) => {
-  acc[key] = order.length - index
-  return acc
-}, {})
+const zIndexes = {
+  modalContainer: 13,
+  modalBackground: 12,
+  dataPanelFieldSelector: 11,
+  typeaheadResults: 7,
+  dataToolbarButton: 6,
+  dataPanel: 5,
+  dataTable: 4,
+  dataToolbar: 3,
+  dataMap: 2,
+}
 
 export default zIndexes
