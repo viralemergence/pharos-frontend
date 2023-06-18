@@ -274,7 +274,7 @@ const DataView = (): JSX.Element => {
 			<CMS.SEO />
 			<DataPage>
 				<NavBar />
-				<ViewContainer isFilterPanelOpen={isFilterPanelOpen}>
+				<ViewContainer>
 					<DataToolbar
 						view={view}
 						changeView={changeView}
