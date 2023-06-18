@@ -1,10 +1,10 @@
 import React, {
+	Dispatch,
+	MutableRefObject,
+	SetStateAction,
 	useEffect,
 	useRef,
 	useState,
-	Dispatch,
-	SetStateAction,
-	MutableRefObject,
 } from 'react'
 import styled from 'styled-components'
 import debounce from 'lodash/debounce'
