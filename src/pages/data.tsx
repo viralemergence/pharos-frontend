@@ -17,7 +17,7 @@ import TableView from 'components/DataPage/TableView/TableView'
 import type { Row } from 'components/DataPage/TableView/TableView'
 import DataToolbar, { View } from 'components/DataPage/Toolbar/Toolbar'
 
-const ViewContainer = styled.main<{ isFilterPanelOpen: boolean }>`
+const ViewContainer = styled.main`
 	flex: 1;
 	position: relative;
 	width: 100%;
