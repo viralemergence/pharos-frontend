@@ -16,6 +16,7 @@ import MapView from 'components/DataPage/MapView/MapView'
 import TableView from 'components/DataPage/TableView/TableView'
 import type { Row } from 'components/DataPage/TableView/TableView'
 import DataToolbar, { View } from 'components/DataPage/Toolbar/Toolbar'
+import { debounceTimeout } from 'components/DataPage/FilterPanel/constants'
 
 const ViewContainer = styled.main`
 	flex: 1;
