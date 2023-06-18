@@ -1,10 +1,6 @@
-import React, {
-  Dispatch,
-  MutableRefObject,
-  SetStateAction,
-} from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 import styled from 'styled-components'
-import { PlusIcon, BackIcon, XIcon, Field, Filter } from './constants'
+import { PlusIcon, BackIcon, XIcon, Field } from './constants'
 
 const FilterPanelToolbarNav = styled.nav`
   display: flex;
@@ -158,22 +154,14 @@ const FieldSelector = ({
 
 const FilterPanelToolbar = ({
   fields,
-  filters,
-  setFilters,
-  clearFilters,
   isFieldSelectorOpen,
   setIsFieldSelectorOpen,
   setIsFilterPanelOpen,
-  filterListRef,
 }: {
   fields: Record<string, Field>
-  filters: Filter[]
-  setFilters: Dispatch<SetStateAction<Filter[]>>
-  clearFilters: () => void
   isFieldSelectorOpen: boolean
   setIsFieldSelectorOpen: Dispatch<SetStateAction<boolean>>
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
-  filterListRef: MutableRefObject<HTMLUListElement | null>
 }) => {
   return (
     <>
@@ -196,11 +184,6 @@ const FilterPanelToolbar = ({
         >
           <PlusIcon style={{ marginRight: '5px' }} /> Add filter
         </FilterPanelToolbarButton>
-        {filters.length > 0 && (
-          <FilterPanelToolbarButton onClick={() => clearFilters()}>
-            Clear all
-          </FilterPanelToolbarButton>
-        )}
         <FilterPanelCloseButton
           className="close-panel x-icon"
           onClick={() => setIsFilterPanelOpen(false)}
@@ -210,13 +193,8 @@ const FilterPanelToolbar = ({
       </FilterPanelToolbarNav>
       {isFieldSelectorOpen && (
         <FieldSelector
-          addFilterValueSetter={fieldId => {
-            setFilters(filters => [...filters, { fieldId, values: [] }])
+          addFilterValueSetter={_fieldId => {
             setIsFieldSelectorOpen(false)
-            const filterList = filterListRef.current
-            setTimeout(() => {
-              if (filterList) filterList.scrollTop = filterList.scrollHeight
-            }, 0)
           }}
           fields={fields}
         />
