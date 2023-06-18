@@ -17,9 +17,6 @@ import TableView from 'components/DataPage/TableView/TableView'
 import type { Row } from 'components/DataPage/TableView/TableView'
 import DataToolbar, { View } from 'components/DataPage/Toolbar/Toolbar'
 
-import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
-import { debounceTimeout } from 'components/DataPage/FilterPanel/constants'
-
 const ViewContainer = styled.main<{ isFilterPanelOpen: boolean }>`
 	flex: 1;
 	position: relative;
@@ -135,7 +132,6 @@ const DataView = (): JSX.Element => {
 	const page = useRef(1)
 	const debouncing = useRef({ on: false, timeout: null })
 	const [view, setView] = useState<View>(View.globe)
-	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(true)
 
 	const changeView = (view: View) => {
 		window.location.hash = view
@@ -161,13 +157,8 @@ const DataView = (): JSX.Element => {
 			<CMS.SEO />
 			<DataPage>
 				<NavBar />
-				<ViewContainer isFilterPanelOpen={isFilterPanelOpen}>
-					<DataToolbar
-						view={view}
-						changeView={changeView}
-						isFilterPanelOpen={isFilterPanelOpen}
-						setIsFilterPanelOpen={setIsFilterPanelOpen}
-					/>
+				<ViewContainer>
+					<DataToolbar view={view} changeView={changeView} />
 					<MapView
 						projection={view === 'globe' ? 'globe' : 'naturalEarth'}
 						style={{
@@ -175,7 +166,6 @@ const DataView = (): JSX.Element => {
 						}}
 					/>
 					<ViewMain>
-						<FilterPanel isFilterPanelOpen={isFilterPanelOpen} />
 						<TableView
 							loadPublishedRecords={() =>
 								loadPublishedRecords({
