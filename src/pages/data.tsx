@@ -188,6 +188,7 @@ const DataView = (): JSX.Element => {
 	const page = useRef(1)
 	const debouncing = useRef({ on: false, timeout: null })
 	const [view, setView] = useState<View>(View.globe)
+	const [fields, setFields] = useState<Record<string, Field>>({})
 
 	/** Filters that will be applied to the published records */
 	const [filters, setFilters] = useState<Filter[]>([])
@@ -198,7 +199,6 @@ const DataView = (): JSX.Element => {
 	 * color-coding the filtered columns. */
 	const [appliedFilters, setAppliedFilters] = useState<Filter[]>([])
 
-	const [fields, setFields] = useState<Record<string, Field>>({})
 	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
 
 	const changeView = (view: View) => {
