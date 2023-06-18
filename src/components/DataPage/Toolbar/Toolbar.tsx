@@ -58,6 +58,10 @@ const DataToolbarDiv = styled.div<{ isFilterPanelOpen: boolean }>`
 	display: flex;
 	flex-flow: row wrap;
 	gap: 1rem;
+	flex-basis: 60px;
+	@media (max-width: 768px) {
+		${({ isFilterPanelOpen }) => (isFilterPanelOpen ? 'display: none' : '')}
+	}
 `
 
 const DataToolbar = ({
@@ -89,10 +93,7 @@ const DataToolbar = ({
 	)
 
 	return (
-		<DataToolbarDiv
-			className="pharos-data-toolbar"
-			isFilterPanelOpen={isFilterPanelOpen}
-		>
+		<DataToolbarDiv isFilterPanelOpen={isFilterPanelOpen}>
 			<DataToolbarButtonContainer>
 				<DataToolbarButton
 					selected={isFilterPanelOpen}
