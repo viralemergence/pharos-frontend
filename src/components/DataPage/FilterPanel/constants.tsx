@@ -17,6 +17,11 @@ export type Field = {
 export type FilterValues = string[]
 export type Filter = { fieldId: string; values: FilterValues }
 
+export type UpdateFilterFunction = (
+  filterIndex: number,
+  newFilterValues: FilterValues
+) => void
+
 const XIconSvg = styled.svg<{ extraStyle?: string }>`
   ${({ extraStyle }) => extraStyle}
 `

@@ -21,6 +21,7 @@ import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
 import {
 	debounceTimeout,
 	Field,
+	Filter,
 } from 'components/DataPage/FilterPanel/constants'
 
 const ViewContainer = styled.main<{ isFilterPanelOpen: boolean }>`
@@ -172,6 +173,8 @@ const DataView = (): JSX.Element => {
 	const [view, setView] = useState<View>(View.globe)
 
 	const [fields, setFields] = useState<Record<string, Field>>({})
+	const [filters, setFilters] = useState<Filter[]>([])
+	const [appliedFilters, setAppliedFilters] = useState<Filter[]>([])
 
 	// NOTE: Setting to false to better support mobile
 	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
