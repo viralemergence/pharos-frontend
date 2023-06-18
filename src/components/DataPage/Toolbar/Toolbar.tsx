@@ -51,26 +51,19 @@ const DataToolbarRadioButtonContainer = styled(DataToolbarButtonContainer)`
 	box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
 	padding: 5px;
 `
-const DataToolbarDiv = styled.div<{ isFilterPanelOpen: boolean }>`
+const DataToolbarDiv = styled.div`
 	padding: 20px 0px 0 30px;
 	z-index: ${({ theme }) => theme.zIndexes.dataToolbar};
 	display: flex;
 	flex-flow: row wrap;
 	gap: 1rem;
 	flex-basis: 60px;
-	@media (max-width: 768px) {
-		${({ isFilterPanelOpen }) => (isFilterPanelOpen ? 'display: none' : '')}
-	}
 `
 
 const DataToolbar = ({
-	isFilterPanelOpen,
-	setIsFilterPanelOpen,
 	view,
 	changeView,
 }: {
-	isFilterPanelOpen: boolean
-	setIsFilterPanelOpen: (open: boolean) => void
 	view: View
 	changeView: (view: View) => void
 }) => {
@@ -90,18 +83,7 @@ const DataToolbar = ({
 	)
 
 	return (
-		<DataToolbarDiv isFilterPanelOpen={isFilterPanelOpen}>
-			<DataToolbarButtonContainer>
-				<DataToolbarButton
-					selected={isFilterPanelOpen}
-					onClick={() => {
-						setIsFilterPanelOpen(!isFilterPanelOpen)
-					}}
-					width={100}
-				>
-					Filters
-				</DataToolbarButton>
-			</DataToolbarButtonContainer>
+		<DataToolbarDiv>
 			<DataToolbarRadioButtonContainer>
 				<ViewRadioButton forView={View.map} label="Map" />
 				<ViewRadioButton forView={View.globe} label="Globe" />
