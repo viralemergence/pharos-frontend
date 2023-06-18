@@ -1,7 +1,7 @@
 import React from 'react'
 
 import styled from 'styled-components'
-import { RenderItemProps } from '../../../../library/ui/typeahead'
+import { RenderItemProps } from '@talus-analytics/library.ui.typeahead'
 
 import removeSVG from '../../../assets/darkTypeaheadRemove.svg'
 
