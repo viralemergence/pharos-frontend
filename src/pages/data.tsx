@@ -21,7 +21,6 @@ import DataToolbar, { View } from 'components/DataPage/Toolbar/Toolbar'
 import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
 import {
 	loadDebounceDelay,
-	debounceTimeout,
 	Field,
 	Filter,
 	FilterValues,
@@ -129,7 +128,8 @@ const loadPublishedRecords = async ({
 	setReachedLastPage: Dispatch<SetStateAction<boolean>>
 	debouncing: MutableRefObject<Debouncing>
 }) => {
-	// Switch on debouncing for debounceTimeout milliseconds
+	// Switch debouncing on for 3 seconds
+	const debounceTimeout = 3000
 	debouncing.current.on = true
 	if (debouncing.current.timeout) clearTimeout(debouncing.current.timeout)
 	debouncing.current.timeout = setTimeout(() => {
