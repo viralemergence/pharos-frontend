@@ -60,7 +60,7 @@ const NoRecordsFound = styled.div`
 
 interface TableViewProps {
   appliedFilters: Filter[]
-  loadPublishedRecords: (options?: { appendResults: boolean }) => void
+  loadPublishedRecords: () => void
   loading: boolean
   page: React.MutableRefObject<number>
   publishedRecords: Row[]
