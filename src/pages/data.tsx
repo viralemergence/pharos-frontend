@@ -16,7 +16,6 @@ import MapView from 'components/DataPage/MapView/MapView'
 import TableView from 'components/DataPage/TableView/TableView'
 import type { Row } from 'components/DataPage/TableView/TableView'
 import DataToolbar, { View } from 'components/DataPage/Toolbar/Toolbar'
-import { debounceTimeout } from 'components/DataPage/FilterPanel/constants'
 
 const ViewContainer = styled.main`
 	flex: 1;
@@ -90,7 +89,8 @@ const loadPublishedRecords = async ({
 	setReachedLastPage,
 	debouncing,
 }: LoadPublishedRecordsOptions) => {
-	// Switch on debouncing for debounceTimeout milliseconds
+	// Switch debouncing on for 3 seconds
+	const debounceTimeout = 3000
 	debouncing.current.on = true
 	if (debouncing.current.timeout) clearTimeout(debouncing.current.timeout)
 	debouncing.current.timeout = setTimeout(() => {
