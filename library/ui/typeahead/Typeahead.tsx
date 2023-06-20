@@ -294,6 +294,15 @@ const Typeahead = ({
     }
   }
 
+  const handleClickItem = (item: Item) => {
+    onAdd(item)
+    setFocusedElementIndex(prev => {
+      if (prev === -1) return prev
+      if (prev === items.length + values.length - 1) return prev
+      return prev + 1
+    })
+  }
+
   const unselectedItems =
     results.length && searchString !== values[0]?.label ? results : items
 
@@ -321,7 +330,7 @@ const Typeahead = ({
       }}
       onBlur={e => {
         // Ignore bubbled blur events
-        if (containerRef?.current?.contains(e.relatedTarget as Node)) return
+        if (containerRef?.current?.contains(e.relatedTarget)) return
         reset()
         unprotectFocus()
       }}
@@ -399,10 +408,7 @@ const Typeahead = ({
               <ItemButton
                 key={item.key}
                 tabIndex={-1}
-                onClick={() => {
-                  onAdd(item)
-                  setFocusedElementIndex(prev => (prev === -1 ? 1 : prev + 1))
-                }}
+                onClick={() => handleClickItem(item)}
                 style={{ color: fontColor }}
                 focusHoverColor={hoverColor}
               >
