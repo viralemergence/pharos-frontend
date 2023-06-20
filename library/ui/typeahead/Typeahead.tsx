@@ -368,10 +368,8 @@ const Typeahead = ({
           className="pharos-typeahead-results"
           resultsMaxHeight={resultsMaxHeight}
           ref={resultsRef}
-          onFocus={e => {
-            // TODO: Is this check needed?
-            if (!containerRef?.current?.contains(e.relatedTarget))
-              protectFocus()
+          onFocus={() => {
+            protectFocus()
           }}
           onBlur={e => {
             if (!containerRef?.current?.contains(e.relatedTarget))
