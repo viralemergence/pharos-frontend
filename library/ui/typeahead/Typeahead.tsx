@@ -16,7 +16,7 @@ import {
   Results,
   ItemButton,
   SearchIcon,
-  Values as Values,
+  Values,
   Items,
 } from './DisplayComponents'
 
