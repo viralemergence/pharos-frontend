@@ -308,7 +308,8 @@ const Typeahead = ({
       }}
       onBlur={e => {
         // Ignore bubbled blur events
-        if (containerRef?.current?.contains(e.relatedTarget as Node)) return
+        if (e.relatedTarget && containerRef?.current?.contains(e.relatedTarget))
+          return
         reset()
       }}
       className={className}
