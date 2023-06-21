@@ -114,7 +114,7 @@ export const ItemButton = styled.button<{
   display: flex;
   justify-content: space-between;
 
-  &:focus,
+  &:focus-visible,
   &:hover {
     background-color: ${({ focusHoverColor }) => focusHoverColor};
   }
