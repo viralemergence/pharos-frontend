@@ -194,6 +194,10 @@ const Typeahead = ({
     if (disabled && !values.length) setSearchString('')
   }, [disabled, values])
 
+  useEffect(() => {
+    if (values.length && !multiselect) setSearchString(values[0]?.label)
+  }, [values, multiselect])
+
   // handle focus changes
   useLayoutEffect(() => {
     if (!showResults || !resultsRef.current) return
