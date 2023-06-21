@@ -351,6 +351,7 @@ const Typeahead = ({
           className="pharos-typeahead-results"
           resultsMaxHeight={resultsMaxHeight}
           ref={resultsRef}
+          tabIndex={0}
         >
           {multiselect && values.length > 0 && (
             <Values borderColor={borderColor}>
