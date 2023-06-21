@@ -286,8 +286,9 @@ const Typeahead = ({
     }
   }
 
-  const handleClickItem = (item: Item) => {
-    onAdd(item)
+  /** Set the focused element to the next button in the list. However, if the
+   * focused element is the input, it remains focused. */
+  const moveFocusDown = () => {
     setFocusedElementIndex(prev => {
       if (prev === -1) return prev
       if (prev === items.length + values.length - 1) return prev
@@ -378,7 +379,7 @@ const Typeahead = ({
                 onClick={() => {
                   onAdd(item)
                   if (multiselect) {
-                    handleClickItem(item)
+                    moveFocusDown()
                   } else {
                     setSearchString(item.label)
                     setShowResults(false)
