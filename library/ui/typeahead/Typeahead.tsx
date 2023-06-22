@@ -286,16 +286,6 @@ const Typeahead = ({
     }
   }
 
-  /** Set the focused element to the next button in the list. However, if the
-   * focused element is the input, it remains focused. */
-  const moveFocusDown = () => {
-    setFocusedElementIndex(prev => {
-      if (prev === -1) return prev
-      if (prev === items.length + values.length - 1) return prev
-      return prev + 1
-    })
-  }
-
   const unselectedItems =
     results.length && searchString !== values[0]?.label ? results : items
 
@@ -356,13 +346,13 @@ const Typeahead = ({
         >
           {multiselect && values.length > 0 && (
             <Values borderColor={borderColor}>
-              {values.map((item: Item) => (
+              {values.map((item: Item, index) => (
                 <ItemButton
                   key={item.key}
                   tabIndex={-1}
                   onClick={() => {
+                    setFocusedElementIndex(index)
                     if (onRemove) onRemove(item)
-                    setFocusedElementIndex(prev => (prev >= 1 ? prev - 1 : 0))
                   }}
                   style={{ color: fontColor }}
                   focusHoverColor={selectedHoverColor}
@@ -373,14 +363,22 @@ const Typeahead = ({
             </Values>
           )}
           <Items>
-            {unselectedItems.map((item: Item) => (
+            {unselectedItems.map((item: Item, index) => (
               <ItemButton
                 key={item.key}
                 tabIndex={-1}
                 onClick={() => {
+                  // TODO: `onAdd` is not guaranteed to run before
+                  // `setFocusedElementIndex`, which could produce a race
+                  // condition. One solution might be to provide a callback,
+                  // `() => setFocusedElementIndex(values.length + index)`, as
+                  // an additional argument to `setFilters` (which is triggered
+                  // by `onAdd`). This would require adding a callback
+                  // parameter to `onAdd` (and, higher up, in `updateFilter`).
+                  // That would be a breaking change.
                   onAdd(item)
                   if (multiselect) {
-                    moveFocusDown()
+                    setFocusedElementIndex(values.length + index + 1)
                   } else {
                     setSearchString(item.label)
                     setShowResults(false)
