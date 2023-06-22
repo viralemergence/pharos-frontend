@@ -378,7 +378,13 @@ const Typeahead = ({
                   // That would be a breaking change.
                   onAdd(item)
                   if (multiselect) {
-                    setFocusedElementIndex(values.length + index + 1)
+                    let newIndex = values.length + index + 1
+                    // Don't go beyond the end of the list
+                    newIndex = Math.min(
+                      newIndex,
+                      values.length + unselectedItems.length - 1
+                    )
+                    setFocusedElementIndex(newIndex)
                   } else {
                     setSearchString(item.label)
                     setShowResults(false)
