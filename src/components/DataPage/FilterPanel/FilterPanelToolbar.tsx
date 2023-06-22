@@ -12,6 +12,7 @@ const FilterPanelToolbarNav = styled.nav`
   justify-content: space-between;
   padding-bottom: 20px;
   padding: 14px 40px;
+  position: relative;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   @media (max-width: 768px) {
     padding: 14px 20px;
