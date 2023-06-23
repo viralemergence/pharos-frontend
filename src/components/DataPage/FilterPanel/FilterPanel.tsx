@@ -58,6 +58,7 @@ const Panel = styled.aside<{ open: boolean }>`
   transition: margin-left 300ms cubic-bezier(0.4, 0, 0.2, 1);
   z-index: ${({ theme }) => theme.zIndexes.dataPanel};
   position: relative;
+  min-width: min(100%, 400px);
   @media (max-width: 768px) {
     background-color: ${({ theme }) => theme.lightBlack};
     display: ${({ open }) => (open ? 'block' : 'none')};
