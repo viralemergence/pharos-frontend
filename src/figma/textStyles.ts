@@ -104,4 +104,78 @@ export default {
 	text-decoration: none;
 	text-transform: none;
 `,
+<<<<<<< HEAD
+||||||| merged common ancestors
+	pharosLogoText: `
+	font-size: 30px;
+	font-family: "Montserrat", helvetica, arial, sans-serif;
+	font-weight: 400;
+	font-style: normal;
+	text-decoration: none;
+	text-transform: none;
+`,
+	extraSmallParagraphUnderline: `
+	font-size: 14px;
+	font-family: "Open Sans", helvetica, arial, sans-serif;
+	font-weight: 400;
+	font-style: normal;
+	line-height: 22px;
+	text-decoration: underline;
+	text-transform: none;
+`,
+	bigMarketingMobile: `
+	font-size: 40px;
+	font-family: "Overpass", helvetica, arial, sans-serif;
+	font-weight: 400;
+	font-style: normal;
+	line-height: 50px;
+	text-decoration: none;
+	text-transform: none;
+`,
+=======
+	pharosLogoText: `
+	font-size: 30px;
+	font-family: "Montserrat", helvetica, arial, sans-serif;
+	font-weight: 400;
+	font-style: normal;
+	text-decoration: none;
+	text-transform: none;
+`,
+	extraSmallParagraphUnderline: `
+	font-size: 14px;
+	font-family: "Open Sans", helvetica, arial, sans-serif;
+	font-weight: 400;
+	font-style: normal;
+	line-height: 22px;
+	text-decoration: underline;
+	text-transform: none;
+`,
+	bigMarketingMobile: `
+	font-size: 40px;
+	font-family: "Overpass", helvetica, arial, sans-serif;
+	font-weight: 400;
+	font-style: normal;
+	line-height: 50px;
+	text-decoration: none;
+	text-transform: none;
+`,
+	smallMarketing: `
+	font-size: 24px;
+	font-family: "Open Sans", helvetica, arial, sans-serif;
+	font-weight: 600;
+	font-style: normal;
+	line-height: 32px;
+	text-decoration: none;
+	text-transform: none;
+	`,
+	smallMarketingMobile: `
+	font-size: 16px;
+	font-family: "Open Sans", helvetica, arial, sans-serif;
+	font-weight: 600;
+	font-style: normal;
+	line-height: 25px;
+	text-decoration: none;
+	text-transform: none;
+	`,
+>>>>>>> review
 }
