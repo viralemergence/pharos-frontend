@@ -202,8 +202,11 @@ const Typeahead = ({
       return
     }
 
-    const [values, items] = [...(resultsRef.current?.children || [])]
-    const allButtons = [...(values?.children || []), ...(items?.children || [])]
+    const [valuesDiv, itemsDiv] = [...(resultsRef.current?.children || [])]
+    const allButtons = [
+      ...(valuesDiv?.children || []),
+      ...(itemsDiv?.children || []),
+    ]
 
     const target = allButtons[focusedElementIndex]
 
@@ -223,7 +226,7 @@ const Typeahead = ({
 
     if (!(target instanceof HTMLElement)) return
 
-    // scroll the list smoothly so that the focused element is
+    // Scroll the list smoothly so that the focused element is
     // exactly at the bottom, overriding default scrolling
     const { top: buttonTop, bottom: buttonBottom } =
       target.getBoundingClientRect()
@@ -237,6 +240,7 @@ const Typeahead = ({
 
     // apply scroll offset
     resultsRef.current.scrollTop += delta
+
     // focus after scroll
     target.focus()
   }, [focusedElementIndex, values, showResults])
@@ -273,11 +277,10 @@ const Typeahead = ({
   const handleKeyDownFromSearchBar: KeyboardEventHandler<
     HTMLInputElement
   > = e => {
-    switch (e.key) {
-      case 'Enter':
-        e.preventDefault()
-        if (results[0] || items[0]) onAdd(results[0] || items[0])
-        return
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      const firstUnselectedItem = [...results, ...items][0]
+      if (firstUnselectedItem) onAdd(firstUnselectedItem)
     }
   }
 
@@ -293,7 +296,7 @@ const Typeahead = ({
         setShowResults(true)
       }}
       onBlur={e => {
-        // Ignore bubbled blur events
+        // Ignore blur events where focus moves to another element inside the container
         if (containerRef?.current?.contains(e.relatedTarget)) return
         reset()
       }}
@@ -320,7 +323,7 @@ const Typeahead = ({
         style={{ backgroundColor, borderColor }}
         fontColor={fontColor}
       />
-      <SearchIcon searchString={searchString} {...{ iconSVG, iconLeft }} />
+      <SearchIcon {...{ searchString, iconSVG, iconLeft }} />
       <Expander
         floating
         open={showResults}
@@ -363,23 +366,18 @@ const Typeahead = ({
                 key={item.key}
                 tabIndex={-1}
                 onClick={() => {
-                  // TODO: `onAdd` is not guaranteed to run before
+                  // NOTE: `onAdd` is not guaranteed to run before
                   // `setFocusedElementIndex`, which could produce a race
-                  // condition. One solution might be to provide a callback,
-                  // `() => setFocusedElementIndex(values.length + index)`, as
-                  // an additional argument to `setFilters` (which is triggered
-                  // by `onAdd`). This would require adding a callback
-                  // parameter to `onAdd` (and, higher up, in `updateFilter`).
-                  // That would be a breaking change.
+                  // condition.
                   onAdd(item)
                   if (multiselect) {
-                    let newIndex = values.length + index + 1
+                    let newFocusedElementIndex = values.length + index + 1
                     // Don't go beyond the end of the list
-                    newIndex = Math.min(
-                      newIndex,
+                    newFocusedElementIndex = Math.min(
+                      newFocusedElementIndex,
                       values.length + unselectedItems.length - 1
                     )
-                    setFocusedElementIndex(newIndex)
+                    setFocusedElementIndex(newFocusedElementIndex)
                   } else {
                     setSearchString(item.label)
                     setShowResults(false)
