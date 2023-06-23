@@ -40,8 +40,7 @@
     "policy": {
       "dependencies": {},
       "peerDependencies": {}
-    },
-    "linkCoreAspects": true
+    }
   },
   /**
    * workspace variants allow to set different subsets of configuration for components in your
