@@ -41,7 +41,7 @@ const ViewContainer = styled.main<{ isFilterPanelOpen: boolean }>`
 		}
 	}
 	.pharos-panel {
-		min-width: 400px;
+		min-width: min(400px, 100%);
 	}
 	main {
 		display: flex;
