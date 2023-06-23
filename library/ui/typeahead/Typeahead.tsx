@@ -280,7 +280,7 @@ const Typeahead = ({
     if (e.key === 'Enter') {
       e.preventDefault()
       const firstUnselectedItem = [...results, ...items][0]
-      if (firstUnselectedItem) onAdd(firstUnselectedItem)
+      if (firstUnselectedItem) addItemAndUpdateSummary(firstUnselectedItem)
     }
   }
 
@@ -288,6 +288,24 @@ const Typeahead = ({
     results.length && searchString !== values[0]?.label ? results : items
 
   const containerRef = useRef<HTMLFormElement>(null)
+
+  const lastItemAddedRef: React.MutableRefObject<Item | null> = useRef(null)
+  const lastItemRemovedRef: React.MutableRefObject<Item | null> = useRef(null)
+
+  const addItemAndUpdateSummary = (item: Item) => {
+    onAdd(item)
+    lastItemAddedRef.current = item
+    lastItemRemovedRef.current = null
+  }
+  const removeItemAndUpdateSummary = (item: Item) => {
+    if (onRemove) onRemove(item)
+    lastItemRemovedRef.current = item
+    lastItemAddedRef.current = null
+  }
+
+  const resultsDivId =
+    `${inputId}-results` ||
+    `pharos-typeahead-results-${Math.random().toString(36).slice(2)}`
 
   return (
     <Container
@@ -322,6 +340,10 @@ const Typeahead = ({
         iconLeft={iconLeft}
         style={{ backgroundColor, borderColor }}
         fontColor={fontColor}
+        role="combobox"
+        aria-autocomplete="list"
+        aria-expanded={showResults}
+        aria-controls={resultsDivId}
       />
       <SearchIcon {...{ searchString, iconSVG, iconLeft }} />
       <Expander
@@ -341,35 +363,45 @@ const Typeahead = ({
           resultsMaxHeight={resultsMaxHeight}
           ref={resultsRef}
           tabIndex={0}
+          id={resultsDivId}
         >
           {multiselect && values.length > 0 && (
-            <Values borderColor={borderColor}>
+            <Values
+              borderColor={borderColor}
+              role="listbox"
+              aria-multiselectable={multiselect ? 'true' : 'false'}
+            >
               {values.map((item: Item, index) => (
                 <ItemButton
                   key={item.key}
                   tabIndex={-1}
                   onClick={() => {
                     setFocusedElementIndex(index)
-                    if (onRemove) onRemove(item)
+                    removeItemAndUpdateSummary(item)
                   }}
                   style={{ color: fontColor }}
                   focusHoverColor={selectedHoverColor}
+                  role="option"
+                  aria-selected="true"
                 >
                   <RenderItem selected item={item} />
                 </ItemButton>
               ))}
             </Values>
           )}
-          <Items>
+          <Items
+            role="listbox"
+            aria-multiselectable={multiselect ? 'true' : 'false'}
+          >
             {unselectedItems.map((item: Item, index) => (
               <ItemButton
                 key={item.key}
                 tabIndex={-1}
                 onClick={() => {
-                  // NOTE: `onAdd` is not guaranteed to run before
+                  // NOTE: `addItemAndUpdateSummary` is not guaranteed to run before
                   // `setFocusedElementIndex`, which could produce a race
                   // condition.
-                  onAdd(item)
+                  addItemAndUpdateSummary(item)
                   if (multiselect) {
                     let newFocusedElementIndex = values.length + index + 1
                     // Don't go beyond the end of the list
@@ -385,6 +417,10 @@ const Typeahead = ({
                 }}
                 style={{ color: fontColor }}
                 focusHoverColor={hoverColor}
+                role="option"
+                aria-setsize={unselectedItems.length}
+                aria-posinset={index}
+                aria-selected="false"
               >
                 <RenderItem item={item} />
               </ItemButton>
@@ -392,11 +428,39 @@ const Typeahead = ({
           </Items>
         </Results>
       </Expander>
-      <ScreenReaderOnly>
-        When options are available, use the Up and Down arrows on your keyboard
-        to review them, and the Enter key to select one.
-      </ScreenReaderOnly>
+      <TypeaheadSelectionSummaryForScreenReader
+        lastItemAdded={lastItemAddedRef.current?.label}
+        lastItemRemoved={lastItemRemovedRef.current?.label}
+        values={values}
+      />
     </Container>
+  )
+}
+
+/** Serves as a replacement for the input placeholder for screen readers */
+const TypeaheadSelectionSummaryForScreenReader = ({
+  lastItemAdded,
+  lastItemRemoved,
+  values,
+}: {
+  lastItemAdded: string | undefined
+  lastItemRemoved: string | undefined
+  values: Item[]
+}) => {
+  return (
+    <ScreenReaderOnly
+      // This `key` prop makes this div re-render when the message
+      // changes. This makes the screen reader read the whole message, not just
+      // the new part
+      key={values.length}
+      aria-live="polite"
+    >
+      {lastItemAdded && <>{lastItemAdded} added to selection.</>}
+      {lastItemRemoved && <>{lastItemRemoved} removed from selection.</>}
+      {values.length}
+      {values.length === 1 ? 'item' : 'items'}
+      selected
+    </ScreenReaderOnly>
   )
 }
 
