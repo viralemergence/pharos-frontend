@@ -163,8 +163,6 @@ const Typeahead = ({
   ariaLabel,
   inputId,
 }: TypeaheadProps) => {
-  if (!items) throw new Error('Item array in multiselect cannot be undefined')
-
   const [searchString, setSearchString] = useState('')
   const [showResults, setShowResults] = useState(false)
 
