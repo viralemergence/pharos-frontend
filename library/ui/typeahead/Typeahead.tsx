@@ -178,7 +178,9 @@ const Typeahead = ({
     () => new Fuse(items, { keys: searchKeys }),
     [items, searchKeys]
   )
-  const results = fuse.search(searchString).map(({ item }) => item)
+  const results = fuse
+    .search(searchString)
+    .map(({ item }: { item: Item }) => item)
 
   const reset = () => {
     setShowResults(false)
@@ -371,7 +373,7 @@ const Typeahead = ({
               role="listbox"
               aria-multiselectable={multiselect ? 'true' : 'false'}
             >
-              {values.map((item: Item, index) => (
+              {values.map((item: Item, index: number) => (
                 <ItemButton
                   key={item.key}
                   tabIndex={-1}
@@ -393,7 +395,7 @@ const Typeahead = ({
             role="listbox"
             aria-multiselectable={multiselect ? 'true' : 'false'}
           >
-            {unselectedItems.map((item: Item, index) => (
+            {unselectedItems.map((item: Item, index: number) => (
               <ItemButton
                 key={item.key}
                 tabIndex={-1}
