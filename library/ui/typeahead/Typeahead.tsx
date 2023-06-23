@@ -202,10 +202,10 @@ const Typeahead = ({
       return
     }
 
-    const [valuesDiv, itemsDiv] = [...(resultsRef.current?.children || [])]
+    const [valuesDiv, itemsDiv] = Array.from(resultsRef.current?.children) || []
     const allButtons = [
-      ...(valuesDiv?.children || []),
-      ...(itemsDiv?.children || []),
+      ...(Array.from(valuesDiv?.children) || []),
+      ...(Array.from(itemsDiv?.children) || []),
     ]
 
     const target = allButtons[focusedElementIndex]
