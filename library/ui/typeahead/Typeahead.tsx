@@ -305,9 +305,13 @@ const Typeahead = ({
     lastItemAddedRef.current = null
   }
 
-  const resultsDivId = inputId
-    ? `${inputId}-results`
-    : `pharos-typeahead-results-${Math.random().toString(36).slice(2)}`
+  const resultsDivId = useMemo(
+    () =>
+      inputId
+        ? `${inputId}-results`
+        : `pharos-typeahead-results-${Math.random().toString(36).slice(2)}`,
+    []
+  )
 
   return (
     <Container
@@ -362,10 +366,10 @@ const Typeahead = ({
         <Results
           style={{ backgroundColor, borderColor }}
           className="pharos-typeahead-results"
+          id={resultsDivId}
           resultsMaxHeight={resultsMaxHeight}
           ref={resultsRef}
           tabIndex={0}
-          id={resultsDivId}
         >
           {multiselect && values.length > 0 && (
             <Values
