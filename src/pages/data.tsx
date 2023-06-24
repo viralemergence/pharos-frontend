@@ -40,9 +40,6 @@ const ViewContainer = styled.main<{ isFilterPanelOpen: boolean }>`
 			${({ isFilterPanelOpen }) => (isFilterPanelOpen ? 'display: none' : '')}
 		}
 	}
-	.pharos-panel {
-		min-width: 400px;
-	}
 	main {
 		display: flex;
 		flex-flow: row nowrap;
