@@ -305,9 +305,9 @@ const Typeahead = ({
     lastItemAddedRef.current = null
   }
 
-  const resultsDivId =
-    `${inputId}-results` ||
-    `pharos-typeahead-results-${Math.random().toString(36).slice(2)}`
+  const resultsDivId = inputId
+    ? `${inputId}-results`
+    : `pharos-typeahead-results-${Math.random().toString(36).slice(2)}`
 
   return (
     <Container
