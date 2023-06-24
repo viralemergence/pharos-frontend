@@ -410,12 +410,18 @@ const Typeahead = ({
                     // `setFocusedElementIndex`, which could produce a race condition.
                     addItemAndUpdateSummary(item)
                     if (multiselect) {
-                      // NOTE: Moving the focus to the next button after adding
-                      // an item keeps the focus outline in the same place
-                      // visually, unless the newly selected item is visible, in
-                      // which case the focus appears to move down toward the
-                      // bottom edge of the results div
-                      let newFocusedElementIndex = itemIndex + 1
+                      const resultsDiv = resultsRef.current
+                      const lastSelectedItem = Array.from(
+                        resultsDiv?.children[0].children ?? []
+                      )?.at(-1)
+                      // Move focus only if no selected items are visible
+                      const isLastSelectedItemVisible =
+                        lastSelectedItem &&
+                        resultsDiv &&
+                        lastSelectedItem.getBoundingClientRect().bottom >
+                          resultsDiv.getBoundingClientRect().top
+                      const increment = isLastSelectedItemVisible ? 0 : 1
+                      let newFocusedElementIndex = itemIndex + increment
                       // Don't go beyond the end of the list
                       newFocusedElementIndex = Math.min(
                         newFocusedElementIndex,
