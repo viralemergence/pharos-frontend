@@ -125,19 +125,18 @@ export interface TypeaheadProps {
   inputId?: string
 }
 
-const isVisibleInContainer = (
-  container: HTMLElement | null,
-  percentageVisible = 1,
-  elem: Element
-) =>
-  container &&
-  elem instanceof HTMLElement &&
-  elem.offsetTop + elem.clientHeight * (1 - percentageVisible) >=
-    container.scrollTop &&
-  elem.offsetTop <=
-    container.scrollTop +
-      container.clientHeight -
-      elem.clientHeight * (1 - percentageVisible)
+const isVisibleInContainer = (container: HTMLElement | null, elem: Element) => {
+  if (!container) return false
+  if (!(elem instanceof HTMLElement)) return false
+  const topOfElementBelowTopOfContainer = elem.offsetTop >= container.scrollTop
+  const bottomOfElementAboveBottomOfContainer =
+    elem.offsetTop + elem.clientHeight <=
+    container.scrollTop + container.clientHeight
+
+  return (
+    topOfElementBelowTopOfContainer && bottomOfElementAboveBottomOfContainer
+  )
+}
 
 const Typeahead = ({
   multiselect = false,
@@ -168,6 +167,8 @@ const Typeahead = ({
   // The index of the focused item in the typeahead. This is either the input
   // (whose index is -1) or a button.
   const [focusedElementIndex, setFocusedElementIndex] = useState<number>(-1)
+
+  console.log('focusedElementIndex', focusedElementIndex)
 
   const inputRef = useRef<HTMLInputElement>(null)
   const resultsRef = useRef<HTMLDivElement>(null)
@@ -237,7 +238,7 @@ const Typeahead = ({
   }, [focusedElementIndex, showResults])
 
   const isVisibleInResultsDiv = (button: Element) =>
-    isVisibleInContainer(resultsRef.current, 0.5, button)
+    isVisibleInContainer(resultsRef.current, button)
 
   /** Move the focus up or down the list by the given delta, ensuring that the
    * focused element is visible */
@@ -256,10 +257,21 @@ const Typeahead = ({
       if (isVisibleInResultsDiv(buttons[prev])) {
         return proposedIndexToFocus
       } else {
+        console.log('delta', delta)
+        console.log(
+          'buttons.findIndex(isVisibleInResultsDiv)',
+          buttons.findIndex(isVisibleInResultsDiv)
+        )
+        console.log(
+          'buttons.findLastIndex(isVisibleInResultsDiv)',
+          buttons.findLastIndex(isVisibleInResultsDiv)
+        )
         return (
           (delta > 0
-            ? buttons.findIndex(isVisibleInResultsDiv)
-            : buttons.findLastIndex(isVisibleInResultsDiv)) ??
+            ? // First visible index
+              buttons.findIndex(isVisibleInResultsDiv)
+            : // Last visible index
+              buttons.findLastIndex(isVisibleInResultsDiv)) ??
           proposedIndexToFocus
         )
       }
