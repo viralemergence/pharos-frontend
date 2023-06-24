@@ -373,18 +373,21 @@ const Typeahead = ({
               role="listbox"
               aria-multiselectable={multiselect ? 'true' : 'false'}
             >
-              {values.map((item: Item, index: number) => (
+              {values.map((item: Item, loopIndex: number) => (
                 <ItemButton
                   key={item.key}
                   tabIndex={-1}
                   onClick={() => {
-                    setFocusedElementIndex(index)
+                    setFocusedElementIndex(loopIndex)
                     removeItemAndUpdateSummary(item)
                   }}
                   style={{ color: fontColor }}
                   focusHoverColor={selectedHoverColor}
                   role="option"
                   aria-selected="true"
+                  aria-setsize={values.length}
+                  aria-posinset={loopIndex}
+                  onMouseEnter={() => setFocusedElementIndex(loopIndex)}
                 >
                   <RenderItem selected item={item} />
                 </ItemButton>
@@ -395,38 +398,46 @@ const Typeahead = ({
             role="listbox"
             aria-multiselectable={multiselect ? 'true' : 'false'}
           >
-            {unselectedItems.map((item: Item, index: number) => (
-              <ItemButton
-                key={item.key}
-                tabIndex={-1}
-                onClick={() => {
-                  // NOTE: `addItemAndUpdateSummary` is not guaranteed to run before
-                  // `setFocusedElementIndex`, which could produce a race
-                  // condition.
-                  addItemAndUpdateSummary(item)
-                  if (multiselect) {
-                    let newFocusedElementIndex = values.length + index + 1
-                    // Don't go beyond the end of the list
-                    newFocusedElementIndex = Math.min(
-                      newFocusedElementIndex,
-                      values.length + unselectedItems.length - 1
-                    )
-                    setFocusedElementIndex(newFocusedElementIndex)
-                  } else {
-                    setSearchString(item.label)
-                    setShowResults(false)
-                  }
-                }}
-                style={{ color: fontColor }}
-                focusHoverColor={hoverColor}
-                role="option"
-                aria-setsize={unselectedItems.length}
-                aria-posinset={index}
-                aria-selected="false"
-              >
-                <RenderItem item={item} />
-              </ItemButton>
-            ))}
+            {unselectedItems.map((item: Item, loopIndex: number) => {
+              const itemIndex = values.length + loopIndex
+              return (
+                <ItemButton
+                  key={item.key}
+                  tabIndex={-1}
+                  onMouseEnter={() => setFocusedElementIndex(itemIndex)}
+                  onClick={() => {
+                    // NOTE: `addItemAndUpdateSummary` is not guaranteed to run before
+                    // `setFocusedElementIndex`, which could produce a race condition.
+                    addItemAndUpdateSummary(item)
+                    if (multiselect) {
+                      // NOTE: Moving the focus to the next button after adding
+                      // an item keeps the focus outline in the same place
+                      // visually, unless the newly selected item is visible, in
+                      // which case the focus appears to move down toward the
+                      // bottom edge of the results div
+                      let newFocusedElementIndex = itemIndex + 1
+                      // Don't go beyond the end of the list
+                      newFocusedElementIndex = Math.min(
+                        newFocusedElementIndex,
+                        values.length + unselectedItems.length - 1
+                      )
+                      setFocusedElementIndex(newFocusedElementIndex)
+                    } else {
+                      setSearchString(item.label)
+                      setShowResults(false)
+                    }
+                  }}
+                  style={{ color: fontColor }}
+                  focusHoverColor={hoverColor}
+                  role="option"
+                  aria-setsize={unselectedItems.length}
+                  aria-posinset={loopIndex}
+                  aria-selected="false"
+                >
+                  <RenderItem item={item} />
+                </ItemButton>
+              )
+            })}
           </Items>
         </Results>
       </Expander>
