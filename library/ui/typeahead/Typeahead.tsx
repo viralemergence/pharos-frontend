@@ -132,19 +132,20 @@ const isPartlyVisibleInContainer = (
 ) => {
   if (!container) return false
   if (!(elem instanceof HTMLElement)) return false
-  const bottomOfElement = elem.offsetTop + elem.clientHeight
-  let topOfContainer = container.scrollTop
-  let bottomOfContainer = container.scrollTop + container.clientHeight
+
+  const { top: elemTop, bottom: elemBottom } = elem.getBoundingClientRect()
+  const { top: containerTop, bottom: containerBottom } =
+    container.getBoundingClientRect()
 
   // Since we are testing whether the element is *partly* visible in the
   // container, we pretend the container is a bit taller than it is
   const partOfElementHeight = percentageVisible * elem.clientHeight
-  topOfContainer -= partOfElementHeight
-  bottomOfContainer += partOfElementHeight
+  const containerTopAdjusted = containerTop - partOfElementHeight
+  const containerBottomAdjusted = containerBottom + partOfElementHeight
 
-  const topOfElementBelowTopOfContainer = elem.offsetTop >= topOfContainer
+  const topOfElementBelowTopOfContainer = elemTop >= containerTopAdjusted
   const bottomOfElementAboveBottomOfContainer =
-    bottomOfElement <= bottomOfContainer
+    elemBottom <= containerBottomAdjusted
   return (
     topOfElementBelowTopOfContainer && bottomOfElementAboveBottomOfContainer
   )
@@ -179,8 +180,6 @@ const Typeahead = ({
   // The index of the focused item in the typeahead. This is either the input
   // (whose index is -1) or a button.
   const [focusedElementIndex, setFocusedElementIndex] = useState<number>(-1)
-
-  console.log('focusedElementIndex', focusedElementIndex)
 
   const inputRef = useRef<HTMLInputElement>(null)
   const resultsRef = useRef<HTMLDivElement>(null)
@@ -266,34 +265,18 @@ const Typeahead = ({
       // avoid going beyond the end of the list
       const proposedIndexToFocus = Math.min(prev + delta, buttons.length - 1)
 
-      if (isVisibleInResultsDiv(buttons[prev], 1)) {
+      if (isVisibleInResultsDiv(buttons[prev], 0.1)) {
         return proposedIndexToFocus
       } else {
-        // TODO: fixing
-        const visibleButtons = buttons.filter(isVisibleInResultsDiv)
-        console.log('visibleButtons.length', visibleButtons.length)
-        // visibleButtons.forEach(
-        //   button =>
-        //     ((button as HTMLButtonElement).style.backgroundColor = 'red')
-        // )
-
-        console.log('delta', delta)
-        console.log(
-          'buttons.findIndex(isVisibleInResultsDiv)',
-          buttons.findIndex(isVisibleInResultsDiv)
-        )
-        console.log(
-          'buttons.findLastIndex(isVisibleInResultsDiv)',
-          buttons.findLastIndex(isVisibleInResultsDiv)
-        )
-        return (
-          (delta > 0
-            ? // First visible index
-              buttons.findIndex(isVisibleInResultsDiv)
-            : // Last visible index
-              buttons.findLastIndex(isVisibleInResultsDiv)) ??
-          proposedIndexToFocus
-        )
+        const indexOfVisibleButton =
+          delta > 0
+            ? // If focus is supposed to move downward, try to focus the
+              // visible button nearest the top of the container
+              buttons.findIndex(button => isVisibleInResultsDiv(button))
+            : // If focus is supposed to move upward, try to focus the visible
+              // button nearest the bottom of the container
+              buttons.findLastIndex(button => isVisibleInResultsDiv(button))
+        return indexOfVisibleButton ?? proposedIndexToFocus
       }
     })
   }
