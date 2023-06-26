@@ -246,7 +246,7 @@ const Typeahead = ({
 
     // focus after scroll
     target.focus()
-  }, [focusedElementIndex, showResults])
+  }, [focusedElementIndex, values, showResults])
 
   const isVisibleInResultsDiv = (button: Element, percentageVisible = 0.5) =>
     isPartlyVisibleInContainer(resultsRef.current, button, percentageVisible)
@@ -408,7 +408,6 @@ const Typeahead = ({
                   onClick={() => {
                     removeItemAndUpdateSummary(item)
                     setTimeout(() => {
-                      console.log('loopIndex', loopIndex)
                       setFocusedElementIndex(loopIndex)
                     }, 500)
                   }}
