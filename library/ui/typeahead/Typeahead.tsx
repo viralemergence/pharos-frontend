@@ -406,8 +406,11 @@ const Typeahead = ({
                   key={item.key}
                   tabIndex={-1}
                   onClick={() => {
-                    setFocusedElementIndex(loopIndex)
                     removeItemAndUpdateSummary(item)
+                    setTimeout(() => {
+                      console.log('loopIndex', loopIndex)
+                      setFocusedElementIndex(loopIndex)
+                    }, 500)
                   }}
                   style={{ color: fontColor }}
                   focusHoverColor={selectedHoverColor}
