@@ -137,8 +137,8 @@ const isPartlyVisibleInContainer = (
   const { top: containerTop, bottom: containerBottom } =
     container.getBoundingClientRect()
 
-  // Since we are testing whether the element is *partly* visible in the
-  // container, we pretend the container is a bit taller than it is
+  // To check whether the element is *partly* visible in the
+  // container, pretend the container is a bit taller than it is
   const partOfElementHeight = percentageVisible * elem.clientHeight
   const containerTopAdjusted = containerTop - partOfElementHeight
   const containerBottomAdjusted = containerBottom + partOfElementHeight
@@ -407,9 +407,7 @@ const Typeahead = ({
                   tabIndex={-1}
                   onClick={() => {
                     removeItemAndUpdateSummary(item)
-                    setTimeout(() => {
-                      setFocusedElementIndex(loopIndex)
-                    }, 500)
+                    setFocusedElementIndex(loopIndex)
                   }}
                   style={{ color: fontColor }}
                   focusHoverColor={selectedHoverColor}
