@@ -178,6 +178,7 @@ const Typeahead = ({
     () => new Fuse(items, { keys: searchKeys }),
     [items, searchKeys]
   )
+
   const results = fuse
     .search(searchString)
     .map(({ item }: { item: Item }) => item)
@@ -188,12 +189,12 @@ const Typeahead = ({
   }
 
   useEffect(() => {
-    if (disabled && !values.length) setSearchString('')
-  }, [disabled, values])
-
-  useEffect(() => {
     if (values.length && !multiselect) setSearchString(values[0]?.label)
   }, [values, multiselect])
+
+  useEffect(() => {
+    if (disabled && !values.length) setSearchString('')
+  }, [disabled, values])
 
   // handle focus changes
   useLayoutEffect(() => {
@@ -242,7 +243,6 @@ const Typeahead = ({
 
     // apply scroll offset
     resultsRef.current.scrollTop += delta
-
     // focus after scroll
     target.focus()
   }, [focusedElementIndex, values, showResults])
@@ -368,7 +368,7 @@ const Typeahead = ({
         aria-expanded={showResults}
         aria-controls={resultsDivId}
       />
-      <SearchIcon {...{ searchString, iconSVG, iconLeft }} />
+      <SearchIcon searchString={searchString} {...{ iconSVG, iconLeft }} />
       <Expander
         floating
         open={showResults}
