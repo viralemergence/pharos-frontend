@@ -39,11 +39,10 @@ const ViewContainer = styled.main`
 		width: 100%;
 		height: calc(100vh - 197px);
 		@media (max-width: 768px) {
-			height: calc(100vh - 73px);
+			height: 100%;
 		}
 	}
 	background-color: rgb(5, 10, 55); //#3d434e;
-	padding-bottom: 1rem;
 `
 
 const ViewMain = styled.main`
