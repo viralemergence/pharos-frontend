@@ -58,10 +58,11 @@ const Panel = styled.aside<{ open: boolean }>`
   display: flex;
   flex-flow: column nowrap;
   margin-left: ${({ open }) => (open ? '30px' : '-400px')};
-  min-width: 400px;
+  max-width: 400px;
+  min-width: min(400px, 100%);
   transition: margin-left 300ms cubic-bezier(0.4, 0, 0.2, 1);
   z-index: ${({ theme }) => theme.zIndexes.dataPanel};
-  max-width: 400px;
+  position: relative;
   @media (max-width: ${mobileBreakpoint}px) {
     background-color: ${({ theme }) => theme.lightBlack};
     display: ${({ open }) => (open ? 'block' : 'none')};
