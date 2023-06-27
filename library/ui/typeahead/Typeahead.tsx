@@ -178,7 +178,6 @@ const Typeahead = ({
     () => new Fuse(items, { keys: searchKeys }),
     [items, searchKeys]
   )
-
   const results = fuse
     .search(searchString)
     .map(({ item }: { item: Item }) => item)
