@@ -10,7 +10,34 @@ describe('FilterPanel', () => {
   it('renders', () => {
     render(
       <ThemeProvider theme={{ ...textStyles, ...colorPalette, zIndexes }}>
-        <FilterPanel isFilterPanelOpen={true} />
+        <FilterPanel
+          isFilterPanelOpen={true}
+          setIsFilterPanelOpen={jest.fn()}
+          fields={{}}
+        />
+      </ThemeProvider>
+    )
+  })
+
+  it('renders with fields', () => {
+    render(
+      <ThemeProvider theme={{ ...textStyles, ...colorPalette, zIndexes }}>
+        <FilterPanel
+          isFilterPanelOpen={true}
+          setIsFilterPanelOpen={jest.fn()}
+          fields={{
+            field1: {
+              label: 'Field 1',
+              type: 'text',
+              options: ['field 1, option 1', 'field 1, option 2'],
+            },
+            field2: {
+              label: 'Field 2',
+              type: 'text',
+              options: ['field 2, option 1', 'field 2, option 2'],
+            },
+          }}
+        />
       </ThemeProvider>
     )
   })
