@@ -321,13 +321,17 @@ const Typeahead = ({
   const getFocusIncrement = () => {
     const resultsDiv = resultsRef.current
     const selectedItems = Array.from(resultsDiv?.children?.[0]?.children ?? [])
+    const isResultsDivScrolledToBottom =
+      resultsDiv &&
+      resultsDiv.scrollHeight === resultsDiv.scrollTop + resultsDiv.clientHeight
     const lastSelectedItem = selectedItems.at(-1)
     const isLastSelectedItemVisible =
       lastSelectedItem &&
       resultsDiv &&
       lastSelectedItem.getBoundingClientRect().bottom >
         resultsDiv.getBoundingClientRect().top
-    return isLastSelectedItemVisible ? 0 : 1
+    if (isLastSelectedItemVisible || isResultsDivScrolledToBottom) return 0
+    else return 1
   }
 
   return (
