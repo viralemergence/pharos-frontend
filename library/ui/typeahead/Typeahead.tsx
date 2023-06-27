@@ -189,6 +189,7 @@ const Typeahead = ({
     () => new Fuse(items, { keys: searchKeys }),
     [items, searchKeys]
   )
+
   const results = fuse
     .search(searchString)
     .map(({ item }: { item: Item }) => item)
@@ -243,7 +244,6 @@ const Typeahead = ({
 
     // apply scroll offset
     resultsRef.current.scrollTop += delta
-
     // focus after scroll
     target.focus()
   }, [focusedElementIndex, values, showResults])
@@ -337,6 +337,23 @@ const Typeahead = ({
     [inputId]
   )
 
+  /** When a button moves to the top of the results div, the browser will make
+   * all the other buttons move down just when some selected items are visible.
+   * So, to keep the outline from appearing to move, we need to add 1 to the
+   * focusedElementIndex just when no selected items are visible. This function
+   * returns 1 in that scenario, 0 otherwise. */
+  const getFocusIncrement = () => {
+    const resultsDiv = resultsRef.current
+    const selectedItems = Array.from(resultsDiv?.children?.[0]?.children ?? [])
+    const lastSelectedItem = selectedItems.at(-1)
+    const isLastSelectedItemVisible =
+      lastSelectedItem &&
+      resultsDiv &&
+      lastSelectedItem.getBoundingClientRect().bottom >
+        resultsDiv.getBoundingClientRect().top
+    return isLastSelectedItemVisible ? 0 : 1
+  }
+
   return (
     <Container
       ref={containerRef}
@@ -375,7 +392,7 @@ const Typeahead = ({
         aria-expanded={showResults}
         aria-controls={resultsDivId}
       />
-      <SearchIcon {...{ searchString, iconSVG, iconLeft }} />
+      <SearchIcon searchString={searchString} {...{ iconSVG, iconLeft }} />
       <Expander
         floating
         open={showResults}
@@ -438,18 +455,8 @@ const Typeahead = ({
                     // `setFocusedElementIndex`, which could produce a race condition.
                     addItemAndUpdateSummary(item)
                     if (multiselect) {
-                      const resultsDiv = resultsRef.current
-                      const lastSelectedItem = Array.from(
-                        resultsDiv?.children[0].children ?? []
-                      )?.at(-1)
-                      // Move focus only if no selected items are visible
-                      const isLastSelectedItemVisible =
-                        lastSelectedItem &&
-                        resultsDiv &&
-                        lastSelectedItem.getBoundingClientRect().bottom >
-                          resultsDiv.getBoundingClientRect().top
-                      const increment = isLastSelectedItemVisible ? 0 : 1
-                      let newFocusedElementIndex = itemIndex + increment
+                      let newFocusedElementIndex =
+                        itemIndex + getFocusIncrement()
                       // Don't go beyond the end of the list
                       newFocusedElementIndex = Math.min(
                         newFocusedElementIndex,
@@ -476,8 +483,8 @@ const Typeahead = ({
         </Results>
       </Expander>
       <TypeaheadSelectionSummaryForScreenReader
-        lastItemAdded={lastItemAddedRef.current?.label}
-        lastItemRemoved={lastItemRemovedRef.current?.label}
+        lastItemAdded={lastItemAddedRef.current}
+        lastItemRemoved={lastItemRemovedRef.current}
         values={values}
       />
     </Container>
@@ -490,8 +497,8 @@ const TypeaheadSelectionSummaryForScreenReader = ({
   lastItemRemoved,
   values,
 }: {
-  lastItemAdded: string | undefined
-  lastItemRemoved: string | undefined
+  lastItemAdded: Item | null
+  lastItemRemoved: Item | null
   values: Item[]
 }) => {
   return (
@@ -502,8 +509,8 @@ const TypeaheadSelectionSummaryForScreenReader = ({
       key={values.length}
       aria-live="polite"
     >
-      {lastItemAdded && <>{lastItemAdded} added to selection.</>}
-      {lastItemRemoved && <>{lastItemRemoved} removed from selection.</>}
+      {lastItemAdded && <>{lastItemAdded.label} added to selection.</>}
+      {lastItemRemoved && <>{lastItemRemoved.label} removed from selection.</>}
       {values.length}
       {values.length === 1 ? 'item' : 'items'}
       selected
@@ -511,7 +518,8 @@ const TypeaheadSelectionSummaryForScreenReader = ({
   )
 }
 
-// Following a pattern used by, for example, https://designsystem.digital.gov/components/combo-box/
+// Following a pattern used by
+// https://designsystem.digital.gov/components/combo-box/ among others
 const ScreenReaderOnly = styled.div`
   position: absolute;
   left: -999em;
