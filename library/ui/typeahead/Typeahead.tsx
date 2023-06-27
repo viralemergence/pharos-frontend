@@ -228,7 +228,7 @@ const Typeahead = ({
 
     if (!(target instanceof HTMLElement)) return
 
-    // Scroll the list smoothly so that the focused element is
+    // scroll the list smoothly so that the focused element is
     // exactly at the bottom, overriding default scrolling
     const { top: buttonTop, bottom: buttonBottom } =
       target.getBoundingClientRect()
