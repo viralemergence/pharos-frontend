@@ -199,12 +199,12 @@ const Typeahead = ({
   }
 
   useEffect(() => {
-    if (disabled && !values.length) setSearchString('')
-  }, [disabled, values])
-
-  useEffect(() => {
     if (values.length && !multiselect) setSearchString(values[0]?.label)
   }, [values, multiselect])
+
+  useEffect(() => {
+    if (disabled && !values.length) setSearchString('')
+  }, [disabled, values])
 
   const getItemButtons = () => {
     const [valuesDiv, itemsDiv] = Array.from(resultsRef.current?.children || [])
@@ -229,7 +229,7 @@ const Typeahead = ({
 
     if (!(target instanceof HTMLElement)) return
 
-    // Scroll the list smoothly so that the focused element is
+    // scroll the list smoothly so that the focused element is
     // exactly at the bottom, overriding default scrolling
     const { top: buttonTop, bottom: buttonBottom } =
       target.getBoundingClientRect()
