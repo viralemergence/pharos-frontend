@@ -189,7 +189,6 @@ const Typeahead = ({
     () => new Fuse(items, { keys: searchKeys }),
     [items, searchKeys]
   )
-
   const results = fuse
     .search(searchString)
     .map(({ item }: { item: Item }) => item)
@@ -343,11 +342,12 @@ const Typeahead = ({
     [inputId]
   )
 
-  /** When a button moves to the top of the results div, the browser will make
+  /** When a button moves to the top of the results div, Chrome and Firefox will make
    * all the other buttons move down just when some selected items are visible.
    * So, to keep the outline from appearing to move, we need to add 1 to the
    * focusedElementIndex just when no selected items are visible. This function
-   * returns 1 in that scenario, 0 otherwise. */
+   * returns 1 in that scenario, 0 otherwise. Safari behaves differently, so
+   * the focus moves a bit weirdly in that browser. */
   const getFocusIncrement = () => {
     const resultsDiv = resultsRef.current
     const selectedItems = Array.from(resultsDiv?.children?.[0]?.children ?? [])
@@ -438,7 +438,7 @@ const Typeahead = ({
                   aria-selected="true"
                   aria-setsize={values.length}
                   aria-posinset={loopIndex}
-                  onMouseEnter={() => setFocusedElementIndex(loopIndex)}
+                  onMouseMove={() => setFocusedElementIndex(loopIndex)}
                 >
                   <RenderItem selected item={item} />
                 </ItemButton>
@@ -455,7 +455,7 @@ const Typeahead = ({
                 <ItemButton
                   key={item.key}
                   tabIndex={-1}
-                  onMouseEnter={() => setFocusedElementIndex(itemIndex)}
+                  onMouseMove={() => setFocusedElementIndex(itemIndex)}
                   onClick={() => {
                     // NOTE: `addItemAndUpdateSummary` is not guaranteed to run before
                     // `setFocusedElementIndex`, which could produce a race condition.
