@@ -14,6 +14,10 @@ const TypeaheadResultContainer = styled.span<{ selected?: boolean }>`
   font-size: 16px;
   text-align: left;
   padding: 8px 12px;
+  align-items: center;
+  img {
+    max-height: 16px;
+  }
 
   ${({ selected }) => selected && ` font-weight: 800; `};
 `
