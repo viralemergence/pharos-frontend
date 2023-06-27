@@ -66,7 +66,7 @@
     },
     "Detection outcome": {
       "type": "string",
-      "definition": "(Required) The result of the test performed. Must be one of the following: 'positive' or 'negative' or 'inconclusive'."
+      "definition": "The result of the test performed. Must be one of the following: 'positive' or 'negative' or 'inconclusive', or may be left blank if the result is pending."
     },
     "Detection measurement": {
       "type": "string",
