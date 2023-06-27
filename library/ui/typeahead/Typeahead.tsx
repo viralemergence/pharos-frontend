@@ -188,12 +188,12 @@ const Typeahead = ({
   }
 
   useEffect(() => {
-    if (disabled && !values.length) setSearchString('')
-  }, [disabled, values])
-
-  useEffect(() => {
     if (values.length && !multiselect) setSearchString(values[0]?.label)
   }, [values, multiselect])
+
+  useEffect(() => {
+    if (disabled && !values.length) setSearchString('')
+  }, [disabled, values])
 
   // handle focus changes
   useLayoutEffect(() => {
@@ -228,7 +228,7 @@ const Typeahead = ({
 
     if (!(target instanceof HTMLElement)) return
 
-    // Scroll the list smoothly so that the focused element is
+    // scroll the list smoothly so that the focused element is
     // exactly at the bottom, overriding default scrolling
     const { top: buttonTop, bottom: buttonBottom } =
       target.getBoundingClientRect()
@@ -242,7 +242,6 @@ const Typeahead = ({
 
     // apply scroll offset
     resultsRef.current.scrollTop += delta
-
     // focus after scroll
     target.focus()
   }, [focusedElementIndex, values, showResults])
@@ -305,9 +304,30 @@ const Typeahead = ({
     lastItemAddedRef.current = null
   }
 
-  const resultsDivId =
-    `${inputId}-results` ||
-    `pharos-typeahead-results-${Math.random().toString(36).slice(2)}`
+  const resultsDivId = useMemo(
+    () =>
+      inputId
+        ? `${inputId}-results`
+        : `pharos-typeahead-results-${Math.random().toString(36).slice(2)}`,
+    [inputId]
+  )
+
+  /** When a button moves to the top of the results div, the browser will make
+   * all the other buttons move down just when some selected items are visible.
+   * So, to keep the outline from appearing to move, we need to add 1 to the
+   * focusedElementIndex just when no selected items are visible. This function
+   * returns 1 in that scenario, 0 otherwise. */
+  const getFocusIncrement = () => {
+    const resultsDiv = resultsRef.current
+    const selectedItems = Array.from(resultsDiv?.children?.[0]?.children ?? [])
+    const lastSelectedItem = selectedItems.at(-1)
+    const isLastSelectedItemVisible =
+      lastSelectedItem &&
+      resultsDiv &&
+      lastSelectedItem.getBoundingClientRect().bottom >
+        resultsDiv.getBoundingClientRect().top
+    return isLastSelectedItemVisible ? 0 : 1
+  }
 
   return (
     <Container
@@ -347,7 +367,7 @@ const Typeahead = ({
         aria-expanded={showResults}
         aria-controls={resultsDivId}
       />
-      <SearchIcon {...{ searchString, iconSVG, iconLeft }} />
+      <SearchIcon searchString={searchString} {...{ iconSVG, iconLeft }} />
       <Expander
         floating
         open={showResults}
@@ -362,10 +382,10 @@ const Typeahead = ({
         <Results
           style={{ backgroundColor, borderColor }}
           className="pharos-typeahead-results"
+          id={resultsDivId}
           resultsMaxHeight={resultsMaxHeight}
           ref={resultsRef}
           tabIndex={0}
-          id={resultsDivId}
         >
           {multiselect && values.length > 0 && (
             <Values
@@ -373,18 +393,21 @@ const Typeahead = ({
               role="listbox"
               aria-multiselectable={multiselect ? 'true' : 'false'}
             >
-              {values.map((item: Item, index: number) => (
+              {values.map((item: Item, loopIndex: number) => (
                 <ItemButton
                   key={item.key}
                   tabIndex={-1}
                   onClick={() => {
-                    setFocusedElementIndex(index)
+                    setFocusedElementIndex(loopIndex)
                     removeItemAndUpdateSummary(item)
                   }}
                   style={{ color: fontColor }}
                   focusHoverColor={selectedHoverColor}
                   role="option"
                   aria-selected="true"
+                  aria-setsize={values.length}
+                  aria-posinset={loopIndex}
+                  onMouseMove={() => setFocusedElementIndex(loopIndex)}
                 >
                   <RenderItem selected item={item} />
                 </ItemButton>
@@ -395,44 +418,48 @@ const Typeahead = ({
             role="listbox"
             aria-multiselectable={multiselect ? 'true' : 'false'}
           >
-            {unselectedItems.map((item: Item, index: number) => (
-              <ItemButton
-                key={item.key}
-                tabIndex={-1}
-                onClick={() => {
-                  // NOTE: `addItemAndUpdateSummary` is not guaranteed to run before
-                  // `setFocusedElementIndex`, which could produce a race
-                  // condition.
-                  addItemAndUpdateSummary(item)
-                  if (multiselect) {
-                    let newFocusedElementIndex = values.length + index + 1
-                    // Don't go beyond the end of the list
-                    newFocusedElementIndex = Math.min(
-                      newFocusedElementIndex,
-                      values.length + unselectedItems.length - 1
-                    )
-                    setFocusedElementIndex(newFocusedElementIndex)
-                  } else {
-                    setSearchString(item.label)
-                    setShowResults(false)
-                  }
-                }}
-                style={{ color: fontColor }}
-                focusHoverColor={hoverColor}
-                role="option"
-                aria-setsize={unselectedItems.length}
-                aria-posinset={index}
-                aria-selected="false"
-              >
-                <RenderItem item={item} />
-              </ItemButton>
-            ))}
+            {unselectedItems.map((item: Item, loopIndex: number) => {
+              const itemIndex = values.length + loopIndex
+              return (
+                <ItemButton
+                  key={item.key}
+                  tabIndex={-1}
+                  onMouseMove={() => setFocusedElementIndex(itemIndex)}
+                  onClick={() => {
+                    // NOTE: `addItemAndUpdateSummary` is not guaranteed to run before
+                    // `setFocusedElementIndex`, which could produce a race condition.
+                    addItemAndUpdateSummary(item)
+                    if (multiselect) {
+                      let newFocusedElementIndex =
+                        itemIndex + getFocusIncrement()
+                      // Don't go beyond the end of the list
+                      newFocusedElementIndex = Math.min(
+                        newFocusedElementIndex,
+                        values.length + unselectedItems.length - 1
+                      )
+                      setFocusedElementIndex(newFocusedElementIndex)
+                    } else {
+                      setSearchString(item.label)
+                      setShowResults(false)
+                    }
+                  }}
+                  style={{ color: fontColor }}
+                  focusHoverColor={hoverColor}
+                  role="option"
+                  aria-setsize={unselectedItems.length}
+                  aria-posinset={loopIndex}
+                  aria-selected="false"
+                >
+                  <RenderItem item={item} />
+                </ItemButton>
+              )
+            })}
           </Items>
         </Results>
       </Expander>
       <TypeaheadSelectionSummaryForScreenReader
-        lastItemAdded={lastItemAddedRef.current?.label}
-        lastItemRemoved={lastItemRemovedRef.current?.label}
+        lastItemAdded={lastItemAddedRef.current}
+        lastItemRemoved={lastItemRemovedRef.current}
         values={values}
       />
     </Container>
@@ -445,8 +472,8 @@ const TypeaheadSelectionSummaryForScreenReader = ({
   lastItemRemoved,
   values,
 }: {
-  lastItemAdded: string | undefined
-  lastItemRemoved: string | undefined
+  lastItemAdded: Item | null
+  lastItemRemoved: Item | null
   values: Item[]
 }) => {
   return (
@@ -457,8 +484,8 @@ const TypeaheadSelectionSummaryForScreenReader = ({
       key={values.length}
       aria-live="polite"
     >
-      {lastItemAdded && <>{lastItemAdded} added to selection.</>}
-      {lastItemRemoved && <>{lastItemRemoved} removed from selection.</>}
+      {lastItemAdded && <>{lastItemAdded.label} added to selection.</>}
+      {lastItemRemoved && <>{lastItemRemoved.label} removed from selection.</>}
       {values.length}
       {values.length === 1 ? 'item' : 'items'}
       selected
@@ -466,7 +493,8 @@ const TypeaheadSelectionSummaryForScreenReader = ({
   )
 }
 
-// Following a pattern used by, for example, https://designsystem.digital.gov/components/combo-box/
+// Following a pattern used by
+// https://designsystem.digital.gov/components/combo-box/ among others
 const ScreenReaderOnly = styled.div`
   position: absolute;
   left: -999em;
