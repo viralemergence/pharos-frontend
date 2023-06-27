@@ -24,11 +24,9 @@ export const Container = styled.form<{ borderColor: string }>`
   button {
     // To ensure button outline is not cut off, make the button slightly
     // smaller than the container
-    left: 2px;
-    position: relative;
-    // TODO: use css flex to center the button
     width: calc(100% - 4px);
     outline: none;
+    position: relative;
 
     // Create an outline that works more robustly on Safari than the default
     // outline
@@ -43,6 +41,7 @@ export const Container = styled.form<{ borderColor: string }>`
     }
 
     &[aria-selected='true']::before {
+      // TODO: Pick a better color?
       border-color: pink !important;
     }
   }
@@ -106,6 +105,11 @@ export const Results = styled.div<{ resultsMaxHeight: string }>`
   align-items: flex-start;
   z-index: 1;
   padding-top: none;
+  [role='listbox'] {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+  }
 `
 
 export const Items = styled.div`
