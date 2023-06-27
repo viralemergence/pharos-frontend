@@ -268,14 +268,20 @@ const Typeahead = ({
       if (isVisibleInResultsDiv(buttons[prev], 0.1)) {
         return proposedIndexToFocus
       } else {
-        const indexOfVisibleButton =
-          delta > 0
-            ? // If focus is supposed to move downward, try to focus the
-              // visible button nearest the top of the container
-              buttons.findIndex(button => isVisibleInResultsDiv(button))
-            : // If focus is supposed to move upward, try to focus the visible
-              // button nearest the bottom of the container
-              buttons.findLastIndex(button => isVisibleInResultsDiv(button))
+        let indexOfVisibleButton
+        if (delta > 0) {
+          // If focus is supposed to move downward, try to focus the
+          // visible button nearest the top of the container
+          indexOfVisibleButton = buttons.findIndex(button =>
+            isVisibleInResultsDiv(button)
+          )
+        } else {
+          // If focus is supposed to move upward, try to focus the visible
+          // button nearest the bottom of the container
+          indexOfVisibleButton = buttons.findLastIndex(button =>
+            isVisibleInResultsDiv(button)
+          )
+        }
         return indexOfVisibleButton ?? proposedIndexToFocus
       }
     })
