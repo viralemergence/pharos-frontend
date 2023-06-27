@@ -459,8 +459,8 @@ const Typeahead = ({
         </Results>
       </Expander>
       <TypeaheadSelectionSummaryForScreenReader
-        lastItemAdded={lastItemAddedRef.current?.label}
-        lastItemRemoved={lastItemRemovedRef.current?.label}
+        lastItemAdded={lastItemAddedRef.current}
+        lastItemRemoved={lastItemRemovedRef.current}
         values={values}
       />
     </Container>
@@ -473,8 +473,8 @@ const TypeaheadSelectionSummaryForScreenReader = ({
   lastItemRemoved,
   values,
 }: {
-  lastItemAdded: string | undefined
-  lastItemRemoved: string | undefined
+  lastItemAdded: Item | null
+  lastItemRemoved: Item | null
   values: Item[]
 }) => {
   return (
@@ -485,8 +485,8 @@ const TypeaheadSelectionSummaryForScreenReader = ({
       key={values.length}
       aria-live="polite"
     >
-      {lastItemAdded && <>{lastItemAdded} added to selection.</>}
-      {lastItemRemoved && <>{lastItemRemoved} removed from selection.</>}
+      {lastItemAdded && <>{lastItemAdded.label} added to selection.</>}
+      {lastItemRemoved && <>{lastItemRemoved.label} removed from selection.</>}
       {values.length}
       {values.length === 1 ? 'item' : 'items'}
       selected
@@ -494,7 +494,8 @@ const TypeaheadSelectionSummaryForScreenReader = ({
   )
 }
 
-// Following a pattern used by, for example, https://designsystem.digital.gov/components/combo-box/
+// Following a pattern used by
+// https://designsystem.digital.gov/components/combo-box/ among others
 const ScreenReaderOnly = styled.div`
   position: absolute;
   left: -999em;
