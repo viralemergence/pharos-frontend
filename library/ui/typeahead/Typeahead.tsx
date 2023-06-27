@@ -312,11 +312,12 @@ const Typeahead = ({
     [inputId]
   )
 
-  /** When a button moves to the top of the results div, the browser will make
+  /** When a button moves to the top of the results div, Chrome and Firefox will make
    * all the other buttons move down just when some selected items are visible.
    * So, to keep the outline from appearing to move, we need to add 1 to the
    * focusedElementIndex just when no selected items are visible. This function
-   * returns 1 in that scenario, 0 otherwise. */
+   * returns 1 in that scenario, 0 otherwise. Safari behaves differently, so
+   * the focus moves a bit weirdly in that browser. */
   const getFocusIncrement = () => {
     const resultsDiv = resultsRef.current
     const selectedItems = Array.from(resultsDiv?.children?.[0]?.children ?? [])
