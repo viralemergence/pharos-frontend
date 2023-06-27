@@ -310,7 +310,7 @@ const Typeahead = ({
       inputId
         ? `${inputId}-results`
         : `pharos-typeahead-results-${Math.random().toString(36).slice(2)}`,
-    []
+    [inputId]
   )
 
   return (
