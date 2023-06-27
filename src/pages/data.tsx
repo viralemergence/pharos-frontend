@@ -135,6 +135,8 @@ const DataView = (): JSX.Element => {
 	const debouncing = useRef({ on: false, timeout: null })
 	const [view, setView] = useState<View>(View.globe)
 
+	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
+
 	const changeView = (view: View) => {
 		window.location.hash = view
 		setView(view)
@@ -168,6 +170,7 @@ const DataView = (): JSX.Element => {
 						}}
 					/>
 					<ViewMain>
+						<FilterPanel isFilterPanelOpen={isFilterPanelOpen} />
 						<TableView
 							loadPublishedRecords={() =>
 								loadPublishedRecords({
