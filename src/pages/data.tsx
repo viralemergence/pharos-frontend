@@ -162,7 +162,12 @@ const DataView = (): JSX.Element => {
 			<DataPage>
 				<NavBar />
 				<ViewContainer>
-					<DataToolbar view={view} changeView={changeView} />
+					<DataToolbar
+						view={view}
+						changeView={changeView}
+						isFilterPanelOpen={isFilterPanelOpen}
+						setIsFilterPanelOpen={setIsFilterPanelOpen}
+					/>
 					<MapView
 						projection={view === 'globe' ? 'globe' : 'naturalEarth'}
 						style={{
