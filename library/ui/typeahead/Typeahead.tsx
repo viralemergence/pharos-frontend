@@ -255,11 +255,11 @@ const Typeahead = ({
    * focused element is visible */
   const moveFocusToVisibleElement = (delta: -1 | 1) => {
     setFocusedElementIndex(prev => {
-      const buttons = getItemButtons()
-
       // if we are in the input, stay there if moving up, or move to the first
       // button if moving down
       if (prev === -1) return delta < 0 ? -1 : 0
+
+      const buttons = getItemButtons()
 
       // The new index of the button we're planning to focus. Use Math.min to
       // avoid going beyond the end of the list
