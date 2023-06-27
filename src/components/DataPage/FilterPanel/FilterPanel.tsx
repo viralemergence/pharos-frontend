@@ -51,7 +51,7 @@ const FilterInput = ({
 const Panel = styled.aside<{ open: boolean }>`
   backdrop-filter: blur(12px);
   background-color: ${({ theme }) => theme.lightBlack};
-  color: ${({ theme }) => theme.white};
+  color: #fff;
   display: flex;
   flex-flow: column nowrap;
   margin-left: ${({ open }) => (open ? '30px' : '-400px')};
@@ -78,8 +78,8 @@ const FieldInput = styled.input`
   ${({ theme }) => theme.smallParagraph};
   background-color: #202020;
   border-radius: 5px;
-  border: 1px solid ${({ theme }) => theme.white};
-  color: ${({ theme }) => theme.white};
+  border: 1px solid #fff;
+  color: #fff;
   font-weight: 600;
   padding: 8px 10px;
   &::-webkit-calendar-picker-indicator {
