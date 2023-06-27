@@ -188,12 +188,12 @@ const Typeahead = ({
   }
 
   useEffect(() => {
-    if (disabled && !values.length) setSearchString('')
-  }, [disabled, values])
-
-  useEffect(() => {
     if (values.length && !multiselect) setSearchString(values[0]?.label)
   }, [values, multiselect])
+
+  useEffect(() => {
+    if (disabled && !values.length) setSearchString('')
+  }, [disabled, values])
 
   // handle focus changes
   useLayoutEffect(() => {
