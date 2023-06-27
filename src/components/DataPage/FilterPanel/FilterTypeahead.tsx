@@ -149,6 +149,7 @@ const FilterTypeahead = ({
               {value}
               <SelectedTypeaheadValueDeleteButton
                 onClick={removeItem.bind(null, { key: value, label: value })}
+                aria-label="Remove filter value"
               >
                 <XIcon extraStyle="stroke: #101010" />
               </SelectedTypeaheadValueDeleteButton>
