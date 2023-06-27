@@ -408,7 +408,7 @@ const Typeahead = ({
                   aria-selected="true"
                   aria-setsize={values.length}
                   aria-posinset={loopIndex}
-                  onMouseEnter={() => setFocusedElementIndex(loopIndex)}
+                  onMouseMove={() => setFocusedElementIndex(loopIndex)}
                 >
                   <RenderItem selected item={item} />
                 </ItemButton>
@@ -425,7 +425,7 @@ const Typeahead = ({
                 <ItemButton
                   key={item.key}
                   tabIndex={-1}
-                  onMouseEnter={() => setFocusedElementIndex(itemIndex)}
+                  onMouseMove={() => setFocusedElementIndex(itemIndex)}
                   onClick={() => {
                     // NOTE: `addItemAndUpdateSummary` is not guaranteed to run before
                     // `setFocusedElementIndex`, which could produce a race condition.
