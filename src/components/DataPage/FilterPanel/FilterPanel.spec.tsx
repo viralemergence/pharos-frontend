@@ -14,6 +14,10 @@ describe('FilterPanel', () => {
           isFilterPanelOpen={true}
           setIsFilterPanelOpen={jest.fn()}
           fields={{}}
+          filters={[]}
+          setFilters={jest.fn()}
+          clearFilters={jest.fn()}
+          updateFilter={jest.fn()}
         />
       </ThemeProvider>
     )
@@ -37,6 +41,10 @@ describe('FilterPanel', () => {
               options: ['field 2, option 1', 'field 2, option 2'],
             },
           }}
+          filters={[]}
+          setFilters={jest.fn()}
+          clearFilters={jest.fn()}
+          updateFilter={jest.fn()}
         />
       </ThemeProvider>
     )
