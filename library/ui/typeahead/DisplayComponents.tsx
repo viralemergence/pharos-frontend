@@ -21,10 +21,6 @@ export const Container = styled.form<{ borderColor: string }>`
     opacity: 0;
   }
 
-  button {
-    outline: none;
-  }
-
   &:focus-within {
     outline: none;
     border-bottom-right-radius: 0;
@@ -117,13 +113,14 @@ export const ItemButton = styled.button<{
 }>`
   background: none;
   border: none;
+  outline: none;
   width: 100%;
   margin: 0;
   padding: 0;
   display: flex;
   justify-content: space-between;
 
-  &:focus-visible {
+  &:focus {
     background-color: ${({ focusHoverColor }) => focusHoverColor};
   }
 `
