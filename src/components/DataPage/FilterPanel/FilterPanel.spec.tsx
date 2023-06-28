@@ -1,12 +1,14 @@
 import React from 'react'
 import FilterPanel from './FilterPanel'
-import { render } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { ThemeProvider } from 'styled-components'
 import textStyles from '../../../figma/textStyles'
 import colorPalette from '../../../figma/colorPalette'
 import zIndexes from '../../../components/layout/ZIndexes'
 
 describe('FilterPanel', () => {
+  const getAddFilterButton = () => screen.getByText('Add filter')
+
   it('renders', () => {
     render(
       <ThemeProvider theme={{ ...textStyles, ...colorPalette, zIndexes }}>
@@ -40,5 +42,12 @@ describe('FilterPanel', () => {
         />
       </ThemeProvider>
     )
+    const addFilterButton = getAddFilterButton()
+    expect(addFilterButton).toBeInTheDocument()
+    expect(screen.queryByText('Field 1')).not.toBeInTheDocument()
+    expect(screen.queryByText('Field 2')).not.toBeInTheDocument()
+    fireEvent.click(addFilterButton)
+    expect(screen.getByText('Field 1')).toBeInTheDocument()
+    expect(screen.getByText('Field 2')).toBeInTheDocument()
   })
 })
