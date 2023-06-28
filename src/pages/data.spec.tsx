@@ -127,7 +127,7 @@ describe('The public data page', () => {
   it('has a filter panel that can be closed by clicking a button', () => {
     const { container } = render(<DataView />)
     const panel = getFilterPanel(container)
-    const closeButtons = screen.getAllByLabelText('Close the filters panel')
+    const closeButtons = screen.getAllByLabelText('Close the Filters panel')
     expect(panel).toContainElement(closeButtons[0])
     expect(panel).toHaveAttribute('aria-hidden', 'false')
     fireEvent.click(closeButtons[0])
