@@ -181,11 +181,13 @@ const FilterPanel = ({
   return (
     <Panel
       open={isFilterPanelOpen}
-      style={{ colorScheme: 'dark' }}
       onClick={_ => {
         setIsFieldSelectorOpen(false)
       }}
+      style={{ colorScheme: 'dark' }}
       role="navigation"
+      aria-hidden={isFilterPanelOpen ? 'false' : 'true'}
+      id="pharos-filter-panel"
     >
       <FilterPanelToolbar
         {...{
