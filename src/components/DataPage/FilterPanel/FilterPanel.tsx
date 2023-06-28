@@ -13,7 +13,6 @@ import {
   FilterValues,
   UpdateFilterFunction,
 } from './constants'
-import FilterTypeahead from './FilterTypeahead'
 import FilterPanelToolbar from './FilterPanelToolbar'
 
 const mobileBreakpoint = 768
@@ -105,7 +104,6 @@ const FilterValueSetter = ({
   updateFilter: UpdateFilterFunction
   options: string[] | undefined
 }) => {
-  const useTypeahead = fieldType === 'text'
   const truthyValues = values.filter(value => value)
   const props = {
     fieldLabel,
@@ -114,8 +112,11 @@ const FilterValueSetter = ({
     updateFilter,
     filterIndex,
   }
-  if (useTypeahead) return <FilterTypeahead {...props} />
-  else return <FilterInput {...props} fieldType={fieldType} />
+  return <FilterInput {...props} fieldType={fieldType} />
+
+  // NOTE: Later this will become:
+  // if (useTypeahead) return <FilterTypeahead {...props} />
+  // else return <FilterInput {...props} fieldType={fieldType} />
 }
 
 const FilterListItemElement = styled.li<{ opacity: number }>`
@@ -180,10 +181,13 @@ const FilterPanel = ({
   return (
     <Panel
       open={isFilterPanelOpen}
-      style={{ colorScheme: 'dark' }}
       onClick={_ => {
         setIsFieldSelectorOpen(false)
       }}
+      style={{ colorScheme: 'dark' }}
+      role="navigation"
+      aria-hidden={isFilterPanelOpen ? 'false' : 'true'}
+      id="pharos-filter-panel"
     >
       <FilterPanelToolbar
         {...{
