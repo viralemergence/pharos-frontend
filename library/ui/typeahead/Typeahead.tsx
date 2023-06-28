@@ -405,7 +405,8 @@ const Typeahead = ({
             aria-multiselectable={multiselect ? 'true' : 'false'}
           >
             {unselectedItems.map((item: Item, loopIndex: number) => {
-              const itemIndex = values.length + loopIndex
+              const countOfSelectedItems = multiselect ? values.length : 0
+              const itemIndex = countOfSelectedItems + loopIndex
               return (
                 <ItemButton
                   key={item.key}
