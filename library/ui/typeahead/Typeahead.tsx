@@ -125,21 +125,6 @@ export interface TypeaheadProps {
   inputId?: string
 }
 
-// const isVisibleInContainer = (
-//   container: HTMLElement | null,
-//   percentageVisible = 1,
-//   elem: Element | null
-// ) =>
-//   elem &&
-//   container &&
-//   elem instanceof HTMLElement &&
-//   elem.offsetTop + elem.clientHeight * (1 - percentageVisible) >=
-//     container.scrollTop &&
-//   elem.offsetTop <=
-//     container.scrollTop +
-//       container.clientHeight -
-//       elem.clientHeight * (1 - percentageVisible)
-
 const Typeahead = ({
   multiselect = false,
   items,
