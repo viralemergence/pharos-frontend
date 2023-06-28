@@ -263,7 +263,7 @@ const Typeahead = ({
         e.preventDefault()
         setFocusedElementIndex(prev => {
           // if we are at the end of the list, stay there
-          if (prev === items.length + values.length - 1) return prev
+          if (prev === countOfDisplayedItems - 1) return prev
           // if we are in the results, go down one
           return prev + 1
         })
@@ -327,6 +327,8 @@ const Typeahead = ({
     if (isLastSelectedItemVisible || isResultsDivScrolledToBottom) return 0
     else return 1
   }
+
+  const countOfDisplayedItems = values.length + unselectedItems.length
 
   return (
     <Container
@@ -434,7 +436,7 @@ const Typeahead = ({
                       // Don't go beyond the end of the list
                       newFocusedElementIndex = Math.min(
                         newFocusedElementIndex,
-                        values.length + unselectedItems.length - 1
+                        countOfDisplayedItems - 1
                       )
                       setFocusedElementIndex(newFocusedElementIndex)
                     } else {
