@@ -102,4 +102,46 @@ describe('The public data page', () => {
       { name: 'naturalEarth' }
     )
   })
+
+  it('has a button labeled Filters that toggles the Filter Panel', () => {
+    const { container } = render(<DataView />)
+
+    // Initially, the filter panel should be visible
+    const panel = getFilterPanel(container)
+    expect(panel).toBeInTheDocument()
+    expect(panel).toHaveAttribute('aria-hidden', 'false')
+    expect(panel).toContainElement(getAddFilterButton())
+
+    const filterPanelButton = screen.getByRole('button', { name: 'Filters' })
+
+    // Clicking the button closes the panel
+    fireEvent.click(filterPanelButton)
+    expect(panel).toHaveAttribute('aria-hidden', 'true')
+
+    // Clicking the button again opens the panel
+    fireEvent.click(filterPanelButton)
+    expect(panel).toHaveAttribute('aria-hidden', 'false')
+  })
+
+  it('has a filter panel that can be closed by clicking a button', () => {
+    const { container } = render(<DataView />)
+    const panel = getFilterPanel(container)
+    const closeButtons = screen.getAllByLabelText('Close the filters panel')
+    expect(panel).toContainElement(closeButtons[0])
+    expect(panel).toHaveAttribute('aria-hidden', 'false')
+    fireEvent.click(closeButtons[0])
+    expect(panel).toHaveAttribute('aria-hidden', 'true')
+  })
+
+  it('has a filter panel that contains buttons for adding filters for fields', async () => {
+    render(<DataView />)
+    fireEvent.click(getAddFilterButton())
+    const expectedButtonLabels = Object.values(publishedRecordsMetadata.fields)
+    await Promise.all(
+      expectedButtonLabels.map(({ label }) =>
+        screen.findByRole('button', { name: label })
+      )
+    )
+  })
+
 })
