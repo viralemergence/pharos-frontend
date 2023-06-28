@@ -102,4 +102,8 @@ describe('The public data page', () => {
       { name: 'naturalEarth' }
     )
   })
+
+  it('lets the user filter by host species', () => {
+    render(<DataView />)
+  })
 })
