@@ -185,6 +185,7 @@ const FilterPanel = ({
       onClick={_ => {
         setIsFieldSelectorOpen(false)
       }}
+      role="navigation"
     >
       <FilterPanelToolbar
         {...{

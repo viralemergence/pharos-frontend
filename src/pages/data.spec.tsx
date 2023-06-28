@@ -71,11 +71,13 @@ describe('The public data page', () => {
   })
 
   // Helper functions for retrieving elements from the page
-  const getAddFilterButton = () => screen.getByLabelText('Add filter')
+  const getAddFilterButton = () => screen.getByText('Add filter')
   const getFilterPanel = (container: HTMLElement) =>
     container.querySelector('aside[role=navigation]')
   const getTableViewButton = () => screen.getByRole('button', { name: 'Table' })
   const getMapViewButton = () => screen.getByRole('button', { name: 'Map' })
+  const getFilterPanelToggleButton = () =>
+    screen.getByRole('button', { name: 'Filters' })
 
   it('renders', () => {
     render(<DataView />)
@@ -104,6 +106,16 @@ describe('The public data page', () => {
   })
 
   it('lets the user filter by host species', () => {
-    render(<DataView />)
+    const { container } = render(<DataView />)
+    const filterPanelToggleButton = getFilterPanelToggleButton()
+    expect(filterPanelToggleButton).toBeInTheDocument()
+    fireEvent.click(filterPanelToggleButton)
+    const filterPanel = getFilterPanel(container)
+    expect(filterPanel).toBeInTheDocument()
+    const addFilterButton = getAddFilterButton()
+    fireEvent.click(addFilterButton)
+    // Add a host species filter to the panel
+    console.log(filterPanel?.innerHTML)
+    //fireEvent.click(screen.getByText('Host species'))
   })
 })
