@@ -197,20 +197,6 @@ const Typeahead = ({
 
     const target = allButtons[focusedElementIndex]
 
-    // I think something like this will be the way to handle
-    // the pageup / pagedown keys jumping focus interaction
-    // it's not working right now though
-
-    // if (!isVisibleInContainer(resultsRef.current, 0.5, target)) {
-    //   const visibleButton = allButtons.find(elem =>
-    //     isVisibleInContainer(resultsRef.current, 0.5, elem)
-    //   )
-    //   if (!visibleButton) return
-
-    //   setFocusedElementIndex(allButtons.indexOf(visibleButton))
-    //   return
-    // }
-
     if (!(target instanceof HTMLElement)) return
 
     // scroll the list smoothly so that the focused element is
