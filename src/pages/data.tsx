@@ -198,7 +198,7 @@ const DataView = (): JSX.Element => {
 	 * color-coding the filtered columns. */
 	const [appliedFilters, setAppliedFilters] = useState<Filter[]>([])
 
-	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
+	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(true)
 
 	const changeView = (view: View) => {
 		window.location.hash = view
