@@ -22,28 +22,7 @@ export const Container = styled.form<{ borderColor: string }>`
   }
 
   button {
-    // To ensure button outline is not cut off, make the button slightly
-    // smaller than the container
-    width: calc(100% - 4px);
     outline: none;
-    position: relative;
-
-    // Create an outline that works more robustly on Safari than the default
-    // outline
-    &:focus::before {
-      content: '';
-      position: absolute;
-      top: 0px;
-      right: 0px;
-      bottom: 0px;
-      left: 0px;
-      border: 2px solid ${({ theme }) => theme.mint};
-    }
-
-    &[aria-selected='true']::before {
-      // TODO: Pick a better color?
-      border-color: pink !important;
-    }
   }
 
   &:focus-within {
@@ -144,8 +123,7 @@ export const ItemButton = styled.button<{
   display: flex;
   justify-content: space-between;
 
-  &:focus-visible,
-  &:hover {
+  &:focus-visible {
     background-color: ${({ focusHoverColor }) => focusHoverColor};
   }
 `
