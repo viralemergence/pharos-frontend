@@ -29,7 +29,15 @@ const Panel = styled.aside<{ open: boolean }>`
 `
 
 const FilterPanel = ({ isFilterPanelOpen }: { isFilterPanelOpen: boolean }) => {
-  return <Panel open={isFilterPanelOpen} style={{ colorScheme: 'dark' }} />
+  return (
+    <Panel
+      open={isFilterPanelOpen}
+      style={{ colorScheme: 'dark' }}
+      role="navigation"
+      aria-hidden={isFilterPanelOpen ? 'false' : 'true'}
+      id="pharos-filter-panel"
+    />
+  )
 }
 
 export default FilterPanel
