@@ -3,6 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import { stateInitialValue } from 'reducers/stateReducer/initialValues'
 import DataView from './data'
+import { publishedRecordsMetadata } from '../../test/serverHandlers'
 
 jest.mock('reducers/stateReducer/stateContext', () => ({
   StateContext: React.createContext({ state: stateInitialValue }),
@@ -71,7 +72,7 @@ describe('The public data page', () => {
   })
 
   // Helper functions for retrieving elements from the page
-  const getAddFilterButton = () => screen.getByLabelText('Add filter')
+  const getAddFilterButton = () => screen.getByText('Add filter')
   const getFilterPanel = (container: HTMLElement) =>
     container.querySelector('aside[role=navigation]')
   const getTableViewButton = () => screen.getByRole('button', { name: 'Table' })
@@ -143,5 +144,4 @@ describe('The public data page', () => {
       )
     )
   })
-
 })
