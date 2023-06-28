@@ -125,21 +125,6 @@ export interface TypeaheadProps {
   inputId?: string
 }
 
-// const isVisibleInContainer = (
-//   container: HTMLElement | null,
-//   percentageVisible = 1,
-//   elem: Element | null
-// ) =>
-//   elem &&
-//   container &&
-//   elem instanceof HTMLElement &&
-//   elem.offsetTop + elem.clientHeight * (1 - percentageVisible) >=
-//     container.scrollTop &&
-//   elem.offsetTop <=
-//     container.scrollTop +
-//       container.clientHeight -
-//       elem.clientHeight * (1 - percentageVisible)
-
 const Typeahead = ({
   multiselect = false,
   items,
@@ -172,6 +157,7 @@ const Typeahead = ({
 
   const inputRef = useRef<HTMLInputElement>(null)
   const resultsRef = useRef<HTMLDivElement>(null)
+  const usingKeyboardRef = useRef(false)
 
   // compute fuzzy search
   const fuse = useMemo(
@@ -212,26 +198,25 @@ const Typeahead = ({
 
     const target = allButtons[focusedElementIndex]
 
-    // I think something like this will be the way to handle
-    // the pageup / pagedown keys jumping focus interaction
-    // it's not working right now though
-
-    // if (!isVisibleInContainer(resultsRef.current, 0.5, target)) {
-    //   const visibleButton = allButtons.find(elem =>
-    //     isVisibleInContainer(resultsRef.current, 0.5, elem)
-    //   )
-    //   if (!visibleButton) return
-
-    //   setFocusedElementIndex(allButtons.indexOf(visibleButton))
-    //   return
-    // }
-
     if (!(target instanceof HTMLElement)) return
 
+    if (usingKeyboardRef.current === true) {
+      scrollFocusedButtonIntoView(target)
+      usingKeyboardRef.current = false
+    }
+
+    // If focusing the element caused it to scroll into view, the user would be
+    // able to scroll the results div by continually hovering over partially
+    // visible buttons
+    target.focus({ preventScroll: true })
+  }, [focusedElementIndex, values, showResults])
+
+  const scrollFocusedButtonIntoView = (focusedButton: HTMLElement) => {
+    if (!resultsRef.current) return
     // scroll the list smoothly so that the focused element is
     // exactly at the bottom, overriding default scrolling
     const { top: buttonTop, bottom: buttonBottom } =
-      target.getBoundingClientRect()
+      focusedButton.getBoundingClientRect()
 
     const { top: listTop, bottom: listBottom } =
       resultsRef.current.getBoundingClientRect()
@@ -242,9 +227,7 @@ const Typeahead = ({
 
     // apply scroll offset
     resultsRef.current.scrollTop += delta
-    // focus after scroll
-    target.focus()
-  }, [focusedElementIndex, values, showResults])
+  }
 
   const handleKeyDownFromContainer: KeyboardEventHandler<
     HTMLFormElement
@@ -252,6 +235,7 @@ const Typeahead = ({
     switch (e.key) {
       case 'ArrowUp':
         e.preventDefault()
+        usingKeyboardRef.current = true
         setFocusedElementIndex(prev => {
           // if we are in the input, stay there
           if (prev === -1) return -1
@@ -261,9 +245,10 @@ const Typeahead = ({
         return
       case 'ArrowDown':
         e.preventDefault()
+        usingKeyboardRef.current = true
         setFocusedElementIndex(prev => {
           // if we are at the end of the list, stay there
-          if (prev === items.length + values.length - 1) return prev
+          if (prev === countOfDisplayedItems - 1) return prev
           // if we are in the results, go down one
           return prev + 1
         })
@@ -327,6 +312,8 @@ const Typeahead = ({
     if (isLastSelectedItemVisible || isResultsDivScrolledToBottom) return 0
     else return 1
   }
+
+  const countOfDisplayedItems = values.length + unselectedItems.length
 
   return (
     <Container
@@ -434,7 +421,7 @@ const Typeahead = ({
                       // Don't go beyond the end of the list
                       newFocusedElementIndex = Math.min(
                         newFocusedElementIndex,
-                        values.length + unselectedItems.length - 1
+                        countOfDisplayedItems - 1
                       )
                       setFocusedElementIndex(newFocusedElementIndex)
                     } else {
