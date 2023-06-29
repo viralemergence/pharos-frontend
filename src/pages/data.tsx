@@ -33,6 +33,12 @@ const ViewContainer = styled.main`
 	display: flex;
 	flex-flow: column nowrap;
 	gap: 20px;
+	.pharos-data-toolbar {
+		flex-basis: 60px;
+		@media (max-width: 768px) {
+			${({ isFilterPanelOpen }) => (isFilterPanelOpen ? 'display: none' : '')}
+		}
+	}
 	main {
 		display: flex;
 		flex-flow: row nowrap;

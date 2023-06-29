@@ -80,6 +80,11 @@ export const Results = styled.div<{ resultsMaxHeight: string }>`
   align-items: flex-start;
   z-index: 1;
   padding-top: none;
+  [role='listbox'] {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+  }
 `
 
 export const Items = styled.div`
@@ -108,14 +113,14 @@ export const ItemButton = styled.button<{
 }>`
   background: none;
   border: none;
+  outline: none;
   width: 100%;
   margin: 0;
   padding: 0;
   display: flex;
   justify-content: space-between;
 
-  &:focus-visible,
-  &:hover {
+  &:focus {
     background-color: ${({ focusHoverColor }) => focusHoverColor};
   }
 `
