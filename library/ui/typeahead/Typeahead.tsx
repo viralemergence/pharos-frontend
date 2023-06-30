@@ -200,7 +200,7 @@ const Typeahead = ({
 
     if (!(target instanceof HTMLElement)) return
 
-    if (usingKeyboardRef.current === true) {
+    if (usingKeyboardRef.current) {
       scrollFocusedButtonIntoView(target)
       usingKeyboardRef.current = false
     }
