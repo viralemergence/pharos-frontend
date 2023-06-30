@@ -324,7 +324,9 @@ const Typeahead = ({
       onBlur={e => {
         // Ignore blur events where focus moves to another element inside the container
         if (containerRef?.current?.contains(e.relatedTarget)) return
-        reset()
+        // Delay closing the results div slightly to avoid a race condition
+        // that causes the div to close immediately without animation
+        setTimeout(() => reset(), 50)
       }}
       className={className}
       onSubmit={e => e.preventDefault()}
