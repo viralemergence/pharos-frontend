@@ -205,10 +205,12 @@ const Typeahead = ({
       usingKeyboardRef.current = false
     }
 
-    // If focusing the element caused it to scroll into view, the user would be
-    // able to scroll the results div by continually hovering over partially
-    // visible buttons
-    target.focus({ preventScroll: true })
+    target.focus({
+      // If focusing the element caused it to scroll into view, the user would be
+      // able to scroll the results div by continually hovering over partially
+      // visible buttons
+      preventScroll: true,
+    })
   }, [focusedElementIndex, values, showResults])
 
   const scrollFocusedButtonIntoView = (focusedButton: HTMLElement) => {
