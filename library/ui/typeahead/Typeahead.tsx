@@ -299,6 +299,9 @@ const Typeahead = ({
     [inputId]
   )
 
+  // when you click a button, some browsers try to keep the visible buttons in
+  // place, if possible. This function accommodates this behavior, in order to
+  // prevent the focus outline from moving weirdly when the user clicks a button
   const getFocusIncrement = () => {
     const resultsDiv = resultsRef.current
     const selectedItems = Array.from(resultsDiv?.children?.[0]?.children ?? [])
@@ -311,8 +314,9 @@ const Typeahead = ({
       resultsDiv &&
       lastSelectedItem.getBoundingClientRect().bottom >
         resultsDiv.getBoundingClientRect().top
-    if (isLastSelectedItemVisible || isResultsDivScrolledToBottom) return 0
-    else return 1
+    if (isLastSelectedItemVisible) return 0
+    if (isResultsDivScrolledToBottom) return 0
+    return 1
   }
 
   const countOfDisplayedItems = values.length + unselectedItems.length
