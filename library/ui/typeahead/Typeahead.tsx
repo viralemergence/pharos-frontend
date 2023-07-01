@@ -190,12 +190,11 @@ const Typeahead = ({
       return
     }
 
-    const [valuesDiv, itemsDiv] = Array.from(resultsRef.current?.children) || []
+    const [valuesDiv, itemsDiv] = Array.from(resultsRef.current?.children || [])
     const allButtons = [
       ...Array.from(valuesDiv?.children || []),
       ...Array.from(itemsDiv?.children || []),
     ]
-
     const target = allButtons[focusedElementIndex]
 
     if (!(target instanceof HTMLElement)) return
@@ -301,7 +300,7 @@ const Typeahead = ({
 
   // when you click a button, some browsers try to keep the visible buttons in
   // place, if possible. This function accommodates this behavior, in order to
-  // prevent the focus outline from moving weirdly when the user clicks a button
+  // prevent focus from moving weirdly when the user clicks a button
   const getFocusIncrement = () => {
     const resultsDiv = resultsRef.current
     const selectedItems = Array.from(resultsDiv?.children?.[0]?.children ?? [])
@@ -332,7 +331,7 @@ const Typeahead = ({
         if (containerRef?.current?.contains(e.relatedTarget)) return
         // Delay closing the results div slightly to avoid a race condition
         // that causes the div to close immediately without animation
-        setTimeout(() => reset(), 50)
+        setTimeout(reset, 50)
       }}
       className={className}
       onSubmit={e => e.preventDefault()}
@@ -434,6 +433,10 @@ const Typeahead = ({
                       )
                       setFocusedElementIndex(newFocusedElementIndex)
                     } else {
+                      // Remove focus from the focused button so that the input
+                      // immediately loses its bottom border
+                      if (document.activeElement instanceof HTMLButtonElement)
+                        document.activeElement?.blur()
                       setSearchString(item.label)
                       setShowResults(false)
                     }
