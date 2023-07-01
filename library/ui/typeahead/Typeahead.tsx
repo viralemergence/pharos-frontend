@@ -435,8 +435,10 @@ const Typeahead = ({
                     } else {
                       // Remove focus from the focused button so that the input
                       // immediately loses its bottom border
-                      if (document.activeElement instanceof HTMLButtonElement)
-                        document.activeElement?.blur()
+                      setTimeout(() => {
+                        if (document.activeElement instanceof HTMLButtonElement)
+                          document.activeElement?.blur()
+                      }, 10)
                       setSearchString(item.label)
                       setShowResults(false)
                     }
