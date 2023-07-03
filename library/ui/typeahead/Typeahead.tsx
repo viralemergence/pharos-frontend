@@ -190,25 +190,26 @@ const Typeahead = ({
       return
     }
 
-    const [valuesDiv, itemsDiv] = Array.from(resultsRef.current?.children) || []
+    const [valuesDiv, itemsDiv] = Array.from(resultsRef.current?.children || [])
     const allButtons = [
       ...Array.from(valuesDiv?.children || []),
       ...Array.from(itemsDiv?.children || []),
     ]
-
     const target = allButtons[focusedElementIndex]
 
     if (!(target instanceof HTMLElement)) return
 
-    if (usingKeyboardRef.current === true) {
+    if (usingKeyboardRef.current) {
       scrollFocusedButtonIntoView(target)
       usingKeyboardRef.current = false
     }
 
-    // If focusing the element caused it to scroll into view, the user would be
-    // able to scroll the results div by continually hovering over partially
-    // visible buttons
-    target.focus({ preventScroll: true })
+    target.focus({
+      // If focusing the element caused it to scroll into view, the user would be
+      // able to scroll the results div by continually hovering over partially
+      // visible buttons
+      preventScroll: true,
+    })
   }, [focusedElementIndex, values, showResults])
 
   const scrollFocusedButtonIntoView = (focusedButton: HTMLElement) => {
@@ -297,6 +298,9 @@ const Typeahead = ({
     [inputId]
   )
 
+  // when you click a button, some browsers try to keep the visible buttons in
+  // place, if possible. This function accommodates this behavior, in order to
+  // prevent focus from moving weirdly when the user clicks a button
   const getFocusIncrement = () => {
     const resultsDiv = resultsRef.current
     const selectedItems = Array.from(resultsDiv?.children?.[0]?.children ?? [])
@@ -309,8 +313,9 @@ const Typeahead = ({
       resultsDiv &&
       lastSelectedItem.getBoundingClientRect().bottom >
         resultsDiv.getBoundingClientRect().top
-    if (isLastSelectedItemVisible || isResultsDivScrolledToBottom) return 0
-    else return 1
+    if (isLastSelectedItemVisible) return 0
+    if (isResultsDivScrolledToBottom) return 0
+    return 1
   }
 
   const countOfDisplayedItems = values.length + unselectedItems.length
@@ -326,7 +331,7 @@ const Typeahead = ({
         if (containerRef?.current?.contains(e.relatedTarget)) return
         // Delay closing the results div slightly to avoid a race condition
         // that causes the div to close immediately without animation
-        setTimeout(() => reset(), 50)
+        setTimeout(reset, 50)
       }}
       className={className}
       onSubmit={e => e.preventDefault()}
@@ -428,6 +433,12 @@ const Typeahead = ({
                       )
                       setFocusedElementIndex(newFocusedElementIndex)
                     } else {
+                      // Remove focus from the focused button so that the input
+                      // immediately loses its bottom border
+                      setTimeout(() => {
+                        if (document.activeElement instanceof HTMLButtonElement)
+                          document.activeElement?.blur()
+                      }, 10)
                       setSearchString(item.label)
                       setShowResults(false)
                     }
