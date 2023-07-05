@@ -148,6 +148,8 @@ const Typeahead = ({
   ariaLabel,
   inputId,
 }: TypeaheadProps) => {
+  if (!items) throw new Error('Item array in multiselect cannot be undefined')
+
   const [searchString, setSearchString] = useState('')
   const [showResults, setShowResults] = useState(false)
 
@@ -164,6 +166,7 @@ const Typeahead = ({
     () => new Fuse(items, { keys: searchKeys }),
     [items, searchKeys]
   )
+
   const results = fuse
     .search(searchString)
     .map(({ item }: { item: Item }) => item)
@@ -437,7 +440,7 @@ const Typeahead = ({
                       // immediately loses its bottom border
                       setTimeout(() => {
                         if (document.activeElement instanceof HTMLButtonElement)
-                          document.activeElement?.blur()
+                          document.activeElement.blur()
                       }, 10)
                       setSearchString(item.label)
                       setShowResults(false)
@@ -478,9 +481,9 @@ const TypeaheadSelectionSummaryForScreenReader = ({
 }) => {
   return (
     <ScreenReaderOnly
-      // This `key` prop makes this div re-render when the message
-      // changes. This makes the screen reader read the whole message, not just
-      // the new part
+      // This `key` prop makes this div re-render when the message changes.
+      // This makes the screen reader read the whole message, not just the new
+      // part.
       key={values.length}
       aria-live="polite"
     >
