@@ -481,9 +481,9 @@ const TypeaheadSelectionSummaryForScreenReader = ({
 }) => {
   return (
     <ScreenReaderOnly
-      // This `key` prop makes this div re-render when the message
-      // changes. This makes the screen reader read the whole message, not just
-      // the new part
+      // This `key` prop makes this div re-render when the message changes.
+      // This makes the screen reader read the whole message, not just the new
+      // part.
       key={values.length}
       aria-live="polite"
     >
