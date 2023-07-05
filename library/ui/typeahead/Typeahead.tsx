@@ -440,7 +440,7 @@ const Typeahead = ({
                       // immediately loses its bottom border
                       setTimeout(() => {
                         if (document.activeElement instanceof HTMLButtonElement)
-                          document.activeElement?.blur()
+                          document.activeElement.blur()
                       }, 10)
                       setSearchString(item.label)
                       setShowResults(false)
