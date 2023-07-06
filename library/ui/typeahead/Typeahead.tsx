@@ -125,21 +125,6 @@ export interface TypeaheadProps {
   inputId?: string
 }
 
-// const isVisibleInContainer = (
-//   container: HTMLElement | null,
-//   percentageVisible = 1,
-//   elem: Element | null
-// ) =>
-//   elem &&
-//   container &&
-//   elem instanceof HTMLElement &&
-//   elem.offsetTop + elem.clientHeight * (1 - percentageVisible) >=
-//     container.scrollTop &&
-//   elem.offsetTop <=
-//     container.scrollTop +
-//       container.clientHeight -
-//       elem.clientHeight * (1 - percentageVisible)
-
 const Typeahead = ({
   multiselect = false,
   items,
@@ -174,6 +159,7 @@ const Typeahead = ({
 
   const inputRef = useRef<HTMLInputElement>(null)
   const resultsRef = useRef<HTMLDivElement>(null)
+  const usingKeyboardRef = useRef(false)
 
   // compute fuzzy search
   const fuse = useMemo(
@@ -207,31 +193,34 @@ const Typeahead = ({
       return
     }
 
-    const [values, items] = [...(resultsRef.current?.children || [])]
-    const allButtons = [...(values?.children || []), ...(items?.children || [])]
-
+    const [valuesDiv, itemsDiv] = Array.from(resultsRef.current?.children || [])
+    const allButtons = [
+      ...Array.from(valuesDiv?.children || []),
+      ...Array.from(itemsDiv?.children || []),
+    ]
     const target = allButtons[focusedElementIndex]
-
-    // I think something like this will be the way to handle
-    // the pageup / pagedown keys jumping focus interaction
-    // it's not working right now though
-
-    // if (!isVisibleInContainer(resultsRef.current, 0.5, target)) {
-    //   const visibleButton = allButtons.find(elem =>
-    //     isVisibleInContainer(resultsRef.current, 0.5, elem)
-    //   )
-    //   if (!visibleButton) return
-
-    //   setFocusedElementIndex(allButtons.indexOf(visibleButton))
-    //   return
-    // }
 
     if (!(target instanceof HTMLElement)) return
 
+    if (usingKeyboardRef.current) {
+      scrollFocusedButtonIntoView(target)
+      usingKeyboardRef.current = false
+    }
+
+    target.focus({
+      // If focusing the element caused it to scroll into view, the user would be
+      // able to scroll the results div by continually hovering over partially
+      // visible buttons
+      preventScroll: true,
+    })
+  }, [focusedElementIndex, values, showResults])
+
+  const scrollFocusedButtonIntoView = (focusedButton: HTMLElement) => {
+    if (!resultsRef.current) return
     // scroll the list smoothly so that the focused element is
     // exactly at the bottom, overriding default scrolling
     const { top: buttonTop, bottom: buttonBottom } =
-      target.getBoundingClientRect()
+      focusedButton.getBoundingClientRect()
 
     const { top: listTop, bottom: listBottom } =
       resultsRef.current.getBoundingClientRect()
@@ -242,9 +231,7 @@ const Typeahead = ({
 
     // apply scroll offset
     resultsRef.current.scrollTop += delta
-    // focus after scroll
-    target.focus()
-  }, [focusedElementIndex, values, showResults])
+  }
 
   const handleKeyDownFromContainer: KeyboardEventHandler<
     HTMLFormElement
@@ -252,18 +239,20 @@ const Typeahead = ({
     switch (e.key) {
       case 'ArrowUp':
         e.preventDefault()
+        usingKeyboardRef.current = true
         setFocusedElementIndex(prev => {
           // if we are in the input, stay there
           if (prev === -1) return -1
-          // if we are in the results, go down one
+          // if we are in the results, go up one
           return prev - 1
         })
         return
       case 'ArrowDown':
         e.preventDefault()
+        usingKeyboardRef.current = true
         setFocusedElementIndex(prev => {
           // if we are at the end of the list, stay there
-          if (prev === items.length + values.length - 1) return prev
+          if (prev === countOfDisplayedItems - 1) return prev
           // if we are in the results, go down one
           return prev + 1
         })
@@ -278,27 +267,62 @@ const Typeahead = ({
   const handleKeyDownFromSearchBar: KeyboardEventHandler<
     HTMLInputElement
   > = e => {
-    switch (e.key) {
-      case 'Enter':
-        e.preventDefault()
-        if (results[0] || items[0]) onAdd(results[0] || items[0])
-        return
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      const firstUnselectedItem = [...results, ...items][0]
+      if (firstUnselectedItem) addItemAndUpdateSummary(firstUnselectedItem)
     }
-  }
-
-  const handleClickItem = (item: Item) => {
-    onAdd(item)
-    setFocusedElementIndex(prev => {
-      if (prev === -1) return prev
-      if (prev === items.length + values.length - 1) return prev
-      return prev + 1
-    })
   }
 
   const unselectedItems =
     results.length && searchString !== values[0]?.label ? results : items
 
   const containerRef = useRef<HTMLFormElement>(null)
+
+  const lastItemAddedRef: React.MutableRefObject<Item | null> = useRef(null)
+  const lastItemRemovedRef: React.MutableRefObject<Item | null> = useRef(null)
+
+  const addItemAndUpdateSummary = (item: Item) => {
+    onAdd(item)
+    lastItemAddedRef.current = item
+    lastItemRemovedRef.current = null
+  }
+  const removeItemAndUpdateSummary = (item: Item) => {
+    if (onRemove) onRemove(item)
+    lastItemRemovedRef.current = item
+    lastItemAddedRef.current = null
+  }
+
+  const resultsDivId = useMemo(
+    () =>
+      inputId
+        ? `${inputId}-results`
+        : `pharos-typeahead-results-${Math.random().toString(36).slice(2)}`,
+    [inputId]
+  )
+
+  // when you click a button, some browsers try to keep the visible buttons in
+  // place, if possible. This function accommodates this behavior, in order to
+  // prevent focus from moving weirdly when the user clicks a button
+  const getFocusIncrement = () => {
+    const resultsDiv = resultsRef.current
+    const selectedItems = Array.from(resultsDiv?.children?.[0]?.children ?? [])
+    const isResultsDivScrolledToBottom =
+      resultsDiv &&
+      resultsDiv.scrollHeight === resultsDiv.scrollTop + resultsDiv.clientHeight
+    const lastSelectedItem = selectedItems.at(-1)
+    const isLastSelectedItemVisible =
+      lastSelectedItem &&
+      resultsDiv &&
+      lastSelectedItem.getBoundingClientRect().bottom >
+        resultsDiv.getBoundingClientRect().top
+    if (isLastSelectedItemVisible) return 0
+    if (isResultsDivScrolledToBottom) return 0
+    return 1
+  }
+
+  const countOfDisplayedItems =
+    (multiselect ? values.length : 0) + unselectedItems.length
 
   return (
     <Container
@@ -307,9 +331,11 @@ const Typeahead = ({
         setShowResults(true)
       }}
       onBlur={e => {
-        // Ignore bubbled blur events
+        // Ignore blur events where focus moves to another element inside the container
         if (containerRef?.current?.contains(e.relatedTarget)) return
-        reset()
+        // Delay closing the results div slightly to avoid a race condition
+        // that causes the div to close immediately without animation
+        setTimeout(reset, 50)
       }}
       className={className}
       onSubmit={e => e.preventDefault()}
@@ -333,6 +359,10 @@ const Typeahead = ({
         iconLeft={iconLeft}
         style={{ backgroundColor, borderColor }}
         fontColor={fontColor}
+        role="combobox"
+        aria-autocomplete="list"
+        aria-expanded={showResults}
+        aria-controls={resultsDivId}
       />
       <SearchIcon searchString={searchString} {...{ iconSVG, iconLeft }} />
       <Expander
@@ -349,51 +379,126 @@ const Typeahead = ({
         <Results
           style={{ backgroundColor, borderColor }}
           className="pharos-typeahead-results"
+          id={resultsDivId}
           resultsMaxHeight={resultsMaxHeight}
           ref={resultsRef}
+          tabIndex={0}
         >
           {multiselect && values.length > 0 && (
-            <Values borderColor={borderColor}>
-              {values.map((item: Item) => (
+            <Values
+              borderColor={borderColor}
+              role="listbox"
+              aria-multiselectable={multiselect ? 'true' : 'false'}
+            >
+              {values.map((item: Item, loopIndex: number) => (
                 <ItemButton
                   key={item.key}
                   tabIndex={-1}
                   onClick={() => {
-                    if (onRemove) onRemove(item)
-                    setFocusedElementIndex(prev => (prev >= 1 ? prev - 1 : 0))
+                    setFocusedElementIndex(loopIndex)
+                    removeItemAndUpdateSummary(item)
                   }}
                   style={{ color: fontColor }}
                   focusHoverColor={selectedHoverColor}
+                  role="option"
+                  aria-selected="true"
+                  aria-setsize={values.length}
+                  aria-posinset={loopIndex}
+                  onMouseMove={() => setFocusedElementIndex(loopIndex)}
                 >
                   <RenderItem selected item={item} />
                 </ItemButton>
               ))}
             </Values>
           )}
-          <Items>
-            {unselectedItems.map((item: Item) => (
-              <ItemButton
-                key={item.key}
-                tabIndex={-1}
-                onClick={() => handleClickItem(item)}
-                style={{ color: fontColor }}
-                focusHoverColor={hoverColor}
-              >
-                <RenderItem item={item} />
-              </ItemButton>
-            ))}
+          <Items
+            role="listbox"
+            aria-multiselectable={multiselect ? 'true' : 'false'}
+          >
+            {unselectedItems.map((item: Item, loopIndex: number) => {
+              const countOfSelectedItems = multiselect ? values.length : 0
+              const itemIndex = countOfSelectedItems + loopIndex
+              return (
+                <ItemButton
+                  key={item.key}
+                  tabIndex={-1}
+                  onMouseMove={() => setFocusedElementIndex(itemIndex)}
+                  onClick={() => {
+                    // NOTE: `addItemAndUpdateSummary` is not guaranteed to run before
+                    // `setFocusedElementIndex`, which could produce a race condition.
+                    addItemAndUpdateSummary(item)
+                    if (multiselect) {
+                      let newFocusedElementIndex =
+                        itemIndex + getFocusIncrement()
+                      // Don't go beyond the end of the list
+                      newFocusedElementIndex = Math.min(
+                        newFocusedElementIndex,
+                        countOfDisplayedItems - 1
+                      )
+                      setFocusedElementIndex(newFocusedElementIndex)
+                    } else {
+                      // Remove focus from the focused button so that the input
+                      // immediately loses its bottom border
+                      setTimeout(() => {
+                        if (document.activeElement instanceof HTMLButtonElement)
+                          document.activeElement.blur()
+                      }, 10)
+                      setSearchString(item.label)
+                      setShowResults(false)
+                    }
+                  }}
+                  style={{ color: fontColor }}
+                  focusHoverColor={hoverColor}
+                  role="option"
+                  aria-setsize={unselectedItems.length}
+                  aria-posinset={loopIndex}
+                  aria-selected="false"
+                >
+                  <RenderItem item={item} />
+                </ItemButton>
+              )
+            })}
           </Items>
         </Results>
       </Expander>
-      <ScreenReaderOnly>
-        When options are available, use the Up and Down arrows on your keyboard
-        to review them, and the Enter key to select one.
-      </ScreenReaderOnly>
+      <TypeaheadSelectionSummaryForScreenReader
+        lastItemAdded={lastItemAddedRef.current}
+        lastItemRemoved={lastItemRemovedRef.current}
+        values={values}
+      />
     </Container>
   )
 }
 
-// Following a pattern used by, for example, https://designsystem.digital.gov/components/combo-box/
+/** Serves as a replacement for the input placeholder for screen readers */
+const TypeaheadSelectionSummaryForScreenReader = ({
+  lastItemAdded,
+  lastItemRemoved,
+  values,
+}: {
+  lastItemAdded: Item | null
+  lastItemRemoved: Item | null
+  values: Item[]
+}) => {
+  return (
+    <ScreenReaderOnly
+      // This `key` prop makes this div re-render when the message changes.
+      // This makes the screen reader read the whole message, not just the new
+      // part.
+      key={values.length}
+      aria-live="polite"
+    >
+      {lastItemAdded && <>{lastItemAdded.label} added to selection.</>}
+      {lastItemRemoved && <>{lastItemRemoved.label} removed from selection.</>}
+      {values.length}
+      {values.length === 1 ? 'item' : 'items'}
+      selected
+    </ScreenReaderOnly>
+  )
+}
+
+// Following a pattern used by
+// https://designsystem.digital.gov/components/combo-box/ among others
 const ScreenReaderOnly = styled.div`
   position: absolute;
   left: -999em;
