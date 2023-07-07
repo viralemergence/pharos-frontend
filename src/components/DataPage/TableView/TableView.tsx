@@ -1,8 +1,31 @@
-import React, { useEffect } from 'react'
+import React, {
+  useEffect,
+  MutableRefObject,
+  Dispatch,
+  SetStateAction,
+} from 'react'
 import styled from 'styled-components'
 import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
 import type { Filter, Field } from '../FilterPanel/constants'
+
+interface Debouncing {
+  on: boolean
+  timeout: ReturnType<typeof setTimeout> | null
+}
+
+export interface LoadPublishedRecordsOptions {
+  appendResults?: boolean
+  filters: Filter[]
+  page: MutableRefObject<number>
+  setLoading: Dispatch<SetStateAction<boolean>>
+  setPublishedRecords: Dispatch<SetStateAction<Row[]>>
+  setAppliedFilters: Dispatch<SetStateAction<Filter[]>>
+  setReachedLastPage: Dispatch<SetStateAction<boolean>>
+  debouncing: MutableRefObject<Debouncing>
+  clearRecordsFirst?: boolean
+  startDebouncingAfter?: boolean
+}
 
 const TableViewContainer = styled.div`
   padding: 0 30px;
@@ -60,14 +83,16 @@ const NoRecordsFound = styled.div`
 
 interface TableViewProps {
   appliedFilters: Filter[]
-  loadPublishedRecords: () => void
+  loadPublishedRecords: (options: LoadPublishedRecordsOptions) => void
+  loadRecordsOptions: LoadPublishedRecordsOptions
   loading: boolean
-  page: React.MutableRefObject<number>
+  page: MutableRefObject<number>
   publishedRecords: Row[]
   reachedLastPage: boolean
   style?: React.CSSProperties
   fields: Record<string, Field>
-  shouldLoadRecordsOnRender: boolean
+  shouldLoadRecordsOnFirstRender: boolean
+  debouncing: MutableRefObject<Debouncing>
 }
 
 export interface Row {
@@ -87,12 +112,17 @@ const TableView = ({
   publishedRecords,
   appliedFilters,
   loadPublishedRecords,
+  loadRecordsOptions,
   reachedLastPage,
   fields,
-  shouldLoadRecordsOnRender,
+  shouldLoadRecordsOnFirstRender,
+  debouncing,
 }: TableViewProps) => {
   useEffect(() => {
-    if (shouldLoadRecordsOnRender) loadPublishedRecords()
+    if (shouldLoadRecordsOnFirstRender) {
+      loadPublishedRecords(loadRecordsOptions)
+      debouncing.current.on = true
+    }
   }, [])
 
   const rowNumberColumn = {
@@ -126,7 +156,8 @@ const TableView = ({
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     if (loading || reachedLastPage || !divIsAtBottom(event)) return
     page.current += 1
-    loadPublishedRecords()
+    // TODO: Make page an option rather than a ref?
+    loadPublishedRecords({ ...loadRecordsOptions, clearRecordsFirst: false })
   }
 
   return (
@@ -142,6 +173,7 @@ const TableView = ({
           // @ts-expect-error: I'm copying this from the docs,
           // but it doesn't look like their type definitions work
           <FillDatasetGrid
+            // TODO: Change to ref
             className={'rdg-dark'}
             style={{ fontFamily: 'Inconsolata' }}
             columns={columns}

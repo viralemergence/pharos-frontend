@@ -1,21 +1,17 @@
-import React, {
-	useCallback,
-	Dispatch,
-	MutableRefObject,
-	SetStateAction,
-	useEffect,
-	useRef,
-	useState,
-} from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import debounce from 'lodash/debounce'
+import differenceBy from 'lodash/differenceBy'
 
 import CMS from '@talus-analytics/library.airtable-cms'
 import Providers from 'components/layout/Providers'
 
 import NavBar from 'components/layout/NavBar/NavBar'
 import MapView from 'components/DataPage/MapView/MapView'
-import TableView, { Row } from 'components/DataPage/TableView/TableView'
+import TableView, {
+	Row,
+	LoadPublishedRecordsOptions,
+} from 'components/DataPage/TableView/TableView'
 import DataToolbar, { View } from 'components/DataPage/Toolbar/Toolbar'
 
 import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
@@ -92,24 +88,7 @@ const isValidRecordsResponse = (
 	return publishedRecords.every(row => typeof row === 'object')
 }
 
-interface Debouncing {
-	on: boolean
-	timeout: ReturnType<typeof setTimeout> | null
-}
-
-interface LoadPublishedRecordsOptions {
-	appendResults?: boolean
-	filters: Filter[]
-	page: MutableRefObject<number>
-	setLoading: Dispatch<SetStateAction<boolean>>
-	setPublishedRecords: Dispatch<SetStateAction<Row[]>>
-	setAppliedFilters: Dispatch<SetStateAction<Filter[]>>
-	setReachedLastPage: Dispatch<SetStateAction<boolean>>
-	debouncing: MutableRefObject<Debouncing>
-}
-
 const loadPublishedRecords = async ({
-	appendResults = true,
 	filters,
 	page,
 	setLoading,
@@ -117,6 +96,7 @@ const loadPublishedRecords = async ({
 	setAppliedFilters,
 	setReachedLastPage,
 	debouncing,
+	clearRecordsFirst,
 }: LoadPublishedRecordsOptions) => {
 	const debounceTimeout = 3000
 	// Switch on debouncing for 3 seconds
@@ -126,7 +106,7 @@ const loadPublishedRecords = async ({
 		debouncing.current.on = false
 	}, debounceTimeout)
 
-	if (!appendResults) page.current = 1
+	if (clearRecordsFirst) page.current = 1
 	setLoading(true)
 	const params = new URLSearchParams()
 	const filtersToApply: Filter[] = []
@@ -154,14 +134,18 @@ const loadPublishedRecords = async ({
 		return
 	}
 	setPublishedRecords((previousRecords: Row[]) => [
-		...(appendResults ? previousRecords : []),
+		...(clearRecordsFirst ? [] : previousRecords),
 		...data.publishedRecords,
 	])
 	setReachedLastPage(data.isLastPage)
 	setTimeout(() => {
 		setAppliedFilters(filtersToApply)
 		setLoading(false)
-	}, 0)
+	})
+	if (clearRecordsFirst) {
+		const dataGrid = document.querySelector('.rdg[role=grid]')
+		if (dataGrid) dataGrid.scrollTop = 0
+	}
 }
 
 const loadPublishedRecordsDebounced = debounce(
@@ -309,9 +293,20 @@ const DataView = (): JSX.Element => {
 
 		if (isValidFilterData(filtersInHash)) {
 			setFilters(filtersInHash)
+			const newFiltersInHash = differenceBy(
+				filtersInHash,
+				filters,
+				filter => filter.fieldId
+			)
+			const onlyBlankFiltersAdded =
+				filtersInHash.length > filters.length &&
+				newFiltersInHash.every(filter => filter.values.length === 0)
+			// If the only new filters are blank, the table does not need to change
+			if (onlyBlankFiltersAdded) return
 			// The load function is debounced because the user might press the browser's back or
 			// forward button many times in a row
-			loadFilteredRecords(filtersInHash, false)
+			// TODO: The comment says that the load function is debounced, but is it?
+			load({ filters: filtersInHash }, false)
 		} else console.error('Invalid filter data in hash')
 	}, [])
 
@@ -335,17 +330,22 @@ const DataView = (): JSX.Element => {
 		}
 	}, [updatePageFromHash])
 
-	const loadFilteredRecords = (filters: Filter[], shouldDebounce = true) => {
-		const options = {
-			appendResults: false,
-			page,
-			filters,
-			setLoading,
-			setPublishedRecords,
-			setAppliedFilters,
-			setReachedLastPage,
-			debouncing,
-		}
+	const loadRecordsOptions: LoadPublishedRecordsOptions = {
+		page,
+		filters,
+		setLoading,
+		setPublishedRecords,
+		setAppliedFilters,
+		setReachedLastPage,
+		debouncing,
+		clearRecordsFirst: true,
+	}
+
+	const load = (
+		extraOptions: Partial<LoadPublishedRecordsOptions>,
+		shouldDebounce = true
+	) => {
+		const options = { ...loadRecordsOptions, ...extraOptions }
 		if (shouldDebounce && debouncing.current.on) {
 			loadPublishedRecordsDebounced(options)
 		} else {
@@ -361,7 +361,7 @@ const DataView = (): JSX.Element => {
 		newFilters[indexOfFilterToUpdate].values = newValues
 		setFilters(newFilters)
 		updateHash({ newFilters })
-		loadFilteredRecords(newFilters)
+		load({ filters: newFilters, clearRecordsFirst: true }, true)
 	}
 
 	const clearFilters = () => {
@@ -369,7 +369,7 @@ const DataView = (): JSX.Element => {
 		updateHash({ newFilters: [] })
 		if (filters.some(({ values }) => values.length > 0)) {
 			// Don't debounce when clearing filters
-			loadFilteredRecords([], false)
+			load({ filters: [] }, false)
 		}
 	}
 
@@ -409,13 +409,9 @@ const DataView = (): JSX.Element => {
 						<TableView
 							fields={fields}
 							appliedFilters={appliedFilters}
-							loadPublishedRecords={() => {
-								// Filtered records are loaded immediately on TableView
-								// render without debouncing
-								loadFilteredRecords(filters, false)
-								debouncing.current.on = false
-							}}
-							shouldLoadRecordsOnRender={
+							loadRecordsOptions={loadRecordsOptions}
+							loadPublishedRecords={loadPublishedRecords}
+							shouldLoadRecordsOnFirstRender={
 								// Only load records on render if there are no filters in the
 								// hash. If there are filters in the hash, updatePageFromHash
 								// will load these records once these in-hash filters have been processed
@@ -428,6 +424,7 @@ const DataView = (): JSX.Element => {
 							style={{
 								display: view === View.table ? 'grid' : 'none',
 							}}
+							debouncing={debouncing}
 						/>
 					</ViewMain>
 				</ViewContainer>
