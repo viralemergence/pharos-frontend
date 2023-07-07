@@ -311,7 +311,7 @@ const DataView = (): JSX.Element => {
 			setFilters(filtersInHash)
 			// The load function is debounced because the user might press the browser's back or
 			// forward button many times in a row
-			loadFilteredRecords(filtersInHash)
+			loadFilteredRecords(filtersInHash, false)
 		} else console.error('Invalid filter data in hash')
 	}, [])
 
@@ -410,11 +410,17 @@ const DataView = (): JSX.Element => {
 							fields={fields}
 							appliedFilters={appliedFilters}
 							loadPublishedRecords={() => {
-								// Filtered records are loaded immediately on TableReview
+								// Filtered records are loaded immediately on TableView
 								// render without debouncing
 								loadFilteredRecords(filters, false)
 								debouncing.current.on = false
 							}}
+							shouldLoadRecordsOnRender={
+								// Only load records on render if there are no filters in the
+								// hash. If there are filters in the hash, updatePageFromHash
+								// will load these records once these in-hash filters have been processed
+								!getViewAndFiltersFromHash().filters.length
+							}
 							loading={loading}
 							page={page}
 							publishedRecords={publishedRecords}

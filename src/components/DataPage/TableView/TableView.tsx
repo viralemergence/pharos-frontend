@@ -67,6 +67,7 @@ interface TableViewProps {
   reachedLastPage: boolean
   style?: React.CSSProperties
   fields: Record<string, Field>
+  shouldLoadRecordsOnRender: boolean
 }
 
 export interface Row {
@@ -88,9 +89,10 @@ const TableView = ({
   loadPublishedRecords,
   reachedLastPage,
   fields,
+  shouldLoadRecordsOnRender,
 }: TableViewProps) => {
   useEffect(() => {
-    loadPublishedRecords()
+    if (shouldLoadRecordsOnRender) loadPublishedRecords()
   }, [])
 
   const rowNumberColumn = {
