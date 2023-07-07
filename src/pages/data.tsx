@@ -37,7 +37,7 @@ const ViewContainer = styled.main`
 		width: 100%;
 		height: calc(100vh - 197px);
 		@media (max-width: 768px) {
-			height: 100%;
+			//height: 100%;
 		}
 	}
 	background-color: rgb(5, 10, 55); //#3d434e;
@@ -50,8 +50,8 @@ const ViewMain = styled.main`
 const DataPage = styled.div`
 	display: flex;
 	flex-flow: column nowrap;
-	height: 100vh;
-	width: 100vw;
+	height: 100%;
+	width: 100%;
 `
 
 interface PublishedRecordsResponse {
@@ -106,6 +106,7 @@ const loadPublishedRecords = async ({
 		debouncing.current.on = false
 	}, debounceTimeout)
 
+	console.log('LOADING WITH FILTERS', filters)
 	if (clearRecordsFirst) page.current = 1
 	setLoading(true)
 	const params = new URLSearchParams()
