@@ -15,11 +15,12 @@ const TableViewContainer = styled.div`
 `
 const TableContaier = styled.div`
   overflow-x: hidden;
+  display: flex;
+  flex-flow: column nowrap;
 `
 const FillDatasetGrid = styled(DataGrid)`
-  block-size: 100%;
-  height: 100%;
   border: 0;
+  flex-grow: 1;
   .rdg-cell {
     background-color: ${({ theme }) => theme.lightBlack};
     &[aria-colindex='1'],
@@ -30,8 +31,25 @@ const FillDatasetGrid = styled(DataGrid)`
       background-color: #384f4d;
     }
   }
+  // Emulate dark mode for Safari
+  &::-webkit-scrollbar {
+    background-color: #2c2c2c;
+    &-thumb {
+      background-clip: padding-box;
+      background-color: #6b6b6c;
+      border-radius: 20px;
+      border: 3px solid transparent;
+    }
+    &-track {
+      border-radius: 20px;
+    }
+    &-corner {
+      background-color: #2c2c2c;
+    }
+  }
 `
 const LoadingMessage = styled.div`
+  ${({ theme }) => theme.gridText}
   position: absolute;
   bottom: 0;
   right: 0;

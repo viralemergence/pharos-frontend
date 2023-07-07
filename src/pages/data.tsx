@@ -21,9 +21,10 @@ const ViewContainer = styled.main`
 	main {
 		display: flex;
 		flex-flow: row nowrap;
+		flex: 1;
 	}
 	background-color: rgb(5, 10, 55); //#3d434e;
-	padding-bottom: 1rem;
+	padding-bottom: 35px;
 `
 
 const ViewMain = styled.main`
@@ -33,7 +34,7 @@ const ViewMain = styled.main`
 const DataPage = styled.div`
 	display: flex;
 	flex-flow: column nowrap;
-	height: 100%;
+	height: 100vh;
 	width: 100%;
 `
 
