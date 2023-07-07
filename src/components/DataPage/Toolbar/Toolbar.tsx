@@ -14,7 +14,6 @@ const DataToolbarButton = styled.button<{
 }>`
 	${({ theme }) => theme.bigParagraph};
 	z-index: ${({ theme }) => theme.zIndexes.dataToolbarButton};
-	text-shadow: ${({ selected }) => (selected ? 'none' : '0 0 2px #000')};
 	position: relative;
 	font-size: 16px;
 	line-height: 25px;
@@ -22,8 +21,10 @@ const DataToolbarButton = styled.button<{
 	border: 0;
 	background-color: ${({ selected, theme }) =>
 		selected ? theme.mint : 'transparent'};
-	${({ selected }) =>
-		selected ? '' : ' &:hover { background-color: rgba(50, 48, 48); } '}
+	${({ selected, theme }) =>
+		selected
+			? ''
+			: ` &:hover { background-color: ${theme.white10PercentOpacity}; } `}
 	color: ${({ selected, theme }) => (selected ? theme.black : theme.white)};
 	border-radius: 7px;
 	margin-right: 10px;
@@ -42,7 +43,7 @@ const DataToolbarButton = styled.button<{
 
 const DataToolbarRadioButton = styled(DataToolbarButton)``
 const DataToolbarButtonContainer = styled.div`
-	background-color: #202020;
+	background-color: ${({ theme }) => theme.white20PercentOpacity};
 	border-radius: 10px;
 	position: relative;
 `

@@ -33,4 +33,6 @@ export default {
   tableContentHighlight: 'rgba(56,79,77,1)',
   tableHeaderHighlight: 'rgba(33,36,61,1)',
   medDarkBlack: 'rgba(26,25,25,1)',
+  white10PercentOpacity: 'rgba(255,255,255,0.1)',
+  white20PercentOpacity: 'rgba(255,255,255,0.2)',
 }
