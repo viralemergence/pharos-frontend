@@ -50,7 +50,7 @@ const ViewMain = styled.main`
 const DataPage = styled.div`
 	display: flex;
 	flex-flow: column nowrap;
-	height: 100%;
+	height: 100vh;
 	width: 100%;
 `
 
