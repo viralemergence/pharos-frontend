@@ -71,9 +71,6 @@ describe('The public data page', () => {
   })
 
   // Helper functions for retrieving elements from the page
-  const getAddFilterButton = () => screen.getByLabelText('Add filter')
-  const getFilterPanel = (container: HTMLElement) =>
-    container.querySelector('aside[role=navigation]')
   const getTableViewButton = () => screen.getByRole('button', { name: 'Table' })
   const getMapViewButton = () => screen.getByRole('button', { name: 'Map' })
 
