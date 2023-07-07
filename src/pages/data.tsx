@@ -1,11 +1,4 @@
-import React, {
-	Dispatch,
-	MutableRefObject,
-	SetStateAction,
-	useEffect,
-	useRef,
-	useState,
-} from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
 import CMS from '@talus-analytics/library.airtable-cms'
@@ -13,25 +6,21 @@ import Providers from 'components/layout/Providers'
 
 import NavBar from 'components/layout/NavBar/NavBar'
 import MapView from 'components/DataPage/MapView/MapView'
-import TableView from 'components/DataPage/TableView/TableView'
+import TableView, {
+	LoadPublishedRecordsOptions,
+} from 'components/DataPage/TableView/TableView'
 import type { Row } from 'components/DataPage/TableView/TableView'
 import DataToolbar, { View } from 'components/DataPage/Toolbar/Toolbar'
 
 const ViewContainer = styled.main`
 	flex: 1;
 	position: relative;
-	width: 100%;
 	display: flex;
 	flex-flow: column nowrap;
 	gap: 20px;
 	main {
 		display: flex;
 		flex-flow: row nowrap;
-		width: 100%;
-		height: calc(100vh - 197px);
-		@media (max-width: 768px) {
-			height: calc(100vh - 73px);
-		}
 	}
 	background-color: rgb(5, 10, 55); //#3d434e;
 	padding-bottom: 1rem;
@@ -44,8 +33,8 @@ const ViewMain = styled.main`
 const DataPage = styled.div`
 	display: flex;
 	flex-flow: column nowrap;
-	height: 100vh;
-	width: 100vw;
+	height: 100%;
+	width: 100%;
 `
 
 interface PublishedRecordsResponse {
@@ -66,23 +55,8 @@ const isValidRecordsResponse = (
 	if (typeof isLastPage !== 'boolean') return false
 	return publishedRecords.every(row => typeof row === 'object')
 }
-
-interface Debouncing {
-	on: boolean
-	timeout: ReturnType<typeof setTimeout> | null
-}
-
-interface LoadPublishedRecordsOptions {
-	appendResults?: boolean
-	page: MutableRefObject<number>
-	setLoading: Dispatch<SetStateAction<boolean>>
-	setPublishedRecords: Dispatch<SetStateAction<Row[]>>
-	setReachedLastPage: Dispatch<SetStateAction<boolean>>
-	debouncing: MutableRefObject<Debouncing>
-}
-
 const loadPublishedRecords = async ({
-	appendResults = true,
+	appendResults = false,
 	page,
 	setLoading,
 	setPublishedRecords,
@@ -168,15 +142,18 @@ const DataView = (): JSX.Element => {
 					/>
 					<ViewMain>
 						<TableView
-							loadPublishedRecords={() =>
+							loadPublishedRecords={(
+								extraOptions: Partial<LoadPublishedRecordsOptions> | undefined
+							) => {
 								loadPublishedRecords({
 									setLoading,
 									setPublishedRecords,
 									setReachedLastPage,
 									page,
 									debouncing,
+									...extraOptions,
 								})
-							}
+							}}
 							loading={loading}
 							page={page}
 							publishedRecords={publishedRecords}

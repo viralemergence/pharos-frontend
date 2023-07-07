@@ -1,4 +1,9 @@
-import React, { useEffect } from 'react'
+import React, {
+  Dispatch,
+  MutableRefObject,
+  SetStateAction,
+  useEffect,
+} from 'react'
 import styled from 'styled-components'
 import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
@@ -9,7 +14,6 @@ const TableViewContainer = styled.div`
   flex: 1;
 `
 const TableContaier = styled.div`
-  padding-bottom: 10px;
   overflow-x: hidden;
 `
 const FillDatasetGrid = styled(DataGrid)`
@@ -57,8 +61,24 @@ const NoRecordsFound = styled.div`
   justify-content: center;
 `
 
+interface Debouncing {
+  on: boolean
+  timeout: ReturnType<typeof setTimeout> | null
+}
+
+export interface LoadPublishedRecordsOptions {
+  appendResults?: boolean
+  page: MutableRefObject<number>
+  setLoading: Dispatch<SetStateAction<boolean>>
+  setPublishedRecords: Dispatch<SetStateAction<Row[]>>
+  setReachedLastPage: Dispatch<SetStateAction<boolean>>
+  debouncing: MutableRefObject<Debouncing>
+}
+
 interface TableViewProps {
-  loadPublishedRecords: () => void
+  loadPublishedRecords: (
+    extraOptions?: Partial<LoadPublishedRecordsOptions>
+  ) => void
   loading: boolean
   page: React.MutableRefObject<number>
   publishedRecords: Row[]
@@ -112,7 +132,7 @@ const TableView = ({
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     if (loading || reachedLastPage || !divIsAtBottom(event)) return
     page.current += 1
-    loadPublishedRecords()
+    loadPublishedRecords({ appendResults: true })
   }
 
   return (
