@@ -36,7 +36,7 @@ const DataToolbarButton = styled.button<{
 	height: 100%;
 	padding: 5px 10px;
 	&:active {
-		outline: 2px solid rgba(255, 255, 255, 0.2);
+		outline: 2px solid ${({ theme }) => theme.white20PercentOpacity};
 	}
 	${props => props.extraStyle}
 `
@@ -46,6 +46,7 @@ const DataToolbarButtonContainer = styled.div`
 	background-color: ${({ theme }) => theme.white20PercentOpacity};
 	border-radius: 10px;
 	position: relative;
+	backdrop-filter: blur(3px);
 `
 const DataToolbarRadioButtonContainer = styled(DataToolbarButtonContainer)`
 	padding: 5px;
