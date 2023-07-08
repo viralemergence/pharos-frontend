@@ -1,56 +1,29 @@
-import React, {
-  Dispatch,
-  MutableRefObject,
-  SetStateAction,
-  useEffect,
-} from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
+
 import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
 
 const TableViewContainer = styled.div`
-  padding: 0 30px;
-  z-index: ${({ theme }) => theme.zIndexes.dataTable};
-  flex: 1;
+  position: relative;
+  background-color: rgba(51, 51, 51, 0.25);
+  backdrop-filter: blur(20px);
+  width: 100%;
+  height: calc(100vh - 87px);
+  padding-top: 53px;
+  z-index: 3;
 `
 const TableContaier = styled.div`
-  overflow-x: hidden;
-  display: flex;
-  flex-flow: column nowrap;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 15px;
 `
 const FillDatasetGrid = styled(DataGrid)`
-  border: 0;
-  flex-grow: 1;
-  block-size: 100px;
-  .rdg-cell {
-    background-color: ${({ theme }) => theme.lightBlack};
-    &[aria-colindex='1'],
-    &[role='columnheader'] {
-      background-color: ${({ theme }) => theme.medBlack};
-    }
-    &.in-filtered-column {
-      background-color: #384f4d;
-    }
-  }
-  // Emulate dark mode for Safari
-  &::-webkit-scrollbar {
-    background-color: #2c2c2c;
-    &-thumb {
-      background-clip: padding-box;
-      background-color: #6b6b6c;
-      border-radius: 20px;
-      border: 3px solid transparent;
-    }
-    &-track {
-      border-radius: 20px;
-    }
-    &-corner {
-      background-color: #2c2c2c;
-    }
-  }
+  block-size: 100%;
+  height: 100%;
 `
 const LoadingMessage = styled.div`
-  ${({ theme }) => theme.gridText}
   position: absolute;
   bottom: 0;
   right: 0;
@@ -80,33 +53,26 @@ const NoRecordsFound = styled.div`
   justify-content: center;
 `
 
-interface Debouncing {
-  on: boolean
-  timeout: ReturnType<typeof setTimeout> | null
-}
-
-export interface LoadPublishedRecordsOptions {
-  appendResults?: boolean
-  page: MutableRefObject<number>
-  setLoading: Dispatch<SetStateAction<boolean>>
-  setPublishedRecords: Dispatch<SetStateAction<Row[]>>
-  setReachedLastPage: Dispatch<SetStateAction<boolean>>
-  debouncing: MutableRefObject<Debouncing>
-}
-
 interface TableViewProps {
-  loadPublishedRecords: (
-    extraOptions?: Partial<LoadPublishedRecordsOptions>
-  ) => void
-  loading: boolean
-  page: React.MutableRefObject<number>
-  publishedRecords: Row[]
-  reachedLastPage: boolean
   style?: React.CSSProperties
 }
 
-export interface Row {
+interface Row {
   [key: string]: string | number
+}
+
+interface PublishedRecordsResponse {
+  publishedRecords: Row[]
+}
+
+function dataIsPublishedRecordsResponse(
+  data: unknown
+): data is PublishedRecordsResponse {
+  if (!data || typeof data !== 'object') return false
+  if (!('publishedRecords' in data)) return false
+  if (!Array.isArray(data.publishedRecords)) return false
+  if (!data.publishedRecords.every(row => typeof row === 'object')) return false
+  return true
 }
 
 const divIsAtBottom = ({ currentTarget }: React.UIEvent<HTMLDivElement>) =>
@@ -115,16 +81,35 @@ const divIsAtBottom = ({ currentTarget }: React.UIEvent<HTMLDivElement>) =>
 
 const rowKeyGetter = (row: Row) => row.pharosID
 
-const TableView = ({
-  style = {},
-  loading,
-  page,
-  publishedRecords,
-  loadPublishedRecords,
-  reachedLastPage,
-}: TableViewProps) => {
+const TableView = ({ style }: TableViewProps) => {
+  const [loading, setLoading] = useState<boolean>(true)
+  const [publishedRecords, setPublishedRecords] = useState<Row[] | null>(null)
+  const page = useRef(1)
+
+  const loadPublishedRecords = async (page: number) => {
+    setLoading(true)
+    const response = await fetch(
+      `${process.env.GATSBY_API_URL}/published-records?` +
+        new URLSearchParams({
+          page: page.toString(),
+          pageSize: '50',
+        })
+    )
+
+    if (response.ok) {
+      const data = await response.json()
+
+      if (dataIsPublishedRecordsResponse(data)) {
+        setPublishedRecords(prev =>
+          prev ? [...prev, ...data.publishedRecords] : data.publishedRecords
+        )
+        setLoading(false)
+      } else console.log('GET /published-records: malformed response')
+    }
+  }
+
   useEffect(() => {
-    loadPublishedRecords()
+    loadPublishedRecords(1)
   }, [])
 
   const rowNumberColumn = {
@@ -149,17 +134,18 @@ const TableView = ({
   ]
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
-    if (loading || reachedLastPage || !divIsAtBottom(event)) return
+    if (loading || !divIsAtBottom(event)) return
     page.current += 1
-    loadPublishedRecords({ appendResults: true })
+    loadPublishedRecords(page.current)
   }
 
   return (
     <TableViewContainer style={style}>
       <TableContaier>
-        {!loading && publishedRecords?.length === 0 ? (
-          <NoRecordsFound>No records published</NoRecordsFound>
-        ) : (
+        {!loading && publishedRecords?.length === 0 && (
+          <NoRecordsFound>No records have been published.</NoRecordsFound>
+        )}
+        {publishedRecords && publishedRecords.length > 1 && (
           // @ts-expect-error: I'm copying this from the docs,
           // but it doesn't look like their type definitions work
           <FillDatasetGrid
@@ -173,8 +159,7 @@ const TableView = ({
         )}
         {loading && (
           <LoadingMessage>
-            <LoadingSpinner />{' '}
-            {page.current > 1 ? 'Loading more rows' : 'Loading'}
+            <LoadingSpinner /> Loading more rows
           </LoadingMessage>
         )}
       </TableContaier>
