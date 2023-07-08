@@ -93,6 +93,10 @@ describe('The public data page', () => {
     expect(getDataGrid()).not.toBeInTheDocument()
     fireEvent.click(getTableViewButton())
     expect(await getDataGridAfterWaiting()).toBeInTheDocument()
+    await waitFor(async () => {
+      const rows = await screen.findAllByRole('row')
+      expect(rows).toHaveLength(51)
+    })
   })
 
   it('has a button labeled Table that, when clicked, displays a message if there are no published records', async () => {
