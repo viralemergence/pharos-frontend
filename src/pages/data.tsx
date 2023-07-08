@@ -37,6 +37,17 @@ const DataPage = styled.div`
 	height: 100vh;
 	width: 100%;
 `
+const MapOverlay = styled.div`
+	backdrop-filter: blur(30px);
+	position: absolute;
+	height: 100%;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	width: 100%;
+	z-index: ${({ theme }) => theme.zIndexes.dataMapOverlay};
+`
 
 interface PublishedRecordsResponse {
 	publishedRecords: Row[]
@@ -133,8 +144,6 @@ const DataView = (): JSX.Element => {
 		}
 	}, [])
 
-	const showEarth = [View.globe, View.map].includes(view)
-
 	return (
 		<Providers>
 			<CMS.SEO />
@@ -142,12 +151,8 @@ const DataView = (): JSX.Element => {
 				<NavBar />
 				<ViewContainer>
 					<DataToolbar view={view} changeView={changeView} />
-					<MapView
-						projection={mapProjection}
-						style={{
-							filter: showEarth ? 'none' : 'blur(30px)',
-						}}
-					/>
+					<MapView projection={mapProjection} />
+					{view === View.table && <MapOverlay />}
 					<ViewMain>
 						<TableView
 							loadPublishedRecords={(
