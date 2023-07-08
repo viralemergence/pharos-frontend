@@ -5,25 +5,48 @@ import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
 
 const TableViewContainer = styled.div`
-  position: relative;
-  background-color: rgba(51, 51, 51, 0.25);
-  backdrop-filter: blur(20px);
-  width: 100%;
-  height: calc(100vh - 87px);
-  padding-top: 53px;
-  z-index: 3;
+  padding: 0 30px;
+  z-index: ${({ theme }) => theme.zIndexes.dataTable};
+  flex: 1;
 `
 const TableContaier = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100%;
-  padding: 15px;
+  overflow-x: hidden;
+  display: flex;
+  flex-flow: column nowrap;
 `
 const FillDatasetGrid = styled(DataGrid)`
-  block-size: 100%;
-  height: 100%;
+  border: 0;
+  flex-grow: 1;
+  block-size: 100px;
+  .rdg-cell {
+    background-color: ${({ theme }) => theme.lightBlack};
+    &[aria-colindex='1'],
+    &[role='columnheader'] {
+      background-color: ${({ theme }) => theme.medBlack};
+    }
+    &.in-filtered-column {
+      background-color: #384f4d;
+    }
+  }
+  // Emulate dark mode for Safari
+  &::-webkit-scrollbar {
+    background-color: #2c2c2c;
+    &-thumb {
+      background-clip: padding-box;
+      background-color: #6b6b6c;
+      border-radius: 20px;
+      border: 3px solid transparent;
+    }
+    &-track {
+      border-radius: 20px;
+    }
+    &-corner {
+      background-color: #2c2c2c;
+    }
+  }
 `
 const LoadingMessage = styled.div`
+  ${({ theme }) => theme.gridText}
   position: absolute;
   bottom: 0;
   right: 0;
