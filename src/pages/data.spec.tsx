@@ -86,7 +86,7 @@ describe('The public data page', () => {
     render(<DataView />)
   })
 
-  it('has a button labeled Table that, when clicked, displays a previously undisplayed grid', async () => {
+  it('has a button labeled Table that, when clicked, displays a previously undisplayed grid with the correct number of rows', async () => {
     render(<DataView />)
     const tableViewButton = getTableViewButton()
     expect(tableViewButton).toBeInTheDocument()
