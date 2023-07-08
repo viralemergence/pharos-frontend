@@ -108,6 +108,13 @@ const DataView = (): JSX.Element => {
 	const page = useRef(1)
 	const debouncing = useRef({ on: false, timeout: null })
 	const [view, setView] = useState<View>(View.globe)
+	const [mapProjection, setMapProjection] = useState<'globe' | 'naturalEarth'>(
+		'naturalEarth'
+	)
+	useEffect(() => {
+		if (view === View.globe) setMapProjection('globe')
+		if (view === View.map) setMapProjection('naturalEarth')
+	}, [view])
 
 	const changeView = (view: View) => {
 		window.location.hash = view
@@ -136,7 +143,7 @@ const DataView = (): JSX.Element => {
 				<ViewContainer>
 					<DataToolbar view={view} changeView={changeView} />
 					<MapView
-						projection={view === 'globe' ? 'globe' : 'naturalEarth'}
+						projection={mapProjection}
 						style={{
 							filter: showEarth ? 'none' : 'blur(30px)',
 						}}

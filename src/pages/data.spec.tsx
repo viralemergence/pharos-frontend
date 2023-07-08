@@ -73,6 +73,7 @@ describe('The public data page', () => {
   // Helper functions for retrieving elements from the page
   const getTableViewButton = () => screen.getByRole('button', { name: 'Table' })
   const getMapViewButton = () => screen.getByRole('button', { name: 'Map' })
+  const getGlobeViewButton = () => screen.getByRole('button', { name: 'Globe' })
 
   it('renders', () => {
     render(<DataView />)
@@ -87,16 +88,53 @@ describe('The public data page', () => {
     expect(screen.queryByRole('grid')).toBeInTheDocument()
   })
 
-  it('has buttons labeled Map and Globe that change the projection of the map', () => {
+  it('has a button labeled Map that sets the projection of the map to naturalEarth', () => {
     render(<DataView />)
-    const countSetProjectionCalls =
+    fireEvent.click(getGlobeViewButton())
+    const howManyTimesMapProjectionWasSet =
       mockedMapboxMap.setProjection.mock.calls.length
     fireEvent.click(getMapViewButton())
     // Check that the click caused setProjection to be called once more,
-    // with 'naturalEarth' as the projection
+    // with 'naturalEarth' as the argument
     expect(mockedMapboxMap.setProjection).toHaveBeenNthCalledWith(
-      countSetProjectionCalls + 1,
+      howManyTimesMapProjectionWasSet + 1,
       { name: 'naturalEarth' }
     )
+  })
+
+  it('has a button labeled Globe that changes the projection of the map to globe', () => {
+    render(<DataView />)
+    fireEvent.click(getMapViewButton())
+    const howManyTimesMapProjectionWasSet =
+      mockedMapboxMap.setProjection.mock.calls.length
+    fireEvent.click(getGlobeViewButton())
+    // Check that the click caused setProjection to be called once more,
+    // with 'globe' as the argument
+    expect(mockedMapboxMap.setProjection).toHaveBeenNthCalledWith(
+      howManyTimesMapProjectionWasSet + 1,
+      { name: 'globe' }
+    )
+  })
+
+  it('has a button labeled Table that displays a grid but leaves the map in natural-earth mode if it was previously in that mode', () => {
+    render(<DataView />)
+    fireEvent.click(getMapViewButton())
+    // Count how many times the map projection was changed before table view
+    // button was pressed
+    const callCount_before = mockedMapboxMap.setProjection.mock.calls.length
+    fireEvent.click(getTableViewButton())
+    const callCount_after = mockedMapboxMap.setProjection.mock.calls.length
+    expect(callCount_after).toEqual(callCount_before)
+  })
+
+  it('has a button labeled Table that displays a grid but leaves the map in globe mode if it was previously in that mode', () => {
+    render(<DataView />)
+    fireEvent.click(getGlobeViewButton())
+    // Count how many times the map projection was changed before the table
+    // view button was pressed
+    const callCount_before = mockedMapboxMap.setProjection.mock.calls.length
+    fireEvent.click(getTableViewButton())
+    const callCount_after = mockedMapboxMap.setProjection.mock.calls.length
+    expect(callCount_after).toEqual(callCount_before)
   })
 })
