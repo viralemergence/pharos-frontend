@@ -1,8 +1,11 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { stateInitialValue } from 'reducers/stateReducer/initialValues'
 import DataView from './data'
+
+import { server } from '../../test/server'
+import { routeThatReturnsNoPublishedRecords } from '../../test/serverHandlers'
 
 jest.mock('reducers/stateReducer/stateContext', () => ({
   StateContext: React.createContext({ state: stateInitialValue }),
@@ -74,18 +77,33 @@ describe('The public data page', () => {
   const getTableViewButton = () => screen.getByRole('button', { name: 'Table' })
   const getMapViewButton = () => screen.getByRole('button', { name: 'Map' })
   const getGlobeViewButton = () => screen.getByRole('button', { name: 'Globe' })
+  const getDataGrid = () => screen.queryByRole('grid')
+  // This function will wait for the data grid to appear. It can be used to check
+  // that the grid appears after loading published records.
+  const getDataGridAfterWaiting = async () => await screen.findByRole('grid')
 
   it('renders', () => {
     render(<DataView />)
   })
 
-  it('has a button labeled Table that, when clicked, displays a previously undisplayed grid', () => {
+  it('has a button labeled Table that, when clicked, displays a previously undisplayed grid', async () => {
     render(<DataView />)
     const tableViewButton = getTableViewButton()
     expect(tableViewButton).toBeInTheDocument()
-    expect(screen.queryByRole('grid')).not.toBeInTheDocument()
-    fireEvent.click(tableViewButton)
-    expect(screen.queryByRole('grid')).toBeInTheDocument()
+    expect(getDataGrid()).not.toBeInTheDocument()
+    fireEvent.click(getTableViewButton())
+    expect(await getDataGridAfterWaiting()).toBeInTheDocument()
+  })
+
+  it('has a button labeled Table that, when clicked, displays a message if there are no published records', async () => {
+    server.use(routeThatReturnsNoPublishedRecords)
+    render(<DataView />)
+    const tableViewButton = getTableViewButton()
+    expect(tableViewButton).toBeInTheDocument()
+    expect(getDataGrid()).not.toBeInTheDocument()
+    fireEvent.click(getTableViewButton())
+    const message = await screen.findByText('No records have been published.')
+    expect(message).toBeInTheDocument()
   })
 
   it('has a button labeled Map that sets the projection of the map to naturalEarth', () => {

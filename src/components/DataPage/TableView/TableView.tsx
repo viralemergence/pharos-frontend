@@ -64,7 +64,7 @@ const LoadingMessage = styled.div`
   align-items: center;
   gap: 10px;
 `
-const NoRecordsFound = styled.div`
+const NoRecordsFound = styled.div.attrs(({ role }) => ({ role }))`
   ${({ theme }) => theme.bigParagraphSemibold};
   margin: 30px auto;
   color: ${({ theme }) => theme.white};
@@ -166,7 +166,9 @@ const TableView = ({ style }: TableViewProps) => {
     <TableViewContainer style={style}>
       <TableContaier>
         {!loading && publishedRecords?.length === 0 && (
-          <NoRecordsFound>No records have been published.</NoRecordsFound>
+          <NoRecordsFound role="status">
+            No records have been published.
+          </NoRecordsFound>
         )}
         {publishedRecords && publishedRecords.length > 1 && (
           // @ts-expect-error: I'm copying this from the docs,
