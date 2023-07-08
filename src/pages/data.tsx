@@ -20,7 +20,7 @@ const ViewContainer = styled.main`
 		flex-flow: row nowrap;
 		flex: 1;
 	}
-	background-color: rgb(5, 10, 55); //#3d434e;
+	background-color: ${({ theme }) => theme.darkPurple};
 	padding-bottom: 35px;
 `
 

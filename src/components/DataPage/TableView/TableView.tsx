@@ -15,6 +15,7 @@ const TableContaier = styled.div`
   flex-flow: column nowrap;
 `
 const FillDatasetGrid = styled(DataGrid)`
+  color-scheme: only dark;
   border: 0;
   flex-grow: 1;
   block-size: 100px;
@@ -25,23 +26,7 @@ const FillDatasetGrid = styled(DataGrid)`
       background-color: ${({ theme }) => theme.medBlack};
     }
     &.in-filtered-column {
-      background-color: #384f4d;
-    }
-  }
-  // Emulate dark mode for Safari
-  &::-webkit-scrollbar {
-    background-color: #2c2c2c;
-    &-thumb {
-      background-clip: padding-box;
-      background-color: #6b6b6c;
-      border-radius: 20px;
-      border: 3px solid transparent;
-    }
-    &-track {
-      border-radius: 20px;
-    }
-    &-corner {
-      background-color: #2c2c2c;
+      background-color: ${({ theme }) => theme.tableContentHighlight};
     }
   }
 `
