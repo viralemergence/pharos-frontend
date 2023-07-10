@@ -1,12 +1,3 @@
-import React from 'react'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-
-import { stateInitialValue } from 'reducers/stateReducer/initialValues'
-import DataPage from './data'
-
-import { server } from '../../test/server'
-import { routeThatReturnsNoPublishedRecords } from '../../test/serverHandlers'
-
 jest.mock('reducers/stateReducer/stateContext', () => ({
   StateContext: React.createContext({ state: stateInitialValue }),
 }))
@@ -42,6 +33,16 @@ jest.mock('cmsHooks/useIconsQuery', () => jest.fn())
 jest.mock('cmsHooks/useIndexPageData', () => jest.fn())
 jest.mock('cmsHooks/useSignInPageData', () => jest.fn())
 jest.mock('cmsHooks/useSiteMetadataQuery', () => jest.fn())
+
+import React from 'react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+
+import { stateInitialValue } from 'reducers/stateReducer/initialValues'
+
+import { server } from '../../test/server'
+import { routeThatReturnsNoPublishedRecords } from '../../test/serverHandlers'
+
+import DataPage from './data'
 
 const mockedMapboxMap = {
   on: jest.fn(),
@@ -87,16 +88,20 @@ describe('The public data page', () => {
   })
 
   it('has a button labeled Table that, when clicked, displays a previously undisplayed grid with the correct number of rows', async () => {
-    render(<DataPage />)
+    render(<DataPage enableVirtualizationOfDataGrid={false} />)
     const tableViewButton = getTableViewButton()
     expect(tableViewButton).toBeInTheDocument()
     expect(getDataGrid()).not.toBeInTheDocument()
     fireEvent.click(getTableViewButton())
-    expect(await getDataGridAfterWaiting()).toBeInTheDocument()
-    await waitFor(async () => {
-      const rows = await screen.findAllByRole('row')
-      expect(rows).toHaveLength(51)
-    })
+    const grid = await getDataGridAfterWaiting()
+    expect(grid).toBeInTheDocument()
+    await waitFor(
+      async () => {
+        const rows = await screen.findAllByRole('row')
+        expect(rows).toHaveLength(51)
+      },
+      { timeout: 3000 }
+    )
   })
 
   it('has a button labeled Table that, when clicked, displays a message if there are no published records', async () => {

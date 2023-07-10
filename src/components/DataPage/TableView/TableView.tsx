@@ -63,6 +63,7 @@ const NoRecordsFound = styled.div.attrs(({ role }) => ({ role }))`
 
 interface TableViewProps {
   style?: React.CSSProperties
+  enableVirtualization?: boolean
 }
 
 interface Row {
@@ -94,7 +95,7 @@ interface LoadPublishedRecordsOptions {
   appendResults?: boolean
 }
 
-const TableView = ({ style }: TableViewProps) => {
+const TableView = ({ style, enableVirtualization = true }: TableViewProps) => {
   const [loading, setLoading] = useState<boolean>(true)
   const [publishedRecords, setPublishedRecords] = useState<Row[]>([])
   const pageRef = useRef(1)
@@ -174,6 +175,7 @@ const TableView = ({ style }: TableViewProps) => {
             rows={publishedRecords}
             onScroll={handleScroll}
             rowKeyGetter={rowKeyGetter}
+            enableVirtualization={enableVirtualization}
           />
         )}
         {loading && (

@@ -46,7 +46,11 @@ const MapOverlay = styled.div`
 	z-index: ${({ theme }) => theme.zIndexes.dataMapOverlay};
 `
 
-const DataPage = (): JSX.Element => {
+const DataPage = ({
+	enableVirtualizationOfDataGrid = true,
+}: {
+	enableVirtualizationOfDataGrid?: boolean
+}): JSX.Element => {
 	const [view, setView] = useState<View>(View.map)
 	const [mapProjection, setMapProjection] = useState<'globe' | 'naturalEarth'>(
 		'naturalEarth'
@@ -85,6 +89,7 @@ const DataPage = (): JSX.Element => {
 					<ViewMain>
 						<TableView
 							style={{ display: view === View.table ? 'grid' : 'none' }}
+							enableVirtualization={enableVirtualizationOfDataGrid}
 						/>
 					</ViewMain>
 				</ViewContainer>
