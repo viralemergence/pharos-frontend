@@ -107,6 +107,7 @@ const TableView = ({ style, enableVirtualization = true }: TableViewProps) => {
     appendResults = false,
   }: LoadPublishedRecordsOptions) => {
     setLoading(true)
+    console.log('loading published records for page', page)
     const response = await fetch(
       `${process.env.GATSBY_API_URL}/published-records?` +
         new URLSearchParams({
@@ -154,6 +155,7 @@ const TableView = ({ style, enableVirtualization = true }: TableViewProps) => {
   ]
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
+    console.log('handling scroll event')
     if (loading || !divIsAtBottom(event)) return
     pageRef.current += 1
     loadPublishedRecords({ page: pageRef.current, appendResults: true })

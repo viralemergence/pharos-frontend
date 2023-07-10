@@ -1,7 +1,3 @@
-//jest.mock('reducers/stateReducer/stateContext', () => ({
-//  StateContext: React.createContext({ state: stateInitialValue }),
-//}))
-//
 jest.mock('@talus-analytics/library.airtable-cms', () => {
   const mockedComponent = jest.fn(({ children }) => children)
 
@@ -17,11 +13,6 @@ jest.mock('@talus-analytics/library.airtable-cms', () => {
     SiteMetadataContext: mockedComponent,
     SiteMetadataProvider: mockedComponent,
     Text: mockedComponent,
-    // getDownloadInfo: jest.fn(),
-    // getImage: jest.fn(),
-    // getText: jest.fn(),
-    // parseRichText: jest.fn(),
-    // useIcon: jest.fn(),
   }
 })
 
@@ -57,13 +48,22 @@ describe('The public data table', () => {
     )
     const grid = await getDataGridAfterWaiting()
     expect(grid).toBeInTheDocument()
-    await waitFor(
-      async () => {
-        const rows = await screen.findAllByRole('row')
-        expect(rows).toHaveLength(51)
-      },
-      { timeout: 3000 }
-    )
+    await waitFor(async () => {
+      const rows = await screen.findAllByRole('row')
+      expect(rows).toHaveLength(51)
+      expect(
+        await screen.findByText('Host species of the first record')
+      ).toBeInTheDocument()
+      expect(
+        await screen.findByText('Host species of the last record')
+      ).toBeInTheDocument()
+      expect(
+        await screen.findByText('Spatial uncertainty of the first record')
+      ).toBeInTheDocument()
+      expect(
+        await screen.findByText('Spatial uncertainty of the last record')
+      ).toBeInTheDocument()
+    })
   })
 
   it('displays a message if there are no published records', async () => {

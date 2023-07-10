@@ -33,7 +33,7 @@ const publishedRecords = [
     Age: null,
     Mass: null,
     Length: null,
-    'Spatial uncertainty': null,
+    'Spatial uncertainty': 'Spatial uncertainty of the first record',
   },
   {
     pharosID: 'prjhYdBAyzZkM-setyM6Jkhdwz3-recOF87wF1s9R',
@@ -1677,7 +1677,77 @@ const publishedRecords = [
     Longitude: 77.103516,
     'Sample ID': '2',
     'Animal ID': '12',
-    'Host species': 'Host species of the last record',
+    'Host species': 'Host species of the last record of the first page',
+    'Host species NCBI tax ID': 0,
+    'Collection method or tissue': null,
+    'Detection method': null,
+    'Primer sequence': null,
+    'Primer citation': null,
+    'Detection target': null,
+    'Detection target NCBI tax ID': null,
+    'Detection outcome': 'positive',
+    'Detection measurement': null,
+    'Detection measurement units': null,
+    Pathogen: null,
+    'Pathogen NCBI tax ID': null,
+    'GenBank accession': null,
+    'Detection comments': null,
+    'Organism sex': null,
+    'Dead or alive': null,
+    'Health notes': null,
+    'Life stage': null,
+    Age: null,
+    Mass: null,
+    Length: null,
+    'Spatial uncertainty':
+      'Spatial uncertainty of the last record of the first page',
+  },
+  {
+    pharosID: 'prjhYdBAyzZkM-setyM6Jkhdwz3-asdf',
+    rowNumber: 51,
+    'Project name': 'A project',
+    Authors: 'Alice Jones',
+    'Collection date': '2021-01-01',
+    Latitude: 28.496311,
+    Longitude: 77.103516,
+    'Sample ID': '2',
+    'Animal ID': '12',
+    'Host species': 'Host species of the first record of the second page',
+    'Host species NCBI tax ID': 0,
+    'Collection method or tissue': null,
+    'Detection method': null,
+    'Primer sequence': null,
+    'Primer citation': null,
+    'Detection target': null,
+    'Detection target NCBI tax ID': null,
+    'Detection outcome': 'positive',
+    'Detection measurement': null,
+    'Detection measurement units': null,
+    Pathogen: null,
+    'Pathogen NCBI tax ID': null,
+    'GenBank accession': null,
+    'Detection comments': null,
+    'Organism sex': null,
+    'Dead or alive': null,
+    'Health notes': null,
+    'Life stage': null,
+    Age: null,
+    Mass: null,
+    Length: null,
+    'Spatial uncertainty':
+      'Spatial uncertainty of the first record of the second page',
+  },
+  {
+    pharosID: 'prjhYdBAyzZkM-setyM6Jkhdwz3-asdf',
+    rowNumber: 52,
+    'Project name': 'A project',
+    Authors: 'Alice Jones',
+    'Collection date': '2021-01-01',
+    Latitude: 28.496311,
+    Longitude: 77.103516,
+    'Sample ID': '2',
+    'Animal ID': '12',
+    'Host species': null,
     'Host species NCBI tax ID': 0,
     'Collection method or tissue': null,
     'Detection method': null,
@@ -1753,8 +1823,18 @@ const publishedRecordsMetadata = {
 const handlers = [
   rest.get(
     `${process.env.GATSBY_API_URL}/published-records`,
-    async (_req, res, ctx) => {
-      const data = { publishedRecords, isLastPage: true }
+    async (req, res, ctx) => {
+      const params = req.url.searchParams
+      const pageSize = Number(params.get('pageSize'))
+      const page = Number(params.get('page'))
+      console.log('page', page)
+      console.log('pageSize', pageSize)
+      const indexOfFirstRecordWanted = (page - 1) * pageSize
+      const subsetOfRecords = publishedRecords.slice(
+        indexOfFirstRecordWanted,
+        indexOfFirstRecordWanted + pageSize
+      )
+      const data = { publishedRecords: subsetOfRecords, isLastPage: true }
       return res(ctx.json(data))
     }
   ),
