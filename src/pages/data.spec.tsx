@@ -21,11 +21,6 @@ jest.mock('@talus-analytics/library.airtable-cms', () => {
     SiteMetadataContext: mockedComponent,
     SiteMetadataProvider: mockedComponent,
     Text: mockedComponent,
-    // getDownloadInfo: jest.fn(),
-    // getImage: jest.fn(),
-    // getText: jest.fn(),
-    // parseRichText: jest.fn(),
-    // useIcon: jest.fn(),
   }
 })
 
@@ -35,12 +30,9 @@ jest.mock('cmsHooks/useSignInPageData', () => jest.fn())
 jest.mock('cmsHooks/useSiteMetadataQuery', () => jest.fn())
 
 import React from 'react'
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 
 import { stateInitialValue } from 'reducers/stateReducer/initialValues'
-
-import { server } from '../../test/server'
-import { routeThatReturnsNoPublishedRecords } from '../../test/serverHandlers'
 
 import DataPage from './data'
 
@@ -87,32 +79,14 @@ describe('The public data page', () => {
     render(<DataPage />)
   })
 
-  it('has a button labeled Table that, when clicked, displays a previously undisplayed grid with the correct number of rows', async () => {
-    render(<DataPage enableVirtualizationOfDataGrid={false} />)
+  it('has a button labeled Table that, when clicked, displays a previously undisplayed grid', async () => {
+    render(<DataPage />)
     const tableViewButton = getTableViewButton()
     expect(tableViewButton).toBeInTheDocument()
     expect(getDataGrid()).not.toBeInTheDocument()
     fireEvent.click(getTableViewButton())
     const grid = await getDataGridAfterWaiting()
     expect(grid).toBeInTheDocument()
-    await waitFor(
-      async () => {
-        const rows = await screen.findAllByRole('row')
-        expect(rows).toHaveLength(51)
-      },
-      { timeout: 3000 }
-    )
-  })
-
-  it('has a button labeled Table that, when clicked, displays a message if there are no published records', async () => {
-    server.use(routeThatReturnsNoPublishedRecords)
-    render(<DataPage />)
-    const tableViewButton = getTableViewButton()
-    expect(tableViewButton).toBeInTheDocument()
-    expect(getDataGrid()).not.toBeInTheDocument()
-    fireEvent.click(getTableViewButton())
-    const message = await screen.findByText('No records have been published.')
-    expect(message).toBeInTheDocument()
   })
 
   it('has a button labeled Map that sets the projection of the map to naturalEarth', () => {

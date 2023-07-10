@@ -63,6 +63,8 @@ const NoRecordsFound = styled.div.attrs(({ role }) => ({ role }))`
 
 interface TableViewProps {
   style?: React.CSSProperties
+  /** Virtualization should be disabled in tests via this prop, so that all the
+   * cells are rendered immediately */
   enableVirtualization?: boolean
 }
 
