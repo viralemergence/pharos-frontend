@@ -89,12 +89,20 @@ const divIsAtBottom = ({ currentTarget }: React.UIEvent<HTMLDivElement>) =>
 
 const rowKeyGetter = (row: Row) => row.pharosID
 
+interface LoadPublishedRecordsOptions {
+  page: number
+  appendResults?: boolean
+}
+
 const TableView = ({ style }: TableViewProps) => {
   const [loading, setLoading] = useState<boolean>(true)
-  const [publishedRecords, setPublishedRecords] = useState<Row[] | null>(null)
-  const page = useRef(1)
+  const [publishedRecords, setPublishedRecords] = useState<Row[]>([])
+  const pageRef = useRef(1)
 
-  const loadPublishedRecords = async (page: number) => {
+  const loadPublishedRecords = async ({
+    page,
+    appendResults = false,
+  }: LoadPublishedRecordsOptions) => {
     setLoading(true)
     const response = await fetch(
       `${process.env.GATSBY_API_URL}/published-records?` +
@@ -108,16 +116,17 @@ const TableView = ({ style }: TableViewProps) => {
       const data = await response.json()
 
       if (dataIsPublishedRecordsResponse(data)) {
-        setPublishedRecords(prev =>
-          prev ? [...prev, ...data.publishedRecords] : data.publishedRecords
-        )
+        setPublishedRecords(prev => [
+          ...(appendResults ? prev : []),
+          ...data.publishedRecords,
+        ])
         setLoading(false)
       } else console.log('GET /published-records: malformed response')
     }
   }
 
   useEffect(() => {
-    loadPublishedRecords(1)
+    loadPublishedRecords({ page: 1 })
   }, [])
 
   const rowNumberColumn = {
@@ -143,8 +152,8 @@ const TableView = ({ style }: TableViewProps) => {
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     if (loading || !divIsAtBottom(event)) return
-    page.current += 1
-    loadPublishedRecords(page.current)
+    pageRef.current += 1
+    loadPublishedRecords({ page: pageRef.current, appendResults: true })
   }
 
   return (
