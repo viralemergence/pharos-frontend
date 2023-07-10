@@ -28,7 +28,7 @@ const ViewMain = styled.main`
 	position: relative;
 `
 
-const DataPage = styled.div`
+const PageContainer = styled.div`
 	display: flex;
 	flex-flow: column nowrap;
 	height: 100vh;
@@ -46,8 +46,8 @@ const MapOverlay = styled.div`
 	z-index: ${({ theme }) => theme.zIndexes.dataMapOverlay};
 `
 
-const DataView = (): JSX.Element => {
-	const [view, setView] = useState<View>(View.globe)
+const DataPage = (): JSX.Element => {
+	const [view, setView] = useState<View>(View.map)
 	const [mapProjection, setMapProjection] = useState<'globe' | 'naturalEarth'>(
 		'naturalEarth'
 	)
@@ -76,7 +76,7 @@ const DataView = (): JSX.Element => {
 	return (
 		<Providers>
 			<CMS.SEO />
-			<DataPage>
+			<PageContainer>
 				<NavBar />
 				<ViewContainer>
 					<DataToolbar view={view} changeView={changeView} />
@@ -88,9 +88,9 @@ const DataView = (): JSX.Element => {
 						/>
 					</ViewMain>
 				</ViewContainer>
-			</DataPage>
+			</PageContainer>
 		</Providers>
 	)
 }
 
-export default DataView
+export default DataPage

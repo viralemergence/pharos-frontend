@@ -2,7 +2,7 @@ import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { stateInitialValue } from 'reducers/stateReducer/initialValues'
-import DataView from './data'
+import DataPage from './data'
 
 import { server } from '../../test/server'
 import { routeThatReturnsNoPublishedRecords } from '../../test/serverHandlers'
@@ -83,11 +83,11 @@ describe('The public data page', () => {
   const getDataGridAfterWaiting = async () => await screen.findByRole('grid')
 
   it('renders', () => {
-    render(<DataView />)
+    render(<DataPage />)
   })
 
   it('has a button labeled Table that, when clicked, displays a previously undisplayed grid with the correct number of rows', async () => {
-    render(<DataView />)
+    render(<DataPage />)
     const tableViewButton = getTableViewButton()
     expect(tableViewButton).toBeInTheDocument()
     expect(getDataGrid()).not.toBeInTheDocument()
@@ -101,7 +101,7 @@ describe('The public data page', () => {
 
   it('has a button labeled Table that, when clicked, displays a message if there are no published records', async () => {
     server.use(routeThatReturnsNoPublishedRecords)
-    render(<DataView />)
+    render(<DataPage />)
     const tableViewButton = getTableViewButton()
     expect(tableViewButton).toBeInTheDocument()
     expect(getDataGrid()).not.toBeInTheDocument()
@@ -111,7 +111,7 @@ describe('The public data page', () => {
   })
 
   it('has a button labeled Map that sets the projection of the map to naturalEarth', () => {
-    render(<DataView />)
+    render(<DataPage />)
     fireEvent.click(getGlobeViewButton())
     const howManyTimesMapProjectionWasSet =
       mockedMapboxMap.setProjection.mock.calls.length
@@ -125,7 +125,7 @@ describe('The public data page', () => {
   })
 
   it('has a button labeled Globe that changes the projection of the map to globe', () => {
-    render(<DataView />)
+    render(<DataPage />)
     fireEvent.click(getMapViewButton())
     const howManyTimesMapProjectionWasSet =
       mockedMapboxMap.setProjection.mock.calls.length
@@ -139,7 +139,7 @@ describe('The public data page', () => {
   })
 
   it('has a button labeled Table that displays a grid but leaves the map in natural-earth mode if it was previously in that mode', () => {
-    render(<DataView />)
+    render(<DataPage />)
     fireEvent.click(getMapViewButton())
     // Count how many times the map projection was changed before table view
     // button was pressed
@@ -150,7 +150,7 @@ describe('The public data page', () => {
   })
 
   it('has a button labeled Table that displays a grid but leaves the map in globe mode if it was previously in that mode', () => {
-    render(<DataView />)
+    render(<DataPage />)
     fireEvent.click(getGlobeViewButton())
     // Count how many times the map projection was changed before the table
     // view button was pressed
