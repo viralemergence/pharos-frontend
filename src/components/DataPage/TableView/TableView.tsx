@@ -154,7 +154,6 @@ const TableView = ({ style, enableVirtualization = true }: TableViewProps) => {
   ]
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
-    console.log('handling scroll event')
     if (loading || !divIsAtBottom(event)) return
     pageRef.current += 1
     loadPublishedRecords({ page: pageRef.current, appendResults: true })
