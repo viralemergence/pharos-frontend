@@ -107,7 +107,6 @@ const TableView = ({ style, enableVirtualization = true }: TableViewProps) => {
     appendResults = false,
   }: LoadPublishedRecordsOptions) => {
     setLoading(true)
-    console.log('loading published records for page', page)
     const response = await fetch(
       `${process.env.GATSBY_API_URL}/published-records?` +
         new URLSearchParams({

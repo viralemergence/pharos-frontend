@@ -1827,8 +1827,6 @@ const handlers = [
       const params = req.url.searchParams
       const pageSize = Number(params.get('pageSize'))
       const page = Number(params.get('page'))
-      console.log('page', page)
-      console.log('pageSize', pageSize)
       const indexOfFirstRecordWanted = (page - 1) * pageSize
       const subsetOfRecords = publishedRecords.slice(
         indexOfFirstRecordWanted,

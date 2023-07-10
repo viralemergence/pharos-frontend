@@ -55,13 +55,17 @@ describe('The public data table', () => {
         await screen.findByText('Host species of the first record')
       ).toBeInTheDocument()
       expect(
-        await screen.findByText('Host species of the last record')
-      ).toBeInTheDocument()
-      expect(
         await screen.findByText('Spatial uncertainty of the first record')
       ).toBeInTheDocument()
       expect(
-        await screen.findByText('Spatial uncertainty of the last record')
+        await screen.findByText(
+          'Host species of the last record of the first page'
+        )
+      ).toBeInTheDocument()
+      expect(
+        await screen.findByText(
+          'Spatial uncertainty of the last record of the first page'
+        )
       ).toBeInTheDocument()
     })
   })
