@@ -3462,7 +3462,7 @@ const handlers = [
         indexOfFirstRecordWanted,
         indexOfFirstRecordWanted + pageSize
       )
-      const data = { publishedRecords: subsetOfRecords, isLastPage: true }
+      const data = { publishedRecords: subsetOfRecords, isLastPage: false }
       return res(ctx.json(data))
     }
   ),
