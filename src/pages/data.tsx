@@ -24,10 +24,6 @@ const ViewContainer = styled.main`
   padding-bottom: 35px;
 `
 
-const ViewMain = styled.main`
-  position: relative;
-`
-
 const PageContainer = styled.div`
   display: flex;
   flex-flow: column nowrap;
@@ -82,11 +78,9 @@ const DataPage = (): JSX.Element => {
           <DataToolbar view={view} changeView={changeView} />
           <MapView projection={mapProjection} />
           {view === View.table && <MapOverlay />}
-          <ViewMain>
-            <TableView
-              style={{ display: view === View.table ? 'grid' : 'none' }}
-            />
-          </ViewMain>
+          <TableView
+            style={{ display: view === View.table ? 'grid' : 'none' }}
+          />
         </ViewContainer>
       </PageContainer>
     </Providers>
