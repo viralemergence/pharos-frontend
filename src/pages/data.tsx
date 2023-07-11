@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import CMS from '@talus-analytics/library.airtable-cms'
@@ -7,46 +7,50 @@ import Providers from 'components/layout/Providers'
 import NavBar from 'components/layout/NavBar/NavBar'
 import MapView from 'components/DataPage/MapView/MapView'
 import TableView from 'components/DataPage/TableView/TableView'
+import DataToolbar, { View } from 'components/DataPage/Toolbar/Toolbar'
 
-const DataViewSelectorContainer = styled.div`
+const ViewContainer = styled.main`
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 20px;
+  main {
+    display: flex;
+    flex-flow: row nowrap;
+    flex: 1;
+  }
+  background-color: ${({ theme }) => theme.darkPurple};
+  padding-bottom: 35px;
+`
+
+const PageContainer = styled.div`
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100vh;
+  width: 100%;
+`
+const MapOverlay = styled.div`
+  backdrop-filter: blur(30px);
   position: absolute;
-  top: 100px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-`
-const DataViewSelector = styled.button<{ selected: boolean }>`
-  ${({ theme }) => theme.bigParagraph};
-  background: none;
-  border: none;
-  border: 1px solid ${({ theme }) => theme.white};
-  color: ${({ selected, theme }) => (selected ? theme.black : theme.white)};
-
-  min-width: 6em;
-
-  padding: 5px 5px;
-  background-color: ${({ selected, theme }) =>
-    selected ? theme.mint : theme.black};
-
-  &:first-child {
-    border-top-left-radius: 5em;
-    border-bottom-left-radius: 5em;
-  }
-
-  &:last-child {
-    border-top-right-radius: 5em;
-    border-bottom-right-radius: 5em;
-    border-left: 0px;
-  }
+  height: 100%;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  z-index: ${({ theme }) => theme.zIndexes.dataMapOverlay};
 `
 
-enum View {
-  table = 'table',
-  map = 'map',
-}
-
-const Map = (): JSX.Element => {
-  const [view, setView] = React.useState<View>(View.map)
+const DataPage = (): JSX.Element => {
+  const [view, setView] = useState<View>(View.map)
+  const [mapProjection, setMapProjection] = useState<'globe' | 'naturalEarth'>(
+    'naturalEarth'
+  )
+  useEffect(() => {
+    if (view === View.globe) setMapProjection('globe')
+    if (view === View.map) setMapProjection('naturalEarth')
+  }, [view])
 
   const changeView = (view: View) => {
     window.location.hash = view
@@ -68,25 +72,19 @@ const Map = (): JSX.Element => {
   return (
     <Providers>
       <CMS.SEO />
-      <NavBar />
-      <DataViewSelectorContainer>
-        <DataViewSelector
-          selected={view === View.map}
-          onClick={() => changeView(View.map)}
-        >
-          Map
-        </DataViewSelector>
-        <DataViewSelector
-          selected={view === View.table}
-          onClick={() => changeView(View.table)}
-        >
-          Table
-        </DataViewSelector>
-      </DataViewSelectorContainer>
-      <MapView style={{ display: view === View.map ? 'block' : 'block' }} />
-      <TableView style={{ display: view === View.table ? 'block' : 'none' }} />
+      <PageContainer>
+        <NavBar />
+        <ViewContainer>
+          <DataToolbar view={view} changeView={changeView} />
+          <MapView projection={mapProjection} />
+          {view === View.table && <MapOverlay />}
+          <TableView
+            style={{ display: view === View.table ? 'grid' : 'none' }}
+          />
+        </ViewContainer>
+      </PageContainer>
     </Providers>
   )
 }
 
-export default Map
+export default DataPage
