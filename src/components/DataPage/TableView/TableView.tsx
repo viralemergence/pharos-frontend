@@ -119,10 +119,19 @@ const TableView = ({ style, enableVirtualization = true }: TableViewProps) => {
       const data = await response.json()
 
       if (dataIsPublishedRecordsResponse(data)) {
-        setPublishedRecords(prev => [
-          ...(appendResults ? prev : []),
-          ...data.publishedRecords,
-        ])
+        setPublishedRecords(prev => {
+          if (appendResults) {
+            // If appending results, ensure that no two records have the same
+            // id
+            const existingPharosIds = new Set(prev.map(row => row.pharosID))
+            const newRecords = data.publishedRecords.filter(
+              record => !existingPharosIds.has(record.pharosID)
+            )
+            return [...prev, ...newRecords]
+          } else {
+            return data.publishedRecords
+          }
+        })
         setLoading(false)
       } else console.log('GET /published-records: malformed response')
     }
