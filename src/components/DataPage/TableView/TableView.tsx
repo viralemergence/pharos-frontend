@@ -191,7 +191,7 @@ const TableView = ({ style, enableVirtualization = true }: TableViewProps) => {
         )}
         {loading && (
           <LoadingMessage>
-            <LoadingSpinner /> Loading more rows
+            <LoadingSpinner /> Loading {pageRef.current > 1 ? ' more rows' : ''}
           </LoadingMessage>
         )}
       </TableContaier>
