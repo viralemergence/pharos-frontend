@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
+
 import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
 
@@ -9,13 +10,15 @@ const TableViewContainer = styled.div`
   flex: 1;
 `
 const TableContaier = styled.div`
-  padding-bottom: 10px;
   overflow-x: hidden;
+  display: flex;
+  flex-flow: column nowrap;
 `
 const FillDatasetGrid = styled(DataGrid)`
-  block-size: 100%;
-  height: 100%;
+  color-scheme: only dark;
   border: 0;
+  flex-grow: 1;
+  block-size: 100px;
   .rdg-cell {
     background-color: ${({ theme }) => theme.lightBlack};
     &[aria-colindex='1'],
@@ -23,11 +26,12 @@ const FillDatasetGrid = styled(DataGrid)`
       background-color: ${({ theme }) => theme.medBlack};
     }
     &.in-filtered-column {
-      background-color: #384f4d;
+      background-color: ${({ theme }) => theme.tableContentHighlight};
     }
   }
 `
 const LoadingMessage = styled.div`
+  ${({ theme }) => theme.gridText}
   position: absolute;
   bottom: 0;
   right: 0;
@@ -45,7 +49,7 @@ const LoadingMessage = styled.div`
   align-items: center;
   gap: 10px;
 `
-const NoRecordsFound = styled.div`
+const NoRecordsFound = styled.div.attrs(({ role }) => ({ role }))`
   ${({ theme }) => theme.bigParagraphSemibold};
   margin: 30px auto;
   color: ${({ theme }) => theme.white};
@@ -58,16 +62,28 @@ const NoRecordsFound = styled.div`
 `
 
 interface TableViewProps {
-  loadPublishedRecords: () => void
-  loading: boolean
-  page: React.MutableRefObject<number>
-  publishedRecords: Row[]
-  reachedLastPage: boolean
   style?: React.CSSProperties
+  /** Virtualization should be disabled in tests via this prop, so that all the
+   * cells are rendered immediately */
+  enableVirtualization?: boolean
 }
 
-export interface Row {
+interface Row {
   [key: string]: string | number
+}
+
+interface PublishedRecordsResponse {
+  publishedRecords: Row[]
+}
+
+function dataIsPublishedRecordsResponse(
+  data: unknown
+): data is PublishedRecordsResponse {
+  if (!data || typeof data !== 'object') return false
+  if (!('publishedRecords' in data)) return false
+  if (!Array.isArray(data.publishedRecords)) return false
+  if (!data.publishedRecords.every(row => typeof row === 'object')) return false
+  return true
 }
 
 const divIsAtBottom = ({ currentTarget }: React.UIEvent<HTMLDivElement>) =>
@@ -76,16 +92,53 @@ const divIsAtBottom = ({ currentTarget }: React.UIEvent<HTMLDivElement>) =>
 
 const rowKeyGetter = (row: Row) => row.pharosID
 
-const TableView = ({
-  style = {},
-  loading,
-  page,
-  publishedRecords,
-  loadPublishedRecords,
-  reachedLastPage,
-}: TableViewProps) => {
+interface LoadPublishedRecordsOptions {
+  page: number
+  appendResults?: boolean
+}
+
+const TableView = ({ style, enableVirtualization = true }: TableViewProps) => {
+  const [loading, setLoading] = useState<boolean>(true)
+  const [publishedRecords, setPublishedRecords] = useState<Row[]>([])
+  const pageRef = useRef(1)
+
+  const loadPublishedRecords = async ({
+    page,
+    appendResults = false,
+  }: LoadPublishedRecordsOptions) => {
+    setLoading(true)
+    const response = await fetch(
+      `${process.env.GATSBY_API_URL}/published-records?` +
+        new URLSearchParams({
+          page: page.toString(),
+          pageSize: '50',
+        })
+    )
+
+    if (response.ok) {
+      const data = await response.json()
+
+      if (dataIsPublishedRecordsResponse(data)) {
+        setPublishedRecords(prev => {
+          if (appendResults) {
+            // If appending results, ensure that no two records have the same
+            // id
+            const existingPharosIds = new Set(prev.map(row => row.pharosID))
+            const newRecords = data.publishedRecords.filter(
+              record => !existingPharosIds.has(record.pharosID)
+            )
+            return [...prev, ...newRecords]
+          } else {
+            return data.publishedRecords
+          }
+        })
+        setLoading(false)
+      } else console.log('GET /published-records: malformed response')
+    }
+  }
+
   useEffect(() => {
-    loadPublishedRecords()
+    loadPublishedRecords({ page: 1 })
   }, [])
 
   const rowNumberColumn = {
@@ -110,17 +163,20 @@ const TableView = ({
   ]
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
-    if (loading || reachedLastPage || !divIsAtBottom(event)) return
-    page.current += 1
-    loadPublishedRecords()
+    if (loading || !divIsAtBottom(event)) return
+    pageRef.current += 1
+    loadPublishedRecords({ page: pageRef.current, appendResults: true })
   }
 
   return (
     <TableViewContainer style={style}>
       <TableContaier>
-        {!loading && publishedRecords?.length === 0 ? (
-          <NoRecordsFound>No records published</NoRecordsFound>
-        ) : (
+        {!loading && publishedRecords?.length === 0 && (
+          <NoRecordsFound role="status">
+            No records have been published.
+          </NoRecordsFound>
+        )}
+        {publishedRecords && publishedRecords.length > 1 && (
           // @ts-expect-error: I'm copying this from the docs,
           // but it doesn't look like their type definitions work
           <FillDatasetGrid
@@ -130,12 +186,12 @@ const TableView = ({
             rows={publishedRecords}
             onScroll={handleScroll}
             rowKeyGetter={rowKeyGetter}
+            enableVirtualization={enableVirtualization}
           />
         )}
         {loading && (
           <LoadingMessage>
-            <LoadingSpinner />{' '}
-            {page.current > 1 ? 'Loading more rows' : 'Loading'}
+            <LoadingSpinner /> Loading {pageRef.current > 1 ? ' more rows' : ''}
           </LoadingMessage>
         )}
       </TableContaier>

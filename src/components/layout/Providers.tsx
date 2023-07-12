@@ -23,6 +23,10 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     font-family: "Poppins", Arial, Helvetica, sans-serif;
     color: ${({ theme }) => theme.black};
+    // this background color prevents the white gap between
+    // the nav bar and the browser chrome, especially on osx
+    // and ios and when installed as a PWA
+    background-color: ${({ theme }) => theme.darkPurple};
   }
 `
 
