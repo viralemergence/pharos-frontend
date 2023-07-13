@@ -18,7 +18,7 @@ const Panel = styled.aside<{ open: boolean }>`
   position: relative;
   transition: margin-left 300ms cubic-bezier(0.4, 0, 0.2, 1);
   z-index: ${({ theme }) => theme.zIndexes.dataPanel};
-  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
     backdrop-filter: blur(100px);
     border-radius: 0;
     border: 0;

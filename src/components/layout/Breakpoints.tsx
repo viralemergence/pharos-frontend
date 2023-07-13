@@ -1,3 +1,4 @@
 export default {
-  mobile: '768px',
+  mobileMaxWidth: '480px',
+  tabletMaxWidth: '768px',
 }

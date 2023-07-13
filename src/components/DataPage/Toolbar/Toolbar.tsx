@@ -64,7 +64,7 @@ const DataToolbarDiv = styled.div<{ isFilterPanelOpen: boolean }>`
   flex-flow: row wrap;
   gap: 1rem;
   flex-basis: 60px;
-  @media (max-width: 768px) {
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
     ${({ isFilterPanelOpen }) => (isFilterPanelOpen ? 'display: none' : '')}
   }
 `

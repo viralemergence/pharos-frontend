@@ -12,8 +12,8 @@ const TableViewContainer = styled.div<{
   padding: 0 30px;
   z-index: ${({ theme }) => theme.zIndexes.dataTable};
   flex: 1;
-  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    // On mobile, hide the table when the filter panel is open
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    // On mobiles and tablets, hide the table when the filter panel is open
     ${({ isFilterPanelOpen }) =>
       isFilterPanelOpen ? 'display: none ! important;' : ''}
   }
