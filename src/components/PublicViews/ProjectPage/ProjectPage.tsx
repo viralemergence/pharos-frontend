@@ -8,8 +8,8 @@ import TopBar, {
   Title,
   Controls,
   Breadcrumbs,
-  BreadcrumbLink,
-  } from 'components/layout/TopBar'
+	BreadcrumbLink,
+} from 'components/layout/TopBar'
 
 import usePublishedProject from './usePublishedProject'
 
