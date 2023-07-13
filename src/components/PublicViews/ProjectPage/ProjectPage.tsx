@@ -67,6 +67,18 @@ const ProjectPage = () => {
             </div>
           </PublicProjectPageContentBox>
           <PublicProjectPageContentBox>
+            <div style={{
+                background: 'darkgray', 
+                height: 100,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              Datasets placeholder
+            </div>
+          </PublicProjectPageContentBox>
+          <PublicProjectPageContentBox>
             <CitationsPublications project={project} />
           </PublicProjectPageContentBox>
       </ProjectPageLayout>
