@@ -17,6 +17,8 @@ import {
   hideInNarrowView,
 } from 'components/ProjectPage/ProjectPageLayout'
 
+import CitationsPublications from 'components/ProjectPage/CitationsPublications'
+
 import PublishUnpublishButtons from './PublishUnpublishButtons'
 import DatasetsTable from './DatasetsTable/DatasetsTable'
 import { ProjectPublishStatusChip } from './PublishingStatusChip'
@@ -65,20 +67,6 @@ const ProjectPage = () => {
     ? commaSeparatedList(project.relatedMaterials)
     : '—'
 
-  const projectPublications =
-    !project.projectPublications || project.projectPublications[0] === '' ? (
-      <p>—</p>
-    ) : (
-      project?.projectPublications?.map(pub => <p>{pub}</p>)
-    )
-
-  const othersCiting =
-    !project.othersCiting || project.othersCiting[0] === '' ? (
-      <p>—</p>
-    ) : (
-      project?.othersCiting?.map(pub => <p>{pub}</p>)
-    )
-
   return (
     <ProjectPageLayout>
       <TopBar>
@@ -101,12 +89,7 @@ const ProjectPage = () => {
         <LoggedInProjectPageContentBox style={{}}>
           <h2>Description</h2>
           <p>{project.description || '—'}</p>
-          <h2>How to cite this project</h2>
-          <p>{project.citation || '—'}</p>
-          <h2>Project publications</h2>
-          {projectPublications}
-          <h2>Publications citing this project</h2>
-          {othersCiting}
+          <CitationsPublications project={project} />
         </LoggedInProjectPageContentBox>
       </ProjectPageMain>
       <ProjectPageSidebar>
