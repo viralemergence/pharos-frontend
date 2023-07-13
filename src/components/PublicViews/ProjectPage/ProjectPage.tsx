@@ -11,6 +11,8 @@ import {
   ProjectPageContentBox,
 } from 'components/ProjectPage/ProjectPageLayout'
 
+import CitationsPublications from 'components/ProjectPage/CitationsPublications'
+
 
 import TopBar, {
   Title,
@@ -63,6 +65,9 @@ const ProjectPage = () => {
             >
               Map placeholder
             </div>
+          </PublicProjectPageContentBox>
+          <PublicProjectPageContentBox>
+            <CitationsPublications project={project} />
           </PublicProjectPageContentBox>
       </ProjectPageLayout>
     </>
