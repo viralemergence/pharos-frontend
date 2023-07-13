@@ -4,16 +4,25 @@ import { ProjectPageLayout } from 'components/ProjectPage/ProjectPageLayout'
 
 import PublicViewBackground from '../PublicViewBackground'
 
-import useProjectID from 'hooks/project/useProjectID'
+import TopBar, {
+  Title,
+  Controls,
+  Breadcrumbs,
+  BreadcrumbLink,
+  } from 'components/layout/TopBar'
+
+import usePublishedProject from './usePublishedProject'
 
 const ProjectPage = () => {
-  const projectID = useProjectID()
+  const project = usePublishedProject()
 
   return (
     <>
       <PublicViewBackground />
       <ProjectPageLayout>
-        <p>Project Page: projectID = {projectID}</p>
+        <TopBar>
+          <Title>Project Page: projectID = {projectID}</Title>
+        </TopBar>
       </ProjectPageLayout>
     </>
   )
