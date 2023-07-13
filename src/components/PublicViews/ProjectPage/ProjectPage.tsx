@@ -4,6 +4,14 @@ import { ProjectPageLayout } from 'components/ProjectPage/ProjectPageLayout'
 
 import PublicViewBackground from '../PublicViewBackground'
 
+import {
+  ProjectPageMain,
+  ProjectPageLayout,
+  ProjectPageSidebar,
+  ProjectPageContentBox,
+} from 'components/ProjectPage/ProjectPageLayout'
+
+
 import TopBar, {
   Title,
   Controls,
@@ -39,6 +47,23 @@ const ProjectPage = () => {
           </Breadcrumbs>
           <Title>Project Page: projectID = {projectID}</Title>
         </TopBar>
+        <ProjectPageMain>
+          <PublicProjectPageContentBox>
+            <h2>Description>
+            <p>{project.description || '—'}</p>
+          </PublicProjectPageContentBox>
+          <PublicProjectPageContentBox>
+            <div style={{
+                background: 'darkgray',
+                height: 300,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              Map placeholder
+            </div>
+          </PublicProjectPageContentBox>
       </ProjectPageLayout>
     </>
   )
