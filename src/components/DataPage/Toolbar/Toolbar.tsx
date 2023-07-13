@@ -10,7 +10,6 @@ export enum View {
 const DataToolbarButton = styled.button<{
   selected?: boolean
   width?: number
-  extraStyle?: string
 }>`
   ${({ theme }) => theme.bigParagraph};
   z-index: ${({ theme }) => theme.zIndexes.dataToolbarButton};
@@ -40,7 +39,10 @@ const DataToolbarButton = styled.button<{
   &:active {
     outline: 2px solid ${({ theme }) => theme.white20PercentOpacity};
   }
-  ${props => props.extraStyle}
+`
+const DataToolbarFiltersButton = styled(DataToolbarButton)`
+  padding-left: 10px;
+  padding-right: 10px;
 `
 
 const DataToolbarRadioButton = styled(DataToolbarButton)``
@@ -96,16 +98,15 @@ const DataToolbar = ({
   return (
     <DataToolbarDiv isFilterPanelOpen={isFilterPanelOpen}>
       <DataToolbarButtonContainer>
-        <DataToolbarButton
+        <DataToolbarFiltersButton
           selected={isFilterPanelOpen}
           onClick={() => {
             setIsFilterPanelOpen(!isFilterPanelOpen)
           }}
-          width={100}
           aria-controls="pharos-filter-panel"
         >
           Filters
-        </DataToolbarButton>
+        </DataToolbarFiltersButton>
       </DataToolbarButtonContainer>
       <DataToolbarRadioButtonContainer>
         <ViewRadioButton forView={View.map} label="Map" />
