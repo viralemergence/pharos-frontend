@@ -1,6 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 
+const panelWidth = '410px'
+
 const Panel = styled.aside<{ open: boolean }>`
   // TODO: Double check that this blur amount is correct
   backdrop-filter: blur(47px);
@@ -12,9 +14,9 @@ const Panel = styled.aside<{ open: boolean }>`
   display: flex;
   height: calc(100% - 35px);
   flex-flow: column nowrap;
-  margin-left: ${({ open }) => (open ? '30px' : '-400px')};
-  min-width: min(400px, 100%);
-  max-width: 400px;
+  margin-left: ${({ open }) => (open ? '30px' : `-${panelWidth}`)};
+  width: min(${panelWidth}, 100%);
+  max-width: ${panelWidth};
   position: relative;
   transition: margin-left 300ms cubic-bezier(0.4, 0, 0.2, 1);
   z-index: ${({ theme }) => theme.zIndexes.dataPanel};
@@ -31,7 +33,6 @@ const Panel = styled.aside<{ open: boolean }>`
     height: 100%;
     margin-right: 0;
     position: absolute;
-    // TODO: Should this be 100%?
     width: 100vw;
     max-width: unset;
   }

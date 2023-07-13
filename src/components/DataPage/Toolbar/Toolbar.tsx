@@ -27,7 +27,7 @@ const DataToolbarButton = styled.button<{
       &:hover { background-color: ${theme.white10PercentOpacity}; }
       `}
   color: ${({ selected, theme }) => (selected ? theme.black : theme.white)};
-  border-radius: 7px;
+  border-radius: 5px;
   margin-right: 5px;
   cursor: pointer;
   &:last-child {
@@ -43,12 +43,13 @@ const DataToolbarButton = styled.button<{
 const DataToolbarFiltersButton = styled(DataToolbarButton)`
   padding-left: 10px;
   padding-right: 10px;
+  margin-left: 0;
 `
 
 const DataToolbarRadioButton = styled(DataToolbarButton)``
 const DataToolbarButtonContainer = styled.div`
   background-color: ${({ theme }) => theme.white20PercentOpacity};
-  border-radius: 10px;
+  border-radius: 5px;
   position: relative;
   backdrop-filter: blur(3px);
   border: 1px solid ${({ theme }) => theme.white10PercentOpacity};
