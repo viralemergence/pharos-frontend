@@ -26,6 +26,10 @@ const ViewContainer = styled.main`
   padding-bottom: 35px;
 `
 
+const ViewMain = styled.div`
+  position: relative;
+`
+
 const PageContainer = styled.div`
   display: flex;
   flex-flow: column nowrap;
@@ -49,6 +53,8 @@ const DataPage = (): JSX.Element => {
   const [mapProjection, setMapProjection] = useState<'globe' | 'naturalEarth'>(
     'naturalEarth'
   )
+  const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
+
   useEffect(() => {
     if (view === View.globe) setMapProjection('globe')
     if (view === View.map) setMapProjection('naturalEarth')
@@ -77,164 +83,24 @@ const DataPage = (): JSX.Element => {
       <PageContainer>
         <NavBar />
         <ViewContainer>
-          <DataToolbar view={view} changeView={changeView} />
+          <DataToolbar
+            view={view}
+            changeView={changeView}
+            isFilterPanelOpen={isFilterPanelOpen}
+            setIsFilterPanelOpen={setIsFilterPanelOpen}
+          />
           <MapView projection={mapProjection} />
           {view === View.table && <MapOverlay />}
-          <TableView
-            style={{ display: view === View.table ? 'grid' : 'none' }}
-          />
+          <ViewMain>
+            <FilterPanel isFilterPanelOpen={isFilterPanelOpen} />
+            <TableView
+              style={{ display: view === View.table ? 'grid' : 'none' }}
+            />
+          </ViewMain>
         </ViewContainer>
       </PageContainer>
     </Providers>
   )
 }
 
-<<<<<<< HEAD
-const isTruthyObject = (value: unknown): value is Record<string, unknown> =>
-	typeof value === 'object' && !!value
-
-const isValidRecordsResponse = (
-	data: unknown
-): data is PublishedRecordsResponse => {
-	if (!isTruthyObject(data)) return false
-	const { publishedRecords, isLastPage } =
-		data as Partial<PublishedRecordsResponse>
-	if (!isTruthyObject(publishedRecords)) return false
-	if (typeof isLastPage !== 'boolean') return false
-	return publishedRecords.every(row => typeof row === 'object')
-}
-
-interface Debouncing {
-	on: boolean
-	timeout: ReturnType<typeof setTimeout> | null
-}
-
-interface LoadPublishedRecordsOptions {
-	appendResults?: boolean
-	page: MutableRefObject<number>
-	setLoading: Dispatch<SetStateAction<boolean>>
-	setPublishedRecords: Dispatch<SetStateAction<Row[]>>
-	setReachedLastPage: Dispatch<SetStateAction<boolean>>
-	debouncing: MutableRefObject<Debouncing>
-}
-
-const loadPublishedRecords = async ({
-	appendResults = true,
-	page,
-	setLoading,
-	setPublishedRecords,
-	setReachedLastPage,
-	debouncing,
-}: LoadPublishedRecordsOptions) => {
-	// Switch debouncing on for 3 seconds
-	const debounceTimeout = 3000
-	debouncing.current.on = true
-	if (debouncing.current.timeout) clearTimeout(debouncing.current.timeout)
-	debouncing.current.timeout = setTimeout(() => {
-		debouncing.current.on = false
-	}, debounceTimeout)
-
-	if (!appendResults) page.current = 1
-	setLoading(true)
-	const params = new URLSearchParams()
-	params.append('page', page.current.toString())
-	params.append('pageSize', '50')
-	const response = await fetch(
-		`${process.env.GATSBY_API_URL}/published-records?` + params
-	)
-	if (!response.ok) {
-		console.log('GET /published-records: error')
-		setLoading(false)
-		return
-	}
-	const data = await response.json()
-	if (!isValidRecordsResponse(data)) {
-		console.log('GET /published-records: malformed response')
-		setLoading(false)
-		return
-	}
-	setPublishedRecords((previousRecords: Row[]) => [
-		...(appendResults ? previousRecords : []),
-		...data.publishedRecords,
-	])
-	setReachedLastPage(data.isLastPage)
-	setTimeout(() => {
-		setLoading(false)
-	}, 0)
-}
-
-const DataView = (): JSX.Element => {
-	const [loading, setLoading] = useState(true)
-	const [publishedRecords, setPublishedRecords] = useState<Row[]>([])
-	const [reachedLastPage, setReachedLastPage] = useState(false)
-	const page = useRef(1)
-	const debouncing = useRef({ on: false, timeout: null })
-	const [view, setView] = useState<View>(View.globe)
-
-	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
-
-	const changeView = (view: View) => {
-		window.location.hash = view
-		setView(view)
-	}
-
-	useEffect(() => {
-		const hash = window.location.hash.replace('#', '')
-
-		function hashIsView(hash: string): hash is View {
-			return Object.values(View).includes(hash)
-		}
-
-		if (hashIsView(hash)) {
-			setView(hash)
-		}
-	}, [])
-
-	const showEarth = [View.globe, View.map].includes(view)
-
-	return (
-		<Providers>
-			<CMS.SEO />
-			<DataPage>
-				<NavBar />
-				<ViewContainer>
-					<DataToolbar
-						view={view}
-						changeView={changeView}
-						isFilterPanelOpen={isFilterPanelOpen}
-						setIsFilterPanelOpen={setIsFilterPanelOpen}
-					/>
-					<MapView
-						projection={view === 'globe' ? 'globe' : 'naturalEarth'}
-						style={{
-							filter: showEarth ? 'none' : 'blur(30px)',
-						}}
-					/>
-					<ViewMain>
-						<FilterPanel isFilterPanelOpen={isFilterPanelOpen} />
-						<TableView
-							loadPublishedRecords={() =>
-								loadPublishedRecords({
-									setLoading,
-									setPublishedRecords,
-									setReachedLastPage,
-									page,
-									debouncing,
-								})
-							}
-							loading={loading}
-							page={page}
-							publishedRecords={publishedRecords}
-							reachedLastPage={reachedLastPage}
-							style={{
-								display: view === View.table ? 'grid' : 'none',
-							}}
-						/>
-					</ViewMain>
-				</ViewContainer>
-			</DataPage>
-		</Providers>
-	)
-}
-
-export default DataView
+export default DataPage

@@ -55,62 +55,28 @@ const DataToolbarButtonContainer = styled.div`
 const DataToolbarRadioButtonContainer = styled(DataToolbarButtonContainer)`
   padding: 5px;
 `
-<<<<<<< HEAD
 const DataToolbarDiv = styled.div<{ isFilterPanelOpen: boolean }>`
-	padding: 20px 0px 0 30px;
-	z-index: ${({ theme }) => theme.zIndexes.dataToolbar};
-	display: flex;
-	flex-flow: row wrap;
-	gap: 1rem;
-	flex-basis: 60px;
-	@media (max-width: 768px) {
-		${({ isFilterPanelOpen }) => (isFilterPanelOpen ? 'display: none' : '')}
-	}
-||||||| 6af089e
-const DataToolbarDiv = styled.div`
-	padding: 20px 0px 0 30px;
-	z-index: ${({ theme }) => theme.zIndexes.dataToolbar};
-	display: flex;
-	flex-flow: row wrap;
-	gap: 1rem;
-	flex-basis: 60px;
-=======
-const DataToolbarDiv = styled.div`
-  padding: 20px 0px 0 30px;
+  padding: 20px 0 0 30px;
   z-index: ${({ theme }) => theme.zIndexes.dataToolbar};
   display: flex;
   flex-flow: row wrap;
   gap: 1rem;
   flex-basis: 60px;
->>>>>>> rkl/datapage-radiobuttons
+  @media (max-width: 768px) {
+    ${({ isFilterPanelOpen }) => (isFilterPanelOpen ? 'display: none' : '')}
+  }
 `
 
 const DataToolbar = ({
-<<<<<<< HEAD
-	isFilterPanelOpen,
-	setIsFilterPanelOpen,
-	view,
-	changeView,
-||||||| 6af089e
-	view,
-	changeView,
-=======
+  isFilterPanelOpen,
+  setIsFilterPanelOpen,
   view,
   changeView,
->>>>>>> rkl/datapage-radiobuttons
 }: {
-<<<<<<< HEAD
-	isFilterPanelOpen: boolean
-	setIsFilterPanelOpen: (open: boolean) => void
-	view: View
-	changeView: (view: View) => void
-||||||| 6af089e
-	view: View
-	changeView: (view: View) => void
-=======
+  isFilterPanelOpen: boolean
+  setIsFilterPanelOpen: (open: boolean) => void
   view: View
   changeView: (view: View) => void
->>>>>>> rkl/datapage-radiobuttons
 }) => {
   const ViewRadioButton = ({
     forView,
@@ -127,41 +93,20 @@ const DataToolbar = ({
     </DataToolbarRadioButton>
   )
 
-<<<<<<< HEAD
-	return (
-		<DataToolbarDiv isFilterPanelOpen={isFilterPanelOpen}>
-			<DataToolbarButtonContainer>
-				<DataToolbarButton
-					selected={isFilterPanelOpen}
-					onClick={() => {
-						setIsFilterPanelOpen(!isFilterPanelOpen)
-					}}
-					width={100}
-					aria-controls="pharos-filter-panel"
-				>
-					Filters
-				</DataToolbarButton>
-			</DataToolbarButtonContainer>
-			<DataToolbarRadioButtonContainer>
-				<ViewRadioButton forView={View.map} label="Map" />
-				<ViewRadioButton forView={View.globe} label="Globe" />
-				<ViewRadioButton forView={View.table} label="Table" />
-			</DataToolbarRadioButtonContainer>
-		</DataToolbarDiv>
-	)
-||||||| 6af089e
-	return (
-		<DataToolbarDiv>
-			<DataToolbarRadioButtonContainer>
-				<ViewRadioButton forView={View.map} label="Map" />
-				<ViewRadioButton forView={View.globe} label="Globe" />
-				<ViewRadioButton forView={View.table} label="Table" />
-			</DataToolbarRadioButtonContainer>
-		</DataToolbarDiv>
-	)
-=======
   return (
-    <DataToolbarDiv>
+    <DataToolbarDiv isFilterPanelOpen={isFilterPanelOpen}>
+      <DataToolbarButtonContainer>
+        <DataToolbarButton
+          selected={isFilterPanelOpen}
+          onClick={() => {
+            setIsFilterPanelOpen(!isFilterPanelOpen)
+          }}
+          width={100}
+          aria-controls="pharos-filter-panel"
+        >
+          Filters
+        </DataToolbarButton>
+      </DataToolbarButtonContainer>
       <DataToolbarRadioButtonContainer>
         <ViewRadioButton forView={View.map} label="Map" />
         <ViewRadioButton forView={View.globe} label="Globe" />
@@ -169,7 +114,6 @@ const DataToolbar = ({
       </DataToolbarRadioButtonContainer>
     </DataToolbarDiv>
   )
->>>>>>> rkl/datapage-radiobuttons
 }
 
 export default DataToolbar
