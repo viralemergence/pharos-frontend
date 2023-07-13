@@ -81,6 +81,7 @@ const ProjectPage = () => {
           <PublicProjectPageContentBox>
             <CitationsPublications project={project} />
           </PublicProjectPageContentBox>
+         </ProjectPageMain>
       </ProjectPageLayout>
     </>
   )
