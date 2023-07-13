@@ -30,6 +30,13 @@ const ProjectPage = () => {
       <PublicViewBackground />
       <ProjectPageLayout>
         <TopBar>
+          <Breadcrumbs>
+            <BreadcrumbLink to={`/data/`}>All data</BreadcrumbLink>
+            <BreadcrumbLink to={`/data/`}>Projects</BreadcrumbLink>
+            <BreadcrumbLink $active to={`/projects/#/${project.projectID}`>
+              {project.name}
+            </BreadcrumbLink>
+          </Breadcrumbs>
           <Title>Project Page: projectID = {projectID}</Title>
         </TopBar>
       </ProjectPageLayout>
