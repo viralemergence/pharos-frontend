@@ -62,8 +62,10 @@ const DataPage = (): JSX.Element => {
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
 
   useEffect(() => {
-    if (view === View.globe) setMapProjection('globe')
-    if (view === View.map) setMapProjection('naturalEarth')
+    if (view === View.globe && mapProjection !== 'globe')
+      setMapProjection('globe')
+    if (view === View.map && mapProjection !== 'naturalEarth')
+      setMapProjection('naturalEarth')
   }, [view])
 
   const changeView = (view: View) => {
