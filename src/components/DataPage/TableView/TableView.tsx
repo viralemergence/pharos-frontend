@@ -102,10 +102,7 @@ const divIsAtBottom = ({ currentTarget }: React.UIEvent<HTMLDivElement>) =>
 
 const rowKeyGetter = (row: Row) => row.pharosID
 
-interface LoadPublishedRecordsOptions {
-  page: number
-  appendResults?: boolean
-}
+const PAGE_SIZE = 50
 
 const TableView = ({
   isOpen,
@@ -114,18 +111,17 @@ const TableView = ({
 }: TableViewProps) => {
   const [loading, setLoading] = useState<boolean>(true)
   const [publishedRecords, setPublishedRecords] = useState<Row[]>([])
-  const pageRef = useRef(1)
 
-  const loadPublishedRecords = async ({
-    page,
-    appendResults = false,
-  }: LoadPublishedRecordsOptions) => {
+  const loadPublishedRecords = async () => {
     setLoading(true)
+    // For example, if there are 100 records, load page 3 (i.e., the records
+    // numbered from 101 to 150)
+    const page = Math.floor(publishedRecords.length / PAGE_SIZE) + 1
     const response = await fetch(
       `${process.env.GATSBY_API_URL}/published-records?` +
         new URLSearchParams({
           page: page.toString(),
-          pageSize: '50',
+          pageSize: PAGE_SIZE.toString(),
         })
     )
 
@@ -134,17 +130,18 @@ const TableView = ({
 
       if (dataIsPublishedRecordsResponse(data)) {
         setPublishedRecords(prev => {
-          if (appendResults) {
-            // If appending results, ensure that no two records have the same
-            // id
-            const existingPharosIds = new Set(prev.map(row => row.pharosID))
-            const newRecords = data.publishedRecords.filter(
-              record => !existingPharosIds.has(record.pharosID)
-            )
-            return [...prev, ...newRecords]
-          } else {
-            return data.publishedRecords
-          }
+          // Ensure that no two records have the same id
+          const existingPharosIds = new Set(prev.map(row => row.pharosID))
+          const newRecords = data.publishedRecords.filter(
+            record => !existingPharosIds.has(record.pharosID)
+          )
+          const publishedRecords = [...prev, ...newRecords]
+          // Sort records by row number, just in case pages come back from the
+          // server in the wrong order
+          publishedRecords.sort(
+            (a, b) => Number(a.rowNumber) - Number(b.rowNumber)
+          )
+          return publishedRecords
         })
         setLoading(false)
       } else console.log('GET /published-records: malformed response')
@@ -152,7 +149,7 @@ const TableView = ({
   }
 
   useEffect(() => {
-    loadPublishedRecords({ page: 1 })
+    loadPublishedRecords()
   }, [])
 
   const rowNumberColumn = {
@@ -178,8 +175,7 @@ const TableView = ({
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     if (loading || !divIsAtBottom(event)) return
-    pageRef.current += 1
-    loadPublishedRecords({ page: pageRef.current, appendResults: true })
+    loadPublishedRecords({ appendResults: true })
   }
 
   return (
@@ -205,7 +201,8 @@ const TableView = ({
         )}
         {loading && (
           <LoadingMessage>
-            <LoadingSpinner /> Loading {pageRef.current > 1 ? ' more rows' : ''}
+            <LoadingSpinner /> Loading{' '}
+            {publishedRecords.length > 0 ? ' more rows' : ''}
           </LoadingMessage>
         )}
       </TableContaier>
