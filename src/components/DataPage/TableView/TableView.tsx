@@ -4,10 +4,19 @@ import styled from 'styled-components'
 import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
 
-const TableViewContainer = styled.div`
+const TableViewContainer = styled.div<{
+  isOpen: boolean
+  isFilterPanelOpen: boolean
+}>`
+  display: ${({ isOpen }) => (isOpen ? 'grid' : 'none')};
   padding: 0 30px;
   z-index: ${({ theme }) => theme.zIndexes.dataTable};
   flex: 1;
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    // On mobile, hide the table when the filter panel is open
+    ${({ isFilterPanelOpen }) =>
+      isFilterPanelOpen ? 'display: none ! important;' : ''}
+  }
 `
 const TableContaier = styled.div`
   overflow-x: hidden;
@@ -62,7 +71,8 @@ const NoRecordsFound = styled.div.attrs(({ role }) => ({ role }))`
 `
 
 interface TableViewProps {
-  style?: React.CSSProperties
+  isOpen: boolean
+  isFilterPanelOpen: boolean
   /** Virtualization should be disabled in tests via this prop, so that all the
    * cells are rendered immediately */
   enableVirtualization?: boolean
@@ -97,7 +107,11 @@ interface LoadPublishedRecordsOptions {
   appendResults?: boolean
 }
 
-const TableView = ({ style, enableVirtualization = true }: TableViewProps) => {
+const TableView = ({
+  isOpen,
+  isFilterPanelOpen,
+  enableVirtualization = true,
+}: TableViewProps) => {
   const [loading, setLoading] = useState<boolean>(true)
   const [publishedRecords, setPublishedRecords] = useState<Row[]>([])
   const pageRef = useRef(1)
@@ -169,7 +183,7 @@ const TableView = ({ style, enableVirtualization = true }: TableViewProps) => {
   }
 
   return (
-    <TableViewContainer style={style}>
+    <TableViewContainer isOpen={isOpen} isFilterPanelOpen={isFilterPanelOpen}>
       <TableContaier>
         {!loading && publishedRecords?.length === 0 && (
           <NoRecordsFound role="status">

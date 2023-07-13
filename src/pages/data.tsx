@@ -24,10 +24,16 @@ const ViewContainer = styled.main`
   }
   background-color: ${({ theme }) => theme.darkPurple};
   padding-bottom: 35px;
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding-bottom: 0;
+  }
 `
 
 const ViewMain = styled.div`
   position: relative;
+  height: 100%;
+  display: flex;
+  flex-flow: row nowrap;
 `
 
 const PageContainer = styled.div`
@@ -94,7 +100,8 @@ const DataPage = (): JSX.Element => {
           <ViewMain>
             <FilterPanel isFilterPanelOpen={isFilterPanelOpen} />
             <TableView
-              style={{ display: view === View.table ? 'grid' : 'none' }}
+              isFilterPanelOpen={isFilterPanelOpen}
+              isOpen={view === View.table}
             />
           </ViewMain>
         </ViewContainer>
