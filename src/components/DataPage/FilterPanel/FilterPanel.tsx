@@ -10,7 +10,7 @@ const Panel = styled.aside<{ open: boolean }>`
   border-top-right-radius: 5px;
   color: ${({ theme }) => theme.white};
   display: flex;
-  height: 100%;
+  height: calc(100% - 35px);
   flex-flow: column nowrap;
   margin-left: ${({ open }) => (open ? '30px' : '-400px')};
   min-width: min(400px, 100%);

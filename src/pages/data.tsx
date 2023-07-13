@@ -23,10 +23,6 @@ const ViewContainer = styled.main`
     flex: 1;
   }
   background-color: ${({ theme }) => theme.darkPurple};
-  padding-bottom: 35px;
-  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
-    padding-bottom: 0;
-  }
 `
 
 const ViewMain = styled.div`
