@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 
 import PublicViewBackground from '../PublicViewBackground'
 
@@ -21,6 +21,11 @@ import TopBar, {
 
 import usePublishedProject from './usePublishedProject'
 
+const Container = styled.div`
+  background-color: ${({ theme }) => theme.lightBlack};
+  display: flow-root;
+`
+
 const PublicProjectPageContentBox = styled(ProjectPageContentBox)`
   background-color: ${({ theme }) => theme.medBlack};
   border-top: 5px solid ${({ theme }) => theme.mint};
@@ -32,9 +37,10 @@ const PublicProjectPageContentBox = styled(ProjectPageContentBox)`
 
 const ProjectPage = () => {
   const project = usePublishedProject()
+  const theme = useTheme()
 
   return (
-    <>
+    <Container>
       <PublicViewBackground />
       <ProjectPageLayout>
         <TopBar>
@@ -83,7 +89,7 @@ const ProjectPage = () => {
           </PublicProjectPageContentBox>
         </ProjectPageMain>
       </ProjectPageLayout>
-    </>
+    </Container>
   )
 }
 

@@ -9,7 +9,7 @@ const PublicViewBackground = styled.div`
   overflow: hidden;
   background-color: ${({ theme }) => theme.lightBlack};
   min-height: 100vh;
-  max-height: 300px;
+  height: 100%;
 
   &:before {
     content: '';
