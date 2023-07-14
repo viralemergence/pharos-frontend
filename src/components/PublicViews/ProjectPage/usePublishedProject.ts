@@ -11,7 +11,6 @@ interface PublishedProject {
   relatedMaterials?: string[]
   projectPublications?: string[]
   othersCiting?: string[]
-  publishStatus: ProjectPublishStatus
   datasets: {
     datasetID: string
     name: string
@@ -51,3 +50,5 @@ const usePublishedProject = () => {
 
   return project
 }
+
+export default usePublishedProject

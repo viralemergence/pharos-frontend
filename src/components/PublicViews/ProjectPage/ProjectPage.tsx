@@ -1,34 +1,32 @@
 import React from 'react'
-
-import { ProjectPageLayout } from 'components/ProjectPage/ProjectPageLayout'
+import styled from 'styled-components'
 
 import PublicViewBackground from '../PublicViewBackground'
 
 import {
   ProjectPageMain,
   ProjectPageLayout,
-  ProjectPageSidebar,
+  // ProjectPageSidebar,
   ProjectPageContentBox,
 } from 'components/ProjectPage/ProjectPageLayout'
 
 import CitationsPublications from 'components/ProjectPage/CitationsPublications'
 
-
 import TopBar, {
   Title,
-  Controls,
+  // Controls,
   Breadcrumbs,
-	BreadcrumbLink,
+  BreadcrumbLink,
 } from 'components/layout/TopBar'
 
 import usePublishedProject from './usePublishedProject'
 
 const PublicProjectPageContentBox = styled(ProjectPageContentBox)`
-  background-color: ${({theme}) => theme.medBlack};
-  border-top: 5px solid ${({theme}) => theme.mint};
+  background-color: ${({ theme }) => theme.medBlack};
+  border-top: 5px solid ${({ theme }) => theme.mint};
 
   > h2 {
-    color: ${({theme}) => theme.medDarkGray};
+    color: ${({ theme }) => theme.medDarkGray};
   }
 `
 
@@ -43,19 +41,20 @@ const ProjectPage = () => {
           <Breadcrumbs>
             <BreadcrumbLink to={`/data/`}>All data</BreadcrumbLink>
             <BreadcrumbLink to={`/data/`}>Projects</BreadcrumbLink>
-            <BreadcrumbLink $active to={`/projects/#/${project.projectID}`>
+            <BreadcrumbLink $active to={`/projects/#/${project.projectID}`}>
               {project.name}
             </BreadcrumbLink>
           </Breadcrumbs>
-          <Title>Project Page: projectID = {projectID}</Title>
+          <Title>Project Page: projectID = {project.projectID}</Title>
         </TopBar>
         <ProjectPageMain>
           <PublicProjectPageContentBox>
-            <h2>Description>
+            <h2>Description</h2>
             <p>{project.description || '—'}</p>
           </PublicProjectPageContentBox>
           <PublicProjectPageContentBox>
-            <div style={{
+            <div
+              style={{
                 background: 'darkgray',
                 height: 300,
                 display: 'flex',
@@ -67,8 +66,9 @@ const ProjectPage = () => {
             </div>
           </PublicProjectPageContentBox>
           <PublicProjectPageContentBox>
-            <div style={{
-                background: 'darkgray', 
+            <div
+              style={{
+                background: 'darkgray',
                 height: 100,
                 display: 'flex',
                 alignItems: 'center',
@@ -81,7 +81,7 @@ const ProjectPage = () => {
           <PublicProjectPageContentBox>
             <CitationsPublications project={project} />
           </PublicProjectPageContentBox>
-         </ProjectPageMain>
+        </ProjectPageMain>
       </ProjectPageLayout>
     </>
   )
