@@ -9,6 +9,8 @@ import MapView from 'components/DataPage/MapView/MapView'
 import TableView from 'components/DataPage/TableView/TableView'
 import DataToolbar, { View } from 'components/DataPage/Toolbar/Toolbar'
 
+import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
+
 const ViewContainer = styled.main`
   flex: 1;
   position: relative;
@@ -21,7 +23,17 @@ const ViewContainer = styled.main`
     flex: 1;
   }
   background-color: ${({ theme }) => theme.darkPurple};
+`
+
+const ViewMain = styled.div`
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-flow: row nowrap;
   padding-bottom: 35px;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    padding-bottom: unset;
+  }
 `
 
 const PageContainer = styled.div`
@@ -39,7 +51,6 @@ const MapOverlay = styled.div`
   top: 0;
   bottom: 0;
   width: 100%;
-  z-index: ${({ theme }) => theme.zIndexes.dataMapOverlay};
 `
 
 const DataPage = (): JSX.Element => {
@@ -47,9 +58,13 @@ const DataPage = (): JSX.Element => {
   const [mapProjection, setMapProjection] = useState<'globe' | 'naturalEarth'>(
     'naturalEarth'
   )
+  const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
+
   useEffect(() => {
-    if (view === View.globe) setMapProjection('globe')
-    if (view === View.map) setMapProjection('naturalEarth')
+    if (view === View.globe && mapProjection !== 'globe')
+      setMapProjection('globe')
+    if (view === View.map && mapProjection !== 'naturalEarth')
+      setMapProjection('naturalEarth')
   }, [view])
 
   const changeView = (view: View) => {
@@ -75,12 +90,21 @@ const DataPage = (): JSX.Element => {
       <PageContainer>
         <NavBar />
         <ViewContainer>
-          <DataToolbar view={view} changeView={changeView} />
           <MapView projection={mapProjection} />
           {view === View.table && <MapOverlay />}
-          <TableView
-            style={{ display: view === View.table ? 'grid' : 'none' }}
+          <DataToolbar
+            view={view}
+            changeView={changeView}
+            isFilterPanelOpen={isFilterPanelOpen}
+            setIsFilterPanelOpen={setIsFilterPanelOpen}
           />
+          <ViewMain>
+            <FilterPanel isFilterPanelOpen={isFilterPanelOpen} />
+            <TableView
+              isFilterPanelOpen={isFilterPanelOpen}
+              isOpen={view === View.table}
+            />
+          </ViewMain>
         </ViewContainer>
       </PageContainer>
     </Providers>

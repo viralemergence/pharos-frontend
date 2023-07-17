@@ -10,10 +10,8 @@ export enum View {
 const DataToolbarButton = styled.button<{
   selected?: boolean
   width?: number
-  extraStyle?: string
 }>`
   ${({ theme }) => theme.bigParagraph};
-  z-index: ${({ theme }) => theme.zIndexes.dataToolbarButton};
   position: relative;
   font-size: 16px;
   line-height: 25px;
@@ -28,7 +26,7 @@ const DataToolbarButton = styled.button<{
       &:hover { background-color: ${theme.white10PercentOpacity}; }
       `}
   color: ${({ selected, theme }) => (selected ? theme.black : theme.white)};
-  border-radius: 7px;
+  border-radius: 5px;
   margin-right: 5px;
   cursor: pointer;
   &:last-child {
@@ -40,13 +38,17 @@ const DataToolbarButton = styled.button<{
   &:active {
     outline: 2px solid ${({ theme }) => theme.white20PercentOpacity};
   }
-  ${props => props.extraStyle}
+`
+const DataToolbarFiltersButton = styled(DataToolbarButton)`
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-left: 0;
 `
 
 const DataToolbarRadioButton = styled(DataToolbarButton)``
 const DataToolbarButtonContainer = styled.div`
   background-color: ${({ theme }) => theme.white20PercentOpacity};
-  border-radius: 10px;
+  border-radius: 5px;
   position: relative;
   backdrop-filter: blur(3px);
   border: 1px solid ${({ theme }) => theme.white10PercentOpacity};
@@ -55,19 +57,25 @@ const DataToolbarButtonContainer = styled.div`
 const DataToolbarRadioButtonContainer = styled(DataToolbarButtonContainer)`
   padding: 5px;
 `
-const DataToolbarDiv = styled.div`
-  padding: 20px 0px 0 30px;
-  z-index: ${({ theme }) => theme.zIndexes.dataToolbar};
+const DataToolbarDiv = styled.div<{ isFilterPanelOpen: boolean }>`
+  padding: 20px 0 0 30px;
   display: flex;
   flex-flow: row wrap;
   gap: 1rem;
   flex-basis: 60px;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    ${({ isFilterPanelOpen }) => (isFilterPanelOpen ? 'display: none' : '')}
+  }
 `
 
 const DataToolbar = ({
+  isFilterPanelOpen,
+  setIsFilterPanelOpen,
   view,
   changeView,
 }: {
+  isFilterPanelOpen: boolean
+  setIsFilterPanelOpen: React.Dispatch<React.SetStateAction<boolean>>
   view: View
   changeView: (view: View) => void
 }) => {
@@ -87,7 +95,18 @@ const DataToolbar = ({
   )
 
   return (
-    <DataToolbarDiv>
+    <DataToolbarDiv isFilterPanelOpen={isFilterPanelOpen}>
+      <DataToolbarButtonContainer>
+        <DataToolbarFiltersButton
+          selected={isFilterPanelOpen}
+          onClick={() => {
+            setIsFilterPanelOpen(prev => !prev)
+          }}
+          aria-controls="pharos-filter-panel"
+        >
+          Filters
+        </DataToolbarFiltersButton>
+      </DataToolbarButtonContainer>
       <DataToolbarRadioButtonContainer>
         <ViewRadioButton forView={View.map} label="Map" />
         <ViewRadioButton forView={View.globe} label="Globe" />

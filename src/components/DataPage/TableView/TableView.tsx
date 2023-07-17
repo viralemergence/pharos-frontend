@@ -1,13 +1,21 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
 
-const TableViewContainer = styled.div`
+const TableViewContainer = styled.div<{
+  isOpen: boolean
+  isFilterPanelOpen: boolean
+}>`
+  display: ${({ isOpen }) => (isOpen ? 'grid' : 'none')};
   padding: 0 30px;
-  z-index: ${({ theme }) => theme.zIndexes.dataTable};
   flex: 1;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    // On mobiles and tablets, hide the table when the filter panel is open
+    ${({ isFilterPanelOpen }) =>
+      isFilterPanelOpen ? 'display: none ! important;' : ''}
+  }
 `
 const TableContaier = styled.div`
   overflow-x: hidden;
@@ -62,7 +70,8 @@ const NoRecordsFound = styled.div.attrs(({ role }) => ({ role }))`
 `
 
 interface TableViewProps {
-  style?: React.CSSProperties
+  isOpen?: boolean
+  isFilterPanelOpen?: boolean
   /** Virtualization should be disabled in tests via this prop, so that all the
    * cells are rendered immediately */
   enableVirtualization?: boolean
@@ -92,26 +101,26 @@ const divIsAtBottom = ({ currentTarget }: React.UIEvent<HTMLDivElement>) =>
 
 const rowKeyGetter = (row: Row) => row.pharosID
 
-interface LoadPublishedRecordsOptions {
-  page: number
-  appendResults?: boolean
-}
+const PAGE_SIZE = 50
 
-const TableView = ({ style, enableVirtualization = true }: TableViewProps) => {
+const TableView = ({
+  isOpen = false,
+  isFilterPanelOpen = false,
+  enableVirtualization = true,
+}: TableViewProps) => {
   const [loading, setLoading] = useState<boolean>(true)
   const [publishedRecords, setPublishedRecords] = useState<Row[]>([])
-  const pageRef = useRef(1)
 
-  const loadPublishedRecords = async ({
-    page,
-    appendResults = false,
-  }: LoadPublishedRecordsOptions) => {
+  const loadPublishedRecords = async () => {
     setLoading(true)
+    // For example, if there are 100 records, load page 3 (i.e., the records
+    // numbered from 101 to 150)
+    const page = Math.floor(publishedRecords.length / PAGE_SIZE) + 1
     const response = await fetch(
       `${process.env.GATSBY_API_URL}/published-records?` +
         new URLSearchParams({
           page: page.toString(),
-          pageSize: '50',
+          pageSize: PAGE_SIZE.toString(),
         })
     )
 
@@ -120,17 +129,18 @@ const TableView = ({ style, enableVirtualization = true }: TableViewProps) => {
 
       if (dataIsPublishedRecordsResponse(data)) {
         setPublishedRecords(prev => {
-          if (appendResults) {
-            // If appending results, ensure that no two records have the same
-            // id
-            const existingPharosIds = new Set(prev.map(row => row.pharosID))
-            const newRecords = data.publishedRecords.filter(
-              record => !existingPharosIds.has(record.pharosID)
-            )
-            return [...prev, ...newRecords]
-          } else {
-            return data.publishedRecords
-          }
+          // Ensure that no two records have the same id
+          const existingPharosIds = new Set(prev.map(row => row.pharosID))
+          const newRecords = data.publishedRecords.filter(
+            record => !existingPharosIds.has(record.pharosID)
+          )
+          const publishedRecords = [...prev, ...newRecords]
+          // Sort records by row number, just in case pages come back from the
+          // server in the wrong order
+          publishedRecords.sort(
+            (a, b) => Number(a.rowNumber) - Number(b.rowNumber)
+          )
+          return publishedRecords
         })
         setLoading(false)
       } else console.log('GET /published-records: malformed response')
@@ -138,7 +148,7 @@ const TableView = ({ style, enableVirtualization = true }: TableViewProps) => {
   }
 
   useEffect(() => {
-    loadPublishedRecords({ page: 1 })
+    loadPublishedRecords()
   }, [])
 
   const rowNumberColumn = {
@@ -164,12 +174,11 @@ const TableView = ({ style, enableVirtualization = true }: TableViewProps) => {
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     if (loading || !divIsAtBottom(event)) return
-    pageRef.current += 1
-    loadPublishedRecords({ page: pageRef.current, appendResults: true })
+    loadPublishedRecords()
   }
 
   return (
-    <TableViewContainer style={style}>
+    <TableViewContainer isOpen={isOpen} isFilterPanelOpen={isFilterPanelOpen}>
       <TableContaier>
         {!loading && publishedRecords?.length === 0 && (
           <NoRecordsFound role="status">
@@ -187,11 +196,13 @@ const TableView = ({ style, enableVirtualization = true }: TableViewProps) => {
             onScroll={handleScroll}
             rowKeyGetter={rowKeyGetter}
             enableVirtualization={enableVirtualization}
+            data-testid="datagrid"
           />
         )}
         {loading && (
           <LoadingMessage>
-            <LoadingSpinner /> Loading {pageRef.current > 1 ? ' more rows' : ''}
+            <LoadingSpinner /> Loading{' '}
+            {publishedRecords.length > 0 ? ' more rows' : ''}
           </LoadingMessage>
         )}
       </TableContaier>

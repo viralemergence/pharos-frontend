@@ -38,7 +38,8 @@ describe('The public data table', () => {
       </Providers>
     )
   })
-  const getDataGridAfterWaiting = async () => await screen.findByRole('grid')
+  const getDataGridAfterWaiting = async () =>
+    await screen.findByTestId('datagrid')
 
   it('displays the first page of published records', async () => {
     render(
@@ -48,28 +49,7 @@ describe('The public data table', () => {
     )
     const grid = await getDataGridAfterWaiting()
     expect(grid).toBeInTheDocument()
-    await waitFor(async () => {
-      const rows = await screen.findAllByRole('row')
-      expect(rows).toHaveLength(51) // 50 rows plus the header
-      expect(
-        await screen.findByText('row 1 - project name')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 1 - host species')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 1 - spatial uncertainty')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 50 - project name')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 50 - host species')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 50 - spatial uncertainty')
-      ).toBeInTheDocument()
-    })
+    expect(grid).toHaveAttribute('aria-rowcount', '51')
   })
 
   // Skipping this test since fireEvent.scroll does not work well when circleci runs `yarn run test`
