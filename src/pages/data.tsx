@@ -357,7 +357,6 @@ const DataPage = (): JSX.Element => {
               }}
               loading={loading}
               publishedRecords={publishedRecords}
-              reachedLastPage={reachedLastPage}
             />
           </ViewMain>
         </ViewContainer>
