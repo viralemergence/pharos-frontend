@@ -88,10 +88,13 @@ const FilterPanelCloseButton = styled(FilterPanelToolbarButton)`
     }
   }
 `
+
+// TODO: Use Dropdown
+
 const FieldSelectorDiv = styled.div`
   position: absolute;
-  top: 70px;
-  width: calc(100% - 59px);
+  top: 74px;
+  width: min(calc(100% - 59px), 350px);
   left: 30px;
   display: flex;
   flex-flow: column nowrap;
