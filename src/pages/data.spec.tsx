@@ -67,7 +67,7 @@ describe('The public data page', () => {
   })
 
   // Helper functions for retrieving elements from the page
-  const getAddFilterButton = () => screen.getByLabelText('Add filter') // TODO: If this doesn't work try getByText
+  const getAddFilterButton = () => screen.getByText('Add filter') // TODO: If this doesn't work try getByText
   const getFilterPanel = (container: HTMLElement) =>
     container.querySelector('aside[role=navigation]')
   const getTableViewButton = () => screen.getByRole('button', { name: 'Table' })
@@ -109,21 +109,21 @@ describe('The public data page', () => {
   it('has a button labeled Filters that toggles the Filter Panel', () => {
     const { container } = render(<DataPage />)
 
-    // Initially, the filter panel should be visible
+    // Initially, the filter panel should be hidden
     const panel = getFilterPanel(container)
     expect(panel).toBeInTheDocument()
-    expect(panel).toHaveAttribute('aria-hidden', 'false')
+    expect(panel).toHaveAttribute('aria-hidden', 'true')
     expect(panel).toContainElement(getAddFilterButton())
 
     const filterPanelButton = screen.getByRole('button', { name: 'Filters' })
 
-    // Clicking the button closes the panel
-    fireEvent.click(filterPanelButton)
-    expect(panel).toHaveAttribute('aria-hidden', 'true')
-
-    // Clicking the button again opens the panel
+    // Clicking the button shows the panel
     fireEvent.click(filterPanelButton)
     expect(panel).toHaveAttribute('aria-hidden', 'false')
+
+    // Clicking the button again hides the panel
+    fireEvent.click(filterPanelButton)
+    expect(panel).toHaveAttribute('aria-hidden', 'true')
   })
 
   it('has a filter panel that can be closed by clicking a button', () => {

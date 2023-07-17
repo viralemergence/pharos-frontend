@@ -57,6 +57,7 @@ const DataPage = (): JSX.Element => {
     'naturalEarth'
   )
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
+  const [fields, setFields] = useState<Record<string, Field>>({})
 
   useEffect(() => {
     if (view === View.globe && mapProjection !== 'globe')
@@ -69,7 +70,6 @@ const DataPage = (): JSX.Element => {
     window.location.hash = view
     setView(view)
   }
-
   useEffect(() => {
     const hash = window.location.hash.replace('#', '')
 
@@ -80,6 +80,19 @@ const DataPage = (): JSX.Element => {
     if (hashIsView(hash)) {
       setView(hash)
     }
+
+    const getMetadata = async () => {
+      const response = await fetch(
+        `${process.env.GATSBY_API_URL}/metadata-for-published-records`
+      )
+      const data = await response.json()
+      if (!isValidMetadataResponse(data)) {
+        console.error('GET /metadata-for-published-records: malformed response')
+        return
+      }
+      setFields(data.fields)
+    }
+    getMetadata()
   }, [])
 
   return (

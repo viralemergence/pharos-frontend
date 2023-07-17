@@ -72,8 +72,8 @@ const NoRecordsFound = styled.div.attrs(({ role }) => ({ role }))`
 `
 
 interface TableViewProps {
-  isOpen: boolean
-  isFilterPanelOpen: boolean
+  isOpen?: boolean
+  isFilterPanelOpen?: boolean
   /** Virtualization should be disabled in tests via this prop, so that all the
    * cells are rendered immediately */
   enableVirtualization?: boolean
@@ -106,8 +106,8 @@ const rowKeyGetter = (row: Row) => row.pharosID
 const PAGE_SIZE = 50
 
 const TableView = ({
-  isOpen,
-  isFilterPanelOpen,
+  isOpen = true,
+  isFilterPanelOpen = false,
   enableVirtualization = true,
 }: TableViewProps) => {
   const [loading, setLoading] = useState<boolean>(true)
