@@ -102,7 +102,7 @@ const DataToolbar = ({
         <DataToolbarFiltersButton
           selected={isFilterPanelOpen}
           onClick={() => {
-            setIsFilterPanelOpen(!isFilterPanelOpen)
+            setIsFilterPanelOpen(prev => !prev)
           }}
           aria-controls="pharos-filter-panel"
         >
