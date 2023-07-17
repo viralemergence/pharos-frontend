@@ -10,5 +10,6 @@ const zIndexes = {
   dataMapOverlay: 3,
   dataMap: 2,
 }
+// TODO: see if I can remove this as much as possible
 
 export default zIndexes
