@@ -31,6 +31,10 @@ const ViewMain = styled.div`
   height: 100%;
   display: flex;
   flex-flow: row nowrap;
+  padding-bottom: 35px;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    padding-bottom: unset;
+  }
 `
 
 const PageContainer = styled.div`
@@ -48,7 +52,6 @@ const MapOverlay = styled.div`
   top: 0;
   bottom: 0;
   width: 100%;
-  z-index: ${({ theme }) => theme.zIndexes.dataMapOverlay};
 `
 
 const DataPage = (): JSX.Element => {
@@ -101,14 +104,14 @@ const DataPage = (): JSX.Element => {
       <PageContainer>
         <NavBar />
         <ViewContainer>
+          <MapView projection={mapProjection} />
+          {view === View.table && <MapOverlay />}
           <DataToolbar
             view={view}
             changeView={changeView}
             isFilterPanelOpen={isFilterPanelOpen}
             setIsFilterPanelOpen={setIsFilterPanelOpen}
           />
-          <MapView projection={mapProjection} />
-          {view === View.table && <MapOverlay />}
           <ViewMain>
             <FilterPanel
               isFilterPanelOpen={isFilterPanelOpen}

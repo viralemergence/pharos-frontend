@@ -99,7 +99,6 @@ const FieldSelectorDiv = styled.div`
   background-color: ${({ theme }) => theme.medBlack};
   border-radius: 5px;
   padding: 5px 0;
-  z-index: ${({ theme }) => theme.zIndexes.dataPanelFieldSelector};
 `
 const FieldSelectorButton = styled(FilterPanelButton)<{ disabled: boolean }>`
   width: 100%;
