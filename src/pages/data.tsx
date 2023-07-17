@@ -30,6 +30,10 @@ const ViewMain = styled.div`
   height: 100%;
   display: flex;
   flex-flow: row nowrap;
+  padding-bottom: 35px;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    padding-bottom: unset;
+  }
 `
 
 const PageContainer = styled.div`

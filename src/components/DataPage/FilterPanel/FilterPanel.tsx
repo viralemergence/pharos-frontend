@@ -12,8 +12,6 @@ const Panel = styled.aside<{ open: boolean }>`
   border-top-right-radius: 5px;
   color: ${({ theme }) => theme.white};
   display: flex;
-  height: calc(100% - 35px);
-  // TODO: Add the margin in ViewMain rather than here and make sure this handles mobile
   flex-flow: column nowrap;
   margin-left: ${({ open }) => (open ? '30px' : `-${panelWidth}`)};
   width: min(${panelWidth}, 100%);
@@ -22,6 +20,7 @@ const Panel = styled.aside<{ open: boolean }>`
   transition: margin-left 300ms cubic-bezier(0.4, 0, 0.2, 1);
   z-index: ${({ theme }) => theme.zIndexes.dataPanel};
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    transition: none;
     backdrop-filter: blur(100px);
     border-radius: 0;
     border: 0;
