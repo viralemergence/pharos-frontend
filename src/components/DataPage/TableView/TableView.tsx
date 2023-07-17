@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
 import type { Filter, Field } from '../FilterPanel/constants'
+import { Row } from '../../../pages/constants'
 
 const TableViewContainer = styled.div<{
   isOpen: boolean
@@ -74,19 +75,16 @@ const NoRecordsFound = styled.div.attrs(({ role }) => ({ role }))`
 
 interface TableViewProps {
   appliedFilters?: Filter[]
-  loadPublishedRecords?: () => void
+  loadNextPage?: (replaceResults?: boolean) => void
   loading?: boolean
   publishedRecords?: Row[]
   fields?: Record<string, Field>
   isOpen?: boolean
   isFilterPanelOpen?: boolean
+  reachedLastPage?: boolean
   /** Virtualization should be disabled in tests via this prop, so that all the
    * cells are rendered immediately */
   enableVirtualization?: boolean
-}
-
-export interface Row {
-  [key: string]: string | number
 }
 
 const divIsAtBottom = ({ currentTarget }: React.UIEvent<HTMLDivElement>) =>
@@ -99,14 +97,15 @@ const TableView = ({
   loading = false,
   publishedRecords = [],
   appliedFilters = [],
-  loadPublishedRecords = () => null,
+  loadNextPage = () => null,
   fields = {},
   isOpen = true,
   isFilterPanelOpen = false,
+  reachedLastPage = false,
   enableVirtualization = true,
 }: TableViewProps) => {
   useEffect(() => {
-    loadPublishedRecords()
+    loadNextPage()
   }, [])
 
   const rowNumberColumn = {
@@ -138,8 +137,8 @@ const TableView = ({
   ]
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
-    if (loading || !divIsAtBottom(event)) return
-    loadPublishedRecords()
+    if (loading || !divIsAtBottom(event) || reachedLastPage) return
+    loadNextPage()
   }
 
   return (
@@ -163,6 +162,8 @@ const TableView = ({
             onScroll={handleScroll}
             rowKeyGetter={rowKeyGetter}
             enableVirtualization={enableVirtualization}
+            role="grid"
+            data-testid="datagrid"
           />
         )}
         {loading && (

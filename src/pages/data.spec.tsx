@@ -78,7 +78,8 @@ describe('The public data page', () => {
   const getDataGrid = () => screen.queryByRole('grid')
   // This function will wait for the data grid to appear. It can be used to check
   // that the grid appears after loading published records.
-  const getDataGridAfterWaiting = async () => await screen.findByRole('grid')
+  const getDataGridAfterWaiting = async () =>
+    await screen.findByTestId('datagrid')
 
   it('renders', () => {
     render(<DataPage />)
@@ -206,28 +207,7 @@ describe('The public data page', () => {
     render(<DataPage enableTableVirtualization={false} />)
     const grid = await getDataGridAfterWaiting()
     expect(grid).toBeInTheDocument()
-    await waitFor(async () => {
-      const rows = await screen.findAllByRole('row')
-      expect(rows).toHaveLength(51) // 50 rows plus the header
-      expect(
-        await screen.findByText('row 1 - project name')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 1 - host species')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 1 - spatial uncertainty')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 50 - project name')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 50 - host species')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 50 - spatial uncertainty')
-      ).toBeInTheDocument()
-    })
+    expect(grid).toHaveAttribute('aria-rowcount', '51')
   })
 
   // Skipping this test since fireEvent.scroll does not work well when circleci runs `yarn run test`

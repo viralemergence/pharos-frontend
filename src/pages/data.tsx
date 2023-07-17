@@ -1,11 +1,4 @@
-import React, {
-  Dispatch,
-  MutableRefObject,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import debounce from 'lodash/debounce'
 
@@ -14,8 +7,9 @@ import Providers from 'components/layout/Providers'
 
 import NavBar from 'components/layout/NavBar/NavBar'
 import MapView from 'components/DataPage/MapView/MapView'
-import TableView, { Row } from 'components/DataPage/TableView/TableView'
+import TableView from 'components/DataPage/TableView/TableView'
 import DataToolbar, { View } from 'components/DataPage/Toolbar/Toolbar'
+import { Row, LoadPublishedRecordsOptions } from './constants'
 
 import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
 import {
@@ -100,21 +94,6 @@ interface PublishedRecordsResponse {
   isLastPage: boolean
 }
 
-interface Debouncing {
-  on: boolean
-  timeout: ReturnType<typeof setTimeout> | null
-}
-
-interface LoadPublishedRecordsOptions {
-  appendResults?: boolean
-  filters: Filter[]
-  setLoading: Dispatch<SetStateAction<boolean>>
-  setPublishedRecords: Dispatch<SetStateAction<Row[]>>
-  setAppliedFilters: Dispatch<SetStateAction<Filter[]>>
-  setReachedLastPage: Dispatch<SetStateAction<boolean>>
-  debouncing: MutableRefObject<Debouncing>
-}
-
 const isValidMetadataResponse = (data: unknown): data is MetadataResponse => {
   if (!isTruthyObject(data)) return false
   const { fields } = data as Partial<MetadataResponse>
@@ -193,7 +172,7 @@ const DataPage = ({
   }, [])
 
   const loadPublishedRecords = async ({
-    appendResults = true,
+    replaceResults = false,
     filters,
     setLoading,
     setPublishedRecords,
@@ -209,11 +188,12 @@ const DataPage = ({
       debouncing.current.on = false
     }, debounceTimeout)
 
-    // For example, if there are 100 records, load page 3 (i.e., the records
-    // numbered from 101 to 150)
-    let page = Math.floor(publishedRecords.length / PAGE_SIZE) + 1
+    const page = replaceResults
+      ? 1
+      : // For example, if there are 100 records, load page 3 (i.e., the records
+        // numbered from 101 to 150)
+        Math.floor(publishedRecords.length / PAGE_SIZE) + 1
 
-    if (!appendResults) page = 1
     setLoading(true)
     const params = new URLSearchParams()
     const filtersToApply: Filter[] = []
@@ -241,14 +221,15 @@ const DataPage = ({
       return
     }
     setPublishedRecords(prev => {
-      // Ensure that no two records have the same id
-      const existingPharosIds = new Set(prev.map(row => row.pharosID))
-      const newRecords = data.publishedRecords.filter(
-        record => !existingPharosIds.has(record.pharosID)
-      )
-      const publishedRecords = appendResults
-        ? [...prev, ...newRecords]
-        : newRecords
+      let { publishedRecords } = data
+      if (!replaceResults) {
+        // Ensure that no two records have the same id
+        const existingPharosIds = new Set(prev.map(row => row.pharosID))
+        const newRecords = publishedRecords.filter(
+          record => !existingPharosIds.has(record.pharosID)
+        )
+        publishedRecords = [...prev, ...newRecords]
+      }
       // Sort records by row number, just in case pages come back from the
       // server in the wrong order
       publishedRecords.sort((a, b) => Number(a.rowNumber) - Number(b.rowNumber))
@@ -292,9 +273,13 @@ const DataPage = ({
     getMetadata()
   }, [])
 
-  const loadFilteredRecords = (filters: Filter[], shouldDebounce = true) => {
+  const loadFilteredRecords = (
+    filters: Filter[],
+    shouldDebounce = true,
+    replaceResults = false
+  ) => {
     const options = {
-      appendResults: false,
+      replaceResults,
       filters,
       setLoading,
       setPublishedRecords,
@@ -316,14 +301,24 @@ const DataPage = ({
     const newFilters = [...filters]
     newFilters[indexOfFilterToUpdate].values = newValues
     setFilters(newFilters)
-    loadFilteredRecords(newFilters)
+    loadFilteredRecords(
+      newFilters,
+      true,
+      // Replace the current results
+      true
+    )
   }
 
   const clearFilters = () => {
     setFilters([])
     if (filters.some(({ values }) => values.length > 0)) {
-      // Don't debounce when clearing filters
-      loadFilteredRecords([], false)
+      loadFilteredRecords(
+        [],
+        // Don't debounce when clearing filters
+        false,
+        // Replace current results
+        true
+      )
     }
   }
 
@@ -357,10 +352,11 @@ const DataPage = ({
               isOpen={view === View.table}
               fields={fields}
               appliedFilters={appliedFilters}
-              loadPublishedRecords={() => {
-                loadFilteredRecords(filters, false)
+              loadNextPage={() => {
+                loadFilteredRecords(filters, false, false)
                 debouncing.current.on = false
               }}
+              reachedLastPage={reachedLastPage}
               loading={loading}
               publishedRecords={publishedRecords}
               enableVirtualization={enableTableVirtualization}
