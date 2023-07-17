@@ -5,13 +5,22 @@ import { ThemeProvider } from 'styled-components'
 import textStyles from '../../../figma/textStyles'
 import colorPalette from '../../../figma/colorPalette'
 import zIndexes from '../../../components/layout/ZIndexes'
+import breakpoints from '../../../components/layout/Breakpoints'
+
+const Provider = ({ children }: { children: React.ReactNode }) => (
+  <ThemeProvider
+    theme={{ ...textStyles, ...colorPalette, zIndexes, breakpoints }}
+  >
+    {children}
+  </ThemeProvider>
+)
 
 describe('FilterPanel', () => {
   const getAddFilterButton = () => screen.getByText('Add filter')
 
   it('renders', () => {
     render(
-      <ThemeProvider theme={{ ...textStyles, ...colorPalette, zIndexes }}>
+      <Provider>
         <FilterPanel
           isFilterPanelOpen={true}
           setIsFilterPanelOpen={jest.fn()}
@@ -21,13 +30,13 @@ describe('FilterPanel', () => {
           clearFilters={jest.fn()}
           updateFilter={jest.fn()}
         />
-      </ThemeProvider>
+      </Provider>
     )
   })
 
   it('renders with fields', () => {
     render(
-      <ThemeProvider theme={{ ...textStyles, ...colorPalette, zIndexes }}>
+      <Provider>
         <FilterPanel
           isFilterPanelOpen={true}
           setIsFilterPanelOpen={jest.fn()}
@@ -48,7 +57,7 @@ describe('FilterPanel', () => {
           clearFilters={jest.fn()}
           updateFilter={jest.fn()}
         />
-      </ThemeProvider>
+      </Provider>
     )
     const addFilterButton = getAddFilterButton()
     expect(addFilterButton).toBeInTheDocument()

@@ -15,7 +15,7 @@ import {
 } from './constants'
 import FilterPanelToolbar from './FilterPanelToolbar'
 
-const mobileBreakpoint = 768
+const panelWidth = '410px'
 
 const Label = styled.label`
   ${({ theme }) => theme.smallParagraph}
@@ -50,18 +50,28 @@ const FilterInput = ({
 }
 
 const Panel = styled.aside<{ open: boolean }>`
-  backdrop-filter: blur(12px);
-  background-color: ${({ theme }) => theme.lightBlack};
+  // TODO: Double check that this blur amount is correct
+  backdrop-filter: blur(47px);
+  background-color: ${({ theme }) => theme.white10PercentOpacity};
+  border: 1px solid ${({ theme }) => theme.white10PercentOpacity};
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
   color: ${({ theme }) => theme.white};
   display: flex;
+  height: calc(100% - 35px);
   flex-flow: column nowrap;
-  margin-left: ${({ open }) => (open ? '30px' : '-400px')};
-  min-width: min(400px, 100%);
+  margin-left: ${({ open }) => (open ? '30px' : `-${panelWidth}`)};
+  width: min(${panelWidth}, 100%);
+  max-width: ${panelWidth};
+  position: relative;
   transition: margin-left 300ms cubic-bezier(0.4, 0, 0.2, 1);
   z-index: ${({ theme }) => theme.zIndexes.dataPanel};
   position: relative;
-  @media (max-width: ${mobileBreakpoint}px) {
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
     background-color: ${({ theme }) => theme.lightBlack};
+    backdrop-filter: blur(100px);
+    border-radius: 0;
+    border: 0;
     display: ${({ open }) => (open ? 'block' : 'none')};
     top: 0;
     bottom: 0;
@@ -72,6 +82,7 @@ const Panel = styled.aside<{ open: boolean }>`
     margin-right: 0;
     position: absolute;
     width: 100vw;
+    max-width: unset;
   }
 `
 

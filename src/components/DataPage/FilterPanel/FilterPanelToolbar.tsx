@@ -11,17 +11,18 @@ const FilterPanelToolbarNav = styled.nav`
   flex-flow: row wrap;
   justify-content: space-between;
   padding-bottom: 20px;
-  padding: 14px 40px;
+  padding: 14px 30px;
   position: relative;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  @media (max-width: 768px) {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.3);
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
     padding: 14px 20px;
   }
 `
 const FieldSelectorMessage = styled.div`
   ${props => props.theme.smallParagraph};
   padding: 10px 15px;
-  color: rgba(255, 255, 255, 0.8);
+  color: ${({ theme }) => theme.white};
 `
 const FilterPanelButton = styled.button`
   ${props => props.theme.smallParagraph};
@@ -32,26 +33,25 @@ const FilterPanelButton = styled.button`
   border: 0;
   cursor: pointer;
   &:hover {
-    background-color: #333;
+    // TODO: Deletable?
+    background-color: ${({ theme }) => theme.white20PercentOpacity};
   }
 `
 const FilterPanelToolbarButton = styled(FilterPanelButton)<{
   isFieldSelectorOpen?: boolean
 }>`
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
+  border-radius: 5px;
   ${({ isFieldSelectorOpen }) =>
     !isFieldSelectorOpen
       ? 'border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;'
       : ''}
   &:hover {
-    background-color: #202020;
+    background-color: ${({ theme }) => theme.white20PercentOpacity};
   }
-  background-color: ${({ isFieldSelectorOpen }) =>
-    isFieldSelectorOpen ? '#202020' : 'rgba(0,0,0,0)'};
+  background-color: ${({ isFieldSelectorOpen, theme }) =>
+    isFieldSelectorOpen ? theme.white20PercentOpacity : 'transparent'};
   &:active {
-    outline: 2px solid rgba(100, 100, 100, 1);
-    transform: scale(0.99);
+    outline: 2px solid ${({ theme }) => theme.darkGray};
   }
   &.add-filter {
     margin-right: auto;
@@ -98,26 +98,34 @@ const FilterPanelCloseButton = styled(FilterPanelToolbarButton)`
 `
 const FieldSelectorDiv = styled.div`
   position: absolute;
-  top: 60px;
-  width: calc(100% - 79px);
-  left: 40px;
+  top: 70px;
+  width: calc(100% - 59px);
+  left: 30px;
   display: flex;
   flex-flow: column nowrap;
   align-items: flex-start;
-  background-color: #202020;
+  background-color: ${({ theme }) => theme.medBlack};
   border-radius: 5px;
-  border-top-left-radius: 0;
   padding: 5px 0;
   z-index: ${({ theme }) => theme.zIndexes.dataPanelFieldSelector};
 `
 const FieldSelectorButton = styled(FilterPanelButton)<{ disabled: boolean }>`
   width: 100%;
+  padding: 5px 15px;
+  margin-bottom: 5px;
   ${({ disabled, theme }) =>
     disabled
-      ? 'color: #777; cursor: unset; &:hover { background-color: inherit; }'
+      ? `color: ${theme.veryDarkGray};
+        cursor: unset;
+        &:hover { background-color: inherit; }`
       : `
-        &:hover { background-color: #36a49d; }
-        &:active { outline: 1px solid ${theme.mint}; }
+        &:hover {
+          background-color: ${theme.medGray};
+          color: ${theme.medBlack};
+        }
+        &:active { 
+          outline: 1px solid ${theme.mint};
+        }
     `}
 `
 

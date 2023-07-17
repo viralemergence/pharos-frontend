@@ -1,22 +1,35 @@
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
+
 import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
 import type { Filter, Field } from '../FilterPanel/constants'
 
-const TableViewContainer = styled.div`
+const TableViewContainer = styled.div<{
+  isOpen: boolean
+  isFilterPanelOpen: boolean
+}>`
+  display: ${({ isOpen }) => (isOpen ? 'grid' : 'none')};
   padding: 0 30px;
   z-index: ${({ theme }) => theme.zIndexes.dataTable};
   flex: 1;
+  margin-bottom: 35px;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    // On mobiles and tablets, hide the table when the filter panel is open
+    ${({ isFilterPanelOpen }) =>
+      isFilterPanelOpen ? 'display: none ! important;' : ''}
+  }
 `
 const TableContaier = styled.div`
-  padding-bottom: 10px;
   overflow-x: hidden;
+  display: flex;
+  flex-flow: column nowrap;
 `
 const FillDatasetGrid = styled(DataGrid)`
-  block-size: 100%;
-  height: 100%;
+  color-scheme: only dark;
   border: 0;
+  flex-grow: 1;
+  block-size: 100px;
   .rdg-cell {
     background-color: ${({ theme }) => theme.lightBlack};
     &[aria-colindex='1'],
@@ -24,11 +37,12 @@ const FillDatasetGrid = styled(DataGrid)`
       background-color: ${({ theme }) => theme.medBlack};
     }
     &.in-filtered-column {
-      background-color: #384f4d;
+      background-color: ${({ theme }) => theme.tableContentHighlight};
     }
   }
 `
 const LoadingMessage = styled.div`
+  ${({ theme }) => theme.gridText}
   position: absolute;
   bottom: 0;
   right: 0;
@@ -46,7 +60,7 @@ const LoadingMessage = styled.div`
   align-items: center;
   gap: 10px;
 `
-const NoRecordsFound = styled.div`
+const NoRecordsFound = styled.div.attrs(({ role }) => ({ role }))`
   ${({ theme }) => theme.bigParagraphSemibold};
   margin: 30px auto;
   color: ${({ theme }) => theme.white};
@@ -62,11 +76,14 @@ interface TableViewProps {
   appliedFilters: Filter[]
   loadPublishedRecords: () => void
   loading: boolean
-  page: React.MutableRefObject<number>
   publishedRecords: Row[]
-  reachedLastPage: boolean
   style?: React.CSSProperties
   fields: Record<string, Field>
+  isOpen?: boolean
+  isFilterPanelOpen?: boolean
+  /** Virtualization should be disabled in tests via this prop, so that all the
+   * cells are rendered immediately */
+  enableVirtualization?: boolean
 }
 
 export interface Row {
@@ -80,14 +97,14 @@ const divIsAtBottom = ({ currentTarget }: React.UIEvent<HTMLDivElement>) =>
 const rowKeyGetter = (row: Row) => row.pharosID
 
 const TableView = ({
-  style = {},
   loading,
-  page,
   publishedRecords,
   appliedFilters,
   loadPublishedRecords,
-  reachedLastPage,
   fields,
+  isOpen = true,
+  isFilterPanelOpen = false,
+  enableVirtualization = true,
 }: TableViewProps) => {
   useEffect(() => {
     loadPublishedRecords()
@@ -122,21 +139,21 @@ const TableView = ({
   ]
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
-    if (loading || reachedLastPage || !divIsAtBottom(event)) return
-    page.current += 1
+    if (loading || !divIsAtBottom(event)) return
     loadPublishedRecords()
   }
 
   return (
-    <TableViewContainer style={style}>
+    <TableViewContainer isOpen={isOpen} isFilterPanelOpen={isFilterPanelOpen}>
       <TableContaier>
-        {!loading && publishedRecords?.length === 0 ? (
-          <NoRecordsFound>
+        {!loading && publishedRecords?.length === 0 && (
+          <NoRecordsFound role="status">
             {appliedFilters.length > 0
               ? 'No matching records found'
-              : 'No records published'}
+              : 'No records have been published'}
           </NoRecordsFound>
-        ) : (
+        )}
+        {publishedRecords && publishedRecords?.length > 0 && (
           // @ts-expect-error: I'm copying this from the docs,
           // but it doesn't look like their type definitions work
           <FillDatasetGrid
@@ -146,12 +163,13 @@ const TableView = ({
             rows={publishedRecords}
             onScroll={handleScroll}
             rowKeyGetter={rowKeyGetter}
+            enableVirtualization={enableVirtualization}
           />
         )}
         {loading && (
           <LoadingMessage>
-            <LoadingSpinner />{' '}
-            {page.current > 1 ? 'Loading more rows' : 'Loading'}
+            <LoadingSpinner /> Loading{' '}
+            {publishedRecords.length > 0 ? ' more rows' : ''}
           </LoadingMessage>
         )}
       </TableContaier>
@@ -160,3 +178,4 @@ const TableView = ({
 }
 
 export default TableView
+olb
