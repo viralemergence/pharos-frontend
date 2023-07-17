@@ -6,7 +6,7 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 
 const MapContainer = styled.div`
   width: 100vw;
-  background: #0b103b;
+  background-color: ${({ theme }) => theme.darkPurple};
   position: absolute;
   left: 0;
   top: 0;

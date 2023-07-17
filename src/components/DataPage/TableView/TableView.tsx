@@ -1,21 +1,34 @@
-import React, { MutableRefObject, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
+
 import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
 
-const TableViewContainer = styled.div`
+const TableViewContainer = styled.div<{
+  isOpen: boolean
+  isFilterPanelOpen: boolean
+}>`
+  display: ${({ isOpen }) => (isOpen ? 'grid' : 'none')};
   padding: 0 30px;
   z-index: ${({ theme }) => theme.zIndexes.dataTable};
   flex: 1;
+  margin-bottom: 35px;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    // On mobiles and tablets, hide the table when the filter panel is open
+    ${({ isFilterPanelOpen }) =>
+      isFilterPanelOpen ? 'display: none ! important;' : ''}
+  }
 `
 const TableContaier = styled.div`
-  padding-bottom: 10px;
   overflow-x: hidden;
+  display: flex;
+  flex-flow: column nowrap;
 `
 const FillDatasetGrid = styled(DataGrid)`
-  block-size: 100%;
-  height: 100%;
+  color-scheme: only dark;
   border: 0;
+  flex-grow: 1;
+  block-size: 100px;
   .rdg-cell {
     background-color: ${({ theme }) => theme.lightBlack};
     &[aria-colindex='1'],
@@ -23,11 +36,12 @@ const FillDatasetGrid = styled(DataGrid)`
       background-color: ${({ theme }) => theme.medBlack};
     }
     &.in-filtered-column {
-      background-color: #384f4d;
+      background-color: ${({ theme }) => theme.tableContentHighlight};
     }
   }
 `
 const LoadingMessage = styled.div`
+  ${({ theme }) => theme.gridText}
   position: absolute;
   bottom: 0;
   right: 0;
@@ -45,7 +59,7 @@ const LoadingMessage = styled.div`
   align-items: center;
   gap: 10px;
 `
-const NoRecordsFound = styled.div`
+const NoRecordsFound = styled.div.attrs(({ role }) => ({ role }))`
   ${({ theme }) => theme.bigParagraphSemibold};
   margin: 30px auto;
   color: ${({ theme }) => theme.white};
@@ -58,16 +72,29 @@ const NoRecordsFound = styled.div`
 `
 
 interface TableViewProps {
-  loadPublishedRecords: () => void
-  loading: boolean
-  page: MutableRefObject<number>
-  publishedRecords: Row[]
-  reachedLastPage: boolean
-  style?: React.CSSProperties
+  isOpen: boolean
+  isFilterPanelOpen: boolean
+  /** Virtualization should be disabled in tests via this prop, so that all the
+   * cells are rendered immediately */
+  enableVirtualization?: boolean
 }
 
-export interface Row {
+interface Row {
   [key: string]: string | number
+}
+
+interface PublishedRecordsResponse {
+  publishedRecords: Row[]
+}
+
+function dataIsPublishedRecordsResponse(
+  data: unknown
+): data is PublishedRecordsResponse {
+  if (!data || typeof data !== 'object') return false
+  if (!('publishedRecords' in data)) return false
+  if (!Array.isArray(data.publishedRecords)) return false
+  if (!data.publishedRecords.every(row => typeof row === 'object')) return false
+  return true
 }
 
 const divIsAtBottom = ({ currentTarget }: React.UIEvent<HTMLDivElement>) =>
@@ -76,14 +103,52 @@ const divIsAtBottom = ({ currentTarget }: React.UIEvent<HTMLDivElement>) =>
 
 const rowKeyGetter = (row: Row) => row.pharosID
 
+const PAGE_SIZE = 50
+
 const TableView = ({
-  style = {},
-  loading,
-  page,
-  publishedRecords,
-  loadPublishedRecords,
-  reachedLastPage,
+  isOpen,
+  isFilterPanelOpen,
+  enableVirtualization = true,
 }: TableViewProps) => {
+  const [loading, setLoading] = useState<boolean>(true)
+  const [publishedRecords, setPublishedRecords] = useState<Row[]>([])
+
+  const loadPublishedRecords = async () => {
+    setLoading(true)
+    // For example, if there are 100 records, load page 3 (i.e., the records
+    // numbered from 101 to 150)
+    const page = Math.floor(publishedRecords.length / PAGE_SIZE) + 1
+    const response = await fetch(
+      `${process.env.GATSBY_API_URL}/published-records?` +
+        new URLSearchParams({
+          page: page.toString(),
+          pageSize: PAGE_SIZE.toString(),
+        })
+    )
+
+    if (response.ok) {
+      const data = await response.json()
+
+      if (dataIsPublishedRecordsResponse(data)) {
+        setPublishedRecords(prev => {
+          // Ensure that no two records have the same id
+          const existingPharosIds = new Set(prev.map(row => row.pharosID))
+          const newRecords = data.publishedRecords.filter(
+            record => !existingPharosIds.has(record.pharosID)
+          )
+          const publishedRecords = [...prev, ...newRecords]
+          // Sort records by row number, just in case pages come back from the
+          // server in the wrong order
+          publishedRecords.sort(
+            (a, b) => Number(a.rowNumber) - Number(b.rowNumber)
+          )
+          return publishedRecords
+        })
+        setLoading(false)
+      } else console.log('GET /published-records: malformed response')
+    }
+  }
+
   useEffect(() => {
     loadPublishedRecords()
   }, [])
@@ -110,17 +175,19 @@ const TableView = ({
   ]
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
-    if (loading || reachedLastPage || !divIsAtBottom(event)) return
-    page.current += 1
+    if (loading || !divIsAtBottom(event)) return
     loadPublishedRecords()
   }
 
   return (
-    <TableViewContainer style={style}>
+    <TableViewContainer isOpen={isOpen} isFilterPanelOpen={isFilterPanelOpen}>
       <TableContaier>
-        {!loading && publishedRecords?.length === 0 ? (
-          <NoRecordsFound>No records published</NoRecordsFound>
-        ) : (
+        {!loading && publishedRecords?.length === 0 && (
+          <NoRecordsFound role="status">
+            No records have been published.
+          </NoRecordsFound>
+        )}
+        {publishedRecords && publishedRecords.length > 1 && (
           // @ts-expect-error: I'm copying this from the docs,
           // but it doesn't look like their type definitions work
           <FillDatasetGrid
@@ -130,12 +197,13 @@ const TableView = ({
             rows={publishedRecords}
             onScroll={handleScroll}
             rowKeyGetter={rowKeyGetter}
+            enableVirtualization={enableVirtualization}
           />
         )}
         {loading && (
           <LoadingMessage>
-            <LoadingSpinner />{' '}
-            {page.current > 1 ? 'Loading more rows' : 'Loading'}
+            <LoadingSpinner /> Loading{' '}
+            {publishedRecords.length > 0 ? ' more rows' : ''}
           </LoadingMessage>
         )}
       </TableContaier>
