@@ -77,7 +77,7 @@ const DataToolbar = ({
   changeView,
 }: {
   isFilterPanelOpen: boolean
-  setIsFilterPanelOpen: (open: boolean) => void
+  setIsFilterPanelOpen: React.Dispatch<React.SetStateAction<boolean>>
   view: View
   changeView: (view: View) => void
 }) => {

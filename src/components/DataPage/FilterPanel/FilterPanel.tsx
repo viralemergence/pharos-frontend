@@ -13,6 +13,7 @@ const Panel = styled.aside<{ open: boolean }>`
   color: ${({ theme }) => theme.white};
   display: flex;
   height: calc(100% - 35px);
+  // TODO: Add the margin in ViewMain rather than here and make sure this handles mobile
   flex-flow: column nowrap;
   margin-left: ${({ open }) => (open ? '30px' : `-${panelWidth}`)};
   width: min(${panelWidth}, 100%);
