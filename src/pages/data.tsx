@@ -51,7 +51,6 @@ const MapOverlay = styled.div`
   top: 0;
   bottom: 0;
   width: 100%;
-  z-index: ${({ theme }) => theme.zIndexes.dataMapOverlay};
 `
 
 const DataPage = (): JSX.Element => {
@@ -91,14 +90,14 @@ const DataPage = (): JSX.Element => {
       <PageContainer>
         <NavBar />
         <ViewContainer>
+          <MapView projection={mapProjection} />
+          {view === View.table && <MapOverlay />}
           <DataToolbar
             view={view}
             changeView={changeView}
             isFilterPanelOpen={isFilterPanelOpen}
             setIsFilterPanelOpen={setIsFilterPanelOpen}
           />
-          <MapView projection={mapProjection} />
-          {view === View.table && <MapOverlay />}
           <ViewMain>
             <FilterPanel isFilterPanelOpen={isFilterPanelOpen} />
             <TableView

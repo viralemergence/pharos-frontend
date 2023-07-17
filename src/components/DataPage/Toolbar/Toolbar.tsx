@@ -12,7 +12,6 @@ const DataToolbarButton = styled.button<{
   width?: number
 }>`
   ${({ theme }) => theme.bigParagraph};
-  z-index: ${({ theme }) => theme.zIndexes.dataToolbarButton};
   position: relative;
   font-size: 16px;
   line-height: 25px;
@@ -60,7 +59,6 @@ const DataToolbarRadioButtonContainer = styled(DataToolbarButtonContainer)`
 `
 const DataToolbarDiv = styled.div<{ isFilterPanelOpen: boolean }>`
   padding: 20px 0 0 30px;
-  z-index: ${({ theme }) => theme.zIndexes.dataToolbar};
   display: flex;
   flex-flow: row wrap;
   gap: 1rem;

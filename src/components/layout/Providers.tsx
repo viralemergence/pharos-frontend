@@ -10,7 +10,6 @@ import getTrackingId from 'utilities/trackingId'
 
 import textStyles from 'figma/textStyles'
 import colorPalette from 'figma/colorPalette'
-import zIndexes from './ZIndexes'
 import breakpoints from './Breakpoints'
 
 import '../../../static/assets/fonts/fonts.css'
@@ -50,7 +49,7 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
       <CMS.IconProvider data={icons}>
         <CMS.SiteMetadataProvider data={siteMetadata} trackingId={trackingId}>
           <ThemeProvider
-            theme={{ ...textStyles, ...colorPalette, zIndexes, breakpoints }}
+            theme={{ ...textStyles, ...colorPalette, breakpoints }}
           >
             <GlobalStyle />
             <WhiteBackground>{children}</WhiteBackground>
