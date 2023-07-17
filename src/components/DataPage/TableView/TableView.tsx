@@ -72,8 +72,8 @@ const NoRecordsFound = styled.div.attrs(({ role }) => ({ role }))`
 `
 
 interface TableViewProps {
-  isOpen: boolean
-  isFilterPanelOpen: boolean
+  isOpen?: boolean
+  isFilterPanelOpen?: boolean
   /** Virtualization should be disabled in tests via this prop, so that all the
    * cells are rendered immediately */
   enableVirtualization?: boolean
@@ -106,8 +106,8 @@ const rowKeyGetter = (row: Row) => row.pharosID
 const PAGE_SIZE = 50
 
 const TableView = ({
-  isOpen,
-  isFilterPanelOpen,
+  isOpen = false,
+  isFilterPanelOpen = false,
   enableVirtualization = true,
 }: TableViewProps) => {
   const [loading, setLoading] = useState<boolean>(true)
@@ -176,7 +176,7 @@ const TableView = ({
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     if (loading || !divIsAtBottom(event)) return
-    loadPublishedRecords({ appendResults: true })
+    loadPublishedRecords()
   }
 
   return (
@@ -198,6 +198,7 @@ const TableView = ({
             onScroll={handleScroll}
             rowKeyGetter={rowKeyGetter}
             enableVirtualization={enableVirtualization}
+            data-testid="datagrid"
           />
         )}
         {loading && (
