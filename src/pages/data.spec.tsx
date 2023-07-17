@@ -153,7 +153,7 @@ describe('The public data page', () => {
     )
   })
 
-  it('lets the user filter by host species', () => {
+  it('lets the user filter by host species', async () => {
     const { container } = render(<DataPage />)
     const filterPanelToggleButton = getFilterPanelToggleButton()
     expect(filterPanelToggleButton).toBeInTheDocument()
@@ -163,8 +163,14 @@ describe('The public data page', () => {
     const addFilterButton = getAddFilterButton()
     fireEvent.click(addFilterButton)
     // Add a host species filter to the panel
-    console.log(filterPanel?.innerHTML)
-    //fireEvent.click(screen.getByText('Host species'))
+    const addHostSpeciesFilterButton = await screen.findByText('Host species')
+    fireEvent.click(addHostSpeciesFilterButton)
+    const hostSpeciesFilterInput = screen.getByLabelText('Host species')
+    expect(hostSpeciesFilterInput).toBeInTheDocument()
+    fireEvent.input(hostSpeciesFilterInput, 'row 10 - host species')
+    const loadingMessage = await screen.findByText('Loading')
+    expect(loadingMessage).toBeInTheDocument()
+    // TODO: Finish writing this test
   })
 
   it('has a button labeled Globe that changes the projection of the map to globe', () => {
