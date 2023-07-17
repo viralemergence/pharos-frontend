@@ -29,7 +29,6 @@ const FilterPanelButton = styled.button`
   border: 0;
   cursor: pointer;
   &:hover {
-    // TODO: Deletable?
     background-color: ${({ theme }) => theme.white20PercentOpacity};
   }
 `
@@ -41,9 +40,6 @@ const FilterPanelToolbarButton = styled(FilterPanelButton)<{
     !isFieldSelectorOpen
       ? 'border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;'
       : ''}
-  &:hover {
-    background-color: ${({ theme }) => theme.white20PercentOpacity};
-  }
   background-color: ${({ isFieldSelectorOpen, theme }) =>
     isFieldSelectorOpen ? theme.white20PercentOpacity : 'transparent'};
   &:active {
