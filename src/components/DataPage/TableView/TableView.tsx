@@ -73,12 +73,11 @@ const NoRecordsFound = styled.div.attrs(({ role }) => ({ role }))`
 `
 
 interface TableViewProps {
-  appliedFilters: Filter[]
-  loadPublishedRecords: () => void
-  loading: boolean
-  publishedRecords: Row[]
-  style?: React.CSSProperties
-  fields: Record<string, Field>
+  appliedFilters?: Filter[]
+  loadPublishedRecords?: () => void
+  loading?: boolean
+  publishedRecords?: Row[]
+  fields?: Record<string, Field>
   isOpen?: boolean
   isFilterPanelOpen?: boolean
   /** Virtualization should be disabled in tests via this prop, so that all the
@@ -97,11 +96,11 @@ const divIsAtBottom = ({ currentTarget }: React.UIEvent<HTMLDivElement>) =>
 const rowKeyGetter = (row: Row) => row.pharosID
 
 const TableView = ({
-  loading,
-  publishedRecords,
-  appliedFilters,
-  loadPublishedRecords,
-  fields,
+  loading = false,
+  publishedRecords = [],
+  appliedFilters = [],
+  loadPublishedRecords = () => null,
+  fields = {},
   isOpen = true,
   isFilterPanelOpen = false,
   enableVirtualization = true,
@@ -149,8 +148,8 @@ const TableView = ({
         {!loading && publishedRecords?.length === 0 && (
           <NoRecordsFound role="status">
             {appliedFilters.length > 0
-              ? 'No matching records found'
-              : 'No records have been published'}
+              ? 'No matching records found.'
+              : 'No records have been published.'}
           </NoRecordsFound>
         )}
         {publishedRecords && publishedRecords?.length > 0 && (
@@ -178,4 +177,3 @@ const TableView = ({
 }
 
 export default TableView
-olb

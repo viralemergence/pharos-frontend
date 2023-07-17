@@ -1,5 +1,5 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { stateInitialValue } from 'reducers/stateReducer/initialValues'
 import { publishedRecordsMetadata } from '../../test/serverHandlers'
@@ -203,11 +203,7 @@ describe('The public data page', () => {
   })
 
   it('displays the first page of published records', async () => {
-    render(
-      <Providers>
-        <TableView enableVirtualization={false} />
-      </Providers>
-    )
+    render(<DataPage enableTableVirtualization={false} />)
     const grid = await getDataGridAfterWaiting()
     expect(grid).toBeInTheDocument()
     await waitFor(async () => {
@@ -236,11 +232,7 @@ describe('The public data page', () => {
 
   // Skipping this test since fireEvent.scroll does not work well when circleci runs `yarn run test`
   it.skip('displays the second page of published records when the user scrolls to the bottom', async () => {
-    render(
-      <Providers>
-        <TableView enableVirtualization={false} />
-      </Providers>
-    )
+    render(<DataPage enableTableVirtualization={false} />)
     const grid = await getDataGridAfterWaiting()
     expect(grid).toBeInTheDocument()
     // Scroll to the bottom of the grid

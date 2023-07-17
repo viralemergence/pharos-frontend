@@ -22,7 +22,7 @@ jest.mock('cmsHooks/useSignInPageData', () => jest.fn())
 jest.mock('cmsHooks/useSiteMetadataQuery', () => jest.fn())
 
 import React from 'react'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 
 import { server } from '../../../../test/server'
 import { routeThatReturnsNoPublishedRecords } from '../../../../test/serverHandlers'

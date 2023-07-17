@@ -128,7 +128,13 @@ interface MetadataResponse {
   fields: Record<string, Field>
 }
 
-const DataPage = (): JSX.Element => {
+const DataPage = ({
+  enableTableVirtualization = true,
+}: {
+  /** Virtualization should be disabled in tests via this prop, so that all the
+   * cells in the table are rendered immediately */
+  enableTableVirtualization?: boolean
+}): JSX.Element => {
   const [loading, setLoading] = useState(true)
   const [publishedRecords, setPublishedRecords] = useState<Row[]>([])
   const [reachedLastPage, setReachedLastPage] = useState(false)
@@ -357,6 +363,7 @@ const DataPage = (): JSX.Element => {
               }}
               loading={loading}
               publishedRecords={publishedRecords}
+              enableVirtualization={enableTableVirtualization}
             />
           </ViewMain>
         </ViewContainer>
