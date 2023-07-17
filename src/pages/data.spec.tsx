@@ -70,6 +70,8 @@ describe('The public data page', () => {
   const getAddFilterButton = () => screen.getByText('Add filter') // TODO: If this doesn't work try getByText
   const getFilterPanel = (container: HTMLElement) =>
     container.querySelector('aside[role=navigation]')
+  const getFilterPanelToggleButton = () =>
+    screen.getByRole('button', { name: 'Filters' })
   const getTableViewButton = () => screen.getByRole('button', { name: 'Table' })
   const getMapViewButton = () => screen.getByRole('button', { name: 'Map' })
   const getGlobeViewButton = () => screen.getByRole('button', { name: 'Globe' })
@@ -115,19 +117,22 @@ describe('The public data page', () => {
     expect(panel).toHaveAttribute('aria-hidden', 'true')
     expect(panel).toContainElement(getAddFilterButton())
 
-    const filterPanelButton = screen.getByRole('button', { name: 'Filters' })
+    const filterPanelToggleButton = getFilterPanelToggleButton()
+    expect(filterPanelToggleButton).toBeInTheDocument()
 
     // Clicking the button shows the panel
-    fireEvent.click(filterPanelButton)
+    fireEvent.click(filterPanelToggleButton)
     expect(panel).toHaveAttribute('aria-hidden', 'false')
 
     // Clicking the button again hides the panel
-    fireEvent.click(filterPanelButton)
+    fireEvent.click(filterPanelToggleButton)
     expect(panel).toHaveAttribute('aria-hidden', 'true')
   })
 
   it('has a filter panel that can be closed by clicking a button', () => {
     const { container } = render(<DataPage />)
+    const filterPanelToggleButton = getFilterPanelToggleButton()
+    fireEvent.click(filterPanelToggleButton)
     const panel = getFilterPanel(container)
     const closeButtons = screen.getAllByLabelText('Close the Filters panel')
     expect(panel).toContainElement(closeButtons[0])
