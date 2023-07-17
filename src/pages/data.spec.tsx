@@ -146,7 +146,9 @@ describe('The public data page', () => {
     fireEvent.click(getAddFilterButton())
     const expectedButtonLabels = Object.values(publishedRecordsMetadata.fields)
     await Promise.all(
-      expectedButtonLabels.map(({ label }) => screen.findByText(label))
+      expectedButtonLabels.map(({ label }) =>
+        screen.findByText(label, { selector: 'button' })
+      )
     )
   })
 
