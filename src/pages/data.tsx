@@ -129,29 +129,29 @@ const DataPage = (): JSX.Element => {
   )
 }
 
-const isTruthyObject = (value: unknown): value is Record<string, unknown> =>
-  typeof value === 'object' && !!value
+const isNormalObject = (value: unknown): value is Record<string, unknown> =>
+  !!value &&
+  typeof value === 'object' &&
+  typeof value !== 'function' &&
+  !Array.isArray(value)
 
 const isValidFieldInMetadataResponse = (data: unknown): data is Field => {
-  if (!isTruthyObject(data)) return false
-  const {
-    label,
-    dataGridKey = '',
-    type = '',
-    options = [],
-  } = data as Partial<Field>
-  if (typeof label !== 'string') return false
-  if (typeof dataGridKey !== 'string') return false
-  if (typeof type !== 'string') return false
-  if (!options.every?.(option => typeof option === 'string')) return false
-  return true
+  if (!isNormalObject(data)) return false
+  const { label, dataGridKey = '', type = '', options = [] } = data
+  return (
+    typeof label === 'string' &&
+    typeof dataGridKey === 'string' &&
+    typeof type === 'string' &&
+    Array.isArray(options) &&
+    options.every?.(option => typeof option === 'string')
+  )
 }
 
 const isValidMetadataResponse = (data: unknown): data is MetadataResponse => {
-  if (!isTruthyObject(data)) return false
-  const { fields } = data as Partial<MetadataResponse>
-  if (!isTruthyObject(fields)) return false
-  return Object.values(fields as Record<string, unknown>).every?.(field =>
+  if (!isNormalObject(data)) return false
+  const { fields } = data
+  if (!isNormalObject(fields)) return false
+  return Object.values(fields).every?.(field =>
     isValidFieldInMetadataResponse(field)
   )
 }
