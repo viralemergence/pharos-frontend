@@ -1,4 +1,10 @@
-import React, { Dispatch, SetStateAction } from 'react'
+import React, {
+  Dispatch,
+  SetStateAction,
+  useRef,
+  useImperativeHandle,
+  forwardRef,
+} from 'react'
 import styled from 'styled-components'
 import { PlusIcon, BackIcon, XIcon, Field } from './constants'
 import Dropdown from '@talus-analytics/library.ui.dropdown'
@@ -46,9 +52,6 @@ const FilterPanelToolbarButton = styled(FilterPanelButton)<{
     isFieldSelectorOpen ? theme.white20PercentOpacity : 'transparent'};
   &:active {
     outline: 2px solid ${({ theme }) => theme.darkGray};
-  }
-  &.add-filter {
-    margin-right: auto;
   }
 `
 const FilterPanelCloseButton = styled(FilterPanelToolbarButton)`
@@ -114,38 +117,52 @@ const FieldSelectorButton = styled(FilterPanelButton)<{ disabled: boolean }>`
         }
     `}
 `
-
-const FieldSelector = ({
-  fields,
-  addFilterValueSetter,
-  onClick = () => null,
-}: {
+interface FieldSelectorProps {
   fields: Record<string, Field>
   addFilterValueSetter: (fieldId: string) => void
   onClick?: (e?: React.MouseEvent<HTMLDivElement>) => void
-}) => {
-  return (
-    <FieldSelectorDiv onClick={onClick}>
-      {Object.entries(fields).map(
-        ([fieldId, { label, addedToPanel = false }]) => (
-          <FieldSelectorButton
-            key={fieldId}
-            value={fieldId}
-            onClick={_ => {
-              addFilterValueSetter(fieldId)
-            }}
-            disabled={addedToPanel}
-          >
-            {label}
-          </FieldSelectorButton>
-        )
-      )}
-      {Object.entries(fields).length === 0 && (
-        <FieldSelectorMessage>Loading&hellip;</FieldSelectorMessage>
-      )}
-    </FieldSelectorDiv>
-  )
 }
+
+// We create a type for the ref we are forwarding.
+interface FieldSelectorDivRef {
+  closeDropdown: () => void
+}
+
+const FieldSelector = forwardRef<FieldSelectorDivRef, FieldSelectorProps>(
+  ({ fields, addFilterValueSetter, onClick = () => null }, ref) => {
+    const divRef = useRef<HTMLDivElement | null>(null)
+    useImperativeHandle(ref, () => ({
+      closeDropdown: () => {
+        const div = divRef.current
+        div?.blur()
+        if (div?.parentNode?.parentNode instanceof HTMLElement)
+          div?.parentNode?.parentNode.blur()
+      },
+    }))
+
+    return (
+      <FieldSelectorDiv onClick={onClick} ref={divRef}>
+        {Object.entries(fields).map(
+          ([fieldId, { label, addedToPanel = false }]) => (
+            <FieldSelectorButton
+              key={fieldId}
+              value={fieldId}
+              onClick={_ => {
+                addFilterValueSetter(fieldId)
+              }}
+              disabled={addedToPanel}
+            >
+              {label}
+            </FieldSelectorButton>
+          )
+        )}
+        {Object.entries(fields).length === 0 && (
+          <FieldSelectorMessage>Loading&hellip;</FieldSelectorMessage>
+        )}
+      </FieldSelectorDiv>
+    )
+  }
+)
 
 const FilterPanelToolbar = ({
   fields,
@@ -154,6 +171,13 @@ const FilterPanelToolbar = ({
   fields: Record<string, Field>
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
 }) => {
+  const fieldSelectorRef = React.useRef<HTMLDivElement>(null)
+  const closeFieldSelector = () => {
+    const fieldSelectorDiv = fieldSelectorRef.current
+    fieldSelectorDiv?.blur()
+    if (fieldSelectorDiv?.parentNode?.parentNode instanceof HTMLElement)
+      fieldSelectorDiv?.parentNode?.parentNode.blur()
+  }
   return (
     <>
       <FilterPanelToolbarNav>
@@ -168,7 +192,7 @@ const FilterPanelToolbar = ({
           expanderStyle={{}}
           renderButton={open => (
             <FilterPanelToolbarButton
-              className="add-filter"
+              style={{ marginRight: 'auto' }}
               isFieldSelectorOpen={open}
             >
               <PlusIcon style={{ marginRight: '5px' }} /> Add filter
@@ -177,9 +201,15 @@ const FilterPanelToolbar = ({
           animDuration={0}
         >
           <FieldSelector
+            ref={fieldSelectorRef}
             onClick={e => {
-              if (e?.target instanceof HTMLElement) e.target.blur()
-              else console.log('not an element?')
+              closeFieldSelector()
+              // // Trigger blur events that will cause the dropdown to close
+              // if (e?.target instanceof HTMLElement) {
+              //   e.target.blur()
+              //   if (e.target.parentNode?.parentNode instanceof HTMLElement)
+              //     e.target.parentNode.parentNode.blur()
+              // }
             }}
             addFilterValueSetter={_fieldId => {
               // Code that adds an input or Typeahead will go here in a downstream PR
