@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useRef } from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 import styled from 'styled-components'
 import { PlusIcon, BackIcon, XIcon, Field } from './constants'
 import Dropdown from '@talus-analytics/library.ui.dropdown'
@@ -50,7 +50,7 @@ const FilterPanelToolbarButton = styled(FilterPanelButton)<{
   &.add-filter {
     margin-right: auto;
   }
-  @media (max-width: 768px) {
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
     &.close-panel {
       &:active {
         transform: scale(0.92);
@@ -59,12 +59,12 @@ const FilterPanelToolbarButton = styled(FilterPanelButton)<{
   }
 `
 const FilterPanelCloseButton = styled(FilterPanelToolbarButton)`
-  @media (min-width: 768px) {
+  @media (min-width: ${({ theme }) => theme.breakpoints.laptopMinWidth}) {
     position: absolute;
     right: 2px;
     top: 2px;
   }
-  @media (max-width: 768px) {
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
     margin-right: 20px;
   }
   border-radius: 50%;
@@ -79,7 +79,7 @@ const FilterPanelCloseButton = styled(FilterPanelToolbarButton)`
   &.back-icon {
     display: none !important;
   }
-  @media (max-width: 768px) {
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
     width: 45px;
     height: 45px;
     &.x-icon {

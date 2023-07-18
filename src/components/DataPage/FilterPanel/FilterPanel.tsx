@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 import styled from 'styled-components'
 import { Field } from './constants'
 import FilterPanelToolbar from './FilterPanelToolbar'
