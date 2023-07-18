@@ -6,7 +6,6 @@ import PublicViewBackground from '../PublicViewBackground'
 import {
   ProjectPageMain,
   ProjectPageLayout,
-  // ProjectPageSidebar,
   ProjectPageContentBox,
   ProjectPageSidebar,
 } from 'components/ProjectPage/ProjectPageLayout'
@@ -15,7 +14,6 @@ import CitationsPublications from 'components/ProjectPage/CitationsPublications'
 
 import TopBar, {
   Title,
-  // Controls,
   Breadcrumbs,
   BreadcrumbLink,
 } from 'components/layout/TopBar'
