@@ -1,12 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 
-/** After user finishes typing, how long to wait before applying a filter, in
-milliseconds */
-export const loadDebounceDelay = 300
-/** After the first load, debouncing is switched on for this many milliseconds */
-export const debounceTimeout = 3000
-
 export type Field = {
   label: string
   dataGridKey?: string
@@ -14,8 +8,6 @@ export type Field = {
   options?: string[]
   addedToPanel?: boolean
 }
-export type FilterValues = string[]
-export type Filter = { fieldId: string; values: FilterValues }
 
 const XIconSvg = styled.svg<{ extraStyle?: string }>`
   ${({ extraStyle }) => extraStyle}
@@ -73,7 +65,3 @@ export const PlusIcon = ({ style = {} }: { style?: React.CSSProperties }) => (
     <line x1="5" y1="12" x2="19" y2="12" stroke="white" strokeWidth="2" />
   </svg>
 )
-
-export const FieldName = styled.div`
-  margin-bottom: 5px;
-`
