@@ -83,6 +83,8 @@ const ProjectPage = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                color: 'darkslategray',
+                fontStyle: 'italic',
               }}
             >
               Map placeholder
@@ -96,6 +98,8 @@ const ProjectPage = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                color: 'darkslategray',
+                fontStyle: 'italic',
               }}
             >
               Datasets placeholder
