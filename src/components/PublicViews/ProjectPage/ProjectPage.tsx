@@ -21,6 +21,7 @@ import TopBar, {
 } from 'components/layout/TopBar'
 
 import usePublishedProject from './usePublishedProject'
+import formatDate from 'utilities/formatDate'
 
 const Container = styled.div`
   background-color: ${({ theme }) => theme.lightBlack};
@@ -115,6 +116,32 @@ const ProjectPage = () => {
                 <AuthorOrganization>{author.organization}</AuthorOrganization>
               </Author>
             ))}
+          </PublicProjectPageContentBox>
+          <PublicProjectPageContentBox>
+            <h2>Project published</h2>
+            <p>{formatDate(project.datePublished)}</p>
+            <h2>Project ID</h2>
+            <p>{project.projectID}</p>
+            {project.relatedMaterials && (
+              <>
+                <h2>Related materials</h2>
+                {project.relatedMaterials.map(material => (
+                  <p>{material}</p>
+                ))}
+              </>
+            )}
+            {project.projectType && (
+              <>
+                <h2>Project type</h2>
+                <p>{project.projectType || '—'}</p>
+              </>
+            )}
+            {project.surveillanceStatus && (
+              <>
+                <h2>Surveillance status</h2>
+                <p>{project.surveillanceStatus || '—'}</p>
+              </>
+            )}
           </PublicProjectPageContentBox>
         </ProjectPageSidebar>
       </ProjectPageLayout>

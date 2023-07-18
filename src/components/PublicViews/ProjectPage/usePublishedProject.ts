@@ -28,11 +28,12 @@ const usePublishedProject = () => {
   const project: PublishedProject = {
     projectID,
     name: 'offline mock project',
-    datePublished: '1-1-2023',
+    datePublished: '2023-1-1',
     description: 'offline mock project description text placeholder',
     projectType: 'Opportunistic',
     surveillanceStatus: 'Complete',
     citation: 'Developer et. al.',
+    relatedMaterials: ['https://www.github.com/viralemergence/'],
     datasets: [
       {
         datasetID: 'datXXXXXXXXX',
