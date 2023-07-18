@@ -29,6 +29,7 @@ const Container = styled.div`
 const PublicProjectPageContentBox = styled(ProjectPageContentBox)`
   background-color: ${({ theme }) => theme.medBlack};
   border-top: 5px solid ${({ theme }) => theme.mint};
+  color: ${({ theme }) => theme.medDarkGray};
 
   > h2 {
     color: ${({ theme }) => theme.medDarkGray};
@@ -62,7 +63,7 @@ const ProjectPage = () => {
             <div
               style={{
                 background: 'darkgray',
-                height: 300,
+                height: 400,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
