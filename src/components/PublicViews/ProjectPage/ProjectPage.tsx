@@ -1,5 +1,5 @@
 import React from 'react'
-import styled, { useTheme } from 'styled-components'
+import styled from 'styled-components'
 
 import PublicViewBackground from '../PublicViewBackground'
 
@@ -29,16 +29,18 @@ const Container = styled.div`
 const PublicProjectPageContentBox = styled(ProjectPageContentBox)`
   background-color: ${({ theme }) => theme.medBlack};
   border-top: 5px solid ${({ theme }) => theme.mint};
-  color: ${({ theme }) => theme.medDarkGray};
+  color: ${({ theme }) => theme.white};
 
   > h2 {
     color: ${({ theme }) => theme.medDarkGray};
   }
 `
+const PublicTitle = styled(Title)`
+  color: ${({ theme }) => theme.white};
+`
 
 const ProjectPage = () => {
   const project = usePublishedProject()
-  const theme = useTheme()
 
   return (
     <Container>
@@ -52,7 +54,9 @@ const ProjectPage = () => {
               {project.name}
             </BreadcrumbLink>
           </Breadcrumbs>
-          <Title>Project Page: projectID = {project.projectID}</Title>
+          <PublicTitle>
+            Project Page: projectID = {project.projectID}
+          </PublicTitle>
         </TopBar>
         <ProjectPageMain>
           <PublicProjectPageContentBox>
