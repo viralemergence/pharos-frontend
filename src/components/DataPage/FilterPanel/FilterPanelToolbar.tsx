@@ -50,13 +50,6 @@ const FilterPanelToolbarButton = styled(FilterPanelButton)<{
   &.add-filter {
     margin-right: auto;
   }
-  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
-    &.close-panel {
-      &:active {
-        transform: scale(0.92);
-      }
-    }
-  }
 `
 const FilterPanelCloseButton = styled(FilterPanelToolbarButton)`
   @media (min-width: ${({ theme }) => theme.breakpoints.laptopMinWidth}) {

@@ -26,15 +26,19 @@ const ViewContainer = styled.main`
   background-color: ${({ theme }) => theme.darkPurple};
 `
 
-const ViewMain = styled.div`
+const ViewMain = styled.div<{ isFilterPanelOpen: boolean }>`
   position: relative;
   height: 100%;
   display: flex;
   flex-flow: row nowrap;
   padding-bottom: 35px;
-  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
-    padding-bottom: unset;
-  }
+  ${({ isFilterPanelOpen, theme }) =>
+    isFilterPanelOpen &&
+    `
+    @media (max-width: ${theme.breakpoints.tabletMaxWidth}) {
+      padding-bottom: unset;
+    }
+  `}
 `
 
 const PageContainer = styled.div`
@@ -98,21 +102,23 @@ const DataPage = (): JSX.Element => {
     getMetadata()
   }, [])
 
+  const mapIsBlurred = view === View.table
+
   return (
     <Providers>
       <CMS.SEO />
       <PageContainer>
         <NavBar />
         <ViewContainer>
-          <MapView projection={mapProjection} />
-          {view === View.table && <MapOverlay />}
+          <MapView projection={mapProjection} isBlurred={mapIsBlurred} />
+          {mapIsBlurred && <MapOverlay />}
           <DataToolbar
             view={view}
             changeView={changeView}
             isFilterPanelOpen={isFilterPanelOpen}
             setIsFilterPanelOpen={setIsFilterPanelOpen}
           />
-          <ViewMain>
+          <ViewMain isFilterPanelOpen={isFilterPanelOpen}>
             <FilterPanel
               isFilterPanelOpen={isFilterPanelOpen}
               setIsFilterPanelOpen={setIsFilterPanelOpen}

@@ -21,7 +21,6 @@ const Panel = styled.aside<{ open: boolean }>`
   position: relative;
   transition: margin-left 300ms cubic-bezier(0.4, 0, 0.2, 1);
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
-    background-color: ${({ theme }) => theme.lightBlack};
     transition: none;
     backdrop-filter: blur(100px);
     border-radius: 0;
