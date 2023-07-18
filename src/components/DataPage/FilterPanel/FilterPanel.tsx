@@ -49,14 +49,9 @@ const FilterPanel = ({
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
   fields: Record<string, Field>
 }) => {
-  const [isFieldSelectorOpen, setIsFieldSelectorOpen] = useState(false)
-
   return (
     <Panel
       open={isFilterPanelOpen}
-      onClick={_ => {
-        setIsFieldSelectorOpen(false)
-      }}
       style={{ colorScheme: 'dark' }}
       role="navigation"
       aria-hidden={isFilterPanelOpen ? 'false' : 'true'}
@@ -65,8 +60,6 @@ const FilterPanel = ({
       <FilterPanelToolbar
         {...{
           fields,
-          isFieldSelectorOpen,
-          setIsFieldSelectorOpen,
           setIsFilterPanelOpen,
         }}
       />

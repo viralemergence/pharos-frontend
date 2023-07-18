@@ -1,6 +1,7 @@
-import React, { Dispatch, SetStateAction } from 'react'
+import React, { Dispatch, SetStateAction, useRef } from 'react'
 import styled from 'styled-components'
 import { PlusIcon, BackIcon, XIcon, Field } from './constants'
+import Dropdown from '@talus-analytics/library.ui.dropdown'
 
 const FilterPanelToolbarNav = styled.nav`
   display: flex;
@@ -12,6 +13,7 @@ const FilterPanelToolbarNav = styled.nav`
   border-bottom: 1px solid rgba(0, 0, 0, 0.3);
   box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.3);
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    justify-content: flex-start;
     padding: 14px 20px;
   }
 `
@@ -25,7 +27,7 @@ const FilterPanelButton = styled.button`
   padding: 10px 15px;
   text-align: left;
   background-color: transparent;
-  color: #fff;
+  color: ${({ theme }) => theme.white};
   border: 0;
   cursor: pointer;
   &:hover {
@@ -89,13 +91,10 @@ const FilterPanelCloseButton = styled(FilterPanelToolbarButton)`
   }
 `
 
-// TODO: Use Dropdown
-
 const FieldSelectorDiv = styled.div`
   position: absolute;
-  top: 74px;
-  width: min(calc(100% - 59px), 350px);
-  left: 30px;
+  top: 12px;
+  width: 351px;
   display: flex;
   flex-flow: column nowrap;
   align-items: flex-start;
@@ -126,18 +125,14 @@ const FieldSelectorButton = styled(FilterPanelButton)<{ disabled: boolean }>`
 const FieldSelector = ({
   fields,
   addFilterValueSetter,
+  onClick = () => null,
 }: {
   fields: Record<string, Field>
   addFilterValueSetter: (fieldId: string) => void
+  onClick?: (e?: React.MouseEvent<HTMLDivElement>) => void
 }) => {
   return (
-    <FieldSelectorDiv
-      onClick={e => {
-        // If this click event propagates, the panel's click handler will
-        // fire, closing the field selector.
-        e.stopPropagation()
-      }}
-    >
+    <FieldSelectorDiv onClick={onClick}>
       {Object.entries(fields).map(
         ([fieldId, { label, addedToPanel = false }]) => (
           <FieldSelectorButton
@@ -161,13 +156,9 @@ const FieldSelector = ({
 
 const FilterPanelToolbar = ({
   fields,
-  isFieldSelectorOpen,
-  setIsFieldSelectorOpen,
   setIsFilterPanelOpen,
 }: {
   fields: Record<string, Field>
-  isFieldSelectorOpen: boolean
-  setIsFieldSelectorOpen: Dispatch<SetStateAction<boolean>>
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
 }) => {
   return (
@@ -180,18 +171,28 @@ const FilterPanelToolbar = ({
         >
           <BackIcon />
         </FilterPanelCloseButton>
-        <FilterPanelToolbarButton
-          className="add-filter"
-          isFieldSelectorOpen={isFieldSelectorOpen}
-          onClick={e => {
-            setIsFieldSelectorOpen(open => !open)
-            // If this click event propagates, the panel's click handler will
-            // fire, closing the field selector.
-            e.stopPropagation()
-          }}
+        <Dropdown
+          expanderStyle={{}}
+          renderButton={open => (
+            <FilterPanelToolbarButton
+              className="add-filter"
+              isFieldSelectorOpen={open}
+            >
+              <PlusIcon style={{ marginRight: '5px' }} /> Add filter
+            </FilterPanelToolbarButton>
+          )}
+          animDuration={0}
         >
-          <PlusIcon style={{ marginRight: '5px' }} /> Add filter
-        </FilterPanelToolbarButton>
+          <FieldSelector
+            onClick={e => {
+              if (e?.target instanceof HTMLElement) e.target.blur()
+            }}
+            addFilterValueSetter={_fieldId => {
+              // Code that adds an input or Typeahead will go here in a downstream PR
+            }}
+            fields={fields}
+          />
+        </Dropdown>
         <FilterPanelCloseButton
           className="close-panel x-icon"
           onClick={() => setIsFilterPanelOpen(false)}
@@ -200,14 +201,6 @@ const FilterPanelToolbar = ({
           <XIcon extraStyle="width: 18px; height: 18px;" />
         </FilterPanelCloseButton>
       </FilterPanelToolbarNav>
-      {isFieldSelectorOpen && (
-        <FieldSelector
-          addFilterValueSetter={_fieldId => {
-            setIsFieldSelectorOpen(false)
-          }}
-          fields={fields}
-        />
-      )}
     </>
   )
 }
