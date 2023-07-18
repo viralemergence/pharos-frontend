@@ -8,6 +8,7 @@ import {
   ProjectPageLayout,
   // ProjectPageSidebar,
   ProjectPageContentBox,
+  ProjectPageSidebar,
 } from 'components/ProjectPage/ProjectPageLayout'
 
 import CitationsPublications from 'components/ProjectPage/CitationsPublications'
@@ -25,7 +26,6 @@ const Container = styled.div`
   background-color: ${({ theme }) => theme.lightBlack};
   display: flow-root;
 `
-
 const PublicProjectPageContentBox = styled(ProjectPageContentBox)`
   background-color: ${({ theme }) => theme.medBlack};
   border-top: 5px solid ${({ theme }) => theme.mint};
@@ -37,6 +37,19 @@ const PublicProjectPageContentBox = styled(ProjectPageContentBox)`
 `
 const PublicTitle = styled(Title)`
   color: ${({ theme }) => theme.white};
+`
+const Author = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+`
+const AuthorName = styled.div`
+  ${({ theme }) => theme.smallParagraphSemibold};
+  color: ${({ theme }) => theme.mint};
+`
+const AuthorOrganization = styled.div`
+  ${({ theme }) => theme.extraSmallParagraph};
+  color: ${({ theme }) => theme.medDarkGray};
 `
 
 const ProjectPage = () => {
@@ -93,6 +106,17 @@ const ProjectPage = () => {
             <CitationsPublications project={project} />
           </PublicProjectPageContentBox>
         </ProjectPageMain>
+        <ProjectPageSidebar>
+          <PublicProjectPageContentBox>
+            <h2>{project.authors.length === 1 ? 'Author' : 'Authors'}</h2>
+            {project.authors.map(author => (
+              <Author>
+                <AuthorName>{author.name}</AuthorName>
+                <AuthorOrganization>{author.organization}</AuthorOrganization>
+              </Author>
+            ))}
+          </PublicProjectPageContentBox>
+        </ProjectPageSidebar>
       </ProjectPageLayout>
     </Container>
   )

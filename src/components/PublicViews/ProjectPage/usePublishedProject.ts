@@ -41,6 +41,11 @@ const usePublishedProject = () => {
     ],
     authors: [
       {
+        researcherID: 'resreview',
+        name: 'Ryan Zimmerman',
+        organization: 'Georgetown University',
+      },
+      {
         researcherID: 'resdev',
         name: 'Developer',
         organization: 'Georgetown University',
