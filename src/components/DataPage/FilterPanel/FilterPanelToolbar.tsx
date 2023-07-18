@@ -179,6 +179,7 @@ const FilterPanelToolbar = ({
           <FieldSelector
             onClick={e => {
               if (e?.target instanceof HTMLElement) e.target.blur()
+              else console.log('not an element?')
             }}
             addFilterValueSetter={_fieldId => {
               // Code that adds an input or Typeahead will go here in a downstream PR

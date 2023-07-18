@@ -27,6 +27,7 @@ const ViewContainer = styled.main`
 `
 
 const ViewMain = styled.div<{ isFilterPanelOpen: boolean }>`
+  pointer-events: none;
   position: relative;
   height: 100%;
   display: flex;

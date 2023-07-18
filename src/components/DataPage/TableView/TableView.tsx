@@ -8,6 +8,7 @@ const TableViewContainer = styled.div<{
   isOpen: boolean
   isFilterPanelOpen: boolean
 }>`
+  pointer-events: auto;
   display: ${({ isOpen }) => (isOpen ? 'grid' : 'none')};
   padding: 0 30px;
   flex: 1;
