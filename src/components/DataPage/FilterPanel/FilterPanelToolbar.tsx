@@ -1,10 +1,4 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  useRef,
-  useImperativeHandle,
-  forwardRef,
-} from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 import styled from 'styled-components'
 import { PlusIcon, BackIcon, XIcon, Field } from './constants'
 import Dropdown from '@talus-analytics/library.ui.dropdown'
@@ -118,51 +112,40 @@ const FieldSelectorButton = styled(FilterPanelButton)<{ disabled: boolean }>`
     `}
 `
 interface FieldSelectorProps {
+  id: string
   fields: Record<string, Field>
   addFilterValueSetter: (fieldId: string) => void
   onClick?: (e?: React.MouseEvent<HTMLDivElement>) => void
 }
 
-// We create a type for the ref we are forwarding.
-interface FieldSelectorDivRef {
-  closeDropdown: () => void
+const FieldSelector = ({
+  id,
+  fields,
+  addFilterValueSetter,
+  onClick = () => null,
+}: FieldSelectorProps) => {
+  return (
+    <FieldSelectorDiv id={id} onClick={onClick}>
+      {Object.entries(fields).map(
+        ([fieldId, { label, addedToPanel = false }]) => (
+          <FieldSelectorButton
+            key={fieldId}
+            value={fieldId}
+            onClick={_ => {
+              addFilterValueSetter(fieldId)
+            }}
+            disabled={addedToPanel}
+          >
+            {label}
+          </FieldSelectorButton>
+        )
+      )}
+      {Object.entries(fields).length === 0 && (
+        <FieldSelectorMessage>Loading&hellip;</FieldSelectorMessage>
+      )}
+    </FieldSelectorDiv>
+  )
 }
-
-const FieldSelector = forwardRef<FieldSelectorDivRef, FieldSelectorProps>(
-  ({ fields, addFilterValueSetter, onClick = () => null }, ref) => {
-    const divRef = useRef<HTMLDivElement | null>(null)
-    useImperativeHandle(ref, () => ({
-      closeDropdown: () => {
-        const div = divRef.current
-        div?.blur()
-        if (div?.parentNode?.parentNode instanceof HTMLElement)
-          div?.parentNode?.parentNode.blur()
-      },
-    }))
-
-    return (
-      <FieldSelectorDiv onClick={onClick} ref={divRef}>
-        {Object.entries(fields).map(
-          ([fieldId, { label, addedToPanel = false }]) => (
-            <FieldSelectorButton
-              key={fieldId}
-              value={fieldId}
-              onClick={_ => {
-                addFilterValueSetter(fieldId)
-              }}
-              disabled={addedToPanel}
-            >
-              {label}
-            </FieldSelectorButton>
-          )
-        )}
-        {Object.entries(fields).length === 0 && (
-          <FieldSelectorMessage>Loading&hellip;</FieldSelectorMessage>
-        )}
-      </FieldSelectorDiv>
-    )
-  }
-)
 
 const FilterPanelToolbar = ({
   fields,
@@ -171,12 +154,12 @@ const FilterPanelToolbar = ({
   fields: Record<string, Field>
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
 }) => {
-  const fieldSelectorRef = React.useRef<HTMLDivElement>(null)
   const closeFieldSelector = () => {
-    const fieldSelectorDiv = fieldSelectorRef.current
-    fieldSelectorDiv?.blur()
+    const fieldSelectorDiv = document.querySelector('#field-selector')
+    if (fieldSelectorDiv instanceof HTMLElement) fieldSelectorDiv?.blur()
     if (fieldSelectorDiv?.parentNode?.parentNode instanceof HTMLElement)
       fieldSelectorDiv?.parentNode?.parentNode.blur()
+    // TODO: investigate whether Safari is misbehaving because of tabindex=-1
   }
   return (
     <>
@@ -201,7 +184,7 @@ const FilterPanelToolbar = ({
           animDuration={0}
         >
           <FieldSelector
-            ref={fieldSelectorRef}
+            id="field-selector"
             onClick={e => {
               closeFieldSelector()
               // // Trigger blur events that will cause the dropdown to close
