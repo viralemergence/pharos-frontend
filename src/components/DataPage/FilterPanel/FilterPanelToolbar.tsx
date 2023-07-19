@@ -112,20 +112,18 @@ const FieldSelectorButton = styled(FilterPanelButton)<{ disabled: boolean }>`
     `}
 `
 interface FieldSelectorProps {
-  id: string
   fields: Record<string, Field>
   addFilterValueSetter: (fieldId: string) => void
   onClick?: (e?: React.MouseEvent<HTMLDivElement>) => void
 }
 
 const FieldSelector = ({
-  id,
   fields,
   addFilterValueSetter,
   onClick = () => null,
 }: FieldSelectorProps) => {
   return (
-    <FieldSelectorDiv id={id} onClick={onClick}>
+    <FieldSelectorDiv onClick={onClick}>
       {Object.entries(fields).map(
         ([fieldId, { label, addedToPanel = false }]) => (
           <FieldSelectorButton
@@ -185,7 +183,6 @@ const FilterPanelToolbar = ({
           animDuration={0}
         >
           <FieldSelector
-            id="field-selector"
             onClick={e => {
               closeFieldSelector()
             }}
