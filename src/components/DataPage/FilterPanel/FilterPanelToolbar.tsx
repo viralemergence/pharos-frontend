@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 import styled from 'styled-components'
 import { PlusIcon, BackIcon, XIcon, Field } from './constants'
 import Dropdown from '@talus-analytics/library.ui.dropdown'
@@ -155,12 +155,12 @@ const FilterPanelToolbar = ({
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
 }) => {
   const closeFieldSelector = () => {
-    const fieldSelectorDiv = document.querySelector('#field-selector')
-    if (fieldSelectorDiv instanceof HTMLElement) fieldSelectorDiv?.blur()
-    if (fieldSelectorDiv?.parentNode?.parentNode instanceof HTMLElement)
-      fieldSelectorDiv?.parentNode?.parentNode.blur()
-    // TODO: investigate whether Safari is misbehaving because of tabindex=-1
+    setDropdownKey(generateDropdownKey())
   }
+
+  const generateDropdownKey = () => Math.random().toString(36).substring(7)
+  const [dropdownKey, setDropdownKey] = useState(generateDropdownKey())
+
   return (
     <>
       <FilterPanelToolbarNav>
@@ -172,6 +172,7 @@ const FilterPanelToolbar = ({
           <BackIcon />
         </FilterPanelCloseButton>
         <Dropdown
+          key={dropdownKey} // This is used to reset the component as a means of closing it
           expanderStyle={{}}
           renderButton={open => (
             <FilterPanelToolbarButton
