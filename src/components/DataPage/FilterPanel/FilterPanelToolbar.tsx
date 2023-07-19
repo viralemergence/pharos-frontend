@@ -188,12 +188,6 @@ const FilterPanelToolbar = ({
             id="field-selector"
             onClick={e => {
               closeFieldSelector()
-              // // Trigger blur events that will cause the dropdown to close
-              // if (e?.target instanceof HTMLElement) {
-              //   e.target.blur()
-              //   if (e.target.parentNode?.parentNode instanceof HTMLElement)
-              //     e.target.parentNode.parentNode.blur()
-              // }
             }}
             addFilterValueSetter={_fieldId => {
               // Code that adds an input or Typeahead will go here in a downstream PR
