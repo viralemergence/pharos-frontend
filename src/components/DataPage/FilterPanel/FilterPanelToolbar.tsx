@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import React, { Dispatch, SetStateAction, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { PlusIcon, BackIcon, XIcon, Field } from './constants'
 import Dropdown from '@talus-analytics/library.ui.dropdown'
@@ -159,6 +159,24 @@ const FilterPanelToolbar = ({
   const generateDropdownKey = () => Math.random().toString(36).substring(7)
   const [dropdownKey, setDropdownKey] = useState(generateDropdownKey())
 
+  const addFilterButtonRef = useRef<HTMLButtonElement>(null)
+
+  const closeFieldSelectorIfClickedOutside = (e: MouseEvent) => {
+    if (
+      addFilterButtonRef.current &&
+      !addFilterButtonRef.current.contains(e.target as Node)
+    ) {
+      closeFieldSelector()
+    }
+  }
+
+  const closeFieldSelectorOnWindowClick = () => {
+    window.addEventListener('click', closeFieldSelectorIfClickedOutside)
+  }
+  const noLongerCloseFieldSelectorOnWindowClick = () => {
+    window.removeEventListener('click', closeFieldSelectorIfClickedOutside)
+  }
+
   return (
     <>
       <FilterPanelToolbarNav>
@@ -172,10 +190,13 @@ const FilterPanelToolbar = ({
         <Dropdown
           key={dropdownKey} // This is used to reset the component as a means of closing it
           expanderStyle={{}}
+          onOpen={() => closeFieldSelectorOnWindowClick()}
+          onClose={() => noLongerCloseFieldSelectorOnWindowClick()}
           renderButton={open => (
             <FilterPanelToolbarButton
               style={{ marginRight: 'auto' }}
               isFieldSelectorOpen={open}
+              ref={addFilterButtonRef}
             >
               <PlusIcon style={{ marginRight: '5px' }} /> Add filter
             </FilterPanelToolbarButton>
