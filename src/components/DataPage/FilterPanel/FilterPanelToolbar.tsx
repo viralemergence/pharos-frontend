@@ -204,7 +204,7 @@ const FilterPanelToolbar = ({
           animDuration={0}
         >
           <FieldSelector
-            onClick={e => {
+            onClick={() => {
               closeFieldSelector()
             }}
             addFilterValueSetter={_fieldId => {
