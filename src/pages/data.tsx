@@ -45,7 +45,7 @@ const ViewMain = styled.div<{ isFilterPanelOpen: boolean }>`
 const PageContainer = styled.div`
   display: flex;
   flex-flow: column nowrap;
-  height: 100vh;
+  height: 100svh;
   width: 100%;
 `
 const MapOverlay = styled.div`
