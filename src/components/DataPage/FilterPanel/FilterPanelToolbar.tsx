@@ -14,7 +14,7 @@ const FilterPanelToolbarNav = styled.nav`
   box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.3);
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
     justify-content: flex-start;
-    padding: 14px 20px;
+    padding: 10px 20px;
   }
 `
 const FieldSelectorMessage = styled.div`
