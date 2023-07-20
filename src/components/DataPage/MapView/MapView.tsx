@@ -21,10 +21,9 @@ mapboxgl.accessToken = process.env.GATSBY_MAPBOX_API_KEY!
 interface MapPageProps {
   style?: React.CSSProperties
   projection?: 'naturalEarth' | 'globe'
-  isBlurred?: boolean
 }
 
-const MapViewDiv = styled.div<{ isBlurred: boolean }>`
+const MapViewDiv = styled.div`
   position: absolute;
   left: 0;
   top: 0;
@@ -32,15 +31,9 @@ const MapViewDiv = styled.div<{ isBlurred: boolean }>`
   bottom: 0;
   width: 100%;
   height: 100%;
-  ${({ isBlurred }) =>
-    isBlurred && `.mapboxgl-control-container { display: none; }`}
 `
 
-const MapView = ({
-  style,
-  projection = 'naturalEarth',
-  isBlurred = false,
-}: MapPageProps) => {
+const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<null | mapboxgl.Map>(null)
 
@@ -155,7 +148,7 @@ const MapView = ({
   }, [projection])
 
   return (
-    <MapViewDiv style={style} isBlurred={isBlurred}>
+    <MapViewDiv style={style}>
       <MapContainer ref={mapContainer} />
     </MapViewDiv>
   )
