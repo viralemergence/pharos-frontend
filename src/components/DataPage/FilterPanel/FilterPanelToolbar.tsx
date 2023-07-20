@@ -77,7 +77,7 @@ const FilterPanelCloseButton = styled(FilterPanelToolbarButton)`
 const FieldSelectorDiv = styled.div`
   position: absolute;
   top: 12px;
-  width: 351px;
+  width: 348px;
   display: flex;
   flex-flow: column nowrap;
   align-items: flex-start;
