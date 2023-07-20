@@ -13,6 +13,7 @@ const TableViewContainer = styled.div<{
   padding: 0 30px;
   flex: 1;
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    padding: 0 10px;
     // On mobiles and tablets, hide the table when the filter panel is open
     ${({ isFilterPanelOpen }) =>
       isFilterPanelOpen ? 'display: none ! important;' : ''}

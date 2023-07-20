@@ -18,6 +18,9 @@ const ViewContainer = styled.main`
   display: flex;
   flex-flow: column nowrap;
   gap: 20px;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    gap: 0px;
+  }
   main {
     display: flex;
     flex-flow: row nowrap;
@@ -33,6 +36,9 @@ const ViewMain = styled.div<{ isFilterPanelOpen: boolean }>`
   display: flex;
   flex-flow: row nowrap;
   padding-bottom: 35px;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    padding-bottom: 10px;
+  }
   ${({ isFilterPanelOpen, theme }) =>
     isFilterPanelOpen &&
     `
