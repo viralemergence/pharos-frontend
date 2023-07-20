@@ -10,8 +10,7 @@ const FilterPanelToolbarNav = styled.nav`
   padding-bottom: 20px;
   padding: 14px 30px;
   position: relative;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
-  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.3);
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 30px 0px;
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
     justify-content: flex-start;
     padding: 10px 20px;
