@@ -66,15 +66,9 @@ const FilterPanelCloseButton = styled(FilterPanelToolbarButton)`
   &:hover {
     background: inherit;
   }
-  &.back-icon {
-    display: none !important;
-  }
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
     width: 45px;
     height: 45px;
-    &.x-icon {
-      display: none;
-    }
     &.back-icon {
       display: flex !important;
     }
@@ -148,6 +142,21 @@ const FieldSelector = ({
   )
 }
 
+const FilterPanelCloseButtonWithBackIcon = styled(FilterPanelCloseButton)`
+  // TODO: is important needed?
+  display: none !important;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    display: flex !important;
+  }
+`
+
+const FilterPanelCloseButtonWithXIcon = styled(FilterPanelCloseButton)`
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    margin-left: auto;
+    margin-right: 0;
+  }
+`
+
 const FilterPanelToolbar = ({
   fields,
   setIsFilterPanelOpen,
@@ -183,13 +192,12 @@ const FilterPanelToolbar = ({
   return (
     <>
       <FilterPanelToolbarNav>
-        <FilterPanelCloseButton
-          className="close-panel back-icon"
+        <FilterPanelCloseButtonWithBackIcon
           onClick={() => setIsFilterPanelOpen(false)}
           aria-label="Close the Filters panel"
         >
           <BackIcon />
-        </FilterPanelCloseButton>
+        </FilterPanelCloseButtonWithBackIcon>
         <Dropdown
           key={dropdownKey} // This is used to reset the component as a means of closing it
           expanderStyle={{}}
@@ -216,13 +224,12 @@ const FilterPanelToolbar = ({
             fields={fields}
           />
         </Dropdown>
-        <FilterPanelCloseButton
-          className="close-panel x-icon"
+        <FilterPanelCloseButtonWithXIcon
           onClick={() => setIsFilterPanelOpen(false)}
           aria-label="Close the Filters panel"
         >
           <XIcon extraStyle="width: 18px; height: 18px;" />
-        </FilterPanelCloseButton>
+        </FilterPanelCloseButtonWithXIcon>
       </FilterPanelToolbarNav>
     </>
   )
