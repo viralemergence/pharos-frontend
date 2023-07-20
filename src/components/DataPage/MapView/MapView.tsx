@@ -33,7 +33,7 @@ const MapViewDiv = styled.div<{ isBlurred: boolean }>`
   width: 100%;
   height: 100%;
   ${({ isBlurred }) =>
-    isBlurred && `.mapboxgl-control-container { display: none; }`}
+    isBlurred && `.mapboxgl-control-container { display: none ! important; }`}
 `
 
 const MapView = ({
