@@ -91,6 +91,9 @@ const FieldSelectorDiv = styled.div`
   background-color: ${({ theme }) => theme.medBlack};
   border-radius: 5px;
   padding: 5px 0;
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobileMaxWidth}) {
+    width: 250px;
+  }
 `
 const FieldSelectorButton = styled(FilterPanelButton)<{ disabled: boolean }>`
   width: 100%;
