@@ -32,7 +32,8 @@ const GlobalStyle = createGlobalStyle`
 
 const WhiteBackground = styled.div`
   background-color: ${({ theme }) => theme.white};
-  min-height: 100vh;
+  min-height: 100vh; // Fallback for browsers that don't support svh
+  min-height: 100svh;
   min-width: 100%;
   display: flow-root;
 `
