@@ -270,7 +270,7 @@ const FilterPanelToolbar = ({
           />
         </Dropdown>
         {filters.length > 0 && (
-          <FilterPanelToolbarButton onClick={() => clearFilters()}>
+          <FilterPanelToolbarButton style={{marginRight: '5px'}} onClick={() => clearFilters()}>
             Clear all
           </FilterPanelToolbarButton>
         )}
