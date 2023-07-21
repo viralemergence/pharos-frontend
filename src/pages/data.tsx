@@ -63,7 +63,7 @@ const ViewMain = styled.div<{ isFilterPanelOpen: boolean }>`
 const PageContainer = styled.div`
   display: flex;
   flex-flow: column nowrap;
-  height: 100vh; // Fallback for browsers that don't support svh
+  height: 100vh;
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
     // On mobile and tablet, accommodate the browser UI.
     height: 100svh;
