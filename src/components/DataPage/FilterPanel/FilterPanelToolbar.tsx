@@ -220,10 +220,13 @@ const FilterPanelToolbar = ({
           key={dropdownKey} // This is used to reset the component as a means of closing it
           expanderStyle={{}}
           onOpen={() => {
-            window.addEventListener('click', closeFieldSelectorIfClickedOutside)
+            window?.addEventListener(
+              'click',
+              closeFieldSelectorIfClickedOutside
+            )
           }}
           onClose={() => {
-            window.removeEventListener(
+            window?.removeEventListener(
               'click',
               closeFieldSelectorIfClickedOutside
             )
