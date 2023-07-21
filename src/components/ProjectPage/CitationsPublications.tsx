@@ -4,11 +4,11 @@ interface CitationsPublicationsProps {
   project: {
     projectPublications?: string[]
     othersCiting?: string[]
+    citation?: string
   }
 }
 
-const CitationsPublications = ({project}: CitationsPublicationsProps) => {
-
+const CitationsPublications = ({ project }: CitationsPublicationsProps) => {
   const projectPublications =
     !project.projectPublications || project.projectPublications[0] === '' ? (
       <p>—</p>
