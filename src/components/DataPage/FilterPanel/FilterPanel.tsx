@@ -39,6 +39,7 @@ const FilterInput = ({
     <Label>
       <FieldName>{fieldLabel}</FieldName>
       <FieldInput
+        // This will be a date field if fieldType == 'date'
         type={fieldType}
         min={fieldType === 'date' ? '1900-01-01' : undefined}
         max={fieldType === 'date' ? '2200-12-31' : undefined}
@@ -103,6 +104,15 @@ const FieldInput = styled.input`
   &:invalid {
     border-color: ${({ theme }) => theme.red};
   }
+
+  // TODO: Use this to dim Safari dark mode placeholder better
+  // &.blank::-webkit-datetime-edit {
+  //   &-day-field,
+  //   &-month-field,
+  //   &-year-field {
+  //     opacity: 0.3;
+  //   }
+  // }
 `
 
 const FilterValueSetter = ({
