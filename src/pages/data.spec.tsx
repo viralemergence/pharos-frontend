@@ -69,7 +69,7 @@ describe('The public data page', () => {
   // Helper functions for retrieving elements from the page
   const getAddFilterButton = () => screen.getByText('Add filter') // TODO: If this doesn't work try getByText
   const getFilterPanel = (container: HTMLElement) =>
-    container.querySelector('aside[role=navigation]')
+    container.querySelector('aside[role=form]')
   const getFilterPanelToggleButton = () =>
     screen.getByRole('button', { name: 'Filters' })
   const getTableViewButton = () => screen.getByRole('button', { name: 'Table' })

@@ -53,7 +53,7 @@ const FilterPanel = ({
     <Panel
       open={isFilterPanelOpen}
       style={{ colorScheme: 'dark' }}
-      role="navigation"
+      role="form"
       aria-hidden={isFilterPanelOpen ? 'false' : 'true'}
       aria-label="Filters panel"
       id="pharos-filter-panel"
