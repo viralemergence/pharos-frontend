@@ -96,7 +96,7 @@ const isValidRecordsResponse = (
   if (!isNormalObject(data)) return false
   const { publishedRecords, isLastPage } =
     data as Partial<PublishedRecordsResponse>
-  if (!isNormalObject(publishedRecords)) return false
+  if (!Array.isArray(publishedRecords)) return false
   if (typeof isLastPage !== 'boolean') return false
   return publishedRecords.every(row => typeof row === 'object')
 }
@@ -162,7 +162,7 @@ const DataPage = ({
       )
       const data = await response.json()
       if (!isValidMetadataResponse(data)) {
-        console.error('GET /metadata-for-published-records: malformed response')
+        console.log('GET /metadata-for-published-records: malformed response')
         return
       }
       setFields(data.fields)
@@ -264,7 +264,7 @@ const DataPage = ({
       )
       const data = await response.json()
       if (!isValidMetadataResponse(data)) {
-        console.error('GET /metadata-for-published-records: malformed response')
+        console.log('GET /metadata-for-published-records: malformed response')
         return
       }
       setFields(data.fields)
