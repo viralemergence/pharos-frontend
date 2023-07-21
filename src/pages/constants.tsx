@@ -20,4 +20,5 @@ export interface Row {
   [key: string]: string | number
 }
 
-export default {}
+// Need a default export to satisfy gatsby
+export default 'default'
