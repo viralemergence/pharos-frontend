@@ -18,7 +18,7 @@ import TopBar, {
   BreadcrumbLink,
 } from 'components/layout/TopBar'
 
-import usePublishedProject from './usePublishedProject'
+import usePublishedProject, { ProjectDataStatus } from './usePublishedProject'
 import formatDate from 'utilities/formatDate'
 
 const Container = styled.div`
@@ -52,7 +52,33 @@ const AuthorOrganization = styled.div`
 `
 
 const ProjectPage = () => {
-  const project = usePublishedProject()
+  const { status, data: project } = usePublishedProject()
+
+  if (status === ProjectDataStatus.Error) {
+    console.log(project.error.message)
+    return (
+      <Container>
+        <PublicViewBackground />
+        <ProjectPageLayout>
+          <TopBar>
+            <Breadcrumbs>
+              <BreadcrumbLink to={`/data/`}>All data</BreadcrumbLink>
+              <BreadcrumbLink to={`/data/`}>Projects</BreadcrumbLink>
+            </Breadcrumbs>
+            <PublicTitle>Project not found</PublicTitle>
+          </TopBar>
+          <ProjectPageMain>
+            <PublicProjectPageContentBox>
+              <h2>Error message</h2>
+              <pre style={{ color: 'white' }}>{project.error.message}</pre>
+            </PublicProjectPageContentBox>
+          </ProjectPageMain>
+        </ProjectPageLayout>
+      </Container>
+    )
+  }
+
+  console.log('project', JSON.stringify(project))
 
   return (
     <Container>
@@ -63,17 +89,23 @@ const ProjectPage = () => {
             <BreadcrumbLink to={`/data/`}>All data</BreadcrumbLink>
             <BreadcrumbLink to={`/data/`}>Projects</BreadcrumbLink>
             <BreadcrumbLink $active to={`/projects/#/${project.projectID}`}>
-              {project.name}
+              {status === ProjectDataStatus.Loaded
+                ? project.name
+                : 'Loading...'}
             </BreadcrumbLink>
           </Breadcrumbs>
           <PublicTitle>
-            Project Page: projectID = {project.projectID}
+            {status === ProjectDataStatus.Loaded ? project.name : '...'}
           </PublicTitle>
         </TopBar>
         <ProjectPageMain>
           <PublicProjectPageContentBox>
             <h2>Description</h2>
-            <p>{project.description || '—'}</p>
+            <p>
+              {status === ProjectDataStatus.Loaded
+                ? project.description
+                : '...'}
+            </p>
           </PublicProjectPageContentBox>
           <PublicProjectPageContentBox>
             <div
@@ -106,43 +138,59 @@ const ProjectPage = () => {
             </div>
           </PublicProjectPageContentBox>
           <PublicProjectPageContentBox>
-            <CitationsPublications project={project} />
+            {status === ProjectDataStatus.Loaded && (
+              <CitationsPublications project={project} />
+            )}
           </PublicProjectPageContentBox>
         </ProjectPageMain>
         <ProjectPageSidebar>
           <PublicProjectPageContentBox>
-            <h2>{project.authors.length === 1 ? 'Author' : 'Authors'}</h2>
-            {project.authors.map(author => (
-              <Author>
-                <AuthorName>{author.name}</AuthorName>
-                <AuthorOrganization>{author.organization}</AuthorOrganization>
-              </Author>
-            ))}
-          </PublicProjectPageContentBox>
-          <PublicProjectPageContentBox>
-            <h2>Project published</h2>
-            <p>{formatDate(project.datePublished)}</p>
-            <h2>Project ID</h2>
-            <p>{project.projectID}</p>
-            {project.relatedMaterials && (
+            {status === ProjectDataStatus.Loaded ? (
               <>
-                <h2>Related materials</h2>
-                {project.relatedMaterials.map(material => (
-                  <p>{material}</p>
+                <h2>{project.authors.length === 1 ? 'Author' : 'Authors'}</h2>
+                {project.authors.map(author => (
+                  <Author key={author.name}>
+                    <AuthorName>{author.name}</AuthorName>
+                    <AuthorOrganization>
+                      {author.organization}
+                    </AuthorOrganization>
+                  </Author>
                 ))}
               </>
+            ) : (
+              <h2>Authors</h2>
             )}
-            {project.projectType && (
+          </PublicProjectPageContentBox>
+          <PublicProjectPageContentBox>
+            {status === ProjectDataStatus.Loaded ? (
               <>
-                <h2>Project type</h2>
-                <p>{project.projectType || '—'}</p>
+                <h2>Project published</h2>
+                <p>{formatDate(project.datePublished)}</p>
+                <h2>Project ID</h2>
+                <p>{project.projectID}</p>
+                {project.relatedMaterials && (
+                  <>
+                    <h2>Related materials</h2>
+                    {project.relatedMaterials.map(material => (
+                      <p key={material}>{material}</p>
+                    ))}
+                  </>
+                )}
+                {project.projectType && (
+                  <>
+                    <h2>Project type</h2>
+                    <p>{project.projectType || '—'}</p>
+                  </>
+                )}
+                {project.surveillanceStatus && (
+                  <>
+                    <h2>Surveillance status</h2>
+                    <p>{project.surveillanceStatus || '—'}</p>
+                  </>
+                )}
               </>
-            )}
-            {project.surveillanceStatus && (
-              <>
-                <h2>Surveillance status</h2>
-                <p>{project.surveillanceStatus || '—'}</p>
-              </>
+            ) : (
+              <h2>Project published</h2>
             )}
           </PublicProjectPageContentBox>
         </ProjectPageSidebar>
