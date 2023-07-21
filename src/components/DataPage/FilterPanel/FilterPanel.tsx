@@ -48,6 +48,15 @@ const FilterInput = ({
           const values = e.target.checkValidity() ? [e.target.value] : []
           updateFilter(filterIndex, values)
         }}
+        onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
+          e.preventDefault()
+          if (!(e.target instanceof HTMLInputElement)) return
+          const dateParts = e.clipboardData
+            .getData('text/plain')
+            .split(/[/\-\s]/g)
+          if (dateParts.length === 3)
+            e.target.value = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`
+        }}
       />
     </Label>
   )
@@ -97,10 +106,6 @@ const FieldInput = styled.input`
   color: ${({ theme }) => theme.white};
   font-weight: 600;
   padding: 8px 10px;
-  &::-webkit-calendar-picker-indicator {
-    filter: invert(1);
-    opacity: 0.5;
-  }
   &:invalid {
     border-color: ${({ theme }) => theme.red};
   }
