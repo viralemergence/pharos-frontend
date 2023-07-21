@@ -152,9 +152,6 @@ const FilterList = styled.ul`
   overflow-y: auto;
   padding: 34px 40px;
   flex: 1;
-  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
-    height: calc(100vh - 60px - 73px);
-  }
   @media (max-width: ${({ theme }) => theme.breakpoints.mobileMaxWidth}) {
     padding: 34px 20px;
   }
