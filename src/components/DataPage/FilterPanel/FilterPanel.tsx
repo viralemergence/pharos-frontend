@@ -70,7 +70,7 @@ const Panel = styled.aside<{ open: boolean }>`
     backdrop-filter: blur(100px);
     border-radius: 0;
     border: 0;
-    display: ${({ open }) => (open ? 'block' : 'none')};
+    display: ${({ open }) => (open ? 'flex' : 'none')};
     top: 0;
     bottom: 0;
     left: 0;

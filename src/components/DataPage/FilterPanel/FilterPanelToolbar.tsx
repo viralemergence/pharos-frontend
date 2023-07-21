@@ -16,7 +16,7 @@ const FilterPanelToolbarNav = styled.nav`
   justify-content: space-between;
   padding-bottom: 20px;
   padding: 14px 30px;
-  position: relative;
+  gap: 10px;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 30px 0px;
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
     justify-content: flex-start;
@@ -61,7 +61,6 @@ const FilterPanelCloseButton = styled(FilterPanelToolbarButton)`
     top: 2px;
   }
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
-    margin-right: 20px;
   }
   border-radius: 50%;
   background: transparent;
