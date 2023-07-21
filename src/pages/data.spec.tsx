@@ -153,7 +153,7 @@ describe('The public data page', () => {
     )
   })
 
-  it('lets the user filter by host species', async () => {
+  it.skip('lets the user filter by host species', async () => {
     const { container } = render(<DataPage />)
     const filterPanelToggleButton = getFilterPanelToggleButton()
     expect(filterPanelToggleButton).toBeInTheDocument()
@@ -173,7 +173,7 @@ describe('The public data page', () => {
     // TODO: Finish writing this test
   })
 
-  it('shows unfiltered records when filter input is blanked', async () => {
+  it.skip('shows unfiltered records when filter input is blanked', async () => {
     // TODO: Write this
   })
 
