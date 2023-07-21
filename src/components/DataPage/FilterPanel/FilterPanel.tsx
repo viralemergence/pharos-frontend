@@ -58,11 +58,12 @@ const Panel = styled.aside<{ open: boolean }>`
   border-top-right-radius: 5px;
   color: ${({ theme }) => theme.white};
   display: flex;
+  height: 100%;
+  max-height: 100%;
   flex-flow: column nowrap;
   margin-left: ${({ open }) => (open ? '30px' : `-${panelWidth}`)};
   width: min(${panelWidth}, 100%);
   max-width: ${panelWidth};
-  position: relative;
   transition: margin-left 300ms cubic-bezier(0.4, 0, 0.2, 1);
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
     transition: none;
@@ -150,7 +151,9 @@ const FilterList = styled.ul`
   margin: 0;
   overflow-y: auto;
   padding: 34px 40px;
-  flex: 1;
+  flex-grow: 1;
+  flex-shrink: 1;
+  max-height: 100%;
   @media (max-width: ${({ theme }) => theme.breakpoints.mobileMaxWidth}) {
     padding: 34px 20px;
   }
