@@ -22,6 +22,9 @@ const FilterPanelToolbarNav = styled.nav`
     justify-content: flex-start;
     padding: 10px 20px;
   }
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobileMaxWidth}) {
+    gap: 5px;
+  }
 `
 const FieldSelectorMessage = styled.div`
   ${props => props.theme.smallParagraph};

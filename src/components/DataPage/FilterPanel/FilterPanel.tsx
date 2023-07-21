@@ -51,6 +51,7 @@ const FilterInput = ({
 
 const Panel = styled.aside<{ open: boolean }>`
   pointer-events: auto;
+  position: relative;
   backdrop-filter: blur(47px);
   background-color: ${({ theme }) => theme.white10PercentOpacity};
   border: 1px solid ${({ theme }) => theme.white10PercentOpacity};
@@ -148,12 +149,20 @@ const FilterListItem = ({ children }: { children: React.ReactNode }) => {
 }
 
 const FilterList = styled.ul`
+  position: absolute;
   margin: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
   overflow-y: auto;
   padding: 34px 40px;
   flex-grow: 1;
   flex-shrink: 1;
   max-height: 100%;
+  top: 73px;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    top: 64px;
+  }
   @media (max-width: ${({ theme }) => theme.breakpoints.mobileMaxWidth}) {
     padding: 34px 20px;
   }
