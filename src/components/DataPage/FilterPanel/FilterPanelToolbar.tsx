@@ -73,23 +73,22 @@ const FilterPanelCloseButton = styled(FilterPanelToolbarButton)`
   }
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
     width: 45px;
-    height: 45px;
-    &.back-icon {
-      display: flex !important;
-    }
   }
 `
 
 const FieldSelectorDiv = styled.div`
   position: absolute;
-  top: 12px;
   width: 348px;
+  top: 15px;
   display: flex;
   flex-flow: column nowrap;
   align-items: flex-start;
   background-color: ${({ theme }) => theme.medBlack};
   border-radius: 5px;
   padding: 5px 0;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    top: 11px;
+  }
   @media (max-width: ${({ theme }) => theme.breakpoints.mobileMaxWidth}) {
     width: 250px;
   }
@@ -149,10 +148,9 @@ const FieldSelector = ({
 }
 
 const FilterPanelCloseButtonWithBackIcon = styled(FilterPanelCloseButton)`
-  // TODO: is important needed?
-  display: none !important;
+  display: none;
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
-    display: flex !important;
+    display: flex;
   }
 `
 
@@ -180,15 +178,16 @@ const FilterPanelToolbar = ({
   isFilterPanelOpen: boolean
   filterListRef: MutableRefObject<HTMLUListElement | null>
 }) => {
+  const addFilterButtonRef = useRef<HTMLButtonElement>(null)
+
+  const generateDropdownKey = () => Math.random().toString(36).substring(7)
+  const [dropdownKey, setDropdownKey] = useState(generateDropdownKey())
   const closeFieldSelector = () => {
     setDropdownKey(generateDropdownKey())
   }
 
-  const generateDropdownKey = () => Math.random().toString(36).substring(7)
-  const [dropdownKey, setDropdownKey] = useState(generateDropdownKey())
-
-  const addFilterButtonRef = useRef<HTMLButtonElement>(null)
-
+  /** Close the field selector if the user clicked somewhere other than the add
+   * filter button */
   const closeFieldSelectorIfClickedOutside = (e: MouseEvent) => {
     if (
       addFilterButtonRef.current &&
@@ -196,17 +195,6 @@ const FilterPanelToolbar = ({
     ) {
       closeFieldSelector()
     }
-  }
-
-  const closeFieldSelectorOnWindowClick = () => {
-    window.addEventListener('click', closeFieldSelectorIfClickedOutside)
-  }
-  const noLongerCloseFieldSelectorOnWindowClick = () => {
-    window.removeEventListener('click', closeFieldSelectorIfClickedOutside)
-  }
-
-  const closeFilterPanel = () => {
-    setIsFilterPanelOpen(false)
   }
 
   const wasFilterPanelOpen = useRef(isFilterPanelOpen)
@@ -231,7 +219,7 @@ const FilterPanelToolbar = ({
     <>
       <FilterPanelToolbarNav>
         <FilterPanelCloseButtonWithBackIcon
-          onClick={() => closeFilterPanel()}
+          onClick={() => setIsFilterPanelOpen(false)}
           aria-label="Close the Filters panel"
         >
           <BackIcon />
@@ -239,8 +227,18 @@ const FilterPanelToolbar = ({
         <Dropdown
           key={dropdownKey} // This is used to reset the component as a means of closing it
           expanderStyle={{}}
-          onOpen={() => closeFieldSelectorOnWindowClick()}
-          onClose={() => noLongerCloseFieldSelectorOnWindowClick()}
+          onOpen={() => {
+            window?.addEventListener(
+              'click',
+              closeFieldSelectorIfClickedOutside
+            )
+          }}
+          onClose={() => {
+            window?.removeEventListener(
+              'click',
+              closeFieldSelectorIfClickedOutside
+            )
+          }}
           renderButton={open => (
             <FilterPanelToolbarButton
               style={{ marginRight: 'auto' }}
@@ -270,7 +268,7 @@ const FilterPanelToolbar = ({
           </FilterPanelToolbarButton>
         )}
         <FilterPanelCloseButtonWithXIcon
-          onClick={() => closeFilterPanel()}
+          onClick={() => setIsFilterPanelOpen(false)}
           aria-label="Close the Filters panel"
         >
           <XIcon extraStyle="width: 18px; height: 18px;" />

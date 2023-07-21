@@ -50,7 +50,6 @@ const FilterInput = ({
 }
 
 const Panel = styled.aside<{ open: boolean }>`
-  // TODO: Double check that this blur amount is correct
   pointer-events: auto;
   backdrop-filter: blur(47px);
   background-color: ${({ theme }) => theme.white10PercentOpacity};
