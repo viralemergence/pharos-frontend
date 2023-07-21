@@ -205,7 +205,6 @@ const FilterPanel = ({
         clearFilters={clearFilters}
         isFieldSelectorOpen={isFieldSelectorOpen}
         setIsFieldSelectorOpen={setIsFieldSelectorOpen}
-        setIsFilterPanelOpen={setIsFilterPanelOpen}
         filterListRef={filterListRef}
       />
       <FilterList ref={filterListRef}>
