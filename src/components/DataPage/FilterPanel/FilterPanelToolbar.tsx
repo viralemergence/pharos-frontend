@@ -177,7 +177,7 @@ const FilterPanelToolbar = ({
   filters: Filter[]
   setFilters: Dispatch<SetStateAction<Filter[]>>
   clearFilters: () => void
-  setIsFieldSelectorOpen: Dispatch<SetStateAction<boolean>>
+  setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
   isFilterPanelOpen: boolean
   filterListRef: MutableRefObject<HTMLUListElement | null>
 }) => {
