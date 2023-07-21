@@ -52,8 +52,24 @@ describe('FilterPanel', () => {
     expect(addFilterButton).toBeInTheDocument()
     expect(screen.queryByText('Field 1')).not.toBeInTheDocument()
     expect(screen.queryByText('Field 2')).not.toBeInTheDocument()
+
     fireEvent.click(addFilterButton)
     expect(screen.getByText('Field 1')).toBeInTheDocument()
     expect(screen.getByText('Field 2')).toBeInTheDocument()
+
+    // After clicking a field, the field selector disappears
+    fireEvent.click(screen.getByText('Field 1'))
+    expect(screen.queryByText('Field 1')).not.toBeInTheDocument()
+    expect(screen.queryByText('Field 2')).not.toBeInTheDocument()
+
+    fireEvent.click(getAddFilterButton())
+    expect(screen.getByText('Field 1')).toBeInTheDocument()
+    expect(screen.getByText('Field 2')).toBeInTheDocument()
+
+    // Clicking the panel makes the field selector disappear
+    const panel = screen.getByRole('form')
+    fireEvent.click(panel)
+    expect(screen.queryByText('Field 1')).not.toBeInTheDocument()
+    expect(screen.queryByText('Field 2')).not.toBeInTheDocument()
   })
 })

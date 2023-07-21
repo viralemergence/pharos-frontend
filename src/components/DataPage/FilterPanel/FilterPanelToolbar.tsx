@@ -149,10 +149,9 @@ const FieldSelector = ({
 }
 
 const FilterPanelCloseButtonWithBackIcon = styled(FilterPanelCloseButton)`
-  // TODO: is important needed?
-  display: none !important;
+  display: none;
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
-    display: flex !important;
+    display: flex;
   }
 `
 
