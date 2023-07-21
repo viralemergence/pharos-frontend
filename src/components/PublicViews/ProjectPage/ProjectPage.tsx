@@ -135,11 +135,18 @@ const ProjectPage = () => {
               Datasets placeholder
             </div>
           </PublicProjectPageContentBox>
-          <PublicProjectPageContentBox>
-            {status === ProjectDataStatus.Loaded && (
-              <CitationsPublications project={project} />
-            )}
-          </PublicProjectPageContentBox>
+          {status === ProjectDataStatus.Loading ||
+            (status === ProjectDataStatus.Loaded &&
+              (project.citation ||
+                (project.othersCiting && project.othersCiting.length > 0) ||
+                (project.projectPublications &&
+                  project.projectPublications.length > 0)) && (
+                <PublicProjectPageContentBox>
+                  {status === ProjectDataStatus.Loaded && (
+                    <CitationsPublications project={project} published />
+                  )}
+                </PublicProjectPageContentBox>
+              ))}
         </ProjectPageMain>
         <ProjectPageSidebar>
           <PublicProjectPageContentBox>
