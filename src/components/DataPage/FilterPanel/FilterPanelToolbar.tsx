@@ -1,4 +1,10 @@
-import React, { Dispatch, SetStateAction, useRef, useState } from 'react'
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import styled from 'styled-components'
 import { PlusIcon, BackIcon, XIcon, Field } from './constants'
 import Dropdown from '@talus-analytics/library.ui.dropdown'
@@ -129,6 +135,7 @@ const FieldSelector = ({
               addFilterValueSetter(fieldId)
             }}
             disabled={addedToPanel}
+            aria-label={`Add filter for ${label}`}
           >
             {label}
           </FieldSelectorButton>
@@ -158,9 +165,11 @@ const FilterPanelCloseButtonWithXIcon = styled(FilterPanelCloseButton)`
 
 const FilterPanelToolbar = ({
   fields,
+  isFilterPanelOpen,
   setIsFilterPanelOpen,
 }: {
   fields: Record<string, Field>
+  isFilterPanelOpen: boolean
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
 }) => {
   const closeFieldSelector = () => {
@@ -188,11 +197,33 @@ const FilterPanelToolbar = ({
     window.removeEventListener('click', closeFieldSelectorIfClickedOutside)
   }
 
+  const closeFilterPanel = () => {
+    setIsFilterPanelOpen(false)
+  }
+
+  const wasFilterPanelOpen = useRef(isFilterPanelOpen)
+  useEffect(() => {
+    if (!wasFilterPanelOpen.current && isFilterPanelOpen) {
+      // If the panel just opened, focus the add filter button
+      addFilterButtonRef.current?.focus()
+      const announcement = screenReaderAnnouncementRef.current
+      if (announcement) {
+        if (!announcement.textContent?.startsWith('Filters panel opened'))
+          announcement.textContent = 'Filters panel opened'
+        // Always add an extra space to force screen readers to read the announcement
+        announcement.textContent += '\xa0'
+      }
+    }
+    wasFilterPanelOpen.current = isFilterPanelOpen
+  }, [isFilterPanelOpen])
+
+  const screenReaderAnnouncementRef = useRef<HTMLDivElement>(null)
+
   return (
     <>
       <FilterPanelToolbarNav>
         <FilterPanelCloseButtonWithBackIcon
-          onClick={() => setIsFilterPanelOpen(false)}
+          onClick={() => closeFilterPanel()}
           aria-label="Close the Filters panel"
         >
           <BackIcon />
@@ -224,14 +255,27 @@ const FilterPanelToolbar = ({
           />
         </Dropdown>
         <FilterPanelCloseButtonWithXIcon
-          onClick={() => setIsFilterPanelOpen(false)}
+          onClick={() => closeFilterPanel()}
           aria-label="Close the Filters panel"
         >
           <XIcon extraStyle="width: 18px; height: 18px;" />
         </FilterPanelCloseButtonWithXIcon>
       </FilterPanelToolbarNav>
+      <ScreenReaderOnly
+        ref={screenReaderAnnouncementRef}
+        aria-live="assertive"
+      />
     </>
   )
 }
+
+const ScreenReaderOnly = styled.div`
+  clip-path: inset(50%);
+  clip: rect(0 0 0 0);
+  height: 0px;
+  overflow: hidden;
+  position: absolute;
+  width: 0px;
+`
 
 export default FilterPanelToolbar

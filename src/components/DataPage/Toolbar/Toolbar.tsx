@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
 export enum View {
@@ -38,7 +38,7 @@ const DataToolbarButton = styled.button<{
     outline: 2px solid ${({ theme }) => theme.white20PercentOpacity};
   }
 `
-const DataToolbarFiltersButton = styled(DataToolbarButton)`
+const FilterPanelLauncher = styled(DataToolbarButton)`
   padding-left: 10px;
   padding-right: 10px;
   margin-left: 0;
@@ -57,10 +57,10 @@ const DataToolbarButtonContainer = styled.div`
   border: 1px solid ${({ theme }) => theme.white10PercentOpacity};
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.124);
 `
-const DataToolbarRadioButtonContainer = styled(DataToolbarButtonContainer)`
+const ContainerForRadioButtons = styled(DataToolbarButtonContainer)`
   padding: 5px;
 `
-const DataToolbarFilterButtonContainer = styled(DataToolbarButtonContainer)`
+const ContainerForFilterPanelLauncher = styled(DataToolbarButtonContainer)`
   height: 42px;
 `
 const DataToolbarDiv = styled.div<{ isFilterPanelOpen: boolean }>`
@@ -87,7 +87,7 @@ const DataToolbar = ({
   view: View
   changeView: (view: View) => void
 }) => {
-  const ViewRadioButton = ({
+  const RadioButton = ({
     forView,
     label,
   }: {
@@ -102,24 +102,35 @@ const DataToolbar = ({
     </DataToolbarRadioButton>
   )
 
+  const filterPanelLauncherRef = useRef<HTMLButtonElement>(null)
+  const wasFilterPanelOpen = useRef(isFilterPanelOpen)
+  useEffect(() => {
+    if (wasFilterPanelOpen.current && !isFilterPanelOpen) {
+      // If the panel just closed, focus the launcher
+      filterPanelLauncherRef.current?.focus()
+    }
+    wasFilterPanelOpen.current = isFilterPanelOpen
+  }, [isFilterPanelOpen])
+
   return (
     <DataToolbarDiv isFilterPanelOpen={isFilterPanelOpen}>
-      <DataToolbarFilterButtonContainer>
-        <DataToolbarFiltersButton
+      <ContainerForFilterPanelLauncher>
+        <FilterPanelLauncher
           selected={isFilterPanelOpen}
+          ref={filterPanelLauncherRef}
           onClick={() => {
             setIsFilterPanelOpen(prev => !prev)
           }}
           aria-controls="pharos-filter-panel"
         >
           Filters
-        </DataToolbarFiltersButton>
-      </DataToolbarFilterButtonContainer>
-      <DataToolbarRadioButtonContainer>
-        <ViewRadioButton forView={View.map} label="Map" />
-        <ViewRadioButton forView={View.globe} label="Globe" />
-        <ViewRadioButton forView={View.table} label="Table" />
-      </DataToolbarRadioButtonContainer>
+        </FilterPanelLauncher>
+      </ContainerForFilterPanelLauncher>
+      <ContainerForRadioButtons>
+        <RadioButton forView={View.map} label="Map" />
+        <RadioButton forView={View.globe} label="Globe" />
+        <RadioButton forView={View.table} label="Table" />
+      </ContainerForRadioButtons>
     </DataToolbarDiv>
   )
 }

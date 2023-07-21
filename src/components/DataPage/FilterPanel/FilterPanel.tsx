@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react'
+import React, { Dispatch, SetStateAction, useRef } from 'react'
 import styled from 'styled-components'
 import { Field } from './constants'
 import FilterPanelToolbar from './FilterPanelToolbar'
@@ -55,13 +55,13 @@ const FilterPanel = ({
       style={{ colorScheme: 'dark' }}
       role="navigation"
       aria-hidden={isFilterPanelOpen ? 'false' : 'true'}
+      aria-label="Filters panel"
       id="pharos-filter-panel"
     >
       <FilterPanelToolbar
-        {...{
-          fields,
-          setIsFilterPanelOpen,
-        }}
+        fields={fields}
+        isFilterPanelOpen={isFilterPanelOpen}
+        setIsFilterPanelOpen={setIsFilterPanelOpen}
       />
       {/* FilterList will go here */}
     </Panel>
