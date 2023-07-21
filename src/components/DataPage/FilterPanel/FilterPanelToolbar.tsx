@@ -73,23 +73,22 @@ const FilterPanelCloseButton = styled(FilterPanelToolbarButton)`
   }
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
     width: 45px;
-    height: 45px;
-    &.back-icon {
-      display: flex !important;
-    }
   }
 `
 
 const FieldSelectorDiv = styled.div`
   position: absolute;
-  top: 12px;
   width: 348px;
+  top: 15px;
   display: flex;
   flex-flow: column nowrap;
   align-items: flex-start;
   background-color: ${({ theme }) => theme.medBlack};
   border-radius: 5px;
   padding: 5px 0;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    top: 11px;
+  }
   @media (max-width: ${({ theme }) => theme.breakpoints.mobileMaxWidth}) {
     width: 250px;
   }
