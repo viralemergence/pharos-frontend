@@ -19,3 +19,5 @@ export interface Debouncing {
 export interface Row {
   [key: string]: string | number
 }
+
+export default {}
