@@ -21,31 +21,62 @@ import {
 
 const PAGE_SIZE = 50
 
-const ViewContainer = styled.main`
+const ViewContainer = styled.main<{
+  isMapBlurred: boolean
+  isFilterPanelOpen: boolean
+}>`
   flex: 1;
   position: relative;
   display: flex;
   flex-flow: column nowrap;
   gap: 20px;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    gap: 0px;
+  }
   main {
     display: flex;
     flex-flow: row nowrap;
     flex: 1;
   }
   background-color: ${({ theme }) => theme.darkPurple};
+
+  ${({ isMapBlurred }) =>
+    isMapBlurred &&
+    `.mapboxgl-control-container { display: none ! important; }`}
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    ${({ isFilterPanelOpen }) =>
+      isFilterPanelOpen &&
+      `.mapboxgl-control-container { display: none ! important; }`}
+  }
 `
 
-const ViewMain = styled.div`
+const ViewMain = styled.div<{ isFilterPanelOpen: boolean }>`
+  pointer-events: none;
   position: relative;
   height: 100%;
   display: flex;
   flex-flow: row nowrap;
+  padding-bottom: 35px;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    padding-bottom: 10px;
+  }
+  ${({ isFilterPanelOpen, theme }) =>
+    isFilterPanelOpen &&
+    `
+    @media (max-width: ${theme.breakpoints.tabletMaxWidth}) {
+      padding-bottom: unset;
+    }
+  `}
 `
 
 const PageContainer = styled.div`
   display: flex;
   flex-flow: column nowrap;
-  height: 100vh;
+  height: 100vh; // Fallback for browsers that don't support svh
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    // On mobile and tablet, accommodate the browser UI.
+    height: 100svh;
+  }
   width: 100%;
 `
 const MapOverlay = styled.div`
@@ -57,34 +88,15 @@ const MapOverlay = styled.div`
   top: 0;
   bottom: 0;
   width: 100%;
-  z-index: ${({ theme }) => theme.zIndexes.dataMapOverlay};
 `
-
-const isTruthyObject = (value: unknown): value is Record<string, unknown> =>
-  typeof value === 'object' && !!value
-
-const isValidFieldInMetadataResponse = (data: unknown): data is Field => {
-  if (!isTruthyObject(data)) return false
-  const {
-    label,
-    dataGridKey = '',
-    type = '',
-    options = [],
-  } = data as Partial<Field>
-  if (typeof label !== 'string') return false
-  if (typeof dataGridKey !== 'string') return false
-  if (typeof type !== 'string') return false
-  if (!options.every?.(option => typeof option === 'string')) return false
-  return true
-}
 
 const isValidRecordsResponse = (
   data: unknown
 ): data is PublishedRecordsResponse => {
-  if (!isTruthyObject(data)) return false
+  if (!isNormalObject(data)) return false
   const { publishedRecords, isLastPage } =
     data as Partial<PublishedRecordsResponse>
-  if (!isTruthyObject(publishedRecords)) return false
+  if (!isNormalObject(publishedRecords)) return false
   if (typeof isLastPage !== 'boolean') return false
   return publishedRecords.every(row => typeof row === 'object')
 }
@@ -92,19 +104,6 @@ const isValidRecordsResponse = (
 interface PublishedRecordsResponse {
   publishedRecords: Row[]
   isLastPage: boolean
-}
-
-const isValidMetadataResponse = (data: unknown): data is MetadataResponse => {
-  if (!isTruthyObject(data)) return false
-  const { fields } = data as Partial<MetadataResponse>
-  if (!isTruthyObject(fields)) return false
-  return Object.values(fields as Record<string, unknown>).every?.(field =>
-    isValidFieldInMetadataResponse(field)
-  )
-}
-
-interface MetadataResponse {
-  fields: Record<string, Field>
 }
 
 const DataPage = ({
@@ -199,7 +198,7 @@ const DataPage = ({
     const filtersToApply: Filter[] = []
     for (const filter of filters) {
       const { fieldId, values } = filter
-      values.forEach(value => {
+      values.forEach((value: string) => {
         params.append(fieldId, value)
       })
       if (values.length > 0) filtersToApply.push(filter)
@@ -322,12 +321,19 @@ const DataPage = ({
     }
   }
 
+  const isMapBlurred = view === View.table
+
   return (
     <Providers>
       <CMS.SEO />
       <PageContainer>
         <NavBar />
-        <ViewContainer>
+        <ViewContainer
+          isMapBlurred={isMapBlurred}
+          isFilterPanelOpen={isFilterPanelOpen}
+        >
+          <MapView projection={mapProjection} />
+          {isMapBlurred && <MapOverlay />}
           <DataToolbar
             view={view}
             changeView={changeView}
@@ -335,9 +341,7 @@ const DataPage = ({
             setIsFilterPanelOpen={setIsFilterPanelOpen}
             appliedFilters={appliedFilters}
           />
-          <MapView projection={mapProjection} />
-          {view === View.table && <MapOverlay />}
-          <ViewMain>
+          <ViewMain isFilterPanelOpen={isFilterPanelOpen}>
             <FilterPanel
               isFilterPanelOpen={isFilterPanelOpen}
               setIsFilterPanelOpen={setIsFilterPanelOpen}
@@ -366,6 +370,41 @@ const DataPage = ({
       </PageContainer>
     </Providers>
   )
+}
+
+interface MetadataResponse {
+  fields: Record<string, Field>
+}
+
+const isNormalObject = (value: unknown): value is Record<string, unknown> =>
+  !!value &&
+  typeof value === 'object' &&
+  typeof value !== 'function' &&
+  !Array.isArray(value)
+
+const isValidFieldInMetadataResponse = (data: unknown): data is Field => {
+  if (!isNormalObject(data)) return false
+  const { label, dataGridKey = '', type = '', options = [] } = data
+  return (
+    typeof label === 'string' &&
+    typeof dataGridKey === 'string' &&
+    typeof type === 'string' &&
+    Array.isArray(options) &&
+    options.every?.(option => typeof option === 'string')
+  )
+}
+
+const isValidMetadataResponse = (data: unknown): data is MetadataResponse => {
+  if (!isNormalObject(data)) return false
+  const { fields } = data
+  if (!isNormalObject(fields)) return false
+  return Object.values(fields).every?.(field =>
+    isValidFieldInMetadataResponse(field)
+  )
+}
+
+interface MetadataResponse {
+  fields: Record<string, Field>
 }
 
 export default DataPage

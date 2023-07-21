@@ -69,11 +69,11 @@ describe('The public data page', () => {
   // Helper functions for retrieving elements from the page
   const getAddFilterButton = () => screen.getByText('Add filter') // TODO: If this doesn't work try getByText
   const getFilterPanel = (container: HTMLElement) =>
-    container.querySelector('aside[role=navigation]')
-  const getTableViewButton = () => screen.getByRole('button', { name: 'Table' })
-  const getMapViewButton = () => screen.getByRole('button', { name: 'Map' })
+    container.querySelector('aside[role=form]')
   const getFilterPanelToggleButton = () =>
     screen.getByRole('button', { name: 'Filters' })
+  const getTableViewButton = () => screen.getByRole('button', { name: 'Table' })
+  const getMapViewButton = () => screen.getByRole('button', { name: 'Map' })
   const getGlobeViewButton = () => screen.getByRole('button', { name: 'Globe' })
   const getDataGrid = () => screen.queryByRole('grid')
   // This function will wait for the data grid to appear. It can be used to check

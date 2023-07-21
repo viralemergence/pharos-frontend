@@ -3412,7 +3412,7 @@ const publishedRecordsMetadata = {
     },
     researcher_name: {
       label: 'Author',
-      dataGridKey: 'Authors',
+      dataGridKey: 'Author',
       options: ['Author A', 'Author B', 'Author C'],
     },
     host_species: {

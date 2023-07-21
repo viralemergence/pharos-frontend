@@ -1,6 +1,14 @@
-import React, { Dispatch, MutableRefObject, SetStateAction } from 'react'
+import React, {
+  Dispatch,
+  MutableRefObject,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import styled from 'styled-components'
 import { PlusIcon, BackIcon, XIcon, Field, Filter } from './constants'
+import Dropdown from '@talus-analytics/library.ui.dropdown'
 
 const FilterPanelToolbarNav = styled.nav`
   display: flex;
@@ -9,10 +17,10 @@ const FilterPanelToolbarNav = styled.nav`
   padding-bottom: 20px;
   padding: 14px 30px;
   position: relative;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
-  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.3);
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 30px 0px;
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
-    padding: 14px 20px;
+    justify-content: flex-start;
+    padding: 10px 20px;
   }
 `
 const FieldSelectorMessage = styled.div`
@@ -25,7 +33,7 @@ const FilterPanelButton = styled.button`
   padding: 10px 15px;
   text-align: left;
   background-color: transparent;
-  color: #fff;
+  color: ${({ theme }) => theme.white};
   border: 0;
   cursor: pointer;
   &:hover {
@@ -45,24 +53,14 @@ const FilterPanelToolbarButton = styled(FilterPanelButton)<{
   &:active {
     outline: 2px solid ${({ theme }) => theme.darkGray};
   }
-  &.add-filter {
-    margin-right: auto;
-  }
-  @media (max-width: 768px) {
-    &.close-panel {
-      &:active {
-        transform: scale(0.92);
-      }
-    }
-  }
 `
 const FilterPanelCloseButton = styled(FilterPanelToolbarButton)`
-  @media (min-width: 768px) {
+  @media (min-width: ${({ theme }) => theme.breakpoints.laptopMinWidth}) {
     position: absolute;
     right: 2px;
     top: 2px;
   }
-  @media (max-width: 768px) {
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
     margin-right: 20px;
   }
   border-radius: 50%;
@@ -74,32 +72,28 @@ const FilterPanelCloseButton = styled(FilterPanelToolbarButton)`
   &:hover {
     background: inherit;
   }
-  &.back-icon {
-    display: none !important;
-  }
-  @media (max-width: 768px) {
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
     width: 45px;
     height: 45px;
-    &.x-icon {
-      display: none;
-    }
     &.back-icon {
       display: flex !important;
     }
   }
 `
+
 const FieldSelectorDiv = styled.div`
   position: absolute;
-  top: 70px;
-  width: calc(100% - 59px);
-  left: 30px;
+  top: 12px;
+  width: 348px;
   display: flex;
   flex-flow: column nowrap;
   align-items: flex-start;
   background-color: ${({ theme }) => theme.medBlack};
   border-radius: 5px;
   padding: 5px 0;
-  z-index: ${({ theme }) => theme.zIndexes.dataPanelFieldSelector};
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobileMaxWidth}) {
+    width: 250px;
+  }
 `
 const FieldSelectorButton = styled(FilterPanelButton)<{ disabled: boolean }>`
   width: 100%;
@@ -120,22 +114,19 @@ const FieldSelectorButton = styled(FilterPanelButton)<{ disabled: boolean }>`
         }
     `}
 `
+interface FieldSelectorProps {
+  fields: Record<string, Field>
+  addFilterValueSetter: (fieldId: string) => void
+  onClick?: (e?: React.MouseEvent<HTMLDivElement>) => void
+}
 
 const FieldSelector = ({
   fields,
   addFilterValueSetter,
-}: {
-  fields: Record<string, Field>
-  addFilterValueSetter: (fieldId: string) => void
-}) => {
+  onClick = () => null,
+}: FieldSelectorProps) => {
   return (
-    <FieldSelectorDiv
-      onClick={e => {
-        // If this click event propagates, the panel's click handler will
-        // fire, closing the field selector.
-        e.stopPropagation()
-      }}
-    >
+    <FieldSelectorDiv onClick={onClick}>
       {Object.entries(fields).map(
         ([fieldId, { label, addedToPanel = false }]) => (
           <FieldSelectorButton
@@ -145,6 +136,7 @@ const FieldSelector = ({
               addFilterValueSetter(fieldId)
             }}
             disabled={addedToPanel}
+            aria-label={`Add filter for ${label}`}
           >
             {label}
           </FieldSelectorButton>
@@ -157,6 +149,21 @@ const FieldSelector = ({
   )
 }
 
+const FilterPanelCloseButtonWithBackIcon = styled(FilterPanelCloseButton)`
+  // TODO: is important needed?
+  display: none !important;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    display: flex !important;
+  }
+`
+
+const FilterPanelCloseButtonWithXIcon = styled(FilterPanelCloseButton)`
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    margin-left: auto;
+    margin-right: 0;
+  }
+`
+
 const FilterPanelToolbar = ({
   fields,
   filters,
@@ -164,6 +171,9 @@ const FilterPanelToolbar = ({
   clearFilters,
   isFieldSelectorOpen,
   setIsFieldSelectorOpen,
+  isFieldSelectorOpen,
+  setIsFieldSelectorOpen,
+  isFilterPanelOpen,
   setIsFilterPanelOpen,
   filterListRef,
 }: {
@@ -173,59 +183,121 @@ const FilterPanelToolbar = ({
   clearFilters: () => void
   isFieldSelectorOpen: boolean
   setIsFieldSelectorOpen: Dispatch<SetStateAction<boolean>>
+  isFilterPanelOpen: boolean
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
   filterListRef: MutableRefObject<HTMLUListElement | null>
 }) => {
+  const closeFieldSelector = () => {
+    setDropdownKey(generateDropdownKey())
+  }
+
+  const generateDropdownKey = () => Math.random().toString(36).substring(7)
+  const [dropdownKey, setDropdownKey] = useState(generateDropdownKey())
+
+  const addFilterButtonRef = useRef<HTMLButtonElement>(null)
+
+  const closeFieldSelectorIfClickedOutside = (e: MouseEvent) => {
+    if (
+      addFilterButtonRef.current &&
+      !addFilterButtonRef.current.contains(e.target as Node)
+    ) {
+      closeFieldSelector()
+    }
+  }
+
+  const closeFieldSelectorOnWindowClick = () => {
+    window.addEventListener('click', closeFieldSelectorIfClickedOutside)
+  }
+  const noLongerCloseFieldSelectorOnWindowClick = () => {
+    window.removeEventListener('click', closeFieldSelectorIfClickedOutside)
+  }
+
+  const closeFilterPanel = () => {
+    setIsFilterPanelOpen(false)
+  }
+
+  const wasFilterPanelOpen = useRef(isFilterPanelOpen)
+  useEffect(() => {
+    if (!wasFilterPanelOpen.current && isFilterPanelOpen) {
+      // If the panel just opened, focus the add filter button
+      addFilterButtonRef.current?.focus()
+      const announcement = screenReaderAnnouncementRef.current
+      if (announcement) {
+        if (!announcement.textContent?.startsWith('Filters panel opened'))
+          announcement.textContent = 'Filters panel opened'
+        // Always add an extra space to force screen readers to read the announcement
+        announcement.textContent += '\xa0'
+      }
+    }
+    wasFilterPanelOpen.current = isFilterPanelOpen
+  }, [isFilterPanelOpen])
+
+  const screenReaderAnnouncementRef = useRef<HTMLDivElement>(null)
+
   return (
     <>
       <FilterPanelToolbarNav>
-        <FilterPanelCloseButton
-          className="close-panel back-icon"
-          onClick={() => setIsFilterPanelOpen(false)}
+        <FilterPanelCloseButtonWithBackIcon
+          onClick={() => closeFilterPanel()}
           aria-label="Close the Filters panel"
         >
           <BackIcon />
-        </FilterPanelCloseButton>
-        <FilterPanelToolbarButton
-          className="add-filter"
-          isFieldSelectorOpen={isFieldSelectorOpen}
-          onClick={e => {
-            setIsFieldSelectorOpen(open => !open)
-            // If this click event propagates, the panel's click handler will
-            // fire, closing the field selector.
-            e.stopPropagation()
-          }}
+        </FilterPanelCloseButtonWithBackIcon>
+        <Dropdown
+          key={dropdownKey} // This is used to reset the component as a means of closing it
+          expanderStyle={{}}
+          onOpen={() => closeFieldSelectorOnWindowClick()}
+          onClose={() => noLongerCloseFieldSelectorOnWindowClick()}
+          renderButton={open => (
+            <FilterPanelToolbarButton
+              style={{ marginRight: 'auto' }}
+              isFieldSelectorOpen={open}
+              ref={addFilterButtonRef}
+            >
+              <PlusIcon style={{ marginRight: '5px' }} /> Add filter
+            </FilterPanelToolbarButton>
+          )}
+          animDuration={0}
         >
-          <PlusIcon style={{ marginRight: '5px' }} /> Add filter
-        </FilterPanelToolbarButton>
+          <FieldSelector
+            addFilterValueSetter={fieldId => {
+              setFilters(filters => [...filters, { fieldId, values: [] }])
+              setIsFieldSelectorOpen(false)
+              const filterList = filterListRef.current
+              setTimeout(() => {
+                if (filterList) filterList.scrollTop = filterList.scrollHeight
+              }, 0)
+            }}
+            fields={fields}
+          />
+        </Dropdown>
         {filters.length > 0 && (
           <FilterPanelToolbarButton onClick={() => clearFilters()}>
             Clear all
           </FilterPanelToolbarButton>
         )}
-        <FilterPanelCloseButton
-          className="close-panel x-icon"
-          onClick={() => setIsFilterPanelOpen(false)}
+        <FilterPanelCloseButtonWithXIcon
+          onClick={() => closeFilterPanel()}
           aria-label="Close the Filters panel"
         >
           <XIcon extraStyle="width: 18px; height: 18px;" />
-        </FilterPanelCloseButton>
+        </FilterPanelCloseButtonWithXIcon>
       </FilterPanelToolbarNav>
-      {isFieldSelectorOpen && (
-        <FieldSelector
-          addFilterValueSetter={fieldId => {
-            setFilters(filters => [...filters, { fieldId, values: [] }])
-            setIsFieldSelectorOpen(false)
-            const filterList = filterListRef.current
-            setTimeout(() => {
-              if (filterList) filterList.scrollTop = filterList.scrollHeight
-            }, 0)
-          }}
-          fields={fields}
-        />
-      )}
+      <ScreenReaderOnly
+        ref={screenReaderAnnouncementRef}
+        aria-live="assertive"
+      />
     </>
   )
 }
+
+const ScreenReaderOnly = styled.div`
+  clip-path: inset(50%);
+  clip: rect(0 0 0 0);
+  height: 0px;
+  overflow: hidden;
+  position: absolute;
+  width: 0px;
+`
 
 export default FilterPanelToolbar

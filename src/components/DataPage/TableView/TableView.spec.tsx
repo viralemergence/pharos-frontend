@@ -39,6 +39,64 @@ describe('The public data table', () => {
     )
   })
 
+  const getDataGridAfterWaiting = async () =>
+    await screen.findByTestId('datagrid')
+
+  it('displays the first page of published records', async () => {
+    render(
+      <Providers>
+        <TableView enableVirtualization={false} />
+      </Providers>
+    )
+    const grid = await getDataGridAfterWaiting()
+    expect(grid).toBeInTheDocument()
+    expect(grid).toHaveAttribute('aria-rowcount', '51')
+  })
+
+  // Skipping this test since fireEvent.scroll does not work well when circleci runs `yarn run test`
+  it.skip('displays the second page of published records when the user scrolls to the bottom', async () => {
+    render(
+      <Providers>
+        <TableView enableVirtualization={false} />
+      </Providers>
+    )
+    const grid = await getDataGridAfterWaiting()
+    expect(grid).toBeInTheDocument()
+    // Scroll to the bottom of the grid
+    fireEvent.scroll(grid, { target: { scrollY: grid.scrollHeight } })
+    await waitFor(async () => {
+      const rows = await screen.findAllByRole('row')
+      expect(rows).toHaveLength(101) // 100 rows plus the header
+      expect(
+        await screen.findByText('row 1 - project name')
+      ).toBeInTheDocument()
+      expect(
+        await screen.findByText('row 1 - host species')
+      ).toBeInTheDocument()
+      expect(
+        await screen.findByText('row 1 - spatial uncertainty')
+      ).toBeInTheDocument()
+      expect(
+        await screen.findByText('row 50 - project name')
+      ).toBeInTheDocument()
+      expect(
+        await screen.findByText('row 50 - host species')
+      ).toBeInTheDocument()
+      expect(
+        await screen.findByText('row 50 - spatial uncertainty')
+      ).toBeInTheDocument()
+      expect(
+        await screen.findByText('row 100 - project name')
+      ).toBeInTheDocument()
+      expect(
+        await screen.findByText('row 100 - host species')
+      ).toBeInTheDocument()
+      expect(
+        await screen.findByText('row 100 - spatial uncertainty')
+      ).toBeInTheDocument()
+    })
+  })
+
   it('displays a message if there are no published records', async () => {
     server.use(routeThatReturnsNoPublishedRecords)
     render(
