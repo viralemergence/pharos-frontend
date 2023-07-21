@@ -78,8 +78,6 @@ const ProjectPage = () => {
     )
   }
 
-  console.log('project', JSON.stringify(project))
-
   return (
     <Container>
       <PublicViewBackground />
@@ -168,14 +166,15 @@ const ProjectPage = () => {
                 <p>{formatDate(project.datePublished)}</p>
                 <h2>Project ID</h2>
                 <p>{project.projectID}</p>
-                {project.relatedMaterials && (
-                  <>
-                    <h2>Related materials</h2>
-                    {project.relatedMaterials.map(material => (
-                      <p key={material}>{material}</p>
-                    ))}
-                  </>
-                )}
+                {project.relatedMaterials &&
+                  project.relatedMaterials.length > 0 && (
+                    <>
+                      <h2>Related materials</h2>
+                      {project.relatedMaterials.map(material => (
+                        <p key={material}>{material}</p>
+                      ))}
+                    </>
+                  )}
                 {project.projectType && (
                   <>
                     <h2>Project type</h2>
