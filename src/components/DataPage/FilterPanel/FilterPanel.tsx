@@ -178,8 +178,6 @@ const FilterPanel = ({
   /** Event handler for when one of the filter input elements receives new input */
   updateFilter: UpdateFilterFunction
 }) => {
-  const [isFieldSelectorOpen, setIsFieldSelectorOpen] = useState(false)
-
   const filterListRef = useRef<HTMLUListElement | null>(null)
 
   const idsOfAddedFields = filters.map(({ fieldId }) => fieldId)
@@ -203,8 +201,6 @@ const FilterPanel = ({
         filters={filters}
         setFilters={setFilters}
         clearFilters={clearFilters}
-        isFieldSelectorOpen={isFieldSelectorOpen}
-        setIsFieldSelectorOpen={setIsFieldSelectorOpen}
         filterListRef={filterListRef}
       />
       <FilterList ref={filterListRef}>

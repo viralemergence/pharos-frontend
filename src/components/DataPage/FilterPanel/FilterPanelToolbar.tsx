@@ -169,10 +169,6 @@ const FilterPanelToolbar = ({
   filters,
   setFilters,
   clearFilters,
-  isFieldSelectorOpen,
-  setIsFieldSelectorOpen,
-  isFieldSelectorOpen,
-  setIsFieldSelectorOpen,
   isFilterPanelOpen,
   setIsFilterPanelOpen,
   filterListRef,
@@ -181,10 +177,8 @@ const FilterPanelToolbar = ({
   filters: Filter[]
   setFilters: Dispatch<SetStateAction<Filter[]>>
   clearFilters: () => void
-  isFieldSelectorOpen: boolean
   setIsFieldSelectorOpen: Dispatch<SetStateAction<boolean>>
   isFilterPanelOpen: boolean
-  setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
   filterListRef: MutableRefObject<HTMLUListElement | null>
 }) => {
   const closeFieldSelector = () => {
@@ -262,7 +256,7 @@ const FilterPanelToolbar = ({
           <FieldSelector
             addFilterValueSetter={fieldId => {
               setFilters(filters => [...filters, { fieldId, values: [] }])
-              setIsFieldSelectorOpen(false)
+              closeFieldSelector()
               const filterList = filterListRef.current
               setTimeout(() => {
                 if (filterList) filterList.scrollTop = filterList.scrollHeight
