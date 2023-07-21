@@ -198,10 +198,15 @@ const DataPage = ({
     const filtersToApply: Filter[] = []
     for (const filter of filters) {
       const { fieldId, values } = filter
+      // Filters with only blank values will not be useed
+      let filterIsUsed = false
       values.forEach((value: string) => {
-        params.append(fieldId, value)
+        if (value) {
+          params.append(fieldId, value)
+          filterIsUsed = true
+        }
       })
-      if (values.length > 0) filtersToApply.push(filter)
+      if (filterIsUsed) filtersToApply.push(filter)
     }
     params.append('page', page.toString())
     params.append('pageSize', PAGE_SIZE.toString())

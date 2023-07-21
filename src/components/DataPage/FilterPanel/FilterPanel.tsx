@@ -40,10 +40,13 @@ const FilterInput = ({
       <FieldName>{fieldLabel}</FieldName>
       <FieldInput
         type={fieldType}
+        min={fieldType === 'date' ? '1900-01-01' : undefined}
+        max={fieldType === 'date' ? '2200-12-31' : undefined}
         defaultValue={values.join(',')}
-        onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
-          updateFilter(filterIndex, [e.target.value])
-        }
+        onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+          const values = e.target.checkValidity() ? [e.target.value] : []
+          updateFilter(filterIndex, values)
+        }}
       />
     </Label>
   )
@@ -96,6 +99,9 @@ const FieldInput = styled.input`
   &::-webkit-calendar-picker-indicator {
     filter: invert(1);
     opacity: 0.5;
+  }
+  &:invalid {
+    border-color: ${({ theme }) => theme.red};
   }
 `
 

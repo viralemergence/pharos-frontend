@@ -255,8 +255,12 @@ const FilterPanelToolbar = ({
         >
           <FieldSelector
             addFilterValueSetter={fieldId => {
-              setFilters(filters => [...filters, { fieldId, values: [] }])
               closeFieldSelector()
+              if (fields[fieldId].type !== 'date') {
+                // For now, do not handle filters other than dates
+                return
+              }
+              setFilters(filters => [...filters, { fieldId, values: [] }])
               const filterList = filterListRef.current
               setTimeout(() => {
                 if (filterList) filterList.scrollTop = filterList.scrollHeight
