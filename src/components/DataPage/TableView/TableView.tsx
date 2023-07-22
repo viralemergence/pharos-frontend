@@ -1,10 +1,14 @@
-import React, { useEffect } from 'react'
+import React, {
+  useEffect,
+  Dispatch,
+  MutableRefObject,
+  SetStateAction,
+} from 'react'
 import styled from 'styled-components'
 
 import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
 import type { Filter, Field } from '../FilterPanel/constants'
-import { Row } from '../../../pages/constants'
 
 const TableViewContainer = styled.div<{
   isOpen: boolean
@@ -177,4 +181,26 @@ const TableView = ({
   )
 }
 
+export interface LoadPublishedRecordsOptions {
+  replaceResults?: boolean
+  filters: Filter[]
+  currentlyLoadedRecords: Row[]
+  setLoading: Dispatch<SetStateAction<boolean>>
+  setPublishedRecords: Dispatch<SetStateAction<Row[]>>
+  setAppliedFilters: Dispatch<SetStateAction<Filter[]>>
+  setReachedLastPage: Dispatch<SetStateAction<boolean>>
+  debouncing: MutableRefObject<Debouncing>
+}
+
+export interface Debouncing {
+  on: boolean
+  timeout: ReturnType<typeof setTimeout> | null
+}
+
+export interface Row {
+  [key: string]: string | number
+}
+
+// TODO: check that these interfaces need to exported
+//
 export default TableView

@@ -258,7 +258,7 @@ const FilterPanelToolbar = ({
               closeFieldSelector()
               if (fields[fieldId].type !== 'date') {
                 // For now, do not handle filters other than dates
-                return
+                //return
               }
               setFilters(filters => [...filters, { fieldId, values: [] }])
               const filterList = filterListRef.current
@@ -270,7 +270,10 @@ const FilterPanelToolbar = ({
           />
         </Dropdown>
         {filters.length > 0 && (
-          <FilterPanelToolbarButton style={{marginRight: '5px'}} onClick={() => clearFilters()}>
+          <FilterPanelToolbarButton
+            style={{ marginRight: '5px' }}
+            onClick={() => clearFilters()}
+          >
             Clear all
           </FilterPanelToolbarButton>
         )}

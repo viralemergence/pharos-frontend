@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import debounce from 'lodash/debounce'
 
@@ -9,7 +9,7 @@ import NavBar from 'components/layout/NavBar/NavBar'
 import MapView from 'components/DataPage/MapView/MapView'
 import TableView from 'components/DataPage/TableView/TableView'
 import DataToolbar, { View } from 'components/DataPage/Toolbar/Toolbar'
-import { Row, LoadPublishedRecordsOptions } from './constants'
+import { Row, LoadOptions } from './constants'
 
 import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
 import {
@@ -106,6 +106,85 @@ interface PublishedRecordsResponse {
   isLastPage: boolean
 }
 
+const load = async ({
+  replaceResults = false,
+  currentlyLoadedRecords,
+  filters,
+  setLoading,
+  setPublishedRecords,
+  setAppliedFilters,
+  setReachedLastPage,
+  debouncing,
+}: LoadOptions) => {
+  // Switch debouncing on for 3 seconds
+  const debounceTimeout = 10000
+  debouncing.current.on = true
+  if (debouncing.current.timeout) clearTimeout(debouncing.current.timeout)
+  debouncing.current.timeout = setTimeout(() => {
+    debouncing.current.on = false
+  }, debounceTimeout)
+
+  const page = replaceResults
+    ? 1
+    : // For example, if there are 100 records, load page 3 (i.e., the records
+      // numbered from 101 to 150)
+      Math.floor(currentlyLoadedRecords.length / PAGE_SIZE) + 1
+  // TODO: Might need to make publishedRecords a parameter here
+
+  setLoading(true)
+  const params = new URLSearchParams()
+  const filtersToApply: Filter[] = []
+  for (const filter of filters) {
+    const { fieldId, values } = filter
+    // Filters with only blank values will not be used
+    let filterIsUsed = false
+    values.forEach((value: string) => {
+      if (value) {
+        params.append(fieldId, value)
+        filterIsUsed = true
+      }
+    })
+    if (filterIsUsed) filtersToApply.push(filter)
+  }
+  params.append('page', page.toString())
+  params.append('pageSize', PAGE_SIZE.toString())
+  const response = await fetch(
+    `${process.env.GATSBY_API_URL}/published-records?` + params
+  )
+  if (!response.ok) {
+    console.log('GET /published-records: error')
+    setLoading(false)
+    return
+  }
+  const data = await response.json()
+  if (!isValidRecordsResponse(data)) {
+    console.log('GET /published-records: malformed response')
+    setLoading(false)
+    return
+  }
+  setPublishedRecords(prev => {
+    let { publishedRecords } = data
+    if (!replaceResults) {
+      // Ensure that no two records have the same id
+      const existingPharosIds = new Set(prev.map(row => row.pharosID))
+      const newRecords = publishedRecords.filter(
+        record => !existingPharosIds.has(record.pharosID)
+      )
+      publishedRecords = [...prev, ...newRecords]
+    }
+    // Sort records by row number, just in case pages come back from the
+    // server in the wrong order
+    publishedRecords.sort((a, b) => Number(a.rowNumber) - Number(b.rowNumber))
+    return publishedRecords
+  })
+
+  setReachedLastPage(data.isLastPage)
+  setTimeout(() => {
+    setAppliedFilters(filtersToApply)
+    setLoading(false)
+  }, 0)
+}
+
 const DataPage = ({
   enableTableVirtualization = true,
 }: {
@@ -114,7 +193,7 @@ const DataPage = ({
   enableTableVirtualization?: boolean
 }): JSX.Element => {
   const [loading, setLoading] = useState(true)
-  const [publishedRecords, setPublishedRecords] = useState<Row[]>([])
+  const [records, setRecords] = useState<Row[]>([])
   const [reachedLastPage, setReachedLastPage] = useState(false)
   const [view, setView] = useState<View>(View.map)
   const [mapProjection, setMapProjection] = useState<'globe' | 'naturalEarth'>(
@@ -170,87 +249,7 @@ const DataPage = ({
     getMetadata()
   }, [])
 
-  const loadPublishedRecords = async ({
-    replaceResults = false,
-    filters,
-    setLoading,
-    setPublishedRecords,
-    setAppliedFilters,
-    setReachedLastPage,
-    debouncing,
-  }: LoadPublishedRecordsOptions) => {
-    // Switch debouncing on for 3 seconds
-    const debounceTimeout = 3000
-    debouncing.current.on = true
-    if (debouncing.current.timeout) clearTimeout(debouncing.current.timeout)
-    debouncing.current.timeout = setTimeout(() => {
-      debouncing.current.on = false
-    }, debounceTimeout)
-
-    const page = replaceResults
-      ? 1
-      : // For example, if there are 100 records, load page 3 (i.e., the records
-        // numbered from 101 to 150)
-        Math.floor(publishedRecords.length / PAGE_SIZE) + 1
-
-    setLoading(true)
-    const params = new URLSearchParams()
-    const filtersToApply: Filter[] = []
-    for (const filter of filters) {
-      const { fieldId, values } = filter
-      // Filters with only blank values will not be useed
-      let filterIsUsed = false
-      values.forEach((value: string) => {
-        if (value) {
-          params.append(fieldId, value)
-          filterIsUsed = true
-        }
-      })
-      if (filterIsUsed) filtersToApply.push(filter)
-    }
-    params.append('page', page.toString())
-    params.append('pageSize', PAGE_SIZE.toString())
-    const response = await fetch(
-      `${process.env.GATSBY_API_URL}/published-records?` + params
-    )
-    if (!response.ok) {
-      console.log('GET /published-records: error')
-      setLoading(false)
-      return
-    }
-    const data = await response.json()
-    if (!isValidRecordsResponse(data)) {
-      console.log('GET /published-records: malformed response')
-      setLoading(false)
-      return
-    }
-    setPublishedRecords(prev => {
-      let { publishedRecords } = data
-      if (!replaceResults) {
-        // Ensure that no two records have the same id
-        const existingPharosIds = new Set(prev.map(row => row.pharosID))
-        const newRecords = publishedRecords.filter(
-          record => !existingPharosIds.has(record.pharosID)
-        )
-        publishedRecords = [...prev, ...newRecords]
-      }
-      // Sort records by row number, just in case pages come back from the
-      // server in the wrong order
-      publishedRecords.sort((a, b) => Number(a.rowNumber) - Number(b.rowNumber))
-      return publishedRecords
-    })
-
-    setReachedLastPage(data.isLastPage)
-    setTimeout(() => {
-      setAppliedFilters(filtersToApply)
-      setLoading(false)
-    }, 0)
-  }
-
-  const loadPublishedRecordsDebounced = debounce(
-    loadPublishedRecords,
-    loadDebounceDelay
-  )
+  const loadDebounced = debounce(load, loadDebounceDelay)
 
   useEffect(() => {
     const hash = window.location.hash.replace('#', '')
@@ -284,17 +283,18 @@ const DataPage = ({
   ) => {
     const options = {
       replaceResults,
+      currentlyLoadedRecords: records,
       filters,
       setLoading,
-      setPublishedRecords,
+      setPublishedRecords: setRecords,
       setAppliedFilters,
       setReachedLastPage,
       debouncing,
     }
     if (shouldDebounce && debouncing.current.on) {
-      loadPublishedRecordsDebounced(options)
+      loadDebounced(options)
     } else {
-      loadPublishedRecords(options)
+      load(options)
     }
   }
 
@@ -367,7 +367,7 @@ const DataPage = ({
               }}
               reachedLastPage={reachedLastPage}
               loading={loading}
-              publishedRecords={publishedRecords}
+              publishedRecords={records}
               enableVirtualization={enableTableVirtualization}
             />
           </ViewMain>
