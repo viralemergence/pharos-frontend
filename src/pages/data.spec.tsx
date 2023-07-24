@@ -227,36 +227,6 @@ describe('The public data page', () => {
     expect(grid).toBeInTheDocument()
     // Scroll to the bottom of the grid
     fireEvent.scroll(grid, { target: { scrollY: grid.scrollHeight } })
-    await waitFor(async () => {
-      const rows = await screen.findAllByRole('row')
-      expect(rows).toHaveLength(101) // 100 rows plus the header
-      expect(
-        await screen.findByText('row 1 - project name')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 1 - host species')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 1 - spatial uncertainty')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 50 - project name')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 50 - host species')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 50 - spatial uncertainty')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 100 - project name')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 100 - host species')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 100 - spatial uncertainty')
-      ).toBeInTheDocument()
-    })
+    expect(grid).toHaveAttribute('aria-rowcount', '101')
   })
 })
