@@ -22,7 +22,7 @@ import {
 const PAGE_SIZE = 50
 
 const ViewContainer = styled.main<{
-  isMapBlurred: boolean
+  shouldBlurMap: boolean
   isFilterPanelOpen: boolean
 }>`
   flex: 1;
@@ -40,8 +40,8 @@ const ViewContainer = styled.main<{
   }
   background-color: ${({ theme }) => theme.darkPurple};
 
-  ${({ isMapBlurred }) =>
-    isMapBlurred &&
+  ${({ shouldBlurMap }) =>
+    shouldBlurMap &&
     `.mapboxgl-control-container { display: none ! important; }`}
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
     ${({ isFilterPanelOpen }) =>
@@ -212,16 +212,17 @@ const DataPage = ({
    * color-coding the filtered columns. */
   const [appliedFilters, setAppliedFilters] = useState<Filter[]>([])
 
-  useEffect(() => {
+  const updateView = (view: View) => {
+    setView(view)
     if (view === View.globe && mapProjection !== 'globe')
       setMapProjection('globe')
     if (view === View.map && mapProjection !== 'naturalEarth')
       setMapProjection('naturalEarth')
-  }, [view])
+  }
 
   const changeView = (view: View) => {
     window.location.hash = view
-    setView(view)
+    updateView(view)
   }
 
   useEffect(() => {
@@ -232,7 +233,7 @@ const DataPage = ({
     }
 
     if (hashIsView(hash)) {
-      setView(hash)
+      updateView(hash)
     }
 
     const getMetadata = async () => {
@@ -249,6 +250,7 @@ const DataPage = ({
     getMetadata()
   }, [])
 
+<<<<<<< HEAD
   const loadDebounced = debounce(load, loadDebounceDelay)
 
   useEffect(() => {
@@ -326,7 +328,7 @@ const DataPage = ({
     }
   }
 
-  const isMapBlurred = view === View.table
+  const shouldBlurMap = view === View.table
 
   return (
     <Providers>
@@ -334,11 +336,11 @@ const DataPage = ({
       <PageContainer>
         <NavBar />
         <ViewContainer
-          isMapBlurred={isMapBlurred}
+          shouldBlurMap={shouldBlurMap}
           isFilterPanelOpen={isFilterPanelOpen}
         >
           <MapView projection={mapProjection} />
-          {isMapBlurred && <MapOverlay />}
+          {shouldBlurMap && <MapOverlay />}
           <DataToolbar
             view={view}
             changeView={changeView}
