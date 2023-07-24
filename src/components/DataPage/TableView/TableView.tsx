@@ -91,7 +91,6 @@ interface TableViewProps {
   filters: Filter[]
   appliedFilters?: Filter[]
   setAppliedFilters: Dispatch<SetStateAction<Filter[]>>
-  fields?: Record<string, Field>
   isOpen?: boolean
   isFilterPanelOpen?: boolean
   /** Virtualization should be disabled in tests via this prop, so that all the
@@ -108,6 +107,7 @@ const rowKeyGetter = (row: Row) => row.pharosID
 const TableView = ({
   filters = [],
   appliedFilters = [],
+  setAppliedFilters,
   fields = {},
   isOpen = true,
   isFilterPanelOpen = false,
@@ -118,7 +118,7 @@ const TableView = ({
   const [reachedLastPage, setReachedLastPage] = useState(false)
 
   /** Load published records. This function prepares the query string and calls
-   * `fetchRecords` to retrieve records from the server. */
+   * fetchRecords() to retrieve records from the API. */
   const load = useCallback(
     async (options: LoadOptions = {}) => {
       const { replaceRecords = false } = options
@@ -139,13 +139,6 @@ const TableView = ({
 
       setLoading(true)
 
-      const pageToLoad = replaceRecords
-        ? 1
-        : // If we're not replacing the current set of records, load the next
-          // page. For example, if there are 100 records, load page 3 (i.e., the
-          // records numbered from 101 to 150)
-          Math.floor(records.length / PAGE_SIZE) + 1
-
       const params = new URLSearchParams()
       const filtersToApply: Filter[] = []
 
@@ -161,12 +154,21 @@ const TableView = ({
         // Filters with only blank values should not be applied
         if (shouldApplyFilter) filtersToApply.push(filter)
       }
+
+      let pageToLoad
+      if (replaceRecords) {
+        pageToLoad = 1
+      } else {
+        // If we're not replacing the current set of records, load the next
+        // page. For example, if there are 100 records, load page 3 (i.e., the
+        // records numbered from 101 to 150)
+        pageToLoad = Math.floor(records.length / PAGE_SIZE) + 1
+      }
       params.append('page', pageToLoad.toString())
       params.append('pageSize', PAGE_SIZE.toString())
+
       const success = await fetchRecords(params, replaceRecords)
-      if (success) {
-        setAppliedFilters(filtersToApply)
-      }
+      if (success) setAppliedFilters(filtersToApply)
       setLoading(false)
     },
     [filters, records]
@@ -178,7 +180,7 @@ const TableView = ({
     load()
   }, [])
 
-  const stringifiedValuesOfFilters = JSON.stringify(
+  const stringifiedFiltersWithValues = JSON.stringify(
     filters.filter(filter => filter.values.length > 0)
   )
 
@@ -188,7 +190,7 @@ const TableView = ({
       shouldDebounce: true,
       replaceRecords: true,
     })
-  }, [stringifiedValuesOfFilters])
+  }, [stringifiedFiltersWithValues])
 
   const fetchRecords = useCallback(
     async (
@@ -256,8 +258,7 @@ const TableView = ({
   ]
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
-    if (loading || !divIsAtBottom(event) || reachedLastPage) return
-    load()
+    if (!loading && !reachedLastPage && divIsAtBottom(event)) load()
   }
 
   return (
