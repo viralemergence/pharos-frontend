@@ -153,7 +153,7 @@ describe('The public data page', () => {
     )
   })
 
-  it('lets the user filter by host species', async () => {
+  it('lets the user filter by collection start date', async () => {
     const { container } = render(<DataPage />)
     const filterPanelToggleButton = getFilterPanelToggleButton()
     expect(filterPanelToggleButton).toBeInTheDocument()
@@ -162,12 +162,11 @@ describe('The public data page', () => {
     expect(filterPanel).toBeInTheDocument()
     const addFilterButton = getAddFilterButton()
     fireEvent.click(addFilterButton)
-    // Add a host species filter to the panel
-    const addHostSpeciesFilterButton = await screen.findByText('Host species')
-    fireEvent.click(addHostSpeciesFilterButton)
-    const hostSpeciesFilterInput = screen.getByLabelText('Host species')
-    expect(hostSpeciesFilterInput).toBeInTheDocument()
-    fireEvent.input(hostSpeciesFilterInput, 'row 10 - host species')
+    const startDate = await screen.findByText('Collected on or after date')
+    fireEvent.click(startDate)
+    const filterInput = screen.getByLabelText('Collected on or after date')
+    expect(filterInput).toBeInTheDocument()
+    fireEvent.input(filterInput, '1/1/2000')
     const loadingMessage = await screen.findByText('Loading')
     expect(loadingMessage).toBeInTheDocument()
     // TODO: Finish writing this test
