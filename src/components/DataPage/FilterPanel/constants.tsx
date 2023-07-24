@@ -1,21 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 
-export type Field = {
-  label: string
-  dataGridKey?: string
-  type?: 'text' | 'date'
-  options?: string[]
-  addedToPanel?: boolean
-}
-export type FilterValues = string[]
-export type Filter = { fieldId: string; values: FilterValues }
-
-export type UpdateFilterFunction = (
-  filterIndex: number,
-  newFilterValues: FilterValues
-) => void
-
 const XIconSvg = styled.svg<{ extraStyle?: string }>`
   ${({ extraStyle }) => extraStyle}
 `

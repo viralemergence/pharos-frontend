@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import { isNormalObject } from 'utilities/data'
@@ -7,15 +7,10 @@ import CMS from '@talus-analytics/library.airtable-cms'
 import Providers from 'components/layout/Providers'
 import NavBar from 'components/layout/NavBar/NavBar'
 import MapView, { MapProjection } from 'components/DataPage/MapView/MapView'
-import TableView, { Row } from 'components/DataPage/TableView/TableView'
+import TableView from 'components/DataPage/TableView/TableView'
 import DataToolbar, { View, isView } from 'components/DataPage/Toolbar/Toolbar'
 
 import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
-import {
-  Field,
-  Filter,
-  UpdateFilterFunction,
-} from 'components/DataPage/FilterPanel/constants'
 
 const METADATA_URL = `${process.env.GATSBY_API_URL}/metadata-for-published-records`
 

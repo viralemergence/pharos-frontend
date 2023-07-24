@@ -3,7 +3,6 @@ import React, {
   SetStateAction,
   useCallback,
   useEffect,
-  useRef,
   useState,
 } from 'react'
 import debounce from 'lodash/debounce'
@@ -11,7 +10,7 @@ import styled from 'styled-components'
 import DataGrid, { Column } from 'react-data-grid'
 
 import LoadingSpinner from './LoadingSpinner'
-import type { Filter, Field } from '../FilterPanel/constants'
+import type { Filter, Field } from '../constants'
 import { isNormalObject } from 'utilities/data'
 
 const loadDebounceDelay = 300
@@ -88,7 +87,7 @@ const NoRecordsFound = styled.div.attrs(({ role }) => ({ role }))`
 
 interface TableViewProps {
   fields?: Record<string, Field>
-  filters: Filter[]
+  filters?: Filter[]
   appliedFilters?: Filter[]
   setAppliedFilters: Dispatch<SetStateAction<Filter[]>>
   isOpen?: boolean
