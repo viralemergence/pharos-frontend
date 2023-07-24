@@ -89,16 +89,17 @@ const DataPage = (): JSX.Element => {
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
   const [fields, setFields] = useState<Record<string, Field>>({})
 
-  useEffect(() => {
+  const updateView = (view: View) => {
+    setView(view)
     if (view === View.globe && mapProjection !== 'globe')
       setMapProjection('globe')
     if (view === View.map && mapProjection !== 'naturalEarth')
       setMapProjection('naturalEarth')
-  }, [view])
+  }
 
   const changeView = (view: View) => {
     window.location.hash = view
-    setView(view)
+    updateView(view)
   }
   useEffect(() => {
     const hash = window.location.hash.replace('#', '')
@@ -108,7 +109,7 @@ const DataPage = (): JSX.Element => {
     }
 
     if (hashIsView(hash)) {
-      setView(hash)
+      updateView(hash)
     }
 
     const getMetadata = async () => {
