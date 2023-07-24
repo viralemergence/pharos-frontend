@@ -193,11 +193,19 @@ const FilterPanelToolbar = ({
   // modify it so that the expander closes when the user clicks outside the
   // button/expander, and then I can focus the Add filter button when that
   // button mounts.
+  //
+  // TODO: Look for more examples of this "reaching for prior state" pattern
+  // and move away from that.
 
   useEffect(() => {
     if (isFilterPanelOpen) {
       // If the panel just opened, focus the add filter button
       addFilterButtonRef.current?.focus()
+      // TODO: See note in src/pages/data.tsx about where to move this logic
+      // Pattern to avoid: putting state in refs. Something like
+      // setScreenReaderAnnouncement(prev => ...) so that the new state can
+      // depend on the old. This is a method of stably depending on prior
+      // state. Avoid the 'if this, then that' imperative style.
       const announcement = screenReaderAnnouncementRef.current
       if (announcement) {
         if (!announcement.textContent?.startsWith('Filters panel opened'))
@@ -209,6 +217,8 @@ const FilterPanelToolbar = ({
   }, [isFilterPanelOpen])
 
   const screenReaderAnnouncementRef = useRef<HTMLDivElement>(null)
+
+  // TODO: Use the useEffect/cleanup pattern to set/unset the click listener on the window
 
   return (
     <>
@@ -279,4 +289,5 @@ const ScreenReaderOnly = styled.div`
   width: 0px;
 `
 
+export default FilterPanelToolbar
 export default FilterPanelToolbar

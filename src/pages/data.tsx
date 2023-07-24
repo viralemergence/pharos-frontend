@@ -89,6 +89,9 @@ const DataPage = (): JSX.Element => {
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
   const [fields, setFields] = useState<Record<string, Field>>({})
 
+  // TODO: Do the screen announcement that the panel is open when
+  // isFilterPanelOpen changes, using a useEffect
+
   const updateView = (view: View) => {
     setView(view)
     if (view === View.globe && mapProjection !== 'globe')
@@ -193,4 +196,6 @@ interface MetadataResponse {
   fields: Record<string, Field>
 }
 
+export default DataPage
+export default DataPage
 export default DataPage
