@@ -212,18 +212,14 @@ const DataPage = ({
    * color-coding the filtered columns. */
   const [appliedFilters, setAppliedFilters] = useState<Filter[]>([])
 
-  const updateView = (view: View) => {
+  const changeView = useCallback((view: View, setHash = true) => {
+    if (setHash) window.location.hash = view
     setView(view)
     if (view === View.globe && mapProjection !== 'globe')
       setMapProjection('globe')
     if (view === View.map && mapProjection !== 'naturalEarth')
       setMapProjection('naturalEarth')
-  }
-
-  const changeView = (view: View) => {
-    window.location.hash = view
-    updateView(view)
-  }
+  }, [])
 
   useEffect(() => {
     const hash = window.location.hash.replace('#', '')
@@ -233,7 +229,7 @@ const DataPage = ({
     }
 
     if (hashIsView(hash)) {
-      updateView(hash)
+      changeView(hash, false)
     }
 
     const getMetadata = async () => {
@@ -248,41 +244,19 @@ const DataPage = ({
       setFields(data.fields)
     }
     getMetadata()
-  }, [])
+  }, [changeView])
 
-<<<<<<< HEAD
   const loadDebounced = debounce(load, loadDebounceDelay)
 
-  useEffect(() => {
-    const hash = window.location.hash.replace('#', '')
-
-    function hashIsView(hash: string): hash is View {
-      return Object.values(View).includes(hash)
-    }
-
-    if (hashIsView(hash)) {
-      setView(hash)
-    }
-
-    const getMetadata = async () => {
-      const response = await fetch(
-        `${process.env.GATSBY_API_URL}/metadata-for-published-records`
-      )
-      const data = await response.json()
-      if (!isValidMetadataResponse(data)) {
-        console.log('GET /metadata-for-published-records: malformed response')
-        return
-      }
-      setFields(data.fields)
-    }
-    getMetadata()
-  }, [])
-
-  const loadFilteredRecords = (
-    filters: Filter[],
+  const loadWithFilters = ({
+    filters,
     shouldDebounce = true,
-    replaceResults = false
-  ) => {
+    replaceResults = false,
+  }: {
+    filters: Filter[]
+    shouldDebounce: boolean
+    replaceResults: boolean
+  }) => {
     const options = {
       replaceResults,
       currentlyLoadedRecords: records,
@@ -307,24 +281,21 @@ const DataPage = ({
     const newFilters = [...filters]
     newFilters[indexOfFilterToUpdate].values = newValues
     setFilters(newFilters)
-    loadFilteredRecords(
-      newFilters,
-      true,
-      // Replace the current results
-      true
-    )
+    loadWithFilters({
+      filters: newFilters,
+      shouldDebounce: true,
+      replaceResults: true,
+    })
   }
 
   const clearFilters = () => {
     setFilters([])
     if (filters.some(({ values }) => values.length > 0)) {
-      loadFilteredRecords(
-        [],
-        // Don't debounce when clearing filters
-        false,
-        // Replace current results
-        true
-      )
+      loadWithFilters({
+        filters: [],
+        shouldDebounce: false,
+        replaceResults: true,
+      })
     }
   }
 
@@ -364,7 +335,11 @@ const DataPage = ({
               fields={fields}
               appliedFilters={appliedFilters}
               loadNextPage={() => {
-                loadFilteredRecords(filters, false, false)
+                loadWithFilters({
+                  filters,
+                  shouldDebounce: false,
+                  replaceResults: false,
+                })
                 debouncing.current.on = false
               }}
               reachedLastPage={reachedLastPage}
