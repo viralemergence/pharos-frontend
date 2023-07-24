@@ -189,9 +189,13 @@ const FilterPanelToolbar = ({
     }
   }
 
-  const wasFilterPanelOpen = useRef(isFilterPanelOpen)
+  // TODO: Copy the Dropdown component into a separate file next to this one,
+  // modify it so that the expander closes when the user clicks outside the
+  // button/expander, and then I can focus the Add filter button when that
+  // button mounts.
+
   useEffect(() => {
-    if (!wasFilterPanelOpen.current && isFilterPanelOpen) {
+    if (isFilterPanelOpen) {
       // If the panel just opened, focus the add filter button
       addFilterButtonRef.current?.focus()
       const announcement = screenReaderAnnouncementRef.current
@@ -202,7 +206,6 @@ const FilterPanelToolbar = ({
         announcement.textContent += '\xa0'
       }
     }
-    wasFilterPanelOpen.current = isFilterPanelOpen
   }, [isFilterPanelOpen])
 
   const screenReaderAnnouncementRef = useRef<HTMLDivElement>(null)
