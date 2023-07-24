@@ -12,15 +12,22 @@ import DataToolbar, { View, isView } from 'components/DataPage/Toolbar/Toolbar'
 
 import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
 
-export type Field = {
-  label: string
-  dataGridKey?: string
-  type?: 'text' | 'date'
-  options?: string[]
-  addedToPanel?: boolean
-}
-export type FilterValues = string[]
-export type Filter = { fieldId: string; values: FilterValues }
+// TODO: Combine Field, Filters and appliedFilters using something like this:
+// export type Field = {
+//   label: string
+//   dataGridKey?: string
+//   type?: 'text' | 'date'
+//   options?: string[]
+//   addedToPanel?: boolean
+//   filterValues: FilterValues[]
+//   applied: boolean
+// }
+// export type FilterValues = string[]
+
+// filters = [
+//   // This is a Filter
+//   { fieldId: 'host_species', values: [] },
+// ]
 
 export type UpdateFilterFunction = (
   filterIndex: number,
