@@ -1,5 +1,5 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { stateInitialValue } from 'reducers/stateReducer/initialValues'
 import { publishedRecordsMetadata } from '../../test/serverHandlers'
@@ -153,7 +153,7 @@ describe('The public data page', () => {
     )
   })
 
-  it.skip('lets the user filter by host species', async () => {
+  it('lets the user filter by host species', async () => {
     const { container } = render(<DataPage />)
     const filterPanelToggleButton = getFilterPanelToggleButton()
     expect(filterPanelToggleButton).toBeInTheDocument()
@@ -220,14 +220,14 @@ describe('The public data page', () => {
     expect(grid).toHaveAttribute('aria-rowcount', '51')
   })
 
-  // Skipping this test since fireEvent.scroll does not work well when circleci runs `yarn run test`
-  // TODO: temporarily unskipping
   it('displays the second page of published records when the user scrolls to the bottom', async () => {
     render(<DataPage enableTableVirtualization={false} />)
     const grid = await getDataGridAfterWaiting()
     expect(grid).toBeInTheDocument()
     // Scroll to the bottom of the grid
     fireEvent.scroll(grid, { target: { scrollY: grid.scrollHeight } })
-    expect(grid).toHaveAttribute('aria-rowcount', '101')
+    waitFor(() => {
+      expect(grid).toHaveAttribute('aria-rowcount', '101')
+    })
   })
 })
