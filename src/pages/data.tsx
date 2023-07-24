@@ -159,7 +159,11 @@ const DataPage = ({
    * `fetchRecords` to retrieve records from the server. */
   const load = useCallback(
     async (options: LoadOptions = {}) => {
-      const { replaceRecords = false, shouldDebounce = false } = options
+      const { replaceRecords = false } = options
+      let { shouldDebounce = false } = options
+
+      // When clearing filters, don't debounce
+      if (!filters.length) shouldDebounce = false
 
       if (shouldDebounce) {
         // Use the debounced version of the load() function
