@@ -221,7 +221,8 @@ describe('The public data page', () => {
   })
 
   // Skipping this test since fireEvent.scroll does not work well when circleci runs `yarn run test`
-  it.skip('displays the second page of published records when the user scrolls to the bottom', async () => {
+  // TODO: temporarily unskipping
+  it('displays the second page of published records when the user scrolls to the bottom', async () => {
     render(<DataPage enableTableVirtualization={false} />)
     const grid = await getDataGridAfterWaiting()
     expect(grid).toBeInTheDocument()
