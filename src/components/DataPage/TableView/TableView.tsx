@@ -181,14 +181,10 @@ const TableView = ({
   )
 }
 
-export interface LoadPublishedRecordsOptions {
+export interface LoadOptions {
   replaceResults?: boolean
   filters: Filter[]
   currentlyLoadedRecords: Row[]
-  setLoading: Dispatch<SetStateAction<boolean>>
-  setPublishedRecords: Dispatch<SetStateAction<Row[]>>
-  setAppliedFilters: Dispatch<SetStateAction<Filter[]>>
-  setReachedLastPage: Dispatch<SetStateAction<boolean>>
   debouncing: MutableRefObject<Debouncing>
 }
 
