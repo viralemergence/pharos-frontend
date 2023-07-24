@@ -79,7 +79,7 @@ const NoRecordsFound = styled.div.attrs(({ role }) => ({ role }))`
 
 interface TableViewProps {
   appliedFilters?: Filter[]
-  loadNextPage?: (replaceResults?: boolean) => void
+  loadNextPage?: (options?: LoadOptions) => void
   loading?: boolean
   publishedRecords?: Row[]
   fields?: Record<string, Field>
@@ -182,10 +182,8 @@ const TableView = ({
 }
 
 export interface LoadOptions {
-  filters: Filter[]
   replaceResults?: boolean
-  currentlyLoadedRecords?: Row[]
-  shouldDebounce: boolean
+  shouldDebounce?: boolean
 }
 
 export interface Row {

@@ -168,7 +168,6 @@ const FilterPanelToolbar = ({
   fields,
   filters,
   setFilters,
-  clearFilters,
   isFilterPanelOpen,
   setIsFilterPanelOpen,
   filterListRef,
@@ -176,7 +175,6 @@ const FilterPanelToolbar = ({
   fields: Record<string, Field>
   filters: Filter[]
   setFilters: Dispatch<SetStateAction<Filter[]>>
-  clearFilters: () => void
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
   isFilterPanelOpen: boolean
   filterListRef: MutableRefObject<HTMLUListElement | null>
@@ -272,7 +270,7 @@ const FilterPanelToolbar = ({
         {filters.length > 0 && (
           <FilterPanelToolbarButton
             style={{ marginRight: '5px' }}
-            onClick={() => clearFilters()}
+            onClick={() => setFilters([])}
           >
             Clear all
           </FilterPanelToolbarButton>

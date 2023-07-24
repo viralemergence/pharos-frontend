@@ -195,7 +195,6 @@ const FilterPanel = ({
   fields,
   filters,
   setFilters,
-  clearFilters,
   updateFilter,
 }: {
   isFilterPanelOpen: boolean
@@ -203,7 +202,6 @@ const FilterPanel = ({
   fields: Record<string, Field>
   filters: Filter[]
   setFilters: Dispatch<SetStateAction<Filter[]>>
-  clearFilters: () => void
   /** Event handler for when one of the filter input elements receives new input */
   updateFilter: UpdateFilterFunction
 }) => {
@@ -229,7 +227,6 @@ const FilterPanel = ({
         setIsFilterPanelOpen={setIsFilterPanelOpen}
         filters={filters}
         setFilters={setFilters}
-        clearFilters={clearFilters}
         filterListRef={filterListRef}
       />
       <FilterList ref={filterListRef}>

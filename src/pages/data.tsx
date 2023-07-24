@@ -92,18 +92,15 @@ const MapOverlay = styled.div`
   width: 100%;
 `
 
-const isValidRecordsResponse = (
-  data: unknown
-): data is PublishedRecordsResponse => {
+const isValidRecordsResponse = (data: unknown): data is RecordsResponse => {
   if (!isNormalObject(data)) return false
-  const { publishedRecords, isLastPage } =
-    data as Partial<PublishedRecordsResponse>
+  const { publishedRecords, isLastPage } = data as Partial<RecordsResponse>
   if (!Array.isArray(publishedRecords)) return false
   if (typeof isLastPage !== 'boolean') return false
   return publishedRecords.every(row => typeof row === 'object')
 }
 
-interface PublishedRecordsResponse {
+interface RecordsResponse {
   publishedRecords: Row[]
   isLastPage: boolean
 }
@@ -124,12 +121,10 @@ const DataPage = ({
   )
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
   const [fields, setFields] = useState<Record<string, Field>>({})
-  const loadDebouncingTimeout = useRef<ReturnType<typeof setTimeout> | null>(
-    null
-  )
 
   /** Filters that will be applied to the published records */
   const [filters, setFilters] = useState<Filter[]>([])
+  const lastFilters = useRef<Filter[]>([])
 
   /** Filters that have been successfully applied to the published
    * records. That is, these filters have been sent to the server, and it
@@ -173,16 +168,15 @@ const DataPage = ({
 
   /** Load published records */
   const load = useCallback(
-    async (options: LoadOptions) => {
-      const {
-        replaceResults = false,
-        filters,
-        shouldDebounce = false,
-      } = options
+    async (options: LoadOptions = {}) => {
+      const { replaceResults = false, shouldDebounce = false } = options
 
       if (shouldDebounce) {
         loadDebounced({ ...options, shouldDebounce: false })
+        return
       }
+
+      setLoading(true)
 
       const pageToLoad = replaceResults
         ? 1
@@ -190,20 +184,19 @@ const DataPage = ({
           // numbered from 101 to 150)
           Math.floor(records.length / PAGE_SIZE) + 1
 
-      setLoading(true)
       const params = new URLSearchParams()
       const filtersToApply: Filter[] = []
       for (const filter of filters) {
         const { fieldId, values } = filter
         // Filters with only blank values will not be used
-        let filterIsUsed = false
+        let isFilterUsed = false
         values.forEach((value: string) => {
           if (value) {
             params.append(fieldId, value)
-            filterIsUsed = true
+            isFilterUsed = true
           }
         })
-        if (filterIsUsed) filtersToApply.push(filter)
+        if (isFilterUsed) filtersToApply.push(filter)
       }
       params.append('page', pageToLoad.toString())
       params.append('pageSize', PAGE_SIZE.toString())
@@ -238,10 +231,11 @@ const DataPage = ({
       })
 
       setReachedLastPage(data.isLastPage)
+      // TODO: See if this setTimeout is still needed
       setTimeout(() => {
         setAppliedFilters(filtersToApply)
         setLoading(false)
-      }, 0)
+      })
     },
     [records]
   )
@@ -252,26 +246,35 @@ const DataPage = ({
     indexOfFilterToUpdate: number,
     newValues: FilterValues
   ) => {
-    const newFilters = [...filters]
-    newFilters[indexOfFilterToUpdate].values = newValues
-    setFilters(newFilters)
+    setFilters(prev =>
+      prev.map(({ fieldId, values }, index) =>
+        index === indexOfFilterToUpdate
+          ? { fieldId, values: newValues }
+          : { fieldId, values }
+      )
+    )
+  }
+
+  // When the filters change, load the first page of results
+  useEffect(() => {
+    const lastFiltersWithValues = lastFilters.current?.filter(
+      filter => filter.values.length > 0
+    )
+    const currentFiltersWithValues = filters.filter(
+      filter => filter.values.length > 0
+    )
+    if (
+      JSON.stringify(lastFiltersWithValues) ===
+      JSON.stringify(currentFiltersWithValues)
+    ) {
+      return
+    }
     load({
-      filters: newFilters,
       shouldDebounce: true,
       replaceResults: true,
     })
-  }
-
-  const clearFilters = () => {
-    setFilters([])
-    if (filters.some(({ values }) => values.length > 0)) {
-      load({
-        filters: [],
-        shouldDebounce: false,
-        replaceResults: true,
-      })
-    }
-  }
+    lastFilters.current = filters
+  }, [filters])
 
   const shouldBlurMap = view === View.table
 
@@ -301,20 +304,13 @@ const DataPage = ({
               filters={filters}
               updateFilter={updateFilter}
               setFilters={setFilters}
-              clearFilters={clearFilters}
             />
             <TableView
               isFilterPanelOpen={isFilterPanelOpen}
               isOpen={view === View.table}
               fields={fields}
               appliedFilters={appliedFilters}
-              loadNextPage={() => {
-                load({
-                  filters,
-                  shouldDebounce: false,
-                  replaceResults: false,
-                })
-              }}
+              loadNextPage={load}
               reachedLastPage={reachedLastPage}
               loading={loading}
               publishedRecords={records}
