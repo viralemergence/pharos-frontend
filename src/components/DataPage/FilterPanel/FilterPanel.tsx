@@ -12,6 +12,7 @@ import FilterPanelToolbar from './FilterPanelToolbar'
 
 const panelWidth = '410px'
 
+// Move this into the DisplayComponents file
 const Label = styled.label`
   ${({ theme }) => theme.smallParagraph}
   display: block;

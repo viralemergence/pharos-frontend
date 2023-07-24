@@ -10,7 +10,7 @@ import styled from 'styled-components'
 import DataGrid, { Column } from 'react-data-grid'
 
 import LoadingSpinner from './LoadingSpinner'
-import type { Filter, Field } from '../constants'
+import type { Filter, Field } from 'pages/data'
 import { isNormalObject } from 'utilities/data'
 
 const loadDebounceDelay = 300

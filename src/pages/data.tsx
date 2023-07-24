@@ -1,21 +1,31 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 
-import { isNormalObject } from 'utilities/data'
+import isNormalObject from 'utilities/isNormalObject'
 
 import CMS from '@talus-analytics/library.airtable-cms'
 import Providers from 'components/layout/Providers'
 import NavBar from 'components/layout/NavBar/NavBar'
-import {
-  Field,
-  Filter,
-  UpdateFilterFunction,
-} from 'components/DataPage/constants'
 import MapView, { MapProjection } from 'components/DataPage/MapView/MapView'
 import TableView from 'components/DataPage/TableView/TableView'
 import DataToolbar, { View, isView } from 'components/DataPage/Toolbar/Toolbar'
 
 import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
+
+export type Field = {
+  label: string
+  dataGridKey?: string
+  type?: 'text' | 'date'
+  options?: string[]
+  addedToPanel?: boolean
+}
+export type FilterValues = string[]
+export type Filter = { fieldId: string; values: FilterValues }
+
+export type UpdateFilterFunction = (
+  filterIndex: number,
+  newFilterValues: FilterValues
+) => void
 
 const METADATA_URL = `${process.env.GATSBY_API_URL}/metadata-for-published-records`
 
