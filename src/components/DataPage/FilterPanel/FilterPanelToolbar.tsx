@@ -6,115 +6,23 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import styled from 'styled-components'
-import { PlusIcon, BackIcon, XIcon, Field, Filter } from './constants'
 import Dropdown from '@talus-analytics/library.ui.dropdown'
 
-const FilterPanelToolbarNav = styled.nav`
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
-  padding-bottom: 20px;
-  padding: 14px 30px;
-  gap: 10px;
-  box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 30px 0px;
-  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
-    justify-content: flex-start;
-    padding: 10px 20px;
-  }
-  @media (max-width: ${({ theme }) => theme.breakpoints.mobileMaxWidth}) {
-    gap: 5px;
-  }
-`
-const FieldSelectorMessage = styled.div`
-  ${props => props.theme.smallParagraph};
-  padding: 10px 15px;
-  color: ${({ theme }) => theme.white};
-`
-const FilterPanelButton = styled.button`
-  ${props => props.theme.smallParagraph};
-  padding: 10px 15px;
-  text-align: left;
-  background-color: transparent;
-  color: ${({ theme }) => theme.white};
-  border: 0;
-  cursor: pointer;
-  &:hover {
-    background-color: ${({ theme }) => theme.white20PercentOpacity};
-  }
-`
-const FilterPanelToolbarButton = styled(FilterPanelButton)<{
-  isFieldSelectorOpen?: boolean
-}>`
-  border-radius: 5px;
-  ${({ isFieldSelectorOpen }) =>
-    !isFieldSelectorOpen
-      ? 'border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;'
-      : ''}
-  background-color: ${({ isFieldSelectorOpen, theme }) =>
-    isFieldSelectorOpen ? theme.white20PercentOpacity : 'transparent'};
-  &:active {
-    outline: 2px solid ${({ theme }) => theme.darkGray};
-  }
-`
-const FilterPanelCloseButton = styled(FilterPanelToolbarButton)`
-  @media (min-width: ${({ theme }) => theme.breakpoints.laptopMinWidth}) {
-    position: absolute;
-    right: 2px;
-    top: 2px;
-  }
-  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
-  }
-  border-radius: 50%;
-  background: transparent;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 5px;
-  &:hover {
-    background: inherit;
-  }
-  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
-    width: 45px;
-  }
-`
+import {
+  PlusIcon,
+  BackIcon,
+  XIcon,
+  FilterPanelToolbarNav,
+  FilterPanelToolbarButton,
+  FilterPanelCloseButtonWithXIcon,
+  FilterPanelCloseButtonWithBackIcon,
+  FieldSelectorDiv,
+  FieldSelectorButton,
+  FieldSelectorMessage,
+  ScreenReaderOnly,
+} from './DisplayComponents'
+import { Field, Filter } from '../constants'
 
-const FieldSelectorDiv = styled.div`
-  position: absolute;
-  width: 348px;
-  top: 15px;
-  display: flex;
-  flex-flow: column nowrap;
-  align-items: flex-start;
-  background-color: ${({ theme }) => theme.medBlack};
-  border-radius: 5px;
-  padding: 5px 0;
-  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
-    top: 11px;
-  }
-  @media (max-width: ${({ theme }) => theme.breakpoints.mobileMaxWidth}) {
-    width: 250px;
-  }
-`
-const FieldSelectorButton = styled(FilterPanelButton)<{ disabled: boolean }>`
-  width: 100%;
-  padding: 5px 15px;
-  margin-bottom: 5px;
-  ${({ disabled, theme }) =>
-    disabled
-      ? `color: ${theme.veryDarkGray};
-        cursor: unset;
-        &:hover { background-color: inherit; }`
-      : `
-        &:hover {
-          background-color: ${theme.medGray};
-          color: ${theme.medBlack};
-        }
-        &:active { 
-          outline: 1px solid ${theme.mint};
-        }
-    `}
-`
 interface FieldSelectorProps {
   fields: Record<string, Field>
   addFilterValueSetter: (fieldId: string) => void
@@ -149,20 +57,6 @@ const FieldSelector = ({
     </FieldSelectorDiv>
   )
 }
-
-const FilterPanelCloseButtonWithBackIcon = styled(FilterPanelCloseButton)`
-  display: none;
-  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
-    display: flex;
-  }
-`
-
-const FilterPanelCloseButtonWithXIcon = styled(FilterPanelCloseButton)`
-  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
-    margin-left: auto;
-    margin-right: 0;
-  }
-`
 
 const FilterPanelToolbar = ({
   fields,
@@ -289,14 +183,5 @@ const FilterPanelToolbar = ({
     </>
   )
 }
-
-const ScreenReaderOnly = styled.div`
-  clip-path: inset(50%);
-  clip: rect(0 0 0 0);
-  height: 0px;
-  overflow: hidden;
-  position: absolute;
-  width: 0px;
-`
 
 export default FilterPanelToolbar

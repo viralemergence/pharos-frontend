@@ -8,11 +8,11 @@ import React, {
 import styled from 'styled-components'
 import {
   Field,
-  FieldName,
   Filter,
   FilterValues,
   UpdateFilterFunction,
-} from './constants'
+} from '../constants'
+import { FieldName} from './DisplayComponents'
 import FilterPanelToolbar from './FilterPanelToolbar'
 
 const panelWidth = '410px'

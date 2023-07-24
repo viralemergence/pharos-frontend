@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
-import type { Filter } from '../FilterPanel/constants'
+import type { Filter } from '../constants'
 
 export enum View {
   map = 'map',

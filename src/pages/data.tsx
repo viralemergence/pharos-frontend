@@ -6,6 +6,11 @@ import { isNormalObject } from 'utilities/data'
 import CMS from '@talus-analytics/library.airtable-cms'
 import Providers from 'components/layout/Providers'
 import NavBar from 'components/layout/NavBar/NavBar'
+import {
+  Field,
+  Filter,
+  UpdateFilterFunction,
+} from 'components/DataPage/constants'
 import MapView, { MapProjection } from 'components/DataPage/MapView/MapView'
 import TableView from 'components/DataPage/TableView/TableView'
 import DataToolbar, { View, isView } from 'components/DataPage/Toolbar/Toolbar'
