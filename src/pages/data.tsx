@@ -6,12 +6,12 @@ import CMS from '@talus-analytics/library.airtable-cms'
 import Providers from 'components/layout/Providers'
 
 import NavBar from 'components/layout/NavBar/NavBar'
-import MapView from 'components/DataPage/MapView/MapView'
+import MapView, { MapProjection } from 'components/DataPage/MapView/MapView'
 import TableView, {
   Row,
   LoadOptions,
 } from 'components/DataPage/TableView/TableView'
-import DataToolbar, { View } from 'components/DataPage/Toolbar/Toolbar'
+import DataToolbar, { View, isView } from 'components/DataPage/Toolbar/Toolbar'
 
 import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
 import {
@@ -22,6 +22,8 @@ import {
 } from 'components/DataPage/FilterPanel/constants'
 
 const PAGE_SIZE = 50
+const RECORDS_URL = `${process.env.GATSBY_API_URL}/published-records`
+const METADATA_URL = `${process.env.GATSBY_API_URL}/metadata-for-published-records`
 
 const ViewContainer = styled.main<{
   shouldBlurMap: boolean
@@ -97,7 +99,9 @@ const isValidRecordsResponse = (data: unknown): data is RecordsResponse => {
   const { publishedRecords, isLastPage } = data as Partial<RecordsResponse>
   if (!Array.isArray(publishedRecords)) return false
   if (typeof isLastPage !== 'boolean') return false
-  return publishedRecords.every(row => typeof row === 'object')
+  return publishedRecords.every(
+    row => typeof row === 'object' && typeof row.rowNumber === 'number'
+  )
 }
 
 interface RecordsResponse {
@@ -112,14 +116,21 @@ const DataPage = ({
    * cells in the table are rendered immediately */
   enableTableVirtualization?: boolean
 }): JSX.Element => {
-  const [loading, setLoading] = useState(true)
   const [records, setRecords] = useState<Row[]>([])
   const [reachedLastPage, setReachedLastPage] = useState(false)
-  const [view, setView] = useState<View>(View.map)
-  const [mapProjection, setMapProjection] = useState<'globe' | 'naturalEarth'>(
-    'naturalEarth'
-  )
+
+  const [loading, setLoading] = useState(true)
+  const [mode, setMode] = useState<{
+    /* The 'view' is controlled by the three radio buttons */
+    view: View
+    /* This variable controls the state of the map. If the user clicks the
+     * 'Globe' radio button, then the 'Table' radio button, the view will be
+     * 'table' and the map projection will be 'globe' */
+    mapProjection: MapProjection
+  }>({ view: View.map, mapProjection: 'naturalEarth' })
+  const { view, mapProjection } = mode
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
+
   const [fields, setFields] = useState<Record<string, Field>>({})
 
   /** Filters that will be applied to the published records */
@@ -132,91 +143,91 @@ const DataPage = ({
    * color-coding the filtered columns. */
   const [appliedFilters, setAppliedFilters] = useState<Filter[]>([])
 
-  const changeView = useCallback((view: View, setHash = true) => {
-    if (setHash) window.location.hash = view
-    setView(view)
-    if (view === View.globe && mapProjection !== 'globe')
-      setMapProjection('globe')
-    if (view === View.map && mapProjection !== 'naturalEarth')
-      setMapProjection('naturalEarth')
+  /** Update the view and, depending on what the view is, update the map
+   * projection view */
+  const changeView = useCallback((newView: View, setHash = true) => {
+    if (setHash) window.location.hash = newView
+    setMode(prev => {
+      let newMapProjection = prev.mapProjection
+      if (newView === View.globe) newMapProjection = 'globe'
+      if (newView === View.map) newMapProjection = 'naturalEarth'
+      return { view: newView, mapProjection: newMapProjection }
+    })
   }, [])
 
-  useEffect(() => {
-    const hash = window.location.hash.replace('#', '')
-
-    function hashIsView(hash: string): hash is View {
-      return Object.values(View).includes(hash)
-    }
-
-    if (hashIsView(hash)) {
-      changeView(hash, false)
-    }
-
-    const getMetadata = async () => {
-      const response = await fetch(
-        `${process.env.GATSBY_API_URL}/metadata-for-published-records`
-      )
-      const data = await response.json()
-      if (!isValidMetadataResponse(data)) {
-        console.log('GET /metadata-for-published-records: malformed response')
-        return
-      }
-      setFields(data.fields)
-    }
-    getMetadata()
-  }, [changeView])
-
-  /** Load published records */
+  /** Load published records. This function prepares the query string and calls
+   * `fetchRecords` to retrieve records from the server. */
   const load = useCallback(
     async (options: LoadOptions = {}) => {
-      const { replaceResults = false, shouldDebounce = false } = options
+      const { replaceRecords = false, shouldDebounce = false } = options
 
       if (shouldDebounce) {
-        loadDebounced({ ...options, shouldDebounce: false })
+        // Use the debounced version of the load() function
+        loadDebounced({
+          ...options,
+          // Prevents an infinite loop
+          shouldDebounce: false,
+        })
         return
       }
 
       setLoading(true)
 
-      const pageToLoad = replaceResults
+      const pageToLoad = replaceRecords
         ? 1
-        : // For example, if there are 100 records, load page 3 (i.e., the records
-          // numbered from 101 to 150)
+        : // If we're not replacing the current set of records, load the next
+          // page. For example, if there are 100 records, load page 3 (i.e., the
+          // records numbered from 101 to 150)
           Math.floor(records.length / PAGE_SIZE) + 1
 
       const params = new URLSearchParams()
       const filtersToApply: Filter[] = []
+
       for (const filter of filters) {
         const { fieldId, values } = filter
-        // Filters with only blank values will not be used
-        let isFilterUsed = false
-        values.forEach((value: string) => {
+        let shouldApplyFilter = false
+        for (const value of values) {
           if (value) {
             params.append(fieldId, value)
-            isFilterUsed = true
+            shouldApplyFilter = true
           }
-        })
-        if (isFilterUsed) filtersToApply.push(filter)
+        }
+        // Filters with only blank values should not be applied
+        if (shouldApplyFilter) filtersToApply.push(filter)
       }
       params.append('page', pageToLoad.toString())
       params.append('pageSize', PAGE_SIZE.toString())
-      const response = await fetch(
-        `${process.env.GATSBY_API_URL}/published-records?` + params
-      )
+      const success = await fetchRecords(params, replaceRecords)
+      if (success) {
+        // TODO: See if setTimeout is still needed
+        setTimeout(() => {
+          setAppliedFilters(filtersToApply)
+        })
+      }
+      setLoading(false)
+    },
+    [filters, records]
+  )
+
+  const fetchRecords = useCallback(
+    async (
+      params: URLSearchParams,
+      replaceRecords: boolean
+    ): Promise<boolean> => {
+      const url = `${RECORDS_URL}?${params}`
+      const response = await fetch(url)
       if (!response.ok) {
-        console.log('GET /published-records: error')
-        setLoading(false)
-        return
+        console.log(`GET ${url}: error`)
+        return false
       }
       const data = await response.json()
       if (!isValidRecordsResponse(data)) {
-        console.log('GET /published-records: malformed response')
-        setLoading(false)
-        return
+        console.log(`GET ${url}: malformed response`)
+        return false
       }
       setRecords(prev => {
         let records = data.publishedRecords
-        if (!replaceResults) {
+        if (!replaceRecords) {
           // Ensure that no two records have the same id
           const existingPharosIds = new Set(prev.map(row => row.pharosID))
           const newRecords = records.filter(
@@ -229,16 +240,21 @@ const DataPage = ({
         records.sort((a, b) => Number(a.rowNumber) - Number(b.rowNumber))
         return records
       })
-
       setReachedLastPage(data.isLastPage)
-      // TODO: See if this setTimeout is still needed
-      setTimeout(() => {
-        setAppliedFilters(filtersToApply)
-        setLoading(false)
-      })
+      return true
     },
-    [records]
+    []
   )
+
+  const fetchMetadata = useCallback(async () => {
+    const response = await fetch(METADATA_URL)
+    const data = await response.json()
+    if (!isValidMetadataResponse(data)) {
+      console.log(`GET ${METADATA_URL}: malformed response`)
+      return
+    }
+    setFields(data.fields)
+  }, [setFields])
 
   const loadDebounced = debounce(load, loadDebounceDelay)
 
@@ -248,7 +264,7 @@ const DataPage = ({
   ) => {
     setFilters(prev =>
       prev.map(({ fieldId, values }, index) =>
-        index === indexOfFilterToUpdate
+        index == indexOfFilterToUpdate
           ? { fieldId, values: newValues }
           : { fieldId, values }
       )
@@ -271,10 +287,16 @@ const DataPage = ({
     }
     load({
       shouldDebounce: true,
-      replaceResults: true,
+      replaceRecords: true,
     })
     lastFilters.current = filters
   }, [filters])
+
+  useEffect(() => {
+    const hash = window.location.hash.replace('#', '')
+    if (isView(hash)) changeView(hash, false)
+    fetchMetadata()
+  }, [changeView, fetchMetadata])
 
   const shouldBlurMap = view === View.table
 

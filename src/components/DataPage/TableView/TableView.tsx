@@ -182,7 +182,7 @@ const TableView = ({
 }
 
 export interface LoadOptions {
-  replaceResults?: boolean
+  replaceRecords?: boolean
   shouldDebounce?: boolean
 }
 

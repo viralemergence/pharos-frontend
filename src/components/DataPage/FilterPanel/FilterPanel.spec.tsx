@@ -24,7 +24,6 @@ describe('FilterPanel', () => {
           fields={{}}
           filters={[]}
           setFilters={jest.fn()}
-          clearFilters={jest.fn()}
           updateFilter={jest.fn()}
         />
       </Provider>
@@ -51,7 +50,6 @@ describe('FilterPanel', () => {
           }}
           filters={[]}
           setFilters={jest.fn()}
-          clearFilters={jest.fn()}
           updateFilter={jest.fn()}
         />
       </Provider>

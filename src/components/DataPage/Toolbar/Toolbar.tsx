@@ -8,6 +8,10 @@ export enum View {
   table = 'table',
 }
 
+export const isView = (str: string): str is View => {
+  return Object.values(View).includes(str)
+}
+
 const DataToolbarButton = styled.button<{
   selected?: boolean
   width?: number
