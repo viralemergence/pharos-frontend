@@ -1,28 +1,22 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import debounce from 'lodash/debounce'
+
+import { isNormalObject } from 'utilities/data'
 
 import CMS from '@talus-analytics/library.airtable-cms'
 import Providers from 'components/layout/Providers'
-
 import NavBar from 'components/layout/NavBar/NavBar'
 import MapView, { MapProjection } from 'components/DataPage/MapView/MapView'
-import TableView, {
-  Row,
-  LoadOptions,
-} from 'components/DataPage/TableView/TableView'
+import TableView, { Row } from 'components/DataPage/TableView/TableView'
 import DataToolbar, { View, isView } from 'components/DataPage/Toolbar/Toolbar'
 
 import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
 import {
-  loadDebounceDelay,
   Field,
   Filter,
-  FilterValues,
+  UpdateFilterFunction,
 } from 'components/DataPage/FilterPanel/constants'
 
-const PAGE_SIZE = 50
-const RECORDS_URL = `${process.env.GATSBY_API_URL}/published-records`
 const METADATA_URL = `${process.env.GATSBY_API_URL}/metadata-for-published-records`
 
 const ViewContainer = styled.main<{
@@ -94,21 +88,6 @@ const MapOverlay = styled.div`
   width: 100%;
 `
 
-const isValidRecordsResponse = (data: unknown): data is RecordsResponse => {
-  if (!isNormalObject(data)) return false
-  const { publishedRecords, isLastPage } = data as Partial<RecordsResponse>
-  if (!Array.isArray(publishedRecords)) return false
-  if (typeof isLastPage !== 'boolean') return false
-  return publishedRecords.every(
-    row => typeof row === 'object' && typeof row.rowNumber === 'number'
-  )
-}
-
-interface RecordsResponse {
-  publishedRecords: Row[]
-  isLastPage: boolean
-}
-
 const DataPage = ({
   enableTableVirtualization = true,
 }: {
@@ -116,11 +95,7 @@ const DataPage = ({
    * cells in the table are rendered immediately */
   enableTableVirtualization?: boolean
 }): JSX.Element => {
-  const [records, setRecords] = useState<Row[]>([])
-  const [reachedLastPage, setReachedLastPage] = useState(false)
-
-  const [loading, setLoading] = useState(true)
-  const [mode, setMode] = useState<{
+  const [viewAndMapProjection, setViewAndMapProjection] = useState<{
     /* The 'view' is controlled by the three radio buttons */
     view: View
     /* This variable controls the state of the map. If the user clicks the
@@ -128,14 +103,13 @@ const DataPage = ({
      * 'table' and the map projection will be 'globe' */
     mapProjection: MapProjection
   }>({ view: View.map, mapProjection: 'naturalEarth' })
-  const { view, mapProjection } = mode
+  const { view, mapProjection } = viewAndMapProjection
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
 
   const [fields, setFields] = useState<Record<string, Field>>({})
 
   /** Filters that will be applied to the published records */
   const [filters, setFilters] = useState<Filter[]>([])
-  const lastFilters = useRef<Filter[]>([])
 
   /** Filters that have been successfully applied to the published
    * records. That is, these filters have been sent to the server, and it
@@ -147,105 +121,13 @@ const DataPage = ({
    * projection view */
   const changeView = useCallback((newView: View, setHash = true) => {
     if (setHash) window.location.hash = newView
-    setMode(prev => {
+    setViewAndMapProjection(prev => {
       let newMapProjection = prev.mapProjection
       if (newView === View.globe) newMapProjection = 'globe'
       if (newView === View.map) newMapProjection = 'naturalEarth'
       return { view: newView, mapProjection: newMapProjection }
     })
   }, [])
-
-  /** Load published records. This function prepares the query string and calls
-   * `fetchRecords` to retrieve records from the server. */
-  const load = useCallback(
-    async (options: LoadOptions = {}) => {
-      const { replaceRecords = false } = options
-      let { shouldDebounce = false } = options
-
-      // When clearing filters, don't debounce
-      if (!filters.length) shouldDebounce = false
-
-      if (shouldDebounce) {
-        // Use the debounced version of the load() function
-        loadDebounced({
-          ...options,
-          // Prevents an infinite loop
-          shouldDebounce: false,
-        })
-        return
-      }
-
-      setLoading(true)
-
-      const pageToLoad = replaceRecords
-        ? 1
-        : // If we're not replacing the current set of records, load the next
-          // page. For example, if there are 100 records, load page 3 (i.e., the
-          // records numbered from 101 to 150)
-          Math.floor(records.length / PAGE_SIZE) + 1
-
-      const params = new URLSearchParams()
-      const filtersToApply: Filter[] = []
-
-      for (const filter of filters) {
-        const { fieldId, values } = filter
-        let shouldApplyFilter = false
-        for (const value of values) {
-          if (value) {
-            params.append(fieldId, value)
-            shouldApplyFilter = true
-          }
-        }
-        // Filters with only blank values should not be applied
-        if (shouldApplyFilter) filtersToApply.push(filter)
-      }
-      params.append('page', pageToLoad.toString())
-      params.append('pageSize', PAGE_SIZE.toString())
-      const success = await fetchRecords(params, replaceRecords)
-      if (success) {
-        setAppliedFilters(filtersToApply)
-      }
-      setLoading(false)
-    },
-    [filters, records]
-  )
-
-  const fetchRecords = useCallback(
-    async (
-      params: URLSearchParams,
-      replaceRecords: boolean
-    ): Promise<boolean> => {
-      const url = `${RECORDS_URL}?${params}`
-      const response = await fetch(url)
-      if (!response.ok) {
-        console.log(`GET ${url}: error`)
-        return false
-      }
-      const data = await response.json()
-      if (!isValidRecordsResponse(data)) {
-        console.log(`GET ${url}: malformed response`)
-        return false
-      }
-      setRecords(prev => {
-        let records = data.publishedRecords
-        if (!replaceRecords) {
-          // Ensure that no two records have the same id
-          const existingPharosIds = new Set(prev.map(row => row.pharosID))
-          const newRecords = records.filter(
-            record => !existingPharosIds.has(record.pharosID)
-          )
-          records = [...prev, ...newRecords]
-        }
-        // Sort records by row number, just in case pages come back from the
-        // server in the wrong order
-        records.sort((a, b) => Number(a.rowNumber) - Number(b.rowNumber))
-        return records
-      })
-      setReachedLastPage(data.isLastPage)
-      return true
-    },
-    []
-  )
 
   const fetchMetadata = useCallback(async () => {
     const response = await fetch(METADATA_URL)
@@ -257,11 +139,9 @@ const DataPage = ({
     setFields(data.fields)
   }, [setFields])
 
-  const loadDebounced = debounce(load, loadDebounceDelay)
-
-  const updateFilter = (
-    indexOfFilterToUpdate: number,
-    newValues: FilterValues
+  const updateFilter: UpdateFilterFunction = (
+    indexOfFilterToUpdate,
+    newValues
   ) => {
     setFilters(prev =>
       prev.map(({ fieldId, values }, index) =>
@@ -271,27 +151,6 @@ const DataPage = ({
       )
     )
   }
-
-  // When the filters change, load the first page of results
-  useEffect(() => {
-    const lastFiltersWithValues = lastFilters.current?.filter(
-      filter => filter.values.length > 0
-    )
-    const currentFiltersWithValues = filters.filter(
-      filter => filter.values.length > 0
-    )
-    if (
-      JSON.stringify(lastFiltersWithValues) ===
-      JSON.stringify(currentFiltersWithValues)
-    ) {
-      return
-    }
-    load({
-      shouldDebounce: true,
-      replaceRecords: true,
-    })
-    lastFilters.current = filters
-  }, [filters])
 
   useEffect(() => {
     const hash = window.location.hash.replace('#', '')
@@ -332,11 +191,9 @@ const DataPage = ({
               isFilterPanelOpen={isFilterPanelOpen}
               isOpen={view === View.table}
               fields={fields}
+              filters={filters}
               appliedFilters={appliedFilters}
-              loadNextPage={load}
-              reachedLastPage={reachedLastPage}
-              loading={loading}
-              publishedRecords={records}
+              setAppliedFilters={setAppliedFilters}
               enableVirtualization={enableTableVirtualization}
             />
           </ViewMain>
@@ -349,12 +206,6 @@ const DataPage = ({
 interface MetadataResponse {
   fields: Record<string, Field>
 }
-
-const isNormalObject = (value: unknown): value is Record<string, unknown> =>
-  !!value &&
-  typeof value === 'object' &&
-  typeof value !== 'function' &&
-  !Array.isArray(value)
 
 const isValidFieldInMetadataResponse = (data: unknown): data is Field => {
   if (!isNormalObject(data)) return false

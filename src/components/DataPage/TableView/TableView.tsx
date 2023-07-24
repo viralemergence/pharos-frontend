@@ -1,14 +1,23 @@
 import React, {
-  useEffect,
   Dispatch,
-  MutableRefObject,
   SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
 } from 'react'
+import debounce from 'lodash/debounce'
 import styled from 'styled-components'
-
 import DataGrid, { Column } from 'react-data-grid'
+
 import LoadingSpinner from './LoadingSpinner'
 import type { Filter, Field } from '../FilterPanel/constants'
+import { isNormalObject } from 'utilities/data'
+
+const loadDebounceDelay = 300
+
+const PAGE_SIZE = 50
+const RECORDS_URL = `${process.env.GATSBY_API_URL}/published-records`
 
 const TableViewContainer = styled.div<{
   isOpen: boolean
@@ -25,7 +34,7 @@ const TableViewContainer = styled.div<{
       isFilterPanelOpen ? 'display: none ! important;' : ''}
   }
 `
-const TableContaier = styled.div`
+const TableContainer = styled.div`
   overflow-x: hidden;
   display: flex;
   flex-flow: column nowrap;
@@ -78,14 +87,13 @@ const NoRecordsFound = styled.div.attrs(({ role }) => ({ role }))`
 `
 
 interface TableViewProps {
+  fields?: Record<string, Field>
+  filters: Filter[]
   appliedFilters?: Filter[]
-  loadNextPage?: (options?: LoadOptions) => void
-  loading?: boolean
-  publishedRecords?: Row[]
+  setAppliedFilters: Dispatch<SetStateAction<Filter[]>>
   fields?: Record<string, Field>
   isOpen?: boolean
   isFilterPanelOpen?: boolean
-  reachedLastPage?: boolean
   /** Virtualization should be disabled in tests via this prop, so that all the
    * cells are rendered immediately */
   enableVirtualization?: boolean
@@ -98,19 +106,126 @@ const divIsAtBottom = ({ currentTarget }: React.UIEvent<HTMLDivElement>) =>
 const rowKeyGetter = (row: Row) => row.pharosID
 
 const TableView = ({
-  loading = false,
-  publishedRecords = [],
+  filters = [],
   appliedFilters = [],
-  loadNextPage = () => null,
   fields = {},
   isOpen = true,
   isFilterPanelOpen = false,
-  reachedLastPage = false,
   enableVirtualization = true,
 }: TableViewProps) => {
+  const [loading, setLoading] = useState(true)
+  const [records, setRecords] = useState<Row[]>([])
+  const [reachedLastPage, setReachedLastPage] = useState(false)
+
+  /** Load published records. This function prepares the query string and calls
+   * `fetchRecords` to retrieve records from the server. */
+  const load = useCallback(
+    async (options: LoadOptions = {}) => {
+      const { replaceRecords = false } = options
+      let { shouldDebounce = false } = options
+
+      // When clearing filters, don't debounce
+      if (!filters.length) shouldDebounce = false
+
+      if (shouldDebounce) {
+        // Use the debounced version of the load() function
+        loadDebounced({
+          ...options,
+          // Prevents an infinite loop
+          shouldDebounce: false,
+        })
+        return
+      }
+
+      setLoading(true)
+
+      const pageToLoad = replaceRecords
+        ? 1
+        : // If we're not replacing the current set of records, load the next
+          // page. For example, if there are 100 records, load page 3 (i.e., the
+          // records numbered from 101 to 150)
+          Math.floor(records.length / PAGE_SIZE) + 1
+
+      const params = new URLSearchParams()
+      const filtersToApply: Filter[] = []
+
+      for (const filter of filters) {
+        const { fieldId, values } = filter
+        let shouldApplyFilter = false
+        for (const value of values) {
+          if (value) {
+            params.append(fieldId, value)
+            shouldApplyFilter = true
+          }
+        }
+        // Filters with only blank values should not be applied
+        if (shouldApplyFilter) filtersToApply.push(filter)
+      }
+      params.append('page', pageToLoad.toString())
+      params.append('pageSize', PAGE_SIZE.toString())
+      const success = await fetchRecords(params, replaceRecords)
+      if (success) {
+        setAppliedFilters(filtersToApply)
+      }
+      setLoading(false)
+    },
+    [filters, records]
+  )
+
+  const loadDebounced = debounce(load, loadDebounceDelay)
+
   useEffect(() => {
-    loadNextPage()
+    load()
   }, [])
+
+  const stringifiedValuesOfFilters = JSON.stringify(
+    filters.filter(filter => filter.values.length > 0)
+  )
+
+  // When the filters have different values, load the first page of results
+  useEffect(() => {
+    load({
+      shouldDebounce: true,
+      replaceRecords: true,
+    })
+  }, [stringifiedValuesOfFilters])
+
+  const fetchRecords = useCallback(
+    async (
+      params: URLSearchParams,
+      replaceRecords: boolean
+    ): Promise<boolean> => {
+      const url = `${RECORDS_URL}?${params}`
+      const response = await fetch(url)
+      if (!response.ok) {
+        console.log(`GET ${url}: error`)
+        return false
+      }
+      const data = await response.json()
+      if (!isValidRecordsResponse(data)) {
+        console.log(`GET ${url}: malformed response`)
+        return false
+      }
+      setRecords(prev => {
+        let records = data.publishedRecords
+        if (!replaceRecords) {
+          // Ensure that no two records have the same id
+          const existingPharosIds = new Set(prev.map(row => row.pharosID))
+          const newRecords = records.filter(
+            record => !existingPharosIds.has(record.pharosID)
+          )
+          records = [...prev, ...newRecords]
+        }
+        // Sort records by row number, just in case pages come back from the
+        // server in the wrong order
+        records.sort((a, b) => Number(a.rowNumber) - Number(b.rowNumber))
+        return records
+      })
+      setReachedLastPage(data.isLastPage)
+      return true
+    },
+    []
+  )
 
   const rowNumberColumn = {
     key: 'rowNumber',
@@ -127,7 +242,7 @@ const TableView = ({
 
   const columns: readonly Column<Row>[] = [
     rowNumberColumn,
-    ...Object.keys(publishedRecords?.[0] ?? {})
+    ...Object.keys(records?.[0] ?? {})
       .filter(key => !['pharosID', 'rowNumber'].includes(key))
       .map(key => ({
         key: key,
@@ -142,27 +257,27 @@ const TableView = ({
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     if (loading || !divIsAtBottom(event) || reachedLastPage) return
-    loadNextPage()
+    load()
   }
 
   return (
     <TableViewContainer isOpen={isOpen} isFilterPanelOpen={isFilterPanelOpen}>
-      <TableContaier>
-        {!loading && publishedRecords?.length === 0 && (
+      <TableContainer>
+        {!loading && records?.length === 0 && (
           <NoRecordsFound role="status">
             {appliedFilters.length > 0
               ? 'No matching records found.'
               : 'No records have been published.'}
           </NoRecordsFound>
         )}
-        {publishedRecords && publishedRecords?.length > 0 && (
+        {records?.length > 0 && (
           // @ts-expect-error: I'm copying this from the docs,
           // but it doesn't look like their type definitions work
           <FillDatasetGrid
             className={'rdg-dark'}
             style={{ fontFamily: 'Inconsolata' }}
             columns={columns}
-            rows={publishedRecords}
+            rows={records}
             onScroll={handleScroll}
             rowKeyGetter={rowKeyGetter}
             enableVirtualization={enableVirtualization}
@@ -172,11 +287,10 @@ const TableView = ({
         )}
         {loading && (
           <LoadingMessage>
-            <LoadingSpinner /> Loading{' '}
-            {publishedRecords.length > 0 ? ' more rows' : ''}
+            <LoadingSpinner /> Loading {records.length > 0 ? ' more rows' : ''}
           </LoadingMessage>
         )}
-      </TableContaier>
+      </TableContainer>
     </TableViewContainer>
   )
 }
@@ -190,6 +304,19 @@ export interface Row {
   [key: string]: string | number
 }
 
-// TODO: check that these interfaces need to exported
-//
+const isValidRecordsResponse = (data: unknown): data is RecordsResponse => {
+  if (!isNormalObject(data)) return false
+  const { publishedRecords, isLastPage } = data as Partial<RecordsResponse>
+  if (!Array.isArray(publishedRecords)) return false
+  if (typeof isLastPage !== 'boolean') return false
+  return publishedRecords.every(
+    row => typeof row === 'object' && typeof row.rowNumber === 'number'
+  )
+}
+
+interface RecordsResponse {
+  publishedRecords: Row[]
+  isLastPage: boolean
+}
+
 export default TableView

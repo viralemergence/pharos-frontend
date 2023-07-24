@@ -1,10 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 
-/** After user finishes typing, how long to wait before applying a filter, in
-milliseconds */
-export const loadDebounceDelay = 300
-
 export type Field = {
   label: string
   dataGridKey?: string
