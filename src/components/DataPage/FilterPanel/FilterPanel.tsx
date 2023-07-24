@@ -49,13 +49,15 @@ const FilterInput = ({
           updateFilter(filterIndex, values)
         }}
         onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
-          e.preventDefault()
-          if (!(e.target instanceof HTMLInputElement)) return
-          const dateParts = e.clipboardData
-            .getData('text/plain')
-            .split(/[/\-\s]/g)
-          if (dateParts.length === 3)
-            e.target.value = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`
+          if (fieldType === 'date') {
+            e.preventDefault()
+            if (!(e.target instanceof HTMLInputElement)) return
+            const dateParts = e.clipboardData
+              .getData('text/plain')
+              .split(/[/\-\s]/g)
+            if (dateParts.length === 3)
+              e.target.value = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`
+          }
         }}
       />
     </Label>

@@ -203,10 +203,7 @@ const DataPage = ({
       params.append('pageSize', PAGE_SIZE.toString())
       const success = await fetchRecords(params, replaceRecords)
       if (success) {
-        // TODO: See if setTimeout is still needed
-        setTimeout(() => {
-          setAppliedFilters(filtersToApply)
-        })
+        setAppliedFilters(filtersToApply)
       }
       setLoading(false)
     },
