@@ -172,78 +172,79 @@ const DataPage = ({
   }, [changeView])
 
   /** Load published records */
-  const load = useCallback(async (options: LoadOptions) => {
-    const {
-      replaceResults = false,
-      filters,
-      currentlyLoadedRecords = [],
-      shouldDebounce = false,
-    } = options
+  const load = useCallback(
+    async (options: LoadOptions) => {
+      const {
+        replaceResults = false,
+        filters,
+        shouldDebounce = false,
+      } = options
 
-    if (shouldDebounce) {
-      loadDebounced({ ...options, shouldDebounce: false })
-    }
-
-    const page = replaceResults
-      ? 1
-      : // For example, if there are 100 records, load page 3 (i.e., the records
-        // numbered from 101 to 150)
-        Math.floor(currentlyLoadedRecords.length / PAGE_SIZE) + 1
-    // TODO: Might need to make publishedRecords a parameter here
-
-    setLoading(true)
-    const params = new URLSearchParams()
-    const filtersToApply: Filter[] = []
-    for (const filter of filters) {
-      const { fieldId, values } = filter
-      // Filters with only blank values will not be used
-      let filterIsUsed = false
-      values.forEach((value: string) => {
-        if (value) {
-          params.append(fieldId, value)
-          filterIsUsed = true
-        }
-      })
-      if (filterIsUsed) filtersToApply.push(filter)
-    }
-    params.append('page', page.toString())
-    params.append('pageSize', PAGE_SIZE.toString())
-    const response = await fetch(
-      `${process.env.GATSBY_API_URL}/published-records?` + params
-    )
-    if (!response.ok) {
-      console.log('GET /published-records: error')
-      setLoading(false)
-      return
-    }
-    const data = await response.json()
-    if (!isValidRecordsResponse(data)) {
-      console.log('GET /published-records: malformed response')
-      setLoading(false)
-      return
-    }
-    setRecords(prev => {
-      let records = data.publishedRecords
-      if (!replaceResults) {
-        // Ensure that no two records have the same id
-        const existingPharosIds = new Set(prev.map(row => row.pharosID))
-        const newRecords = records.filter(
-          record => !existingPharosIds.has(record.pharosID)
-        )
-        records = [...prev, ...newRecords]
+      if (shouldDebounce) {
+        loadDebounced({ ...options, shouldDebounce: false })
       }
-      // Sort records by row number, just in case pages come back from the
-      // server in the wrong order
-      records.sort((a, b) => Number(a.rowNumber) - Number(b.rowNumber))
-      return records
-    })
 
-    setReachedLastPage(data.isLastPage)
-    setTimeout(() => {
-      setAppliedFilters(filtersToApply)
-      setLoading(false)
-    }, 0)
-  }, [])
+      const pageToLoad = replaceResults
+        ? 1
+        : // For example, if there are 100 records, load page 3 (i.e., the records
+          // numbered from 101 to 150)
+          Math.floor(records.length / PAGE_SIZE) + 1
+
+      setLoading(true)
+      const params = new URLSearchParams()
+      const filtersToApply: Filter[] = []
+      for (const filter of filters) {
+        const { fieldId, values } = filter
+        // Filters with only blank values will not be used
+        let filterIsUsed = false
+        values.forEach((value: string) => {
+          if (value) {
+            params.append(fieldId, value)
+            filterIsUsed = true
+          }
+        })
+        if (filterIsUsed) filtersToApply.push(filter)
+      }
+      params.append('page', pageToLoad.toString())
+      params.append('pageSize', PAGE_SIZE.toString())
+      const response = await fetch(
+        `${process.env.GATSBY_API_URL}/published-records?` + params
+      )
+      if (!response.ok) {
+        console.log('GET /published-records: error')
+        setLoading(false)
+        return
+      }
+      const data = await response.json()
+      if (!isValidRecordsResponse(data)) {
+        console.log('GET /published-records: malformed response')
+        setLoading(false)
+        return
+      }
+      setRecords(prev => {
+        let records = data.publishedRecords
+        if (!replaceResults) {
+          // Ensure that no two records have the same id
+          const existingPharosIds = new Set(prev.map(row => row.pharosID))
+          const newRecords = records.filter(
+            record => !existingPharosIds.has(record.pharosID)
+          )
+          records = [...prev, ...newRecords]
+        }
+        // Sort records by row number, just in case pages come back from the
+        // server in the wrong order
+        records.sort((a, b) => Number(a.rowNumber) - Number(b.rowNumber))
+        return records
+      })
+
+      setReachedLastPage(data.isLastPage)
+      setTimeout(() => {
+        setAppliedFilters(filtersToApply)
+        setLoading(false)
+      }, 0)
+    },
+    [records]
+  )
 
   const loadDebounced = debounce(load, loadDebounceDelay)
 
