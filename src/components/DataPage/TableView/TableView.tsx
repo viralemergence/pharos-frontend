@@ -182,15 +182,10 @@ const TableView = ({
 }
 
 export interface LoadOptions {
-  replaceResults?: boolean
   filters: Filter[]
-  currentlyLoadedRecords: Row[]
-  debouncing: MutableRefObject<Debouncing>
-}
-
-export interface Debouncing {
-  on: boolean
-  timeout: ReturnType<typeof setTimeout> | null
+  replaceResults?: boolean
+  currentlyLoadedRecords?: Row[]
+  shouldDebounce: boolean
 }
 
 export interface Row {

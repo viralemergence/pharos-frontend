@@ -124,7 +124,9 @@ const DataPage = ({
   )
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
   const [fields, setFields] = useState<Record<string, Field>>({})
-  const debouncing = useRef({ on: false, timeout: null })
+  const loadDebouncingTimeout = useRef<ReturnType<typeof setTimeout> | null>(
+    null
+  )
 
   /** Filters that will be applied to the published records */
   const [filters, setFilters] = useState<Filter[]>([])
@@ -170,19 +172,17 @@ const DataPage = ({
   }, [changeView])
 
   /** Load published records */
-  const load = async ({
-    replaceResults = false,
-    currentlyLoadedRecords,
-    filters,
-    debouncing,
-  }: LoadOptions) => {
-    // Switch debouncing on for 3 seconds
-    const debounceTimeout = 10000
-    debouncing.current.on = true
-    if (debouncing.current.timeout) clearTimeout(debouncing.current.timeout)
-    debouncing.current.timeout = setTimeout(() => {
-      debouncing.current.on = false
-    }, debounceTimeout)
+  const load = useCallback(async (options: LoadOptions) => {
+    const {
+      replaceResults = false,
+      filters,
+      currentlyLoadedRecords = [],
+      shouldDebounce = false,
+    } = options
+
+    if (shouldDebounce) {
+      loadDebounced({ ...options, shouldDebounce: false })
+    }
 
     const page = replaceResults
       ? 1
@@ -243,31 +243,9 @@ const DataPage = ({
       setAppliedFilters(filtersToApply)
       setLoading(false)
     }, 0)
-  }
+  }, [])
 
   const loadDebounced = debounce(load, loadDebounceDelay)
-
-  const loadWithFilters = ({
-    filters,
-    shouldDebounce = true,
-    replaceResults = false,
-  }: {
-    filters: Filter[]
-    shouldDebounce: boolean
-    replaceResults: boolean
-  }) => {
-    const options: LoadOptions = {
-      replaceResults,
-      currentlyLoadedRecords: records,
-      filters,
-      debouncing,
-    }
-    if (shouldDebounce && debouncing.current.on) {
-      loadDebounced(options)
-    } else {
-      load(options)
-    }
-  }
 
   const updateFilter = (
     indexOfFilterToUpdate: number,
@@ -276,7 +254,7 @@ const DataPage = ({
     const newFilters = [...filters]
     newFilters[indexOfFilterToUpdate].values = newValues
     setFilters(newFilters)
-    loadWithFilters({
+    load({
       filters: newFilters,
       shouldDebounce: true,
       replaceResults: true,
@@ -286,7 +264,7 @@ const DataPage = ({
   const clearFilters = () => {
     setFilters([])
     if (filters.some(({ values }) => values.length > 0)) {
-      loadWithFilters({
+      load({
         filters: [],
         shouldDebounce: false,
         replaceResults: true,
@@ -330,12 +308,11 @@ const DataPage = ({
               fields={fields}
               appliedFilters={appliedFilters}
               loadNextPage={() => {
-                loadWithFilters({
+                load({
                   filters,
                   shouldDebounce: false,
                   replaceResults: false,
                 })
-                debouncing.current.on = false
               }}
               reachedLastPage={reachedLastPage}
               loading={loading}
