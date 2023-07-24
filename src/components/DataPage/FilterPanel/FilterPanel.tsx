@@ -6,13 +6,8 @@ import React, {
   useState,
 } from 'react'
 import styled from 'styled-components'
-import {
-  Field,
-  Filter,
-  FilterValues,
-  UpdateFilterFunction,
-} from '../constants'
-import { FieldName} from './DisplayComponents'
+import { Field, Filter, FilterValues, UpdateFilterFunction } from '../constants'
+import { FieldName } from './DisplayComponents'
 import FilterPanelToolbar from './FilterPanelToolbar'
 
 const panelWidth = '410px'

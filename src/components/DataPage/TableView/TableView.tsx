@@ -138,7 +138,7 @@ const TableView = ({
 
       setLoading(true)
 
-      const params = new URLSearchParams()
+      const queryStringParameters = new URLSearchParams()
       const filtersToApply: Filter[] = []
 
       for (const filter of filters) {
@@ -146,7 +146,7 @@ const TableView = ({
         let shouldApplyFilter = false
         for (const value of values) {
           if (value) {
-            params.append(fieldId, value)
+            queryStringParameters.append(fieldId, value)
             shouldApplyFilter = true
           }
         }
@@ -163,10 +163,10 @@ const TableView = ({
         // records numbered from 101 to 150)
         pageToLoad = Math.floor(records.length / PAGE_SIZE) + 1
       }
-      params.append('page', pageToLoad.toString())
-      params.append('pageSize', PAGE_SIZE.toString())
+      queryStringParameters.append('page', pageToLoad.toString())
+      queryStringParameters.append('pageSize', PAGE_SIZE.toString())
 
-      const success = await fetchRecords(params, replaceRecords)
+      const success = await fetchRecords(queryStringParameters, replaceRecords)
       if (success) setAppliedFilters(filtersToApply)
       setLoading(false)
     },
@@ -193,10 +193,10 @@ const TableView = ({
 
   const fetchRecords = useCallback(
     async (
-      params: URLSearchParams,
+      queryStringParameters: URLSearchParams,
       replaceRecords: boolean
     ): Promise<boolean> => {
-      const url = `${RECORDS_URL}?${params}`
+      const url = `${RECORDS_URL}?${queryStringParameters}`
       const response = await fetch(url)
       if (!response.ok) {
         console.log(`GET ${url}: error`)

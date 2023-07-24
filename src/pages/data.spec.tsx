@@ -1,5 +1,6 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 
 import { stateInitialValue } from 'reducers/stateReducer/initialValues'
 import { publishedRecordsMetadata } from '../../test/serverHandlers'
@@ -154,22 +155,37 @@ describe('The public data page', () => {
   })
 
   it('lets the user filter by collection start date', async () => {
-    const { container } = render(<DataPage />)
-    const filterPanelToggleButton = getFilterPanelToggleButton()
-    expect(filterPanelToggleButton).toBeInTheDocument()
-    fireEvent.click(filterPanelToggleButton)
-    const filterPanel = getFilterPanel(container)
-    expect(filterPanel).toBeInTheDocument()
-    const addFilterButton = getAddFilterButton()
-    fireEvent.click(addFilterButton)
-    const startDate = await screen.findByText('Collected on or after date')
-    fireEvent.click(startDate)
+    render(<DataPage />)
+    fireEvent.click(getFilterPanelToggleButton())
+    fireEvent.click(getAddFilterButton())
+    fireEvent.click(await screen.findByText('Collected on or after date'))
     const filterInput = screen.getByLabelText('Collected on or after date')
     expect(filterInput).toBeInTheDocument()
-    fireEvent.input(filterInput, '1/1/2000')
-    const loadingMessage = await screen.findByText('Loading')
-    expect(loadingMessage).toBeInTheDocument()
-    // TODO: Finish writing this test
+    await userEvent.type(filterInput, '2020-04-01')
+    const grid = await getDataGridAfterWaiting()
+    await waitFor(() => {
+      expect(grid).toHaveAttribute('aria-rowcount', '10')
+    })
+
+    // Remove the date
+    await userEvent.type(filterInput, '{backspace}'.repeat(10))
+    await waitFor(() => {
+      expect(grid).toHaveAttribute('aria-rowcount', '51')
+    })
+  })
+
+  it('does not filter by a date if it is invalid', async () => {
+    render(<DataPage />)
+    fireEvent.click(getFilterPanelToggleButton())
+    fireEvent.click(getAddFilterButton())
+    fireEvent.click(await screen.findByText('Collected on or after date'))
+    const filterInput = screen.getByLabelText('Collected on or after date')
+    expect(filterInput).toBeInTheDocument()
+    await userEvent.type(filterInput, '3000-01-01')
+    const grid = await getDataGridAfterWaiting()
+    await waitFor(() => {
+      expect(grid).toHaveAttribute('aria-rowcount', '51')
+    })
   })
 
   it.skip('shows unfiltered records when filter input is blanked', async () => {
