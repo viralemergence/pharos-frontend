@@ -13,7 +13,7 @@ import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
 import { Field } from 'components/DataPage/FilterPanel/constants'
 
 const ViewContainer = styled.main<{
-  isMapBlurred: boolean
+  shouldBlurMap: boolean
   isFilterPanelOpen: boolean
 }>`
   flex: 1;
@@ -31,8 +31,8 @@ const ViewContainer = styled.main<{
   }
   background-color: ${({ theme }) => theme.darkPurple};
 
-  ${({ isMapBlurred }) =>
-    isMapBlurred &&
+  ${({ shouldBlurMap }) =>
+    shouldBlurMap &&
     `.mapboxgl-control-container { display: none ! important; }`}
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
     ${({ isFilterPanelOpen }) =>
@@ -126,7 +126,7 @@ const DataPage = (): JSX.Element => {
     getMetadata()
   }, [])
 
-  const isMapBlurred = view === View.table
+  const shouldBlurMap = view === View.table
 
   return (
     <Providers>
@@ -134,11 +134,11 @@ const DataPage = (): JSX.Element => {
       <PageContainer>
         <NavBar />
         <ViewContainer
-          isMapBlurred={isMapBlurred}
+          shouldBlurMap={shouldBlurMap}
           isFilterPanelOpen={isFilterPanelOpen}
         >
           <MapView projection={mapProjection} />
-          {isMapBlurred && <MapOverlay />}
+          {shouldBlurMap && <MapOverlay />}
           <DataToolbar
             view={view}
             changeView={changeView}
