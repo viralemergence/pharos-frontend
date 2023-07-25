@@ -149,9 +149,9 @@ const TableView = ({
 
       const queryStringParameters = new URLSearchParams()
 
-      const appliedFilterIndexes = filters.reduce<number[]>(
-        (indexes, filter, index) => {
-          if (!filter.addedToPanel) return indexes
+      const fieldIdsOfAppliedFilters = filters.reduce<string[]>(
+        (fieldIds, filter) => {
+          if (!filter.addedToPanel) return fieldIds
           const { fieldId, values = [] } = filter
           let shouldApplyFilter = false
           for (const value of values) {
@@ -160,7 +160,7 @@ const TableView = ({
               shouldApplyFilter = true
             }
           }
-          return shouldApplyFilter ? [...indexes, index] : indexes
+          return shouldApplyFilter ? [...fieldIds, fieldId] : fieldIds
         },
         []
       )
@@ -181,11 +181,10 @@ const TableView = ({
 
       if (success)
         setFilters(prev =>
-          prev.map((filter, index) =>
-            appliedFilterIndexes.includes(index)
-              ? { ...filter, applied: true }
-              : filter
-          )
+          prev.map(filter => ({
+            ...filter,
+            applied: fieldIdsOfAppliedFilters.includes(filter.fieldId),
+          }))
         )
 
       setLoading(false)
