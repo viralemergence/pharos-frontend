@@ -18,17 +18,17 @@ import {
 import FilterPanelToolbar from './FilterPanelToolbar'
 
 const FilterInput = ({
+  fieldId,
   fieldLabel,
   fieldType,
   values,
   updateFilter,
-  filterIndex,
 }: {
+  fieldId: string
   fieldLabel: string
   fieldType: string
   values: string[]
   updateFilter: UpdateFilterFunction
-  filterIndex: number
 }) => {
   return (
     <FilterLabel>
@@ -41,7 +41,7 @@ const FilterInput = ({
         defaultValue={values.join(',')}
         onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
           const values = e.target.checkValidity() ? [e.target.value] : []
-          updateFilter(filterIndex, values)
+          updateFilter(fieldId, values)
         }}
         onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
           if (fieldType === 'date') {
@@ -60,14 +60,14 @@ const FilterInput = ({
 }
 
 const FilterValueSetter = ({
-  filterIndex,
+  fieldId,
   fieldLabel,
   fieldType = 'text',
   values,
   updateFilter,
   options = [],
 }: {
-  filterIndex: number
+  fieldId: string
   fieldLabel: string
   fieldType: 'text' | 'date'
   values: string[]
@@ -76,11 +76,11 @@ const FilterValueSetter = ({
 }) => {
   const truthyValues = values.filter(value => value)
   const props = {
+    fieldId,
     fieldLabel,
     values: truthyValues,
     options,
     updateFilter,
-    filterIndex,
   }
   return <FilterInput {...props} fieldType={fieldType} />
 
@@ -99,10 +99,7 @@ const FilterListItem = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
-type UpdateFilterFunction = (
-  filterIndex: number,
-  newFilterValues: string[]
-) => void
+type UpdateFilterFunction = (fieldId: string, newFilterValues: string[]) => void
 
 const FilterPanel = ({
   isFilterPanelOpen,
@@ -117,16 +114,14 @@ const FilterPanel = ({
 }) => {
   const filterListRef = useRef<HTMLUListElement | null>(null)
 
-  const filtersSorted = sortBy(filters, 'panelIndex')
+  const addedFilters = filters.filter(({ addedToPanel }) => addedToPanel)
+  const filtersSorted = sortBy(addedFilters, 'panelIndex')
 
-  const updateFilter: UpdateFilterFunction = (
-    /* Index of the filter to update. This is the index in the Filters array,
-     * not the panelIndex */
-    index,
-    newValues
-  ) => {
+  const updateFilter: UpdateFilterFunction = (fieldId, newValues) => {
     setFilters(prev =>
-      prev.map((filter, i) => (index === i ? { ...filter, newValues } : filter))
+      prev.map(filter =>
+        filter.fieldId === fieldId ? { ...filter, values: newValues } : filter
+      )
     )
   }
 
@@ -147,22 +142,20 @@ const FilterPanel = ({
         filterListRef={filterListRef}
       />
       <ListOfAddedFilters ref={filterListRef}>
-        {filtersSorted.map(
-          ({ fieldId, label, type, options, values = [] }, filterIndex) => {
-            return (
-              <FilterListItem key={`${fieldId}-${filterIndex}`}>
-                <FilterValueSetter
-                  filterIndex={filterIndex}
-                  fieldLabel={label}
-                  fieldType={type}
-                  options={options}
-                  updateFilter={updateFilter}
-                  values={values}
-                />
-              </FilterListItem>
-            )
-          }
-        )}
+        {filtersSorted.map(({ fieldId, label, type, options, values = [] }) => {
+          return (
+            <FilterListItem key={fieldId}>
+              <FilterValueSetter
+                fieldId={fieldId}
+                fieldLabel={label}
+                fieldType={type}
+                options={options}
+                updateFilter={updateFilter}
+                values={values}
+              />
+            </FilterListItem>
+          )
+        })}
       </ListOfAddedFilters>
     </Panel>
   )

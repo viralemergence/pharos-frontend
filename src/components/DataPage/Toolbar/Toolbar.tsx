@@ -47,13 +47,11 @@ const DataToolbar = ({
   )
 
   const filterPanelLauncherRef = useRef<HTMLButtonElement>(null)
-  const wasFilterPanelOpen = useRef(isFilterPanelOpen)
   useEffect(() => {
-    if (wasFilterPanelOpen.current && !isFilterPanelOpen) {
+    if (!isFilterPanelOpen) {
       // If the panel just closed, focus the launcher
       filterPanelLauncherRef.current?.focus()
     }
-    wasFilterPanelOpen.current = isFilterPanelOpen
   }, [isFilterPanelOpen])
 
   const appliedFiltersCount = filters.filter(({ applied }) => applied).length
@@ -70,7 +68,7 @@ const DataToolbar = ({
           aria-controls="pharos-filter-panel"
         >
           Filters
-          {appliedFiltersCount && (
+          {appliedFiltersCount > 0 && (
             <span style={{ marginLeft: '5px' }}>({appliedFiltersCount})</span>
           )}
         </FilterPanelLauncher>

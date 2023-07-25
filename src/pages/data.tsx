@@ -115,6 +115,8 @@ const DataPage = ({
 
   const [filters, setFilters] = useState<Filter[]>([])
 
+  console.log('filters on render', filters)
+
   /** Update the view and, depending on what the view is, update the map
    * projection view */
   const changeView = useCallback((newView: View, setHash = true) => {
@@ -133,8 +135,10 @@ const DataPage = ({
     }
     const filters = Object.entries(data.fields).map(([fieldId, filter]) => ({
       fieldId,
+      type: filter.type || 'text',
       ...filter,
     }))
+    console.log('filters in fetchMetadata', filters)
     setFilters(filters)
   }, [setFilters])
 
@@ -191,14 +195,14 @@ interface MetadataResponse {
 
 interface FilterInMetadata {
   label: string
-  type: 'text' | 'date'
+  type?: 'text' | 'date'
   dataGridKey: string
   options: string[]
 }
 
 const isValidFieldInMetadataResponse = (data: unknown): data is Filter => {
   if (!isNormalObject(data)) return false
-  const { label, dataGridKey = '', type = '', options = [] } = data
+  const { label, dataGridKey = '', type = 'text', options = [] } = data
   return (
     typeof label === 'string' &&
     typeof dataGridKey === 'string' &&

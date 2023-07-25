@@ -34,6 +34,7 @@ const FieldSelector = ({
   addFilterValueSetter,
   onClick = () => null,
 }: FieldSelectorProps) => {
+  console.log('in fieldselector filters', filters)
   return (
     <FieldSelectorDiv onClick={onClick}>
       {filters.map(({ fieldId, type, label, addedToPanel = false }) => (
@@ -107,6 +108,10 @@ const FilterPanelToolbar = ({
 
   const screenReaderAnnouncementRef = useRef<HTMLDivElement>(null)
 
+  const removeAllFilters = () => {
+    setFilters(prev => prev.map(filter => ({ ...filter, addedToPanel: false })))
+  }
+
   return (
     <>
       <FilterPanelToolbarNav>
@@ -158,6 +163,7 @@ const FilterPanelToolbar = ({
                 )
               )
               const filterList = filterListRef.current
+              // TODO: If possible, set the scrolltop when FilterList mounts
               setTimeout(() => {
                 if (filterList) filterList.scrollTop = filterList.scrollHeight
               }, 0)
@@ -167,7 +173,7 @@ const FilterPanelToolbar = ({
         {filters.length > 0 && (
           <FilterPanelToolbarButton
             style={{ marginRight: '5px' }}
-            onClick={() => setFilters([])}
+            onClick={() => removeAllFilters()}
           >
             Clear all
           </FilterPanelToolbarButton>

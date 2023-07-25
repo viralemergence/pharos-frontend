@@ -86,7 +86,7 @@ const NoRecordsFound = styled.div.attrs(({ role }) => ({ role }))`
 `
 
 interface TableViewProps {
-  filters?: Filter[]
+  filters: Filter[]
   setFilters: Dispatch<SetStateAction<Filter[]>>
   isOpen?: boolean
   isFilterPanelOpen?: boolean
@@ -102,15 +102,24 @@ const divIsAtBottom = ({ currentTarget }: React.UIEvent<HTMLDivElement>) =>
 const rowKeyGetter = (row: Row) => row.pharosID
 
 const TableView = ({
-  filters = [],
+  filters,
   setFilters,
   isOpen = true,
   isFilterPanelOpen = false,
   enableVirtualization = true,
 }: TableViewProps) => {
+  console.log('filters at top of tv', filters)
   const [loading, setLoading] = useState(true)
   const [records, setRecords] = useState<Row[]>([])
   const [reachedLastPage, setReachedLastPage] = useState(false)
+
+  const addedFilters = filters.filter(f => f.addedToPanel)
+
+  const stringifiedFilters = JSON.stringify(filters)
+  const stringifiedRecords = JSON.stringify(records)
+  const stringifiedFiltersWithValues = JSON.stringify(
+    addedFilters.filter(filter => filter.values?.length)
+  )
 
   /** Load published records. This function prepares the query string and calls
    * fetchRecords() to retrieve records from the API. */
@@ -121,11 +130,11 @@ const TableView = ({
         shouldDebounce?: boolean
       } = {}
     ) => {
-      const replaceRecords = options.replaceRecords
+      const replaceRecords = options.replaceRecords || false
       let shouldDebounce = options.shouldDebounce
 
       // When clearing filters, don't debounce
-      if (!filters.length) shouldDebounce = false
+      if (!addedFilters.length) shouldDebounce = false
 
       if (shouldDebounce) {
         // Use the debounced version of the load() function
@@ -141,18 +150,20 @@ const TableView = ({
 
       const queryStringParameters = new URLSearchParams()
 
-      for (const filter of filters) {
-        const { fieldId, values = [] } = filter
-        let shouldApplyFilter = false
-        for (const value of values) {
-          if (value) {
-            queryStringParameters.append(fieldId, value)
-            shouldApplyFilter = true
+      const appliedFilterIndexes = addedFilters.reduce<number[]>(
+        (indexes, filter, index) => {
+          const { fieldId, values = [] } = filter
+          let shouldApplyFilter = false
+          for (const value of values) {
+            if (value) {
+              queryStringParameters.append(fieldId, value)
+              shouldApplyFilter = true
+            }
           }
-        }
-        // Filters with only blank values should not be applied
-        if (shouldApplyFilter) filter.applied = true
-      }
+          return shouldApplyFilter ? [...indexes, index] : indexes
+        },
+        []
+      )
 
       let pageToLoad
       if (replaceRecords) {
@@ -168,11 +179,18 @@ const TableView = ({
 
       const success = await fetchRecords(queryStringParameters, replaceRecords)
 
-      if (success) setFilters(filters)
+      if (success)
+        setFilters(prev =>
+          prev.map((filter, index) =>
+            appliedFilterIndexes.includes(index)
+              ? { ...filter, applied: true }
+              : filter
+          )
+        )
 
       setLoading(false)
     },
-    [filters, records]
+    [stringifiedFilters, stringifiedRecords]
   )
 
   const loadDebounced = debounce(load, loadDebounceDelay)
@@ -180,10 +198,6 @@ const TableView = ({
   useEffect(() => {
     load()
   }, [])
-
-  const stringifiedFiltersWithValues = JSON.stringify(
-    filters.filter(filter => filter.values?.length)
-  )
 
   // When the filters have different values, load the first page of results
   useEffect(() => {
@@ -268,14 +282,14 @@ const TableView = ({
   return (
     <TableViewContainer isOpen={isOpen} isFilterPanelOpen={isFilterPanelOpen}>
       <TableContainer>
-        {!loading && records?.length === 0 && (
+        {!loading && records.length === 0 && (
           <NoRecordsFound role="status">
             {appliedFilters.length
               ? 'No matching records found.'
               : 'No records have been published.'}
           </NoRecordsFound>
         )}
-        {records?.length && (
+        {records.length > 0 && (
           // @ts-expect-error: I'm copying this from the docs,
           // but it doesn't look like their type definitions work
           <FillDatasetGrid
@@ -292,7 +306,7 @@ const TableView = ({
         )}
         {loading && (
           <LoadingMessage>
-            <LoadingSpinner /> Loading {records.length > 0 ? ' more rows' : ''}
+            <LoadingSpinner /> Loading {records.length > 0 && ' more rows'}
           </LoadingMessage>
         )}
       </TableContainer>
