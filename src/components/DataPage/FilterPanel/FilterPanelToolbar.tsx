@@ -34,7 +34,6 @@ const FieldSelector = ({
   addFilterValueSetter,
   onClick = () => null,
 }: FieldSelectorProps) => {
-  console.log('in fieldselector filters', filters)
   return (
     <FieldSelectorDiv onClick={onClick}>
       {filters.map(({ fieldId, type, label, addedToPanel = false }) => (
