@@ -108,7 +108,6 @@ const TableView = ({
   isFilterPanelOpen = false,
   enableVirtualization = true,
 }: TableViewProps) => {
-  console.log('filters at top of tv', filters)
   const [loading, setLoading] = useState(true)
   const [records, setRecords] = useState<Row[]>([])
   const [reachedLastPage, setReachedLastPage] = useState(false)
@@ -150,8 +149,9 @@ const TableView = ({
 
       const queryStringParameters = new URLSearchParams()
 
-      const appliedFilterIndexes = addedFilters.reduce<number[]>(
+      const appliedFilterIndexes = filters.reduce<number[]>(
         (indexes, filter, index) => {
+          if (!filter.addedToPanel) return indexes
           const { fieldId, values = [] } = filter
           let shouldApplyFilter = false
           for (const value of values) {
@@ -253,9 +253,9 @@ const TableView = ({
     width: 55,
   }
 
-  const keysOfFilteredColumns = filters.reduce<string[]>(
-    (keys, { applied, values, dataGridKey }) =>
-      applied && values?.length ? [...keys, dataGridKey] : keys,
+  const keysOfFilteredColumns = addedFilters.reduce<string[]>(
+    (keys, { applied, dataGridKey }) =>
+      applied ? [...keys, dataGridKey] : keys,
     []
   )
 

@@ -109,7 +109,9 @@ const FilterPanelToolbar = ({
   const screenReaderAnnouncementRef = useRef<HTMLDivElement>(null)
 
   const removeAllFilters = () => {
-    setFilters(prev => prev.map(filter => ({ ...filter, addedToPanel: false })))
+    setFilters(prev =>
+      prev.map(filter => ({ ...filter, applied: false, addedToPanel: false }))
+    )
   }
 
   return (

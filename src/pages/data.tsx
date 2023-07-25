@@ -115,8 +115,6 @@ const DataPage = ({
 
   const [filters, setFilters] = useState<Filter[]>([])
 
-  console.log('filters on render', filters)
-
   /** Update the view and, depending on what the view is, update the map
    * projection view */
   const changeView = useCallback((newView: View, setHash = true) => {
@@ -138,7 +136,6 @@ const DataPage = ({
       type: filter.type || 'text',
       ...filter,
     }))
-    console.log('filters in fetchMetadata', filters)
     setFilters(filters)
   }, [setFilters])
 
