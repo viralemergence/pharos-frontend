@@ -188,10 +188,6 @@ describe('The public data page', () => {
     })
   })
 
-  it.skip('shows unfiltered records when filter input is blanked', async () => {
-    // TODO: Write this
-  })
-
   it('has a button labeled Globe that changes the projection of the map to globe', () => {
     render(<DataPage />)
     fireEvent.click(getMapViewButton())
