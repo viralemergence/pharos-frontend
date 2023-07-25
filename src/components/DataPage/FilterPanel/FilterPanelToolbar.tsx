@@ -109,7 +109,12 @@ const FilterPanelToolbar = ({
 
   const removeAllFilters = () => {
     setFilters(prev =>
-      prev.map(filter => ({ ...filter, applied: false, addedToPanel: false }))
+      prev.map(filter => ({
+        ...filter,
+        applied: false,
+        addedToPanel: false,
+        values: undefined,
+      }))
     )
   }
 

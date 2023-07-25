@@ -81,6 +81,7 @@ describe('The public data page', () => {
   // that the grid appears after loading published records.
   const getDataGridAfterWaiting = async () =>
     await screen.findByTestId('datagrid')
+  const getClearFiltersButton = () => screen.getByText('Clear all')
 
   it('renders', () => {
     render(<DataPage />)
@@ -152,6 +153,50 @@ describe('The public data page', () => {
         screen.findByText(label, { selector: 'button' })
       )
     )
+  })
+
+  it('has a filter panel that contains a button that clears all filters in the panel', async () => {
+    render(<DataPage />)
+    fireEvent.click(getAddFilterButton())
+    const addFilterForAfterDate = await screen.findByText(
+      'Collected on or after date',
+      {
+        selector: 'button',
+      }
+    )
+    fireEvent.click(addFilterForAfterDate)
+    expect(
+      screen.getByLabelText('Collected on or after date')
+    ).toBeInTheDocument()
+    fireEvent.click(getClearFiltersButton())
+    expect(
+      screen.queryByLabelText('Collected on or after date')
+    ).not.toBeInTheDocument()
+  })
+
+  it('lets the user add date fields to the panel', async () => {
+    render(<DataPage />)
+    fireEvent.click(getAddFilterButton())
+    const addFilterForAfterDate = await screen.findByText(
+      'Collected on or after date',
+      {
+        selector: 'button',
+      }
+    )
+    const addFilterForBeforeDate = await screen.findByText(
+      'Collected on or before date',
+      {
+        selector: 'button',
+      }
+    )
+    fireEvent.click(addFilterForAfterDate)
+    fireEvent.click(addFilterForBeforeDate)
+    const filterInputs = screen.getAllByLabelText(
+      /Collected on or (before|after) date/
+    )
+    // Expect the inputs to appear in the order they were added
+    expect(filterInputs[0].ariaLabel).toEqual('Collected on or after date')
+    expect(filterInputs[1].ariaLabel).toEqual('Collected on or before date')
   })
 
   it('lets the user filter by collection start date', async () => {

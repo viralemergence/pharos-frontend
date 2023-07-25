@@ -21,7 +21,7 @@ export type Filter = {
   addedToPanel?: boolean
   values?: string[]
   applied?: boolean
-  /* Determines the order that filters appear in, in the panel */
+  /* Determines the order of the filters in the panel */
   panelIndex?: number
 }
 
