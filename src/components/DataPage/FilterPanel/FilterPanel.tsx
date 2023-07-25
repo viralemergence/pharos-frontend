@@ -5,18 +5,17 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import styled from 'styled-components'
-import { Field, Filter, FilterValues, UpdateFilterFunction } from '../constants'
-import { FieldName } from './DisplayComponents'
+import type { Filter } from 'pages/data'
+import sortBy from 'lodash/sortBy'
+import {
+  FieldName,
+  FieldInput,
+  ListOfAddedFilters,
+  FilterLabel,
+  FilterListItemElement,
+  Panel,
+} from './DisplayComponents'
 import FilterPanelToolbar from './FilterPanelToolbar'
-
-const panelWidth = '410px'
-
-// Move this into the DisplayComponents file
-const Label = styled.label`
-  ${({ theme }) => theme.smallParagraph}
-  display: block;
-`
 
 const FilterInput = ({
   fieldLabel,
@@ -27,12 +26,12 @@ const FilterInput = ({
 }: {
   fieldLabel: string
   fieldType: string
-  values: FilterValues
+  values: string[]
   updateFilter: UpdateFilterFunction
   filterIndex: number
 }) => {
   return (
-    <Label>
+    <FilterLabel>
       <FieldName>{fieldLabel}</FieldName>
       <FieldInput
         // This will be a date field if fieldType == 'date'
@@ -56,67 +55,9 @@ const FilterInput = ({
           }
         }}
       />
-    </Label>
+    </FilterLabel>
   )
 }
-
-const Panel = styled.aside<{ open: boolean }>`
-  pointer-events: auto;
-  position: relative;
-  backdrop-filter: blur(47px);
-  background-color: ${({ theme }) => theme.white10PercentOpacity};
-  border: 1px solid ${({ theme }) => theme.white10PercentOpacity};
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  color: ${({ theme }) => theme.white};
-  display: flex;
-  height: 100%;
-  max-height: 100%;
-  flex-flow: column nowrap;
-  margin-left: ${({ open }) => (open ? '30px' : `-${panelWidth}`)};
-  width: min(${panelWidth}, 100%);
-  max-width: ${panelWidth};
-  transition: margin-left 300ms cubic-bezier(0.4, 0, 0.2, 1);
-  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
-    transition: none;
-    backdrop-filter: blur(100px);
-    border-radius: 0;
-    border: 0;
-    display: ${({ open }) => (open ? 'flex' : 'none')};
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: 0;
-    height: 100%;
-    margin-right: 0;
-    position: absolute;
-    width: 100vw;
-    max-width: unset;
-  }
-`
-
-const FieldInput = styled.input`
-  ${({ theme }) => theme.smallParagraph};
-  background-color: #202020;
-  border-radius: 5px;
-  border: 1px solid ${({ theme }) => theme.white};
-  color: ${({ theme }) => theme.white};
-  font-weight: 600;
-  padding: 8px 10px;
-  &:invalid {
-    border-color: ${({ theme }) => theme.red};
-  }
-
-  // TODO: Use this to dim Safari dark mode placeholder better
-  // &.blank::-webkit-datetime-edit {
-  //   &-day-field,
-  //   &-month-field,
-  //   &-year-field {
-  //     opacity: 0.3;
-  //   }
-  // }
-`
 
 const FilterValueSetter = ({
   filterIndex,
@@ -129,7 +70,7 @@ const FilterValueSetter = ({
   filterIndex: number
   fieldLabel: string
   fieldType: 'text' | 'date'
-  values: FilterValues
+  values: string[]
   updateFilter: UpdateFilterFunction
   options: string[] | undefined
 }) => {
@@ -148,15 +89,6 @@ const FilterValueSetter = ({
   // else return <FilterInput {...props} fieldType={fieldType} />
 }
 
-const FilterListItemElement = styled.li<{ opacity: number }>`
-  list-style: none;
-  margin-bottom: 20px;
-  opacity: ${({ opacity }) => opacity};
-  transition: opacity 0.25s;
-  &:last-child {
-    margin-bottom: 0;
-  }
-`
 const FilterListItem = ({ children }: { children: React.ReactNode }) => {
   const [opacity, setOpacity] = useState(0)
   useEffect(() => {
@@ -167,47 +99,35 @@ const FilterListItem = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
-const FilterList = styled.ul`
-  position: absolute;
-  margin: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  overflow-y: auto;
-  padding: 34px 40px;
-  flex-grow: 1;
-  flex-shrink: 1;
-  max-height: 100%;
-  top: 73px;
-  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
-    top: 64px;
-  }
-  @media (max-width: ${({ theme }) => theme.breakpoints.mobileMaxWidth}) {
-    padding: 34px 20px;
-  }
-`
+type UpdateFilterFunction = (
+  filterIndex: number,
+  newFilterValues: string[]
+) => void
 
 const FilterPanel = ({
   isFilterPanelOpen,
   setIsFilterPanelOpen,
-  fields,
   filters,
   setFilters,
-  updateFilter,
 }: {
   isFilterPanelOpen: boolean
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
-  fields: Record<string, Field>
   filters: Filter[]
   setFilters: Dispatch<SetStateAction<Filter[]>>
-  /** Event handler for when one of the filter input elements receives new input */
-  updateFilter: UpdateFilterFunction
 }) => {
   const filterListRef = useRef<HTMLUListElement | null>(null)
 
-  const idsOfAddedFields = filters.map(({ fieldId }) => fieldId)
-  for (const fieldId in fields) {
-    fields[fieldId].addedToPanel = idsOfAddedFields.includes(fieldId)
+  const filtersSorted = sortBy(filters, 'panelIndex')
+
+  const updateFilter: UpdateFilterFunction = (
+    /* Index of the filter to update. This is the index in the Filters array,
+     * not the panelIndex */
+    index,
+    newValues
+  ) => {
+    setFilters(prev =>
+      prev.map((filter, i) => (index === i ? { ...filter, newValues } : filter))
+    )
   }
 
   return (
@@ -220,30 +140,30 @@ const FilterPanel = ({
       id="pharos-filter-panel"
     >
       <FilterPanelToolbar
-        fields={fields}
         isFilterPanelOpen={isFilterPanelOpen}
         setIsFilterPanelOpen={setIsFilterPanelOpen}
         filters={filters}
         setFilters={setFilters}
         filterListRef={filterListRef}
       />
-      <FilterList ref={filterListRef}>
-        {filters.map((filter, filterIndex) => {
-          const { label = '', type = 'text' } = fields[filter.fieldId]
-          return (
-            <FilterListItem key={`${filter.fieldId}-${filterIndex}`}>
-              <FilterValueSetter
-                filterIndex={filterIndex}
-                fieldLabel={label}
-                fieldType={type}
-                options={fields[filter.fieldId].options}
-                updateFilter={updateFilter}
-                values={filter.values}
-              />
-            </FilterListItem>
-          )
-        })}
-      </FilterList>
+      <ListOfAddedFilters ref={filterListRef}>
+        {filtersSorted.map(
+          ({ fieldId, label, type, options, values = [] }, filterIndex) => {
+            return (
+              <FilterListItem key={`${fieldId}-${filterIndex}`}>
+                <FilterValueSetter
+                  filterIndex={filterIndex}
+                  fieldLabel={label}
+                  fieldType={type}
+                  options={options}
+                  updateFilter={updateFilter}
+                  values={values}
+                />
+              </FilterListItem>
+            )
+          }
+        )}
+      </ListOfAddedFilters>
     </Panel>
   )
 }

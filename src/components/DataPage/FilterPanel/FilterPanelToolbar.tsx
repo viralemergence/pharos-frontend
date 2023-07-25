@@ -21,37 +21,35 @@ import {
   FieldSelectorMessage,
   ScreenReaderOnly,
 } from './DisplayComponents'
-import { Field, Filter } from '../constants'
+import type { Filter } from 'pages/data'
 
 interface FieldSelectorProps {
-  fields: Record<string, Field>
-  addFilterValueSetter: (fieldId: string) => void
+  filters: Filter[]
+  addFilterValueSetter: (options: Partial<Filter>) => void
   onClick?: (e?: React.MouseEvent<HTMLDivElement>) => void
 }
 
 const FieldSelector = ({
-  fields,
+  filters,
   addFilterValueSetter,
   onClick = () => null,
 }: FieldSelectorProps) => {
   return (
     <FieldSelectorDiv onClick={onClick}>
-      {Object.entries(fields).map(
-        ([fieldId, { label, addedToPanel = false }]) => (
-          <FieldSelectorButton
-            key={fieldId}
-            value={fieldId}
-            onClick={_ => {
-              addFilterValueSetter(fieldId)
-            }}
-            disabled={addedToPanel}
-            aria-label={`Add filter for ${label}`}
-          >
-            {label}
-          </FieldSelectorButton>
-        )
-      )}
-      {Object.entries(fields).length === 0 && (
+      {filters.map(({ fieldId, type, label, addedToPanel = false }) => (
+        <FieldSelectorButton
+          key={fieldId}
+          value={fieldId}
+          onClick={_ => {
+            addFilterValueSetter({ fieldId, type })
+          }}
+          disabled={addedToPanel}
+          aria-label={`Add filter for ${label}`}
+        >
+          {label}
+        </FieldSelectorButton>
+      ))}
+      {filters.length === 0 && (
         <FieldSelectorMessage>Loading&hellip;</FieldSelectorMessage>
       )}
     </FieldSelectorDiv>
@@ -59,14 +57,12 @@ const FieldSelector = ({
 }
 
 const FilterPanelToolbar = ({
-  fields,
   filters,
   setFilters,
   isFilterPanelOpen,
   setIsFilterPanelOpen,
   filterListRef,
 }: {
-  fields: Record<string, Field>
   filters: Filter[]
   setFilters: Dispatch<SetStateAction<Filter[]>>
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
@@ -101,7 +97,8 @@ const FilterPanelToolbar = ({
       if (announcement) {
         if (!announcement.textContent?.startsWith('Filters panel opened'))
           announcement.textContent = 'Filters panel opened'
-        // Always add an extra space to force screen readers to read the announcement
+        // Always add an extra space to force screen readers to read the
+        // announcement
         announcement.textContent += '\xa0'
       }
     }
@@ -146,19 +143,25 @@ const FilterPanelToolbar = ({
           animDuration={0}
         >
           <FieldSelector
-            addFilterValueSetter={fieldId => {
+            filters={filters}
+            addFilterValueSetter={({ fieldId, type }) => {
               closeFieldSelector()
-              if (fields[fieldId].type !== 'date') {
+              if (type !== 'date') {
                 // For now, do not handle filters other than dates
-                //return
+                return
               }
-              setFilters(filters => [...filters, { fieldId, values: [] }])
+              setFilters(filters =>
+                filters.map(filter =>
+                  filter.fieldId === fieldId
+                    ? { ...filter, addedToPanel: true, values: [] }
+                    : filter
+                )
+              )
               const filterList = filterListRef.current
               setTimeout(() => {
                 if (filterList) filterList.scrollTop = filterList.scrollHeight
               }, 0)
             }}
-            fields={fields}
           />
         </Dropdown>
         {filters.length > 0 && (

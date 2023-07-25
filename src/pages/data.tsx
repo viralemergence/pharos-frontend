@@ -12,27 +12,18 @@ import DataToolbar, { View, isView } from 'components/DataPage/Toolbar/Toolbar'
 
 import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
 
-// TODO: Combine Field, Filters and appliedFilters using something like this:
-// export type Field = {
-//   label: string
-//   dataGridKey?: string
-//   type?: 'text' | 'date'
-//   options?: string[]
-//   addedToPanel?: boolean
-//   filterValues: FilterValues[]
-//   applied: boolean
-// }
-// export type FilterValues = string[]
-
-// filters = [
-//   // This is a Filter
-//   { fieldId: 'host_species', values: [] },
-// ]
-
-export type UpdateFilterFunction = (
-  filterIndex: number,
-  newFilterValues: FilterValues
-) => void
+export type Filter = {
+  fieldId: string
+  label: string
+  type: 'text' | 'date'
+  dataGridKey: string
+  options: string[]
+  addedToPanel?: boolean
+  values?: string[]
+  applied?: boolean
+  /* Determines the order that filters appear in, in the panel */
+  panelIndex?: number
+}
 
 const METADATA_URL = `${process.env.GATSBY_API_URL}/metadata-for-published-records`
 
@@ -94,6 +85,7 @@ const PageContainer = styled.div`
   }
   width: 100%;
 `
+
 const MapOverlay = styled.div`
   backdrop-filter: blur(30px);
   position: absolute;
@@ -112,38 +104,24 @@ const DataPage = ({
    * cells in the table are rendered immediately */
   enableTableVirtualization?: boolean
 }): JSX.Element => {
-  const [viewAndMapProjection, setViewAndMapProjection] = useState<{
-    /* The 'view' is controlled by the three radio buttons */
-    view: View
-    /* This variable controls the state of the map. If the user clicks the
-     * 'Globe' radio button, then the 'Table' radio button, the view will be
-     * 'table' and the map projection will be 'globe' */
-    mapProjection: MapProjection
-  }>({ view: View.map, mapProjection: 'naturalEarth' })
-  const { view, mapProjection } = viewAndMapProjection
+  /* The 'view' is controlled by the three radio buttons */
+  const [view, setView] = useState<View>(View.map)
+  /* This variable controls the state of the map. If the user clicks the
+   * 'Globe' radio button, then the 'Table' radio button, the view will be
+   * 'table' and the map projection will be 'globe' */
+  const [mapProjection, setMapProjection] =
+    useState<MapProjection>('naturalEarth')
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
 
-  const [fields, setFields] = useState<Record<string, Field>>({})
-
-  /** Filters that will be applied to the published records */
   const [filters, setFilters] = useState<Filter[]>([])
-
-  /** Filters that have been successfully applied to the published
-   * records. That is, these filters have been sent to the server, and it
-   * responded with an appropriate subset of the records. This is used for
-   * color-coding the filtered columns. */
-  const [appliedFilters, setAppliedFilters] = useState<Filter[]>([])
 
   /** Update the view and, depending on what the view is, update the map
    * projection view */
   const changeView = useCallback((newView: View, setHash = true) => {
     if (setHash) window.location.hash = newView
-    setViewAndMapProjection(prev => {
-      let newMapProjection = prev.mapProjection
-      if (newView === View.globe) newMapProjection = 'globe'
-      if (newView === View.map) newMapProjection = 'naturalEarth'
-      return { view: newView, mapProjection: newMapProjection }
-    })
+    setView(newView)
+    if (newView === View.globe) setMapProjection('globe')
+    if (newView === View.map) setMapProjection('naturalEarth')
   }, [])
 
   const fetchMetadata = useCallback(async () => {
@@ -153,21 +131,12 @@ const DataPage = ({
       console.log(`GET ${METADATA_URL}: malformed response`)
       return
     }
-    setFields(data.fields)
-  }, [setFields])
-
-  const updateFilter: UpdateFilterFunction = (
-    indexOfFilterToUpdate,
-    newValues
-  ) => {
-    setFilters(prev =>
-      prev.map(({ fieldId, values }, index) =>
-        index == indexOfFilterToUpdate
-          ? { fieldId, values: newValues }
-          : { fieldId, values }
-      )
-    )
-  }
+    const filters = Object.entries(data.fields).map(([fieldId, filter]) => ({
+      fieldId,
+      ...filter,
+    }))
+    setFilters(filters)
+  }, [setFilters])
 
   useEffect(() => {
     const hash = window.location.hash.replace('#', '')
@@ -197,20 +166,16 @@ const DataPage = ({
           />
           <ViewMain isFilterPanelOpen={isFilterPanelOpen}>
             <FilterPanel
+              filters={filters}
+              setFilters={setFilters}
               isFilterPanelOpen={isFilterPanelOpen}
               setIsFilterPanelOpen={setIsFilterPanelOpen}
-              fields={fields}
-              filters={filters}
-              updateFilter={updateFilter}
-              setFilters={setFilters}
             />
             <TableView
-              isFilterPanelOpen={isFilterPanelOpen}
-              isOpen={view === View.table}
-              fields={fields}
               filters={filters}
-              appliedFilters={appliedFilters}
-              setAppliedFilters={setAppliedFilters}
+              setFilters={setFilters}
+              isOpen={view === View.table}
+              isFilterPanelOpen={isFilterPanelOpen}
               enableVirtualization={enableTableVirtualization}
             />
           </ViewMain>
@@ -221,16 +186,23 @@ const DataPage = ({
 }
 
 interface MetadataResponse {
-  fields: Record<string, Field>
+  fields: Record<string, FilterInMetadata>
+}
+interface FilterInMetadata {
+  label: string
+  type: 'text' | 'date'
+  dataGridKey: string
+  options: string[]
 }
 
-const isValidFieldInMetadataResponse = (data: unknown): data is Field => {
+const isValidFieldInMetadataResponse = (data: unknown): data is Filter => {
   if (!isNormalObject(data)) return false
   const { label, dataGridKey = '', type = '', options = [] } = data
   return (
     typeof label === 'string' &&
     typeof dataGridKey === 'string' &&
     typeof type === 'string' &&
+    ['text', 'date'].includes(type) &&
     Array.isArray(options) &&
     options.every?.(option => typeof option === 'string')
   )
@@ -246,7 +218,7 @@ const isValidMetadataResponse = (data: unknown): data is MetadataResponse => {
 }
 
 interface MetadataResponse {
-  fields: Record<string, Field>
+  fields: Record<string, Filter>
 }
 
 export default DataPage

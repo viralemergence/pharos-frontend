@@ -10,8 +10,8 @@ import styled from 'styled-components'
 import DataGrid, { Column } from 'react-data-grid'
 
 import LoadingSpinner from './LoadingSpinner'
-import type { Filter, Field } from 'pages/data'
-import { isNormalObject } from 'utilities/data'
+import type { Filter } from 'pages/data'
+import isNormalObject from 'utilities/isNormalObject'
 
 const loadDebounceDelay = 300
 
@@ -86,10 +86,8 @@ const NoRecordsFound = styled.div.attrs(({ role }) => ({ role }))`
 `
 
 interface TableViewProps {
-  fields?: Record<string, Field>
   filters?: Filter[]
-  appliedFilters?: Filter[]
-  setAppliedFilters: Dispatch<SetStateAction<Filter[]>>
+  setFilters: Dispatch<SetStateAction<Filter[]>>
   isOpen?: boolean
   isFilterPanelOpen?: boolean
   /** Virtualization should be disabled in tests via this prop, so that all the
@@ -105,9 +103,7 @@ const rowKeyGetter = (row: Row) => row.pharosID
 
 const TableView = ({
   filters = [],
-  appliedFilters = [],
-  setAppliedFilters,
-  fields = {},
+  setFilters,
   isOpen = true,
   isFilterPanelOpen = false,
   enableVirtualization = true,
@@ -119,9 +115,14 @@ const TableView = ({
   /** Load published records. This function prepares the query string and calls
    * fetchRecords() to retrieve records from the API. */
   const load = useCallback(
-    async (options: LoadOptions = {}) => {
-      const { replaceRecords = false } = options
-      let { shouldDebounce = false } = options
+    async (
+      options: {
+        replaceRecords?: boolean
+        shouldDebounce?: boolean
+      } = {}
+    ) => {
+      const replaceRecords = options.replaceRecords
+      let shouldDebounce = options.shouldDebounce
 
       // When clearing filters, don't debounce
       if (!filters.length) shouldDebounce = false
@@ -139,10 +140,9 @@ const TableView = ({
       setLoading(true)
 
       const queryStringParameters = new URLSearchParams()
-      const filtersToApply: Filter[] = []
 
       for (const filter of filters) {
-        const { fieldId, values } = filter
+        const { fieldId, values = [] } = filter
         let shouldApplyFilter = false
         for (const value of values) {
           if (value) {
@@ -151,7 +151,7 @@ const TableView = ({
           }
         }
         // Filters with only blank values should not be applied
-        if (shouldApplyFilter) filtersToApply.push(filter)
+        if (shouldApplyFilter) filter.applied = true
       }
 
       let pageToLoad
@@ -167,7 +167,9 @@ const TableView = ({
       queryStringParameters.append('pageSize', PAGE_SIZE.toString())
 
       const success = await fetchRecords(queryStringParameters, replaceRecords)
-      if (success) setAppliedFilters(filtersToApply)
+
+      if (success) setFilters(filters)
+
       setLoading(false)
     },
     [filters, records]
@@ -180,7 +182,7 @@ const TableView = ({
   }, [])
 
   const stringifiedFiltersWithValues = JSON.stringify(
-    filters.filter(filter => filter.values.length > 0)
+    filters.filter(filter => filter.values?.length)
   )
 
   // When the filters have different values, load the first page of results
@@ -237,9 +239,11 @@ const TableView = ({
     width: 55,
   }
 
-  const dataGridKeysForFilteredColumns = appliedFilters
-    .filter(({ values }) => values.length > 0)
-    .map(({ fieldId }) => fields[fieldId]?.dataGridKey)
+  const keysOfFilteredColumns = filters.reduce<string[]>(
+    (keys, { applied, values, dataGridKey }) =>
+      applied && values?.length ? [...keys, dataGridKey] : keys,
+    []
+  )
 
   const columns: readonly Column<Row>[] = [
     rowNumberColumn,
@@ -250,7 +254,7 @@ const TableView = ({
         name: key,
         width: key.length * 7.5 + 15 + 'px',
         resizable: true,
-        cellClass: dataGridKeysForFilteredColumns.includes(key)
+        cellClass: keysOfFilteredColumns.includes(key)
           ? 'in-filtered-column'
           : undefined,
       })),
@@ -259,18 +263,19 @@ const TableView = ({
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     if (!loading && !reachedLastPage && divIsAtBottom(event)) load()
   }
+  const appliedFilters = filters.filter(filter => filter.applied)
 
   return (
     <TableViewContainer isOpen={isOpen} isFilterPanelOpen={isFilterPanelOpen}>
       <TableContainer>
         {!loading && records?.length === 0 && (
           <NoRecordsFound role="status">
-            {appliedFilters.length > 0
+            {appliedFilters.length
               ? 'No matching records found.'
               : 'No records have been published.'}
           </NoRecordsFound>
         )}
-        {records?.length > 0 && (
+        {records?.length && (
           // @ts-expect-error: I'm copying this from the docs,
           // but it doesn't look like their type definitions work
           <FillDatasetGrid
@@ -293,11 +298,6 @@ const TableView = ({
       </TableContainer>
     </TableViewContainer>
   )
-}
-
-export interface LoadOptions {
-  replaceRecords?: boolean
-  shouldDebounce?: boolean
 }
 
 export interface Row {

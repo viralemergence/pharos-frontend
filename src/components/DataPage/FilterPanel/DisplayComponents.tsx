@@ -199,3 +199,98 @@ export const ScreenReaderOnly = styled.div`
   position: absolute;
   width: 0px;
 `
+
+export const FilterListItemElement = styled.li<{ opacity: number }>`
+  list-style: none;
+  margin-bottom: 20px;
+  opacity: ${({ opacity }) => opacity};
+  transition: opacity 0.25s;
+  &:last-child {
+    margin-bottom: 0;
+  }
+`
+
+export const ListOfAddedFilters = styled.ul`
+  position: absolute;
+  margin: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  overflow-y: auto;
+  padding: 34px 40px;
+  flex-grow: 1;
+  flex-shrink: 1;
+  max-height: 100%;
+  top: 73px;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    top: 64px;
+  }
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobileMaxWidth}) {
+    padding: 34px 20px;
+  }
+`
+
+export const FilterLabel = styled.label`
+  ${({ theme }) => theme.smallParagraph}
+  display: block;
+`
+
+const panelWidth = '410px'
+
+export const Panel = styled.aside<{ open: boolean }>`
+  pointer-events: auto;
+  position: relative;
+  backdrop-filter: blur(47px);
+  background-color: ${({ theme }) => theme.white10PercentOpacity};
+  border: 1px solid ${({ theme }) => theme.white10PercentOpacity};
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  color: ${({ theme }) => theme.white};
+  display: flex;
+  height: 100%;
+  max-height: 100%;
+  flex-flow: column nowrap;
+  margin-left: ${({ open }) => (open ? '30px' : `-${panelWidth}`)};
+  width: min(${panelWidth}, 100%);
+  max-width: ${panelWidth};
+  transition: margin-left 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    transition: none;
+    backdrop-filter: blur(100px);
+    border-radius: 0;
+    border: 0;
+    display: ${({ open }) => (open ? 'flex' : 'none')};
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    height: 100%;
+    margin-right: 0;
+    position: absolute;
+    width: 100vw;
+    max-width: unset;
+  }
+`
+
+export const FieldInput = styled.input`
+  ${({ theme }) => theme.smallParagraph};
+  background-color: #202020;
+  border-radius: 5px;
+  border: 1px solid ${({ theme }) => theme.white};
+  color: ${({ theme }) => theme.white};
+  font-weight: 600;
+  padding: 8px 10px;
+  &:invalid {
+    border-color: ${({ theme }) => theme.red};
+  }
+
+  // TODO: Use this to dim Safari dark mode placeholder better
+  // &.blank::-webkit-datetime-edit {
+  //   &-day-field,
+  //   &-month-field,
+  //   &-year-field {
+  //     opacity: 0.3;
+  //   }
+  // }
+`
