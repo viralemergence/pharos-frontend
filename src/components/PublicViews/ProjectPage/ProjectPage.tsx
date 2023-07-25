@@ -172,7 +172,7 @@ const ProjectPage = () => {
                 <h2>Project published</h2>
                 <p>{formatDate(project.datePublished)}</p>
                 <h2>Project ID</h2>
-                <p>{project.projectID}</p>
+                <pre>{project.projectID}</pre>
                 {project.relatedMaterials &&
                   project.relatedMaterials.length > 0 && (
                     <>
