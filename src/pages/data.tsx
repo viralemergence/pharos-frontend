@@ -162,7 +162,7 @@ const DataPage = ({
             changeView={changeView}
             isFilterPanelOpen={isFilterPanelOpen}
             setIsFilterPanelOpen={setIsFilterPanelOpen}
-            appliedFilters={appliedFilters}
+            filters={filters}
           />
           <ViewMain isFilterPanelOpen={isFilterPanelOpen}>
             <FilterPanel
@@ -188,6 +188,7 @@ const DataPage = ({
 interface MetadataResponse {
   fields: Record<string, FilterInMetadata>
 }
+
 interface FilterInMetadata {
   label: string
   type: 'text' | 'date'
@@ -215,10 +216,6 @@ const isValidMetadataResponse = (data: unknown): data is MetadataResponse => {
   return Object.values(fields).every?.(field =>
     isValidFieldInMetadataResponse(field)
   )
-}
-
-interface MetadataResponse {
-  fields: Record<string, Filter>
 }
 
 export default DataPage
