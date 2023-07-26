@@ -24,6 +24,7 @@ import formatDate from 'utilities/formatDate'
 import { MintButtonLink } from 'components/ui/MintButton'
 import useAppState from 'hooks/useAppState'
 import { UserStatus } from 'reducers/stateReducer/types'
+import DatasetsTable from 'components/AuthenticatedViews/ProjectPage/DatasetsTable/DatasetsTable'
 
 const Container = styled.div`
   background-color: ${({ theme }) => theme.lightBlack};
@@ -135,21 +136,13 @@ const ProjectPage = () => {
               Map placeholder
             </div>
           </PublicProjectPageContentBox>
-          <PublicProjectPageContentBox>
-            <div
-              style={{
-                background: 'darkgray',
-                height: 100,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'darkslategray',
-                fontStyle: 'italic',
-              }}
-            >
-              Datasets placeholder
-            </div>
-          </PublicProjectPageContentBox>
+          <DatasetsTable
+            publicView={true}
+            project={project}
+            datasets={
+              status === ProjectDataStatus.Loaded ? project.datasets : []
+            }
+          />
           {status === ProjectDataStatus.Loading ||
             (status === ProjectDataStatus.Loaded &&
               (project.citation ||

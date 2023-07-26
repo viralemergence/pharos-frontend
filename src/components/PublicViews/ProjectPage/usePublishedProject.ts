@@ -1,7 +1,14 @@
 import useProjectID from 'hooks/project/useProjectID'
 import { useEffect, useState } from 'react'
 
-interface PublishedProject {
+export interface PublishedDataset {
+  projectID: string
+  datasetID: string
+  name: string
+  lastUpdated: string
+}
+
+export interface PublishedProject {
   projectID: string
   name: string
   datePublished: string
@@ -12,10 +19,7 @@ interface PublishedProject {
   relatedMaterials?: string[]
   projectPublications?: string[]
   othersCiting?: string[]
-  datasets: {
-    datasetID: string
-    name: string
-  }[]
+  datasets: PublishedDataset[]
   authors: {
     researcherID: string
     name: string
