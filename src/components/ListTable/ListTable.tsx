@@ -10,25 +10,30 @@ const mediumBreakpoint = 1000
 const Container = styled.div`
   max-width: 100%;
 `
-const TableGrid = styled.div`
+const TableGrid = styled.div<{ $darkmode: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 15px;
 
   @media (min-width: ${cardsBreakpoint - 1}px) {
-    border: 1px solid ${({ theme }) => theme.medGray};
+    ${({ $darkmode, theme }) =>
+      $darkmode
+        ? `border-top: 5px solid ${theme.mint}`
+        : `border: 1px solid ${theme.medGray}`};
     gap: 0px;
   }
 `
 export const RowLink = styled(Link)<{
   $wideColumnTemplate?: string
   $mediumColumnTemplate?: string
+  $darkmode: boolean
 }>`
   transition: 150ms ease;
   display: flex;
   flex-direction: column;
-  background-color: ${({ theme }) => theme.veryLightMint};
-  color: ${({ theme }) => theme.black};
+  background-color: ${({ theme, $darkmode }) =>
+    $darkmode ? theme.medDarkBlack : theme.veryLightMint};
+  color: ${({ theme, $darkmode }) => ($darkmode ? theme.white : theme.black)};
   text-decoration: none;
   padding: 15px;
 
@@ -41,13 +46,18 @@ export const RowLink = styled(Link)<{
     grid-template-columns: ${({ $mediumColumnTemplate }) =>
       $mediumColumnTemplate};
 
-    background-color: ${({ theme }) => theme.white};
+    background-color: ${({ theme, $darkmode }) =>
+      $darkmode ? theme.medBlack : theme.white};
     &:nth-child(2n) {
-      background: ${({ theme }) => theme.veryLightMint};
+      background: ${({ theme, $darkmode }) =>
+        $darkmode ? theme.medDarkBlack : theme.veryLightMint};
     }
 
     &:nth-of-type(1) {
-      box-shadow: inset 0px 4px 4px #e0eae8;
+      box-shadow: ${({ $darkmode }) =>
+        $darkmode
+          ? '0px 4px 4px 0px rgba(0, 0, 0, 0.25) inset'
+          : 'inset 0px 4px 4px #e0eae8'};
     }
   }
 
@@ -56,13 +66,15 @@ export const RowLink = styled(Link)<{
   }
 
   &:hover {
-    background-color: ${({ theme }) => lighten(0.05, theme.hoverMint)};
+    background-color: ${({ theme, $darkmode }) =>
+      $darkmode ? theme.black : lighten(0.05, theme.hoverMint)};
   }
 `
 
 export const HeaderRow = styled.div<{
   $wideColumnTemplate?: string
   $mediumColumnTemplate?: string
+  $darkmode?: boolean
 }>`
   display: grid;
 
@@ -75,6 +87,9 @@ export const HeaderRow = styled.div<{
 
   ${({ theme }) => theme.smallParagraphSemibold};
   align-items: center;
+  color: ${({ theme, $darkmode }) => ($darkmode ? theme.white : theme.black)};
+  background-color: ${({ theme, $darkmode }) =>
+    $darkmode ? theme.medBlack : theme.white};
 
   > div {
     padding: 15px;
@@ -124,6 +139,7 @@ interface ListTableProps {
   wideColumnTemplate: string
   mediumColumnTemplate?: string
   style?: React.CSSProperties
+  darkmode?: boolean
 }
 
 const ListTable = ({
@@ -131,6 +147,7 @@ const ListTable = ({
   wideColumnTemplate,
   mediumColumnTemplate,
   style,
+  darkmode = false,
 }: ListTableProps) => {
   const childrenWithColumns = React.Children.map(children, child => {
     // Checking isValidElement is the safe way and avoids a typescript
@@ -142,10 +159,12 @@ const ListTable = ({
         child as React.ReactElement<{
           $wideColumnTemplate: string
           $mediumColumnTemplate: string
+          $darkmode?: boolean
         }>,
         {
           $wideColumnTemplate: wideColumnTemplate,
           $mediumColumnTemplate: mediumColumnTemplate ?? wideColumnTemplate,
+          $darkmode: darkmode,
         }
       )
     }
@@ -154,7 +173,7 @@ const ListTable = ({
 
   return (
     <Container style={style}>
-      <TableGrid>{childrenWithColumns}</TableGrid>
+      <TableGrid $darkmode={darkmode}>{childrenWithColumns}</TableGrid>
     </Container>
   )
 }

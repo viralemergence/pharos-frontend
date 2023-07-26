@@ -17,6 +17,8 @@ import {
   hideInNarrowView,
 } from 'components/ProjectPage/ProjectPageLayout'
 
+import CitationsPublications from 'components/ProjectPage/CitationsPublications'
+
 import PublishUnpublishButtons from './PublishUnpublishButtons'
 import DatasetsTable from './DatasetsTable/DatasetsTable'
 import { ProjectPublishStatusChip } from './PublishingStatusChip'
@@ -25,6 +27,7 @@ import useUser from 'hooks/useUser'
 import useProject from 'hooks/project/useProject'
 
 import { commaSeparatedList } from 'utilities/grammar'
+import useDatasets from 'hooks/dataset/useDatasets'
 
 const LoggedInProjectPageContentBox = styled(ProjectPageContentBox)`
   background-color: ${({ theme }) => theme.isThisGrayEvenHereItsSoLight};
@@ -60,24 +63,11 @@ const ProjectStatus = () => {
 const ProjectPage = () => {
   const user = useUser()
   const project = useProject()
+  const datasets = useDatasets()
 
   const relatedMaterials = project.relatedMaterials
     ? commaSeparatedList(project.relatedMaterials)
     : '—'
-
-  const projectPublications =
-    !project.projectPublications || project.projectPublications[0] === '' ? (
-      <p>—</p>
-    ) : (
-      project?.projectPublications?.map(pub => <p>{pub}</p>)
-    )
-
-  const othersCiting =
-    !project.othersCiting || project.othersCiting[0] === '' ? (
-      <p>—</p>
-    ) : (
-      project?.othersCiting?.map(pub => <p>{pub}</p>)
-    )
 
   return (
     <ProjectPageLayout>
@@ -97,16 +87,15 @@ const ProjectPage = () => {
         <MobileProjectStatus>
           <ProjectStatus />
         </MobileProjectStatus>
-        <DatasetsTable />
+        <DatasetsTable
+          publicView={false}
+          project={project}
+          datasets={datasets}
+        />
         <LoggedInProjectPageContentBox style={{}}>
           <h2>Description</h2>
           <p>{project.description || '—'}</p>
-          <h2>How to cite this project</h2>
-          <p>{project.citation || '—'}</p>
-          <h2>Project publications</h2>
-          {projectPublications}
-          <h2>Publications citing this project</h2>
-          {othersCiting}
+          <CitationsPublications project={project} />
         </LoggedInProjectPageContentBox>
       </ProjectPageMain>
       <ProjectPageSidebar>
