@@ -19,11 +19,7 @@ import DatasetStatusMessage from './DatasetStatusMessage/DatasetStatusMessage'
 import PreReleaseButton from './ReleaseButton/PreReleaseButton'
 
 import useProject from 'hooks/project/useProject'
-
-const TopSection = styled.section`
-  padding: 20px 40px;
-  margin-bottom: 15px;
-`
+import { DatasetTopSection } from 'components/DatasetPage/DatasetPageLayout'
 
 const DatasetControls = styled(Controls)`
   display: flex;
@@ -37,7 +33,7 @@ const DatasetEditor = () => {
 
   return (
     <>
-      <TopSection>
+      <DatasetTopSection>
         <TopBar>
           <Breadcrumbs>
             <BreadcrumbLink to={`/projects/`}>All projects</BreadcrumbLink>
@@ -59,7 +55,7 @@ const DatasetEditor = () => {
             <CSVUploader />
           </DatasetControls>
         </TopBar>
-      </TopSection>
+      </DatasetTopSection>
 
       <DatasetGrid />
     </>

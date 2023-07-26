@@ -27,7 +27,7 @@ export interface PublishedProject {
   }[]
 }
 
-interface PublishedProjectData {
+export interface PublishedProjectData {
   project: PublishedProject
 }
 
