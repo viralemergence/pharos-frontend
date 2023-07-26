@@ -18,7 +18,7 @@ const TableGrid = styled.div<{ $darkmode: boolean }>`
   @media (min-width: ${cardsBreakpoint - 1}px) {
     ${({ $darkmode, theme }) =>
       $darkmode
-        ? `border-top: 5px solid ${theme.mint}`
+        ? `border-top: thin solid ${theme.mint}`
         : `border: 1px solid ${theme.medGray}`};
     gap: 0px;
   }

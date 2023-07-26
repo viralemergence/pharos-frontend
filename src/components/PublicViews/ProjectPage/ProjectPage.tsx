@@ -6,17 +6,17 @@ import PublicViewBackground from '../PublicViewBackground'
 import {
   ProjectPageMain,
   ProjectPageLayout,
-  ProjectPageContentBox,
   ProjectPageSidebar,
+  ProjectPageContentBox,
 } from 'components/ProjectPage/ProjectPageLayout'
 
 import CitationsPublications from 'components/ProjectPage/CitationsPublications'
 
 import TopBar, {
   Title,
+  Controls,
   Breadcrumbs,
   PublicViewBreadcrumbLink,
-  Controls,
 } from 'components/layout/TopBar'
 
 import usePublishedProject, { ProjectDataStatus } from './usePublishedProject'
@@ -32,7 +32,7 @@ const Container = styled.div`
 `
 const PublicProjectPageContentBox = styled(ProjectPageContentBox)`
   background-color: ${({ theme }) => theme.medDarkBlack};
-  border-top: 5px solid ${({ theme }) => theme.mint};
+  border-top: thin solid ${({ theme }) => theme.mint};
   color: ${({ theme }) => theme.white};
 
   > h2 {
