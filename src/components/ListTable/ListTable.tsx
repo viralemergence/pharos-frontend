@@ -26,7 +26,7 @@ const TableGrid = styled.div<{ $darkmode: boolean }>`
 export const RowLink = styled(Link)<{
   $wideColumnTemplate?: string
   $mediumColumnTemplate?: string
-  $darkmode: boolean
+  $darkmode?: boolean
 }>`
   transition: 150ms ease;
   display: flex;
