@@ -14,10 +14,7 @@ import TopBar, {
   Controls,
 } from 'components/layout/TopBar'
 
-import {
-  ProjectPageMain,
-  ProjectPageContentBox,
-} from 'components/ProjectPage/ProjectPageLayout'
+import { ProjectPageContentBox } from 'components/ProjectPage/ProjectPageLayout'
 
 import useAppState from 'hooks/useAppState'
 import usePublishedProject, {
@@ -68,6 +65,17 @@ const DatasetPage = () => {
               <PublicViewBreadcrumbLink to={`/data/`}>
                 Projects
               </PublicViewBreadcrumbLink>
+              {status === ProjectDataStatus.Loaded && (
+                <BreadcrumbLink
+                  style={{ color: theme.white }}
+                  $active
+                  to={`/${project.projectID}`}
+                >
+                  {status === ProjectDataStatus.Loaded
+                    ? project.name
+                    : 'Loading...'}
+                </BreadcrumbLink>
+              )}
             </Breadcrumbs>
             <Title>Dataset not found</Title>
           </TopBar>
