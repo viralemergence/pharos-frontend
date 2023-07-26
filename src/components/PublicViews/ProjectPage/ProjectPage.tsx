@@ -31,7 +31,7 @@ const Container = styled.div`
   display: flow-root;
 `
 const PublicProjectPageContentBox = styled(ProjectPageContentBox)`
-  background-color: ${({ theme }) => theme.medBlack};
+  background-color: ${({ theme }) => theme.medDarkBlack};
   border-top: 5px solid ${({ theme }) => theme.mint};
   color: ${({ theme }) => theme.white};
 

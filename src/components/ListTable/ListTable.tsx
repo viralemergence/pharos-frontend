@@ -32,7 +32,7 @@ export const RowLink = styled(Link)<{
   display: flex;
   flex-direction: column;
   background-color: ${({ theme, $darkmode }) =>
-    $darkmode ? theme.medDarkBlack : theme.veryLightMint};
+    $darkmode ? theme.medBlack : theme.veryLightMint};
   color: ${({ theme, $darkmode }) => ($darkmode ? theme.white : theme.black)};
   text-decoration: none;
   padding: 15px;
@@ -47,10 +47,10 @@ export const RowLink = styled(Link)<{
       $mediumColumnTemplate};
 
     background-color: ${({ theme, $darkmode }) =>
-      $darkmode ? theme.medBlack : theme.white};
+      $darkmode ? theme.medDarkBlack : theme.white};
     &:nth-child(2n) {
       background: ${({ theme, $darkmode }) =>
-        $darkmode ? theme.medDarkBlack : theme.veryLightMint};
+        $darkmode ? theme.medBlack : theme.veryLightMint};
     }
 
     &:nth-of-type(1) {
@@ -89,7 +89,7 @@ export const HeaderRow = styled.div<{
   align-items: center;
   color: ${({ theme, $darkmode }) => ($darkmode ? theme.white : theme.black)};
   background-color: ${({ theme, $darkmode }) =>
-    $darkmode ? theme.medBlack : theme.white};
+    $darkmode ? theme.medDarkBlack : theme.white};
 
   > div {
     padding: 15px;
@@ -101,8 +101,9 @@ export const HeaderRow = styled.div<{
   }
 `
 
-export const CardHeaderRow = styled.h3`
+export const CardHeaderRow = styled.h3<{ $darkmode?: boolean }>`
   ${({ theme }) => theme.h3};
+  color: ${({ theme, $darkmode }) => ($darkmode ? theme.white : theme.black)};
   margin: 10px 0;
 
   @media (min-width: ${cardsBreakpoint}px) {
