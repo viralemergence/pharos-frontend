@@ -6,8 +6,8 @@ import PublicViewBackground from '../PublicViewBackground'
 import {
   ProjectPageMain,
   ProjectPageLayout,
-  ProjectPageSidebar,
   ProjectPageContentBox,
+  ProjectPageSidebar,
 } from 'components/ProjectPage/ProjectPageLayout'
 
 import CitationsPublications from 'components/ProjectPage/CitationsPublications'
@@ -56,8 +56,6 @@ const AuthorOrganization = styled.div`
 const ProjectPage = () => {
   const { status, data: project } = usePublishedProject()
   const { user } = useAppState()
-
-  console.log(project)
 
   if (status === ProjectDataStatus.Error) {
     console.log(project.error.message)
