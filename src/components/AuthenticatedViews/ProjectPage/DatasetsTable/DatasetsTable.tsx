@@ -9,26 +9,54 @@ import ListTable, {
   TableCell,
 } from 'components/ListTable/ListTable'
 
-import useProject from 'hooks/project/useProject'
 import useModal from 'hooks/useModal/useModal'
 import CreateDatasetForm from '../CreateDatasetForm/CreateDatasetForm'
 import CreateNewDatasetRow from './CreateNewDatasetRow'
 import useDatasets from 'hooks/dataset/useDatasets'
 import { datasetInitialValue } from 'reducers/stateReducer/initialValues'
+import { Project } from 'reducers/stateReducer/types'
+
+import {
+  PublishedDataset,
+  PublishedProject,
+} from 'components/PublicViews/ProjectPage/usePublishedProject'
 
 const datasetPlaceholder = {
   ...datasetInitialValue,
   name: 'Loading...',
 }
 
-interface DatasetsTableProps {
+interface UnpublishedDatasetsTableProps {
+  publicView?: false
   style?: React.CSSProperties
+  project: Project
+  datasets: ReturnType<typeof useDatasets>
 }
 
-const DatasetsTable = ({ style }: DatasetsTableProps) => {
+interface PublishedDatasetsTableProps {
+  publicView: true
+  style?: React.CSSProperties
+  project: {
+    projectID: PublishedProject['projectID']
+  }
+  datasets: PublishedDataset[]
+}
+
+type DatasetsTableProps =
+  | UnpublishedDatasetsTableProps
+  | PublishedDatasetsTableProps
+
+const DatasetsTable = ({
+  publicView,
+  style,
+  project,
+  datasets,
+}: DatasetsTableProps) => {
   const setModal = useModal()
-  const project = useProject()
-  const datasets = useDatasets()
+
+  let datasetIDs
+  if (publicView) datasetIDs = datasets.map(d => d.datasetID)
+  else datasetIDs = project.datasetIDs
 
   // create rows for each dataset based on datasetIDs
   // using placeholder for datasets that aren't loaded
@@ -42,28 +70,43 @@ const DatasetsTable = ({ style }: DatasetsTableProps) => {
             new Date(a.lastUpdated).getTime()
         )
       : // if there are no datasets, return placeholder
-        project.datasetIDs.map(id => ({
+        datasetIDs.map(id => ({
           ...datasetPlaceholder,
           datasetID: id,
         }))
 
-  const wideColumnTemplate = '1.5fr 1fr 150px 220px'
-  const mediumColumnTemplate = '1fr 150px 220px'
+  // in the publicView, add one placeholder if there are no datasets
+  if (publicView && sorted.length === 0) sorted.push(datasetPlaceholder)
 
   return (
     <>
       <CardHeaderRow>Datasets</CardHeaderRow>
-      <ListTable {...{ wideColumnTemplate, mediumColumnTemplate, style }}>
+      <ListTable
+        wideColumnTemplate={
+          publicView ? '1.5fr 220px' : '1.5fr 1fr 150px 220px'
+        }
+        mediumColumnTemplate={publicView ? '1fr 220px' : '1fr 150px 220px'}
+        darkmode={publicView}
+        style={style}
+      >
         <HeaderRow>
           <TableCell>Name</TableCell>
-          <TableCell hideMedium>Collection Dates</TableCell>
-          <TableCell>Status</TableCell>
+          {!publicView && (
+            <>
+              <TableCell hideMedium>Collection Dates</TableCell>
+              <TableCell>Status</TableCell>
+            </>
+          )}
           <TableCell>Last updated</TableCell>
         </HeaderRow>
         {sorted.map(dataset => (
           <RowLink
             key={dataset.datasetID}
-            to={`/projects/${project.projectID}/${dataset.datasetID}`}
+            to={
+              publicView
+                ? `/${project.projectID}/${dataset.datasetID}`
+                : `/projects/${project.projectID}/${dataset.datasetID}`
+            }
             onClick={e => {
               if (dataset.datasetID === datasetPlaceholder.datasetID) {
                 e.preventDefault()
@@ -71,10 +114,11 @@ const DatasetsTable = ({ style }: DatasetsTableProps) => {
               }
             }}
           >
-            <DatasetsTableRow dataset={dataset} />
+            <DatasetsTableRow dataset={dataset} publicView={publicView} />
           </RowLink>
         ))}
-        <CreateNewDatasetRow />
+
+        {!publicView && <CreateNewDatasetRow />}
       </ListTable>
       <CardHeaderRow>Project Information</CardHeaderRow>
     </>
