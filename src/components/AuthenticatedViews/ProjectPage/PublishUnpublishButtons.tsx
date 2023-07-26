@@ -196,11 +196,6 @@ const PublishUnpublishButtons = () => {
 
   return (
     <ButtonContainer>
-      {project.publishStatus === ProjectPublishStatus.Published && (
-        <MintButtonLink to={`/projects/#/${project.projectID}/`}>
-          View published
-        </MintButtonLink>
-      )}
       {publishButton}
       <MintButton
         warning
@@ -215,6 +210,11 @@ const PublishUnpublishButtons = () => {
       >
         {unPublishing ? 'Unpublishing...' : 'Unpublish'}
       </MintButton>
+      {project.publishStatus === ProjectPublishStatus.Published && (
+        <MintButtonLink to={`/projects/#/${project.projectID}/`}>
+          View published
+        </MintButtonLink>
+      )}
     </ButtonContainer>
   )
 }
