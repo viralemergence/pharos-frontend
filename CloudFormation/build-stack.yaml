@@ -12,37 +12,10 @@ AWSTemplateFormatVersion: 2010-09-09
 Parameters:
   DomainName:
     Type: String
-    # Default: "covidvaccineteam.org"
-    Default: 'talusanalytics.com'
+    Default: 'viralemergence.org'
   CertificateArn:
     Type: String
-    # Default: "arn:aws:acm:us-east-1:560812044035:certificate/6e6a8e16-520e-4a15-bf4e-18cbd416be15"
-    # Default: "arn:aws:acm:us-east-1:560812044035:certificate/de08d472-9d84-437b-b05b-6f3894be7dc5"
-    Default: 'arn:aws:acm:us-east-1:560812044035:certificate/d98e831c-999b-4d94-8d09-5b8922f2fcb8'
-
-Conditions:
-  # This conditional checks if the domain name is project-specific, or
-  # if it is using talusanalytics.com; if talusanalytics.com is being
-  # used, all the urls are built as subdomains with the branch name
-  # hyphenated to the project name (pulled from the stack name):
-  #     dev-project.talusanalytics.com
-  #     review-project.talusanalytics.com
-  #     staging-project.talusanalytics.com
-  #     prod-project.talusanalytics.com
-
-  # Once the project has a custom domain, this stack should be updated
-  # with the correct domain and cert arn above, which will move all
-  # associated resources to the standard project pattern:
-  #     dev.projectdomain.com
-  #     review.projectdomain.com
-  #     staging.projectdomain.com
-  #     projectdomain.com
-
-  # Example update command (after editing domainName and cert above):
-  # aws cloudformation update-stack \
-  #   --stack-name build-stack-test \
-  #   --template-body file://build-stack.yaml
-  CustomDomainProvided: !Not [!Equals [!Ref DomainName, 'talusanalytics.com']]
+    Default: 'arn:aws:acm:us-east-1:560812044035:certificate/12cc95e5-14f2-4608-88ab-15aabc514834'
 
 Resources:
   # Using lambda to generate random string to use in headers between CF and S3
@@ -158,13 +131,13 @@ Resources:
             if (host.includes('dev')) subdomain = 'dev';
             if (host.includes('review')) subdomain = 'review';
             if (host.includes('staging')) subdomain = 'staging';
-            if (host.includes('prod')) subdomain = 'prod';
+            if (host.startsWith('pharos')) subdomain = 'prod';
 
             const authObj = {
-              dev: ['dev', '****************'],
-              review: ['review', '****************'],
+              dev: ['dev', '**************'],
+              review: ['review', '*********************'],
               staging: ['staging', '****************'],
-              prod: ['prod', '****************'],
+              prod: ['prod', '***********************'],
             };
 
             const checkAuthorized = headers => {
@@ -173,7 +146,7 @@ Resources:
               const authString = headers.authorization[0].value;
               const user = authObj[subdomain];
               const checkString = 'Basic ' +
-                new Buffer(user[0] + ':' +
+                Buffer.from(user[0] + ':' +
                 user[1]).toString('base64');
               return authString === checkString;
             };
@@ -196,10 +169,10 @@ Resources:
           callback(null, request);
           };
 
-  BasicAuthLambdaVersion:
+  BasicAuthLambdaVersion5:
     Type: 'AWS::Lambda::Version'
     Properties:
-      Description: '1'
+      Description: 'v4 with logs'
       FunctionName: !Ref BasicAuthLambda
 
   ############ Dev site setup ############
@@ -247,11 +220,7 @@ Resources:
     Properties:
       DistributionConfig:
         Aliases:
-          - !If [
-              CustomDomainProvided,
-              !Join ['.', ['dev', !Ref DomainName]],
-              !Join ['', ['dev-', !Ref AWS::StackName, '.', !Ref DomainName]],
-            ]
+          - !Join ['', ['dev-pharos.', !Ref DomainName]]
         Origins:
           - DomainName:
               !Select [1, !Split ['//', !GetAtt S3DevBucket.WebsiteURL]]
@@ -280,32 +249,12 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
             - EventType: 'viewer-request'
-              LambdaFunctionARN: !Ref BasicAuthLambdaVersion
+              LambdaFunctionARN: !Ref BasicAuthLambdaVersion5
         PriceClass: PriceClass_100
         ViewerCertificate:
           AcmCertificateArn: !Ref CertificateArn
           MinimumProtocolVersion: TLSv1.2_2018
           SslSupportMethod: sni-only
-
-  # The Route53 A record pointing the subdomain to
-  # the cloudfront distribution
-  Route53DevRecord:
-    Type: AWS::Route53::RecordSetGroup
-    Properties:
-      # HostedZoneName must include a trailing dot, this is so anoying
-      # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-hostedzonename
-      HostedZoneName: !Join ['', [!Ref DomainName, '.']]
-      RecordSets:
-        - AliasTarget:
-            DNSName: !GetAtt DevDistribution.DomainName
-            HostedZoneId: Z2FDTNDATAQYW2
-          Name:
-            !If [
-              CustomDomainProvided,
-              !Join ['.', ['dev', !Ref DomainName]],
-              !Join ['', ['dev-', !Ref AWS::StackName, '.', !Ref DomainName]],
-            ]
-          Type: A
 
   ########### Review site setup ############
   # The following blocks follow the same pattern
@@ -344,14 +293,7 @@ Resources:
     Properties:
       DistributionConfig:
         Aliases:
-          - !If [
-              CustomDomainProvided,
-              !Join ['.', ['review', !Ref DomainName]],
-              !Join [
-                '',
-                ['review-', !Ref AWS::StackName, '.', !Ref DomainName],
-              ],
-            ]
+          - !Join ['', ['review-pharos.', !Ref DomainName]]
         Origins:
           - DomainName:
               !Select [1, !Split ['//', !GetAtt S3ReviewBucket.WebsiteURL]]
@@ -380,33 +322,12 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
             - EventType: 'viewer-request'
-              LambdaFunctionARN: !Ref BasicAuthLambdaVersion
+              LambdaFunctionARN: !Ref BasicAuthLambdaVersion5
         PriceClass: PriceClass_100
         ViewerCertificate:
           AcmCertificateArn: !Ref CertificateArn
           MinimumProtocolVersion: TLSv1.2_2018
           SslSupportMethod: sni-only
-
-  Route53ReviewRecord:
-    Type: AWS::Route53::RecordSetGroup
-    Properties:
-      # HostedZoneName must include a trailing dot
-      # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-hostedzonename
-      HostedZoneName: !Join ['', [!Ref DomainName, '.']]
-      RecordSets:
-        - AliasTarget:
-            DNSName: !GetAtt ReviewDistribution.DomainName
-            HostedZoneId: Z2FDTNDATAQYW2
-          Name:
-            !If [
-              CustomDomainProvided,
-              !Join ['.', ['review', !Ref DomainName]],
-              !Join [
-                '',
-                ['review-', !Ref AWS::StackName, '.', !Ref DomainName],
-              ],
-            ]
-          Type: A
 
   ############ Staging site setup ############
   S3StagingBucket:
@@ -443,14 +364,7 @@ Resources:
     Properties:
       DistributionConfig:
         Aliases:
-          - !If [
-              CustomDomainProvided,
-              !Join ['.', ['staging', !Ref DomainName]],
-              !Join [
-                '',
-                ['staging-', !Ref AWS::StackName, '.', !Ref DomainName],
-              ],
-            ]
+          - !Join ['', ['staging-pharos.', !Ref DomainName]]
         Origins:
           - DomainName:
               !Select [1, !Split ['//', !GetAtt S3StagingBucket.WebsiteURL]]
@@ -479,33 +393,12 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
             - EventType: 'viewer-request'
-              LambdaFunctionARN: !Ref BasicAuthLambdaVersion
+              LambdaFunctionARN: !Ref BasicAuthLambdaVersion5
         PriceClass: PriceClass_100
         ViewerCertificate:
           AcmCertificateArn: !Ref CertificateArn
           MinimumProtocolVersion: TLSv1.2_2018
           SslSupportMethod: sni-only
-
-  Route53StagingRecord:
-    Type: AWS::Route53::RecordSetGroup
-    Properties:
-      # HostedZoneName must include a trailing dot
-      # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-hostedzonename
-      HostedZoneName: !Join ['', [!Ref DomainName, '.']]
-      RecordSets:
-        - AliasTarget:
-            DNSName: !GetAtt StagingDistribution.DomainName
-            HostedZoneId: Z2FDTNDATAQYW2
-          Name:
-            !If [
-              CustomDomainProvided,
-              !Join ['.', ['staging', !Ref DomainName]],
-              !Join [
-                '',
-                ['staging-', !Ref AWS::StackName, '.', !Ref DomainName],
-              ],
-            ]
-          Type: A
 
   ############ Prod site setup ############
   S3ProdBucket:
@@ -539,11 +432,7 @@ Resources:
     Properties:
       DistributionConfig:
         Aliases:
-          - !If [
-              CustomDomainProvided,
-              !Ref DomainName,
-              !Join ['', ['prod-', !Ref AWS::StackName, '.', !Ref DomainName]],
-            ]
+          - !Join ['', ['pharos.', !Ref DomainName]]
         Origins:
           - DomainName:
               !Select [1, !Split ['//', !GetAtt S3ProdBucket.WebsiteURL]]
@@ -572,30 +461,12 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
             - EventType: 'viewer-request'
-              LambdaFunctionARN: !Ref BasicAuthLambdaVersion
+              LambdaFunctionARN: !Ref BasicAuthLambdaVersion5
         PriceClass: PriceClass_All
         ViewerCertificate:
           AcmCertificateArn: !Ref CertificateArn
           MinimumProtocolVersion: TLSv1.2_2018
           SslSupportMethod: sni-only
-
-  Route53ProdRecord:
-    Type: AWS::Route53::RecordSetGroup
-    Properties:
-      # HostedZoneName must include a trailing dot
-      # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-hostedzonename
-      HostedZoneName: !Join ['', [!Ref DomainName, '.']]
-      RecordSets:
-        - AliasTarget:
-            DNSName: !GetAtt ProdDistribution.DomainName
-            HostedZoneId: Z2FDTNDATAQYW2
-          Name:
-            !If [
-              CustomDomainProvided,
-              !Ref DomainName,
-              !Join ['', ['prod-', !Ref AWS::StackName, '.', !Ref DomainName]],
-            ]
-          Type: A
 
 Outputs:
   CloudFrontID:
@@ -603,4 +474,22 @@ Outputs:
     Description: Dev CloudFront ID
   CloudFrontURL:
     Value: !GetAtt DevDistribution.DomainName
+    Description: CloudFront URL for updating DNS record
+  CloudFrontID:
+    Value: !Ref ReviewDistribution
+    Description: Review CloudFront ID
+  CloudFrontURL:
+    Value: !GetAtt ReviewDistribution.DomainName
+    Description: CloudFront URL for updating DNS record
+  CloudFrontID:
+    Value: !Ref StagingDistribution
+    Description: Staging CloudFront ID
+  CloudFrontURL:
+    Value: !GetAtt StagingDistribution.DomainName
+    Description: CloudFront URL for updating DNS record
+  CloudFrontID:
+    Value: !Ref ProdDistribution
+    Description: Prod CloudFront ID
+  CloudFrontURL:
+    Value: !GetAtt ProdDistribution.DomainName
     Description: CloudFront URL for updating DNS record
