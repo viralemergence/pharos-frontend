@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react'
 import { StateActions } from 'reducers/stateReducer/stateReducer'
 import { NodeStatus, ProjectPublishStatus } from 'reducers/stateReducer/types'
 
-import MintButton from 'components/ui/MintButton'
+import MintButton, { MintButtonLink } from 'components/ui/MintButton'
 
 import useProject from 'hooks/project/useProject'
 import useDispatch from 'hooks/useDispatch'
@@ -196,6 +196,11 @@ const PublishUnpublishButtons = () => {
 
   return (
     <ButtonContainer>
+      {project.publishStatus === ProjectPublishStatus.Published && (
+        <MintButtonLink to={`/projects/#/${project.projectID}/`}>
+          View published
+        </MintButtonLink>
+      )}
       {publishButton}
       <MintButton
         warning
