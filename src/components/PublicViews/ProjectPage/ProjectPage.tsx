@@ -15,7 +15,7 @@ import CitationsPublications from 'components/ProjectPage/CitationsPublications'
 import TopBar, {
   Title,
   Breadcrumbs,
-  BreadcrumbLink,
+  PublicViewBreadcrumbLink,
   Controls,
 } from 'components/layout/TopBar'
 
@@ -38,9 +38,6 @@ const PublicProjectPageContentBox = styled(ProjectPageContentBox)`
   > h2 {
     color: ${({ theme }) => theme.medDarkGray};
   }
-`
-const PublicTitle = styled(Title)`
-  color: ${({ theme }) => theme.white};
 `
 const Author = styled.div`
   display: flex;
@@ -68,12 +65,16 @@ const ProjectPage = () => {
       <Container>
         <PublicViewBackground />
         <ProjectPageLayout>
-          <TopBar>
+          <TopBar darkmode>
             <Breadcrumbs>
-              <BreadcrumbLink to={`/data/`}>All data</BreadcrumbLink>
-              <BreadcrumbLink to={`/data/`}>Projects</BreadcrumbLink>
+              <PublicViewBreadcrumbLink to={`/data/`}>
+                All data
+              </PublicViewBreadcrumbLink>
+              <PublicViewBreadcrumbLink to={`/data/`}>
+                Projects
+              </PublicViewBreadcrumbLink>
             </Breadcrumbs>
-            <PublicTitle>Project not found</PublicTitle>
+            <Title>Project not found</Title>
           </TopBar>
           <ProjectPageMain>
             <PublicProjectPageContentBox>
@@ -90,19 +91,26 @@ const ProjectPage = () => {
     <Container>
       <PublicViewBackground />
       <ProjectPageLayout>
-        <TopBar>
+        <TopBar darkmode>
           <Breadcrumbs>
-            <BreadcrumbLink to={`/data/`}>All data</BreadcrumbLink>
-            <BreadcrumbLink to={`/data/`}>Projects</BreadcrumbLink>
-            <BreadcrumbLink $active to={`/projects/#/${project.projectID}`}>
+            <PublicViewBreadcrumbLink to={`/data/`}>
+              All data
+            </PublicViewBreadcrumbLink>
+            <PublicViewBreadcrumbLink to={`/data/`}>
+              Projects
+            </PublicViewBreadcrumbLink>
+            <PublicViewBreadcrumbLink
+              $active
+              to={`/projects/#/${project.projectID}`}
+            >
               {status === ProjectDataStatus.Loaded
                 ? project.name
                 : 'Loading...'}
-            </BreadcrumbLink>
+            </PublicViewBreadcrumbLink>
           </Breadcrumbs>
-          <PublicTitle>
+          <Title>
             {status === ProjectDataStatus.Loaded ? project.name : 'Loading...'}
-          </PublicTitle>
+          </Title>
           <Controls>
             {user.status === UserStatus.loggedIn &&
               user.data?.projectIDs?.includes(project.projectID) && (
