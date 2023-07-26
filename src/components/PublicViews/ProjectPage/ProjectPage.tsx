@@ -16,10 +16,14 @@ import TopBar, {
   Title,
   Breadcrumbs,
   BreadcrumbLink,
+  Controls,
 } from 'components/layout/TopBar'
 
 import usePublishedProject, { ProjectDataStatus } from './usePublishedProject'
 import formatDate from 'utilities/formatDate'
+import { MintButtonLink } from 'components/ui/MintButton'
+import useAppState from 'hooks/useAppState'
+import { UserStatus } from 'reducers/stateReducer/types'
 
 const Container = styled.div`
   background-color: ${({ theme }) => theme.lightBlack};
@@ -53,6 +57,9 @@ const AuthorOrganization = styled.div`
 
 const ProjectPage = () => {
   const { status, data: project } = usePublishedProject()
+  const { user } = useAppState()
+
+  console.log(project)
 
   if (status === ProjectDataStatus.Error) {
     console.log(project.error.message)
@@ -93,8 +100,16 @@ const ProjectPage = () => {
             </BreadcrumbLink>
           </Breadcrumbs>
           <PublicTitle>
-            {status === ProjectDataStatus.Loaded ? project.name : '...'}
+            {status === ProjectDataStatus.Loaded ? project.name : 'Loading...'}
           </PublicTitle>
+          <Controls>
+            {user.status === UserStatus.loggedIn &&
+              user.data?.projectIDs?.includes(project.projectID) && (
+                <MintButtonLink to={`/app/#/projects/${project.projectID}`}>
+                  Manage project
+                </MintButtonLink>
+              )}
+          </Controls>
         </TopBar>
         <ProjectPageMain>
           <PublicProjectPageContentBox>
