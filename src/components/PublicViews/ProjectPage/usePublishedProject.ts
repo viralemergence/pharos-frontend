@@ -39,11 +39,9 @@ const projectIsPublishedProjectData = (
 
   const project = projectData.project as Partial<PublishedProject>
   if (typeof project !== 'object' || project === null) return false
-
   if (typeof project.projectID !== 'string') return false
   if (typeof project.name !== 'string') return false
   if (typeof project.datePublished !== 'string') return false
-
   if (
     typeof project.description !== 'string' &&
     typeof project.description !== 'undefined'

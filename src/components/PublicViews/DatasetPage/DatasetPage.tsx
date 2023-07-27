@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled, { useTheme } from 'styled-components'
 
 import PublicViewBackground from '../PublicViewBackground'
@@ -22,6 +22,8 @@ import usePublishedProject, {
 } from '../ProjectPage/usePublishedProject'
 import { UserStatus } from 'reducers/stateReducer/types'
 import { MintButtonLink } from 'components/ui/MintButton'
+import usePublishedRecords from './usePublishedRecords'
+import FilteredPublishedRecordsDataGrid from '../FilteredPublishedRecordsDataGrid'
 
 const Container = styled.div`
   background-color: ${({ theme }) => theme.lightBlack};
@@ -39,11 +41,29 @@ const ErrorMessageBox = styled(ProjectPageContentBox)`
   }
 `
 
+const GridContainer = styled.div`
+  height: calc(100svh - 265px);
+  margin: 0 40px;
+`
+
+const pageSize = 50
+
 const DatasetPage = () => {
+  const theme = useTheme()
   const datasetID = useDatasetID()
   const { status, data: project } = usePublishedProject()
   const { user } = useAppState()
-  const theme = useTheme()
+
+  const [filters] = useState(() => ({
+    dataset_id: [datasetID],
+  }))
+
+  const [publishedRecordsData] = usePublishedRecords({
+    filters,
+    pageSize,
+  })
+
+  console.log(publishedRecordsData)
 
   const dataset =
     status === ProjectDataStatus.Loaded &&
@@ -133,6 +153,9 @@ const DatasetPage = () => {
           </Controls>
         </TopBar>
       </DatasetTopSection>
+      <GridContainer>
+        <FilteredPublishedRecordsDataGrid filters={filters} />
+      </GridContainer>
     </Container>
   )
 }
