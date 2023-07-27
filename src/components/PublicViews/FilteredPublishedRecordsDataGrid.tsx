@@ -24,7 +24,6 @@ const TableContainer = styled.div`
   width: 100%;
   height: 100%;
 `
-
 const LoadingMessage = styled.div`
   position: absolute;
   bottom: 0;
@@ -42,6 +41,11 @@ const LoadingMessage = styled.div`
   align-items: center;
   gap: 10px;
   color: ${({ theme }) => theme.white};
+`
+const InitialLoadingMessage = styled(LoadingMessage)`
+  top: 0;
+  left: 0;
+  justify-content: center;
 `
 
 const FillDatasetGrid = styled(DataGrid)`
@@ -100,7 +104,7 @@ const FilteredPublishedRecordsDataGrid = ({
 
   return (
     <TableContainer>
-      {publishedRecordsData.data.publishedRecords.length > 1 && (
+      {publishedRecordsData.data.publishedRecords.length > 0 && (
         // @ts-expect-error: I'm copying this from the docs,
         // but it doesn't look like their type definitions work
         <FillDatasetGrid
@@ -113,9 +117,9 @@ const FilteredPublishedRecordsDataGrid = ({
         />
       )}
       {publishedRecordsData.status === PublishedRecordsLoadingState.LOADING && (
-        <LoadingMessage>
+        <InitialLoadingMessage>
           <LoadingSpinner /> Loading
-        </LoadingMessage>
+        </InitialLoadingMessage>
       )}
       {publishedRecordsData.status ===
         PublishedRecordsLoadingState.LOADING_MORE && (
