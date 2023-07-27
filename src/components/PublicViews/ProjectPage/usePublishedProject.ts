@@ -31,65 +31,41 @@ export interface PublishedProjectData {
   project: PublishedProject
 }
 
-function projectIsPublishedProjectData(
+const projectIsPublishedProjectData = (
   projectData: unknown
-): projectData is PublishedProjectData {
+): projectData is PublishedProjectData => {
   if (typeof projectData !== 'object' || projectData === null) return false
   if (!('project' in projectData)) return false
 
-  const project = projectData.project
+  const project = projectData.project as Partial<PublishedProject>
   if (typeof project !== 'object' || project === null) return false
-
-  if (typeof (project as PublishedProject).projectID !== 'string') return false
-  if (typeof (project as PublishedProject).name !== 'string') return false
-  if (typeof (project as PublishedProject).datePublished !== 'string')
-    return false
-
+  if (typeof project.projectID !== 'string') return false
+  if (typeof project.name !== 'string') return false
+  if (typeof project.datePublished !== 'string') return false
   if (
-    typeof (project as PublishedProject).description !== 'string' &&
-    typeof (project as PublishedProject).description !== 'undefined'
+    typeof project.description !== 'string' &&
+    typeof project.description !== 'undefined'
   )
     return false
-  if (
-    (project as PublishedProject).projectType &&
-    typeof (project as PublishedProject).projectType !== 'string'
-  )
+  if (project.projectType && typeof project.projectType !== 'string')
     return false
   if (
-    (project as PublishedProject).surveillanceStatus &&
-    typeof (project as PublishedProject).surveillanceStatus !== 'string'
+    project.surveillanceStatus &&
+    typeof project.surveillanceStatus !== 'string'
   )
+    return false
+  if (project.citation && typeof project.citation !== 'string') return false
+  if (project.relatedMaterials && !Array.isArray(project.relatedMaterials))
     return false
   if (
-    (project as PublishedProject).citation &&
-    typeof (project as PublishedProject).citation !== 'string'
+    project.projectPublications &&
+    !Array.isArray(project.projectPublications)
   )
     return false
-  if (
-    (project as PublishedProject).relatedMaterials &&
-    !Array.isArray((project as PublishedProject).relatedMaterials)
-  )
+  if (project.othersCiting && !Array.isArray(project.othersCiting)) return false
+  if (!Array.isArray(project.datasets) || project.datasets === null)
     return false
-  if (
-    (project as PublishedProject).projectPublications &&
-    !Array.isArray((project as PublishedProject).projectPublications)
-  )
-    return false
-  if (
-    (project as PublishedProject).othersCiting &&
-    !Array.isArray((project as PublishedProject).othersCiting)
-  )
-    return false
-  if (
-    !Array.isArray((project as PublishedProject).datasets) ||
-    (project as PublishedProject).datasets === null
-  )
-    return false
-  if (
-    !Array.isArray((project as PublishedProject).authors) ||
-    (project as PublishedProject).authors === null
-  )
-    return false
+  if (!Array.isArray(project.authors) || project.authors === null) return false
   return true
 }
 
