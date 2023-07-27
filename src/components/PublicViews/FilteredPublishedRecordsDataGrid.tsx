@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import DataGrid, { Column } from 'react-data-grid'
+import DataGrid, { Column, FormatterProps } from 'react-data-grid'
 
 import usePublishedRecords, {
   PublishedRecordsLoadingState,
@@ -52,7 +52,29 @@ const InitialLoadingMessage = styled(LoadingMessage)`
 const FillDatasetGrid = styled(DataGrid)`
   block-size: 100%;
   height: 100%;
+
+  --rdg-background-color: ${({ theme }) => theme.medBlack};
+  --rdg-header-background-color: ${({ theme }) => theme.black};
+  --rdg-row-hover-background-color: ${({ theme }) => theme.black};
 `
+
+const RowCellContainer = styled.div`
+  margin-left: -8px;
+  margin-right: -8px;
+  padding: 0 8px;
+  display: flex;
+  justify-content: space-between;
+  background-color: ${({ theme }) => theme.black};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+const RowNumber = ({ row: { rowNumber } }: FormatterProps<Row>) => (
+  <RowCellContainer>
+    <span>{Number(rowNumber) + 1}</span>
+  </RowCellContainer>
+)
 
 const rowKeyGetter = (row: Row) => row.pharosID
 
@@ -73,6 +95,7 @@ const FilteredPublishedRecordsDataGrid = ({
     resizable: false,
     minWidth: 55,
     width: 55,
+    formatter: RowNumber,
   }
 
   if (publishedRecordsData.status === PublishedRecordsLoadingState.ERROR) {
