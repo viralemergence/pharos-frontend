@@ -17,13 +17,18 @@ export enum PublishedRecordsLoadingState {
   ERROR,
 }
 
+interface PublishedRecordsLoading {
+  status: PublishedRecordsLoadingState.INITIAL
+  data: PublishedRecordsResponse
+}
+
 interface PublishedRecordsInitial {
   status: PublishedRecordsLoadingState.LOADING
   data: PublishedRecordsResponse
 }
 
-interface PublishedRecordsLoading {
-  status: PublishedRecordsLoadingState.INITIAL
+interface PublishedRecordsLoadingMore {
+  status: PublishedRecordsLoadingState.LOADING_MORE
   data: PublishedRecordsResponse
 }
 
@@ -44,6 +49,7 @@ interface ErrorWithMessage {
 type PublishedRecordsData =
   | PublishedRecordsInitial
   | PublishedRecordsLoading
+  | PublishedRecordsLoadingMore
   | PublishedRecordsLoaded
   | PublishedRecordsError
 
@@ -196,10 +202,13 @@ const usePublishedRecords = ({
   const loadMore = () => {
     if (
       publishedRecordsData.status !== PublishedRecordsLoadingState.ERROR &&
+      publishedRecordsData.status !== PublishedRecordsLoadingState.LOADING &&
+      publishedRecordsData.status !==
+        PublishedRecordsLoadingState.LOADING_MORE &&
       publishedRecordsData.data.isLastPage === false
     ) {
       setPublishedRecordsData(prev => ({
-        status: PublishedRecordsLoadingState.LOADING,
+        status: PublishedRecordsLoadingState.LOADING_MORE,
         data:
           prev.status !== PublishedRecordsLoadingState.ERROR
             ? prev.data
