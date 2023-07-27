@@ -47,6 +47,7 @@ const GridContainer = styled.div`
 `
 
 const pageSize = 50
+const hideColumns = ['Project name']
 
 const DatasetPage = () => {
   const theme = useTheme()
@@ -154,7 +155,10 @@ const DatasetPage = () => {
         </TopBar>
       </DatasetTopSection>
       <GridContainer>
-        <FilteredPublishedRecordsDataGrid filters={filters} />
+        <FilteredPublishedRecordsDataGrid
+          filters={filters}
+          hideColumns={hideColumns}
+        />
       </GridContainer>
     </Container>
   )
