@@ -31,9 +31,9 @@ export interface PublishedProjectData {
   project: PublishedProject
 }
 
-function projectIsPublishedProjectData(
+const projectIsPublishedProjectData = (
   projectData: unknown
-): projectData is PublishedProjectData {
+): projectData is PublishedProjectData => {
   if (typeof projectData !== 'object' || projectData === null) return false
   if (!('project' in projectData)) return false
 
