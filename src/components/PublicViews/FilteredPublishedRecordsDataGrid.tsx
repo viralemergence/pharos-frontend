@@ -17,6 +17,7 @@ interface FilteredPublishedRecordsDataGridProps {
     [key: string]: string[]
   }
   pageSize?: number
+  hideColumns?: string[]
 }
 
 const TableContainer = styled.div`
@@ -58,6 +59,7 @@ const rowKeyGetter = (row: Row) => row.pharosID
 const FilteredPublishedRecordsDataGrid = ({
   filters,
   pageSize = 50,
+  hideColumns = [],
 }: FilteredPublishedRecordsDataGridProps) => {
   const [publishedRecordsData, loadMore] = usePublishedRecords({
     filters,
@@ -85,7 +87,7 @@ const FilteredPublishedRecordsDataGrid = ({
   const columns: readonly Column<Row>[] = [
     rowNumberColumn,
     ...Object.keys(publishedRecordsData.data.publishedRecords[0] ?? {})
-      .filter(key => !['pharosID', 'rowNumber'].includes(key))
+      .filter(key => !['pharosID', 'rowNumber', ...hideColumns].includes(key))
       .map(key => ({
         key: key,
         name: key,
