@@ -28,10 +28,11 @@ export default {
   tableContentHighlight: `rgba(85,85,85,1)`,
   tableHeaderHighlight: `rgba(33,36,61,1)`,
   white20Opacity: `rgba(255,255,255,0.200)`,
-  white10Opacity: `rgba(255,255,255,0.100)`,
+  white10PercentOpacity: `rgba(255,255,255,0.100)`,
   white30Opacity: `rgba(255,255,255,0.300)`,
   mutedPurple1: `rgba(38,42,62,1)`,
   mutedPurple2: `rgba(63,66,84,1)`,
   mutedPurple3: `rgba(76,79,98,1)`,
   publicPagePurpleBackground: `rgba(15,19,41,1)`,
+  orange: `rgba(207,109,13,1)`,
 }
