@@ -33,4 +33,5 @@ export default {
   mutedPurple1: `rgba(38,42,62,1)`,
   mutedPurple2: `rgba(63,66,84,1)`,
   mutedPurple3: `rgba(76,79,98,1)`,
+  publicPagePurpleBackground: `rgba(15,19,41,1)`,
 }
