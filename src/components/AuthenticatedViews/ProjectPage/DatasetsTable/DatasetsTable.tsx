@@ -1,7 +1,5 @@
 import React from 'react'
 
-import { DatasetsTableRow } from './DatasetsTableRow'
-
 import ListTable, {
   CardHeaderRow,
   HeaderRow,
@@ -9,12 +7,15 @@ import ListTable, {
   TableCell,
 } from 'components/ListTable/ListTable'
 
-import useModal from 'hooks/useModal/useModal'
+import { DatasetsTableRow } from './DatasetsTableRow'
 import CreateDatasetForm from '../CreateDatasetForm/CreateDatasetForm'
 import CreateNewDatasetRow from './CreateNewDatasetRow'
-import useDatasets from 'hooks/dataset/useDatasets'
-import { datasetInitialValue } from 'reducers/stateReducer/initialValues'
 import { Project } from 'reducers/stateReducer/types'
+
+import useModal from 'hooks/useModal/useModal'
+import useDatasets from 'hooks/dataset/useDatasets'
+
+import { datasetInitialValue } from 'reducers/stateReducer/initialValues'
 
 import {
   PublishedDataset,

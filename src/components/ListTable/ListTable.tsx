@@ -18,9 +18,11 @@ const TableGrid = styled.div<{ $darkmode: boolean }>`
   @media (min-width: ${cardsBreakpoint - 1}px) {
     ${({ $darkmode, theme }) =>
       $darkmode
-        ? `border-top: thin solid ${theme.mint}`
+        ? `border-top: 5px solid ${theme.mint}`
         : `border: 1px solid ${theme.medGray}`};
     gap: 0px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
   }
 `
 export const RowLink = styled(Link)<{
@@ -32,7 +34,7 @@ export const RowLink = styled(Link)<{
   display: flex;
   flex-direction: column;
   background-color: ${({ theme, $darkmode }) =>
-    $darkmode ? theme.medBlack : theme.veryLightMint};
+    $darkmode ? theme.mutedPurple2 : theme.veryLightMint};
   color: ${({ theme, $darkmode }) => ($darkmode ? theme.white : theme.black)};
   text-decoration: none;
   padding: 15px;
@@ -47,16 +49,16 @@ export const RowLink = styled(Link)<{
       $mediumColumnTemplate};
 
     background-color: ${({ theme, $darkmode }) =>
-      $darkmode ? theme.medDarkBlack : theme.white};
+      $darkmode ? theme.mutedPurple1 : theme.white};
     &:nth-child(2n) {
       background: ${({ theme, $darkmode }) =>
-        $darkmode ? theme.medBlack : theme.veryLightMint};
+        $darkmode ? theme.mutedPurple2 : theme.veryLightMint};
     }
 
     &:nth-of-type(1) {
       box-shadow: ${({ $darkmode }) =>
         $darkmode
-          ? '0px 4px 4px 0px rgba(0, 0, 0, 0.25) inset'
+          ? '0px 4px 4px 0px rgba(34, 34, 36, 0.25) inset'
           : 'inset 0px 4px 4px #e0eae8'};
     }
   }
@@ -67,7 +69,7 @@ export const RowLink = styled(Link)<{
 
   &:hover {
     background-color: ${({ theme, $darkmode }) =>
-      $darkmode ? theme.black : lighten(0.05, theme.hoverMint)};
+      $darkmode ? theme.mutedPurple3 : lighten(0.05, theme.hoverMint)};
   }
 `
 
@@ -89,7 +91,7 @@ export const HeaderRow = styled.div<{
   align-items: center;
   color: ${({ theme, $darkmode }) => ($darkmode ? theme.white : theme.black)};
   background-color: ${({ theme, $darkmode }) =>
-    $darkmode ? theme.medDarkBlack : theme.white};
+    $darkmode ? theme.mutedPurple1 : theme.white};
 
   > div {
     padding: 15px;
