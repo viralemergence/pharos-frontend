@@ -35,4 +35,5 @@ export default {
   mutedPurple3: `rgba(76,79,98,1)`,
   publicPagePurpleBackground: `rgba(15,19,41,1)`,
   orange: `rgba(207,109,13,1)`,
+  red: 'rgba(176,33,24,1)',
 }
