@@ -35,7 +35,7 @@ const PublicProjectPageContentBox = styled(ProjectPageContentBox)<{
 }>`
   position: relative;
   background-color: ${({ theme }) => theme.mutedPurple1};
-  border: 1px solid ${({ theme }) => theme.white10Opacity};
+  border: 1px solid ${({ theme }) => theme.white10PercentOpacity};
   border-top: none;
   color: ${({ theme }) => theme.white};
   border-top-left-radius: 5px;
@@ -47,7 +47,7 @@ const PublicProjectPageContentBox = styled(ProjectPageContentBox)<{
 
   &:before {
     background-color: ${({ theme, interactive }) =>
-      interactive ? theme.mint : theme.white10Opacity};
+      interactive ? theme.mint : theme.white10PercentOpacity};
     content: '';
     position: absolute;
     top: 0;
