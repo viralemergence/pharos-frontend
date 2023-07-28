@@ -30,13 +30,32 @@ const Container = styled.div`
   background-color: ${({ theme }) => theme.lightBlack};
   display: flow-root;
 `
-const PublicProjectPageContentBox = styled(ProjectPageContentBox)`
-  background-color: ${({ theme }) => theme.medDarkBlack};
-  border-top: thin solid ${({ theme }) => theme.mint};
+const PublicProjectPageContentBox = styled(ProjectPageContentBox)<{
+  interactive?: boolean
+}>`
+  position: relative;
+  background-color: ${({ theme }) => theme.mutedPurple1};
+  border: 1px solid ${({ theme }) => theme.white10Opacity};
+  border-top: none;
   color: ${({ theme }) => theme.white};
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 
   > h2 {
     color: ${({ theme }) => theme.medDarkGray};
+  }
+
+  &:before {
+    background-color: ${({ theme, interactive }) =>
+      interactive ? theme.mint : theme.white10Opacity};
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -1px;
+    right: -1px;
+    height: 5px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
   }
 `
 const Author = styled.div`
@@ -127,15 +146,14 @@ const ProjectPage = () => {
                 : '...'}
             </p>
           </PublicProjectPageContentBox>
-          <PublicProjectPageContentBox>
+          <PublicProjectPageContentBox interactive>
             <div
               style={{
-                background: 'darkgray',
                 height: 400,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: 'darkslategray',
+                color: 'darkgray',
                 fontStyle: 'italic',
               }}
             >
