@@ -27,7 +27,7 @@ import { UserStatus } from 'reducers/stateReducer/types'
 import DatasetsTable from 'components/AuthenticatedViews/ProjectPage/DatasetsTable/DatasetsTable'
 
 const Container = styled.div`
-  background-color: ${({ theme }) => theme.lightBlack};
+  background-color: ${({ theme }) => theme.publicPagePurpleBackground};
   display: flow-root;
 `
 const PublicProjectPageContentBox = styled(ProjectPageContentBox)<{

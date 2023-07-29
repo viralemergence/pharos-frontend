@@ -25,10 +25,6 @@ import { MintButtonLink } from 'components/ui/MintButton'
 import usePublishedRecords from './usePublishedRecords'
 import FilteredPublishedRecordsDataGrid from '../FilteredPublishedRecordsDataGrid'
 
-const Container = styled.div`
-  background-color: ${({ theme }) => theme.lightBlack};
-  display: flow-root;
-`
 const ErrorMessageBox = styled(ProjectPageContentBox)`
   position: relative;
   margin-top: 40px;
@@ -42,6 +38,7 @@ const ErrorMessageBox = styled(ProjectPageContentBox)`
 `
 
 const GridContainer = styled.div`
+  height: calc(100vh - 265px);
   height: calc(100svh - 265px);
   margin: 0 40px;
 `
@@ -75,7 +72,7 @@ const DatasetPage = () => {
     (status === ProjectDataStatus.Loaded && !dataset)
   ) {
     return (
-      <Container>
+      <>
         <PublicViewBackground />
         <DatasetTopSection>
           <TopBar darkmode>
@@ -112,12 +109,12 @@ const DatasetPage = () => {
             )}
           </ErrorMessageBox>
         </DatasetTopSection>
-      </Container>
+      </>
     )
   }
 
   return (
-    <Container>
+    <>
       <PublicViewBackground />
       <DatasetTopSection>
         <TopBar darkmode>
@@ -160,7 +157,7 @@ const DatasetPage = () => {
           hideColumns={hideColumns}
         />
       </GridContainer>
-    </Container>
+    </>
   )
 }
 
