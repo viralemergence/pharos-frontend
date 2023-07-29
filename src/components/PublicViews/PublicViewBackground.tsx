@@ -11,8 +11,8 @@ const PublicViewBackground = styled.div`
   background-position: 0% 0%;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  min-height: 100vh;
-  height: 100%;
+  min-height: calc(100vh - 80px);
+  min-height: calc(100svh - 80px);
 
   &:before {
     content: '';

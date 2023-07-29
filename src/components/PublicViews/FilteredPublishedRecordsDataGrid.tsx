@@ -7,6 +7,7 @@ import usePublishedRecords, {
   PublishedRecordsLoadingState,
 } from './DatasetPage/usePublishedRecords'
 import LoadingSpinner from 'components/DataPage/TableView/LoadingSpinner'
+import { darken } from 'polished'
 
 interface Row {
   [key: string]: string | number
@@ -33,7 +34,7 @@ const LoadingMessage = styled.div`
   padding: 15px 30px;
   text-align: center;
   backdrop-filter: blur(5px);
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: ${({ theme }) => darken(0.05, theme.mutedPurple1)};
   border-top-left-radius: 5px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   border-left: 1px solid rgba(255, 255, 255, 0.1);
@@ -46,6 +47,7 @@ const LoadingMessage = styled.div`
 const InitialLoadingMessage = styled(LoadingMessage)`
   top: 0;
   left: 0;
+  background-color: rgba(255, 255, 255, 0.15);
   justify-content: center;
 `
 
@@ -54,9 +56,10 @@ const FillDatasetGrid = styled(DataGrid)`
   height: 100%;
   border: 0;
 
-  --rdg-background-color: ${({ theme }) => theme.medBlack};
-  --rdg-header-background-color: ${({ theme }) => theme.black};
-  --rdg-row-hover-background-color: ${({ theme }) => theme.black};
+  --rdg-border-color: rgba(216, 218, 220, 0.3);
+  --rdg-background-color: ${({ theme }) => theme.mutedPurple1};
+  --rdg-header-background-color: ${({ theme }) => theme.mutedPurple3};
+  --rdg-row-hover-background-color: ${({ theme }) => theme.mutedPurple2};
 `
 
 const RowCellContainer = styled.div`
@@ -65,7 +68,7 @@ const RowCellContainer = styled.div`
   padding: 0 8px;
   display: flex;
   justify-content: space-between;
-  background-color: ${({ theme }) => theme.black};
+  background-color: ${({ theme }) => theme.mutedPurple3};
   display: flex;
   justify-content: center;
   align-items: center;
