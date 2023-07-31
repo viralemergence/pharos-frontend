@@ -81,7 +81,7 @@ const RowNumberContainer = styled(CellContainer)`
 
 const RowNumber = ({ row: { rowNumber } }: FormatterProps<Row>) => (
   <RowNumberContainer>
-    <span>{Number(rowNumber) + 1}</span>
+    <span>{Number(rowNumber)}</span>
   </RowNumberContainer>
 )
 
@@ -130,8 +130,6 @@ const FilteredPublishedRecordsDataGrid = ({
     formatter: RowNumber,
   }
 
-  console.log(publishedRecordsData)
-
   if (publishedRecordsData.status === PublishedRecordsLoadingState.ERROR) {
     return (
       <ErrorMessageContainer>
@@ -150,11 +148,11 @@ const FilteredPublishedRecordsDataGrid = ({
         name: key,
         width: key.length * 7.5 + 15 + 'px',
         resizable: true,
-        ...(key in formatters ? { formatter: formatters[key] } : {}),
+        ...(key in formatters
+          ? { formatter: formatters[key as keyof typeof formatters] }
+          : {}),
       })),
   ]
-
-  console.log(columns)
 
   const handleScroll = ({ currentTarget }: React.UIEvent<HTMLDivElement>) => {
     if (
