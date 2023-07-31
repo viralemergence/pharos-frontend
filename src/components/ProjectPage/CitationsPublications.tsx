@@ -21,7 +21,7 @@ const CitationsPublications = ({
     !project.projectPublications || project.projectPublications[0] === '' ? (
       <p>—</p>
     ) : (
-      project?.projectPublications?.map(pub => <p>{pub}</p>)
+      project?.projectPublications?.map(pub => <p key={pub}>{pub}</p>)
     )
 
   const showOthersCiting =
@@ -31,7 +31,7 @@ const CitationsPublications = ({
     !project.othersCiting || project.othersCiting[0] === '' ? (
       <p>—</p>
     ) : (
-      project?.othersCiting?.map(pub => <p>{pub}</p>)
+      project?.othersCiting?.map(pub => <p key={pub}>{pub}</p>)
     )
 
   return (
