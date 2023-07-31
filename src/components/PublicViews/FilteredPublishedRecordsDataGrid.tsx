@@ -8,6 +8,7 @@ import usePublishedRecords, {
 } from './DatasetPage/usePublishedRecords'
 import LoadingSpinner from 'components/DataPage/TableView/LoadingSpinner'
 import { darken } from 'polished'
+import { Link } from 'gatsby'
 
 interface Row {
   [key: string]: string | number
@@ -50,6 +51,10 @@ const InitialLoadingMessage = styled(LoadingMessage)`
   background-color: rgba(255, 255, 255, 0.15);
   justify-content: center;
 `
+const ErrorMessageContainer = styled.div`
+  color: ${({ theme }) => theme.white};
+  padding: 15px 30px;
+`
 
 const FillDatasetGrid = styled(DataGrid)`
   block-size: 100%;
@@ -61,13 +66,13 @@ const FillDatasetGrid = styled(DataGrid)`
   --rdg-header-background-color: ${({ theme }) => theme.mutedPurple3};
   --rdg-row-hover-background-color: ${({ theme }) => theme.mutedPurple2};
 `
-
-const RowCellContainer = styled.div`
+const CellContainer = styled.div`
   margin-left: -8px;
   margin-right: -8px;
   padding: 0 8px;
-  display: flex;
-  justify-content: space-between;
+`
+
+const RowNumberContainer = styled(CellContainer)`
   background-color: ${({ theme }) => theme.mutedPurple3};
   display: flex;
   justify-content: center;
@@ -75,12 +80,35 @@ const RowCellContainer = styled.div`
 `
 
 const RowNumber = ({ row: { rowNumber } }: FormatterProps<Row>) => (
-  <RowCellContainer>
+  <RowNumberContainer>
     <span>{Number(rowNumber) + 1}</span>
-  </RowCellContainer>
+  </RowNumberContainer>
 )
 
+const ProjectNameContainer = styled(CellContainer)`
+  background-color: ${({ theme }) => theme.mutedPurple1};
+
+  a {
+    color: ${({ theme }) => theme.white};
+  }
+`
+const ProjectName = ({ row }: FormatterProps<Row>) => {
+  const projectName = row['Project name']
+  const pharosID = row.pharosID
+  return (
+    <ProjectNameContainer>
+      <Link to={`/projects/#/${pharosID.toString().split('-')[0]}`}>
+        {projectName}
+      </Link>
+    </ProjectNameContainer>
+  )
+}
+
 const rowKeyGetter = (row: Row) => row.pharosID
+
+const formatters = {
+  'Project name': ProjectName,
+}
 
 const FilteredPublishedRecordsDataGrid = ({
   filters,
@@ -102,12 +130,14 @@ const FilteredPublishedRecordsDataGrid = ({
     formatter: RowNumber,
   }
 
+  console.log(publishedRecordsData)
+
   if (publishedRecordsData.status === PublishedRecordsLoadingState.ERROR) {
     return (
-      <div>
+      <ErrorMessageContainer>
         <p>Failed to load published records</p>
         <pre>{publishedRecordsData.error.message}</pre>
-      </div>
+      </ErrorMessageContainer>
     )
   }
 
@@ -120,8 +150,11 @@ const FilteredPublishedRecordsDataGrid = ({
         name: key,
         width: key.length * 7.5 + 15 + 'px',
         resizable: true,
+        ...(key in formatters ? { formatter: formatters[key] } : {}),
       })),
   ]
+
+  console.log(columns)
 
   const handleScroll = ({ currentTarget }: React.UIEvent<HTMLDivElement>) => {
     if (
