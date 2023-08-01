@@ -6,6 +6,7 @@ import MintButton from 'components/ui/MintButton'
 
 import usePlaceName from 'hooks/mapbox/usePlaceName'
 import LoadingSpinner from '../TableView/LoadingSpinner'
+import CloseButton from 'components/ui/CloseButton'
 
 const Container = styled.div<{ drawerOpen: boolean }>`
   position: absolute;
@@ -13,11 +14,12 @@ const Container = styled.div<{ drawerOpen: boolean }>`
   right: 0;
   height: 400px;
   bottom: 0;
-  background-color: ${({ theme }) => theme.publicPagePurpleBackground};
   display: flex;
   flex-direction: column;
+  box-shadow: 0px 0px 50px 0px rgba(0, 0, 0, 0.25);
   border-top: 1px solid ${({ theme }) => theme.white10PercentOpacity};
-  padding: 3px;
+  background-color: ${({ theme }) => theme.publicPagePurpleBackground};
+  padding: 10px 10px 0px 10px;
   z-index: 2;
 
   transform: ${({ drawerOpen }) =>
@@ -44,14 +46,14 @@ const Topbar = styled.div`
 `
 
 interface MapTableDrawerProps {
-  filters: { [key: string]: string[] }
+  mapDrawerFilters: { [key: string]: string[] }
   clickLngLat: [number, number] | null
   drawerOpen: boolean
   setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const MapTableDrawer = ({
-  filters,
+  mapDrawerFilters,
   clickLngLat,
   drawerOpen,
   setDrawerOpen,
@@ -68,10 +70,12 @@ const MapTableDrawer = ({
           {placeNameLoading && <>&nbsp;</>}
           {placeName && `${placeName} `}
         </h1>
-        <MintButton onClick={() => setDrawerOpen(!drawerOpen)}>X</MintButton>
+        <CloseButton onClick={() => setDrawerOpen(!drawerOpen)} />
       </Topbar>
       <DrawerTableContainer>
-        {drawerOpen && <FilteredPublishedRecordsDataGrid filters={filters} />}
+        {drawerOpen && (
+          <FilteredPublishedRecordsDataGrid filters={mapDrawerFilters} />
+        )}
       </DrawerTableContainer>
     </Container>
   )

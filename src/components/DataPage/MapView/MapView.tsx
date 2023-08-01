@@ -38,9 +38,9 @@ const MapViewDiv = styled.div`
 const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<null | mapboxgl.Map>(null)
-  const [filters, setFilters] = React.useState<{ [key: string]: string[] }>({
-    test: ['test'],
-  })
+  const [mapDrawerFilters, setMapDrawerFilters] = React.useState<{
+    [key: string]: string[]
+  }>({})
   const [clickLngLat, setClickLngLat] = React.useState<[number, number] | null>(
     null
   )
@@ -130,7 +130,7 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
       }
 
       setDrawerOpen(true)
-      setFilters({ pharos_id: pharosIDs })
+      setMapDrawerFilters({ pharos_id: pharosIDs })
       setClickLngLat(feature.geometry.coordinates)
 
       new mapboxgl.Popup({ offset: [0, -5] })
@@ -161,10 +161,12 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
     <MapViewDiv style={style}>
       <MapContainer ref={mapContainer} />
       <MapTableDrawer
-        filters={filters}
-        clickLngLat={clickLngLat}
-        drawerOpen={drawerOpen}
-        setDrawerOpen={setDrawerOpen}
+        {...{
+          clickLngLat,
+          drawerOpen,
+          setDrawerOpen,
+          mapDrawerFilters,
+        }}
       />
     </MapViewDiv>
   )
