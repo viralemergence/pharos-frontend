@@ -59,7 +59,11 @@ const MapTableDrawer = ({
   drawerOpen,
   setDrawerOpen,
 }: MapTableDrawerProps) => {
-  const { loading: placeNameLoading, placeName } = usePlaceName({
+  const {
+    loading: placeNameLoading,
+    error: placeNameError,
+    placeName,
+  } = usePlaceName({
     lngLat: clickLngLat,
   })
 
@@ -68,7 +72,7 @@ const MapTableDrawer = ({
       <Topbar>
         {placeNameLoading && <LoadingSpinner scale={0.7} />}
         <h1>
-          {placeNameLoading && <>&nbsp;</>}
+          {(placeNameLoading || placeNameError) && <>&nbsp;</>}
           {placeName && `${placeName} `}
         </h1>
         <CloseButton onClick={() => setDrawerOpen(!drawerOpen)} />
