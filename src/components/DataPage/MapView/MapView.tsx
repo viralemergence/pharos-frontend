@@ -54,7 +54,7 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       // style: 'mapbox://styles/ryan-talus/cl7uqzqjh002215oxyz136ijf/draft',
-      style: 'mapbox://styles/ryan-talus/clgzr609k00c901qr07gy1303/draft',
+      // style: 'mapbox://styles/ryan-talus/clgzr609k00c901qr07gy1303/draft',
       // projection: { name: 'naturalEarth' },
       projection: { name: projection },
       // maxZoom: 12,
@@ -157,8 +157,6 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
     if (!map.current) return
     map.current.setProjection({ name: projection })
   }, [projection])
-
-  console.log({ drawerOpen })
 
   return (
     <MapViewDiv style={style}>
