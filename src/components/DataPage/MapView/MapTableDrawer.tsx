@@ -19,7 +19,6 @@ const Container = styled.div<{ drawerOpen: boolean }>`
   border-top: 1px solid ${({ theme }) => theme.white10PercentOpacity};
   background-color: ${({ theme }) => theme.publicPagePurpleBackground};
   padding: 10px 10px 0px 10px;
-  z-index: 2;
 
   transform: ${({ drawerOpen }) =>
     drawerOpen ? 'translateY(0)' : 'translateY(100%)'};

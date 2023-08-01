@@ -5,7 +5,9 @@ import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import MapTableDrawer from './MapTableDrawer'
 
-const MapContainer = styled.div`
+export type MapProjection = 'globe' | 'naturalEarth'
+
+const MapContainer = styled.div<{ drawerOpen: boolean }>`
   width: 100vw;
   background-color: ${({ theme }) => theme.darkPurple};
   position: absolute;
@@ -15,6 +17,12 @@ const MapContainer = styled.div`
   bottom: 0;
   width: 100%;
   height: 100%;
+
+  ${({ drawerOpen }) =>
+    drawerOpen &&
+    `.mapboxgl-ctrl-bottom-left { display: none ! important; };
+     .mapboxgl-ctrl-bottom-right { display: none ! important; };
+    `}
 `
 
 mapboxgl.accessToken = process.env.GATSBY_MAPBOX_API_KEY!
@@ -154,7 +162,7 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
 
   return (
     <MapViewDiv style={style}>
-      <MapContainer ref={mapContainer} />
+      <MapContainer drawerOpen={drawerOpen} ref={mapContainer} />
       <MapTableDrawer
         {...{
           clickLngLat,
