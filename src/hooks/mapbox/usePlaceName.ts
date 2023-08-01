@@ -29,7 +29,9 @@ interface PlaceNameSuccess {
 
 type UsePlaceNameData = PlaceNameLoading | PlaceNameError | PlaceNameSuccess
 
-type UsePlaceName = (props: { lngLat: LngLat | null }) => UsePlaceNameData
+type UsePlaceName = (props: {
+  lngLat: [number, number] | null
+}) => UsePlaceNameData
 
 const usePlaceName: UsePlaceName = ({ lngLat }) => {
   const { loading, error, result } = useReverseGeocoder({ lngLat })
