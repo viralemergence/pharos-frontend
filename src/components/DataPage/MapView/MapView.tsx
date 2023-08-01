@@ -72,11 +72,6 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
     map.current.on('load', () => {
       if (!map.current) return
 
-      map.current.addSource('pharosinitial', {
-        type: 'vector',
-        url: 'mapbox://ryan-talus.5yalgb',
-      })
-
       map.current.addSource('pharos-points', {
         type: 'geojson',
         // Use a URL for the value for the `data` property.
