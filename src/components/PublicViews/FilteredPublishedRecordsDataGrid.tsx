@@ -1,13 +1,18 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
-import DataGrid, { Column, FormatterProps } from 'react-data-grid'
+import DataGrid, {
+  Column,
+  DataGridHandle,
+  FormatterProps,
+} from 'react-data-grid'
 
 import usePublishedRecords, {
   PublishedRecordsLoadingState,
 } from './DatasetPage/usePublishedRecords'
 import LoadingSpinner from 'components/DataPage/TableView/LoadingSpinner'
 import { darken } from 'polished'
+import { Link } from 'gatsby'
 
 interface Row {
   [key: string]: string | number
@@ -50,6 +55,10 @@ const InitialLoadingMessage = styled(LoadingMessage)`
   background-color: rgba(255, 255, 255, 0.15);
   justify-content: center;
 `
+const ErrorMessageContainer = styled.div`
+  color: ${({ theme }) => theme.white};
+  padding: 15px 30px;
+`
 
 const FillDatasetGrid = styled(DataGrid)`
   block-size: 100%;
@@ -61,13 +70,13 @@ const FillDatasetGrid = styled(DataGrid)`
   --rdg-header-background-color: ${({ theme }) => theme.mutedPurple3};
   --rdg-row-hover-background-color: ${({ theme }) => theme.mutedPurple2};
 `
-
-const RowCellContainer = styled.div`
+const CellContainer = styled.div`
   margin-left: -8px;
   margin-right: -8px;
   padding: 0 8px;
-  display: flex;
-  justify-content: space-between;
+`
+
+const RowNumberContainer = styled(CellContainer)`
   background-color: ${({ theme }) => theme.mutedPurple3};
   display: flex;
   justify-content: center;
@@ -75,12 +84,39 @@ const RowCellContainer = styled.div`
 `
 
 const RowNumber = ({ row: { rowNumber } }: FormatterProps<Row>) => (
-  <RowCellContainer>
-    <span>{Number(rowNumber) + 1}</span>
-  </RowCellContainer>
+  <RowNumberContainer>
+    <span>{Number(rowNumber)}</span>
+  </RowNumberContainer>
 )
 
+const ProjectNameContainer = styled(CellContainer)`
+  // background-color: ${({ theme }) => theme.mutedPurple1};
+
+  a {
+    color: ${({ theme }) => theme.white};
+  }
+`
+const ProjectName = ({ row }: FormatterProps<Row>) => {
+  const projectName = row['Project name']
+  const pharosID = row.pharosID
+  return (
+    <ProjectNameContainer>
+      <Link to={`/projects/#/${pharosID.toString().split('-')[0]}`}>
+        {projectName}
+      </Link>
+    </ProjectNameContainer>
+  )
+}
+
 const rowKeyGetter = (row: Row) => row.pharosID
+
+const formatters = {
+  'Project name': ProjectName,
+}
+
+const defaultWidthOverride = {
+  'Project name': 400,
+}
 
 const FilteredPublishedRecordsDataGrid = ({
   filters,
@@ -91,6 +127,15 @@ const FilteredPublishedRecordsDataGrid = ({
     filters,
     pageSize,
   })
+
+  const gridRef = useRef<DataGridHandle>(null)
+
+  // when the filters change, scroll to the top
+  useEffect(() => {
+    if (gridRef.current) {
+      gridRef.current.scrollToRow(0)
+    }
+  }, [filters])
 
   const rowNumberColumn = {
     key: 'rowNumber',
@@ -104,10 +149,10 @@ const FilteredPublishedRecordsDataGrid = ({
 
   if (publishedRecordsData.status === PublishedRecordsLoadingState.ERROR) {
     return (
-      <div>
+      <ErrorMessageContainer>
         <p>Failed to load published records</p>
         <pre>{publishedRecordsData.error.message}</pre>
-      </div>
+      </ErrorMessageContainer>
     )
   }
 
@@ -118,8 +163,14 @@ const FilteredPublishedRecordsDataGrid = ({
       .map(key => ({
         key: key,
         name: key,
-        width: key.length * 7.5 + 15 + 'px',
+        width:
+          key in defaultWidthOverride
+            ? defaultWidthOverride[key as keyof typeof defaultWidthOverride]
+            : key.length * 7.5 + 15 + 'px',
         resizable: true,
+        ...(key in formatters
+          ? { formatter: formatters[key as keyof typeof formatters] }
+          : {}),
       })),
   ]
 
@@ -137,6 +188,7 @@ const FilteredPublishedRecordsDataGrid = ({
         // @ts-expect-error: I'm copying this from the docs,
         // but it doesn't look like their type definitions work
         <FillDatasetGrid
+          ref={gridRef}
           className={'rdg-dark'}
           style={{ fontFamily: 'Inconsolata' }}
           columns={columns}

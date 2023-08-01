@@ -146,20 +146,22 @@ const ProjectPage = () => {
                 : '...'}
             </p>
           </PublicProjectPageContentBox>
-          <PublicProjectPageContentBox interactive>
-            <div
-              style={{
-                height: 400,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'darkgray',
-                fontStyle: 'italic',
-              }}
-            >
-              Map placeholder
-            </div>
-          </PublicProjectPageContentBox>
+          {
+            // <PublicProjectPageContentBox interactive>
+            // <div
+            //   style={{
+            //     height: 400,
+            //     display: 'flex',
+            //     alignItems: 'center',
+            //     justifyContent: 'center',
+            //     color: 'darkgray',
+            //     fontStyle: 'italic',
+            //   }}
+            // >
+            //   Map placeholder
+            // </div>
+            // </PublicProjectPageContentBox>
+          }
           <DatasetsTable
             publicView={true}
             project={project}
