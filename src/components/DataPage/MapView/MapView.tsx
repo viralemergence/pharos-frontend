@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react'
 import styled from 'styled-components'
-import mapboxgl, { LngLat, Point } from 'mapbox-gl'
+import mapboxgl, { LngLat } from 'mapbox-gl'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 import MapTableDrawer from './MapTableDrawer'
