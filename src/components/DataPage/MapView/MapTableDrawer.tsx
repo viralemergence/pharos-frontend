@@ -32,8 +32,7 @@ const Container = styled.div<{ drawerOpen: boolean }>`
     color: ${({ theme }) => theme.white};
     ${({ theme }) => theme.bigParagraphSemibold};
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-start;
     margin: 0px;
   }
 `
