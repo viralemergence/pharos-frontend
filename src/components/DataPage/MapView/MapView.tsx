@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import mapboxgl from 'mapbox-gl'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
+import MapTableDrawer from './MapTableDrawer'
 
 const MapContainer = styled.div`
   width: 100vw;
@@ -37,6 +38,11 @@ const MapViewDiv = styled.div`
 const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<null | mapboxgl.Map>(null)
+  const [pharosIDs, setPharosIDs] = React.useState<string[]>([])
+  const [clickLngLat, setClickLngLat] = React.useState<{
+    x: number
+    y: number
+  } | null>(null)
 
   // const [lng, setLng] = React.useState(0)
   // const [lat, setLat] = React.useState(0)
@@ -105,23 +111,25 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
         layers: ['pharos-points-layer'],
       })
 
-      console.log(features.length)
-
       if (!features.length) {
         return
       }
 
-      console.log(features[0])
+      const pharosIDs = features
+        .map(feature => feature?.properties?.pharos_id as string)
+        .slice(0, 150)
+
+      setPharosIDs(pharosIDs)
+      setClickLngLat(event.point)
+
+      console.log('click')
+      console.log(event.point)
 
       const feature = features[0] as unknown as {
-        properties: {
-          Latitude: number
-          Longitude: number
-          Host_species: string
-          Parasite_species: string
-          Dataset: string
-        }
         geometry: { coordinates: mapboxgl.LngLatLike }
+        properties: {
+          [key: string]: string
+        }
       }
 
       new mapboxgl.Popup({ offset: [0, -5] })
@@ -151,6 +159,7 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
   return (
     <MapViewDiv style={style}>
       <MapContainer ref={mapContainer} />
+      <MapTableDrawer pharosIDs={pharosIDs} clickLngLat={clickLngLat} />
     </MapViewDiv>
   )
 }
