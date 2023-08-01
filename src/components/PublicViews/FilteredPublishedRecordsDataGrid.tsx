@@ -54,6 +54,7 @@ const InitialLoadingMessage = styled(LoadingMessage)`
   left: 0;
   background-color: rgba(76, 79, 98, 0.125);
   justify-content: center;
+  border-radius: 0;
 `
 const ErrorMessageContainer = styled.div`
   color: ${({ theme }) => theme.white};
