@@ -41,6 +41,8 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
   const [pharosIDs, setPharosIDs] = React.useState<string[]>([])
   const [clickLngLat, setClickLngLat] = React.useState<LngLat | null>(null)
 
+  const [drawerOpen, setDrawerOpen] = React.useState(false)
+
   // const [lng, setLng] = React.useState(0)
   // const [lat, setLat] = React.useState(0)
   // const [zoom, setZoom] = React.useState(1.7)
@@ -119,6 +121,9 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
       setPharosIDs(pharosIDs)
       setClickLngLat(map.current.unproject(event.point))
 
+      console.log('SET DRAWER OPEN')
+      setDrawerOpen(true)
+
       console.log('click')
       console.log(event.point)
 
@@ -153,10 +158,17 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
     map.current.setProjection({ name: projection })
   }, [projection])
 
+  console.log({ drawerOpen })
+
   return (
     <MapViewDiv style={style}>
       <MapContainer ref={mapContainer} />
-      <MapTableDrawer pharosIDs={pharosIDs} clickLngLat={clickLngLat} />
+      <MapTableDrawer
+        pharosIDs={pharosIDs}
+        clickLngLat={clickLngLat}
+        drawerOpen={drawerOpen}
+        setDrawerOpen={setDrawerOpen}
+      />
     </MapViewDiv>
   )
 }
