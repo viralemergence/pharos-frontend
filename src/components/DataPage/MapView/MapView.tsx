@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react'
 import styled from 'styled-components'
-import mapboxgl from 'mapbox-gl'
+import mapboxgl, { LngLat, Point } from 'mapbox-gl'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 import MapTableDrawer from './MapTableDrawer'
@@ -39,10 +39,7 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<null | mapboxgl.Map>(null)
   const [pharosIDs, setPharosIDs] = React.useState<string[]>([])
-  const [clickLngLat, setClickLngLat] = React.useState<{
-    x: number
-    y: number
-  } | null>(null)
+  const [clickLngLat, setClickLngLat] = React.useState<LngLat | null>(null)
 
   // const [lng, setLng] = React.useState(0)
   // const [lat, setLat] = React.useState(0)
@@ -120,7 +117,7 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
         .slice(0, 150)
 
       setPharosIDs(pharosIDs)
-      setClickLngLat(event.point)
+      setClickLngLat(map.current.unproject(event.point))
 
       console.log('click')
       console.log(event.point)

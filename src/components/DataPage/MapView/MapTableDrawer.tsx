@@ -1,4 +1,7 @@
 import FilteredPublishedRecordsDataGrid from 'components/PublicViews/FilteredPublishedRecordsDataGrid'
+import usePlaceName from 'hooks/mapbox/usePlaceName'
+import useReverseGeocoder, { PlaceType } from 'hooks/mapbox/useReverseGeocoder'
+import { LngLat, Point } from 'mapbox-gl'
 import React from 'react'
 import styled from 'styled-components'
 
@@ -29,15 +32,25 @@ const DrawerTableContainer = styled.div`
 
 interface MapTableDrawerProps {
   pharosIDs: string[]
-  clickLngLat: { x: number; y: number } | null
+  clickLngLat: LngLat | null
 }
 
 const MapTableDrawer = ({ pharosIDs, clickLngLat }: MapTableDrawerProps) => {
+  const {
+    loading: placeNameLoading,
+    error: placeNameError,
+    placeName,
+  } = usePlaceName({ lngLat: clickLngLat })
+
   return (
     <Container>
-      {
-        // <h1>{`${clickLngLat?.x}, ${clickLngLat?.y}`}</h1>
-      }
+      <h1>
+        <>
+          {placeNameLoading && 'Loading...'}
+          {placeNameError && placeNameError.message}
+          {placeName && `${placeName} `}
+        </>
+      </h1>
       <DrawerTableContainer>
         <FilteredPublishedRecordsDataGrid filters={{ pharos_id: pharosIDs }} />
       </DrawerTableContainer>
