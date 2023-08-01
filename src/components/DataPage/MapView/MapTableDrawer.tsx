@@ -6,6 +6,7 @@ import FilteredPublishedRecordsDataGrid from 'components/PublicViews/FilteredPub
 import usePlaceName from 'hooks/mapbox/usePlaceName'
 import LoadingSpinner from '../TableView/LoadingSpinner'
 import CloseButton from 'components/ui/CloseButton'
+import MapTableTitlePointIcon from './MapTableTitlePointIcon'
 
 const Container = styled.div<{ drawerOpen: boolean }>`
   position: absolute;
@@ -30,6 +31,10 @@ const Container = styled.div<{ drawerOpen: boolean }>`
   h1 {
     color: ${({ theme }) => theme.white};
     ${({ theme }) => theme.bigParagraphSemibold};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0px;
   }
 `
 const DrawerTableContainer = styled.div`
@@ -42,7 +47,8 @@ const Topbar = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-left: 30px;
+  margin-left: 10px;
+  margin-bottom: 10px;
 `
 
 interface MapTableDrawerProps {
@@ -69,8 +75,9 @@ const MapTableDrawer = ({
   return (
     <Container drawerOpen={drawerOpen}>
       <Topbar>
-        {placeNameLoading && <LoadingSpinner scale={0.7} />}
+        {placeNameLoading && <LoadingSpinner scale={0.4} />}
         <h1>
+          <MapTableTitlePointIcon />
           {(placeNameLoading || placeNameError) && <>&nbsp;</>}
           {placeName && `${placeName} `}
         </h1>
