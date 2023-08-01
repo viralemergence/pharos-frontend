@@ -64,10 +64,6 @@ interface GeocoderResponse {
   attribution: string
 }
 
-interface UseReverseGeocoderProps {
-  lngLat: LngLat | null
-}
-
 interface ReverseGeocoderDataLoading {
   loading: true
   error: false
@@ -93,7 +89,11 @@ type ReverseGeocoderData =
 
 const endpoint = 'https://api.mapbox.com/geocoding/v5/mapbox.places'
 
-const useReverseGeocoder = ({ lngLat }: UseReverseGeocoderProps) => {
+type UseReverseGeocoder = (props: {
+  lngLat: LngLat | null
+}) => ReverseGeocoderData
+
+const useReverseGeocoder: UseReverseGeocoder = ({ lngLat }) => {
   const [reverseGeocoderData, setReverseGeocoderData] =
     useState<ReverseGeocoderData>({
       loading: true,
@@ -108,6 +108,12 @@ const useReverseGeocoder = ({ lngLat }: UseReverseGeocoderProps) => {
     const requestReverseGeocode = async () => {
       const key = process.env.GATSBY_MAPBOX_API_KEY
       if (!key) throw new Error('No Mapbox API key found')
+
+      setReverseGeocoderData({
+        loading: true,
+        error: false,
+        result: undefined,
+      })
 
       const params = new URLSearchParams({
         access_token: key,
@@ -157,6 +163,13 @@ const useReverseGeocoder = ({ lngLat }: UseReverseGeocoderProps) => {
       ignore = true
     }
   }, [lngLat])
+
+  if (!lngLat)
+    return {
+      loading: false,
+      error: new Error('lngLat not provided'),
+      result: undefined,
+    }
 
   return reverseGeocoderData
 }
