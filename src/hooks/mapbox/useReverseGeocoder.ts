@@ -65,7 +65,7 @@ interface GeocoderResponse {
 }
 
 interface UseReverseGeocoderProps {
-  point: LngLat | null
+  lngLat: LngLat | null
 }
 
 interface ReverseGeocoderDataLoading {
@@ -93,7 +93,7 @@ type ReverseGeocoderData =
 
 const endpoint = 'https://api.mapbox.com/geocoding/v5/mapbox.places'
 
-const useReverseGeocoder = ({ point }: UseReverseGeocoderProps) => {
+const useReverseGeocoder = ({ lngLat }: UseReverseGeocoderProps) => {
   const [reverseGeocoderData, setReverseGeocoderData] =
     useState<ReverseGeocoderData>({
       loading: true,
@@ -103,7 +103,7 @@ const useReverseGeocoder = ({ point }: UseReverseGeocoderProps) => {
 
   useEffect(() => {
     let ignore = false
-    if (!point) return
+    if (!lngLat) return
 
     const requestReverseGeocode = async () => {
       const key = process.env.GATSBY_MAPBOX_API_KEY
@@ -114,7 +114,7 @@ const useReverseGeocoder = ({ point }: UseReverseGeocoderProps) => {
       })
 
       const response = await fetch(
-        `${endpoint}/${point.lng},${point.lat}.json?${params.toString()}`
+        `${endpoint}/${lngLat.lng},${lngLat.lat}.json?${params.toString()}`
       )
 
       if (ignore) return
@@ -156,7 +156,7 @@ const useReverseGeocoder = ({ point }: UseReverseGeocoderProps) => {
     return () => {
       ignore = true
     }
-  }, [point])
+  }, [lngLat])
 
   return reverseGeocoderData
 }
