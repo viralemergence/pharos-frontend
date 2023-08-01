@@ -1,4 +1,3 @@
-import { LngLat } from 'mapbox-gl'
 import useReverseGeocoder, { PlaceType } from './useReverseGeocoder'
 
 const placeTypeFallbackOrder = [
