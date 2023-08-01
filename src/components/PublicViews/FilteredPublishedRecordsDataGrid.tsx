@@ -1,7 +1,11 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
-import DataGrid, { Column, FormatterProps } from 'react-data-grid'
+import DataGrid, {
+  Column,
+  DataGridHandle,
+  FormatterProps,
+} from 'react-data-grid'
 
 import usePublishedRecords, {
   PublishedRecordsLoadingState,
@@ -86,7 +90,7 @@ const RowNumber = ({ row: { rowNumber } }: FormatterProps<Row>) => (
 )
 
 const ProjectNameContainer = styled(CellContainer)`
-  background-color: ${({ theme }) => theme.mutedPurple1};
+  // background-color: ${({ theme }) => theme.mutedPurple1};
 
   a {
     color: ${({ theme }) => theme.white};
@@ -110,6 +114,10 @@ const formatters = {
   'Project name': ProjectName,
 }
 
+const defaultWidthOverride = {
+  'Project name': 400,
+}
+
 const FilteredPublishedRecordsDataGrid = ({
   filters,
   pageSize = 50,
@@ -119,6 +127,15 @@ const FilteredPublishedRecordsDataGrid = ({
     filters,
     pageSize,
   })
+
+  const gridRef = useRef<DataGridHandle>(null)
+
+  // when the filters change, scroll to the top
+  useEffect(() => {
+    if (gridRef.current) {
+      gridRef.current.scrollToRow(0)
+    }
+  }, [filters])
 
   const rowNumberColumn = {
     key: 'rowNumber',
@@ -146,7 +163,10 @@ const FilteredPublishedRecordsDataGrid = ({
       .map(key => ({
         key: key,
         name: key,
-        width: key.length * 7.5 + 15 + 'px',
+        width:
+          key in defaultWidthOverride
+            ? defaultWidthOverride[key as keyof typeof defaultWidthOverride]
+            : key.length * 7.5 + 15 + 'px',
         resizable: true,
         ...(key in formatters
           ? { formatter: formatters[key as keyof typeof formatters] }
@@ -168,6 +188,7 @@ const FilteredPublishedRecordsDataGrid = ({
         // @ts-expect-error: I'm copying this from the docs,
         // but it doesn't look like their type definitions work
         <FillDatasetGrid
+          ref={gridRef}
           className={'rdg-dark'}
           style={{ fontFamily: 'Inconsolata' }}
           columns={columns}
