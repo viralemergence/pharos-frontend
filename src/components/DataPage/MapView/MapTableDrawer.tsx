@@ -28,7 +28,7 @@ const Container = styled.div<{ drawerOpen: boolean }>`
 
   h1 {
     color: ${({ theme }) => theme.white};
-    ${({ theme }) => theme.h1};
+    ${({ theme }) => theme.bigParagraphSemibold};
   }
 `
 const DrawerTableContainer = styled.div`
@@ -57,21 +57,17 @@ const MapTableDrawer = ({
   drawerOpen,
   setDrawerOpen,
 }: MapTableDrawerProps) => {
-  const {
-    loading: placeNameLoading,
-    error: placeNameError,
-    placeName,
-  } = usePlaceName({ lngLat: clickLngLat })
+  const { loading: placeNameLoading, placeName } = usePlaceName({
+    lngLat: clickLngLat,
+  })
 
   return (
     <Container drawerOpen={drawerOpen}>
       <Topbar>
+        {placeNameLoading && <LoadingSpinner scale={0.7} />}
         <h1>
-          <>
-            {placeNameLoading && <LoadingSpinner />}
-            {placeNameError && placeNameError.message}
-            {placeName && `${placeName} `}
-          </>
+          &nbsp;
+          {placeName && `${placeName} `}
         </h1>
         <MintButton onClick={() => setDrawerOpen(!drawerOpen)}>X</MintButton>
       </Topbar>
