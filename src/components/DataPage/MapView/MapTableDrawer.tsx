@@ -25,7 +25,9 @@ const Container = styled.div<{ drawerOpen: boolean }>`
   transform: ${({ drawerOpen }) =>
     drawerOpen ? 'translateY(0)' : 'translateY(100%)'};
 
-  transition: 250ms ease;
+  // slower transition when opening to make loading state feel faster
+  // faster transition when closing to make closing feel snappy
+  transition: ${({ drawerOpen }) => (drawerOpen ? '250ms' : '150ms')};
 
   h1 {
     color: ${({ theme }) => theme.white};
