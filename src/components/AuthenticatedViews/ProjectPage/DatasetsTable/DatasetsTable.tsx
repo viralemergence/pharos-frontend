@@ -108,12 +108,6 @@ const DatasetsTable = ({
                 ? `/${project.projectID}/${dataset.datasetID}`
                 : `/projects/${project.projectID}/${dataset.datasetID}`
             }
-            onClick={e => {
-              if (dataset.datasetID === datasetPlaceholder.datasetID) {
-                e.preventDefault()
-                setModal(<CreateDatasetForm />, { closeable: true })
-              }
-            }}
           >
             <DatasetsTableRow dataset={dataset} publicView={publicView} />
           </RowLink>
