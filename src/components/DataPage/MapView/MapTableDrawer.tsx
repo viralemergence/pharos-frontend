@@ -2,7 +2,6 @@ import React from 'react'
 import styled from 'styled-components'
 
 import FilteredPublishedRecordsDataGrid from 'components/PublicViews/FilteredPublishedRecordsDataGrid'
-import MintButton from 'components/ui/MintButton'
 
 import usePlaceName from 'hooks/mapbox/usePlaceName'
 import LoadingSpinner from '../TableView/LoadingSpinner'
