@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { LngLat } from 'mapbox-gl'
 
 import FilteredPublishedRecordsDataGrid from 'components/PublicViews/FilteredPublishedRecordsDataGrid'
 import MintButton from 'components/ui/MintButton'
@@ -45,14 +44,14 @@ const Topbar = styled.div`
 `
 
 interface MapTableDrawerProps {
-  pharosIDs: string[]
-  clickLngLat: LngLat | null
+  filters: { [key: string]: string[] }
+  clickLngLat: [number, number] | null
   drawerOpen: boolean
   setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const MapTableDrawer = ({
-  pharosIDs,
+  filters,
   clickLngLat,
   drawerOpen,
   setDrawerOpen,
@@ -66,17 +65,13 @@ const MapTableDrawer = ({
       <Topbar>
         {placeNameLoading && <LoadingSpinner scale={0.7} />}
         <h1>
-          &nbsp;
+          {placeNameLoading && <>&nbsp;</>}
           {placeName && `${placeName} `}
         </h1>
         <MintButton onClick={() => setDrawerOpen(!drawerOpen)}>X</MintButton>
       </Topbar>
       <DrawerTableContainer>
-        {drawerOpen && (
-          <FilteredPublishedRecordsDataGrid
-            filters={{ pharos_id: pharosIDs }}
-          />
-        )}
+        {drawerOpen && <FilteredPublishedRecordsDataGrid filters={filters} />}
       </DrawerTableContainer>
     </Container>
   )

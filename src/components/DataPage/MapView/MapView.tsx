@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react'
 import styled from 'styled-components'
-import mapboxgl, { LngLat } from 'mapbox-gl'
+import mapboxgl from 'mapbox-gl'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 import MapTableDrawer from './MapTableDrawer'
@@ -38,8 +38,12 @@ const MapViewDiv = styled.div`
 const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<null | mapboxgl.Map>(null)
-  const [pharosIDs, setPharosIDs] = React.useState<string[]>([])
-  const [clickLngLat, setClickLngLat] = React.useState<LngLat | null>(null)
+  const [filters, setFilters] = React.useState<{ [key: string]: string[] }>({
+    test: ['test'],
+  })
+  const [clickLngLat, setClickLngLat] = React.useState<[number, number] | null>(
+    null
+  )
 
   const [drawerOpen, setDrawerOpen] = React.useState(false)
 
@@ -118,21 +122,16 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
         .map(feature => feature?.properties?.pharos_id as string)
         .slice(0, 150)
 
-      setPharosIDs(pharosIDs)
-      setClickLngLat(map.current.unproject(event.point))
-
-      console.log('SET DRAWER OPEN')
-      setDrawerOpen(true)
-
-      console.log('click')
-      console.log(event.point)
-
       const feature = features[0] as unknown as {
-        geometry: { coordinates: mapboxgl.LngLatLike }
+        geometry: { coordinates: [number, number] }
         properties: {
           [key: string]: string
         }
       }
+
+      setDrawerOpen(true)
+      setFilters({ pharos_id: pharosIDs })
+      setClickLngLat(feature.geometry.coordinates)
 
       new mapboxgl.Popup({ offset: [0, -5] })
         .setLngLat(feature.geometry.coordinates)
@@ -162,7 +161,7 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
     <MapViewDiv style={style}>
       <MapContainer ref={mapContainer} />
       <MapTableDrawer
-        pharosIDs={pharosIDs}
+        filters={filters}
         clickLngLat={clickLngLat}
         drawerOpen={drawerOpen}
         setDrawerOpen={setDrawerOpen}
