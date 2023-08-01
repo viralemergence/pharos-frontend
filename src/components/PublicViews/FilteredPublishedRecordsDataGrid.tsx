@@ -115,7 +115,7 @@ const formatters = {
 }
 
 const defaultWidthOverride = {
-  'Project name': 400,
+  'Project name': 300,
 }
 
 const FilteredPublishedRecordsDataGrid = ({
