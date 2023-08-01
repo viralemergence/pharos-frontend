@@ -1,4 +1,3 @@
-import { LngLat } from 'mapbox-gl'
 import { useEffect, useState } from 'react'
 
 // https://docs.mapbox.com/api/search/geocoding/#geocoding-response-object
@@ -90,7 +89,7 @@ type ReverseGeocoderData =
 const endpoint = 'https://api.mapbox.com/geocoding/v5/mapbox.places'
 
 type UseReverseGeocoder = (props: {
-  lngLat: LngLat | null
+  lngLat: [number, number] | null
 }) => ReverseGeocoderData
 
 const useReverseGeocoder: UseReverseGeocoder = ({ lngLat }) => {
@@ -120,7 +119,7 @@ const useReverseGeocoder: UseReverseGeocoder = ({ lngLat }) => {
       })
 
       const response = await fetch(
-        `${endpoint}/${lngLat.lng},${lngLat.lat}.json?${params.toString()}`
+        `${endpoint}/${lngLat[0]},${lngLat[1]}.json?${params.toString()}`
       )
 
       if (ignore) return

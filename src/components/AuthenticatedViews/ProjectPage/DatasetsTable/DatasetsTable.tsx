@@ -8,11 +8,9 @@ import ListTable, {
 } from 'components/ListTable/ListTable'
 
 import { DatasetsTableRow } from './DatasetsTableRow'
-import CreateDatasetForm from '../CreateDatasetForm/CreateDatasetForm'
 import CreateNewDatasetRow from './CreateNewDatasetRow'
 import { Project } from 'reducers/stateReducer/types'
 
-import useModal from 'hooks/useModal/useModal'
 import useDatasets from 'hooks/dataset/useDatasets'
 
 import { datasetInitialValue } from 'reducers/stateReducer/initialValues'
@@ -53,8 +51,6 @@ const DatasetsTable = ({
   project,
   datasets,
 }: DatasetsTableProps) => {
-  const setModal = useModal()
-
   let datasetIDs
   if (publicView) datasetIDs = datasets.map(d => d.datasetID)
   else datasetIDs = project.datasetIDs
@@ -108,12 +104,6 @@ const DatasetsTable = ({
                 ? `/${project.projectID}/${dataset.datasetID}`
                 : `/projects/${project.projectID}/${dataset.datasetID}`
             }
-            onClick={e => {
-              if (dataset.datasetID === datasetPlaceholder.datasetID) {
-                e.preventDefault()
-                setModal(<CreateDatasetForm />, { closeable: true })
-              }
-            }}
           >
             <DatasetsTableRow dataset={dataset} publicView={publicView} />
           </RowLink>
