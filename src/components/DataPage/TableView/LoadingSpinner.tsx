@@ -41,10 +41,11 @@ const SpinnerAnimation = styled.div<{ scale: number }>`
 
 interface LoadingSpinnerProps {
   scale?: number
+  style?: React.CSSProperties
 }
 
-const LoadingSpinner = ({ scale = 1 }: LoadingSpinnerProps) => (
-  <SpinnerAnimation scale={scale}>
+const LoadingSpinner = ({ scale = 1, style }: LoadingSpinnerProps) => (
+  <SpinnerAnimation scale={scale} style={style}>
     <div />
     <div />
     <div />
