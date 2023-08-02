@@ -138,26 +138,32 @@ const fetchPublishedRecords = async ({
   const data = (await response.json()) as PublishedRecord[]
 
   if (dataIsPublishedRecordsResponse(data)) {
-    console.log('ignore', ignore)
-    console.log('append', append)
+    if (append)
+      setPublishedRecordsData(prev =>
+        prev.status === PublishedRecordsLoadingState.ERROR
+          ? // if coming from an error state, just use the result directly
+            {
+              status: PublishedRecordsLoadingState.LOADED,
+              data,
+            }
+          : // if previous results loaded correctly, append the new results
+            {
+              status: PublishedRecordsLoadingState.LOADED,
+              data: {
+                isLastPage: data.isLastPage,
+                publishedRecords: [
+                  ...prev.data.publishedRecords,
+                  ...data.publishedRecords,
+                ],
+              },
+            }
+      )
+    else
+      setPublishedRecordsData({
+        status: PublishedRecordsLoadingState.LOADED,
+        data,
+      })
 
-    setPublishedRecordsData(prev =>
-      prev.status === PublishedRecordsLoadingState.ERROR || page === 1
-        ? {
-            status: PublishedRecordsLoadingState.LOADED,
-            data,
-          }
-        : {
-            status: PublishedRecordsLoadingState.LOADED,
-            data: {
-              isLastPage: data.isLastPage,
-              publishedRecords: [
-                ...prev.data.publishedRecords,
-                ...data.publishedRecords,
-              ],
-            },
-          }
-    )
     return
   } else {
     setPublishedRecordsData({
