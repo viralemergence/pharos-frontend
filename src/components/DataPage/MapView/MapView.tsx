@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react'
+import { renderToString } from 'react-dom/server'
 import styled from 'styled-components'
 import mapboxgl from 'mapbox-gl'
 
@@ -136,20 +137,48 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
       setMapDrawerFilters({ pharos_id: pharosIDs })
       setClickLngLat(feature.geometry.coordinates)
 
+      // This is not an acceptable way to make a popup,
+      // I'm just fixing the problem with minimal changes
+      // to the code to avoid merge conflicts, this whole
+      // component will get rewritten soon.
       new mapboxgl.Popup({ offset: [0, -5] })
         .setLngLat(feature.geometry.coordinates)
         .setHTML(
-          Object.entries(feature.properties)
-            .filter(([key, _]) => !['pharos_id', 'dataset_id'].includes(key))
-            .map(
-              ([key, value]) =>
-                `<h3 style="margin-bottom: 0; margin-top: 0; font-size: 12px;">${(key =>
-                  key[0].toUpperCase() + key.slice(1).replace(/_/g, ' '))(
-                  key
-                )}</h3>
-             <p style="margin-top: 0; margin-bottom: 5px; font-size: 10px; line-height: 13px;">${value}</p>`
-            )
-            .join('')
+          renderToString(
+            (() => {
+              const projectCount = features.reduce(
+                (acc, curr) =>
+                  acc.add(curr.properties?.pharos_id.split('-')[0]),
+                new Set()
+              ).size
+              const recordCount = features.length
+              return (
+                <>
+                  <h3
+                    style={{
+                      margin: '5px 8px 5px 8px',
+                      fontSize: 12,
+                      fontWeight: 100,
+                    }}
+                  >
+                    {projectCount === 1 ? 'Projects' : 'Projects'}:&nbsp;{' '}
+                    <strong>{projectCount.toLocaleString()}</strong>
+                  </h3>
+                  <h3
+                    style={{
+                      margin: '0 8px 0px 8px',
+                      marginTop: 5,
+                      fontSize: 12,
+                      fontWeight: 100,
+                    }}
+                  >
+                    {recordCount === 1 ? 'Records' : 'Records'}:&nbsp;{' '}
+                    <strong>{recordCount.toLocaleString()}</strong>
+                  </h3>
+                </>
+              )
+            })()
+          )
         )
         .addTo(map.current)
     })
