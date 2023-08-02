@@ -91,8 +91,6 @@ const RowNumber = ({ row: { rowNumber } }: FormatterProps<Row>) => (
 )
 
 const ProjectNameContainer = styled(CellContainer)`
-  // background-color: ${({ theme }) => theme.mutedPurple1};
-
   a {
     color: ${({ theme }) => theme.white};
 
