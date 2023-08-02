@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useRef } from 'react'
 import styled from 'styled-components'
 
 import DataGrid, {
@@ -16,14 +16,6 @@ import { PublishedRecordsLoadingState } from 'hooks/publishedRecords/fetchPublis
 
 interface Row {
   [key: string]: string | number
-}
-
-interface FilteredPublishedRecordsDataGridProps {
-  filters: {
-    [key: string]: string[]
-  }
-  pageSize?: number
-  hideColumns?: string[]
 }
 
 const TableContainer = styled.div`
@@ -122,24 +114,26 @@ const defaultWidthOverride = {
   Author: 200,
 }
 
+interface FilteredPublishedRecordsDataGridProps {
+  publishedRecordsData: ReturnType<typeof usePublishedRecords>[0]
+  loadMore: ReturnType<typeof usePublishedRecords>[1]
+  hideColumns?: string[]
+}
+
 const PublishedRecordsDataGrid = ({
-  filters,
-  pageSize = 50,
+  publishedRecordsData,
+  loadMore,
   hideColumns = [],
 }: FilteredPublishedRecordsDataGridProps) => {
-  const [publishedRecordsData, loadMore] = usePublishedRecords({
-    filters,
-    pageSize,
-  })
-
   const gridRef = useRef<DataGridHandle>(null)
 
-  // when the filters change, scroll to the top
-  useEffect(() => {
-    if (gridRef.current) {
-      gridRef.current.scrollToRow(0)
-    }
-  }, [filters])
+  // not sure how to handle this case just yet...
+  // // when the filters change, scroll to the top
+  // useEffect(() => {
+  //   if (gridRef.current) {
+  //     gridRef.current.scrollToRow(0)
+  //   }
+  // }, [filters])
 
   const rowNumberColumn = {
     key: 'rowNumber',

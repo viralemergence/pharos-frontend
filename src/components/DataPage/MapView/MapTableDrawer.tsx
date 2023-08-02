@@ -7,6 +7,7 @@ import usePlaceName from 'hooks/mapbox/usePlaceName'
 import LoadingSpinner from '../TableView/LoadingSpinner'
 import CloseButton from 'components/ui/CloseButton'
 import MapTableTitlePointIcon from './MapTableTitlePointIcon'
+import usePublishedRecords from 'hooks/publishedRecords/usePublishedRecords'
 
 const Container = styled.div<{ drawerOpen: boolean }>`
   position: absolute;
@@ -72,6 +73,11 @@ const MapTableDrawer = ({
     lngLat: clickLngLat,
   })
 
+  const [publishedRecordsData, loadMore] = usePublishedRecords({
+    filters: mapDrawerFilters,
+    pageSize: 50,
+  })
+
   return (
     <Container drawerOpen={drawerOpen}>
       <Topbar>
@@ -86,7 +92,12 @@ const MapTableDrawer = ({
         <CloseButton onClick={() => setDrawerOpen(!drawerOpen)} />
       </Topbar>
       <DrawerTableContainer>
-        {drawerOpen && <PublishedRecordsDataGrid filters={mapDrawerFilters} />}
+        {drawerOpen && (
+          <PublishedRecordsDataGrid
+            publishedRecordsData={publishedRecordsData}
+            loadMore={loadMore}
+          />
+        )}
       </DrawerTableContainer>
     </Container>
   )

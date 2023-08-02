@@ -23,6 +23,7 @@ import useAppState from 'hooks/useAppState'
 import usePublishedProject, {
   ProjectDataStatus,
 } from '../ProjectPage/usePublishedProject'
+import usePublishedRecords from 'hooks/publishedRecords/usePublishedRecords'
 
 const ErrorMessageBox = styled(ProjectPageContentBox)`
   position: relative;
@@ -42,7 +43,8 @@ const GridContainer = styled.div`
   margin: 0 40px;
 `
 
-const hideColumns = ['Project name']
+const HIDECOLUMNS = ['Project name']
+const PAGESIZE = 50
 
 const DatasetPage = () => {
   const theme = useTheme()
@@ -53,6 +55,11 @@ const DatasetPage = () => {
   const [filters] = useState(() => ({
     dataset_id: [datasetID],
   }))
+
+  const [publishedRecordsData, loadMore] = usePublishedRecords({
+    pageSize: PAGESIZE,
+    filters,
+  })
 
   const dataset =
     status === ProjectDataStatus.Loaded &&
@@ -143,7 +150,11 @@ const DatasetPage = () => {
         </TopBar>
       </DatasetTopSection>
       <GridContainer>
-        <PublishedRecordsDataGrid filters={filters} hideColumns={hideColumns} />
+        <PublishedRecordsDataGrid
+          publishedRecordsData={publishedRecordsData}
+          hideColumns={HIDECOLUMNS}
+          loadMore={loadMore}
+        />
       </GridContainer>
     </>
   )
