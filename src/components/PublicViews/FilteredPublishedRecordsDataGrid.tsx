@@ -95,6 +95,10 @@ const ProjectNameContainer = styled(CellContainer)`
 
   a {
     color: ${({ theme }) => theme.white};
+
+    &:hover {
+      color: ${({ theme }) => theme.mint};
+    }
   }
 `
 const ProjectName = ({ row }: FormatterProps<Row>) => {
@@ -117,6 +121,7 @@ const formatters = {
 
 const defaultWidthOverride = {
   'Project name': 300,
+  Author: 200,
 }
 
 const FilteredPublishedRecordsDataGrid = ({
