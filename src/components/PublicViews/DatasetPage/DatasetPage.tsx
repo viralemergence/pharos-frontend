@@ -17,7 +17,7 @@ import TopBar, {
 import { ProjectPageContentBox } from 'components/ProjectPage/ProjectPageLayout'
 import { UserStatus } from 'reducers/stateReducer/types'
 import { MintButtonLink } from 'components/ui/MintButton'
-import FilteredPublishedRecordsDataGrid from '../FilteredPublishedRecordsDataGrid'
+import PublishedRecordsDataGrid from '../PublishedRecordsDataGrid'
 
 import useAppState from 'hooks/useAppState'
 import usePublishedProject, {
@@ -143,10 +143,7 @@ const DatasetPage = () => {
         </TopBar>
       </DatasetTopSection>
       <GridContainer>
-        <FilteredPublishedRecordsDataGrid
-          filters={filters}
-          hideColumns={hideColumns}
-        />
+        <PublishedRecordsDataGrid filters={filters} hideColumns={hideColumns} />
       </GridContainer>
     </>
   )

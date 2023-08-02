@@ -124,7 +124,7 @@ const defaultWidthOverride = {
   Author: 200,
 }
 
-const FilteredPublishedRecordsDataGrid = ({
+const PublishedRecordsDataGrid = ({
   filters,
   pageSize = 50,
   hideColumns = [],
@@ -218,4 +218,4 @@ const FilteredPublishedRecordsDataGrid = ({
   )
 }
 
-export default FilteredPublishedRecordsDataGrid
+export default PublishedRecordsDataGrid

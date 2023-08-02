@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import FilteredPublishedRecordsDataGrid from 'components/PublicViews/FilteredPublishedRecordsDataGrid'
+import PublishedRecordsDataGrid from 'components/PublicViews/PublishedRecordsDataGrid'
 
 import usePlaceName from 'hooks/mapbox/usePlaceName'
 import LoadingSpinner from '../TableView/LoadingSpinner'
@@ -86,9 +86,7 @@ const MapTableDrawer = ({
         <CloseButton onClick={() => setDrawerOpen(!drawerOpen)} />
       </Topbar>
       <DrawerTableContainer>
-        {drawerOpen && (
-          <FilteredPublishedRecordsDataGrid filters={mapDrawerFilters} />
-        )}
+        {drawerOpen && <PublishedRecordsDataGrid filters={mapDrawerFilters} />}
       </DrawerTableContainer>
     </Container>
   )
