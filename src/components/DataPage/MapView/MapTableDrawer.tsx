@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 
 import FilteredPublishedRecordsDataGrid from 'components/PublicViews/FilteredPublishedRecordsDataGrid'
@@ -34,6 +34,7 @@ const Container = styled.div<{ drawerOpen: boolean }>`
     display: flex;
     align-items: flex-start;
     margin: 0px;
+    height: 38px;
   }
 `
 const DrawerTableContainer = styled.div`
@@ -74,9 +75,11 @@ const MapTableDrawer = ({
   return (
     <Container drawerOpen={drawerOpen}>
       <Topbar>
-        {placeNameLoading && <LoadingSpinner scale={0.4} />}
         <h1>
-          <MapTableTitlePointIcon />
+          {<MapTableTitlePointIcon />}
+          {placeNameLoading && (
+            <LoadingSpinner scale={0.6} style={{ top: '-4px', left: '-8px' }} />
+          )}
           {(placeNameLoading || placeNameError) && <>&nbsp;</>}
           {placeName && `${placeName} `}
         </h1>
