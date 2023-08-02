@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import styled, { useTheme } from 'styled-components'
 
 import PublicViewBackground from '../PublicViewBackground'
@@ -23,7 +23,6 @@ import useAppState from 'hooks/useAppState'
 import usePublishedProject, {
   ProjectDataStatus,
 } from '../ProjectPage/usePublishedProject'
-import usePublishedRecords from 'hooks/publishedRecords/usePublishedRecords'
 
 const ErrorMessageBox = styled(ProjectPageContentBox)`
   position: relative;
