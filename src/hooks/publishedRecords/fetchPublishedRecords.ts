@@ -1,10 +1,8 @@
-import { useEffect, useState } from 'react'
-
-interface PublishedRecord {
+export interface PublishedRecord {
   [key: string]: string | number
 }
 
-interface PublishedRecordsResponse {
+export interface PublishedRecordsResponse {
   isLastPage: boolean
   publishedRecords: PublishedRecord[]
 }
@@ -17,27 +15,27 @@ export enum PublishedRecordsLoadingState {
   ERROR,
 }
 
-interface PublishedRecordsLoading {
+export interface PublishedRecordsLoading {
   status: PublishedRecordsLoadingState.INITIAL
   data: PublishedRecordsResponse
 }
 
-interface PublishedRecordsInitial {
+export interface PublishedRecordsInitial {
   status: PublishedRecordsLoadingState.LOADING
   data: PublishedRecordsResponse
 }
 
-interface PublishedRecordsLoadingMore {
+export interface PublishedRecordsLoadingMore {
   status: PublishedRecordsLoadingState.LOADING_MORE
   data: PublishedRecordsResponse
 }
 
-interface PublishedRecordsLoaded {
+export interface PublishedRecordsLoaded {
   status: PublishedRecordsLoadingState.LOADED
   data: PublishedRecordsResponse
 }
 
-interface PublishedRecordsError {
+export interface PublishedRecordsError {
   status: PublishedRecordsLoadingState.ERROR
   error: Error
 }
@@ -46,14 +44,14 @@ interface ErrorWithMessage {
   message: string
 }
 
-type PublishedRecordsData =
+export type PublishedRecordsData =
   | PublishedRecordsInitial
   | PublishedRecordsLoading
   | PublishedRecordsLoadingMore
   | PublishedRecordsLoaded
   | PublishedRecordsError
 
-interface UsePublishedRecordsProps {
+export interface UsePublishedRecordsProps {
   pageSize: number
   filters: {
     [key: string]: string[]
@@ -71,7 +69,7 @@ const dataIsPublishedRecordsResponse = (
   return true
 }
 
-interface FetchPublishedRecordsProps {
+export interface FetchPublishedRecordsProps {
   filters: {
     [key: string]: string[]
   }
@@ -81,15 +79,19 @@ interface FetchPublishedRecordsProps {
     React.SetStateAction<PublishedRecordsData>
   >
   ignore: boolean
+  append: boolean
 }
 
-const publishedRecordsInitialData = {
+export type LoadMore = () => void
+
+export const publishedRecordsInitialData = {
   isLastPage: false,
   publishedRecords: [],
 }
 
 const fetchPublishedRecords = async ({
   ignore,
+  append,
   filters,
   page,
   pageSize,
@@ -136,6 +138,9 @@ const fetchPublishedRecords = async ({
   const data = (await response.json()) as PublishedRecord[]
 
   if (dataIsPublishedRecordsResponse(data)) {
+    console.log('ignore', ignore)
+    console.log('append', append)
+
     setPublishedRecordsData(prev =>
       prev.status === PublishedRecordsLoadingState.ERROR || page === 1
         ? {
@@ -163,69 +168,4 @@ const fetchPublishedRecords = async ({
   }
 }
 
-type loadMore = () => void
-
-const usePublishedRecords = ({
-  pageSize,
-  filters,
-}: UsePublishedRecordsProps): [PublishedRecordsData, loadMore] => {
-  const [publishedRecordsData, setPublishedRecordsData] =
-    useState<PublishedRecordsData>({
-      status: PublishedRecordsLoadingState.INITIAL,
-      data: publishedRecordsInitialData,
-    })
-
-  useEffect(() => {
-    let ignore = false
-
-    setPublishedRecordsData(prev => ({
-      status: PublishedRecordsLoadingState.LOADING,
-      data:
-        prev.status !== PublishedRecordsLoadingState.ERROR
-          ? prev.data
-          : publishedRecordsInitialData,
-    }))
-
-    fetchPublishedRecords({
-      ignore,
-      filters,
-      page: 1,
-      pageSize,
-      setPublishedRecordsData,
-    })
-
-    return () => {
-      ignore = true
-    }
-  }, [filters, pageSize])
-
-  const loadMore = () => {
-    if (
-      publishedRecordsData.status !== PublishedRecordsLoadingState.ERROR &&
-      publishedRecordsData.status !== PublishedRecordsLoadingState.LOADING &&
-      publishedRecordsData.status !==
-        PublishedRecordsLoadingState.LOADING_MORE &&
-      publishedRecordsData.data.isLastPage === false
-    ) {
-      setPublishedRecordsData(prev => ({
-        status: PublishedRecordsLoadingState.LOADING_MORE,
-        data:
-          prev.status !== PublishedRecordsLoadingState.ERROR
-            ? prev.data
-            : publishedRecordsInitialData,
-      }))
-
-      fetchPublishedRecords({
-        ignore: false,
-        filters,
-        page: publishedRecordsData.data.publishedRecords.length / pageSize + 1,
-        pageSize,
-        setPublishedRecordsData,
-      })
-    }
-  }
-
-  return [publishedRecordsData, loadMore]
-}
-
-export default usePublishedRecords
+export default fetchPublishedRecords

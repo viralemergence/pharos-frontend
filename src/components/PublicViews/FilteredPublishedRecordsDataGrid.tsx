@@ -7,12 +7,12 @@ import DataGrid, {
   FormatterProps,
 } from 'react-data-grid'
 
-import usePublishedRecords, {
-  PublishedRecordsLoadingState,
-} from './DatasetPage/usePublishedRecords'
+import usePublishedRecords from 'hooks/publishedRecords/usePublishedRecords'
+
 import LoadingSpinner from 'components/DataPage/TableView/LoadingSpinner'
 import { darken } from 'polished'
 import { Link } from 'gatsby'
+import { PublishedRecordsLoadingState } from 'hooks/publishedRecords/fetchPublishedRecords'
 
 interface Row {
   [key: string]: string | number
