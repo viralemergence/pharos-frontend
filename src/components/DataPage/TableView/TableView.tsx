@@ -132,19 +132,14 @@ const TableView = ({
         shouldDebounce?: boolean
       } = {}
     ) => {
-      const replaceRecords = options.replaceRecords || false
-      let shouldDebounce = options.shouldDebounce
-
       // When clearing filters, don't debounce
-      if (!addedFilters.length) shouldDebounce = false
+      if (!addedFilters.length) options.shouldDebounce = false
 
-      if (shouldDebounce) {
-        // Use the debounced version of the load() function
-        loadDebounced({
-          ...options,
-          // Prevents an infinite loop
-          shouldDebounce: false,
-        })
+      if (options.shouldDebounce) {
+        // Use the debounced version of the load() function. The function
+        // that the debouncer runs should not itself be debounced - this would
+        // create an infinite loop. So we must set shouldDebounce to false.
+        loadDebounced({ ...options, shouldDebounce: false })
         return
       }
 
@@ -165,7 +160,7 @@ const TableView = ({
       }
 
       let pageToLoad
-      if (replaceRecords) {
+      if (options.replaceRecords) {
         pageToLoad = 1
       } else {
         // If we're not replacing the current set of records, load the next
@@ -176,7 +171,10 @@ const TableView = ({
       queryStringParameters.append('page', pageToLoad.toString())
       queryStringParameters.append('pageSize', PAGE_SIZE.toString())
 
-      const success = await fetchRecords(queryStringParameters, replaceRecords)
+      const success = await fetchRecords(
+        queryStringParameters,
+        options.replaceRecords
+      )
 
       if (success) {
         setFilters(prev =>
