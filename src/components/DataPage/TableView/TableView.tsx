@@ -206,6 +206,10 @@ const TableView = ({
     // is that a problem?
   }, [stringifiedFiltersWithValues])
 
+  /**
+   * Fetch published records from the API
+   * @returns {boolean} Whether the records were successfully fetched
+   */
   const fetchRecords = useCallback(
     async (
       queryStringParameters: URLSearchParams,
