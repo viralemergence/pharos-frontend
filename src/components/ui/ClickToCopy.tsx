@@ -12,7 +12,7 @@ const Container = styled.div<{ darkmode: boolean }>`
 
   border-radius: 5px;
   border: 1px solid rgba(0, 0, 0, 0);
-  padding: 5px 10px;
+  padding: 5px 10px 5px 15px;
 
   transition: 250ms ease;
 
