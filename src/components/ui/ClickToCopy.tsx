@@ -41,6 +41,7 @@ const ChildrenContainer = styled.div<{ showSuccessMessage: boolean }>`
   opacity: ${({ showSuccessMessage }) => (showSuccessMessage ? 0 : 1)};
   transition: 250ms ease;
   overflow-wrap: anywhere;
+  word-break: break-all;
   width: 100%;
 `
 const SuccessMessage = styled.div<{
