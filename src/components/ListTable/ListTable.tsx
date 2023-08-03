@@ -74,7 +74,7 @@ export const RowLink = styled(Link)<{
 
   &:hover {
     background-color: ${({ theme, $darkmode }) =>
-      $darkmode ? theme.mutedPurple3 : lighten(0.05, theme.hoverMint)};
+      $darkmode ? theme.mutedPurple4 : lighten(0.05, theme.hoverMint)};
   }
 `
 
