@@ -80,6 +80,7 @@ export interface FetchPublishedRecordsProps {
   >
   ignore: boolean
   append: boolean
+  overwriteRowNumber?: boolean
 }
 
 export type LoadMore = () => void
@@ -96,6 +97,7 @@ const fetchPublishedRecords = async ({
   page,
   pageSize,
   setPublishedRecordsData,
+  overwriteRowNumber = false,
 }: FetchPublishedRecordsProps) => {
   const params = new URLSearchParams()
   params.append('page', page.toString())
@@ -130,7 +132,9 @@ const fetchPublishedRecords = async ({
     const message = (await response.json()) as ErrorWithMessage
     setPublishedRecordsData({
       status: PublishedRecordsLoadingState.ERROR,
-      error: new Error(`Status: ${response.status}; ${message.message}`),
+      error: new Error(
+        `Status: ${response.status}; ${JSON.stringify(message)}`
+      ),
     })
     return
   }
@@ -139,25 +143,34 @@ const fetchPublishedRecords = async ({
 
   if (dataIsPublishedRecordsResponse(data)) {
     if (append)
-      setPublishedRecordsData(prev =>
-        prev.status === PublishedRecordsLoadingState.ERROR
-          ? // if coming from an error state, just use the result directly
-            {
-              status: PublishedRecordsLoadingState.LOADED,
-              data,
-            }
-          : // if previous results loaded correctly, append the new results
-            {
-              status: PublishedRecordsLoadingState.LOADED,
-              data: {
-                isLastPage: data.isLastPage,
-                publishedRecords: [
-                  ...prev.data.publishedRecords,
-                  ...data.publishedRecords,
-                ],
-              },
-            }
-      )
+      setPublishedRecordsData(prev => {
+        if (prev.status === PublishedRecordsLoadingState.ERROR)
+          return {
+            status: PublishedRecordsLoadingState.LOADED,
+            data,
+          }
+        else {
+          const nextRecords = [
+            ...prev.data.publishedRecords,
+            ...data.publishedRecords,
+          ]
+          if (overwriteRowNumber) {
+            nextRecords.forEach((record, index) => {
+              record.rowNumber = index + 1
+            })
+          }
+          return {
+            status: PublishedRecordsLoadingState.LOADED,
+            data: {
+              isLastPage: data.isLastPage,
+              publishedRecords: [
+                ...prev.data.publishedRecords,
+                ...data.publishedRecords,
+              ],
+            },
+          }
+        }
+      })
     else
       setPublishedRecordsData({
         status: PublishedRecordsLoadingState.LOADED,

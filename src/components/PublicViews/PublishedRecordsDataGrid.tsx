@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
 import DataGrid, {
@@ -127,13 +127,14 @@ const PublishedRecordsDataGrid = ({
 }: FilteredPublishedRecordsDataGridProps) => {
   const gridRef = useRef<DataGridHandle>(null)
 
-  // not sure how to handle this case just yet...
-  // // when the filters change, scroll to the top
-  // useEffect(() => {
-  //   if (gridRef.current) {
-  //     gridRef.current.scrollToRow(0)
-  //   }
-  // }, [filters])
+  // when we are loading a full new set of records, scroll to the top
+  useEffect(() => {
+    if (
+      gridRef.current &&
+      publishedRecordsData.status === PublishedRecordsLoadingState.LOADING
+    )
+      gridRef.current.scrollToRow(0)
+  }, [publishedRecordsData.status])
 
   const rowNumberColumn = {
     key: 'rowNumber',

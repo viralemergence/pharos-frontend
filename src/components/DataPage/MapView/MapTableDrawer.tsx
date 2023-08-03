@@ -7,7 +7,7 @@ import usePlaceName from 'hooks/mapbox/usePlaceName'
 import LoadingSpinner from '../TableView/LoadingSpinner'
 import CloseButton from 'components/ui/CloseButton'
 import MapTableTitlePointIcon from './MapTableTitlePointIcon'
-import usePublishedRecords from 'hooks/publishedRecords/usePublishedRecords'
+import usePublishedRecordsByPharosIDs from 'hooks/publishedRecords/usePublishedRecordsByPharosIDs'
 
 const Container = styled.div<{ drawerOpen: boolean }>`
   position: absolute;
@@ -53,14 +53,14 @@ const Topbar = styled.div`
 `
 
 interface MapTableDrawerProps {
-  mapDrawerFilters: { [key: string]: string[] }
+  clickedPharosIDs: string[]
   clickLngLat: [number, number] | null
   drawerOpen: boolean
   setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const MapTableDrawer = ({
-  mapDrawerFilters,
+  clickedPharosIDs,
   clickLngLat,
   drawerOpen,
   setDrawerOpen,
@@ -73,8 +73,8 @@ const MapTableDrawer = ({
     lngLat: clickLngLat,
   })
 
-  const [publishedRecordsData, loadMore] = usePublishedRecords({
-    filters: mapDrawerFilters,
+  const [publishedRecordsData, loadMore] = usePublishedRecordsByPharosIDs({
+    pharosIDs: clickedPharosIDs,
     pageSize: 50,
   })
 
