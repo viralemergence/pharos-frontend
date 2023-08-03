@@ -119,6 +119,7 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
       })
 
       if (!features.length) {
+        setDrawerOpen(false)
         return
       }
 
@@ -135,6 +136,7 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
       }
 
       setDrawerOpen(true)
+
       setClickedPharosIDs(pharosIDs)
       setClickLngLat(feature.geometry.coordinates)
 
