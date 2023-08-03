@@ -116,6 +116,9 @@ const TableView = ({
   /** Filters that have been added to the panel */
   const addedFilters = filters.filter(f => f.addedToPanel)
 
+  /** Filters that have been applied to the table */
+  const appliedFilters = filters.filter(f => f.applied)
+
   // These values are used as dependencies in some useEffect hooks below
   const stringifiedFilters = JSON.stringify(filters)
   const stringifiedRecords = JSON.stringify(records)
@@ -132,6 +135,10 @@ const TableView = ({
         shouldDebounce?: boolean
       } = {}
     ) => {
+      // Set default values
+      options.replaceRecords ||= false
+      options.shouldDebounce ||= false
+
       // When clearing filters, don't debounce
       if (!addedFilters.length) options.shouldDebounce = false
 
@@ -175,7 +182,7 @@ const TableView = ({
 
       const success = await fetchRecords(
         queryStringParameters,
-        options.replaceRecords
+        options.replaceRecords || false
       )
 
       if (success) {
@@ -280,7 +287,6 @@ const TableView = ({
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     if (!loading && !reachedLastPage && divIsAtBottom(event)) load()
   }
-  const appliedFilters = filters.filter(f => f.applied)
 
   return (
     <TableViewContainer isOpen={isOpen} isFilterPanelOpen={isFilterPanelOpen}>
