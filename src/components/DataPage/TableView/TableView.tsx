@@ -280,7 +280,7 @@ const TableView = ({
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     if (!loading && !reachedLastPage && divIsAtBottom(event)) load()
   }
-  const appliedFilters = filters.filter(filter => filter.applied)
+  const appliedFilters = filters.filter(f => f.applied)
 
   return (
     <TableViewContainer isOpen={isOpen} isFilterPanelOpen={isFilterPanelOpen}>
