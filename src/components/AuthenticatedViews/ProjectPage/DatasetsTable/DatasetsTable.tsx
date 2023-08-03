@@ -87,7 +87,7 @@ const DatasetsTable = ({
         style={style}
       >
         <HeaderRow>
-          <TableCell>Name</TableCell>
+          <TableCell>Dataset</TableCell>
           {!publicView && (
             <>
               <TableCell hideMedium>Collection Dates</TableCell>
