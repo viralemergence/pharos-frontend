@@ -28,6 +28,7 @@ import useProject from 'hooks/project/useProject'
 
 import { commaSeparatedList } from 'utilities/grammar'
 import useDatasets from 'hooks/dataset/useDatasets'
+import ClickToCopy from 'components/ui/ClickToCopy'
 
 const LoggedInProjectPageContentBox = styled(ProjectPageContentBox)`
   background-color: ${({ theme }) => theme.isThisGrayEvenHereItsSoLight};
@@ -107,8 +108,13 @@ const ProjectPage = () => {
           <p>{user.name}</p>
         </LoggedInProjectPageContentBox>
         <LoggedInProjectPageContentBox>
-          <h2>DOI</h2>
-          <p>Not yet available</p>
+          <h2>Project perminant link</h2>
+          <ClickToCopy
+            copyContentString={`${window.location.origin}/#/projects/${project.projectID}`}
+            style={{ marginTop: 10 }}
+          >
+            {window.location.hostname}/#/projects/{project.projectID}
+          </ClickToCopy>
           <h2>Project type</h2>
           <p>{project.projectType || '—'}</p>
           <h2>Surveillance status</h2>
