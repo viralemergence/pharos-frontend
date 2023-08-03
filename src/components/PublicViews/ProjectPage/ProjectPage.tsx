@@ -30,7 +30,7 @@ const Container = styled.div`
   background-color: ${({ theme }) => theme.publicPagePurpleBackground};
   display: flow-root;
 `
-const PublicProjectPageContentBox = styled(ProjectPageContentBox)<{
+export const PublicProjectPageContentBox = styled(ProjectPageContentBox)<{
   interactive?: boolean
 }>`
   position: relative;
