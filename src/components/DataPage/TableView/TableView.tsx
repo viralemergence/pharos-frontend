@@ -113,8 +113,10 @@ const TableView = ({
   const [records, setRecords] = useState<Row[]>([])
   const [reachedLastPage, setReachedLastPage] = useState(false)
 
+  /** Filters that have been added to the panel */
   const addedFilters = filters.filter(f => f.addedToPanel)
 
+  // These values are used as dependencies in some useEffect hooks below
   const stringifiedFilters = JSON.stringify(filters)
   const stringifiedRecords = JSON.stringify(records)
   const stringifiedFiltersWithValues = JSON.stringify(
