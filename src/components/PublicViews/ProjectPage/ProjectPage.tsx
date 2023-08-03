@@ -25,6 +25,7 @@ import { MintButtonLink } from 'components/ui/MintButton'
 import useAppState from 'hooks/useAppState'
 import { UserStatus } from 'reducers/stateReducer/types'
 import DatasetsTable from 'components/AuthenticatedViews/ProjectPage/DatasetsTable/DatasetsTable'
+import ClickToCopy from 'components/ui/ClickToCopy'
 
 const Container = styled.div`
   background-color: ${({ theme }) => theme.publicPagePurpleBackground};
@@ -205,8 +206,14 @@ const ProjectPage = () => {
               <>
                 <h2>Project published</h2>
                 <p>{formatDate(project.datePublished)}</p>
-                <h2>Project ID</h2>
-                <pre>{project.projectID}</pre>
+                <h2>Permanent project link</h2>
+                <ClickToCopy
+                  darkmode
+                  copyContentString={`${window.location.origin}/#/projects/${project.projectID}`}
+                  style={{ marginTop: 10 }}
+                >
+                  {window.location.hostname}/#/projects/{project.projectID}
+                </ClickToCopy>
                 {project.relatedMaterials &&
                   project.relatedMaterials.length > 0 && (
                     <>

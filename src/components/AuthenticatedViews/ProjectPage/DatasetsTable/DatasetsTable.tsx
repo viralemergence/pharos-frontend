@@ -77,7 +77,7 @@ const DatasetsTable = ({
 
   return (
     <>
-      <CardHeaderRow $darkmode>Datasets</CardHeaderRow>
+      <CardHeaderRow $darkmode={publicView}>Datasets</CardHeaderRow>
       <ListTable
         wideColumnTemplate={
           publicView ? '1.5fr 220px' : '1.5fr 1fr 150px 220px'
@@ -111,7 +111,7 @@ const DatasetsTable = ({
 
         {!publicView && <CreateNewDatasetRow />}
       </ListTable>
-      <CardHeaderRow $darkmode>Project Information</CardHeaderRow>
+      <CardHeaderRow $darkmode={publicView}>Project Information</CardHeaderRow>
     </>
   )
 }
