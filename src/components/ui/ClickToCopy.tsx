@@ -37,6 +37,7 @@ const Container = styled.div<{ darkmode: boolean }>`
   }
 `
 const ChildrenContainer = styled.div<{ showSuccessMessage: boolean }>`
+  ${({ theme }) => theme.smallParagraph};
   opacity: ${({ showSuccessMessage }) => (showSuccessMessage ? 0 : 1)};
   transition: 250ms ease;
   overflow-wrap: anywhere;
@@ -56,6 +57,7 @@ const SuccessMessage = styled.div<{
   display: flex;
   align-items: center;
   justify-content: center;
+  ${({ theme }) => theme.smallParagraph};
 
   background-color: ${({ theme, darkmode }) =>
     darkmode ? theme.white20PercentOpacity : theme.hoverMint};
