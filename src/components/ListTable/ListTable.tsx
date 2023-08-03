@@ -21,8 +21,12 @@ const TableGrid = styled.div<{ $darkmode: boolean }>`
         ? `border-top: 5px solid ${theme.mint}`
         : `border: 1px solid ${theme.medGray}`};
     gap: 0px;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
+
+    ${({ $darkmode }) =>
+      $darkmode &&
+      `border-top-left-radius: 5px;
+       border-top-right-radius: 5px;
+      `}
   }
 `
 export const RowLink = styled(Link)<{
@@ -43,6 +47,7 @@ export const RowLink = styled(Link)<{
 
   @media (min-width: ${cardsBreakpoint - 1}px) {
     padding: 0;
+    padding-left: 15px;
     align-items: center;
     display: grid;
     grid-template-columns: ${({ $mediumColumnTemplate }) =>
@@ -79,6 +84,7 @@ export const HeaderRow = styled.div<{
   $darkmode?: boolean
 }>`
   display: grid;
+  padding-left: 15px;
 
   grid-template-columns: ${({ $mediumColumnTemplate }) =>
     $mediumColumnTemplate};
@@ -105,6 +111,7 @@ export const HeaderRow = styled.div<{
 
 export const CardHeaderRow = styled.h3<{ $darkmode?: boolean }>`
   ${({ theme }) => theme.h3};
+  color: ${({ theme, $darkmode }) => ($darkmode ? theme.white : theme.black)};
   color: ${({ theme, $darkmode }) => ($darkmode ? theme.white : theme.black)};
   margin: 10px 0;
 
