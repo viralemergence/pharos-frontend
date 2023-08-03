@@ -73,6 +73,7 @@ const LoadingMessage = styled.div`
   align-items: center;
   gap: 10px;
 `
+// TODO: Is this .attrs(role) thing necessary?
 const NoRecordsFound = styled.div.attrs(({ role }) => ({ role }))`
   ${({ theme }) => theme.bigParagraphSemibold};
   margin: 30px auto;
