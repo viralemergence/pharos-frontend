@@ -204,8 +204,6 @@ const ProjectPage = () => {
           <PublicProjectPageContentBox>
             {status === ProjectDataStatus.Loaded ? (
               <>
-                <h2>Project published</h2>
-                <p>{formatDate(project.datePublished)}</p>
                 <h2>Permanent project link</h2>
                 <ClickToCopy
                   darkmode
@@ -214,6 +212,8 @@ const ProjectPage = () => {
                 >
                   {window.location.hostname}/#/projects/{project.projectID}
                 </ClickToCopy>
+                <h2>Project published</h2>
+                <p>{formatDate(project.datePublished)}</p>
                 {project.relatedMaterials &&
                   project.relatedMaterials.length > 0 && (
                     <>
