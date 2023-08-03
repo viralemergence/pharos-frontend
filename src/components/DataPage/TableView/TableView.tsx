@@ -176,13 +176,14 @@ const TableView = ({
 
       const success = await fetchRecords(queryStringParameters, replaceRecords)
 
-      if (success)
+      if (success) {
         setFilters(prev =>
           prev.map(filter => ({
             ...filter,
             applied: fieldIdsOfAppliedFilters.includes(filter.fieldId),
           }))
         )
+      }
 
       setLoading(false)
     },
