@@ -14,7 +14,6 @@ import TopBar, {
   Controls,
 } from 'components/layout/TopBar'
 
-import { ProjectPageContentBox } from 'components/ProjectPage/ProjectPageLayout'
 import { UserStatus } from 'reducers/stateReducer/types'
 import { MintButtonLink } from 'components/ui/MintButton'
 import PublishedRecordsDataGrid from '../PublishedRecordsDataGrid'
@@ -24,18 +23,7 @@ import usePublishedProject, {
   ProjectDataStatus,
 } from '../ProjectPage/usePublishedProject'
 import usePublishedRecords from 'hooks/publishedRecords/usePublishedRecords'
-
-const ErrorMessageBox = styled(ProjectPageContentBox)`
-  position: relative;
-  margin-top: 40px;
-  background-color: ${({ theme }) => theme.medDarkBlack};
-  border-top: thin solid ${({ theme }) => theme.mint};
-  color: ${({ theme }) => theme.white};
-
-  > h2 {
-    color: ${({ theme }) => theme.medDarkGray};
-  }
-`
+import { PublicProjectPageContentBox } from '../ProjectPage/ProjectPage'
 
 const GridContainer = styled.div`
   height: calc(100vh - 265px);
@@ -95,7 +83,7 @@ const DatasetPage = () => {
             </Breadcrumbs>
             <Title>Dataset not found</Title>
           </TopBar>
-          <ErrorMessageBox>
+          <PublicProjectPageContentBox style={{ marginTop: 30 }}>
             <h2>Error message</h2>
             {status === ProjectDataStatus.Error && (
               <pre style={{ color: 'white' }}>{project.error.message}</pre>
@@ -105,7 +93,7 @@ const DatasetPage = () => {
                 {`Dataset with ID ${datasetID} not found in project ${project.name}`}
               </pre>
             )}
-          </ErrorMessageBox>
+          </PublicProjectPageContentBox>
         </DatasetTopSection>
       </>
     )
