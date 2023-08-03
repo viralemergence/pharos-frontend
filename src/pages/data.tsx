@@ -197,5 +197,3 @@ interface MetadataResponse {
 }
 
 export default DataPage
-export default DataPage
-export default DataPage
