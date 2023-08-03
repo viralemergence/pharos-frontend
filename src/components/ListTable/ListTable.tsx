@@ -54,7 +54,7 @@ export const RowLink = styled(Link)<{
       $mediumColumnTemplate};
 
     background-color: ${({ theme, $darkmode }) =>
-      $darkmode ? theme.mutedPurple1 : theme.white};
+      $darkmode ? theme.mutedPurple3 : theme.white};
     &:nth-child(2n) {
       background: ${({ theme, $darkmode }) =>
         $darkmode ? theme.mutedPurple2 : theme.veryLightMint};
@@ -93,9 +93,13 @@ export const HeaderRow = styled.div<{
     grid-template-columns: ${({ $wideColumnTemplate }) => $wideColumnTemplate};
   }
 
-  ${({ theme }) => theme.smallParagraphSemibold};
+  ${({ theme, $darkmode }) =>
+    $darkmode ? theme.smallParagraph : theme.smallParagraphSemibold};
+
   align-items: center;
   color: ${({ theme, $darkmode }) => ($darkmode ? theme.white : theme.black)};
+  color: ${({ theme, $darkmode }) =>
+    $darkmode ? theme.medDarkGray : theme.black};
   background-color: ${({ theme, $darkmode }) =>
     $darkmode ? theme.mutedPurple1 : theme.white};
 
