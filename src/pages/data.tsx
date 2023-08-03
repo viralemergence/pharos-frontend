@@ -1,15 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
+import CMS from '@talus-analytics/library.airtable-cms'
 
 import isNormalObject from 'utilities/isNormalObject'
-
-import CMS from '@talus-analytics/library.airtable-cms'
 import Providers from 'components/layout/Providers'
 import NavBar from 'components/layout/NavBar/NavBar'
 import MapView, { MapProjection } from 'components/DataPage/MapView/MapView'
 import TableView from 'components/DataPage/TableView/TableView'
 import DataToolbar, { View, isView } from 'components/DataPage/Toolbar/Toolbar'
-
 import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
 
 export type Filter = {
@@ -112,11 +110,9 @@ const DataPage = ({
   const [mapProjection, setMapProjection] =
     useState<MapProjection>('naturalEarth')
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
-
   const [filters, setFilters] = useState<Filter[]>([])
 
-  /** Update the view and, depending on what the view is, update the map
-   * projection view */
+  /** Update the view, and update the map projection view accordingly */
   const changeView = useCallback((newView: View, setHash = true) => {
     if (setHash) window.location.hash = newView
     setView(newView)
