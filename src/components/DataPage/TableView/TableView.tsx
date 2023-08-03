@@ -123,7 +123,7 @@ const TableView = ({
   const stringifiedFilters = JSON.stringify(filters)
   const stringifiedRecords = JSON.stringify(records)
   const stringifiedFiltersWithValues = JSON.stringify(
-    addedFilters.filter(filter => filter.values?.length)
+    addedFilters.filter(f => f.values?.length)
   )
 
   /** Load published records. This function prepares the query string and calls
