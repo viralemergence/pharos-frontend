@@ -293,8 +293,8 @@ const TableView = ({
           </NoRecordsFound>
         )}
         {records.length > 0 && (
-          // @ts-expect-error: I'm copying this from the docs,
-          // but it doesn't look like their type definitions work
+          // @ts-expect-error: I'm copying this from the docs, but it doesn't
+          // look like their type definitions work
           <FillDatasetGrid
             className={'rdg-dark'}
             style={{ fontFamily: 'Inconsolata' }}
