@@ -1,13 +1,26 @@
 import React from 'react'
+import styled from 'styled-components'
+import { commaSeparatedList } from 'utilities/grammar'
 
 interface CitationsPublicationsProps {
   project: {
+    projectID: string
     projectPublications?: string[]
     othersCiting?: string[]
     citation?: string
+    datePublished?: string
+    name: string
+    authors?: {
+      researcherID?: string
+      name?: string
+    }[]
   }
   published?: boolean
 }
+
+const ProjectLink = styled.a`
+  color: ${({ theme }) => theme.white};
+`
 
 const CitationsPublications = ({
   project,
@@ -34,12 +47,29 @@ const CitationsPublications = ({
       project?.othersCiting?.map(pub => <p key={pub}>{pub}</p>)
     )
 
+  let yearPublished = 'Unpublished'
+  if (project.datePublished) {
+    yearPublished = new Date(project.datePublished).getFullYear().toString()
+  }
+
   return (
     <>
-      {(!published || project.citation) && (
+      {published && (
         <>
           <h2>How to cite this project</h2>
-          <p>{project.citation || '—'}</p>
+          <p>
+            {commaSeparatedList(
+              project.authors?.map(author => author?.name ?? '') ?? []
+            )}
+            . {project.name} ({yearPublished}).{' '}
+            <ProjectLink
+              href={`${window.location.origin}/#/projects/${project.projectID}`}
+            >
+              {window.location.hostname}/#/projects/{project.projectID}
+            </ProjectLink>
+            . Accessed on{' '}
+            {new Date().toISOString().split('.')[0].split('T').join(' ')} UTC.
+          </p>
         </>
       )}
       {showProjectPublications && (
