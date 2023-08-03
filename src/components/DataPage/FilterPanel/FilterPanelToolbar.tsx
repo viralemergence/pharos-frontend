@@ -88,6 +88,7 @@ const FilterPanelToolbar = ({
     }
   }
 
+  // TODO: Do this without refs
   const wasFilterPanelOpen = useRef(isFilterPanelOpen)
   useEffect(() => {
     if (!wasFilterPanelOpen.current && isFilterPanelOpen) {
