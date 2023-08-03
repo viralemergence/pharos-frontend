@@ -162,15 +162,22 @@ const FilterPanelToolbar = ({
                 // For now, do not handle filters other than dates
                 return
               }
-              setFilters(filters =>
-                filters.map(filter =>
-                  filter.fieldId === fieldId
-                    ? { ...filter, addedToPanel: true, values: [] }
-                    : filter
+              setFilters(filters => {
+                const highestPanelIndex = Math.max(
+                  ...filters.map(panel => panel.panelIndex || -1)
                 )
-              )
+                return filters.map(f => {
+                  if (f.fieldId !== fieldId) return f
+                  return {
+                    ...f,
+                    addedToPanel: true,
+                    values: [],
+                    panelIndex: highestPanelIndex + 1,
+                  }
+                })
+              })
               const filterList = filterListRef.current
-              // TODO: If possible, set the scrolltop when FilterList mounts
+              // TODO: If possible, set the scrolltop when FilterList renders
               setTimeout(() => {
                 if (filterList) filterList.scrollTop = filterList.scrollHeight
               }, 0)
