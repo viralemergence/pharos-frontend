@@ -151,11 +151,13 @@ const TableView = ({
       for (const filter of filters) {
         if (!filter.addedToPanel) continue
         if (!filter.values) continue
-        const truthyValues = filter.values.filter(v => Boolean(v))
-        for (const value of truthyValues) {
+        const validValues = filter.values.filter(
+          (value: string) => ![null, undefined, ''].includes(value)
+        )
+        for (const value of validValues) {
           queryStringParameters.append(filter.fieldId, value)
         }
-        if (truthyValues.length > 0)
+        if (validValues.length > 0)
           fieldIdsOfAppliedFilters.push(filter.fieldId)
       }
 
