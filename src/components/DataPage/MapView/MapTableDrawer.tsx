@@ -1,12 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import FilteredPublishedRecordsDataGrid from 'components/PublicViews/FilteredPublishedRecordsDataGrid'
+import PublishedRecordsDataGrid from 'components/PublicViews/PublishedRecordsDataGrid'
 
 import usePlaceName from 'hooks/mapbox/usePlaceName'
 import LoadingSpinner from '../TableView/LoadingSpinner'
 import CloseButton from 'components/ui/CloseButton'
 import MapTableTitlePointIcon from './MapTableTitlePointIcon'
+import usePublishedRecordsByPharosIDs from 'hooks/publishedRecords/usePublishedRecordsByPharosIDs'
 
 const Container = styled.div<{ drawerOpen: boolean }>`
   position: absolute;
@@ -52,14 +53,14 @@ const Topbar = styled.div`
 `
 
 interface MapTableDrawerProps {
-  mapDrawerFilters: { [key: string]: string[] }
+  clickedPharosIDs: string[]
   clickLngLat: [number, number] | null
   drawerOpen: boolean
   setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const MapTableDrawer = ({
-  mapDrawerFilters,
+  clickedPharosIDs,
   clickLngLat,
   drawerOpen,
   setDrawerOpen,
@@ -70,6 +71,11 @@ const MapTableDrawer = ({
     placeName,
   } = usePlaceName({
     lngLat: clickLngLat,
+  })
+
+  const [publishedRecordsData, loadMore] = usePublishedRecordsByPharosIDs({
+    pharosIDs: clickedPharosIDs,
+    pageSize: 50,
   })
 
   return (
@@ -87,7 +93,10 @@ const MapTableDrawer = ({
       </Topbar>
       <DrawerTableContainer>
         {drawerOpen && (
-          <FilteredPublishedRecordsDataGrid filters={mapDrawerFilters} />
+          <PublishedRecordsDataGrid
+            publishedRecordsData={publishedRecordsData}
+            loadMore={loadMore}
+          />
         )}
       </DrawerTableContainer>
     </Container>

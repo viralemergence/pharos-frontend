@@ -7,23 +7,15 @@ import DataGrid, {
   FormatterProps,
 } from 'react-data-grid'
 
-import usePublishedRecords, {
-  PublishedRecordsLoadingState,
-} from './DatasetPage/usePublishedRecords'
+import usePublishedRecords from 'hooks/publishedRecords/usePublishedRecords'
+
 import LoadingSpinner from 'components/DataPage/TableView/LoadingSpinner'
 import { darken } from 'polished'
 import { Link } from 'gatsby'
+import { PublishedRecordsLoadingState } from 'hooks/publishedRecords/fetchPublishedRecords'
 
 interface Row {
   [key: string]: string | number
-}
-
-interface FilteredPublishedRecordsDataGridProps {
-  filters: {
-    [key: string]: string[]
-  }
-  pageSize?: number
-  hideColumns?: string[]
 }
 
 const TableContainer = styled.div`
@@ -91,8 +83,6 @@ const RowNumber = ({ row: { rowNumber } }: FormatterProps<Row>) => (
 )
 
 const ProjectNameContainer = styled(CellContainer)`
-  // background-color: ${({ theme }) => theme.mutedPurple1};
-
   a {
     color: ${({ theme }) => theme.white};
 
@@ -124,24 +114,27 @@ const defaultWidthOverride = {
   Author: 200,
 }
 
-const FilteredPublishedRecordsDataGrid = ({
-  filters,
-  pageSize = 50,
+interface FilteredPublishedRecordsDataGridProps {
+  publishedRecordsData: ReturnType<typeof usePublishedRecords>[0]
+  loadMore: ReturnType<typeof usePublishedRecords>[1]
+  hideColumns?: string[]
+}
+
+const PublishedRecordsDataGrid = ({
+  publishedRecordsData,
+  loadMore,
   hideColumns = [],
 }: FilteredPublishedRecordsDataGridProps) => {
-  const [publishedRecordsData, loadMore] = usePublishedRecords({
-    filters,
-    pageSize,
-  })
-
   const gridRef = useRef<DataGridHandle>(null)
 
-  // when the filters change, scroll to the top
+  // when we are loading a full new set of records, scroll to the top
   useEffect(() => {
-    if (gridRef.current) {
+    if (
+      gridRef.current &&
+      publishedRecordsData.status === PublishedRecordsLoadingState.LOADING
+    )
       gridRef.current.scrollToRow(0)
-    }
-  }, [filters])
+  }, [publishedRecordsData.status])
 
   const rowNumberColumn = {
     key: 'rowNumber',
@@ -218,4 +211,4 @@ const FilteredPublishedRecordsDataGrid = ({
   )
 }
 
-export default FilteredPublishedRecordsDataGrid
+export default PublishedRecordsDataGrid

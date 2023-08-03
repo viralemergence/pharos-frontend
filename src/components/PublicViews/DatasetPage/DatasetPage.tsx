@@ -15,15 +15,15 @@ import TopBar, {
 } from 'components/layout/TopBar'
 
 import { ProjectPageContentBox } from 'components/ProjectPage/ProjectPageLayout'
+import { UserStatus } from 'reducers/stateReducer/types'
+import { MintButtonLink } from 'components/ui/MintButton'
+import PublishedRecordsDataGrid from '../PublishedRecordsDataGrid'
 
 import useAppState from 'hooks/useAppState'
 import usePublishedProject, {
   ProjectDataStatus,
 } from '../ProjectPage/usePublishedProject'
-import { UserStatus } from 'reducers/stateReducer/types'
-import { MintButtonLink } from 'components/ui/MintButton'
-import usePublishedRecords from './usePublishedRecords'
-import FilteredPublishedRecordsDataGrid from '../FilteredPublishedRecordsDataGrid'
+import usePublishedRecords from 'hooks/publishedRecords/usePublishedRecords'
 
 const ErrorMessageBox = styled(ProjectPageContentBox)`
   position: relative;
@@ -43,8 +43,8 @@ const GridContainer = styled.div`
   margin: 0 40px;
 `
 
-const pageSize = 50
-const hideColumns = ['Project name']
+const HIDECOLUMNS = ['Project name']
+const PAGESIZE = 50
 
 const DatasetPage = () => {
   const theme = useTheme()
@@ -56,12 +56,10 @@ const DatasetPage = () => {
     dataset_id: [datasetID],
   }))
 
-  const [publishedRecordsData] = usePublishedRecords({
+  const [publishedRecordsData, loadMore] = usePublishedRecords({
+    pageSize: PAGESIZE,
     filters,
-    pageSize,
   })
-
-  console.log(publishedRecordsData)
 
   const dataset =
     status === ProjectDataStatus.Loaded &&
@@ -152,9 +150,10 @@ const DatasetPage = () => {
         </TopBar>
       </DatasetTopSection>
       <GridContainer>
-        <FilteredPublishedRecordsDataGrid
-          filters={filters}
-          hideColumns={hideColumns}
+        <PublishedRecordsDataGrid
+          publishedRecordsData={publishedRecordsData}
+          hideColumns={HIDECOLUMNS}
+          loadMore={loadMore}
         />
       </GridContainer>
     </>

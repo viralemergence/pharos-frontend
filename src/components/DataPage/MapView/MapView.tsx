@@ -46,9 +46,9 @@ const MapViewDiv = styled.div`
 const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<null | mapboxgl.Map>(null)
-  const [mapDrawerFilters, setMapDrawerFilters] = React.useState<{
-    [key: string]: string[]
-  }>({})
+
+  const [clickedPharosIDs, setClickedPharosIDs] = React.useState<string[]>([])
+
   const [clickLngLat, setClickLngLat] = React.useState<[number, number] | null>(
     null
   )
@@ -121,9 +121,10 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
         return
       }
 
-      const pharosIDs = features
-        .map(feature => feature?.properties?.pharos_id as string)
-        .slice(0, 150)
+      const pharosIDs = features.map(
+        feature => feature?.properties?.pharos_id as string
+      )
+      // .slice(0, 150)
 
       const feature = features[0] as unknown as {
         geometry: { coordinates: [number, number] }
@@ -133,7 +134,7 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
       }
 
       setDrawerOpen(true)
-      setMapDrawerFilters({ pharos_id: pharosIDs })
+      setClickedPharosIDs(pharosIDs)
       setClickLngLat(feature.geometry.coordinates)
 
       // This is not an acceptable way to make a popup,
@@ -196,7 +197,7 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
           clickLngLat,
           drawerOpen,
           setDrawerOpen,
-          mapDrawerFilters,
+          clickedPharosIDs,
         }}
       />
     </MapViewDiv>
