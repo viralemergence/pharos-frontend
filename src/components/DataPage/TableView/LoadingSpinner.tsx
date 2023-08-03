@@ -1,11 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const SpinnerAnimation = styled.div`
+const SpinnerAnimation = styled.div<{ scale: number }>`
   display: inline-block;
   position: relative;
   width: 40px;
   height: 40px;
+  transform: scale(${({ scale }) => scale});
+
   > div {
     box-sizing: border-box;
     display: block;
@@ -37,8 +39,13 @@ const SpinnerAnimation = styled.div`
   }
 `
 
-const LoadingSpinner = () => (
-  <SpinnerAnimation>
+interface LoadingSpinnerProps {
+  scale?: number
+  style?: React.CSSProperties
+}
+
+const LoadingSpinner = ({ scale = 1, style }: LoadingSpinnerProps) => (
+  <SpinnerAnimation scale={scale} style={style}>
     <div />
     <div />
     <div />
