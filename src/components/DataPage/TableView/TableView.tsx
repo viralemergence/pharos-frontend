@@ -194,9 +194,13 @@ const TableView = ({
 
   useEffect(() => {
     load()
+    // TODO: Is there a danger that the TableView component might unmount
+    // before load() has had a change to modify this component, and does this
+    // mean there will be console errors if this early unmounting occurs? And
+    // is that a problem?
   }, [])
 
-  // When the filters have different values, load the first page of results
+  // When the filters' values have changed, load the first page of results
   useEffect(() => {
     load({
       shouldDebounce: true,
