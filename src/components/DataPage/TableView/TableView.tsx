@@ -150,21 +150,17 @@ const TableView = ({
 
       const queryStringParameters = new URLSearchParams()
 
-      const fieldIdsOfAppliedFilters = filters.reduce<string[]>(
-        (fieldIds, filter) => {
-          if (!filter.addedToPanel) return fieldIds
-          const { fieldId, values = [] } = filter
-          let shouldApplyFilter = false
-          for (const value of values) {
-            if (value) {
-              queryStringParameters.append(fieldId, value)
-              shouldApplyFilter = true
-            }
-          }
-          return shouldApplyFilter ? [...fieldIds, fieldId] : fieldIds
-        },
-        []
-      )
+      const fieldIdsOfAppliedFilters: string[] = []
+      for (const filter of filters) {
+        if (!filter.addedToPanel) continue
+        if (!filter.values) continue
+        const truthyValues = filter.values.filter(v => Boolean(v))
+        for (const value of truthyValues) {
+          queryStringParameters.append(filter.fieldId, value)
+        }
+        if (truthyValues.length > 0)
+          fieldIdsOfAppliedFilters.push(filter.fieldId)
+      }
 
       let pageToLoad
       if (replaceRecords) {
