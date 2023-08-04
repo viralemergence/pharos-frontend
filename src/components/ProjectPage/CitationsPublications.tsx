@@ -63,9 +63,9 @@ const CitationsPublications = ({
             )}
             . {project.name} ({yearPublished}).{' '}
             <ProjectLink
-              href={`${window.location.origin}/#/projects/${project.projectID}`}
+              href={`${window.location.origin}/projects/#/${project.projectID}`}
             >
-              {window.location.hostname}/#/projects/{project.projectID}
+              {window.location.hostname}/projects/#/{project.projectID}
             </ProjectLink>
             . Accessed on{' '}
             {new Date().toISOString().split('.')[0].split('T').join(' ')} UTC.
