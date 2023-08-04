@@ -290,4 +290,3 @@ const ScreenReaderOnly = styled.div`
 `
 
 export default FilterPanelToolbar
-export default FilterPanelToolbar

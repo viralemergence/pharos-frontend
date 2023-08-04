@@ -10,8 +10,6 @@ const Panel = styled.aside<{ open: boolean }>`
   backdrop-filter: blur(47px);
   background-color: ${({ theme }) => theme.white10PercentOpacity};
   border: 1px solid ${({ theme }) => theme.white10PercentOpacity};
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
   color: ${({ theme }) => theme.white};
   display: flex;
   flex-flow: column nowrap;
