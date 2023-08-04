@@ -126,6 +126,12 @@ const FilterPanel = ({
     )
   }
 
+  // When a new filter is added, scroll the filter list to the bottom
+  useEffect(() => {
+    const filterList = filterListRef?.current
+    if (filterList) filterList.scrollTop = filterList.scrollHeight
+  }, [addedFilters.length])
+
   return (
     <Panel
       open={isFilterPanelOpen}
@@ -140,7 +146,6 @@ const FilterPanel = ({
         setIsFilterPanelOpen={setIsFilterPanelOpen}
         filters={filters}
         setFilters={setFilters}
-        filterListRef={filterListRef}
       />
       <ListOfAddedFilters ref={filterListRef}>
         {addedFilters.map(({ fieldId, label, type, options, values = [] }) => {

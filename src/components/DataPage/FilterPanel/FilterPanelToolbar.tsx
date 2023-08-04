@@ -60,13 +60,11 @@ const FilterPanelToolbar = ({
   setFilters,
   isFilterPanelOpen,
   setIsFilterPanelOpen,
-  filterListRef,
 }: {
   filters: Filter[]
   setFilters: Dispatch<SetStateAction<Filter[]>>
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
   isFilterPanelOpen: boolean
-  filterListRef: MutableRefObject<HTMLUListElement | null>
 }) => {
   const addFilterButtonRef = useRef<HTMLButtonElement>(null)
 
@@ -177,11 +175,6 @@ const FilterPanelToolbar = ({
                   }
                 })
               })
-              const filterList = filterListRef.current
-              // TODO: If possible, set the scrolltop when FilterList renders
-              setTimeout(() => {
-                if (filterList) filterList.scrollTop = filterList.scrollHeight
-              }, 0)
             }}
           />
         </Dropdown>
