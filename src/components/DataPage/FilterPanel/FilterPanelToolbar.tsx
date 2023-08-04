@@ -71,6 +71,8 @@ const FilterPanelToolbar = ({
 }) => {
   const addFilterButtonRef = useRef<HTMLButtonElement>(null)
 
+  const addedFilters = filters.filter(f => f.addedToPanel)
+
   const generateDropdownKey = () => Math.random().toString(36).substring(7)
   const [dropdownKey, setDropdownKey] = useState(generateDropdownKey())
   const closeFieldSelector = () => {
@@ -164,7 +166,7 @@ const FilterPanelToolbar = ({
               }
               setFilters(filters => {
                 const highestPanelIndex = Math.max(
-                  ...filters.map(panel => panel.panelIndex || -1)
+                  ...filters.map(panel => panel.panelIndex)
                 )
                 return filters.map(f => {
                   if (f.fieldId !== fieldId) return f
@@ -184,7 +186,7 @@ const FilterPanelToolbar = ({
             }}
           />
         </Dropdown>
-        {filters.length > 0 && (
+        {addedFilters.length > 0 && (
           <FilterPanelToolbarButton
             style={{ marginRight: '5px' }}
             onClick={() => removeAllFilters()}

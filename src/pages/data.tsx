@@ -20,7 +20,7 @@ export type Filter = {
   values?: string[]
   applied?: boolean
   /* Determines the order of the filters in the panel */
-  panelIndex?: number
+  panelIndex: number
 }
 
 const METADATA_URL = `${process.env.GATSBY_API_URL}/metadata-for-published-records`
@@ -130,6 +130,9 @@ const DataPage = ({
     const filters = Object.entries(data.fields).map(([fieldId, filter]) => ({
       fieldId,
       type: filter.type || 'text',
+      // When a filter is added to the panel, it will receive a new panelIndex,
+      // indicating its order in the panel
+      panelIndex: -1,
       ...filter,
     }))
     setFilters(filters)
@@ -193,7 +196,7 @@ interface FilterInMetadata {
   options: string[]
 }
 
-const isValidFieldInMetadataResponse = (data: unknown): data is Filter => {
+const isValidFilterInMetadataResponsee = (data: unknown): data is Filter => {
   if (!isNormalObject(data)) return false
   const { label, dataGridKey = '', type = 'text', options = [] } = data
   return (
@@ -211,7 +214,7 @@ const isValidMetadataResponse = (data: unknown): data is MetadataResponse => {
   const { fields } = data
   if (!isNormalObject(fields)) return false
   return Object.values(fields).every?.(field =>
-    isValidFieldInMetadataResponse(field)
+    isValidFilterInMetadataResponsee(field)
   )
 }
 

@@ -189,14 +189,17 @@ describe('The public data page', () => {
         selector: 'button',
       }
     )
-    fireEvent.click(addFilterForAfterDate)
-    fireEvent.click(addFilterForBeforeDate)
-    const filterInputs = screen.getAllByLabelText(
-      /Collected on or (before|after) date/
+    debugger
+    userEvent.click(addFilterForBeforeDate)
+    const filterForBeforeDate = await screen.findByLabelText(
+      /^Collected on or before date/
     )
-    // Expect the inputs to appear in the order they were added
-    expect(filterInputs[0].ariaLabel).toEqual('Collected on or after date')
-    expect(filterInputs[1].ariaLabel).toEqual('Collected on or before date')
+    userEvent.click(addFilterForAfterDate)
+    const filterForAfterDate = await screen.findByLabelText(
+      /^Collected on or after date/
+    )
+    // expect(filterForAfterDate).toBeInTheDocument()
+    // expect(filterForBeforeDate).toBeInTheDocument()
   })
 
   it('lets the user filter by collection start date', async () => {

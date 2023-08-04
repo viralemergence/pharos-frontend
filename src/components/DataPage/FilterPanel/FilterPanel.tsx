@@ -114,8 +114,9 @@ const FilterPanel = ({
 }) => {
   const filterListRef = useRef<HTMLUListElement | null>(null)
 
-  const addedFilters = filters.filter(({ addedToPanel }) => addedToPanel)
-  const filtersSorted = sortBy(addedFilters, 'panelIndex')
+  const addedFilters = filters
+    .filter(({ addedToPanel }) => addedToPanel)
+    .sort((a, b) => a.panelIndex - b.panelIndex)
 
   const updateFilter: UpdateFilterFunction = (fieldId, newValues) => {
     setFilters(prev =>
@@ -142,7 +143,7 @@ const FilterPanel = ({
         filterListRef={filterListRef}
       />
       <ListOfAddedFilters ref={filterListRef}>
-        {filtersSorted.map(({ fieldId, label, type, options, values = [] }) => {
+        {addedFilters.map(({ fieldId, label, type, options, values = [] }) => {
           return (
             <FilterListItem key={fieldId}>
               <FilterValueSetter

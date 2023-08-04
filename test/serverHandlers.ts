@@ -3437,15 +3437,11 @@ const publishedRecordsMetadata = {
     },
     collection_start_date: {
       label: 'Collected on or after date',
-      'Collection date': '2020-04-10',
       type: 'date',
-      filterGroup: 'collection_date',
     },
     collection_end_date: {
       label: 'Collected on or before date',
-      'Collection date': '2020-04-11',
       type: 'date',
-      filterGroup: 'collection_date',
     },
   },
 }
