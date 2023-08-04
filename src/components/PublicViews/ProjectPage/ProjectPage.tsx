@@ -207,10 +207,10 @@ const ProjectPage = () => {
                 <h2>Permanent project link</h2>
                 <ClickToCopy
                   darkmode
-                  copyContentString={`${window.location.origin}/#/projects/${project.projectID}`}
+                  copyContentString={`${window.location.origin}/projects/#/${project.projectID}`}
                   style={{ marginTop: 10 }}
                 >
-                  {window.location.hostname}/#/projects/{project.projectID}
+                  {window.location.hostname}/projects/#/{project.projectID}
                 </ClickToCopy>
                 <h2>Project published</h2>
                 <p>{formatDate(project.datePublished)}</p>
