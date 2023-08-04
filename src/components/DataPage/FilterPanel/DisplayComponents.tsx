@@ -154,7 +154,7 @@ export const FieldSelectorDiv = styled.div`
 `
 
 export const FieldSelectorButton = styled(FilterPanelButton)<{
-  disabled: boolean
+  disabled?: boolean
 }>`
   width: 100%;
   padding: 5px 15px;
