@@ -163,7 +163,6 @@ const DataPage = ({
           <ViewMain isFilterPanelOpen={isFilterPanelOpen}>
             <FilterPanel
               filters={filters}
-              setFilters={setFilters}
               isFilterPanelOpen={isFilterPanelOpen}
               setIsFilterPanelOpen={setIsFilterPanelOpen}
             />

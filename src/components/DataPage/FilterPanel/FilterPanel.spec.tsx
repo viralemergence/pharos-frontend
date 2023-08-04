@@ -22,7 +22,6 @@ describe('FilterPanel', () => {
           isFilterPanelOpen={true}
           setIsFilterPanelOpen={jest.fn()}
           filters={[]}
-          setFilters={jest.fn()}
         />
       </Provider>
     )
@@ -50,7 +49,6 @@ describe('FilterPanel', () => {
               dataGridKey: 'field2',
             },
           ]}
-          setFilters={jest.fn()}
         />
       </Provider>
     )

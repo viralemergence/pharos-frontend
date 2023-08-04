@@ -7,12 +7,10 @@ const FilterPanel = ({
   isFilterPanelOpen,
   setIsFilterPanelOpen,
   filters,
-  setFilters,
 }: {
   isFilterPanelOpen: boolean
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
   filters: Filter[]
-  setFilters: Dispatch<SetStateAction<Filter[]>>
 }) => {
   return (
     <Panel
@@ -27,7 +25,6 @@ const FilterPanel = ({
         isFilterPanelOpen={isFilterPanelOpen}
         setIsFilterPanelOpen={setIsFilterPanelOpen}
         filters={filters}
-        setFilters={setFilters}
       />
       {/* List of added filters will go here */}
     </Panel>
