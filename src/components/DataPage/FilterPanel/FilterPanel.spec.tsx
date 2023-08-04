@@ -41,7 +41,6 @@ describe('FilterPanel', () => {
               type: 'text',
               options: ['field 1, option 1', 'field 1, option 2'],
               dataGridKey: 'field1',
-              panelIndex: 0,
             },
             {
               fieldId: 'field2',
@@ -49,7 +48,6 @@ describe('FilterPanel', () => {
               type: 'text',
               options: ['field 2, option 1', 'field 2, option 2'],
               dataGridKey: 'field2',
-              panelIndex: 1,
             },
           ]}
           setFilters={jest.fn()}

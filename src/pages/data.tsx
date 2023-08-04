@@ -130,9 +130,6 @@ const DataPage = ({
     const filters = Object.entries(data.fields).map(([fieldId, filter]) => ({
       fieldId,
       type: filter.type || 'text',
-      // When a filter is added to the panel, it will receive a new panelIndex,
-      // indicating its order in the panel
-      panelIndex: -1,
       ...filter,
     }))
     setFilters(filters)
@@ -162,7 +159,6 @@ const DataPage = ({
             changeView={changeView}
             isFilterPanelOpen={isFilterPanelOpen}
             setIsFilterPanelOpen={setIsFilterPanelOpen}
-            filters={filters}
           />
           <ViewMain isFilterPanelOpen={isFilterPanelOpen}>
             <FilterPanel

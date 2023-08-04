@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react'
-import type { Filter } from 'pages/data'
 import {
   FilterPanelLauncher,
   DataToolbarRadioButton,
@@ -23,13 +22,11 @@ const DataToolbar = ({
   setIsFilterPanelOpen,
   view,
   changeView,
-  filters = [],
 }: {
   isFilterPanelOpen: boolean
   setIsFilterPanelOpen: React.Dispatch<React.SetStateAction<boolean>>
   view: View
   changeView: (view: View) => void
-  filters: Filter[]
 }) => {
   const RadioButton = ({
     forView,
@@ -54,8 +51,6 @@ const DataToolbar = ({
     }
   }, [isFilterPanelOpen])
 
-  const appliedFiltersCount = filters.filter(({ applied }) => applied).length
-
   return (
     <DataToolbarDiv isFilterPanelOpen={isFilterPanelOpen}>
       <ContainerForFilterPanelLauncher>
@@ -68,9 +63,6 @@ const DataToolbar = ({
           aria-controls="pharos-filter-panel"
         >
           Filters
-          {appliedFiltersCount > 0 && (
-            <span style={{ marginLeft: '5px' }}>({appliedFiltersCount})</span>
-          )}
         </FilterPanelLauncher>
       </ContainerForFilterPanelLauncher>
       <ContainerForRadioButtons>

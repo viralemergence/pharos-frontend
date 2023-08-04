@@ -47,12 +47,10 @@ const FieldSelector = ({ filters }: FieldSelectorProps) => {
 
 const FilterPanelToolbar = ({
   filters,
-  setFilters,
   isFilterPanelOpen,
   setIsFilterPanelOpen,
 }: {
   filters: Filter[]
-  setFilters: Dispatch<SetStateAction<Filter[]>>
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
   isFilterPanelOpen: boolean
 }) => {
@@ -82,9 +80,6 @@ const FilterPanelToolbar = ({
   //
   // TODO: Look for more examples of this "reaching for prior state" pattern
   // and move away from that.
-
-  // TODO: Do this without refs
-  const wasFilterPanelOpen = useRef(isFilterPanelOpen)
 
   useEffect(() => {
     if (isFilterPanelOpen) {

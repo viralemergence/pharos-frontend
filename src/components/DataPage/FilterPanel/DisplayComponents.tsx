@@ -210,26 +210,6 @@ export const FilterListItemElement = styled.li<{ opacity: number }>`
   }
 `
 
-export const ListOfAddedFilters = styled.ul`
-  position: absolute;
-  margin: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  overflow-y: auto;
-  padding: 34px 40px;
-  flex-grow: 1;
-  flex-shrink: 1;
-  max-height: 100%;
-  top: 73px;
-  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
-    top: 64px;
-  }
-  @media (max-width: ${({ theme }) => theme.breakpoints.mobileMaxWidth}) {
-    padding: 34px 20px;
-  }
-`
-
 export const FilterLabel = styled.label`
   ${({ theme }) => theme.smallParagraph}
   display: block;
