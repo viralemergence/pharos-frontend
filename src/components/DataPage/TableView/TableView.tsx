@@ -206,10 +206,6 @@ const TableView = ({
       shouldDebounce: true,
       replaceRecords: true,
     })
-    // TODO: Is there a danger that the TableView component might unmount
-    // before load() has had a change to modify this component, and does this
-    // mean there will be console errors if this early unmounting occurs? And
-    // is that a problem?
   }, [stringifiedFiltersWithValues])
 
   /**
