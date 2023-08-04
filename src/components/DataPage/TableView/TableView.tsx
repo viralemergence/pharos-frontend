@@ -30,10 +30,13 @@ const FillDatasetGrid = styled(DataGrid)`
   flex-grow: 1;
   block-size: 100px;
   .rdg-cell {
-    background-color: ${({ theme }) => theme.mutedPurple3};
+    background-color: ${({ theme }) => theme.mutedPurple1};
+    border-bottom-color: rgba(216, 218, 220, 0.3);
+    border-right-color: rgba(216, 218, 220, 0.08);
+    border-left-color: rgba(216, 218, 220, 0.08);
     &[aria-colindex='1'],
     &[role='columnheader'] {
-      background-color: ${({ theme }) => theme.lightBlack};
+      background-color: ${({ theme }) => theme.mutedPurple3};
     }
     &.in-filtered-column {
       background-color: ${({ theme }) => theme.tableContentHighlight};
