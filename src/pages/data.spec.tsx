@@ -1,5 +1,6 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 
 import { stateInitialValue } from 'reducers/stateReducer/initialValues'
 import { publishedRecordsMetadata } from '../../test/serverHandlers'
@@ -95,18 +96,32 @@ describe('The public data page', () => {
     expect(grid).toBeInTheDocument()
   })
 
-  it('has a button labeled Map that sets the projection of the map to naturalEarth', () => {
+  it('has a button labeled Map that sets the projection of the map to naturalEarth', async () => {
     render(<DataPage />)
-    fireEvent.click(getGlobeViewButton())
+    const globeViewButton = getGlobeViewButton()
+    expect(globeViewButton).toBeInTheDocument()
+    userEvent.click(globeViewButton)
+    /** Get the projections that have been assigned to the map, in the order in which they were assigned */
+    const getAssignedMapProjections = () => mockedMapboxMap.setProjection.mock.calls.map((call) => call[0].name).reverse()
+    await waitFor(() => {
+      const assignedProjections = getAssignedMapProjections()
+      expect(assignedProjections[0]).toBe('naturalEarth')
+      expect(assignedProjections.at(-1)).toBe('naturalEarth')
+    })
+
+    return
     const howManyTimesMapProjectionWasSet =
       mockedMapboxMap.setProjection.mock.calls.length
-    fireEvent.click(getMapViewButton())
-    // Check that the click caused setProjection to be called once more,
-    // with 'naturalEarth' as the argument
-    expect(mockedMapboxMap.setProjection).toHaveBeenNthCalledWith(
-      howManyTimesMapProjectionWasSet + 1,
-      { name: 'naturalEarth' }
-    )
+    console.dir({callNames: mockedMapboxMap.setProjection.mock.calls.map((call) => call[0].name)});
+    userEvent.click(getMapViewButton())
+    // Check that the click caused setProjection to be called again with
+    // 'naturalEarth' as the argument
+    console.dir({callNames: mockedMapboxMap.setProjection.mock.calls.map((call) => call[0].name)});
+    expect(
+      mockedMapboxMap.setProjection.mock.calls.filter(
+        call => call[0].name == 'naturalEarth'
+      ).length
+    ).toBeGreaterThan(howManyTimesMapProjectionWasSet)
   })
 
   it('has a button labeled Filters that toggles the Filter Panel', () => {

@@ -114,11 +114,13 @@ const DataPage = ({
   const changeView = useCallback((newView: View, setHash = true) => {
     if (setHash) window.location.hash = newView
     setView(newView)
-    if (newView === View.globe && mapProjection !== 'globe')
+    if (newView === View.globe && mapProjection !== 'globe') {
       setMapProjection('globe')
-    if (newView === View.map && mapProjection !== 'naturalEarth')
+    }
+    if (newView === View.map && mapProjection !== 'naturalEarth') {
       setMapProjection('naturalEarth')
-  }, [])
+    }
+  }, [mapProjection])
 
   const fetchMetadata = useCallback(async () => {
     const response = await fetch(METADATA_URL)
