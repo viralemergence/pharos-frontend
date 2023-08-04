@@ -21,7 +21,7 @@ const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
     padding: 0;
-    font-family: "Open sans", Arial, Helvetica, sans-serif;
+    font-family: "Poppins", Arial, Helvetica, sans-serif;
     color: ${({ theme }) => theme.black};
     // this background color prevents the white gap between
     // the nav bar and the browser chrome, especially on osx

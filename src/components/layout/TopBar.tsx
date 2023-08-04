@@ -1,8 +1,7 @@
-import { Link as ReactRouterLink } from 'react-router-dom'
-import { Link as GatsbyLink } from 'gatsby'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
-const TopBar = styled.div<{ darkmode?: boolean }>`
+const TopBar = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -11,10 +10,6 @@ const TopBar = styled.div<{ darkmode?: boolean }>`
   grid-area: topbar;
   gap: 15px;
   margin-top: 20px;
-
-  > h1 {
-    color: ${({ theme, darkmode }) => (darkmode ? theme.white : theme.black)};
-  }
 `
 
 export const Title = styled.h1`
@@ -33,36 +28,18 @@ export const Breadcrumbs = styled.div`
   flex-wrap: wrap;
 `
 
-const breadcrumbLinkStyles = `
+export const BreadcrumbLink = styled(Link)<{ $active?: boolean }>`
+  ${({ theme }) => theme.extraSmallParagraph};
   display: flex;
+  color: ${({ theme, $active: active }) =>
+    active ? theme.medDarkGray : theme.veryDarkGray};
+
   border: thin solid rgba(0, 0, 0, 0);
 
   &:not(:first-of-type)::before {
     content: '/';
     padding: 0 0.75em;
   }
-`
-
-export const BreadcrumbLink = styled(ReactRouterLink)<{
-  $active?: boolean
-}>`
-  ${({ theme }) => theme.extraSmallParagraph};
-
-  color: ${({ theme, $active: active }) =>
-    active ? theme.medDarkGray : theme.veryDarkGray};
-
-  ${breadcrumbLinkStyles}
-`
-
-export const PublicViewBreadcrumbLink = styled(GatsbyLink)<{
-  $active?: boolean
-}>`
-  ${({ theme }) => theme.extraSmallParagraph};
-
-  color: ${({ theme, $active: active }) =>
-    active ? theme.medDarkGray : theme.white};
-
-  ${breadcrumbLinkStyles}
 `
 
 export const Controls = styled.div`

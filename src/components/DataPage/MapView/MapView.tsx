@@ -1,14 +1,10 @@
 import React, { useRef, useEffect } from 'react'
-import { renderToString } from 'react-dom/server'
 import styled from 'styled-components'
 import mapboxgl from 'mapbox-gl'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
-import MapTableDrawer from './MapTableDrawer'
 
-export type MapProjection = 'globe' | 'naturalEarth'
-
-const MapContainer = styled.div<{ drawerOpen: boolean }>`
+const MapContainer = styled.div`
   width: 100vw;
   background-color: ${({ theme }) => theme.darkPurple};
   position: absolute;
@@ -18,12 +14,6 @@ const MapContainer = styled.div<{ drawerOpen: boolean }>`
   bottom: 0;
   width: 100%;
   height: 100%;
-
-  ${({ drawerOpen }) =>
-    drawerOpen &&
-    `.mapboxgl-ctrl-bottom-left { display: none ! important; };
-     .mapboxgl-ctrl-bottom-right { display: none ! important; };
-    `}
 `
 
 mapboxgl.accessToken = process.env.GATSBY_MAPBOX_API_KEY!
@@ -46,14 +36,6 @@ const MapViewDiv = styled.div`
 const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<null | mapboxgl.Map>(null)
-
-  const [clickedPharosIDs, setClickedPharosIDs] = React.useState<string[]>([])
-
-  const [clickLngLat, setClickLngLat] = React.useState<[number, number] | null>(
-    null
-  )
-
-  const [drawerOpen, setDrawerOpen] = React.useState(false)
 
   // const [lng, setLng] = React.useState(0)
   // const [lat, setLat] = React.useState(0)
@@ -79,6 +61,11 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
 
     map.current.on('load', () => {
       if (!map.current) return
+
+      map.current.addSource('pharosinitial', {
+        type: 'vector',
+        url: 'mapbox://ryan-talus.5yalgb',
+      })
 
       map.current.addSource('pharos-points', {
         type: 'geojson',
@@ -117,70 +104,39 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
         layers: ['pharos-points-layer'],
       })
 
+      console.log(features.length)
+
       if (!features.length) {
-        setDrawerOpen(false)
         return
       }
 
-      const pharosIDs = features.map(
-        feature => feature?.properties?.pharos_id as string
-      )
-      // .slice(0, 150)
+      console.log(features[0])
 
       const feature = features[0] as unknown as {
-        geometry: { coordinates: [number, number] }
         properties: {
-          [key: string]: string
+          Latitude: number
+          Longitude: number
+          Host_species: string
+          Parasite_species: string
+          Dataset: string
         }
+        geometry: { coordinates: mapboxgl.LngLatLike }
       }
 
-      setDrawerOpen(true)
-
-      setClickedPharosIDs(pharosIDs)
-      setClickLngLat(feature.geometry.coordinates)
-
-      // This is not an acceptable way to make a popup,
-      // I'm just fixing the problem with minimal changes
-      // to the code to avoid merge conflicts, this whole
-      // component will get rewritten soon.
       new mapboxgl.Popup({ offset: [0, -5] })
         .setLngLat(feature.geometry.coordinates)
         .setHTML(
-          renderToString(
-            (() => {
-              const projectCount = features.reduce(
-                (acc, curr) =>
-                  acc.add(curr.properties?.pharos_id.split('-')[0]),
-                new Set()
-              ).size
-              const recordCount = features.length
-              return (
-                <>
-                  <h3
-                    style={{
-                      margin: '5px 8px 5px 8px',
-                      fontSize: 12,
-                      fontWeight: 100,
-                    }}
-                  >
-                    {projectCount === 1 ? 'Projects' : 'Projects'}:&nbsp;{' '}
-                    <strong>{projectCount.toLocaleString()}</strong>
-                  </h3>
-                  <h3
-                    style={{
-                      margin: '0 8px 0px 8px',
-                      marginTop: 5,
-                      fontSize: 12,
-                      fontWeight: 100,
-                    }}
-                  >
-                    {recordCount === 1 ? 'Records' : 'Records'}:&nbsp;{' '}
-                    <strong>{recordCount.toLocaleString()}</strong>
-                  </h3>
-                </>
-              )
-            })()
-          )
+          Object.entries(feature.properties)
+            .filter(([key, _]) => !['pharos_id', 'dataset_id'].includes(key))
+            .map(
+              ([key, value]) =>
+                `<h3 style="margin-bottom: 0; margin-top: 0; font-size: 12px;">${(key =>
+                  key[0].toUpperCase() + key.slice(1).replace(/_/g, ' '))(
+                  key
+                )}</h3>
+             <p style="margin-top: 0; margin-bottom: 5px; font-size: 10px; line-height: 13px;">${value}</p>`
+            )
+            .join('')
         )
         .addTo(map.current)
     })
@@ -193,15 +149,7 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
 
   return (
     <MapViewDiv style={style}>
-      <MapContainer drawerOpen={drawerOpen} ref={mapContainer} />
-      <MapTableDrawer
-        {...{
-          clickLngLat,
-          drawerOpen,
-          setDrawerOpen,
-          clickedPharosIDs,
-        }}
-      />
+      <MapContainer ref={mapContainer} />
     </MapViewDiv>
   )
 }
