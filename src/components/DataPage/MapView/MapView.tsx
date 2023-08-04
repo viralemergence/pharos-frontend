@@ -1,5 +1,4 @@
 import React, { useRef, useEffect } from 'react'
-import { renderToString } from 'react-dom/server'
 import styled from 'styled-components'
 import mapboxgl from 'mapbox-gl'
 
@@ -143,44 +142,25 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
       // I'm just fixing the problem with minimal changes
       // to the code to avoid merge conflicts, this whole
       // component will get rewritten soon.
+
+      const projectCount = features.reduce(
+        (acc, curr) => acc.add(curr.properties?.pharos_id.split('-')[0]),
+        new Set()
+      ).size
+      const recordCount = features.length
+
       new mapboxgl.Popup({ offset: [0, -5] })
         .setLngLat(feature.geometry.coordinates)
         .setHTML(
-          renderToString(
-            (() => {
-              const projectCount = features.reduce(
-                (acc, curr) =>
-                  acc.add(curr.properties?.pharos_id.split('-')[0]),
-                new Set()
-              ).size
-              const recordCount = features.length
-              return (
-                <>
-                  <h3
-                    style={{
-                      margin: '5px 8px 5px 8px',
-                      fontSize: 12,
-                      fontWeight: 100,
-                    }}
-                  >
-                    {projectCount === 1 ? 'Projects' : 'Projects'}:&nbsp;{' '}
-                    <strong>{projectCount.toLocaleString()}</strong>
-                  </h3>
-                  <h3
-                    style={{
-                      margin: '0 8px 0px 8px',
-                      marginTop: 5,
-                      fontSize: 12,
-                      fontWeight: 100,
-                    }}
-                  >
-                    {recordCount === 1 ? 'Records' : 'Records'}:&nbsp;{' '}
-                    <strong>{recordCount.toLocaleString()}</strong>
-                  </h3>
-                </>
-              )
-            })()
-          )
+          `<h3 style='margin: 5px 8px 5px 8px; font-size: 12px; font-weight: 100' >
+              ${projectCount === 1 ? 'Projects' : 'Projects'}:&nbsp; 
+              <strong>${projectCount.toLocaleString()}</strong>
+            </h3>
+            <h3 style='margin: 0 8px 0px 8px; margin-top: 5px; font-size: 12px; font-weight: 100;' >
+              ${recordCount === 1 ? 'Records' : 'Records'}:&nbsp; 
+              <strong>${recordCount.toLocaleString()}</strong>
+            </h3>
+          `
         )
         .addTo(map.current)
     })
