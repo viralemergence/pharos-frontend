@@ -3,16 +3,13 @@ import backgroundImage from '../../assets/projectPageBackground-fs8.png'
 
 const PublicViewBackground = styled.div`
   position: absolute;
-  top: 80px;
+  top: 0;
   right: 0;
   left: 0;
   overflow: hidden;
-  background-color: ${({ theme }) => theme.publicPagePurpleBackground};
-  background-position: 0% 0%;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  min-height: calc(100vh - 80px);
-  min-height: calc(100svh - 80px);
+  background-color: ${({ theme }) => theme.lightBlack};
+  min-height: 100vh;
+  max-height: 300px;
 
   &:before {
     content: '';
@@ -21,14 +18,12 @@ const PublicViewBackground = styled.div`
     right: -10px;
     height: 300px;
     left: -10px;
-    filter: blur(2px);
+    filter: blur(5px);
 
-    background: linear-gradient(
-        180deg,
-        rgba(14, 18, 40, 0.6) 0%,
-        rgba(14, 18, 40, 0.9) 37.5%,
-        #0e1228 65.63%,
-        ${({ theme }) => theme.publicPagePurpleBackground} 100%
+    background-image: linear-gradient(
+        rgba(50, 48, 48, 0.39) 0%,
+        rgba(50, 48, 48, 0.7) 50%,
+        ${({ theme }) => theme.lightBlack} 100%
       ),
       url(${backgroundImage});
 

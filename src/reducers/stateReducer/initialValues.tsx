@@ -19,7 +19,7 @@ export const datasetInitialValue: Dataset = {
   name: 'Loading dataset',
   datasetID: '',
   projectID: '',
-  lastUpdated: '',
+  lastUpdated: '0',
 }
 
 const metadataObjInitialValue = {
