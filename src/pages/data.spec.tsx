@@ -102,21 +102,33 @@ describe('The public data page', () => {
     expect(globeViewButton).toBeInTheDocument()
     userEvent.click(globeViewButton)
     /** Get the projections that have been assigned to the map, in the order in which they were assigned */
-    const getAssignedMapProjections = () => mockedMapboxMap.setProjection.mock.calls.map((call) => call[0].name).reverse()
+    const getAssignedMapProjections = () =>
+      mockedMapboxMap.setProjection.mock.calls
+        .map(call => call[0].name)
+        .reverse()
+    // TODO: Use waitfor to fix this test.
     await waitFor(() => {
       const assignedProjections = getAssignedMapProjections()
-      expect(assignedProjections[0]).toBe('naturalEarth')
+      expect(assignedProjections[0]).toBe('globe')
       expect(assignedProjections.at(-1)).toBe('naturalEarth')
     })
 
     return
     const howManyTimesMapProjectionWasSet =
       mockedMapboxMap.setProjection.mock.calls.length
-    console.dir({callNames: mockedMapboxMap.setProjection.mock.calls.map((call) => call[0].name)});
+    console.dir({
+      callNames: mockedMapboxMap.setProjection.mock.calls.map(
+        call => call[0].name
+      ),
+    })
     userEvent.click(getMapViewButton())
     // Check that the click caused setProjection to be called again with
     // 'naturalEarth' as the argument
-    console.dir({callNames: mockedMapboxMap.setProjection.mock.calls.map((call) => call[0].name)});
+    console.dir({
+      callNames: mockedMapboxMap.setProjection.mock.calls.map(
+        call => call[0].name
+      ),
+    })
     expect(
       mockedMapboxMap.setProjection.mock.calls.filter(
         call => call[0].name == 'naturalEarth'
