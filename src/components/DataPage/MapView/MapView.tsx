@@ -4,6 +4,8 @@ import mapboxgl from 'mapbox-gl'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
+export type MapProjection = 'globe' | 'naturalEarth'
+
 const MapContainer = styled.div`
   width: 100vw;
   background-color: ${({ theme }) => theme.darkPurple};

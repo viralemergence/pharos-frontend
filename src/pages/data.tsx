@@ -1,16 +1,29 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
-
 import CMS from '@talus-analytics/library.airtable-cms'
+
+import isNormalObject from 'utilities/isNormalObject'
 import Providers from 'components/layout/Providers'
-
 import NavBar from 'components/layout/NavBar/NavBar'
-import MapView from 'components/DataPage/MapView/MapView'
+import MapView, { MapProjection } from 'components/DataPage/MapView/MapView'
 import TableView from 'components/DataPage/TableView/TableView'
-import DataToolbar, { View } from 'components/DataPage/Toolbar/Toolbar'
-
+import DataToolbar, { View, isView } from 'components/DataPage/Toolbar/Toolbar'
 import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
-import { Field } from 'components/DataPage/FilterPanel/constants'
+
+export type Filter = {
+  fieldId: string
+  label: string
+  type: 'text' | 'date'
+  dataGridKey: string
+  options: string[]
+  addedToPanel?: boolean
+  values?: string[]
+  applied?: boolean
+  /* Determines the order of the filters in the panel */
+  panelIndex: number
+}
+
+const METADATA_URL = `${process.env.GATSBY_API_URL}/metadata-for-published-records`
 
 const ViewContainer = styled.main<{
   shouldBlurMap: boolean
@@ -70,6 +83,7 @@ const PageContainer = styled.div`
   }
   width: 100%;
 `
+
 const MapOverlay = styled.div`
   backdrop-filter: blur(30px);
   position: absolute;
@@ -81,53 +95,59 @@ const MapOverlay = styled.div`
   width: 100%;
 `
 
-const DataPage = (): JSX.Element => {
+const DataPage = ({
+  enableTableVirtualization = true,
+}: {
+  /** Virtualization should be disabled in tests via this prop, so that all the
+   * cells in the table are rendered immediately */
+  enableTableVirtualization?: boolean
+}): JSX.Element => {
+  /* The 'view' is controlled by the three radio buttons */
   const [view, setView] = useState<View>(View.map)
-  const [mapProjection, setMapProjection] = useState<'globe' | 'naturalEarth'>(
-    'naturalEarth'
-  )
+  /* This variable controls the state of the map. If the user clicks the
+   * 'Globe' radio button, then the 'Table' radio button, the view will be
+   * 'table' and the map projection will be 'globe' */
+  const [mapProjection, setMapProjection] =
+    useState<MapProjection>('naturalEarth')
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
-  const [fields, setFields] = useState<Record<string, Field>>({})
+  const [filters, setFilters] = useState<Filter[]>([])
 
   // TODO: Do the screen announcement that the panel is open when
   // isFilterPanelOpen changes, using a useEffect
 
-  const updateView = (view: View) => {
-    setView(view)
-    if (view === View.globe && mapProjection !== 'globe')
+  /** Update the view, and update the map projection view accordingly */
+  const changeView = useCallback((newView: View, setHash = true) => {
+    if (setHash) window.location.hash = newView
+    setView(newView)
+    if (newView === View.globe && mapProjection !== 'globe')
       setMapProjection('globe')
-    if (view === View.map && mapProjection !== 'naturalEarth')
+    if (newView === View.map && mapProjection !== 'naturalEarth')
       setMapProjection('naturalEarth')
-  }
+  }, [])
 
-  const changeView = (view: View) => {
-    window.location.hash = view
-    updateView(view)
-  }
+  const fetchMetadata = useCallback(async () => {
+    const response = await fetch(METADATA_URL)
+    const data = await response.json()
+    if (!isValidMetadataResponse(data)) {
+      console.log(`GET ${METADATA_URL}: malformed response`)
+      return
+    }
+    const filters = Object.entries(data.fields).map(([fieldId, filter]) => ({
+      fieldId,
+      type: filter.type || 'text',
+      // When a filter is added to the panel, it will receive a new panelIndex,
+      // indicating its order in the panel
+      panelIndex: -1,
+      ...filter,
+    }))
+    setFilters(filters)
+  }, [setFilters])
+
   useEffect(() => {
     const hash = window.location.hash.replace('#', '')
-
-    function hashIsView(hash: string): hash is View {
-      return Object.values(View).includes(hash)
-    }
-
-    if (hashIsView(hash)) {
-      updateView(hash)
-    }
-
-    const getMetadata = async () => {
-      const response = await fetch(
-        `${process.env.GATSBY_API_URL}/metadata-for-published-records`
-      )
-      const data = await response.json()
-      if (!isValidMetadataResponse(data)) {
-        console.error('GET /metadata-for-published-records: malformed response')
-        return
-      }
-      setFields(data.fields)
-    }
-    getMetadata()
-  }, [])
+    if (isView(hash)) changeView(hash, false)
+    fetchMetadata()
+  }, [changeView, fetchMetadata])
 
   const shouldBlurMap = view === View.table
 
@@ -147,16 +167,21 @@ const DataPage = (): JSX.Element => {
             changeView={changeView}
             isFilterPanelOpen={isFilterPanelOpen}
             setIsFilterPanelOpen={setIsFilterPanelOpen}
+            filters={filters}
           />
           <ViewMain isFilterPanelOpen={isFilterPanelOpen}>
             <FilterPanel
+              filters={filters}
+              setFilters={setFilters}
               isFilterPanelOpen={isFilterPanelOpen}
               setIsFilterPanelOpen={setIsFilterPanelOpen}
-              fields={fields}
             />
             <TableView
-              isFilterPanelOpen={isFilterPanelOpen}
+              filters={filters}
+              setFilters={setFilters}
               isOpen={view === View.table}
+              isFilterPanelOpen={isFilterPanelOpen}
+              enableVirtualization={enableTableVirtualization}
             />
           </ViewMain>
         </ViewContainer>
@@ -165,19 +190,25 @@ const DataPage = (): JSX.Element => {
   )
 }
 
-const isNormalObject = (value: unknown): value is Record<string, unknown> =>
-  !!value &&
-  typeof value === 'object' &&
-  typeof value !== 'function' &&
-  !Array.isArray(value)
+interface MetadataResponse {
+  fields: Record<string, FilterInMetadata>
+}
 
-const isValidFieldInMetadataResponse = (data: unknown): data is Field => {
+interface FilterInMetadata {
+  label: string
+  type?: 'text' | 'date'
+  dataGridKey: string
+  options: string[]
+}
+
+const isValidFilterInMetadataResponsee = (data: unknown): data is Filter => {
   if (!isNormalObject(data)) return false
-  const { label, dataGridKey = '', type = '', options = [] } = data
+  const { label, dataGridKey = '', type = 'text', options = [] } = data
   return (
     typeof label === 'string' &&
     typeof dataGridKey === 'string' &&
     typeof type === 'string' &&
+    ['text', 'date'].includes(type) &&
     Array.isArray(options) &&
     options.every?.(option => typeof option === 'string')
   )
@@ -188,12 +219,8 @@ const isValidMetadataResponse = (data: unknown): data is MetadataResponse => {
   const { fields } = data
   if (!isNormalObject(fields)) return false
   return Object.values(fields).every?.(field =>
-    isValidFieldInMetadataResponse(field)
+    isValidFilterInMetadataResponsee(field)
   )
-}
-
-interface MetadataResponse {
-  fields: Record<string, Field>
 }
 
 export default DataPage

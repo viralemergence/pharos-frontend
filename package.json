@@ -13,6 +13,7 @@
     "preinstall": "scripts/preinstall.sh",
     "postinstall": "scripts/postinstall.sh",
     "test": "GATSBY_API_URL='http://localhost:3000' jest",
+    "test-with-debugger": "GATSBY_API_URL='http://localhost:3000' node --inspect-brk node_modules/.bin/jest --runInBand",
     "coverage": "GATSBY_API_URL='http://localhost:3000' jest --coverage"
   },
   "browserslist": [

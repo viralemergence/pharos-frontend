@@ -1,5 +1,6 @@
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 
 import { stateInitialValue } from 'reducers/stateReducer/initialValues'
 import { publishedRecordsMetadata } from '../../test/serverHandlers'
@@ -78,7 +79,9 @@ describe('The public data page', () => {
   const getDataGrid = () => screen.queryByRole('grid')
   // This function will wait for the data grid to appear. It can be used to check
   // that the grid appears after loading published records.
-  const getDataGridAfterWaiting = async () => await screen.findByRole('grid')
+  const getDataGridAfterWaiting = async () =>
+    await screen.findByTestId('datagrid')
+  const getClearFiltersButton = () => screen.getByText('Clear all')
 
   it('renders', () => {
     render(<DataPage />)
@@ -152,6 +155,97 @@ describe('The public data page', () => {
     )
   })
 
+  it('has a filter panel that contains a button that clears all filters in the panel', async () => {
+    render(<DataPage />)
+    fireEvent.click(getAddFilterButton())
+    const addFilterForAfterDate = await screen.findByText(
+      'Collected on or after date',
+      { selector: 'button' }
+    )
+    fireEvent.click(addFilterForAfterDate)
+    expect(
+      screen.getByLabelText('Collected on or after date')
+    ).toBeInTheDocument()
+    fireEvent.click(getClearFiltersButton())
+    expect(
+      screen.queryByLabelText('Collected on or after date')
+    ).not.toBeInTheDocument()
+  })
+
+  it('lets the user add date fields to the panel', async () => {
+    render(<DataPage />)
+
+    userEvent.click(getAddFilterButton())
+    const addFilterForBeforeDate = await screen.findByText(
+      'Collected on or before date',
+      { selector: 'button' }
+    )
+    expect(addFilterForBeforeDate).toBeInTheDocument()
+    userEvent.click(addFilterForBeforeDate)
+
+    const filterForBeforeDate = await screen.findByLabelText(
+      /^Collected on or before date/
+    )
+
+    userEvent.click(getAddFilterButton())
+    const addFilterForAfterDate = await screen.findByText(
+      'Collected on or after date',
+      { selector: 'button' }
+    )
+    expect(addFilterForAfterDate).toBeInTheDocument()
+    userEvent.click(addFilterForAfterDate)
+
+    const filterForAfterDate = await screen.findByLabelText(
+      /^Collected on or after date/
+    )
+    expect(filterForAfterDate).toBeInTheDocument()
+    expect(filterForBeforeDate).toBeInTheDocument()
+
+    const dateFilters = await screen.findAllByLabelText(/^Collected on/)
+    expect(dateFilters[0]).toHaveAttribute(
+      'aria-label',
+      'Collected on or before date'
+    )
+    expect(dateFilters[1]).toHaveAttribute(
+      'aria-label',
+      'Collected on or after date'
+    )
+  })
+
+  it('lets the user filter by collection start date', async () => {
+    render(<DataPage />)
+    fireEvent.click(getFilterPanelToggleButton())
+    fireEvent.click(getAddFilterButton())
+    fireEvent.click(await screen.findByText('Collected on or after date'))
+    const filterInput = screen.getByLabelText('Collected on or after date')
+    expect(filterInput).toBeInTheDocument()
+    await userEvent.type(filterInput, '2020-04-01')
+    const grid = await getDataGridAfterWaiting()
+    await waitFor(() => {
+      expect(grid).toHaveAttribute('aria-rowcount', '10')
+    })
+
+    // Remove the date
+    await userEvent.type(filterInput, '{backspace}'.repeat(10))
+    await waitFor(() => {
+      expect(grid).toHaveAttribute('aria-rowcount', '51')
+    })
+  })
+
+  it('does not filter by a date if it is invalid', async () => {
+    render(<DataPage />)
+    fireEvent.click(getFilterPanelToggleButton())
+    fireEvent.click(getAddFilterButton())
+    fireEvent.click(await screen.findByText('Collected on or after date'))
+    const filterInput = screen.getByLabelText('Collected on or after date')
+    expect(filterInput).toBeInTheDocument()
+    await userEvent.type(filterInput, '3000-01-01')
+    const grid = await getDataGridAfterWaiting()
+    await waitFor(() => {
+      expect(grid).toHaveAttribute('aria-rowcount', '51')
+    })
+  })
+
   it('has a button labeled Globe that changes the projection of the map to globe', () => {
     render(<DataPage />)
     fireEvent.click(getMapViewButton())
@@ -186,5 +280,23 @@ describe('The public data page', () => {
     fireEvent.click(getTableViewButton())
     const callCount_after = mockedMapboxMap.setProjection.mock.calls.length
     expect(callCount_after).toEqual(callCount_before)
+  })
+
+  it('displays the first page of published records', async () => {
+    render(<DataPage enableTableVirtualization={false} />)
+    const grid = await getDataGridAfterWaiting()
+    expect(grid).toBeInTheDocument()
+    expect(grid).toHaveAttribute('aria-rowcount', '51')
+  })
+
+  it('displays the second page of published records when the user scrolls to the bottom', async () => {
+    render(<DataPage enableTableVirtualization={false} />)
+    const grid = await getDataGridAfterWaiting()
+    expect(grid).toBeInTheDocument()
+    // Scroll to the bottom of the grid
+    fireEvent.scroll(grid, { target: { scrollY: grid.scrollHeight } })
+    waitFor(() => {
+      expect(grid).toHaveAttribute('aria-rowcount', '101')
+    })
   })
 })
