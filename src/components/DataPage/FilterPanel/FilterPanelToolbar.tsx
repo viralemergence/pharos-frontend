@@ -39,7 +39,6 @@ const FieldSelector = ({
       {filters.map(({ fieldId, type, label, addedToPanel = false }) => (
         <FieldSelectorButton
           key={fieldId}
-          value={fieldId}
           onClick={_ => {
             addFilterValueSetter({ fieldId, type })
           }}

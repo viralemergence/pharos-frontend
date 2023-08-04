@@ -6,7 +6,6 @@ import React, {
   useState,
 } from 'react'
 import type { Filter } from 'pages/data'
-import sortBy from 'lodash/sortBy'
 import {
   FieldName,
   FieldInput,
@@ -36,6 +35,7 @@ const FilterInput = ({
       <FieldInput
         // This will be a date field if fieldType == 'date'
         type={fieldType}
+        aria-label={fieldLabel}
         min={fieldType === 'date' ? '1900-01-01' : undefined}
         max={fieldType === 'date' ? '2200-12-31' : undefined}
         defaultValue={values.join(',')}

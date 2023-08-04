@@ -160,9 +160,7 @@ describe('The public data page', () => {
     fireEvent.click(getAddFilterButton())
     const addFilterForAfterDate = await screen.findByText(
       'Collected on or after date',
-      {
-        selector: 'button',
-      }
+      { selector: 'button' }
     )
     fireEvent.click(addFilterForAfterDate)
     expect(
@@ -176,30 +174,42 @@ describe('The public data page', () => {
 
   it('lets the user add date fields to the panel', async () => {
     render(<DataPage />)
-    fireEvent.click(getAddFilterButton())
-    const addFilterForAfterDate = await screen.findByText(
-      'Collected on or after date',
-      {
-        selector: 'button',
-      }
-    )
+
+    userEvent.click(getAddFilterButton())
     const addFilterForBeforeDate = await screen.findByText(
       'Collected on or before date',
-      {
-        selector: 'button',
-      }
+      { selector: 'button' }
     )
-    debugger
+    expect(addFilterForBeforeDate).toBeInTheDocument()
     userEvent.click(addFilterForBeforeDate)
+
     const filterForBeforeDate = await screen.findByLabelText(
       /^Collected on or before date/
     )
+
+    userEvent.click(getAddFilterButton())
+    const addFilterForAfterDate = await screen.findByText(
+      'Collected on or after date',
+      { selector: 'button' }
+    )
+    expect(addFilterForAfterDate).toBeInTheDocument()
     userEvent.click(addFilterForAfterDate)
+
     const filterForAfterDate = await screen.findByLabelText(
       /^Collected on or after date/
     )
-    // expect(filterForAfterDate).toBeInTheDocument()
-    // expect(filterForBeforeDate).toBeInTheDocument()
+    expect(filterForAfterDate).toBeInTheDocument()
+    expect(filterForBeforeDate).toBeInTheDocument()
+
+    const dateFilters = await screen.findAllByLabelText(/^Collected on/)
+    expect(dateFilters[0]).toHaveAttribute(
+      'aria-label',
+      'Collected on or before date'
+    )
+    expect(dateFilters[1]).toHaveAttribute(
+      'aria-label',
+      'Collected on or after date'
+    )
   })
 
   it('lets the user filter by collection start date', async () => {
