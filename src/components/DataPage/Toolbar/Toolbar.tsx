@@ -44,10 +44,14 @@ const DataToolbar = ({
   )
 
   const filterPanelLauncherRef = useRef<HTMLButtonElement>(null)
+  const wasFilterPanelOpenRef = useRef(false)
   useEffect(() => {
-    if (!isFilterPanelOpen) {
-      // If the panel just closed, focus the launcher
+    // If the panel just closed, focus the launcher
+    if (wasFilterPanelOpenRef.current && !isFilterPanelOpen) {
       filterPanelLauncherRef.current?.focus()
+    }
+    if (isFilterPanelOpen) {
+      wasFilterPanelOpenRef.current = true
     }
   }, [isFilterPanelOpen])
 

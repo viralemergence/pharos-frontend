@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
 import Expander, { ExpanderProps } from '@talus-analytics/library.ui.expander'
@@ -34,7 +34,10 @@ export interface DropdownProps
    */
   expanderStyle?: React.CSSProperties
   animDuration?: number
-  debugOpen?: boolean
+  /** This prop allows the open/closed state of the dropdown to be controlled by its parent */
+  open?: boolean
+  /** This prop allows the open/closed state of the dropdown to be controlled by its parent */
+  setOpen?: React.Dispatch<React.SetStateAction<boolean>>
   floating?: boolean
 }
 
@@ -47,10 +50,18 @@ const Dropdown = ({
   floating = true,
   animDuration = 250,
   expanderStyle = {},
-  debugOpen,
   ...props
 }: DropdownProps) => {
-  const [open, setOpen] = useState<boolean | undefined>(undefined)
+  let [open, setOpen] = useState<boolean>(false)
+  // If open and setOpen are provided through props, use those instead
+  if (props.open !== undefined && props.setOpen !== undefined) {
+    open = props.open
+    setOpen = props.setOpen
+  }
+  const openDropdown = () => setOpen(true)
+  const closeDropdown = () => setOpen(false)
+  const toggleDropdown = () => setOpen(prev => !prev)
+
   const [touchScreen, setTouchScreen] = useState(false)
 
   // Handle touch screens: if a touch event is detected, override the
@@ -81,27 +92,17 @@ const Dropdown = ({
     open === false && onClose && onClose()
   }, [open, onClose, onOpen])
 
-  // detect onBlur, set a no-time timer to close it next tick but cancel
-  // the timer if one of the child elements got focus. taken from here:
-  // https://reactjs.org/docs/accessibility.html#mouse-and-pointer-events
-  // This approach handles closing the expander when the user clicks away
-  // but also when the user navigates away using the keyboard.
-  let blurTimeout: ReturnType<typeof global.setTimeout>
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
-  const onBlurHandler = () => {
-    blurTimeout = setTimeout(() => {
-      setOpen(false)
-    })
-  }
-
-  const onFocusHandler = () => {
-    clearTimeout(blurTimeout)
+  const onBlurHandler = (e: React.FocusEvent<HTMLDivElement>) => {
+    if (dropdownRef.current?.contains(e.relatedTarget)) return
+    closeDropdown()
   }
 
   // by default, clicking the button opens / closes the expander
   let mouseHandlers: {
     [key: string]: (e: React.MouseEvent<HTMLButtonElement>) => void
-  } = { onClick: () => setOpen(prev => !prev) }
+  } = { onClick: () => toggleDropdown() }
 
   let hoverHandlers: { [key: string]: () => void } = {}
   // if hover is true, only allow onClick events from the keyboard
@@ -110,15 +111,15 @@ const Dropdown = ({
   if (hover) {
     mouseHandlers = {
       onClick: e => {
-        if (touchScreen) setOpen(prev => !prev)
-        if (e.clientX === 0 && e.clientY === 0) setOpen(prev => !prev)
+        if (touchScreen) toggleDropdown()
+        if (e.clientX === 0 && e.clientY === 0) toggleDropdown()
       },
     }
     hoverHandlers = {
       onMouseEnter: () => {
-        if (!touchScreen) setOpen(true)
+        if (!touchScreen) openDropdown()
       },
-      onMouseLeave: () => setOpen(false),
+      onMouseLeave: () => closeDropdown(),
     }
   }
 
@@ -156,14 +157,14 @@ const Dropdown = ({
   }
 
   return (
-    <div onFocus={onFocusHandler} onBlur={onBlurHandler}>
+    <div onBlur={onBlurHandler} ref={dropdownRef}>
       {buttonWithProps}
       <Expander
         {...props}
         floating={floating}
         style={expanderStyle}
-        {...{ open, animDuration }}
-        {...(debugOpen ? { open: true } : {})}
+        open={open}
+        animDuration={animDuration}
       >
         <InteractionTarget {...hoverHandlers} tabIndex={-1}>
           {children}

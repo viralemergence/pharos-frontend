@@ -23,16 +23,20 @@ import type { Filter } from 'pages/data'
 
 interface FieldSelectorProps {
   filters: Filter[]
-  onClick?: (e?: React.MouseEvent<HTMLDivElement>) => void
+  setIsDropdownOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const FieldSelector = ({ filters }: FieldSelectorProps) => {
+const FieldSelector = ({ filters, setIsDropdownOpen }: FieldSelectorProps) => {
   return (
     <FieldSelectorDiv>
       {filters.map(({ fieldId, label }) => (
         <FieldSelectorButton
           key={fieldId}
           aria-label={`Add filter for ${label}`}
+          onClick={() => {
+            console.log('closing dropdown')
+            setIsDropdownOpen(false)
+          }}
         >
           {label}
         </FieldSelectorButton>
@@ -55,23 +59,6 @@ const FilterPanelToolbar = ({
 }) => {
   const addFilterButtonRef = useRef<HTMLButtonElement>(null)
 
-  const generateDropdownKey = () => Math.random().toString(36).substring(7)
-  const [dropdownKey, setDropdownKey] = useState(generateDropdownKey())
-  const closeFieldSelector = () => {
-    setDropdownKey(generateDropdownKey())
-  }
-
-  /** Close the field selector if the user clicked somewhere other than the add
-   * filter button */
-  const closeFieldSelectorIfClickedOutside = (e: MouseEvent) => {
-    if (
-      addFilterButtonRef.current &&
-      !addFilterButtonRef.current.contains(e.target as Node)
-    ) {
-      closeFieldSelector()
-    }
-  }
-
   // TODO: Copy the Dropdown component into a separate file next to this one,
   // modify it so that the expander closes when the user clicks outside the
   // button/expander, and then I can focus the Add filter button when that
@@ -87,7 +74,7 @@ const FilterPanelToolbar = ({
     }
   }, [isFilterPanelOpen])
 
-  // TODO: Use the useEffect/cleanup pattern to set/unset the click listener on the window
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   return (
     <>
@@ -99,21 +86,10 @@ const FilterPanelToolbar = ({
           <BackIcon />
         </FilterPanelCloseButtonWithBackIcon>
         <Dropdown
-          key={dropdownKey} // This is used to reset the component as a means of closing it
+          open={isDropdownOpen}
+          setOpen={setIsDropdownOpen}
           expanderStyle={{}}
-          onOpen={() => {
-            window?.addEventListener(
-              'click',
-              closeFieldSelectorIfClickedOutside
-            )
-          }}
-          onClose={() => {
-            window?.removeEventListener(
-              'click',
-              closeFieldSelectorIfClickedOutside
-            )
-          }}
-          renderButton={open => (
+          renderButton={(open: boolean) => (
             <FilterPanelToolbarButton
               style={{ marginRight: 'auto' }}
               isFieldSelectorOpen={open}
@@ -124,7 +100,10 @@ const FilterPanelToolbar = ({
           )}
           animDuration={0}
         >
-          <FieldSelector filters={filters} />
+          <FieldSelector
+            filters={filters}
+            setIsDropdownOpen={setIsDropdownOpen}
+          />
         </Dropdown>
         <FilterPanelCloseButtonWithXIcon
           onClick={() => setIsFilterPanelOpen(false)}
