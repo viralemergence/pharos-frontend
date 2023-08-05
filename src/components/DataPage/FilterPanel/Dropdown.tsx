@@ -156,7 +156,11 @@ const Dropdown = ({
     )
   }
   return (
-    <div onBlur={onBlurHandler} ref={dropdownRef}>
+    <div
+      onBlur={onBlurHandler}
+      ref={dropdownRef}
+      tabIndex={-1} // Ensure that onBlurHandler()'s use of e.relatedTarget works on Safari
+    >
       {buttonWithProps}
       <Expander
         {...props}
