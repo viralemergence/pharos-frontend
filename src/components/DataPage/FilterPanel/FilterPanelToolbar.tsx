@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import Dropdown from '@talus-analytics/library.ui.dropdown'
+import Dropdown from './Dropdown'
 
 import {
   PlusIcon,
