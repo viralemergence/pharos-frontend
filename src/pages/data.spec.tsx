@@ -133,7 +133,9 @@ describe('The public data page', () => {
     const panel = getFilterPanel(container)
     expect(panel).toBeInTheDocument()
     expect(panel).toHaveAttribute('aria-hidden', 'true')
-    expect(panel).toContainElement(getAddFilterButton())
+    
+    // When the filter panel is hidden, the Add filter button is not rendered
+    expect(screen.queryByText('Add filter')).toBe(null)
 
     const filterPanelToggleButton = getFilterPanelToggleButton()
     expect(filterPanelToggleButton).toBeInTheDocument()
@@ -141,6 +143,7 @@ describe('The public data page', () => {
     // Clicking the button shows the panel
     fireEvent.click(filterPanelToggleButton)
     expect(panel).toHaveAttribute('aria-hidden', 'false')
+    expect(panel).toContainElement(getAddFilterButton())
 
     // Clicking the button again hides the panel
     fireEvent.click(filterPanelToggleButton)
@@ -161,6 +164,7 @@ describe('The public data page', () => {
 
   it('has a filter panel that contains buttons for adding filters for fields', async () => {
     render(<DataPage />)
+    fireEvent.click(getFilterPanelToggleButton())
     fireEvent.click(getAddFilterButton())
     const expectedButtonLabels = Object.values(publishedRecordsMetadata.fields)
     await Promise.all(
