@@ -12,7 +12,7 @@ import {
   BackIcon,
   XIcon,
   FilterPanelToolbarNav,
-  FilterPanelToolbarButton,
+  FilterPanelToolbarButtonStyled,
   FilterPanelCloseButtonWithXIcon,
   FilterPanelCloseButtonWithBackIcon,
   FieldSelectorDiv,
@@ -48,6 +48,24 @@ const FieldSelector = ({ filters, setIsDropdownOpen }: FieldSelectorProps) => {
   )
 }
 
+export const FilterPanelToolbarButton = ({
+  isFieldSelectorOpen,
+}: {
+  isFieldSelectorOpen: boolean
+}) => {
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  // TODO: Will this focus too early, while the panel is out of sight?
+  useEffect(() => {
+    buttonRef.current?.focus()
+  }, [])
+  return (
+    <FilterPanelToolbarButtonStyled
+      isFieldSelectorOpen={isFieldSelectorOpen}
+      ref={buttonRef}
+    />
+  )
+}
+
 const FilterPanelToolbar = ({
   filters,
   isFilterPanelOpen,
@@ -57,8 +75,6 @@ const FilterPanelToolbar = ({
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
   isFilterPanelOpen: boolean
 }) => {
-  const addFilterButtonRef = useRef<HTMLButtonElement>(null)
-
   // TODO: Copy the Dropdown component into a separate file next to this one,
   // modify it so that the expander closes when the user clicks outside the
   // button/expander, and then I can focus the Add filter button when that
@@ -68,10 +84,10 @@ const FilterPanelToolbar = ({
   // and move away from that.
 
   useEffect(() => {
-    if (isFilterPanelOpen) {
-      // If the panel just opened, focus the add filter button
-      addFilterButtonRef.current?.focus()
-    }
+    // if (isFilterPanelOpen) {
+    //   // If the panel just opened, focus the add filter button
+    //   addFilterButtonRef.current?.focus()
+    // }
   }, [isFilterPanelOpen])
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -93,7 +109,6 @@ const FilterPanelToolbar = ({
             <FilterPanelToolbarButton
               style={{ marginRight: 'auto' }}
               isFieldSelectorOpen={open}
-              ref={addFilterButtonRef}
             >
               <PlusIcon style={{ marginRight: '5px' }} /> Add filter
             </FilterPanelToolbarButton>
