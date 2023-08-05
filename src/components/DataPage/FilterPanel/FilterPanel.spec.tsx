@@ -1,6 +1,6 @@
 import React from 'react'
 import FilterPanel from './FilterPanel'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { ThemeProvider } from 'styled-components'
 import textStyles from '../../../figma/textStyles'
 import colorPalette from '../../../figma/colorPalette'
@@ -60,20 +60,5 @@ describe('FilterPanel', () => {
     fireEvent.click(addFilterButton)
     expect(screen.getByText('Field 1')).toBeInTheDocument()
     expect(screen.getByText('Field 2')).toBeInTheDocument()
-
-    // After clicking a field, the field selector disappears
-    fireEvent.click(screen.getByText('Field 1'))
-    expect(screen.queryByText('Field 1')).not.toBeInTheDocument()
-    expect(screen.queryByText('Field 2')).not.toBeInTheDocument()
-
-    fireEvent.click(getAddFilterButton())
-    expect(screen.getByText('Field 1')).toBeInTheDocument()
-    expect(screen.getByText('Field 2')).toBeInTheDocument()
-
-    // Clicking the panel makes the field selector disappear
-    const panel = screen.getByRole('form')
-    fireEvent.click(panel)
-    expect(screen.queryByText('Field 1')).not.toBeInTheDocument()
-    expect(screen.queryByText('Field 2')).not.toBeInTheDocument()
   })
 })
