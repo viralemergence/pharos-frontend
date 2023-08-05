@@ -111,16 +111,19 @@ const DataPage = ({
   // isFilterPanelOpen changes, using a useEffect
 
   /** Update the view, and update the map projection view accordingly */
-  const changeView = useCallback((newView: View, setHash = true) => {
-    if (setHash) window.location.hash = newView
-    setView(newView)
-    if (newView === View.globe && mapProjection !== 'globe') {
-      setMapProjection('globe')
-    }
-    if (newView === View.map && mapProjection !== 'naturalEarth') {
-      setMapProjection('naturalEarth')
-    }
-  }, [mapProjection])
+  const changeView = useCallback(
+    (newView: View, setHash = true) => {
+      if (setHash) window.location.hash = newView
+      setView(newView)
+      if (newView === View.globe && mapProjection !== 'globe') {
+        setMapProjection('globe')
+      }
+      if (newView === View.map && mapProjection !== 'naturalEarth') {
+        setMapProjection('naturalEarth')
+      }
+    },
+    [mapProjection]
+  )
 
   const fetchMetadata = useCallback(async () => {
     const response = await fetch(METADATA_URL)

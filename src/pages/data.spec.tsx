@@ -1,6 +1,5 @@
 import React from 'react'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { stateInitialValue } from 'reducers/stateReducer/initialValues'
 import { publishedRecordsMetadata } from '../../test/serverHandlers'
@@ -97,43 +96,34 @@ describe('The public data page', () => {
   })
 
   it('has a button labeled Map that sets the projection of the map to naturalEarth', async () => {
-    render(<DataPage />)
-    const globeViewButton = getGlobeViewButton()
-    expect(globeViewButton).toBeInTheDocument()
-    userEvent.click(globeViewButton)
-    /** Get the projections that have been assigned to the map, in the order in which they were assigned */
+    /** Get the projections that have been assigned to the map, in the order in
+     * which they were assigned */
     const getAssignedMapProjections = () =>
       mockedMapboxMap.setProjection.mock.calls
         .map(call => call[0].name)
-        .reverse()
-    // TODO: Use waitfor to fix this test.
-    await waitFor(() => {
-      const assignedProjections = getAssignedMapProjections()
-      expect(assignedProjections[0]).toBe('globe')
-      expect(assignedProjections.at(-1)).toBe('naturalEarth')
+        // Remove consecutive duplicates since it doesn't matter if the map
+        // projection is set to the same value multiple times in a row
+        .reduce(
+          (acc, value) => (value !== acc.at(-1) ? [...acc, value] : acc),
+          []
+        )
+    render(<DataPage />)
+    await act(async () => {
+      fireEvent.click(getGlobeViewButton())
+      fireEvent.click(getMapViewButton())
     })
+    const projections = getAssignedMapProjections()
 
-    return
-    const howManyTimesMapProjectionWasSet =
-      mockedMapboxMap.setProjection.mock.calls.length
-    console.dir({
-      callNames: mockedMapboxMap.setProjection.mock.calls.map(
-        call => call[0].name
-      ),
-    })
-    userEvent.click(getMapViewButton())
-    // Check that the click caused setProjection to be called again with
-    // 'naturalEarth' as the argument
-    console.dir({
-      callNames: mockedMapboxMap.setProjection.mock.calls.map(
-        call => call[0].name
-      ),
-    })
-    expect(
-      mockedMapboxMap.setProjection.mock.calls.filter(
-        call => call[0].name == 'naturalEarth'
-      ).length
-    ).toBeGreaterThan(howManyTimesMapProjectionWasSet)
+    // The map should initially use the naturalEarth (in other words, flat) projection
+    expect(projections[0]).toBe('naturalEarth')
+
+    // Clicking the Globe button should set the projection to 'globe'
+    expect(projections[1]).toBe('globe')
+
+    // Clicking the Map button should set the projection to 'naturalEarth'
+    expect(projections[2]).toBe('naturalEarth')
+
+    expect(projections.length).toBe(3)
   })
 
   it('has a button labeled Filters that toggles the Filter Panel', () => {

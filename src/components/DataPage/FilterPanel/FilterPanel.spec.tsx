@@ -27,7 +27,7 @@ describe('FilterPanel', () => {
     )
   })
 
-  it('renders with fields', () => {
+  it('renders with filters', () => {
     render(
       <Provider>
         <FilterPanel
