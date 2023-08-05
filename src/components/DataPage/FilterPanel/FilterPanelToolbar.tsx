@@ -87,8 +87,6 @@ const FilterPanelToolbar = ({
     }
   }, [isFilterPanelOpen])
 
-  const screenReaderAnnouncementRef = useRef<HTMLDivElement>(null)
-
   // TODO: Use the useEffect/cleanup pattern to set/unset the click listener on the window
 
   return (
