@@ -98,7 +98,7 @@ export const FilterPanelButton = styled.button`
   }
 `
 
-export const FilterPanelToolbarButton = styled(FilterPanelButton)<{
+export const FilterPanelToolbarButtonStyled = styled(FilterPanelButton)<{
   isFieldSelectorOpen?: boolean
 }>`
   border-radius: 5px;
@@ -113,7 +113,7 @@ export const FilterPanelToolbarButton = styled(FilterPanelButton)<{
   }
 `
 
-export const FilterPanelCloseButton = styled(FilterPanelToolbarButton)`
+export const FilterPanelCloseButton = styled(FilterPanelToolbarButtonStyled)`
   @media (min-width: ${({ theme }) => theme.breakpoints.laptopMinWidth}) {
     position: absolute;
     right: 2px;

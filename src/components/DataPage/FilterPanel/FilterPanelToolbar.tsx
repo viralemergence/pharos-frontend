@@ -34,7 +34,6 @@ const FieldSelector = ({ filters, setIsDropdownOpen }: FieldSelectorProps) => {
           key={fieldId}
           aria-label={`Add filter for ${label}`}
           onClick={() => {
-            console.log('closing dropdown')
             setIsDropdownOpen(false)
           }}
         >
@@ -48,13 +47,18 @@ const FieldSelector = ({ filters, setIsDropdownOpen }: FieldSelectorProps) => {
   )
 }
 
-export const FilterPanelToolbarButton = ({
+const FilterPanelToolbarButton = ({
   isFieldSelectorOpen,
+  onClick,
+  children,
+  style,
 }: {
   isFieldSelectorOpen: boolean
+  children: React.ReactNode
+  onClick?: React.MouseEventHandler<HTMLButtonElement>
+  style?: React.CSSProperties
 }) => {
   const buttonRef = useRef<HTMLButtonElement>(null)
-  // TODO: Will this focus too early, while the panel is out of sight?
   useEffect(() => {
     buttonRef.current?.focus()
   }, [])
@@ -62,33 +66,23 @@ export const FilterPanelToolbarButton = ({
     <FilterPanelToolbarButtonStyled
       isFieldSelectorOpen={isFieldSelectorOpen}
       ref={buttonRef}
-    />
+      style={style}
+      onClick={onClick}
+    >
+      {children}
+    </FilterPanelToolbarButtonStyled>
   )
 }
 
 const FilterPanelToolbar = ({
   filters,
-  isFilterPanelOpen,
   setIsFilterPanelOpen,
 }: {
   filters: Filter[]
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
-  isFilterPanelOpen: boolean
 }) => {
-  // TODO: Copy the Dropdown component into a separate file next to this one,
-  // modify it so that the expander closes when the user clicks outside the
-  // button/expander, and then I can focus the Add filter button when that
-  // button mounts.
-  //
   // TODO: Look for more examples of this "reaching for prior state" pattern
   // and move away from that.
-
-  useEffect(() => {
-    // if (isFilterPanelOpen) {
-    //   // If the panel just opened, focus the add filter button
-    //   addFilterButtonRef.current?.focus()
-    // }
-  }, [isFilterPanelOpen])
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
@@ -104,11 +98,11 @@ const FilterPanelToolbar = ({
         <Dropdown
           open={isDropdownOpen}
           setOpen={setIsDropdownOpen}
-          expanderStyle={{}}
           renderButton={(open: boolean) => (
             <FilterPanelToolbarButton
               style={{ marginRight: 'auto' }}
               isFieldSelectorOpen={open}
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             >
               <PlusIcon style={{ marginRight: '5px' }} /> Add filter
             </FilterPanelToolbarButton>

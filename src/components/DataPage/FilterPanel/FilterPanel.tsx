@@ -21,12 +21,15 @@ const FilterPanel = ({
       aria-label="Filters panel"
       id="pharos-filter-panel"
     >
-      <FilterPanelToolbar
-        isFilterPanelOpen={isFilterPanelOpen}
-        setIsFilterPanelOpen={setIsFilterPanelOpen}
-        filters={filters}
-      />
-      {/* List of added filters will go here */}
+      {isFilterPanelOpen && (
+        <>
+          <FilterPanelToolbar
+            setIsFilterPanelOpen={setIsFilterPanelOpen}
+            filters={filters}
+          />
+          {/* List of added filters will go here */}
+        </>
+      )}
     </Panel>
   )
 }

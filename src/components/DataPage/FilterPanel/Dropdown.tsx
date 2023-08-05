@@ -155,7 +155,6 @@ const Dropdown = ({
         `Element type found was ${type}.`
     )
   }
-
   return (
     <div onBlur={onBlurHandler} ref={dropdownRef}>
       {buttonWithProps}
