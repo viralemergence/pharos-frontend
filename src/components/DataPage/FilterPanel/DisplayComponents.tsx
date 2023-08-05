@@ -191,15 +191,6 @@ export const FilterPanelCloseButtonWithXIcon = styled(FilterPanelCloseButton)`
   }
 `
 
-export const ScreenReaderOnly = styled.div`
-  clip-path: inset(50%);
-  clip: rect(0 0 0 0);
-  height: 0px;
-  overflow: hidden;
-  position: absolute;
-  width: 0px;
-`
-
 export const FilterListItemElement = styled.li<{ opacity: number }>`
   list-style: none;
   margin-bottom: 20px;

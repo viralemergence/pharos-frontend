@@ -75,3 +75,12 @@ export const DataToolbarDiv = styled.div<{ isFilterPanelOpen: boolean }>`
     ${({ isFilterPanelOpen }) => (isFilterPanelOpen ? 'display: none' : '')}
   }
 `
+
+export const ScreenReaderOnly = styled.div`
+  clip-path: inset(50%);
+  clip: rect(0 0 0 0);
+  height: 0px;
+  overflow: hidden;
+  position: absolute;
+  width: 0px;
+`

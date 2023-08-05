@@ -9,6 +9,7 @@ import MapView, { MapProjection } from 'components/DataPage/MapView/MapView'
 import TableView from 'components/DataPage/TableView/TableView'
 import DataToolbar, { View, isView } from 'components/DataPage/Toolbar/Toolbar'
 import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
+import { ScreenReaderOnly } from 'components/DataPage/DisplayComponents'
 
 export type Filter = {
   fieldId: string
@@ -107,8 +108,7 @@ const DataPage = ({
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
   const [filters, setFilters] = useState<Filter[]>([])
 
-  // TODO: Do the screen announcement that the panel is open when
-  // isFilterPanelOpen changes, using a useEffect
+  const [screenReaderAnnouncement, setScreenReaderAnnouncement] = useState('')
 
   /** Update the view, and update the map projection view accordingly */
   const changeView = useCallback(
@@ -148,6 +148,18 @@ const DataPage = ({
 
   const shouldBlurMap = view === View.table
 
+  useEffect(() => {
+    if (isFilterPanelOpen) {
+      setScreenReaderAnnouncement(
+        prev =>
+          'Filters panel opened' +
+          // Alternate adding and removing a period to ensure that the screen
+          // reader reads the announcement
+          (prev.endsWith('.') ? '' : '.')
+      )
+    }
+  }, [isFilterPanelOpen])
+
   return (
     <Providers>
       <CMS.SEO />
@@ -178,6 +190,9 @@ const DataPage = ({
             />
           </ViewMain>
         </ViewContainer>
+        <ScreenReaderOnly aria-live="assertive">
+          {screenReaderAnnouncement}
+        </ScreenReaderOnly>
       </PageContainer>
     </Providers>
   )

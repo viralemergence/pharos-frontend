@@ -18,7 +18,6 @@ import {
   FieldSelectorDiv,
   FieldSelectorButton,
   FieldSelectorMessage,
-  ScreenReaderOnly,
 } from './DisplayComponents'
 import type { Filter } from 'pages/data'
 
@@ -85,19 +84,6 @@ const FilterPanelToolbar = ({
     if (isFilterPanelOpen) {
       // If the panel just opened, focus the add filter button
       addFilterButtonRef.current?.focus()
-      // TODO: See note in src/pages/data.tsx about where to move this logic
-      // Pattern to avoid: putting state in refs. Something like
-      // setScreenReaderAnnouncement(prev => ...) so that the new state can
-      // depend on the old. This is a method of stably depending on prior
-      // state. Avoid the 'if this, then that' imperative style.
-      const announcement = screenReaderAnnouncementRef.current
-      if (announcement) {
-        if (!announcement.textContent?.startsWith('Filters panel opened'))
-          announcement.textContent = 'Filters panel opened'
-        // Always add an extra space to force screen readers to read the
-        // announcement
-        announcement.textContent += '\xa0'
-      }
     }
   }, [isFilterPanelOpen])
 
@@ -149,10 +135,6 @@ const FilterPanelToolbar = ({
           <XIcon extraStyle="width: 18px; height: 18px;" />
         </FilterPanelCloseButtonWithXIcon>
       </FilterPanelToolbarNav>
-      <ScreenReaderOnly
-        ref={screenReaderAnnouncementRef}
-        aria-live="assertive"
-      />
     </>
   )
 }
