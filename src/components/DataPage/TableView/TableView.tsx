@@ -228,8 +228,12 @@ const TableView = ({
 
       setLoading(false)
     },
-    [stringifiedFilters, stringifiedRecords]
+    //[stringifiedFilters, stringifiedRecords]
+    []
   )
+  // TODO: Debouncing doesn't work properly as the filters and records are
+  // being changed because these change the callback, which means the debouncer
+  // doesn't see the distinct calls to load() as calls to the same function.
 
   const loadDebounced = debounce(load, loadDebounceDelay, {
     // TODO: experimenting
