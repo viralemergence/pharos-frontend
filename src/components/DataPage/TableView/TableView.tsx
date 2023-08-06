@@ -1,9 +1,16 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 import debounce from 'lodash/debounce'
 import styled from 'styled-components'
 import DataGrid, { Column } from 'react-data-grid'
 
 import LoadingSpinner from './LoadingSpinner'
+import type { Filter } from 'pages/data'
 import isNormalObject from 'utilities/isNormalObject'
 
 const loadDebounceDelay = 300
@@ -74,8 +81,8 @@ const LoadingMessage = styled.div`
   backdrop-filter: blur(5px);
   background-color: rgba(0, 0, 0, 0.5);
   border-top-left-radius: 5px;
-  border-top: 1px solid ${({ theme }) => theme.white10PercentOpacity};
-  border-left: 1px solid ${({ theme }) => theme.white10PercentOpacity};
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
@@ -94,6 +101,8 @@ const NoRecordsFound = styled.div`
 `
 
 interface TableViewProps {
+  filters: Filter[]
+  setFilters: Dispatch<SetStateAction<Filter[]>>
   isOpen?: boolean
   isFilterPanelOpen?: boolean
   /** Virtualization should be disabled in tests via this prop, so that all the
@@ -108,6 +117,8 @@ const divIsAtBottom = ({ currentTarget }: React.UIEvent<HTMLDivElement>) =>
 const rowKeyGetter = (row: Row) => row.pharosID
 
 const TableView = ({
+  filters,
+  setFilters,
   isOpen = true,
   isFilterPanelOpen = false,
   enableVirtualization = true,
@@ -115,6 +126,19 @@ const TableView = ({
   const [loading, setLoading] = useState(true)
   const [records, setRecords] = useState<Row[]>([])
   const [reachedLastPage, setReachedLastPage] = useState(false)
+
+  /** Filters that have been added to the panel */
+  const addedFilters = filters.filter(f => f.addedToPanel)
+
+  /** Filters that have been applied to the table */
+  const appliedFilters = filters.filter(f => f.applied)
+
+  // These values are used as dependencies in some useEffect hooks below
+  const stringifiedFilters = JSON.stringify(filters)
+  const stringifiedRecords = JSON.stringify(records)
+  const stringifiedFiltersWithValues = JSON.stringify(
+    addedFilters.filter(f => f.values?.length)
+  )
 
   /** Load published records. This function prepares the query string and calls
    * fetchRecords() to retrieve records from the API. */
@@ -129,6 +153,9 @@ const TableView = ({
       options.replaceRecords ||= false
       options.shouldDebounce ||= false
 
+      // When clearing filters, don't debounce
+      if (!addedFilters.length) options.shouldDebounce = false
+
       if (options.shouldDebounce) {
         // Use the debounced version of the load() function. The function
         // that the debouncer runs should not itself be debounced - this would
@@ -140,6 +167,20 @@ const TableView = ({
       setLoading(true)
 
       const queryStringParameters = new URLSearchParams()
+
+      const fieldIdsOfAppliedFilters: string[] = []
+      for (const filter of filters) {
+        if (!filter.addedToPanel) continue
+        if (!filter.values) continue
+        const validValues = filter.values.filter(
+          (value: string) => ![null, undefined, ''].includes(value)
+        )
+        for (const value of validValues) {
+          queryStringParameters.append(filter.fieldId, value)
+        }
+        if (validValues.length > 0)
+          fieldIdsOfAppliedFilters.push(filter.fieldId)
+      }
 
       let pageToLoad
       if (options.replaceRecords) {
@@ -153,22 +194,34 @@ const TableView = ({
       queryStringParameters.append('page', pageToLoad.toString())
       queryStringParameters.append('pageSize', PAGE_SIZE.toString())
 
-      await fetchRecords(queryStringParameters, options.replaceRecords || false)
+      const success = await fetchRecords(
+        queryStringParameters,
+        options.replaceRecords || false
+      )
+
+      if (success) {
+        setFilters(prev =>
+          prev.map(filter => ({
+            ...filter,
+            applied: fieldIdsOfAppliedFilters.includes(filter.fieldId),
+          }))
+        )
+      }
 
       setLoading(false)
     },
-    []
+    [stringifiedFilters, stringifiedRecords]
   )
 
   const loadDebounced = debounce(load, loadDebounceDelay)
 
-  // Load the first page of results when TableView mounts
+  // Load the first page of results when TableView mounts and when the filters' values have changed
   useEffect(() => {
     load({
       shouldDebounce: true,
       replaceRecords: true,
     })
-  }, [])
+  }, [stringifiedFiltersWithValues])
 
   /**
    * Fetch published records from the API
@@ -220,6 +273,12 @@ const TableView = ({
     width: 55,
   }
 
+  const keysOfFilteredColumns = addedFilters.reduce<string[]>(
+    (keys, { applied, dataGridKey }) =>
+      applied ? [...keys, dataGridKey] : keys,
+    []
+  )
+
   const columns: readonly Column<Row>[] = [
     rowNumberColumn,
     ...Object.keys(records?.[0] ?? {})
@@ -229,6 +288,9 @@ const TableView = ({
         name: key,
         width: key.length * 7.5 + 15 + 'px',
         resizable: true,
+        cellClass: keysOfFilteredColumns.includes(key)
+          ? 'in-filtered-column'
+          : undefined,
       })),
   ]
 
@@ -241,7 +303,9 @@ const TableView = ({
       <TableContainer>
         {!loading && records.length === 0 && (
           <NoRecordsFound role="status">
-            {'No records have been published.'}
+            {appliedFilters.length
+              ? 'No matching records found.'
+              : 'No records have been published.'}
           </NoRecordsFound>
         )}
         {records.length > 0 && (

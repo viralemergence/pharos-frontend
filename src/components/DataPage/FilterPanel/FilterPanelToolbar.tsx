@@ -25,19 +25,25 @@ import type { Filter } from 'pages/data'
 const AddFilterToPanelButton = ({
   filters,
   setIsDropdownOpen,
+  addFilterValueSetter,
+  onClick = () => null,
 }: {
   filters: Filter[]
   setIsDropdownOpen: Dispatch<SetStateAction<boolean>>
+  addFilterValueSetter: (options: Partial<Filter>) => void
+  onClick?: (e?: React.MouseEvent<HTMLDivElement>) => void
 }) => {
   return (
-    <FilterAdderDiv>
-      {filters.map(({ fieldId, label }) => (
+    <FilterAdderDiv onClick={onClick}>
+      {filters.map(({ fieldId, type, label, addedToPanel = false }) => (
         <AddFilterToPanelButtonStyled
           key={fieldId}
-          aria-label={`Add filter for ${label}`}
-          onClick={() => {
+          onClick={_ => {
+            addFilterValueSetter({ fieldId, type })
             setIsDropdownOpen(false)
           }}
+          disabled={addedToPanel}
+          aria-label={`Add filter for ${label}`}
         >
           {label}
         </AddFilterToPanelButtonStyled>
@@ -90,7 +96,7 @@ const FilterPanelToolbar = ({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const addFilterButtonRef = useRef<HTMLButtonElement>(null)
 
-  const wasFilterPanelOpen = useRef(isFilterPanelOpen)
+  const addedFilters = filters.filter(f => f.addedToPanel)
 
   useEffect(() => {
     if (isFilterPanelOpen) {
@@ -98,6 +104,17 @@ const FilterPanelToolbar = ({
       addFilterButtonRef.current?.focus()
     }
   }, [isFilterPanelOpen])
+
+  const removeAllFilters = () => {
+    setFilters(prev =>
+      prev.map(filter => ({
+        ...filter,
+        applied: false,
+        addedToPanel: false,
+        values: undefined,
+      }))
+    )
+  }
 
   return (
     <>
@@ -125,8 +142,37 @@ const FilterPanelToolbar = ({
           <AddFilterToPanelButton
             filters={filters}
             setIsDropdownOpen={setIsDropdownOpen}
+            addFilterValueSetter={({ fieldId, type }) => {
+              if (type !== 'date') {
+                // For now, do not handle filters other than dates
+                return
+              }
+              setFilters(filters => {
+                const highestPanelIndex = Math.max(
+                  ...filters.map(panel => panel.panelIndex)
+                )
+                return filters.map(f => {
+                  if (f.fieldId !== fieldId) return f
+                  return {
+                    ...f,
+                    addedToPanel: true,
+                    values: [],
+                    panelIndex: highestPanelIndex + 1,
+                  }
+                })
+              })
+            }}
           />
         </Dropdown>
+        {addedFilters.length > 0 && (
+          <FilterPanelToolbarButton
+            style={{ marginRight: '5px' }}
+            onClick={() => removeAllFilters()}
+            isFilterAdderOpen={isDropdownOpen} // TODO: this seems not right
+          >
+            Clear all
+          </FilterPanelToolbarButton>
+        )}
         <FilterPanelCloseButtonWithXIcon
           onClick={() => setIsFilterPanelOpen(false)}
           aria-label="Close the Filters panel"

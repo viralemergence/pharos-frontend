@@ -22,6 +22,11 @@ export type Filter = {
   type: 'text' | 'date'
   dataGridKey: string
   options: string[]
+  addedToPanel?: boolean
+  values?: string[]
+  applied?: boolean
+  /* Determines the order of the filters in the panel */
+  panelIndex: number
 }
 
 const METADATA_URL = `${process.env.GATSBY_API_URL}/metadata-for-published-records`
@@ -123,6 +128,8 @@ const DataPage = ({
               setIsFilterPanelOpen={setIsFilterPanelOpen}
             />
             <TableView
+              filters={filters}
+              setFilters={setFilters}
               isOpen={view === View.table}
               isFilterPanelOpen={isFilterPanelOpen}
               enableVirtualization={enableTableVirtualization}
