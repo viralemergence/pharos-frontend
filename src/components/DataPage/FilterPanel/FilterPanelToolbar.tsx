@@ -9,9 +9,9 @@ import Dropdown from './Dropdown'
 
 import {
   BackIcon,
-  FieldSelectorButton,
-  FieldSelectorDiv,
-  FieldSelectorMessage,
+  AddFilterToPanelButtonStyled,
+  FilterAdderDiv,
+  FilterAdderMessage,
   FilterPanelCloseButtonWithBackIcon,
   FilterPanelCloseButtonWithXIcon,
   FilterPanelToolbarButtonStyled,
@@ -21,16 +21,18 @@ import {
 } from './DisplayComponents'
 import type { Filter } from 'pages/data'
 
-interface FieldSelectorProps {
+/** Button that adds a filter to the panel */
+const AddFilterToPanelButton = ({
+  filters,
+  setIsDropdownOpen,
+}: {
   filters: Filter[]
   setIsDropdownOpen: Dispatch<SetStateAction<boolean>>
-}
-
-const FieldSelector = ({ filters, setIsDropdownOpen }: FieldSelectorProps) => {
+}) => {
   return (
-    <FieldSelectorDiv>
+    <FilterAdderDiv>
       {filters.map(({ fieldId, label }) => (
-        <FieldSelectorButton
+        <AddFilterToPanelButtonStyled
           key={fieldId}
           aria-label={`Add filter for ${label}`}
           onClick={() => {
@@ -38,22 +40,22 @@ const FieldSelector = ({ filters, setIsDropdownOpen }: FieldSelectorProps) => {
           }}
         >
           {label}
-        </FieldSelectorButton>
+        </AddFilterToPanelButtonStyled>
       ))}
       {filters.length === 0 && (
-        <FieldSelectorMessage>Loading&hellip;</FieldSelectorMessage>
+        <FilterAdderMessage>Loading&hellip;</FilterAdderMessage>
       )}
-    </FieldSelectorDiv>
+    </FilterAdderDiv>
   )
 }
 
 const FilterPanelToolbarButton = ({
-  isFieldSelectorOpen,
+  isFilterAdderOpen,
   onClick,
   children,
   style,
 }: {
-  isFieldSelectorOpen: boolean
+  isFilterAdderOpen: boolean
   children: React.ReactNode
   onClick?: React.MouseEventHandler<HTMLButtonElement>
   style?: React.CSSProperties
@@ -64,7 +66,7 @@ const FilterPanelToolbarButton = ({
   }, [])
   return (
     <FilterPanelToolbarButtonStyled
-      isFieldSelectorOpen={isFieldSelectorOpen}
+      isFilterAdderOpen={isFilterAdderOpen}
       ref={buttonRef}
       style={style}
       onClick={onClick}
@@ -98,7 +100,7 @@ const FilterPanelToolbar = ({
           renderButton={(open: boolean) => (
             <FilterPanelToolbarButton
               style={{ marginRight: 'auto' }}
-              isFieldSelectorOpen={open}
+              isFilterAdderOpen={open}
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             >
               <PlusIcon style={{ marginRight: '5px' }} /> Add filter
@@ -106,7 +108,7 @@ const FilterPanelToolbar = ({
           )}
           animDuration={0}
         >
-          <FieldSelector
+          <AddFilterToPanelButton
             filters={filters}
             setIsDropdownOpen={setIsDropdownOpen}
           />

@@ -79,7 +79,7 @@ export const FilterPanelToolbarNav = styled.nav`
   }
 `
 
-export const FieldSelectorMessage = styled.div`
+export const FilterAdderMessage = styled.div`
   ${props => props.theme.smallParagraph};
   padding: 10px 15px;
   color: ${({ theme }) => theme.white};
@@ -99,15 +99,15 @@ export const FilterPanelButton = styled.button`
 `
 
 export const FilterPanelToolbarButtonStyled = styled(FilterPanelButton)<{
-  isFieldSelectorOpen?: boolean
+  isFilterAdderOpen?: boolean
 }>`
   border-radius: 5px;
-  ${({ isFieldSelectorOpen }) =>
-    !isFieldSelectorOpen
+  ${({ isFilterAdderOpen }) =>
+    !isFilterAdderOpen
       ? 'border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;'
       : ''}
-  background-color: ${({ isFieldSelectorOpen, theme }) =>
-    isFieldSelectorOpen ? theme.white20PercentOpacity : 'transparent'};
+  background-color: ${({ isFilterAdderOpen, theme }) =>
+    isFilterAdderOpen ? theme.white20PercentOpacity : 'transparent'};
   &:active {
     outline: 2px solid ${({ theme }) => theme.darkGray};
   }
@@ -135,7 +135,7 @@ export const FilterPanelCloseButton = styled(FilterPanelToolbarButtonStyled)`
   }
 `
 
-export const FieldSelectorDiv = styled.div`
+export const FilterAdderDiv = styled.div`
   position: absolute;
   width: 348px;
   top: 15px;
@@ -153,7 +153,7 @@ export const FieldSelectorDiv = styled.div`
   }
 `
 
-export const FieldSelectorButton = styled(FilterPanelButton)<{
+export const AddFilterToPanelButtonStyled = styled(FilterPanelButton)<{
   disabled?: boolean
 }>`
   width: 100%;
