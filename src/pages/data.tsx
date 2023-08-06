@@ -47,8 +47,8 @@ const DataPage = ({
 
   /** Update the view, and update the map projection view accordingly */
   const changeView = useCallback(
-    (newView: View, setHash = true) => {
-      if (setHash) window.location.hash = newView
+    (newView: View, shouldSetHash = true) => {
+      if (shouldSetHash) window.location.hash = newView
       setView(newView)
       if (newView === View.globe && mapProjection !== 'globe') {
         setMapProjection('globe')
@@ -81,8 +81,6 @@ const DataPage = ({
     fetchMetadata()
   }, [changeView, fetchMetadata])
 
-  const shouldBlurMap = view === View.table
-
   useEffect(() => {
     if (isFilterPanelOpen) {
       setScreenReaderAnnouncement(
@@ -94,6 +92,8 @@ const DataPage = ({
       )
     }
   }, [isFilterPanelOpen])
+
+  const shouldBlurMap = view === View.table
 
   return (
     <Providers>
