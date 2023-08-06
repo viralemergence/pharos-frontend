@@ -78,12 +78,26 @@ const FilterPanelToolbarButton = ({
 
 const FilterPanelToolbar = ({
   filters,
+  setFilters,
+  isFilterPanelOpen,
   setIsFilterPanelOpen,
 }: {
   filters: Filter[]
+  setFilters: Dispatch<SetStateAction<Filter[]>>
+  isFilterPanelOpen: boolean
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const addFilterButtonRef = useRef<HTMLButtonElement>(null)
+
+  const wasFilterPanelOpen = useRef(isFilterPanelOpen)
+
+  useEffect(() => {
+    if (isFilterPanelOpen) {
+      // If the panel just opened, focus the add filter button
+      addFilterButtonRef.current?.focus()
+    }
+  }, [isFilterPanelOpen])
 
   return (
     <>

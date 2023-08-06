@@ -34,7 +34,7 @@ describe('The public data table', () => {
   it('renders', () => {
     render(
       <Providers>
-        <TableView />
+        <TableView filters={[]} setFilters={jest.fn()} />
       </Providers>
     )
   })
@@ -43,7 +43,7 @@ describe('The public data table', () => {
     server.use(routeThatReturnsNoPublishedRecords)
     render(
       <Providers>
-        <TableView />
+        <TableView filters={[]} setFilters={jest.fn()} />
       </Providers>
     )
     const message = await screen.findByText('No records have been published.')
