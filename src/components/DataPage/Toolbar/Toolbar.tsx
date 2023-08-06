@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import {
   FilterPanelLauncher,
   DataToolbarRadioButton,
@@ -44,16 +44,18 @@ const DataToolbar = ({
   )
 
   const filterPanelLauncherRef = useRef<HTMLButtonElement>(null)
-  const wasFilterPanelOpenRef = useRef(false)
+  // Keep track of whether the filter panel was open on last render, to detect
+  // when the panel closes
+  const [wasFilterPanelOpen, setWasFilterPanelOpen] = useState(false)
   useEffect(() => {
     // If the panel just closed, focus the launcher
-    if (wasFilterPanelOpenRef.current && !isFilterPanelOpen) {
+    if (wasFilterPanelOpen && !isFilterPanelOpen) {
       filterPanelLauncherRef.current?.focus()
     }
     if (isFilterPanelOpen) {
-      wasFilterPanelOpenRef.current = true
+      setWasFilterPanelOpen(true)
     }
-  }, [isFilterPanelOpen])
+  }, [isFilterPanelOpen, wasFilterPanelOpen])
 
   return (
     <DataToolbarDiv isFilterPanelOpen={isFilterPanelOpen}>
