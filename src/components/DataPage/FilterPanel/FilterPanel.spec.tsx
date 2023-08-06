@@ -22,13 +22,12 @@ describe('FilterPanel', () => {
           isFilterPanelOpen={true}
           setIsFilterPanelOpen={jest.fn()}
           filters={[]}
-          setFilters={jest.fn()}
         />
       </Provider>
     )
   })
 
-  it('renders with fields', () => {
+  it('renders with filters', () => {
     render(
       <Provider>
         <FilterPanel
@@ -41,7 +40,6 @@ describe('FilterPanel', () => {
               type: 'text',
               options: ['field 1, option 1', 'field 1, option 2'],
               dataGridKey: 'field1',
-              panelIndex: 0,
             },
             {
               fieldId: 'field2',
@@ -49,10 +47,8 @@ describe('FilterPanel', () => {
               type: 'text',
               options: ['field 2, option 1', 'field 2, option 2'],
               dataGridKey: 'field2',
-              panelIndex: 1,
             },
           ]}
-          setFilters={jest.fn()}
         />
       </Provider>
     )
@@ -64,20 +60,5 @@ describe('FilterPanel', () => {
     fireEvent.click(addFilterButton)
     expect(screen.getByText('Field 1')).toBeInTheDocument()
     expect(screen.getByText('Field 2')).toBeInTheDocument()
-
-    // After clicking a field, the field selector disappears
-    fireEvent.click(screen.getByText('Field 1'))
-    expect(screen.queryByText('Field 1')).not.toBeInTheDocument()
-    expect(screen.queryByText('Field 2')).not.toBeInTheDocument()
-
-    fireEvent.click(getAddFilterButton())
-    expect(screen.getByText('Field 1')).toBeInTheDocument()
-    expect(screen.getByText('Field 2')).toBeInTheDocument()
-
-    // Clicking the panel makes the field selector disappear
-    const panel = screen.getByRole('form')
-    fireEvent.click(panel)
-    expect(screen.queryByText('Field 1')).not.toBeInTheDocument()
-    expect(screen.queryByText('Field 2')).not.toBeInTheDocument()
   })
 })

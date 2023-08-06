@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
-export const DatasetPageMain = styled.div`
+export const DatasetTopSection = styled.section`
   position: relative;
-  padding: 30px;
-  color: ${({ theme }) => theme.white};
+  padding: 0px 40px 20px 40px;
+  margin-bottom: 15px;
 `

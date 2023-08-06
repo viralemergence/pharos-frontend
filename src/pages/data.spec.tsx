@@ -1,6 +1,5 @@
 import React from 'react'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { stateInitialValue } from 'reducers/stateReducer/initialValues'
 import { publishedRecordsMetadata } from '../../test/serverHandlers'
@@ -81,7 +80,6 @@ describe('The public data page', () => {
   // that the grid appears after loading published records.
   const getDataGridAfterWaiting = async () =>
     await screen.findByTestId('datagrid')
-  const getClearFiltersButton = () => screen.getByText('Clear all')
 
   it('renders', () => {
     render(<DataPage />)
@@ -97,18 +95,35 @@ describe('The public data page', () => {
     expect(grid).toBeInTheDocument()
   })
 
-  it('has a button labeled Map that sets the projection of the map to naturalEarth', () => {
+  it('has a button labeled Map that sets the projection of the map to naturalEarth', async () => {
+    /** Get the projections that have been assigned to the map, in the order in
+     * which they were assigned */
+    const getAssignedMapProjections = () =>
+      mockedMapboxMap.setProjection.mock.calls
+        .map(call => call[0].name)
+        // Remove consecutive duplicates since it doesn't matter if the map
+        // projection is set to the same value multiple times in a row
+        .reduce(
+          (acc, value) => (value !== acc.at(-1) ? [...acc, value] : acc),
+          []
+        )
     render(<DataPage />)
-    fireEvent.click(getGlobeViewButton())
-    const howManyTimesMapProjectionWasSet =
-      mockedMapboxMap.setProjection.mock.calls.length
-    fireEvent.click(getMapViewButton())
-    // Check that the click caused setProjection to be called once more,
-    // with 'naturalEarth' as the argument
-    expect(mockedMapboxMap.setProjection).toHaveBeenNthCalledWith(
-      howManyTimesMapProjectionWasSet + 1,
-      { name: 'naturalEarth' }
-    )
+    await act(async () => {
+      fireEvent.click(getGlobeViewButton())
+      fireEvent.click(getMapViewButton())
+    })
+    const projections = getAssignedMapProjections()
+
+    // The map should initially use the naturalEarth (in other words, flat) projection
+    expect(projections[0]).toBe('naturalEarth')
+
+    // Clicking the Globe button should set the projection to 'globe'
+    expect(projections[1]).toBe('globe')
+
+    // Clicking the Map button should set the projection to 'naturalEarth'
+    expect(projections[2]).toBe('naturalEarth')
+
+    expect(projections.length).toBe(3)
   })
 
   it('has a button labeled Filters that toggles the Filter Panel', () => {
@@ -118,7 +133,9 @@ describe('The public data page', () => {
     const panel = getFilterPanel(container)
     expect(panel).toBeInTheDocument()
     expect(panel).toHaveAttribute('aria-hidden', 'true')
-    expect(panel).toContainElement(getAddFilterButton())
+    
+    // When the filter panel is hidden, the Add filter button is not rendered
+    expect(screen.queryByText('Add filter')).toBe(null)
 
     const filterPanelToggleButton = getFilterPanelToggleButton()
     expect(filterPanelToggleButton).toBeInTheDocument()
@@ -126,6 +143,7 @@ describe('The public data page', () => {
     // Clicking the button shows the panel
     fireEvent.click(filterPanelToggleButton)
     expect(panel).toHaveAttribute('aria-hidden', 'false')
+    expect(panel).toContainElement(getAddFilterButton())
 
     // Clicking the button again hides the panel
     fireEvent.click(filterPanelToggleButton)
@@ -146,6 +164,7 @@ describe('The public data page', () => {
 
   it('has a filter panel that contains buttons for adding filters for fields', async () => {
     render(<DataPage />)
+    fireEvent.click(getFilterPanelToggleButton())
     fireEvent.click(getAddFilterButton())
     const expectedButtonLabels = Object.values(publishedRecordsMetadata.fields)
     await Promise.all(
@@ -153,97 +172,6 @@ describe('The public data page', () => {
         screen.findByText(label, { selector: 'button' })
       )
     )
-  })
-
-  it('has a filter panel that contains a button that clears all filters in the panel', async () => {
-    render(<DataPage />)
-    fireEvent.click(getAddFilterButton())
-    const addFilterForAfterDate = await screen.findByText(
-      'Collected on or after date',
-      { selector: 'button' }
-    )
-    fireEvent.click(addFilterForAfterDate)
-    expect(
-      screen.getByLabelText('Collected on or after date')
-    ).toBeInTheDocument()
-    fireEvent.click(getClearFiltersButton())
-    expect(
-      screen.queryByLabelText('Collected on or after date')
-    ).not.toBeInTheDocument()
-  })
-
-  it('lets the user add date fields to the panel', async () => {
-    render(<DataPage />)
-
-    userEvent.click(getAddFilterButton())
-    const addFilterForBeforeDate = await screen.findByText(
-      'Collected on or before date',
-      { selector: 'button' }
-    )
-    expect(addFilterForBeforeDate).toBeInTheDocument()
-    userEvent.click(addFilterForBeforeDate)
-
-    const filterForBeforeDate = await screen.findByLabelText(
-      /^Collected on or before date/
-    )
-
-    userEvent.click(getAddFilterButton())
-    const addFilterForAfterDate = await screen.findByText(
-      'Collected on or after date',
-      { selector: 'button' }
-    )
-    expect(addFilterForAfterDate).toBeInTheDocument()
-    userEvent.click(addFilterForAfterDate)
-
-    const filterForAfterDate = await screen.findByLabelText(
-      /^Collected on or after date/
-    )
-    expect(filterForAfterDate).toBeInTheDocument()
-    expect(filterForBeforeDate).toBeInTheDocument()
-
-    const dateFilters = await screen.findAllByLabelText(/^Collected on/)
-    expect(dateFilters[0]).toHaveAttribute(
-      'aria-label',
-      'Collected on or before date'
-    )
-    expect(dateFilters[1]).toHaveAttribute(
-      'aria-label',
-      'Collected on or after date'
-    )
-  })
-
-  it('lets the user filter by collection start date', async () => {
-    render(<DataPage />)
-    fireEvent.click(getFilterPanelToggleButton())
-    fireEvent.click(getAddFilterButton())
-    fireEvent.click(await screen.findByText('Collected on or after date'))
-    const filterInput = screen.getByLabelText('Collected on or after date')
-    expect(filterInput).toBeInTheDocument()
-    await userEvent.type(filterInput, '2020-04-01')
-    const grid = await getDataGridAfterWaiting()
-    await waitFor(() => {
-      expect(grid).toHaveAttribute('aria-rowcount', '10')
-    })
-
-    // Remove the date
-    await userEvent.type(filterInput, '{backspace}'.repeat(10))
-    await waitFor(() => {
-      expect(grid).toHaveAttribute('aria-rowcount', '51')
-    })
-  })
-
-  it('does not filter by a date if it is invalid', async () => {
-    render(<DataPage />)
-    fireEvent.click(getFilterPanelToggleButton())
-    fireEvent.click(getAddFilterButton())
-    fireEvent.click(await screen.findByText('Collected on or after date'))
-    const filterInput = screen.getByLabelText('Collected on or after date')
-    expect(filterInput).toBeInTheDocument()
-    await userEvent.type(filterInput, '3000-01-01')
-    const grid = await getDataGridAfterWaiting()
-    await waitFor(() => {
-      expect(grid).toHaveAttribute('aria-rowcount', '51')
-    })
   })
 
   it('has a button labeled Globe that changes the projection of the map to globe', () => {

@@ -1,5 +1,4 @@
-import React, { useEffect, useRef } from 'react'
-import type { Filter } from 'pages/data'
+import React, { useEffect, useState, useRef } from 'react'
 import {
   FilterPanelLauncher,
   DataToolbarRadioButton,
@@ -23,13 +22,11 @@ const DataToolbar = ({
   setIsFilterPanelOpen,
   view,
   changeView,
-  filters = [],
 }: {
   isFilterPanelOpen: boolean
   setIsFilterPanelOpen: React.Dispatch<React.SetStateAction<boolean>>
   view: View
   changeView: (view: View) => void
-  filters: Filter[]
 }) => {
   const RadioButton = ({
     forView,
@@ -47,14 +44,18 @@ const DataToolbar = ({
   )
 
   const filterPanelLauncherRef = useRef<HTMLButtonElement>(null)
+  // Keep track of whether the filter panel was open on last render, to detect
+  // when the panel closes
+  const [wasFilterPanelOpen, setWasFilterPanelOpen] = useState(false)
   useEffect(() => {
-    if (!isFilterPanelOpen) {
-      // If the panel just closed, focus the launcher
+    // If the panel just closed, focus the launcher
+    if (wasFilterPanelOpen && !isFilterPanelOpen) {
       filterPanelLauncherRef.current?.focus()
     }
-  }, [isFilterPanelOpen])
-
-  const appliedFiltersCount = filters.filter(({ applied }) => applied).length
+    if (isFilterPanelOpen) {
+      setWasFilterPanelOpen(true)
+    }
+  }, [isFilterPanelOpen, wasFilterPanelOpen])
 
   return (
     <DataToolbarDiv isFilterPanelOpen={isFilterPanelOpen}>
@@ -68,9 +69,6 @@ const DataToolbar = ({
           aria-controls="pharos-filter-panel"
         >
           Filters
-          {appliedFiltersCount > 0 && (
-            <span style={{ marginLeft: '5px' }}>({appliedFiltersCount})</span>
-          )}
         </FilterPanelLauncher>
       </ContainerForFilterPanelLauncher>
       <ContainerForRadioButtons>

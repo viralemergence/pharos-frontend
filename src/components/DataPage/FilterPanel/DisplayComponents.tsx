@@ -79,7 +79,7 @@ export const FilterPanelToolbarNav = styled.nav`
   }
 `
 
-export const FieldSelectorMessage = styled.div`
+export const FilterAdderMessage = styled.div`
   ${props => props.theme.smallParagraph};
   padding: 10px 15px;
   color: ${({ theme }) => theme.white};
@@ -98,22 +98,22 @@ export const FilterPanelButton = styled.button`
   }
 `
 
-export const FilterPanelToolbarButton = styled(FilterPanelButton)<{
-  isFieldSelectorOpen?: boolean
+export const FilterPanelToolbarButtonStyled = styled(FilterPanelButton)<{
+  isFilterAdderOpen?: boolean
 }>`
   border-radius: 5px;
-  ${({ isFieldSelectorOpen }) =>
-    !isFieldSelectorOpen
+  ${({ isFilterAdderOpen }) =>
+    !isFilterAdderOpen
       ? 'border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;'
       : ''}
-  background-color: ${({ isFieldSelectorOpen, theme }) =>
-    isFieldSelectorOpen ? theme.white20PercentOpacity : 'transparent'};
+  background-color: ${({ isFilterAdderOpen, theme }) =>
+    isFilterAdderOpen ? theme.white20PercentOpacity : 'transparent'};
   &:active {
     outline: 2px solid ${({ theme }) => theme.darkGray};
   }
 `
 
-export const FilterPanelCloseButton = styled(FilterPanelToolbarButton)`
+export const FilterPanelCloseButton = styled(FilterPanelToolbarButtonStyled)`
   @media (min-width: ${({ theme }) => theme.breakpoints.laptopMinWidth}) {
     position: absolute;
     right: 2px;
@@ -135,7 +135,7 @@ export const FilterPanelCloseButton = styled(FilterPanelToolbarButton)`
   }
 `
 
-export const FieldSelectorDiv = styled.div`
+export const FilterAdderDiv = styled.div`
   position: absolute;
   width: 348px;
   top: 15px;
@@ -153,8 +153,8 @@ export const FieldSelectorDiv = styled.div`
   }
 `
 
-export const FieldSelectorButton = styled(FilterPanelButton)<{
-  disabled: boolean
+export const AddFilterToPanelButtonStyled = styled(FilterPanelButton)<{
+  disabled?: boolean
 }>`
   width: 100%;
   padding: 5px 15px;
@@ -191,15 +191,6 @@ export const FilterPanelCloseButtonWithXIcon = styled(FilterPanelCloseButton)`
   }
 `
 
-export const ScreenReaderOnly = styled.div`
-  clip-path: inset(50%);
-  clip: rect(0 0 0 0);
-  height: 0px;
-  overflow: hidden;
-  position: absolute;
-  width: 0px;
-`
-
 export const FilterListItemElement = styled.li<{ opacity: number }>`
   list-style: none;
   margin-bottom: 20px;
@@ -207,26 +198,6 @@ export const FilterListItemElement = styled.li<{ opacity: number }>`
   transition: opacity 0.25s;
   &:last-child {
     margin-bottom: 0;
-  }
-`
-
-export const ListOfAddedFilters = styled.ul`
-  position: absolute;
-  margin: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  overflow-y: auto;
-  padding: 34px 40px;
-  flex-grow: 1;
-  flex-shrink: 1;
-  max-height: 100%;
-  top: 73px;
-  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
-    top: 64px;
-  }
-  @media (max-width: ${({ theme }) => theme.breakpoints.mobileMaxWidth}) {
-    padding: 34px 20px;
   }
 `
 
@@ -243,8 +214,6 @@ export const Panel = styled.aside<{ open: boolean }>`
   backdrop-filter: blur(47px);
   background-color: ${({ theme }) => theme.white10PercentOpacity};
   border: 1px solid ${({ theme }) => theme.white10PercentOpacity};
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
   color: ${({ theme }) => theme.white};
   display: flex;
   height: 100%;
