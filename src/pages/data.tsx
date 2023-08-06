@@ -31,8 +31,11 @@ export type Filter = {
   /** To filter on a specific field, the user sets values for the filter. For
    * example, the host_species filter could receive the value "Bear". */
   values?: string[]
-  /** Whether or not the filter has been successfully applied to the records,
-   * such that only matching records are shown in the table. */
+  /** If a filter has been 'applied', this means that it has been applied to
+   * the list of records shown in the table, so that only records matching the
+   * filter are shown in the table. For example, if the user sets host_species
+   * to ['Bear'], then, once the table has been populated with bears and bears
+   * only, the host_species filter's 'applied' property will be set to true. */
   applied?: boolean
   /* This number determines the order of the filters in the panel. */
   panelIndex: number

@@ -48,10 +48,13 @@ const DataToolbar = ({
 
   const filterPanelLauncherRef = useRef<HTMLButtonElement>(null)
   // Keep track of whether the filter panel was open on last render, to detect
-  // when the panel closes
+  // when the panel closes.
   const [wasFilterPanelOpen, setWasFilterPanelOpen] = useState(false)
   useEffect(() => {
-    // If the panel just closed, focus the launcher
+    // If the panel just closed, focus the launcher. We need to check both that
+    // the filter panel is currently closed and also that it was previously
+    // open. If we skip the second check, the launcher will be focused when the
+    // Toolbar first renders.
     if (wasFilterPanelOpen && !isFilterPanelOpen) {
       filterPanelLauncherRef.current?.focus()
     }
