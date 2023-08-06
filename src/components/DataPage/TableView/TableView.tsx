@@ -14,7 +14,7 @@ import LoadingSpinner from './LoadingSpinner'
 import type { Filter } from 'pages/data'
 import isNormalObject from 'utilities/isNormalObject'
 
-const loadDebounceDelay = 1000 // TODO: experimenting with this longer delay rather than 300
+const loadDebounceDelay = 300
 
 const PAGE_SIZE = 50
 const RECORDS_URL = `${process.env.GATSBY_API_URL}/published-records`
@@ -150,15 +150,16 @@ const TableView = ({
       options: {
         replaceRecords?: boolean
         shouldDebounce?: boolean
+        filters?: Filter[]
       } = {}
     ) => {
       latestLoadRequestId.current += 1
       const currentLoadRequestId = latestLoadRequestId.current
 
-      console.log('options', { options })
       // Set default values
-      options.replaceRecords ||= false
-      options.shouldDebounce ||= false
+      options.replaceRecords ??= false
+      options.shouldDebounce ??= false
+      options.filters ??= []
 
       // When clearing filters, don't debounce
       if (!addedFilters.length) options.shouldDebounce = false
@@ -178,11 +179,12 @@ const TableView = ({
       const queryStringParameters = new URLSearchParams()
 
       const fieldIdsOfAppliedFilters: string[] = []
-      for (const filter of filters) {
+      for (const filter of options.filters) {
         if (!filter.addedToPanel) continue
         if (!filter.values) continue
         const validValues = filter.values.filter(
-          (value: string) => ![null, undefined, ''].includes(value)
+          (value: string) =>
+            value !== null && value !== undefined && value !== ''
         )
         for (const value of validValues) {
           queryStringParameters.append(filter.fieldId, value)
@@ -205,11 +207,13 @@ const TableView = ({
 
       const success = await fetchRecords(
         queryStringParameters,
-        options.replaceRecords || false
+        options.replaceRecords ?? false
       )
 
-      // If, while the asynchronous fetchRecords() function was running, load()
-      // was called again, don't process this response.
+      // If load() was called again while the asynchronous fetchRecords()
+      // function was running, don't process this response. This means that a
+      // response will only be processed if the corresponding request for
+      // records was the most recent request for records.
       const isLatestLoadRequest =
         currentLoadRequestId === latestLoadRequestId.current
       if (!isLatestLoadRequest) {
@@ -228,29 +232,21 @@ const TableView = ({
 
       setLoading(false)
     },
-    //[stringifiedFilters, stringifiedRecords]
     []
   )
-  // TODO: Debouncing doesn't work properly as the filters and records are
-  // being changed because these change the callback, which means the debouncer
-  // doesn't see the distinct calls to load() as calls to the same function.
-
   const loadDebounced = debounce(load, loadDebounceDelay, {
-    // TODO: experimenting
     leading: true,
     trailing: true,
   })
 
   // Load the first page of results when TableView mounts and when the filters' values have changed
   useEffect(() => {
-    console.log('useEffect triggered', stringifiedFiltersWithValues)
     load({
       shouldDebounce: true,
       replaceRecords: true,
+      filters,
     })
   }, [stringifiedFiltersWithValues])
-
-  console.log('stringifiedFiltersWithValues', stringifiedFiltersWithValues)
 
   const latestLoadRequestId = useRef(0)
 
@@ -327,8 +323,7 @@ const TableView = ({
   ]
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
-    // TODO: temporarily disabled
-    /// if (!loading && !reachedLastPage && divIsAtBottom(event)) load()
+    if (!loading && !reachedLastPage && divIsAtBottom(event)) load({ filters })
   }
 
   return (

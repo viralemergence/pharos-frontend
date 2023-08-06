@@ -36,8 +36,9 @@ const FilterInput = ({
         // This will be a date field if fieldType == 'date'
         type={fieldType}
         aria-label={fieldLabel}
-        min={fieldType === 'date' ? '1900-01-01' : undefined}
-        max={fieldType === 'date' ? '2200-12-31' : undefined}
+        // TODO: Determine what the bounds should be
+        min={fieldType === 'date' ? '0001-01-01' : undefined}
+        max={fieldType === 'date' ? '3000-12-31' : undefined}
         defaultValue={values.join(',')}
         onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
           const values = e.target.checkValidity() ? [e.target.value] : []
