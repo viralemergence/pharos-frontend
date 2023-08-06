@@ -144,7 +144,7 @@ interface FilterInMetadata {
   options: string[]
 }
 
-const isValidFilterInMetadataResponsee = (data: unknown): data is Filter => {
+const isValidFilterInMetadataResponse = (data: unknown): data is Filter => {
   if (!isNormalObject(data)) return false
   const { label, dataGridKey = '', type = 'text', options = [] } = data
   return (
@@ -162,7 +162,7 @@ const isValidMetadataResponse = (data: unknown): data is MetadataResponse => {
   const { fields } = data
   if (!isNormalObject(fields)) return false
   return Object.values(fields).every?.(field =>
-    isValidFilterInMetadataResponsee(field)
+    isValidFilterInMetadataResponse(field)
   )
 }
 
