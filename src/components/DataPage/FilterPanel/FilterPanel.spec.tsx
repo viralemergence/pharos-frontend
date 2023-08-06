@@ -22,6 +22,7 @@ describe('FilterPanel', () => {
           isFilterPanelOpen={true}
           setIsFilterPanelOpen={jest.fn()}
           filters={[]}
+          setFilters={jest.fn()}
         />
       </Provider>
     )
@@ -51,6 +52,7 @@ describe('FilterPanel', () => {
               panelIndex: 1,
             },
           ]}
+          setFilters={jest.fn()}
         />
       </Provider>
     )

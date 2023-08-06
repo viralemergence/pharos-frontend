@@ -105,10 +105,12 @@ const FilterPanel = ({
   isFilterPanelOpen,
   setIsFilterPanelOpen,
   filters,
+  setFilters,
 }: {
   isFilterPanelOpen: boolean
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
   filters: Filter[]
+  setFilters: Dispatch<SetStateAction<Filter[]>>
 }) => {
   const filterListRef = useRef<HTMLUListElement | null>(null)
 
@@ -118,7 +120,7 @@ const FilterPanel = ({
 
   const updateFilter: UpdateFilterFunction = (fieldId, newValues) => {
     setFilters(prev =>
-      prev.map(filter =>
+      prev.map((filter: Filter) =>
         filter.fieldId === fieldId ? { ...filter, values: newValues } : filter
       )
     )

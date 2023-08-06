@@ -135,7 +135,7 @@ describe('The public data page', () => {
     const panel = getFilterPanel(container)
     expect(panel).toBeInTheDocument()
     expect(panel).toHaveAttribute('aria-hidden', 'true')
-    
+
     // When the filter panel is hidden, the Add filter button is not rendered
     expect(screen.queryByText('Add filter')).toBe(null)
 
@@ -178,6 +178,7 @@ describe('The public data page', () => {
 
   it('has a filter panel that contains a button that clears all filters in the panel', async () => {
     render(<DataPage />)
+    fireEvent.click(getFilterPanelToggleButton())
     fireEvent.click(getAddFilterButton())
     const addFilterForAfterDate = await screen.findByText(
       'Collected on or after date',
@@ -195,7 +196,7 @@ describe('The public data page', () => {
 
   it('lets the user add date fields to the panel', async () => {
     render(<DataPage />)
-
+    fireEvent.click(getFilterPanelToggleButton())
     userEvent.click(getAddFilterButton())
     const addFilterForBeforeDate = await screen.findByText(
       'Collected on or before date',
