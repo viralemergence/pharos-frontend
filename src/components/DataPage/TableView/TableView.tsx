@@ -3,6 +3,7 @@ import React, {
   SetStateAction,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from 'react'
 import debounce from 'lodash/debounce'
@@ -13,7 +14,7 @@ import LoadingSpinner from './LoadingSpinner'
 import type { Filter } from 'pages/data'
 import isNormalObject from 'utilities/isNormalObject'
 
-const loadDebounceDelay = 300
+const loadDebounceDelay = 1000 // TODO: experimenting with this longer delay rather than 300
 
 const PAGE_SIZE = 50
 const RECORDS_URL = `${process.env.GATSBY_API_URL}/published-records`
@@ -137,7 +138,9 @@ const TableView = ({
   const stringifiedFilters = JSON.stringify(filters)
   const stringifiedRecords = JSON.stringify(records)
   const stringifiedFiltersWithValues = JSON.stringify(
-    addedFilters.filter(f => f.values?.length)
+    addedFilters
+      .filter(f => f.values?.length)
+      .map(({ fieldId, values }) => ({ fieldId, values }))
   )
 
   /** Load published records. This function prepares the query string and calls
@@ -149,6 +152,10 @@ const TableView = ({
         shouldDebounce?: boolean
       } = {}
     ) => {
+      latestLoadRequestId.current += 1
+      const currentLoadRequestId = latestLoadRequestId.current
+
+      console.log('options', { options })
       // Set default values
       options.replaceRecords ||= false
       options.shouldDebounce ||= false
@@ -161,8 +168,10 @@ const TableView = ({
         // that the debouncer runs should not itself be debounced - this would
         // create an infinite loop. So we must set shouldDebounce to false.
         loadDebounced({ ...options, shouldDebounce: false })
+        console.log('🕰 debouncing the load')
         return
       }
+      console.log('🚀 ACTUALLY LOADING')
 
       setLoading(true)
 
@@ -199,6 +208,15 @@ const TableView = ({
         options.replaceRecords || false
       )
 
+      // If, while the asynchronous fetchRecords() function was running, load()
+      // was called again, don't process this response.
+      const isLatestLoadRequest =
+        currentLoadRequestId === latestLoadRequestId.current
+      if (!isLatestLoadRequest) {
+        console.error('🚨 request out of date')
+        return
+      }
+
       if (success) {
         setFilters(prev =>
           prev.map(filter => ({
@@ -213,15 +231,24 @@ const TableView = ({
     [stringifiedFilters, stringifiedRecords]
   )
 
-  const loadDebounced = debounce(load, loadDebounceDelay)
+  const loadDebounced = debounce(load, loadDebounceDelay, {
+    // TODO: experimenting
+    leading: true,
+    trailing: true,
+  })
 
   // Load the first page of results when TableView mounts and when the filters' values have changed
   useEffect(() => {
+    console.log('useEffect triggered', stringifiedFiltersWithValues)
     load({
       shouldDebounce: true,
       replaceRecords: true,
     })
   }, [stringifiedFiltersWithValues])
+
+  console.log('stringifiedFiltersWithValues', stringifiedFiltersWithValues)
+
+  const latestLoadRequestId = useRef(0)
 
   /**
    * Fetch published records from the API
@@ -234,6 +261,7 @@ const TableView = ({
     ): Promise<boolean> => {
       const url = `${RECORDS_URL}?${queryStringParameters}`
       const response = await fetch(url)
+      console.log('done fetching', url)
       if (!response.ok) {
         console.log(`GET ${url}: error`)
         return false
@@ -295,7 +323,8 @@ const TableView = ({
   ]
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
-    if (!loading && !reachedLastPage && divIsAtBottom(event)) load()
+    // TODO: temporarily disabled
+    /// if (!loading && !reachedLastPage && divIsAtBottom(event)) load()
   }
 
   return (
