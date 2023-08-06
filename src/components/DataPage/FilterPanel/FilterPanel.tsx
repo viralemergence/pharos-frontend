@@ -19,7 +19,7 @@ const FilterPanel = ({
       role="form"
       aria-hidden={isFilterPanelOpen ? 'false' : 'true'}
       aria-label="Filters panel"
-      id="pharos-filter-panel"
+      id="pharos-filter-panel" // The filter panel toggle button has aria-controls="pharos-filter-panel"
     >
       {isFilterPanelOpen && (
         <>
