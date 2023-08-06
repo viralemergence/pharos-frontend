@@ -1,5 +1,75 @@
 import styled from 'styled-components'
 
+export const ViewContainer = styled.main<{
+  shouldBlurMap: boolean
+  isFilterPanelOpen: boolean
+}>`
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 20px;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    gap: 0px;
+  }
+  main {
+    display: flex;
+    flex-flow: row nowrap;
+    flex: 1;
+  }
+  background-color: ${({ theme }) => theme.darkPurple};
+
+  ${({ shouldBlurMap }) =>
+    shouldBlurMap &&
+    `.mapboxgl-control-container { display: none ! important; }`}
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    ${({ isFilterPanelOpen }) =>
+      isFilterPanelOpen &&
+      `.mapboxgl-control-container { display: none ! important; }`}
+  }
+`
+
+export const ViewMain = styled.div<{ isFilterPanelOpen: boolean }>`
+  pointer-events: none;
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  padding-bottom: 35px;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    padding-bottom: 10px;
+  }
+  ${({ isFilterPanelOpen, theme }) =>
+    isFilterPanelOpen &&
+    `
+    @media (max-width: ${theme.breakpoints.tabletMaxWidth}) {
+      padding-bottom: unset;
+    }
+  `}
+`
+
+export const PageContainer = styled.div`
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100vh;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    // On mobile and tablet, accommodate the browser UI.
+    height: 100svh;
+  }
+  width: 100%;
+`
+
+export const MapOverlay = styled.div`
+  backdrop-filter: blur(30px);
+  position: absolute;
+  height: 100%;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+`
+
 const DataToolbarButton = styled.button<{
   selected?: boolean
   width?: number
