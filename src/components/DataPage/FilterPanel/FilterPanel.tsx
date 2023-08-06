@@ -43,17 +43,6 @@ const FilterInput = ({
           const values = e.target.checkValidity() ? [e.target.value] : []
           updateFilter(fieldId, values)
         }}
-        onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
-          if (fieldType === 'date') {
-            e.preventDefault()
-            if (!(e.target instanceof HTMLInputElement)) return
-            const dateParts = e.clipboardData
-              .getData('text/plain')
-              .split(/[/\-\s]/g)
-            if (dateParts.length === 3)
-              e.target.value = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`
-          }
-        }}
       />
     </FilterLabel>
   )
