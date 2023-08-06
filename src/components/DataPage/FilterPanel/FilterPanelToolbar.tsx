@@ -8,16 +8,16 @@ import React, {
 import Dropdown from './Dropdown'
 
 import {
-  PlusIcon,
   BackIcon,
-  XIcon,
-  FilterPanelToolbarNav,
-  FilterPanelToolbarButtonStyled,
-  FilterPanelCloseButtonWithXIcon,
-  FilterPanelCloseButtonWithBackIcon,
-  FieldSelectorDiv,
   FieldSelectorButton,
+  FieldSelectorDiv,
   FieldSelectorMessage,
+  FilterPanelCloseButtonWithBackIcon,
+  FilterPanelCloseButtonWithXIcon,
+  FilterPanelToolbarButtonStyled,
+  FilterPanelToolbarNav,
+  PlusIcon,
+  XIcon,
 } from './DisplayComponents'
 import type { Filter } from 'pages/data'
 
