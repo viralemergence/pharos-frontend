@@ -81,9 +81,6 @@ const FilterPanelToolbar = ({
   filters: Filter[]
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
 }) => {
-  // TODO: Look for more examples of this "reaching for prior state" pattern
-  // and move away from that.
-
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   return (
