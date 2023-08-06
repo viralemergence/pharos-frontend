@@ -9,11 +9,11 @@ import TableView from 'components/DataPage/TableView/TableView'
 import DataToolbar, { View, isView } from 'components/DataPage/Toolbar/Toolbar'
 import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
 import {
+  MapOverlay,
   PageContainer,
+  ScreenReaderOnly,
   ViewContainer,
   ViewMain,
-  MapOverlay,
-  ScreenReaderOnly,
 } from 'components/DataPage/DisplayComponents'
 
 export type Filter = {
