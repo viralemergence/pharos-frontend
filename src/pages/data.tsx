@@ -20,12 +20,21 @@ export type Filter = {
   fieldId: string
   label: string
   type: 'text' | 'date'
+  /** In the table (a.k.a. 'data grid') each column has a distinct id a.k.a.
+   * 'key'. The dataGridKey of a Filter is the key of its associated column. */
   dataGridKey: string
+  /** The different possible values for a filter - relevant for typeahead fields. */
   options: string[]
+  /** A filter has been 'added to the panel' when the panel contains an input
+   * (such as a date input or a typeahead) for setting the filter's values. */
   addedToPanel?: boolean
+  /** To filter on a specific field, the user sets values for the filter. For
+   * example, the host_species filter could receive the value "Bear". */
   values?: string[]
+  /** Whether or not the filter has been successfully applied to the records,
+   * such that only matching records are shown in the table. */
   applied?: boolean
-  /* Determines the order of the filters in the panel */
+  /* This number determines the order of the filters in the panel. */
   panelIndex: number
 }
 
