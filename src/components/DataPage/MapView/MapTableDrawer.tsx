@@ -11,8 +11,8 @@ import usePublishedRecordsByPharosIDs from 'hooks/publishedRecords/usePublishedR
 
 // slower transition when opening to make loading state feel faster
 // faster transition when closing to make closing feel snappy
-const ANIMATION_OPEN_DURATION = 2500
-const ANIMATION_CLOSE_DURATION = 1500
+const ANIMATION_OPEN_DURATION = 250
+const ANIMATION_CLOSE_DURATION = 150
 const DRAWER_HEIGHT = 400
 
 const Hider = styled.div<{ drawerOpen: boolean }>`
