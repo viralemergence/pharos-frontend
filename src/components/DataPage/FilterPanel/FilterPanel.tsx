@@ -22,12 +22,16 @@ const FilterInput = ({
   fieldType,
   values,
   updateFilter,
+  earliestPossibleDate,
+  latestPossibleDate,
 }: {
   fieldId: string
   fieldLabel: string
   fieldType: string
   values: string[]
   updateFilter: UpdateFilterFunction
+  earliestPossibleDate?: string
+  latestPossibleDate?: string
 }) => {
   return (
     <FilterLabel>
@@ -36,9 +40,8 @@ const FilterInput = ({
         // This will be a date field if fieldType == 'date'
         type={fieldType}
         aria-label={fieldLabel}
-        // TODO: Determine what the bounds should be
-        min={fieldType === 'date' ? '0001-01-01' : undefined}
-        max={fieldType === 'date' ? '3000-12-31' : undefined}
+        min={earliestPossibleDate}
+        max={latestPossibleDate}
         defaultValue={values.join(',')}
         onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
           const values = e.target.checkValidity() ? [e.target.value] : []
