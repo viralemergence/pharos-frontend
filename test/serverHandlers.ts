@@ -1,11 +1,4 @@
-import {
-  DefaultBodyType,
-  PathParams,
-  ResponseResolver,
-  RestContext,
-  RestRequest,
-  rest,
-} from 'msw'
+import { rest } from 'msw'
 
 const publishedRecords = [
   {
@@ -3465,7 +3458,6 @@ const handlers = [
       // Handle some filters for testing purposes
       let recordsToReturn = [...publishedRecords]
       const collectionStartDate = params.get('collection_start_date')
-      console.log('collectionStartDate', `${collectionStartDate}`)
       if (collectionStartDate) {
         recordsToReturn = recordsToReturn.filter(
           record =>

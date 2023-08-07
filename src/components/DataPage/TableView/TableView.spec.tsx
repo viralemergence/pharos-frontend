@@ -25,18 +25,11 @@ import React from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
 
 import { server } from '../../../../test/server'
-import {
-  routeThatReturnsNoPublishedRecords,
-} from '../../../../test/serverHandlers'
+import { routeThatReturnsNoPublishedRecords } from '../../../../test/serverHandlers'
 import Providers from 'components/layout/Providers'
 
 import TableView from './TableView'
 import { Filter } from 'pages/data'
-
-// TODO: Extract as a utility, use in serverHandlers.ts
-const sleep = (milliseconds: number) => {
-  return new Promise(resolve => setTimeout(resolve, milliseconds))
-}
 
 describe('The public data table', () => {
   const getDataGridAfterWaiting = async () =>
@@ -77,11 +70,6 @@ describe('The public data table', () => {
     values: ['2020-03-01'],
   }
 
-  const startDateFilterApril2020: Filter = {
-    ...startDateFilter,
-    values: ['2020-04-01'],
-  }
-
   it('can be filtered by collection start date', async () => {
     render(
       <Providers>
@@ -96,5 +84,4 @@ describe('The public data table', () => {
       expect(grid).toHaveAttribute('aria-rowcount', '41')
     })
   })
-
 })
