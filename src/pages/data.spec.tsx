@@ -261,7 +261,7 @@ describe('The public data page', () => {
     fireEvent.click(await screen.findByText('Collected on or after date'))
     const filterInput = screen.getByLabelText('Collected on or after date')
     expect(filterInput).toBeInTheDocument()
-    await userEvent.type(filterInput, '3000-01-01')
+    await userEvent.type(filterInput, '0000-00-00')
     const grid = await getDataGridAfterWaiting()
     await waitFor(() => {
       expect(grid).toHaveAttribute('aria-rowcount', '51')

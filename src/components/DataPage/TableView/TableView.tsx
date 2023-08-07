@@ -169,10 +169,8 @@ const TableView = ({
         // that the debouncer runs should not itself be debounced - this would
         // create an infinite loop. So we must set shouldDebounce to false.
         loadDebounced({ ...options, shouldDebounce: false })
-        console.log('🕰 debouncing the load')
         return
       }
-      console.log('🚀 ACTUALLY LOADING')
 
       setLoading(true)
 
@@ -216,10 +214,7 @@ const TableView = ({
       // records was the most recent request for records.
       const isLatestLoadRequest =
         currentLoadRequestId === latestLoadRequestId.current
-      if (!isLatestLoadRequest) {
-        console.error('🚨 request out of date')
-        return
-      }
+      if (!isLatestLoadRequest) return
 
       if (success) {
         setFilters(prev =>
@@ -261,7 +256,6 @@ const TableView = ({
     ): Promise<boolean> => {
       const url = `${RECORDS_URL}?${queryStringParameters}`
       const response = await fetch(url)
-      console.log('done fetching', url)
       if (!response.ok) {
         console.log(`GET ${url}: error`)
         return false
