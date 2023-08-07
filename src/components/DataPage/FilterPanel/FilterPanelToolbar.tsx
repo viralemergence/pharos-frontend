@@ -10,7 +10,7 @@ import Dropdown from './Dropdown'
 import {
   BackIcon,
   AddFilterToPanelButtonStyled,
-  FilterSelectorDiv as FilterSelectorDiv,
+  FilterSelectorDiv,
   FilterSelectorMessage,
   FilterPanelCloseButtonWithBackIcon,
   FilterPanelCloseButtonWithXIcon,
