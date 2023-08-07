@@ -39,6 +39,13 @@ export type Filter = {
   applied?: boolean
   /* This number determines the order of the filters in the panel. */
   panelIndex: number
+  /** Date filters will have this property, which is the earliest collection
+   * date that appears among the published records */
+  earliestDateUsed?: string
+  /** Date filters will have this property, which is the
+   * furthest-into-the-future collection date that appears among the published
+   * records */
+  latestDateUsed?: string
 }
 
 const METADATA_URL = `${process.env.GATSBY_API_URL}/metadata-for-published-records`

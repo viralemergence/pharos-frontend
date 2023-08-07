@@ -17,35 +17,26 @@ import {
 import FilterPanelToolbar from './FilterPanelToolbar'
 
 const FilterInput = ({
-  fieldId,
-  fieldLabel,
-  fieldType,
-  values,
+  filter,
   updateFilter,
-  earliestPossibleDate,
-  latestPossibleDate,
 }: {
-  fieldId: string
-  fieldLabel: string
-  fieldType: string
-  values: string[]
+  filter: Filter
   updateFilter: UpdateFilterFunction
-  earliestPossibleDate?: string
-  latestPossibleDate?: string
 }) => {
+  const values = filter.values ?? []
   return (
     <FilterLabel>
-      <FieldName>{fieldLabel}</FieldName>
+      <FieldName>{filter.label}</FieldName>
       <FieldInput
         // This will be a date field if fieldType == 'date'
-        type={fieldType}
-        aria-label={fieldLabel}
-        min={earliestPossibleDate}
-        max={latestPossibleDate}
+        type={filter.type}
+        aria-label={filter.label}
+        min={filter.earliestDateUsed}
+        max={filter.latestDateUsed}
         defaultValue={values.join(',')}
         onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
           const values = e.target.checkValidity() ? [e.target.value] : []
-          updateFilter(fieldId, values)
+          updateFilter(filter.fieldId, values)
         }}
       />
     </FilterLabel>
@@ -53,29 +44,18 @@ const FilterInput = ({
 }
 
 const FilterValueSetter = ({
-  fieldId,
-  fieldLabel,
-  fieldType = 'text',
-  values,
+  filter,
   updateFilter,
-  options = [],
 }: {
-  fieldId: string
-  fieldLabel: string
-  fieldType: 'text' | 'date'
-  values: string[]
+  filter: Filter
   updateFilter: UpdateFilterFunction
-  options: string[] | undefined
 }) => {
-  const truthyValues = values.filter(value => value)
+  const truthyValues = filter.values.filter(value => value)
   const props = {
-    fieldId,
-    fieldLabel,
-    values: truthyValues,
-    options,
+    filter: { ...filter, values: truthyValues },
     updateFilter,
   }
-  return <FilterInput {...props} fieldType={fieldType} />
+  return <FilterInput {...props} />
 
   // NOTE: Later this will become:
   // if (useTypeahead) return <FilterTypeahead {...props} />
@@ -143,22 +123,16 @@ const FilterPanel = ({
             setFilters={setFilters}
           />
           <ListOfAddedFilters ref={filterListRef}>
-            {addedFilters.map(
-              ({ fieldId, label, type, options, values = [] }) => {
-                return (
-                  <FilterListItem key={fieldId}>
-                    <FilterValueSetter
-                      fieldId={fieldId}
-                      fieldLabel={label}
-                      fieldType={type}
-                      options={options}
-                      updateFilter={updateFilter}
-                      values={values}
-                    />
-                  </FilterListItem>
-                )
-              }
-            )}
+            {addedFilters.map(filter => {
+              return (
+                <FilterListItem key={filter.fieldId}>
+                  <FilterValueSetter
+                    filter={filter}
+                    updateFilter={updateFilter}
+                  />
+                </FilterListItem>
+              )
+            })}
           </ListOfAddedFilters>
         </>
       )}
