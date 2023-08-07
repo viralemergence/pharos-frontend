@@ -106,8 +106,8 @@ const DataPage = ({
       setScreenReaderAnnouncement(
         prev =>
           'Filters panel opened' +
-          // Alternate adding and removing a period to ensure that the screen
-          // reader reads the announcement
+          // Alternate adding and removing a period to make the screen
+          // reader read the announcement
           (prev.endsWith('.') ? '' : '.')
       )
     }
