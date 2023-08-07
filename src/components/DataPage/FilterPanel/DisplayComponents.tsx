@@ -252,15 +252,6 @@ export const FieldInput = styled.input`
   &:invalid {
     border-color: ${({ theme }) => theme.red};
   }
-
-  // TODO: Use this to dim Safari dark mode placeholder better
-  // &.blank::-webkit-datetime-edit {
-  //   &-day-field,
-  //   &-month-field,
-  //   &-year-field {
-  //     opacity: 0.3;
-  //   }
-  // }
 `
 
 export const DataToolbarButton = styled.button<{
