@@ -46,21 +46,14 @@ const FillDatasetGrid = styled(DataGrid)`
   block-size: 100px;
   .rdg-cell {
     background-color: ${({ theme }) => theme.mutedPurple1};
-    // TODO: Put these colors in the figma color file
-    border-top-color: rgba(216, 218, 220, 0.3);
-    border-bottom-color: rgba(216, 218, 220, 0.3);
-    border-right-color: rgba(216, 218, 220, 0.08);
-    border-left-color: rgba(216, 218, 220, 0.08);
+    // TODO: Put this color in the figma color file
+    border-color: rgba(216, 218, 220, 0.3);
     &[aria-colindex='1'],
     &[role='columnheader'] {
       background-color: ${({ theme }) => theme.mutedPurple3};
     }
-    &[role='columnheader'] {
-      border-bottom-color: ${({ theme }) => theme.medGray};
-    }
     &[aria-colindex='1'] {
       text-align: center;
-      border-right-color: rgba(216, 218, 220, 0.3);
     }
     &.in-filtered-column {
       background-color: ${({ theme }) => theme.tableContentHighlight};
