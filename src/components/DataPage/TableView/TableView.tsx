@@ -252,14 +252,14 @@ const TableView = ({
 
       // Suppose a user sets a value for a filter and then changes it a second
       // later. Then two GET requests will be made. But suppose that the first
-      // request is handled slowly, and it completes after the second request
-      // does. In this case, we should ignore the response to the first
-      // request, since it is not the latest request. The following code
-      // ensures that if the GET request just completed is not the latest GET
-      // request of published records, then the response is discarded.
+      // request takes a while and finishes after the second request does. In
+      // this case, we should ignore the response to the first request, since
+      // it is not the latest request. The following code ensures that if the
+      // GET request just completed is not the latest GET request for published
+      // records, then the response is discarded.
       const isLatestRecordsRequest =
         currentRecordsRequestId === latestRecordsRequestId.current
-      //if (!isLatestRecordsRequest) return false
+      if (!isLatestRecordsRequest) return false
 
       if (!response.ok) {
         console.log(`GET ${url}: error`)

@@ -27,7 +27,6 @@ import { render, screen, waitFor } from '@testing-library/react'
 import { server } from '../../../../test/server'
 import {
   routeThatReturnsNoPublishedRecords,
-  routeThatIsSometimesSlow,
 } from '../../../../test/serverHandlers'
 import Providers from 'components/layout/Providers'
 

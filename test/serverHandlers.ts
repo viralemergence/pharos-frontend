@@ -3453,46 +3453,33 @@ const publishedRecordsMetadata = {
   },
 }
 
-type RequestHandler = ResponseResolver<
-  RestRequest<never, PathParams<string>>,
-  RestContext,
-  DefaultBodyType
->
-
-const publishedRecordsRequestHandler: RequestHandler = async (
-  req,
-  res,
-  ctx
-) => {
-  console.log('publishedRecordsRequestHandler called');
-  const params = req.url.searchParams
-  const pageSize = Number(params.get('pageSize'))
-  const page = Number(params.get('page'))
-  const indexOfFirstRecordWanted = (page - 1) * pageSize
-
-  // Handle some filters for testing purposes
-  let recordsToReturn = [...publishedRecords]
-  const collectionStartDate = params.get('collection_start_date')
-  console.log('collectionStartDate', `${collectionStartDate}`)
-  if (collectionStartDate) {
-    recordsToReturn = recordsToReturn.filter(
-      record =>
-        new Date(record['Collection date']) >= new Date(collectionStartDate)
-    )
-  }
-
-  recordsToReturn = recordsToReturn.slice(
-    indexOfFirstRecordWanted,
-    indexOfFirstRecordWanted + pageSize
-  )
-  const data = { publishedRecords: recordsToReturn, isLastPage: false }
-  return res(ctx.json(data))
-}
-
 const handlers = [
   rest.get(
     `${process.env.GATSBY_API_URL}/published-records`,
-    publishedRecordsRequestHandler
+    async (req, res, ctx) => {
+      const params = req.url.searchParams
+      const pageSize = Number(params.get('pageSize'))
+      const page = Number(params.get('page'))
+      const indexOfFirstRecordWanted = (page - 1) * pageSize
+
+      // Handle some filters for testing purposes
+      let recordsToReturn = [...publishedRecords]
+      const collectionStartDate = params.get('collection_start_date')
+      console.log('collectionStartDate', `${collectionStartDate}`)
+      if (collectionStartDate) {
+        recordsToReturn = recordsToReturn.filter(
+          record =>
+            new Date(record['Collection date']) >= new Date(collectionStartDate)
+        )
+      }
+
+      recordsToReturn = recordsToReturn.slice(
+        indexOfFirstRecordWanted,
+        indexOfFirstRecordWanted + pageSize
+      )
+      const data = { publishedRecords: recordsToReturn, isLastPage: false }
+      return res(ctx.json(data))
+    }
   ),
   rest.get(
     `${process.env.GATSBY_API_URL}/metadata-for-published-records`,
@@ -3512,24 +3499,8 @@ const routeThatReturnsNoPublishedRecords = rest.get(
   }
 )
 
-const sleep = (milliseconds: number) => {
-  return new Promise(resolve => setTimeout(resolve, milliseconds))
-}
-
-const routeThatIsSometimesSlow = rest.get(
-  `${process.env.GATSBY_API_URL}/published-records`,
-  async (req, res, ctx) => {
-    if (req.url.searchParams.get('collection_start_date') === '2020-03-01') {
-      console.log('sleeping')
-      await sleep(1000)
-    }
-    await publishedRecordsRequestHandler(req, res, ctx)
-  }
-)
-
 export {
   handlers,
   publishedRecordsMetadata,
   routeThatReturnsNoPublishedRecords,
-  routeThatIsSometimesSlow,
 }
