@@ -134,14 +134,16 @@ const TableView = ({
   /** Filters that have been applied to the table */
   const appliedFilters = filters.filter(f => f.applied)
 
-  // These values are used as dependencies in some useEffect hooks below
-  const stringifiedFilters = JSON.stringify(filters)
-  const stringifiedRecords = JSON.stringify(records)
+  // This is used as a dependency in a useEffect hook below
   const stringifiedFiltersWithValues = JSON.stringify(
     addedFilters
       .filter(f => f.values?.length)
       .map(({ fieldId, values }) => ({ fieldId, values }))
   )
+
+  /** This is used to prevent /published-records responses from being processed
+   * out of order */
+  const latestRecordsRequestId = useRef(0)
 
   /** Load published records. This function prepares the query string and calls
    * fetchRecords() to retrieve records from the API. */
@@ -153,9 +155,6 @@ const TableView = ({
         filters?: Filter[]
       } = {}
     ) => {
-      latestLoadRequestId.current += 1
-      const currentLoadRequestId = latestLoadRequestId.current
-
       // Set default values
       options.replaceRecords ??= false
       options.shouldDebounce ??= false
@@ -208,14 +207,6 @@ const TableView = ({
         options.replaceRecords ?? false
       )
 
-      // If load() was called again while the asynchronous fetchRecords()
-      // function was running, don't process this response. This means that a
-      // response will only be processed if the corresponding request for
-      // records was the most recent request for records.
-      const isLatestLoadRequest =
-        currentLoadRequestId === latestLoadRequestId.current
-      if (!isLatestLoadRequest) return
-
       if (success) {
         setFilters(prev =>
           prev.map(filter => ({
@@ -229,6 +220,7 @@ const TableView = ({
     },
     []
   )
+
   const loadDebounced = debounce(load, loadDebounceDelay, {
     leading: true,
     trailing: true,
@@ -243,8 +235,6 @@ const TableView = ({
     })
   }, [stringifiedFiltersWithValues])
 
-  const latestLoadRequestId = useRef(0)
-
   /**
    * Fetch published records from the API
    * @returns {boolean} Whether the records were successfully fetched
@@ -254,13 +244,29 @@ const TableView = ({
       queryStringParameters: URLSearchParams,
       replaceRecords: boolean
     ): Promise<boolean> => {
+      latestRecordsRequestId.current += 1
+      const currentRecordsRequestId = latestRecordsRequestId.current
+
       const url = `${RECORDS_URL}?${queryStringParameters}`
       const response = await fetch(url)
+
+      // Suppose a user sets a value for a filter and then changes it a second
+      // later. Then two GET requests will be made. But suppose that the first
+      // request is handled slowly, and it completes after the second request
+      // does. In this case, we should ignore the response to the first
+      // request, since it is not the latest request. The following code
+      // ensures that if the GET request just completed is not the latest GET
+      // request of published records, then the response is discarded.
+      const isLatestRecordsRequest =
+        currentRecordsRequestId === latestRecordsRequestId.current
+      //if (!isLatestRecordsRequest) return false
+
       if (!response.ok) {
         console.log(`GET ${url}: error`)
         return false
       }
       const data = await response.json()
+
       if (!isValidRecordsResponse(data)) {
         console.log(`GET ${url}: malformed response`)
         return false
