@@ -59,9 +59,6 @@ const FillDatasetGrid = styled(DataGrid)`
       background-color: ${({ theme }) => theme.tableContentHighlight};
     }
   }
-  [aria-rowindex='1'] [aria-colindex='1'] {
-    border-bottom-color: ${({ theme }) => theme.white10PercentOpacity};
-  }
 `
 const LoadingMessage = styled.div`
   ${({ theme }) => theme.gridText}
