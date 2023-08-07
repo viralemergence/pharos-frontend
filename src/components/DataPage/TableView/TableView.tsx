@@ -141,8 +141,13 @@ const TableView = ({
       .map(({ fieldId, values }) => ({ fieldId, values }))
   )
 
-  /** This is used to prevent /published-records responses from being processed
-   * out of order */
+  /** This ref ensures that if the GET request that just finished is not the
+   * latest GET request for published records, then the response is discarded.
+   * (Why this matters: Suppose a user sets a value for a filter and then
+   * changes it a second later. Then two GET requests will be made. But suppose
+   * that the first request takes a while and finishes after the second request
+   * does. In this case, we should ignore the response to the first request,
+   * since it is not the latest request.)  */
   const latestRecordsRequestId = useRef(0)
 
   /** Load published records. This function prepares the query string and calls
@@ -250,13 +255,6 @@ const TableView = ({
       const url = `${RECORDS_URL}?${queryStringParameters}`
       const response = await fetch(url)
 
-      // Suppose a user sets a value for a filter and then changes it a second
-      // later. Then two GET requests will be made. But suppose that the first
-      // request takes a while and finishes after the second request does. In
-      // this case, we should ignore the response to the first request, since
-      // it is not the latest request. The following code ensures that if the
-      // GET request just completed is not the latest GET request for published
-      // records, then the response is discarded.
       const isLatestRecordsRequest =
         currentRecordsRequestId === latestRecordsRequestId.current
       if (!isLatestRecordsRequest) return false
