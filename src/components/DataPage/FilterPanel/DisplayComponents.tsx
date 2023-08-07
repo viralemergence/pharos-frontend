@@ -120,8 +120,6 @@ export const FilterPanelCloseButton = styled(FilterPanelToolbarButtonStyled)`
     right: 2px;
     top: 2px;
   }
-  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
-  }
   border-radius: 50%;
   background: transparent;
   display: flex;
