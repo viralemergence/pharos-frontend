@@ -1,33 +1,38 @@
-import React from 'react'
+import React, { useState, useLayoutEffect } from 'react'
 import styled from 'styled-components'
 
+import CloseButton from 'components/ui/CloseButton'
+import LoadingSpinner from '../TableView/LoadingSpinner'
+import MapTableTitlePointIcon from './MapTableTitlePointIcon'
 import PublishedRecordsDataGrid from 'components/PublicViews/PublishedRecordsDataGrid'
 
 import usePlaceName from 'hooks/mapbox/usePlaceName'
-import LoadingSpinner from '../TableView/LoadingSpinner'
-import CloseButton from 'components/ui/CloseButton'
-import MapTableTitlePointIcon from './MapTableTitlePointIcon'
 import usePublishedRecordsByPharosIDs from 'hooks/publishedRecords/usePublishedRecordsByPharosIDs'
 
-const Container = styled.div<{ drawerOpen: boolean }>`
+// slower transition when opening to make loading state feel faster
+// faster transition when closing to make closing feel snappy
+const ANIMATION_OPEN_DURATION = 250
+const ANIMATION_CLOSE_DURATION = 150
+const DRAWER_HEIGHT = 400
+
+const Hider = styled.div<{ drawerOpen: boolean }>`
   position: absolute;
   left: 0;
   right: 0;
-  height: 400px;
+  overflow: hidden;
   bottom: 0;
+  height: ${({ drawerOpen }) => (drawerOpen ? DRAWER_HEIGHT : 0)}px;
+  transition: ${({ drawerOpen }) =>
+    drawerOpen ? ANIMATION_OPEN_DURATION : ANIMATION_CLOSE_DURATION}ms;
+`
+const Container = styled.div<{ drawerOpen: boolean }>`
   display: flex;
   flex-direction: column;
+  padding: 0px 10px;
   box-shadow: 0px 0px 50px 0px rgba(0, 0, 0, 0.25);
   border-top: 1px solid ${({ theme }) => theme.white10PercentOpacity};
   background-color: ${({ theme }) => theme.publicPagePurpleBackground};
-  padding: 10px 10px 0px 10px;
-
-  transform: ${({ drawerOpen }) =>
-    drawerOpen ? 'translateY(0)' : 'translateY(100%)'};
-
-  // slower transition when opening to make loading state feel faster
-  // faster transition when closing to make closing feel snappy
-  transition: ${({ drawerOpen }) => (drawerOpen ? '250ms' : '150ms')};
+  height: ${DRAWER_HEIGHT}px;
 
   h1 {
     color: ${({ theme }) => theme.white};
@@ -35,6 +40,7 @@ const Container = styled.div<{ drawerOpen: boolean }>`
     display: flex;
     align-items: flex-start;
     margin: 0px;
+    margin-top: 10px;
     height: 38px;
   }
 `
@@ -49,7 +55,6 @@ const Topbar = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-left: 10px;
-  margin-bottom: 10px;
 `
 
 interface MapTableDrawerProps {
@@ -78,28 +83,49 @@ const MapTableDrawer = ({
     pageSize: 50,
   })
 
+  const [renderDrawerContents, setRenderDrawerContents] = useState(drawerOpen)
+
+  // render drawer contents before opening starts but after closing finishes
+  useLayoutEffect(() => {
+    let closeTimeout: ReturnType<typeof setTimeout>
+
+    if (drawerOpen) setRenderDrawerContents(true)
+    else
+      closeTimeout = setTimeout(
+        () => setRenderDrawerContents(false),
+        ANIMATION_CLOSE_DURATION
+      )
+
+    return () => clearTimeout(closeTimeout)
+  }, [drawerOpen])
+
   return (
-    <Container drawerOpen={drawerOpen}>
-      <Topbar>
-        <h1>
-          {<MapTableTitlePointIcon />}
-          {placeNameLoading && (
-            <LoadingSpinner scale={0.6} style={{ top: '-4px', left: '-8px' }} />
-          )}
-          {(placeNameLoading || placeNameError) && <>&nbsp;</>}
-          {placeName && `${placeName} `}
-        </h1>
-        <CloseButton onClick={() => setDrawerOpen(!drawerOpen)} />
-      </Topbar>
-      <DrawerTableContainer>
-        {drawerOpen && (
-          <PublishedRecordsDataGrid
-            publishedRecordsData={publishedRecordsData}
-            loadMore={loadMore}
-          />
-        )}
-      </DrawerTableContainer>
-    </Container>
+    <Hider drawerOpen={drawerOpen}>
+      {renderDrawerContents && (
+        <Container drawerOpen={drawerOpen}>
+          <Topbar>
+            <h1>
+              <MapTableTitlePointIcon />
+              {placeNameLoading && (
+                <LoadingSpinner
+                  scale={0.6}
+                  style={{ top: '-4px', left: '-8px' }}
+                />
+              )}
+              {(placeNameLoading || placeNameError) && <>&nbsp;</>}
+              {placeName && `${placeName} `}
+            </h1>
+            <CloseButton onClick={() => setDrawerOpen(!drawerOpen)} />
+          </Topbar>
+          <DrawerTableContainer>
+            <PublishedRecordsDataGrid
+              publishedRecordsData={publishedRecordsData}
+              loadMore={loadMore}
+            />
+          </DrawerTableContainer>
+        </Container>
+      )}
+    </Hider>
   )
 }
 
