@@ -35,9 +35,9 @@ export interface DropdownProps
   expanderStyle?: React.CSSProperties
   animDuration?: number
   /** This prop allows the open/closed state of the dropdown to be controlled by its parent */
-  open?: boolean
+  open: boolean
   /** This prop allows the open/closed state of the dropdown to be controlled by its parent */
-  setOpen?: React.Dispatch<React.SetStateAction<boolean>>
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>
   floating?: boolean
 }
 
@@ -50,14 +50,10 @@ const Dropdown = ({
   floating = true,
   animDuration = 250,
   expanderStyle = {},
+  open,
+  setOpen,
   ...props
 }: DropdownProps) => {
-  let [open, setOpen] = useState<boolean>(false)
-  // If open and setOpen are provided through props, use those instead
-  if (props.open !== undefined && props.setOpen !== undefined) {
-    open = props.open
-    setOpen = props.setOpen
-  }
   const openDropdown = () => setOpen(true)
   const closeDropdown = () => setOpen(false)
   const toggleDropdown = () => setOpen(prev => !prev)

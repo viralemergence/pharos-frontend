@@ -120,8 +120,6 @@ export const FilterPanelCloseButton = styled(FilterPanelToolbarButtonStyled)`
     right: 2px;
     top: 2px;
   }
-  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
-  }
   border-radius: 50%;
   background: transparent;
   display: flex;
@@ -274,15 +272,6 @@ export const FieldInput = styled.input`
   &:invalid {
     border-color: ${({ theme }) => theme.red};
   }
-
-  // TODO: Use this to dim Safari dark mode placeholder better
-  // &.blank::-webkit-datetime-edit {
-  //   &-day-field,
-  //   &-month-field,
-  //   &-year-field {
-  //     opacity: 0.3;
-  //   }
-  // }
 `
 
 export const DataToolbarButton = styled.button<{
