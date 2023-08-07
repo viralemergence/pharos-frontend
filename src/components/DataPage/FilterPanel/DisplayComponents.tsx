@@ -79,7 +79,7 @@ export const FilterPanelToolbarNav = styled.nav`
   }
 `
 
-export const FilterAdderMessage = styled.div`
+export const FilterSelectorMessage = styled.div`
   ${props => props.theme.smallParagraph};
   padding: 10px 15px;
   color: ${({ theme }) => theme.white};
@@ -98,19 +98,20 @@ export const FilterPanelButton = styled.button`
   }
 `
 
-export const FilterPanelToolbarButtonStyled = styled(FilterPanelButton)<{
-  isFilterAdderOpen?: boolean
-}>`
+export const FilterPanelToolbarButtonStyled = styled(FilterPanelButton)`
   border-radius: 5px;
-  ${({ isFilterAdderOpen }) =>
-    !isFilterAdderOpen
-      ? 'border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;'
-      : ''}
-  background-color: ${({ isFilterAdderOpen, theme }) =>
-    isFilterAdderOpen ? theme.white20PercentOpacity : 'transparent'};
   &:active {
     outline: 2px solid ${({ theme }) => theme.darkGray};
   }
+`
+
+export const FilterSelectorLauncherStyled = styled(
+  FilterPanelToolbarButtonStyled
+)<{
+  isFilterSelectorOpen?: boolean
+}>`
+  background-color: ${({ isFilterSelectorOpen, theme }) =>
+    isFilterSelectorOpen ? theme.white20PercentOpacity : 'transparent'};
 `
 
 export const FilterPanelCloseButton = styled(FilterPanelToolbarButtonStyled)`
@@ -135,7 +136,7 @@ export const FilterPanelCloseButton = styled(FilterPanelToolbarButtonStyled)`
   }
 `
 
-export const FilterAdderDiv = styled.div`
+export const FilterSelectorDiv = styled.div`
   position: absolute;
   width: 348px;
   top: 15px;
