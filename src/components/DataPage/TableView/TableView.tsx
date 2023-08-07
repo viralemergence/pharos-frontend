@@ -216,9 +216,9 @@ const TableView = ({
             applied: fieldIdsOfAppliedFilters.includes(filter.fieldId),
           }))
         )
+      } else {
+        setLoading(false)
       }
-
-      setLoading(false)
     },
     []
   )
@@ -320,6 +320,11 @@ const TableView = ({
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     if (!loading && !reachedLastPage && divIsAtBottom(event)) load({ filters })
   }
+
+  // When records finish loading, remove the 'Loading...' indicator
+  useEffect(() => {
+    setLoading(false)
+  }, [records])
 
   return (
     <TableViewContainer isOpen={isOpen} isFilterPanelOpen={isFilterPanelOpen}>
