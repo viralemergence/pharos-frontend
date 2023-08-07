@@ -1,7 +1,7 @@
 import React, {
   Dispatch,
+  MutableRefObject,
   SetStateAction,
-  useCallback,
   useEffect,
   useRef,
   useState,
@@ -107,6 +107,141 @@ const divIsAtBottom = ({ currentTarget }: React.UIEvent<HTMLDivElement>) =>
 
 const rowKeyGetter = (row: Row) => row.pharosID
 
+/** Load published records. This function prepares the query string and calls
+ * fetchRecords() to retrieve records from the API. */
+const load = async ({
+  records,
+  replaceRecords = false,
+  filters = [],
+  setLoading,
+  setFilters,
+  latestRecordsRequestIdRef,
+  setReachedLastPage,
+  setRecords,
+}: {
+  records: Row[]
+  replaceRecords?: boolean
+  filters?: Filter[]
+  setLoading: Dispatch<SetStateAction<boolean>>
+  setFilters: Dispatch<SetStateAction<Filter[]>>
+  latestRecordsRequestIdRef: MutableRefObject<number>
+  setReachedLastPage: Dispatch<SetStateAction<boolean>>
+  setRecords: Dispatch<SetStateAction<Row[]>>
+}) => {
+  setLoading(true)
+
+  const queryStringParameters = new URLSearchParams()
+
+  const fieldIdsOfAppliedFilters: string[] = []
+  for (const filter of filters) {
+    if (!filter.addedToPanel) continue
+    if (!filter.values) continue
+    const validValues = filter.values.filter(
+      (value: string) => value !== null && value !== undefined && value !== ''
+    )
+    for (const value of validValues) {
+      queryStringParameters.append(filter.fieldId, value)
+    }
+    if (validValues.length > 0) fieldIdsOfAppliedFilters.push(filter.fieldId)
+  }
+
+  let pageToLoad
+  if (replaceRecords) {
+    pageToLoad = 1
+  } else {
+    // If we're not replacing the current set of records, load the next
+    // page. For example, if there are 100 records, load page 3 (i.e., the
+    // records numbered from 101 to 150)
+    pageToLoad = Math.floor(records.length / PAGE_SIZE) + 1
+  }
+  queryStringParameters.append('page', pageToLoad.toString())
+  queryStringParameters.append('pageSize', PAGE_SIZE.toString())
+
+  const success = await fetchRecords({
+    queryStringParameters,
+    replaceRecords: replaceRecords,
+    latestRecordsRequestIdRef,
+    setRecords,
+    setReachedLastPage,
+  })
+
+  if (success) {
+    setFilters(prev =>
+      prev.map(filter => ({
+        ...filter,
+        applied: fieldIdsOfAppliedFilters.includes(filter.fieldId),
+      }))
+    )
+  } else {
+    setLoading(false)
+  }
+}
+
+/**
+ * Fetch published records from the API
+ * @returns {boolean} Whether the records were successfully fetched
+ */
+const fetchRecords = async ({
+  queryStringParameters,
+  replaceRecords,
+  setReachedLastPage,
+  setRecords,
+  latestRecordsRequestIdRef,
+}: {
+  queryStringParameters: URLSearchParams
+  replaceRecords: boolean
+  latestRecordsRequestIdRef: MutableRefObject<number>
+  setRecords: Dispatch<SetStateAction<Row[]>>
+  setReachedLastPage: Dispatch<SetStateAction<boolean>>
+}): Promise<boolean> => {
+  latestRecordsRequestIdRef.current += 1
+  const latestRecordsRequestId = latestRecordsRequestIdRef.current
+  const currentRecordsRequestId = latestRecordsRequestId
+
+  const url = `${RECORDS_URL}?${queryStringParameters}`
+  const response = await fetch(url)
+
+  const isLatestRecordsRequest =
+    currentRecordsRequestId === latestRecordsRequestId
+  if (!isLatestRecordsRequest) return false
+
+  if (!response.ok) {
+    console.log(`GET ${url}: error`)
+    return false
+  }
+  const data = await response.json()
+
+  if (!isValidRecordsResponse(data)) {
+    console.log(`GET ${url}: malformed response`)
+    return false
+  }
+  setRecords((prev: Row[]) => {
+    const records = data.publishedRecords
+    if (!replaceRecords) {
+      // Ensure that no two records have the same id
+      const existingPharosIds = new Set(prev.map(row => row.pharosID))
+      const rowsAlreadyInTheTable = records.filter(record =>
+        existingPharosIds.has(record.pharosID)
+      )
+      if (rowsAlreadyInTheTable.length > 0)
+        console.error(
+          `The API returned ${rowsAlreadyInTheTable.length} rows that are already in the table`
+        )
+    }
+    // Sort records by row number, just in case pages come back from the
+    // server in the wrong order
+    records.sort((a, b) => Number(a.rowNumber) - Number(b.rowNumber))
+    return records
+  })
+  setReachedLastPage(data.isLastPage)
+  return true
+}
+
+const loadDebounced = debounce(load, loadDebounceDelay, {
+  leading: true,
+  trailing: true,
+})
+
 const TableView = ({
   filters,
   setFilters,
@@ -134,148 +269,26 @@ const TableView = ({
   /** This ref ensures that if the GET request that just finished is not the
    * latest GET request for published records, then the response is discarded.
    * (Why this matters: Suppose a user sets a value for a filter and then
-   * changes it a second later. Then two GET requests will be made. But suppose
+   * changes it a second later. Then two GET requests will be sent. But suppose
    * that the first request takes a while and finishes after the second request
    * does. In this case, we should ignore the response to the first request,
    * since it is not the latest request.)  */
-  const latestRecordsRequestId = useRef(0)
+  const latestRecordsRequestIdRef = useRef(0)
 
-  /** Load published records. This function prepares the query string and calls
-   * fetchRecords() to retrieve records from the API. */
-  const load = useCallback(
-    async (
-      options: {
-        replaceRecords?: boolean
-        shouldDebounce?: boolean
-        filters?: Filter[]
-      } = {}
-    ) => {
-      // Set default values
-      options.replaceRecords ??= false
-      options.shouldDebounce ??= false
-      options.filters ??= []
-
-      if (options.shouldDebounce) {
-        // Use the debounced version of the load() function. The function
-        // that the debouncer runs should not itself be debounced - this would
-        // create an infinite loop. So we must set shouldDebounce to false.
-        loadDebounced({ ...options, shouldDebounce: false })
-        return
-      }
-
-      setLoading(true)
-
-      const queryStringParameters = new URLSearchParams()
-
-      const fieldIdsOfAppliedFilters: string[] = []
-      for (const filter of options.filters) {
-        if (!filter.addedToPanel) continue
-        if (!filter.values) continue
-        const validValues = filter.values.filter(
-          (value: string) =>
-            value !== null && value !== undefined && value !== ''
-        )
-        for (const value of validValues) {
-          queryStringParameters.append(filter.fieldId, value)
-        }
-        if (validValues.length > 0)
-          fieldIdsOfAppliedFilters.push(filter.fieldId)
-      }
-
-      let pageToLoad
-      if (options.replaceRecords) {
-        pageToLoad = 1
-      } else {
-        // If we're not replacing the current set of records, load the next
-        // page. For example, if there are 100 records, load page 3 (i.e., the
-        // records numbered from 101 to 150)
-        pageToLoad = Math.floor(records.length / PAGE_SIZE) + 1
-      }
-      queryStringParameters.append('page', pageToLoad.toString())
-      queryStringParameters.append('pageSize', PAGE_SIZE.toString())
-
-      const success = await fetchRecords(
-        queryStringParameters,
-        options.replaceRecords ?? false
-      )
-
-      if (success) {
-        setFilters(prev =>
-          prev.map(filter => ({
-            ...filter,
-            applied: fieldIdsOfAppliedFilters.includes(filter.fieldId),
-          }))
-        )
-      } else {
-        setLoading(false)
-      }
-    },
-    []
-  )
-
-  const loadDebounced = debounce(load, loadDebounceDelay, {
-    leading: true,
-    trailing: true,
-  })
+  const loadOptions = {
+    filters,
+    latestRecordsRequestIdRef,
+    records,
+    setFilters,
+    setLoading,
+    setReachedLastPage,
+    setRecords,
+  }
 
   // Load the first page of results when TableView mounts and when the filters' values have changed
   useEffect(() => {
-    load({
-      shouldDebounce: true,
-      replaceRecords: true,
-      filters,
-    })
+    loadDebounced({ ...loadOptions, replaceRecords: true })
   }, [stringifiedFiltersWithValues])
-
-  /**
-   * Fetch published records from the API
-   * @returns {boolean} Whether the records were successfully fetched
-   */
-  const fetchRecords = useCallback(
-    async (
-      queryStringParameters: URLSearchParams,
-      replaceRecords: boolean
-    ): Promise<boolean> => {
-      latestRecordsRequestId.current += 1
-      const currentRecordsRequestId = latestRecordsRequestId.current
-
-      const url = `${RECORDS_URL}?${queryStringParameters}`
-      const response = await fetch(url)
-
-      const isLatestRecordsRequest =
-        currentRecordsRequestId === latestRecordsRequestId.current
-      if (!isLatestRecordsRequest) return false
-
-      if (!response.ok) {
-        console.log(`GET ${url}: error`)
-        return false
-      }
-      const data = await response.json()
-
-      if (!isValidRecordsResponse(data)) {
-        console.log(`GET ${url}: malformed response`)
-        return false
-      }
-      setRecords(prev => {
-        let records = data.publishedRecords
-        if (!replaceRecords) {
-          // Ensure that no two records have the same id
-          const existingPharosIds = new Set(prev.map(row => row.pharosID))
-          const newRecords = records.filter(
-            record => !existingPharosIds.has(record.pharosID)
-          )
-          records = [...prev, ...newRecords]
-        }
-        // Sort records by row number, just in case pages come back from the
-        // server in the wrong order
-        records.sort((a, b) => Number(a.rowNumber) - Number(b.rowNumber))
-        return records
-      })
-      setReachedLastPage(data.isLastPage)
-      return true
-    },
-    []
-  )
 
   const rowNumberColumn = {
     key: 'rowNumber',
@@ -308,7 +321,8 @@ const TableView = ({
   ]
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
-    if (!loading && !reachedLastPage && divIsAtBottom(event)) load({ filters })
+    if (!loading && !reachedLastPage && divIsAtBottom(event))
+      load({ ...loadOptions, replaceRecords: false })
   }
 
   // When records finish loading, remove the 'Loading...' indicator
@@ -351,6 +365,7 @@ const TableView = ({
   )
 }
 
+/** A.k.a. record */
 export interface Row {
   [key: string]: string | number
 }
