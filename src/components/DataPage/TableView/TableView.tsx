@@ -165,9 +165,6 @@ const TableView = ({
       options.shouldDebounce ??= false
       options.filters ??= []
 
-      // When clearing filters, don't debounce
-      if (!addedFilters.length) options.shouldDebounce = false
-
       if (options.shouldDebounce) {
         // Use the debounced version of the load() function. The function
         // that the debouncer runs should not itself be debounced - this would

@@ -105,7 +105,7 @@ const FilterPanel = ({
   const filterListRef = useRef<HTMLUListElement | null>(null)
 
   const addedFilters = filters
-    .filter(({ addedToPanel }) => addedToPanel)
+    .filter(f => f.addedToPanel)
     .sort((a, b) => a.panelIndex - b.panelIndex)
 
   const updateFilter: UpdateFilterFunction = (fieldId, newValues) => {
