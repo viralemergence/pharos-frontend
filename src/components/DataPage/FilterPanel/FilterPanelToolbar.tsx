@@ -52,12 +52,10 @@ const FilterSelectorLauncher = ({
   isFilterSelectorOpen,
   onClick,
   children,
-  style,
 }: {
   isFilterSelectorOpen: boolean
   children: React.ReactNode
   onClick?: React.MouseEventHandler<HTMLButtonElement>
-  style?: React.CSSProperties
 }) => {
   const buttonRef = useRef<HTMLButtonElement>(null)
   useEffect(() => {
@@ -67,7 +65,6 @@ const FilterSelectorLauncher = ({
     <FilterSelectorLauncherStyled
       isFilterSelectorOpen={isFilterSelectorOpen}
       ref={buttonRef}
-      style={style}
       onClick={onClick}
     >
       {children}
@@ -98,7 +95,6 @@ const FilterPanelToolbar = ({
           setOpen={setIsDropdownOpen}
           renderButton={(open: boolean) => (
             <FilterSelectorLauncher
-              style={{ marginRight: 'auto' }}
               isFilterSelectorOpen={open}
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             >
