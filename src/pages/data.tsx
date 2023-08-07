@@ -26,6 +26,7 @@ const ViewContainer = styled.main`
 `
 
 const ViewMain = styled.div`
+  pointer-events: none;
   position: relative;
   height: 100%;
   display: flex;
