@@ -105,7 +105,7 @@ const MapTableDrawer = ({
         <Container drawerOpen={drawerOpen}>
           <Topbar>
             <h1>
-              {<MapTableTitlePointIcon />}
+              <MapTableTitlePointIcon />
               {placeNameLoading && (
                 <LoadingSpinner
                   scale={0.6}
