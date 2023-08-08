@@ -14,7 +14,7 @@ export const ResearcherPageLayout = styled.div`
 
   ${wideMargins}
 
-  @media (max-width: 1200px) {
+  @media (max-width: 1300px) {
     grid-template-columns: minmax(245px, 1fr) 3fr;
     grid-template-areas:
       'topbar topbar'
