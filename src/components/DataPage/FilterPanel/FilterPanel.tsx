@@ -213,7 +213,6 @@ const FilterPanel = ({
                   <FilterValueSetter
                     filter={filter}
                     updateFilter={updateFilter}
-                    filters={filters}
                     setFilters={setFilters}
                   />
                 </FilterListItem>
