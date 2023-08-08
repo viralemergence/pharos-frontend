@@ -1,4 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, {
+  Dispatch,
+  SetStateAction,
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 import debounce from 'lodash/debounce'
 import styled from 'styled-components'
 import DataGrid, { Column } from 'react-data-grid'
@@ -99,38 +106,114 @@ const rowKeyGetter = (row: Row) => row.pharosID
 
 /** Load published records. This function prepares the query string and calls
  * fetchRecords() to retrieve records from the API. */
-const load = async (options: {
+const load = async ({
+  records,
+  replaceRecords = false,
+  setLoading,
+  latestRecordsRequestIdRef,
+  setReachedLastPage,
+  setRecords,
+}: {
+  records: Row[]
   replaceRecords?: boolean
-  shouldDebounce?: boolean
   setLoading: Dispatch<SetStateAction<boolean>>
+  latestRecordsRequestIdRef: MutableRefObject<number>
+  setReachedLastPage: Dispatch<SetStateAction<boolean>>
+  setRecords: Dispatch<SetStateAction<Row[]>>
 }) => {
-  // Set default values
-  options.replaceRecords ||= false
-
   setLoading(true)
 
   const queryStringParameters = new URLSearchParams()
 
   let pageToLoad
-  if (options.replaceRecords) {
+  if (replaceRecords) {
     pageToLoad = 1
   } else {
     // If we're not replacing the current set of records, load the next
     // page. For example, if there are 100 records, load page 3 (i.e., the
     // records numbered from 101 to 150)
     pageToLoad = Math.floor(records.length / PAGE_SIZE) + 1
-    console.log('records.length ', records.length)
-    console.log('pageToLoad', pageToLoad)
   }
   queryStringParameters.append('page', pageToLoad.toString())
   queryStringParameters.append('pageSize', PAGE_SIZE.toString())
 
-  await fetchRecords(queryStringParameters, options.replaceRecords || false)
+  const success = await fetchRecords({
+    queryStringParameters,
+    replaceRecords: replaceRecords,
+    latestRecordsRequestIdRef,
+    setRecords,
+    setReachedLastPage,
+  })
 
-  setLoading(false)
+  if (!success) {
+    setLoading(false)
+  }
 }
 
-const loadDebounced = debounce(load, loadDebounceDelay)
+/**
+ * Fetch published records from the API
+ * @returns {boolean} Whether the records were successfully fetched
+ */
+const fetchRecords = async ({
+  queryStringParameters,
+  replaceRecords,
+  setReachedLastPage,
+  setRecords,
+  latestRecordsRequestIdRef,
+}: {
+  queryStringParameters: URLSearchParams
+  replaceRecords: boolean
+  latestRecordsRequestIdRef: MutableRefObject<number>
+  setRecords: Dispatch<SetStateAction<Row[]>>
+  setReachedLastPage: Dispatch<SetStateAction<boolean>>
+}): Promise<boolean> => {
+  latestRecordsRequestIdRef.current += 1
+  const latestRecordsRequestId = latestRecordsRequestIdRef.current
+  const currentRecordsRequestId = latestRecordsRequestId
+
+  const url = `${RECORDS_URL}?${queryStringParameters}`
+  const response = await fetch(url)
+
+  const isLatestRecordsRequest =
+    currentRecordsRequestId === latestRecordsRequestId
+  if (!isLatestRecordsRequest) return false
+
+  if (!response.ok) {
+    console.log(`GET ${url}: error`)
+    return false
+  }
+  const data = await response.json()
+
+  if (!isValidRecordsResponse(data)) {
+    console.log(`GET ${url}: malformed response`)
+    return false
+  }
+  setRecords((prev: Row[]) => {
+    const records = data.publishedRecords
+    if (!replaceRecords) {
+      // Ensure that no two records have the same id
+      const existingPharosIds = new Set(prev.map(row => row.pharosID))
+      const rowsAlreadyInTheTable = records.filter(record =>
+        existingPharosIds.has(record.pharosID)
+      )
+      if (rowsAlreadyInTheTable.length > 0)
+        console.error(
+          `The API returned ${rowsAlreadyInTheTable.length} rows that are already in the table`
+        )
+    }
+    // Sort records by row number, just in case pages come back from the
+    // server in the wrong order
+    records.sort((a, b) => Number(a.rowNumber) - Number(b.rowNumber))
+    return records
+  })
+  setReachedLastPage(data.isLastPage)
+  return true
+}
+
+const loadDebounced = debounce(load, loadDebounceDelay, {
+  leading: true,
+  trailing: true,
+})
 
 const TableView = ({
   isOpen = true,
