@@ -185,8 +185,7 @@ export const FilterPanelCloseButtonWithBackIcon = styled(
 
 export const FilterPanelCloseButtonWithXIcon = styled(FilterPanelCloseButton)`
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
-    margin-left: auto;
-    margin-right: 0;
+    display: none;
   }
 `
 
