@@ -1,9 +1,9 @@
 import React, {
   Dispatch,
-  SetStateAction,
   MutableRefObject,
-  useCallback,
+  SetStateAction,
   useEffect,
+  useRef,
   useState,
 } from 'react'
 import debounce from 'lodash/debounce'
@@ -134,20 +134,19 @@ const load = async ({
     // records numbered from 101 to 150)
     pageToLoad = Math.floor(records.length / PAGE_SIZE) + 1
   }
+
   queryStringParameters.append('page', pageToLoad.toString())
   queryStringParameters.append('pageSize', PAGE_SIZE.toString())
 
-  const success = await fetchRecords({
+  await fetchRecords({
     queryStringParameters,
-    replaceRecords: replaceRecords,
+    replaceRecords,
     latestRecordsRequestIdRef,
     setRecords,
     setReachedLastPage,
   })
 
-  if (!success) {
-    setLoading(false)
-  }
+  setLoading(false)
 }
 
 /**
@@ -188,8 +187,8 @@ const fetchRecords = async ({
     console.log(`GET ${url}: malformed response`)
     return false
   }
-  setRecords((prev: Row[]) => {
-    const records = data.publishedRecords
+  setRecords(prev => {
+    let records = data.publishedRecords
     if (!replaceRecords) {
       // Ensure that no two records have the same id
       const existingPharosIds = new Set(prev.map(row => row.pharosID))
@@ -200,6 +199,7 @@ const fetchRecords = async ({
         console.error(
           `The API returned ${rowsAlreadyInTheTable.length} rows that are already in the table`
         )
+      records = [...prev, ...records]
     }
     // Sort records by row number, just in case pages come back from the
     // server in the wrong order
@@ -224,57 +224,27 @@ const TableView = ({
   const [records, setRecords] = useState<Row[]>([])
   const [reachedLastPage, setReachedLastPage] = useState(false)
 
+  /** This ref ensures that if the GET request that just finished is not the
+   * latest GET request for published records, then the response is discarded.
+   * (Why this matters: Suppose a user sets a value for a filter and then
+   * changes it a second later. Then two GET requests will be sent. But suppose
+   * that the first request takes a while and finishes after the second request
+   * does. In this case, we should ignore the response to the first request,
+   * since it is not the latest request.)  */
+  const latestRecordsRequestIdRef = useRef(0)
+
+  const loadOptions = {
+    latestRecordsRequestIdRef,
+    records,
+    setLoading,
+    setReachedLastPage,
+    setRecords,
+  }
+
   // Load the first page of results when TableView mounts
   useEffect(() => {
-    load({
-      shouldDebounce: true,
-      replaceRecords: true,
-    })
+    loadDebounced({ ...loadOptions, replaceRecords: true })
   }, [])
-
-  /**
-   * Fetch published records from the API
-   * @returns {boolean} Whether the records were successfully fetched
-   */
-  const fetchRecords = useCallback(
-    async (
-      queryStringParameters: URLSearchParams,
-      replaceRecords: boolean
-    ): Promise<boolean> => {
-      const url = `${RECORDS_URL}?${queryStringParameters}`
-      console.log('url', url)
-      const response = await fetch(url)
-      if (!response.ok) {
-        console.log(`GET ${url}: error`)
-        return false
-      }
-      const data = await response.json()
-      if (!isValidRecordsResponse(data)) {
-        console.log(`GET ${url}: malformed response`)
-        return false
-      }
-      setRecords(prev => {
-        let records = data.publishedRecords
-        console.log('records', records)
-        if (!replaceRecords) {
-          // Ensure that no two records have the same id
-          const existingPharosIds = new Set(prev.map(row => row.pharosID))
-          const newRecords = records.filter(
-            record => !existingPharosIds.has(record.pharosID)
-          )
-          records = [...prev, ...newRecords]
-          console.log('newRecords', newRecords)
-        }
-        // Sort records by row number, just in case pages come back from the
-        // server in the wrong order
-        records.sort((a, b) => Number(a.rowNumber) - Number(b.rowNumber))
-        return records
-      })
-      setReachedLastPage(data.isLastPage)
-      return true
-    },
-    []
-  )
 
   const rowNumberColumn = {
     key: 'rowNumber',
@@ -298,7 +268,8 @@ const TableView = ({
   ]
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
-    if (!loading && !reachedLastPage && divIsAtBottom(event)) load()
+    if (!loading && !reachedLastPage && divIsAtBottom(event))
+      load({ ...loadOptions, records, replaceRecords: false })
   }
 
   return (
