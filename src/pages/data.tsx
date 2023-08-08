@@ -107,8 +107,11 @@ const DataPage = ({
   useEffect(() => {
     const hash = window.location.hash.replace('#', '')
     if (isView(hash)) changeView(hash, false)
+  }, [changeView])
+
+  useEffect(() => {
     fetchMetadata()
-  }, [changeView, fetchMetadata])
+  }, [])
 
   useEffect(() => {
     if (isFilterPanelOpen) {
