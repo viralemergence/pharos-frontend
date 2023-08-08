@@ -97,6 +97,41 @@ const divIsAtBottom = ({ currentTarget }: React.UIEvent<HTMLDivElement>) =>
 
 const rowKeyGetter = (row: Row) => row.pharosID
 
+/** Load published records. This function prepares the query string and calls
+ * fetchRecords() to retrieve records from the API. */
+const load = async (options: {
+  replaceRecords?: boolean
+  shouldDebounce?: boolean
+  setLoading: Dispatch<SetStateAction<boolean>>
+}) => {
+  // Set default values
+  options.replaceRecords ||= false
+
+  setLoading(true)
+
+  const queryStringParameters = new URLSearchParams()
+
+  let pageToLoad
+  if (options.replaceRecords) {
+    pageToLoad = 1
+  } else {
+    // If we're not replacing the current set of records, load the next
+    // page. For example, if there are 100 records, load page 3 (i.e., the
+    // records numbered from 101 to 150)
+    pageToLoad = Math.floor(records.length / PAGE_SIZE) + 1
+    console.log('records.length ', records.length)
+    console.log('pageToLoad', pageToLoad)
+  }
+  queryStringParameters.append('page', pageToLoad.toString())
+  queryStringParameters.append('pageSize', PAGE_SIZE.toString())
+
+  await fetchRecords(queryStringParameters, options.replaceRecords || false)
+
+  setLoading(false)
+}
+
+const loadDebounced = debounce(load, loadDebounceDelay)
+
 const TableView = ({
   isOpen = true,
   isFilterPanelOpen = false,
@@ -105,52 +140,6 @@ const TableView = ({
   const [loading, setLoading] = useState(true)
   const [records, setRecords] = useState<Row[]>([])
   const [reachedLastPage, setReachedLastPage] = useState(false)
-
-  /** Load published records. This function prepares the query string and calls
-   * fetchRecords() to retrieve records from the API. */
-  const load = useCallback(
-    async (
-      options: {
-        replaceRecords?: boolean
-        shouldDebounce?: boolean
-      } = {}
-    ) => {
-      // Set default values
-      options.replaceRecords ||= false
-      options.shouldDebounce ||= false
-
-      if (options.shouldDebounce) {
-        // Use the debounced version of the load() function. The function
-        // that the debouncer runs should not itself be debounced - this would
-        // create an infinite loop. So we must set shouldDebounce to false.
-        loadDebounced({ ...options, shouldDebounce: false })
-        return
-      }
-
-      setLoading(true)
-
-      const queryStringParameters = new URLSearchParams()
-
-      let pageToLoad
-      if (options.replaceRecords) {
-        pageToLoad = 1
-      } else {
-        // If we're not replacing the current set of records, load the next
-        // page. For example, if there are 100 records, load page 3 (i.e., the
-        // records numbered from 101 to 150)
-        pageToLoad = Math.floor(records.length / PAGE_SIZE) + 1
-      }
-      queryStringParameters.append('page', pageToLoad.toString())
-      queryStringParameters.append('pageSize', PAGE_SIZE.toString())
-
-      await fetchRecords(queryStringParameters, options.replaceRecords || false)
-
-      setLoading(false)
-    },
-    []
-  )
-
-  const loadDebounced = debounce(load, loadDebounceDelay)
 
   // Load the first page of results when TableView mounts
   useEffect(() => {
@@ -170,6 +159,7 @@ const TableView = ({
       replaceRecords: boolean
     ): Promise<boolean> => {
       const url = `${RECORDS_URL}?${queryStringParameters}`
+      console.log('url', url)
       const response = await fetch(url)
       if (!response.ok) {
         console.log(`GET ${url}: error`)
@@ -182,6 +172,7 @@ const TableView = ({
       }
       setRecords(prev => {
         let records = data.publishedRecords
+        console.log('records', records)
         if (!replaceRecords) {
           // Ensure that no two records have the same id
           const existingPharosIds = new Set(prev.map(row => row.pharosID))
@@ -189,6 +180,7 @@ const TableView = ({
             record => !existingPharosIds.has(record.pharosID)
           )
           records = [...prev, ...newRecords]
+          console.log('newRecords', newRecords)
         }
         // Sort records by row number, just in case pages come back from the
         // server in the wrong order
