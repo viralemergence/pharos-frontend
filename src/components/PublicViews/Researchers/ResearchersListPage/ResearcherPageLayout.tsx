@@ -13,6 +13,20 @@ export const ResearcherPageLayout = styled.div`
   color: ${({ theme }) => theme.white};
 
   ${wideMargins}
+
+  @media (max-width: 1200px) {
+    grid-template-columns: minmax(245px, 1fr) 3fr;
+    grid-template-areas:
+      'topbar topbar'
+      'alphabet main';
+  }
+
+  @media (max-width: 700px) {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'topbar'
+      'main';
+  }
 `
 
 export const ResearcherPageMain = styled.div`

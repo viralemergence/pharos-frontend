@@ -1,18 +1,22 @@
+import React from 'react'
+import styled from 'styled-components'
+
 import TopBar, {
   Breadcrumbs,
   Controls,
   PublicViewBreadcrumbLink,
   Title,
 } from 'components/layout/TopBar'
+
 import PublicViewBackground from 'components/PublicViews/PublicViewBackground'
-import React from 'react'
-import styled from 'styled-components'
 import AlphabetControl from './AlphabetControl'
+
 import {
   ResearcherPageContentBox,
   ResearcherPageLayout,
   ResearcherPageMain,
 } from './ResearcherPageLayout'
+
 import SearchControl from './SearchControl'
 
 const Container = styled.div`
