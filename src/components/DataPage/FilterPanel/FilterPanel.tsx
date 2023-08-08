@@ -5,13 +5,15 @@ import React, {
   useRef,
   useState,
 } from 'react'
+import debounce from 'lodash/debounce'
 import type { Filter } from 'pages/data'
 import {
-  FieldName,
   FieldInput,
-  ListOfAddedFilters,
+  FieldName,
   FilterLabel,
   FilterListItemElement,
+  InvalidDateMessage,
+  ListOfAddedFilters,
   Panel,
 } from './DisplayComponents'
 import FilterPanelToolbar from './FilterPanelToolbar'
@@ -23,22 +25,68 @@ const FilterInput = ({
   filter: Filter
   updateFilter: UpdateFilterFunction
 }) => {
+  const [valid, setValid] = useState(true)
+  console.log('valid', valid)
+  const declareValidDebounced = debounce(() => setValid(true), 1000, {
+    leading: true,
+    trailing: true,
+  })
+  const declareInvalidDebounced = debounce(() => setValid(false), 1000, {
+    leading: false,
+    trailing: true,
+  })
+  const setValidDebounced = (valid: boolean) => {
+    if (valid) {
+      declareValidDebounced()
+      declareInvalidDebounced.cancel()
+    } else {
+      declareInvalidDebounced()
+      declareValidDebounced.cancel()
+    }
+  }
+
+  // Cancel debouncing in case component unmounts
+  useEffect(() => {
+    return () => {
+      declareValidDebounced.cancel()
+      declareInvalidDebounced.cancel()
+    }
+  }, [])
+
   const values = filter.values ?? []
+  let earliestAllowableDate, latestAllowableDate
+  if (filter.earliestDateUsed) {
+    earliestAllowableDate = `${filter.earliestDateUsed.slice(0, 2)}00-01-01`
+  }
+  if (filter.latestDateUsed) {
+    latestAllowableDate = `${
+      Number(filter.latestDateUsed.slice(0, 2)) + 1
+    }00-01-01`
+  }
   return (
     <FilterLabel>
       <FieldName>{filter.label}</FieldName>
       <FieldInput
-        // This will be a date field if fieldType == 'date'
+        // This is a date input if filter.type is 'date'
         type={filter.type}
         aria-label={filter.label}
-        min={filter.earliestDateUsed}
-        max={filter.latestDateUsed}
+        min={earliestAllowableDate}
+        max={latestAllowableDate}
         defaultValue={values.join(',')}
         onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-          const values = e.target.checkValidity() ? [e.target.value] : []
+          const valid = e.target.checkValidity()
+          const values = valid ? [e.target.value] : []
           updateFilter(filter.fieldId, values)
         }}
       />
+      {!valid && (
+        <InvalidDateMessage>
+          Date must be between{' '}
+          <span style={{ whiteSpace: 'nowrap' }}>{earliestAllowableDate}</span>{' '}
+          and{' '}
+          <span style={{ whiteSpace: 'nowrap' }}>{latestAllowableDate}</span>
+        </InvalidDateMessage>
+      )}
     </FilterLabel>
   )
 }

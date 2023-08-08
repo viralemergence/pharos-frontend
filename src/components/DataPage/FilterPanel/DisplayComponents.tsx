@@ -269,8 +269,30 @@ export const FieldInput = styled.input`
   color: ${({ theme }) => theme.white};
   font-weight: 600;
   padding: 8px 10px;
-  &:invalid {
-    border-color: ${({ theme }) => theme.red};
+`
+
+export const InvalidDateMessage = styled.aside`
+  ${({ theme }) => theme.extraSmallParagraph};
+  background-color: ${({ theme }) => theme.white};
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1), 0px 1px 3px rgba(0, 0, 0, 0.2);
+  color: ${({ theme }) => theme.black};
+  border: 1px solid ${({ theme }) => theme.black};
+  padding: 5px 10px;
+  position: absolute;
+  width: 200px;
+  transform: translateY(10px);
+  &::before {
+    border-bottom: 10px solid ${({ theme }) => theme.white};
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    content: '';
+    height: 0;
+    left: 50%;
+    position: absolute;
+    top: -10px;
+    transform: translateX(-400%);
+    width: 0;
   }
 `
 

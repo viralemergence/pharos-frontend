@@ -39,12 +39,12 @@ export type Filter = {
   applied?: boolean
   /* This number determines the order of the filters in the panel. */
   panelIndex: number
-  /** Date filters will have this property, which is the earliest collection
-   * date that appears among the published records */
+  /** The historically earliest collection date that appears among the
+   * published records. Only date filters have this property. */
   earliestDateUsed?: string
-  /** Date filters will have this property, which is the
-   * furthest-into-the-future collection date that appears among the published
-   * records */
+  /** The historically latest, furthest-into-the-future collection date that
+   * appears among the published records. Only date filters have this property.
+   * */
   latestDateUsed?: string
 }
 
