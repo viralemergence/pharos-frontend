@@ -282,6 +282,7 @@ export const InvalidDateMessage = styled.aside`
   position: absolute;
   width: 200px;
   transform: translateY(10px);
+  animation: fadeIn 0.15s forwards;
   &::before {
     border-bottom: 10px solid ${({ theme }) => theme.white};
     border-left: 10px solid transparent;
@@ -293,6 +294,16 @@ export const InvalidDateMessage = styled.aside`
     top: -10px;
     transform: translateX(-400%);
     width: 0;
+  }
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(9px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(9px) scale(1);
+    }
   }
 `
 

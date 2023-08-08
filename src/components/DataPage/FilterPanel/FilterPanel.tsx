@@ -18,6 +18,13 @@ import {
 } from './DisplayComponents'
 import FilterPanelToolbar from './FilterPanelToolbar'
 
+/** Localize a date without changing the time zone */
+const localizeDate = (dateString: string) => {
+  const [year, month, day] = dateString.split('-').map(Number)
+  const date = new Date(year, month - 1, day)
+  return date.toLocaleDateString()
+}
+
 const FilterInput = ({
   filter,
   updateFilter,
@@ -25,43 +32,23 @@ const FilterInput = ({
   filter: Filter
   updateFilter: UpdateFilterFunction
 }) => {
-  const [valid, setValid] = useState(true)
-  console.log('valid', valid)
-  const declareValidDebounced = debounce(() => setValid(true), 1000, {
-    leading: true,
-    trailing: true,
-  })
-  const declareInvalidDebounced = debounce(() => setValid(false), 1000, {
-    leading: false,
-    trailing: true,
-  })
-  const setValidDebounced = (valid: boolean) => {
-    if (valid) {
-      declareValidDebounced()
-      declareInvalidDebounced.cancel()
-    } else {
-      declareInvalidDebounced()
-      declareValidDebounced.cancel()
-    }
-  }
-
-  // Cancel debouncing in case component unmounts
-  useEffect(() => {
-    return () => {
-      declareValidDebounced.cancel()
-      declareInvalidDebounced.cancel()
-    }
-  }, [])
-
   const values = filter.values ?? []
-  let earliestAllowableDate, latestAllowableDate
+  const [valid, setValid] = useState(true)
+  const setValidDebounced = debounce(setValid, 2500)
+
+  let earliestAllowableDate,
+    latestAllowableDate,
+    earliestAllowableDateLocalized,
+    latestAllowableDateLocalized
   if (filter.earliestDateUsed) {
     earliestAllowableDate = `${filter.earliestDateUsed.slice(0, 2)}00-01-01`
+    earliestAllowableDateLocalized = localizeDate(earliestAllowableDate)
   }
   if (filter.latestDateUsed) {
     latestAllowableDate = `${
       Number(filter.latestDateUsed.slice(0, 2)) + 1
     }00-01-01`
+    latestAllowableDateLocalized = localizeDate(latestAllowableDate)
   }
   return (
     <FilterLabel>
@@ -77,14 +64,28 @@ const FilterInput = ({
           const valid = e.target.checkValidity()
           const values = valid ? [e.target.value] : []
           updateFilter(filter.fieldId, values)
+          if (valid) {
+            setValid(valid)
+            setValidDebounced.cancel()
+          } else {
+            // When marking a date as invalid, debounce so that the field isn't
+            // eagerly marked invalid as the user begins to type a valid date.
+            // Check the validity again in the callback to avoid using a stale
+            // value.
+            setValidDebounced(() => e.target.checkValidity())
+          }
         }}
       />
       {!valid && (
         <InvalidDateMessage>
           Date must be between{' '}
-          <span style={{ whiteSpace: 'nowrap' }}>{earliestAllowableDate}</span>{' '}
+          <span style={{ whiteSpace: 'nowrap' }}>
+            {earliestAllowableDateLocalized}
+          </span>{' '}
           and{' '}
-          <span style={{ whiteSpace: 'nowrap' }}>{latestAllowableDate}</span>
+          <span style={{ whiteSpace: 'nowrap' }}>
+            {latestAllowableDateLocalized}
+          </span>
         </InvalidDateMessage>
       )}
     </FilterLabel>
@@ -98,7 +99,7 @@ const FilterValueSetter = ({
   filter: Filter
   updateFilter: UpdateFilterFunction
 }) => {
-  const truthyValues = filter.values.filter(value => value)
+  const truthyValues = (filter.values ?? []).filter(value => value)
   const props = {
     filter: { ...filter, values: truthyValues },
     updateFilter,
