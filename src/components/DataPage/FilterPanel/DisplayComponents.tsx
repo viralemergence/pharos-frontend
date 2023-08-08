@@ -271,7 +271,7 @@ export const FieldInput = styled.input`
   padding: 8px 10px;
 `
 
-export const InvalidDateMessage = styled.aside`
+export const DateTooltip = styled.aside<{ flipped: boolean }>`
   ${({ theme }) => theme.extraSmallParagraph};
   background-color: ${({ theme }) => theme.white};
   border-radius: 5px;
@@ -280,9 +280,11 @@ export const InvalidDateMessage = styled.aside`
   border: 1px solid ${({ theme }) => theme.black};
   padding: 5px 10px;
   position: absolute;
-  width: 200px;
+  width: 330px;
+  text-align: center;
   transform: translateY(10px);
   animation: fadeIn 0.15s forwards;
+  ${({ flipped }) => (flipped ? 'top: 10px;' : '')}
   &::before {
     border-bottom: 10px solid ${({ theme }) => theme.white};
     border-left: 10px solid transparent;
@@ -292,8 +294,16 @@ export const InvalidDateMessage = styled.aside`
     left: 50%;
     position: absolute;
     top: -10px;
-    transform: translateX(-400%);
+    transform: translateX(-700%);
     width: 0;
+    ${({ flipped }) =>
+      flipped
+        ? `
+      transform: translateX(-700%) rotate(180deg);
+      top: unset;
+      bottom: -10px;
+      `
+        : ''}
   }
   @keyframes fadeIn {
     from {

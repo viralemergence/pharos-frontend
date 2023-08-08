@@ -109,6 +109,7 @@ const FilterPanelToolbar = ({
         applied: false,
         addedToPanel: false,
         values: undefined,
+        inputIsValid: undefined,
       }))
     )
   }
@@ -154,6 +155,7 @@ const FilterPanelToolbar = ({
                     addedToPanel: true,
                     values: [],
                     panelIndex: highestPanelIndex + 1,
+                    tooltipOrientation: 'bottom',
                   }
                 })
               })

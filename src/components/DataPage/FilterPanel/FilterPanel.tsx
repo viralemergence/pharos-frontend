@@ -12,7 +12,7 @@ import {
   FieldName,
   FilterLabel,
   FilterListItemElement,
-  InvalidDateMessage,
+  DateTooltip,
   ListOfAddedFilters,
   Panel,
 } from './DisplayComponents'
@@ -28,13 +28,14 @@ const localizeDate = (dateString: string) => {
 const FilterInput = ({
   filter,
   updateFilter,
+  setFilters,
 }: {
   filter: Filter
   updateFilter: UpdateFilterFunction
+  setFilters: Dispatch<SetStateAction<Filter[]>>
 }) => {
   const values = filter.values ?? []
-  const [valid, setValid] = useState(true)
-  const setValidDebounced = debounce(setValid, 2500)
+  const updateFilterDebounced = debounce(updateFilter, 2000)
 
   let earliestAllowableDate,
     latestAllowableDate,
@@ -63,21 +64,42 @@ const FilterInput = ({
         onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
           const valid = e.target.checkValidity()
           const values = valid ? [e.target.value] : []
-          updateFilter(filter.fieldId, values)
           if (valid) {
-            setValid(valid)
-            setValidDebounced.cancel()
+            updateFilter(filter.fieldId, values, () => e.target.checkValidity())
+            updateFilterDebounced.cancel()
           } else {
             // When marking a date as invalid, debounce so that the field isn't
             // eagerly marked invalid as the user begins to type a valid date.
             // Check the validity again in the callback to avoid using a stale
             // value.
-            setValidDebounced(() => e.target.checkValidity())
+            updateFilterDebounced(filter.fieldId, values, () =>
+              e.target.checkValidity()
+            )
           }
         }}
+        onFocus={(_e: React.FocusEvent<HTMLInputElement>) => {
+          // If this date field is focused and the previous field is a date
+          // field with a tooltip, move that tooltip out of the way
+          setFilters(prev =>
+            prev.map(f => {
+              return f.panelIndex === filter.panelIndex - 1 &&
+                f.type === 'date' &&
+                f.inputIsValid === false
+                ? { ...f, tooltipOrientation: 'top' }
+                : f
+            })
+          )
+        }}
+        onBlur={(_e: React.FocusEvent<HTMLInputElement>) => {
+          setFilters(prev =>
+            prev.map(f =>
+              f.type === 'date' ? { ...f, tooltipOrientation: 'bottom' } : f
+            )
+          )
+        }}
       />
-      {!valid && (
-        <InvalidDateMessage>
+      {filter.inputIsValid === false && (
+        <DateTooltip flipped={filter.tooltipOrientation === 'top'}>
           Date must be between{' '}
           <span style={{ whiteSpace: 'nowrap' }}>
             {earliestAllowableDateLocalized}
@@ -86,7 +108,7 @@ const FilterInput = ({
           <span style={{ whiteSpace: 'nowrap' }}>
             {latestAllowableDateLocalized}
           </span>
-        </InvalidDateMessage>
+        </DateTooltip>
       )}
     </FilterLabel>
   )
@@ -95,14 +117,17 @@ const FilterInput = ({
 const FilterValueSetter = ({
   filter,
   updateFilter,
+  setFilters,
 }: {
   filter: Filter
   updateFilter: UpdateFilterFunction
+  setFilters: Dispatch<SetStateAction<Filter[]>>
 }) => {
   const truthyValues = (filter.values ?? []).filter(value => value)
   const props = {
     filter: { ...filter, values: truthyValues },
     updateFilter,
+    setFilters,
   }
   return <FilterInput {...props} />
 
@@ -121,7 +146,11 @@ const FilterListItem = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
-type UpdateFilterFunction = (fieldId: string, newFilterValues: string[]) => void
+type UpdateFilterFunction = (
+  fieldId: string,
+  newFilterValues: string[],
+  getValidity?: () => boolean
+) => void
 
 const FilterPanel = ({
   isFilterPanelOpen,
@@ -140,10 +169,16 @@ const FilterPanel = ({
     .filter(f => f.addedToPanel)
     .sort((a, b) => a.panelIndex - b.panelIndex)
 
-  const updateFilter: UpdateFilterFunction = (fieldId, newValues) => {
+  const updateFilter: UpdateFilterFunction = (
+    fieldId,
+    newValues,
+    getValidity?: () => boolean
+  ) => {
     setFilters(prev =>
       prev.map((filter: Filter) =>
-        filter.fieldId === fieldId ? { ...filter, values: newValues } : filter
+        filter.fieldId === fieldId
+          ? { ...filter, values: newValues, inputIsValid: getValidity?.() }
+          : filter
       )
     )
   }
@@ -178,6 +213,8 @@ const FilterPanel = ({
                   <FilterValueSetter
                     filter={filter}
                     updateFilter={updateFilter}
+                    filters={filters}
+                    setFilters={setFilters}
                   />
                 </FilterListItem>
               )

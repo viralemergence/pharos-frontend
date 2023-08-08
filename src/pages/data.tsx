@@ -46,6 +46,8 @@ export type Filter = {
    * appears among the published records. Only date filters have this property.
    * */
   latestDateUsed?: string
+  inputIsValid?: boolean
+  tooltipOrientation?: 'bottom' | 'top'
 }
 
 const METADATA_URL = `${process.env.GATSBY_API_URL}/metadata-for-published-records`
