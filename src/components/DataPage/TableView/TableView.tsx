@@ -216,7 +216,7 @@ const fetchRecords = async ({
     return false
   }
   setRecords((prev: Row[]) => {
-    const records = data.publishedRecords
+    let records = data.publishedRecords
     if (!replaceRecords) {
       // Ensure that no two records have the same id
       const existingPharosIds = new Set(prev.map(row => row.pharosID))
@@ -227,6 +227,7 @@ const fetchRecords = async ({
         console.error(
           `The API returned ${rowsAlreadyInTheTable.length} rows that are already in the table`
         )
+      records = [...prev, ...records]
     }
     // Sort records by row number, just in case pages come back from the
     // server in the wrong order
@@ -289,6 +290,7 @@ const TableView = ({
   useEffect(() => {
     loadDebounced({ ...loadOptions, replaceRecords: true })
   }, [stringifiedFiltersWithValues])
+
 
   const rowNumberColumn = {
     key: 'rowNumber',
