@@ -8,8 +8,14 @@ const Container = styled.div`
   align-items: stretch;
   width: 245px;
   padding: 10px;
+  border: 1px solid ${({ theme }) => theme.white10PercentOpacity};
+  border-radius: 5px;
 
   background-color: ${({ theme }) => theme.mutedPurple1};
+
+  @media (max-width: 700px) {
+    display: none;
+  }
 `
 const Alphabet = styled.div`
   display: grid;
@@ -22,7 +28,7 @@ const Button = styled.button`
   background-color: 1px solid rgba(0, 0, 0, 0);
   border: 1px solid rgba(0, 0, 0, 0);
 
-  transition: 150ms;
+  transition: 200ms;
 
   &:hover {
     color: ${({ theme }) => theme.mint};
