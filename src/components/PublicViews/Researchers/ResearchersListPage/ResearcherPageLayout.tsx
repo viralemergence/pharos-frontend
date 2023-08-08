@@ -5,7 +5,7 @@ export const ResearcherPageLayout = styled.div`
   position: relative;
   display: grid;
   gap: 30px;
-  grid-template-columns: minmax(245px, 1fr) 3fr minmax(245px, 1fr);
+  grid-template-columns: minmax(245px, 1fr) 2fr minmax(245px, 1fr);
   grid-template-areas:
     'topbar topbar topbar'
     'alphabet main spacer';
