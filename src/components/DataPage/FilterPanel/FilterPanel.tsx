@@ -37,6 +37,13 @@ const FilterInput = ({
   const values = filter.values ?? []
   const updateFilterDebounced = debounce(updateFilter, 2000)
 
+  useEffect(() => {
+    // Cancel debounce on unmount
+    return () => {
+      updateFilterDebounced.cancel()
+    }
+  }, [])
+
   let earliestAllowableDate,
     latestAllowableDate,
     earliestAllowableDateLocalized,
@@ -64,17 +71,22 @@ const FilterInput = ({
         onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
           const valid = e.target.checkValidity()
           const values = valid ? [e.target.value] : []
+          const checkValidity = () => {
+            if (e && e.target && e.target.checkValidity) {
+              return e.target.checkValidity()
+            } else {
+              return false
+            }
+          }
           if (valid) {
-            updateFilter(filter.fieldId, values, () => e.target.checkValidity())
+            updateFilter(filter.fieldId, values, checkValidity)
             updateFilterDebounced.cancel()
           } else {
             // When marking a date as invalid, debounce so that the field isn't
             // eagerly marked invalid as the user begins to type a valid date.
             // Check the validity again in the callback to avoid using a stale
             // value.
-            updateFilterDebounced(filter.fieldId, values, () =>
-              e.target.checkValidity()
-            )
+            updateFilterDebounced(filter.fieldId, values, checkValidity)
           }
         }}
         onFocus={(_e: React.FocusEvent<HTMLInputElement>) => {
