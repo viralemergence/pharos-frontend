@@ -24,6 +24,7 @@ import AlphabetControl from './AlphabetControl'
 
 import usePublishedResearchers from 'hooks/researchers/usePublishedResearchers'
 import { PublishedResearchersStatus } from 'hooks/researchers/fetchPublishedResearchers'
+
 import usePublishedResearchersFilters from './useResearchersListFilters'
 
 const Container = styled.div`

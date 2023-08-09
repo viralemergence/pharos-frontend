@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { ResearcherPageContentBox } from './ResearcherPageLayout'
 
 import { PublishedResearcher } from 'hooks/researchers/fetchPublishedResearchers'
+import { Link } from 'react-router-dom'
 
 interface ResearcherBoxProps {
   researcher: PublishedResearcher
@@ -22,8 +23,10 @@ const Organization = styled.p`
 
 const ResearcherBox = ({ researcher }: ResearcherBoxProps) => (
   <ResearcherPageContentBox interactive>
-    <Name>{researcher.name}</Name>
-    <Organization>{researcher.organization}</Organization>
+    <Link to={`/${researcher.researcherID}`}>
+      <Name>{researcher.name}</Name>
+      <Organization>{researcher.organization}</Organization>
+    </Link>
   </ResearcherPageContentBox>
 )
 

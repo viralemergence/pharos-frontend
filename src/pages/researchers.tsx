@@ -7,6 +7,7 @@ import NavBar from 'components/layout/NavBar/NavBar'
 import ModalMessageProvider from 'hooks/useModal/ModalMessageProvider'
 
 import ResearchersListPage from 'components/PublicViews/Researchers/ResearchersListPage/ResearchersListPage'
+import ResearchersPage from 'components/PublicViews/Researchers/ResearchersPage/ResearcherPage'
 
 const Researchers = () => {
   // on the build server, don't try to render client-side routes
@@ -23,9 +24,7 @@ const Researchers = () => {
               path="/:researcherID"
               element={
                 <ModalMessageProvider>
-                  {
-                    // <ResearchersPage />
-                  }
+                  <ResearchersPage />
                 </ModalMessageProvider>
               }
             />
