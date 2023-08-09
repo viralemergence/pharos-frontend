@@ -30,7 +30,17 @@ const setFiltersInParams = (filters: PublishedResearchersFilters) => {
 
   let nextURL = `${window.location.pathname}`
   if (params.toString() !== '') nextURL += `?${params.toString()}`
-  window.history.replaceState({}, '', nextURL)
+
+  // replace state if the user is typing a search
+  if (filters.searchString) window.history.replaceState({}, '', nextURL)
+  // for other filters use pushState so they can "go back"
+  else window.history.pushState({}, '', nextURL)
+}
+
+const handlePopState = (
+  setFilters: React.Dispatch<React.SetStateAction<PublishedResearchersFilters>>
+) => {
+  setFilters(getFiltersFromParams())
 }
 
 // handle filters in state and synchronize with url search params
@@ -38,6 +48,11 @@ const usePublishedResearchersFilters = () => {
   const [filters, setFilters] = useState<PublishedResearchersFilters>(
     getFiltersFromParams()
   )
+
+  useEffect(() => {
+    window.addEventListener('popstate', () => handlePopState(setFilters))
+    return () => window.removeEventListener('popstate', () => handlePopState)
+  }, [])
 
   // update search params when filters change
   useEffect(() => {

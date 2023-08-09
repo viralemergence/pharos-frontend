@@ -63,7 +63,11 @@ const ResearchersListPage = () => {
           </Breadcrumbs>
           <Title>Researchers</Title>
           <Controls>
-            <SearchControl filters={filters} setFilters={setFilters} />
+            <SearchControl
+              filters={filters}
+              setFilters={setFilters}
+              filteredResearchers={publishedResearchers.filtered}
+            />
           </Controls>
         </TopBar>
         <AlphabetControl
