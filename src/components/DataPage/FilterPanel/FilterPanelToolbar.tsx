@@ -20,7 +20,7 @@ import {
   PlusIcon,
   XIcon,
 } from './DisplayComponents'
-import type { Filter } from 'pages/data'
+import { Filter, filterDefaultProperties } from 'pages/data'
 
 const FilterSelector = ({
   filters,
@@ -106,10 +106,7 @@ const FilterPanelToolbar = ({
     setFilters(prev =>
       prev.map(filter => ({
         ...filter,
-        applied: false,
-        addedToPanel: false,
-        values: undefined,
-        inputIsValid: undefined,
+        ...filterDefaultProperties,
       }))
     )
   }

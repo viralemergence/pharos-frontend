@@ -50,6 +50,19 @@ export type Filter = {
   tooltipOrientation?: 'bottom' | 'top'
 }
 
+/** When a filter is cleared from the panel, it receives these default properties */
+export const filterDefaultProperties: Partial<Filter> & { panelIndex: number } =
+  {
+    values: undefined,
+    addedToPanel: false,
+    /** When a filter is added to the panel, it receives a new panelIndex (zero
+     * or greater), indicating its order in the panel. */
+    panelIndex: -1,
+    applied: false,
+    tooltipOrientation: undefined,
+    inputIsValid: undefined,
+  }
+
 const METADATA_URL = `${process.env.GATSBY_API_URL}/metadata-for-published-records`
 
 const DataPage = ({
@@ -96,9 +109,7 @@ const DataPage = ({
     const filters = Object.entries(data.fields).map(([fieldId, filter]) => ({
       fieldId,
       type: filter.type || 'text',
-      // When a filter is added to the panel, it will receive a new panelIndex,
-      // indicating its order in the panel
-      panelIndex: -1,
+      ...filterDefaultProperties,
       ...filter,
     }))
     setFilters(filters)
