@@ -24,10 +24,7 @@ jest.mock('cmsHooks/useSiteMetadataQuery', () => jest.fn())
 import React from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
 
-import { server } from '../../../../test/server'
-import { routeThatReturnsNoPublishedRecords } from '../../../../test/serverHandlers'
 import Providers from 'components/layout/Providers'
-
 import TableView from './TableView'
 import { Filter } from 'pages/data'
 
