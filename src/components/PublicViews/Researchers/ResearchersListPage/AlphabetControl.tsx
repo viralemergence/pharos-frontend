@@ -38,8 +38,8 @@ const Button = styled.button`
   }
 `
 
-const AllButton = styled(Button)`
-  color: ${({ theme }) => theme.mint};
+const AllButton = styled(Button)<{ selected: boolean }>`
+  color: ${({ theme, selected }) => (selected ? theme.mint : theme.white)};
   ${({ theme }) => theme.bigParagraphSemibold};
   padding: 10px;
   text-align: left;
@@ -96,6 +96,7 @@ const AlphabetControl = ({
   return (
     <Container>
       <AllButton
+        selected={filters.startsWithLetter === undefined}
         onClick={() =>
           setFilters(prev => ({ ...prev, startsWithLetter: undefined }))
         }
