@@ -298,6 +298,12 @@ const TableView = ({
     loadDebounced({ ...loadOptions, replaceRecords: true })
   }, [stringifiedFiltersWithValues])
 
+  useEffect(() => {
+    return () => {
+      loadDebounced.cancel()
+    }
+  }, [])
+
   const rowNumberColumn = {
     key: 'rowNumber',
     name: '',
