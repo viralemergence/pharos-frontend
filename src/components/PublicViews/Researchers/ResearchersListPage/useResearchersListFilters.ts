@@ -58,7 +58,6 @@ const handlePopState = (
 
     if (params.toString() === filterParams.toString()) return prev
 
-    console.log('popstate set filters')
     return getFiltersFromParams()
   })
 }
