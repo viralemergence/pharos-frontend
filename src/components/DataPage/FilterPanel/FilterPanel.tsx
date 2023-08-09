@@ -126,7 +126,7 @@ const FilterInput = ({
   )
 }
 
-const FilterValueSetter = ({
+const FilterUI = ({
   filter,
   updateFilter,
   setFilters,
@@ -222,7 +222,7 @@ const FilterPanel = ({
             {addedFilters.map(filter => {
               return (
                 <FilterListItem key={filter.fieldId}>
-                  <FilterValueSetter
+                  <FilterUI
                     filter={filter}
                     updateFilter={updateFilter}
                     setFilters={setFilters}
