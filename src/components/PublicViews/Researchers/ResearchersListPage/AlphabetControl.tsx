@@ -13,6 +13,7 @@ const Container = styled.div`
   border: 1px solid ${({ theme }) => theme.white10PercentOpacity};
   border-radius: 5px;
   background-color: ${({ theme }) => theme.mutedPurple1};
+  height: fit-content;
 
   @media (max-width: 700px) {
     display: none;
