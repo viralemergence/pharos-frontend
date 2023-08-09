@@ -35,10 +35,7 @@ const usePublishedResearchersFilters = () => {
     getFiltersFromParams()
   )
 
-  useEffect(() => {
-    setFilters(getFiltersFromParams())
-  }, [])
-
+  // update search params when filters change
   useEffect(() => {
     setFiltersInParams(filters)
   }, [filters])
