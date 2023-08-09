@@ -86,7 +86,11 @@ const AlphabetControl = ({
   filters,
 }: AlphabetControlProps) => {
   const handleLetterClick = (letter: string) => {
-    setFilters(prev => ({ ...prev, startsWithLetter: letter }))
+    setFilters(prev => ({
+      ...prev,
+      searchString: '',
+      startsWithLetter: letter,
+    }))
   }
 
   return (
