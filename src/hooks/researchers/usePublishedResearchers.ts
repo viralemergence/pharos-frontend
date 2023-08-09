@@ -6,13 +6,19 @@ import fetchPublishedResearchers, {
   PublishedResearchersStatus,
 } from './fetchPublishedResearchers'
 
-interface UsePublishedResearchersProps {
-  filters?: PublishedResearchersServerFilters
+interface PublishedResearchersClientFilters {
+  startsWithLetter?: string
+  searchString?: string
 }
 
-const usePublishedResearchers = ({
-  filters,
-}: UsePublishedResearchersProps): PublishedResearchersData => {
+export type PublishedResearchersFilters = PublishedResearchersServerFilters &
+  PublishedResearchersClientFilters
+
+interface UsePublishedResearchersProps {
+  filters?: PublishedResearchersFilters
+}
+
+const usePublishedResearchers = ({ filters }: UsePublishedResearchersProps) => {
   const [publishedResearchers, setPublishedResearchers] =
     useState<PublishedResearchersData>({
       status: PublishedResearchersStatus.Loading,
@@ -34,7 +40,24 @@ const usePublishedResearchers = ({
     }
   }, [filters?.researcherIDs])
 
-  return publishedResearchers
+  let publishedResearchersFiltered =
+    publishedResearchers.status === PublishedResearchersStatus.Loaded
+      ? publishedResearchers.data
+      : []
+
+  if (publishedResearchers.status === PublishedResearchersStatus.Loaded) {
+    if (filters?.startsWithLetter) {
+      const letter = filters.startsWithLetter
+      publishedResearchersFiltered = publishedResearchersFiltered.filter(
+        researcher => researcher.name.toLowerCase().startsWith(letter)
+      )
+    }
+  }
+
+  return {
+    ...publishedResearchers,
+    filtered: publishedResearchersFiltered,
+  }
 }
 
 export default usePublishedResearchers

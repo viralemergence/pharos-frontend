@@ -17,7 +17,9 @@ import {
 } from './ResearcherPageLayout'
 
 import SearchControl from './SearchControl'
-import usePublishedResearchers from 'hooks/researchers/usePublishedResearchers'
+import usePublishedResearchers, {
+  PublishedResearchersFilters,
+} from 'hooks/researchers/usePublishedResearchers'
 import { PublishedResearchersStatus } from 'hooks/researchers/fetchPublishedResearchers'
 import ResearcherBox from './ResearcherBox'
 
@@ -27,8 +29,10 @@ const Container = styled.div`
 `
 
 const ResearchersListPage = () => {
-  const publishedResearchers = usePublishedResearchers({})
+  const [filters, setFilters] = React.useState<PublishedResearchersFilters>({})
+  const publishedResearchers = usePublishedResearchers({ filters })
 
+  console.log(publishedResearchers)
   return (
     <Container>
       <PublicViewBackground />
@@ -47,11 +51,22 @@ const ResearchersListPage = () => {
             <SearchControl />
           </Controls>
         </TopBar>
-        <AlphabetControl />
+        <AlphabetControl
+          filters={filters}
+          setFilters={setFilters}
+          researchers={
+            publishedResearchers.status === PublishedResearchersStatus.Loaded
+              ? publishedResearchers.data
+              : []
+          }
+        />
         <ResearcherPageMain>
           {publishedResearchers.status === PublishedResearchersStatus.Loaded ? (
-            publishedResearchers.data.map(researcher => (
-              <ResearcherBox researcher={researcher} />
+            publishedResearchers.filtered.map(researcher => (
+              <ResearcherBox
+                key={researcher.researcherID}
+                researcher={researcher}
+              />
             ))
           ) : (
             <h3>Loading</h3>

@@ -34,6 +34,7 @@ export const ResearcherPageMain = styled.div`
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  gap: 30px;
 `
 
 export const ResearcherPageContentBox = styled.div<{ interactive?: boolean }>`
