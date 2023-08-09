@@ -40,7 +40,9 @@ const LoadingSpinnerContainer = styled.div`
 `
 
 const ResearchersListPage = () => {
-  const [filters, setFilters] = React.useState<PublishedResearchersFilters>({})
+  const [filters, setFilters] = React.useState<PublishedResearchersFilters>({
+    searchString: '',
+  })
   const publishedResearchers = usePublishedResearchers({ filters })
 
   return (
@@ -58,7 +60,7 @@ const ResearchersListPage = () => {
           </Breadcrumbs>
           <Title>Researchers</Title>
           <Controls>
-            <SearchControl />
+            <SearchControl filters={filters} setFilters={setFilters} />
           </Controls>
         </TopBar>
         <AlphabetControl

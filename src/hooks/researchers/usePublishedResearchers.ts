@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Fuse from 'fuse.js'
 
 import fetchPublishedResearchers, {
   PublishedResearcher,
@@ -9,14 +10,14 @@ import fetchPublishedResearchers, {
 
 interface PublishedResearchersClientFilters {
   startsWithLetter?: string
-  searchString?: string
+  searchString: string
 }
 
 export type PublishedResearchersFilters = PublishedResearchersServerFilters &
   PublishedResearchersClientFilters
 
 interface UsePublishedResearchersProps {
-  filters?: PublishedResearchersFilters
+  filters: PublishedResearchersFilters
 }
 
 interface UsePublishedResearchersData {
@@ -54,12 +55,22 @@ const usePublishedResearchers = ({
 
   let publishedResearchersFiltered = publishedResearchers.data
 
+  const fuse = new Fuse(publishedResearchersFiltered, {
+    keys: ['name', 'email', 'organization'],
+  })
+
   if (publishedResearchers.status === PublishedResearchersStatus.Loaded) {
     if (filters?.startsWithLetter) {
       const letter = filters.startsWithLetter
       publishedResearchersFiltered = publishedResearchersFiltered.filter(
         researcher => researcher.name.toLowerCase().startsWith(letter)
       )
+    }
+
+    if (filters.searchString !== '') {
+      publishedResearchersFiltered = fuse
+        .search(filters.searchString)
+        .map(result => result.item)
     }
   }
 
