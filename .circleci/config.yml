@@ -99,9 +99,9 @@ jobs:
           name: Typescript Checks
           command: yarn tsc
 
-      # - run:
-      #     name: Run tests
-      #     command: yarn run test
+      - run:
+          name: Run tests
+          command: yarn run test
 
       - run:
           name: Gatsby build
