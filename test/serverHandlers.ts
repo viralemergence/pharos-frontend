@@ -3435,12 +3435,8 @@ const publishedRecordsMetadata = {
       label: 'Pathogen',
       dataGridKey: 'Pathogen',
     },
-    collection_start_date: {
-      label: 'Collected on or after date',
-      type: 'date',
-    },
-    collection_end_date: {
-      label: 'Collected on or before date',
+    collection_date: {
+      label: 'Collection date',
       type: 'date',
     },
   },
@@ -3474,7 +3470,6 @@ const handlers = [
           )
         }
       }
-
       recordsToReturn = recordsToReturn.slice(
         indexOfFirstRecordWanted,
         indexOfFirstRecordWanted + pageSize

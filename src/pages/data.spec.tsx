@@ -180,17 +180,17 @@ describe('The public data page', () => {
     render(<DataPage />)
     fireEvent.click(getFilterPanelToggleButton())
     fireEvent.click(getAddFilterButton())
-    const addFilterForAfterDate = await screen.findByText(
-      'Collected on or after date',
+    const addFilterForCollectionDate = await screen.findByText(
+      'Collection date',
       { selector: 'button' }
     )
-    fireEvent.click(addFilterForAfterDate)
+    fireEvent.click(addFilterForCollectionDate)
     expect(
-      screen.getByLabelText('Collected on or after date')
+      screen.getByLabelText('Collected on this date or later')
     ).toBeInTheDocument()
     fireEvent.click(getClearFiltersButton())
     expect(
-      screen.queryByLabelText('Collected on or after date')
+      screen.queryByLabelText('Collected on this date or later')
     ).not.toBeInTheDocument()
   })
 
@@ -198,25 +198,16 @@ describe('The public data page', () => {
     render(<DataPage />)
     fireEvent.click(getFilterPanelToggleButton())
     userEvent.click(getAddFilterButton())
-    const addFilterForBeforeDate = await screen.findByText(
-      'Collected on or before date',
+    const addFilterForCollectionDate = await screen.findByText(
+      'Collection date',
       { selector: 'button' }
     )
-    expect(addFilterForBeforeDate).toBeInTheDocument()
-    userEvent.click(addFilterForBeforeDate)
+    expect(addFilterForCollectionDate).toBeInTheDocument()
+    userEvent.click(addFilterForCollectionDate)
 
     const filterForBeforeDate = await screen.findByLabelText(
-      /^Collected on or before date/
+      /^Collected on this date or earlier/
     )
-
-    userEvent.click(getAddFilterButton())
-    const addFilterForAfterDate = await screen.findByText(
-      'Collected on or after date',
-      { selector: 'button' }
-    )
-    expect(addFilterForAfterDate).toBeInTheDocument()
-    userEvent.click(addFilterForAfterDate)
-
     const filterForAfterDate = await screen.findByLabelText(
       /^Collected on or after date/
     )
@@ -226,11 +217,11 @@ describe('The public data page', () => {
     const dateFilters = await screen.findAllByLabelText(/^Collected on/)
     expect(dateFilters[0]).toHaveAttribute(
       'aria-label',
-      'Collected on or before date'
+      'Collected on this date or earlier'
     )
     expect(dateFilters[1]).toHaveAttribute(
       'aria-label',
-      'Collected on or after date'
+      'Collected on this date or later'
     )
   })
 
@@ -238,8 +229,8 @@ describe('The public data page', () => {
     render(<DataPage />)
     fireEvent.click(getFilterPanelToggleButton())
     fireEvent.click(getAddFilterButton())
-    fireEvent.click(await screen.findByText('Collected on or after date'))
-    const filterInput = screen.getByLabelText('Collected on or after date')
+    fireEvent.click(await screen.findByText('Collection date'))
+    const filterInput = screen.getByLabelText('Collected on this date or later')
     expect(filterInput).toBeInTheDocument()
     await userEvent.type(filterInput, '2020-04-01')
     const grid = await getDataGridAfterWaiting()
@@ -258,8 +249,8 @@ describe('The public data page', () => {
     render(<DataPage />)
     fireEvent.click(getFilterPanelToggleButton())
     fireEvent.click(getAddFilterButton())
-    fireEvent.click(await screen.findByText('Collected on or after date'))
-    const filterInput = screen.getByLabelText('Collected on or after date')
+    fireEvent.click(await screen.findByText('Collection date'))
+    const filterInput = screen.getByLabelText('Collected on this date or later')
     expect(filterInput).toBeInTheDocument()
     await userEvent.type(filterInput, '0000-00-00')
     const grid = await getDataGridAfterWaiting()
