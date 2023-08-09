@@ -93,6 +93,16 @@ const fetchPublishedResearchers = async ({
 
   const data = await response.json()
 
+  if (!response.ok) {
+    console.log(data)
+    setPublishedResearchers({
+      status: PublishedResearchersStatus.Error,
+      error: new Error(JSON.stringify(data)),
+      data: [],
+    })
+    return
+  }
+
   if (!dataIsPublishedResearchersResponse(data)) {
     setPublishedResearchers({
       status: PublishedResearchersStatus.Error,
