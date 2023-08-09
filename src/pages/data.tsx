@@ -8,6 +8,7 @@ import MapView, { MapProjection } from 'components/DataPage/MapView/MapView'
 import TableView from 'components/DataPage/TableView/TableView'
 import DataToolbar, { View, isView } from 'components/DataPage/Toolbar/Toolbar'
 import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
+import { filterDefaultProperties } from 'components/DataPage/FilterPanel/FilterPanelToolbar'
 import {
   MapOverlay,
   PageContainer,
@@ -48,18 +49,6 @@ export type Filter = {
   latestDateUsed?: string
   inputIsValid?: boolean
   tooltipOrientation?: 'bottom' | 'top'
-}
-
-/** When a filter is cleared from the panel, it receives these default properties */
-export const filterDefaultProperties = {
-  values: undefined,
-  addedToPanel: false,
-  /** When a filter is added to the panel, it receives a new panelIndex (zero
-   * or greater), indicating its order in the panel. */
-  panelIndex: -1,
-  applied: false,
-  tooltipOrientation: undefined,
-  inputIsValid: undefined,
 }
 
 const METADATA_URL = `${process.env.GATSBY_API_URL}/metadata-for-published-records`
