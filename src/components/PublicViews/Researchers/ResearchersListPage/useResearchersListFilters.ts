@@ -9,9 +9,12 @@ const getFiltersFromParams = () => {
   const searchString = params.get('searchString') ?? ''
   const paramsFilters: PublishedResearchersFilters = { searchString }
 
+  const researcherID = params.get('researcherID')
+  if (researcherID) paramsFilters.researcherID = researcherID
+
   // set startsWithLetter only if there is no search string
   const startsWithLetter = params.get('startsWithLetter')
-  if (!searchString && startsWithLetter)
+  if (!searchString && !researcherID && startsWithLetter)
     paramsFilters.startsWithLetter = startsWithLetter
 
   return paramsFilters
@@ -24,8 +27,6 @@ const setFiltersInParams = (filters: PublishedResearchersFilters) => {
   Object.entries(filters).forEach(([key, value]) => {
     if (value) params.append(key, value)
   })
-
-  console.log('params', params.toString())
 
   let nextURL = `${window.location.pathname}`
   if (params.toString() !== '') nextURL += `?${params.toString()}`

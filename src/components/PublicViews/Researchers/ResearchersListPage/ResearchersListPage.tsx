@@ -19,7 +19,7 @@ import {
 } from './ResearcherPageLayout'
 
 import SearchControl from './SearchControl'
-import ResearcherBox from './ResearcherBox'
+import ResearcherSummary from './ResearcherBox'
 import AlphabetControl from './AlphabetControl'
 
 import usePublishedResearchers from 'hooks/researchers/usePublishedResearchers'
@@ -73,11 +73,13 @@ const ResearchersListPage = () => {
               <ErrorBox>{publishedResearchers.error?.message}</ErrorBox>
             </ResearcherPageContentBox>
           )}
-          {publishedResearchers.status === PublishedResearchersStatus.Loaded &&
+          {!filters.researcherID &&
+            publishedResearchers.status === PublishedResearchersStatus.Loaded &&
             publishedResearchers.filtered.map(researcher => (
-              <ResearcherBox
+              <ResearcherSummary
                 key={researcher.researcherID}
                 researcher={researcher}
+                setFilters={setFilters}
               />
             ))}
           {publishedResearchers.status ===

@@ -23,7 +23,6 @@ const Alphabet = styled.div`
   display: grid;
   grid-template-columns: repeat(5, 1fr);
 `
-
 const Button = styled.button`
   background: none;
   border: none;
@@ -38,7 +37,6 @@ const Button = styled.button`
     border: 1px solid ${({ theme }) => theme.white10PercentOpacity};
   }
 `
-
 const AllButton = styled(Button)<{ selected: boolean }>`
   color: ${({ theme, selected }) => (selected ? theme.mint : theme.white)};
   ${({ theme }) => theme.bigParagraphSemibold};
@@ -87,11 +85,7 @@ const AlphabetControl = ({
   filters,
 }: AlphabetControlProps) => {
   const handleLetterClick = (letter: string) => {
-    setFilters(prev => ({
-      ...prev,
-      searchString: '',
-      startsWithLetter: letter,
-    }))
+    setFilters({ startsWithLetter: letter })
   }
 
   return (

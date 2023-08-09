@@ -14,13 +14,9 @@ const SearchControl = ({ filters, setFilters }: SearchControlProps) => (
     type="search"
     placeholder="Search"
     style={{ maxWidth: 'calc(100vw - 40px)' }}
-    value={filters.searchString}
+    value={filters.searchString ?? ''}
     onChange={e => {
-      setFilters(prev => ({
-        ...prev,
-        startsWithLetter: undefined,
-        searchString: e.target.value,
-      }))
+      setFilters({ searchString: e.target.value })
     }}
   />
 )

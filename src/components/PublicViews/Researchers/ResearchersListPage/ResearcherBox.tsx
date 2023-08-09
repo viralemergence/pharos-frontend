@@ -1,14 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { ResearcherPageContentBox } from './ResearcherPageLayout'
+import { ResearcherButton } from './ResearcherPageLayout'
 
 import { PublishedResearcher } from 'hooks/researchers/fetchPublishedResearchers'
-import { Link } from 'react-router-dom'
-
-interface ResearcherBoxProps {
-  researcher: PublishedResearcher
-}
+import { PublishedResearchersFilters } from 'hooks/researchers/usePublishedResearchers'
 
 const Name = styled.h2`
   ${({ theme }) => theme.h2};
@@ -21,13 +17,18 @@ const Organization = styled.p`
   margin: 0;
 `
 
-const ResearcherBox = ({ researcher }: ResearcherBoxProps) => (
-  <ResearcherPageContentBox interactive>
-    <Link to={`/${researcher.researcherID}`}>
-      <Name>{researcher.name}</Name>
-      <Organization>{researcher.organization}</Organization>
-    </Link>
-  </ResearcherPageContentBox>
+interface ResearcherBoxProps {
+  researcher: PublishedResearcher
+  setFilters: React.Dispatch<React.SetStateAction<PublishedResearchersFilters>>
+}
+
+const ResearcherSummary = ({ researcher, setFilters }: ResearcherBoxProps) => (
+  <ResearcherButton
+    onClick={() => setFilters({ researcherID: researcher.researcherID })}
+  >
+    <Name>{researcher.name}</Name>
+    <Organization>{researcher.organization}</Organization>
+  </ResearcherButton>
 )
 
-export default ResearcherBox
+export default ResearcherSummary

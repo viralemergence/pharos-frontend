@@ -1,5 +1,5 @@
 import wideMargins from 'components/layout/Margins'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 export const ResearcherPageLayout = styled.div`
   position: relative;
@@ -37,7 +37,7 @@ export const ResearcherPageMain = styled.div`
   gap: 30px;
 `
 
-export const ResearcherPageContentBox = styled.div<{ interactive?: boolean }>`
+const ContentBox = css`
   padding: 20px 30px;
   position: relative;
   background-color: ${({ theme }) => theme.mutedPurple2};
@@ -47,20 +47,11 @@ export const ResearcherPageContentBox = styled.div<{ interactive?: boolean }>`
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   transition: 250ms;
-
-  &:hover {
-    ${({ interactive, theme }) =>
-      interactive &&
-      `
-      background-color: ${theme.mutedPurple1};
-      border: 1px solid ${theme.mint};
-      border-top: none;
-    `}
-  }
+  display: flex;
+  flex-direction: column;
+  justify-content: flspace-between;
 
   &:before {
-    background-color: ${({ theme, interactive }) =>
-      interactive ? theme.mint : theme.white10PercentOpacity};
     content: '';
     position: absolute;
     top: 0;
@@ -69,5 +60,27 @@ export const ResearcherPageContentBox = styled.div<{ interactive?: boolean }>`
     height: 5px;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
+    background-color: ${({ theme }) => theme.white10PercentOpacity};
   }
+`
+
+export const ResearcherButton = styled.button`
+  background: none;
+  border: none;
+
+  ${ContentBox}
+
+  &:hover {
+    background-color: ${({ theme }) => theme.mutedPurple1};
+    border: 1px solid ${({ theme }) => theme.mint};
+    border-top: none;
+  }
+
+  &:before {
+    background-color: ${({ theme }) => theme.mint};
+  }
+`
+
+export const ResearcherPageContentBox = styled.div`
+  ${ContentBox}
 `
