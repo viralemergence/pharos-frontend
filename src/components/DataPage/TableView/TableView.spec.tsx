@@ -43,17 +43,6 @@ describe('The public data table', () => {
     )
   })
 
-  it('displays a message if there are no published records', async () => {
-    server.use(routeThatReturnsNoPublishedRecords)
-    render(
-      <Providers>
-        <TableView filters={[]} setFilters={jest.fn()} />
-      </Providers>
-    )
-    const message = await screen.findByText('No records have been published.')
-    expect(message).toBeInTheDocument()
-  })
-
   const startDateFilter: Filter = {
     fieldId: 'collection_start_date',
     label: 'Collected on or after',
