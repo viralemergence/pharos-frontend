@@ -10,7 +10,7 @@ import fetchPublishedResearchers, {
 
 interface PublishedResearchersClientFilters {
   startsWithLetter?: string
-  searchString: string
+  searchString?: string
 }
 
 export type PublishedResearchersFilters = PublishedResearchersServerFilters &
@@ -67,7 +67,7 @@ const usePublishedResearchers = ({
       )
     }
 
-    if (filters.searchString !== '') {
+    if (filters.searchString && filters.searchString !== '') {
       publishedResearchersFiltered = fuse
         .search(filters.searchString)
         .map(result => result.item)
