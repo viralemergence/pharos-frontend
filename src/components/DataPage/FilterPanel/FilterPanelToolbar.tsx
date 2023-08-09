@@ -20,7 +20,8 @@ import {
   PlusIcon,
   XIcon,
 } from './DisplayComponents'
-import { Filter, filterDefaultProperties } from 'pages/data'
+import type { Filter } from 'pages/data'
+import { filterDefaultProperties } from 'pages/data'
 
 const FilterSelector = ({
   filters,
