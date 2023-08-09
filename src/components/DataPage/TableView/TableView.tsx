@@ -253,7 +253,7 @@ const TableView = ({
   isFilterPanelOpen = false,
   enableVirtualization = true,
 }: TableViewProps) => {
-  const [loading, setLoading] = useState<LoadingState>(false)
+  const [loading, setLoading] = useState<LoadingState>('replacing')
   const [records, setRecords] = useState<Row[]>([])
   const [reachedLastPage, setReachedLastPage] = useState(false)
 
@@ -357,11 +357,9 @@ const TableView = ({
   return (
     <TableViewContainer isOpen={isOpen} isFilterPanelOpen={isFilterPanelOpen}>
       <TableContainer>
-        {!loading && records.length === 0 && (
+        {!loading && records.length === 0 && appliedFilters.length > 0 && (
           <NoRecordsFound role="status">
-            {appliedFilters.length
-              ? 'No matching records found.'
-              : 'No records have been published.'}
+            No matching records found.
           </NoRecordsFound>
         )}
         {records.length > 0 && (
