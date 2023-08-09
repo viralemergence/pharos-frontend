@@ -8,15 +8,15 @@ import TopBar, {
   PublicViewBreadcrumbLink,
 } from 'components/layout/TopBar'
 
+import ErrorBox from 'components/ui/ErrorBox'
+import LoadingSpinner from 'components/DataPage/TableView/LoadingSpinner'
+import PublicViewBackground from 'components/PublicViews/PublicViewBackground'
+
 import {
   ResearcherPageMain,
   ResearcherPageLayout,
   ResearcherPageContentBox,
 } from './ResearcherPageLayout'
-
-import ErrorBox from 'components/ui/ErrorBox'
-import LoadingSpinner from 'components/DataPage/TableView/LoadingSpinner'
-import PublicViewBackground from 'components/PublicViews/PublicViewBackground'
 
 import SearchControl from './SearchControl'
 import ResearcherBox from './ResearcherBox'
