@@ -42,8 +42,8 @@ const usePublishedResearchers = ({
 
     fetchPublishedResearchers({
       setPublishedResearchers,
-      filters: filters?.researcherIDs
-        ? { researcherIDs: filters?.researcherIDs }
+      filters: filters?.researcherID
+        ? { researcherID: filters?.researcherID }
         : {},
       ignore,
     })
@@ -51,7 +51,7 @@ const usePublishedResearchers = ({
     return () => {
       ignore = true
     }
-  }, [filters?.researcherIDs])
+  }, [filters?.researcherID])
 
   let publishedResearchersFiltered = publishedResearchers.data
 
