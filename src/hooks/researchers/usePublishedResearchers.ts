@@ -23,6 +23,7 @@ interface UsePublishedResearchersData {
   status: PublishedResearchersStatus
   filtered: PublishedResearcher[]
   all: PublishedResearcher[]
+  error: Error | null
 }
 
 const usePublishedResearchers = ({
@@ -66,6 +67,7 @@ const usePublishedResearchers = ({
     status: publishedResearchers.status,
     filtered: publishedResearchersFiltered,
     all: publishedResearchers.data,
+    error: publishedResearchers.error,
   }
 }
 

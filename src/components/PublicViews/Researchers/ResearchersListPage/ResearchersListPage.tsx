@@ -9,6 +9,7 @@ import TopBar, {
 } from 'components/layout/TopBar'
 
 import {
+  ResearcherPageContentBox,
   ResearcherPageLayout,
   ResearcherPageMain,
 } from './ResearcherPageLayout'
@@ -24,15 +25,24 @@ import usePublishedResearchers, {
   PublishedResearchersFilters,
 } from 'hooks/researchers/usePublishedResearchers'
 import { PublishedResearchersStatus } from 'hooks/researchers/fetchPublishedResearchers'
+import ErrorBox from 'components/ui/ErrorBox'
 
 const Container = styled.div`
   background-color: ${({ theme }) => theme.publicPagePurpleBackground};
   display: flow-root;
 `
+const LoadingSpinnerContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  ${({ theme }) => theme.bigParagraph};
+  color: ${({ theme }) => theme.white};
+`
 
 const ResearchersListPage = () => {
   const [filters, setFilters] = React.useState<PublishedResearchersFilters>({})
   const publishedResearchers = usePublishedResearchers({ filters })
+  console.log(publishedResearchers)
 
   return (
     <Container>
@@ -58,18 +68,25 @@ const ResearchersListPage = () => {
           researchers={publishedResearchers.all}
         />
         <ResearcherPageMain>
-          {publishedResearchers.status === PublishedResearchersStatus.Loaded ? (
+          {publishedResearchers.status === PublishedResearchersStatus.Error && (
+            <ResearcherPageContentBox>
+              <h3>Error loading researchers</h3>
+              <ErrorBox>{publishedResearchers.error?.message}</ErrorBox>
+            </ResearcherPageContentBox>
+          )}
+          {publishedResearchers.status === PublishedResearchersStatus.Loaded &&
             publishedResearchers.filtered.map(researcher => (
               <ResearcherBox
                 key={researcher.researcherID}
                 researcher={researcher}
               />
-            ))
-          ) : (
-            <h3>
-              <LoadingSpinner />
+            ))}
+          {publishedResearchers.status ===
+            PublishedResearchersStatus.Loading && (
+            <LoadingSpinnerContainer>
+              <LoadingSpinner style={{ marginRight: 5 }} />
               Loading
-            </h3>
+            </LoadingSpinnerContainer>
           )}
         </ResearcherPageMain>
       </ResearcherPageLayout>

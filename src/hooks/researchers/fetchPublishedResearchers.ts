@@ -80,7 +80,7 @@ const fetchPublishedResearchers = async ({
   )
 
   const response = await fetch(
-    `${process.env.GATSBY_API_URL}/researchers/?` + params.toString()
+    `${process.env.GATSBY_API_URL}/researcherss/?` + params.toString()
   ).catch(error => {
     setPublishedResearchers({
       status: PublishedResearchersStatus.Error,
@@ -89,23 +89,14 @@ const fetchPublishedResearchers = async ({
     })
   })
 
-  if (ignore) return
-
-  if (!response) {
-    setPublishedResearchers({
-      status: PublishedResearchersStatus.Error,
-      error: new Error('No Response'),
-      data: [],
-    })
-    return
-  }
+  if (ignore || !response) return
 
   const data = await response.json()
 
   if (!dataIsPublishedResearchersResponse(data)) {
     setPublishedResearchers({
       status: PublishedResearchersStatus.Error,
-      error: new Error('Invalid Response'),
+      error: new Error('Invalid Response structure'),
       data: [],
     })
     return
