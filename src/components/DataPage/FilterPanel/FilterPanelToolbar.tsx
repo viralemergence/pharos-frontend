@@ -25,11 +25,11 @@ import type { Filter } from 'pages/data'
 const FilterSelector = ({
   filters,
   setIsDropdownOpen,
-  addFilterValueSetter,
+  addFilterUI,
 }: {
   filters: Filter[]
   setIsDropdownOpen: Dispatch<SetStateAction<boolean>>
-  addFilterValueSetter: (options: Partial<Filter>) => void
+  addFilterUI: (options: Partial<Filter>) => void
 }) => {
   return (
     <FilterSelectorDiv>
@@ -37,7 +37,7 @@ const FilterSelector = ({
         <AddFilterToPanelButtonStyled
           key={fieldId}
           onClick={_ => {
-            addFilterValueSetter({ fieldId, type })
+            addFilterUI({ fieldId, type })
             setIsDropdownOpen(false)
           }}
           disabled={addedToPanel}
@@ -134,7 +134,7 @@ const FilterPanelToolbar = ({
           <FilterSelector
             filters={filters}
             setIsDropdownOpen={setIsDropdownOpen}
-            addFilterValueSetter={({ fieldId, type }) => {
+            addFilterUI={({ fieldId, type }) => {
               if (type !== 'date') {
                 // For now, do not handle filters other than dates
                 return
