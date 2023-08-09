@@ -26,6 +26,7 @@ import usePublishedResearchers from 'hooks/researchers/usePublishedResearchers'
 import { PublishedResearchersStatus } from 'hooks/researchers/fetchPublishedResearchers'
 
 import usePublishedResearchersFilters from './useResearchersListFilters'
+import ResearcherDetail from './ResearcherDetail'
 
 const Container = styled.div`
   background-color: ${({ theme }) => theme.publicPagePurpleBackground};
@@ -52,7 +53,11 @@ const ResearchersListPage = () => {
             <PublicViewBreadcrumbLink to={`/data/`}>
               All data
             </PublicViewBreadcrumbLink>
-            <PublicViewBreadcrumbLink $active to={`/researchers/`}>
+            <PublicViewBreadcrumbLink
+              $active
+              to={`/researchers/`}
+              onClick={() => setFilters({})}
+            >
               Researchers
             </PublicViewBreadcrumbLink>
           </Breadcrumbs>
@@ -82,6 +87,11 @@ const ResearchersListPage = () => {
                 setFilters={setFilters}
               />
             ))}
+          {filters.researcherID &&
+            publishedResearchers.status ===
+              PublishedResearchersStatus.Loaded && (
+              <ResearcherDetail researcher={publishedResearchers.filtered[0]} />
+            )}
           {publishedResearchers.status ===
             PublishedResearchersStatus.Loading && (
             <LoadingSpinnerContainer>

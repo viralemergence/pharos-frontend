@@ -92,9 +92,7 @@ const AlphabetControl = ({
     <Container>
       <AllButton
         selected={filters.startsWithLetter === undefined}
-        onClick={() =>
-          setFilters(prev => ({ ...prev, startsWithLetter: undefined }))
-        }
+        onClick={() => setFilters({})}
       >
         ALL
       </AllButton>
