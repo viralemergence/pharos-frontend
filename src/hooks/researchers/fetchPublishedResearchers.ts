@@ -80,7 +80,7 @@ const fetchPublishedResearchers = async ({
   )
 
   const response = await fetch(
-    `${process.env.GATSBY_API_URL}/researcherss/?` + params.toString()
+    `${process.env.GATSBY_API_URL}/researchers/?` + params.toString()
   ).catch(error => {
     setPublishedResearchers({
       status: PublishedResearchersStatus.Error,
