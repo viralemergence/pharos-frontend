@@ -3457,12 +3457,22 @@ const handlers = [
 
       // Handle some filters for testing purposes
       let recordsToReturn = [...publishedRecords]
-      const collectionStartDate = params.get('collection_start_date')
-      if (collectionStartDate) {
-        recordsToReturn = recordsToReturn.filter(
-          record =>
-            new Date(record['Collection date']) >= new Date(collectionStartDate)
-        )
+      const collectionDate = params.get('collection_date')
+      if (collectionDate && collectionDate.length >= 2) {
+        const [collectionStartDate, collectionEndDate] = collectionDate
+        if (collectionStartDate) {
+          recordsToReturn = recordsToReturn.filter(
+            record =>
+              new Date(record['Collection date']) >=
+              new Date(collectionStartDate)
+          )
+        }
+        if (collectionEndDate) {
+          recordsToReturn = recordsToReturn.filter(
+            record =>
+              new Date(record['Collection date']) >= new Date(collectionEndDate)
+          )
+        }
       }
 
       recordsToReturn = recordsToReturn.slice(
