@@ -262,7 +262,7 @@ export const Panel = styled.aside<{ open: boolean }>`
 
 export const FieldInput = styled.input`
   ${({ theme }) => theme.smallParagraph};
-  background-color: #202020;
+  background-color: ${({ theme }) => theme.mutedPurple1};
   border-radius: 5px;
   border: 1px solid ${({ theme }) => theme.white};
   color: ${({ theme }) => theme.white};
