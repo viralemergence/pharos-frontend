@@ -12,12 +12,14 @@ import PublicViewBackground from 'components/PublicViews/PublicViewBackground'
 import AlphabetControl from './AlphabetControl'
 
 import {
-  ResearcherPageContentBox,
   ResearcherPageLayout,
   ResearcherPageMain,
 } from './ResearcherPageLayout'
 
 import SearchControl from './SearchControl'
+import usePublishedResearchers from 'hooks/researchers/usePublishedResearchers'
+import { PublishedResearchersStatus } from 'hooks/researchers/fetchPublishedResearchers'
+import ResearcherBox from './ResearcherBox'
 
 const Container = styled.div`
   background-color: ${({ theme }) => theme.publicPagePurpleBackground};
@@ -25,6 +27,8 @@ const Container = styled.div`
 `
 
 const ResearchersListPage = () => {
+  const publishedResearchers = usePublishedResearchers({})
+
   return (
     <Container>
       <PublicViewBackground />
@@ -45,9 +49,13 @@ const ResearchersListPage = () => {
         </TopBar>
         <AlphabetControl />
         <ResearcherPageMain>
-          <ResearcherPageContentBox interactive>
-            <h2>Researcher Name</h2>
-          </ResearcherPageContentBox>
+          {publishedResearchers.status === PublishedResearchersStatus.Loaded ? (
+            publishedResearchers.data.map(researcher => (
+              <ResearcherBox researcher={researcher} />
+            ))
+          ) : (
+            <h3>Loading</h3>
+          )}
         </ResearcherPageMain>
       </ResearcherPageLayout>
     </Container>
