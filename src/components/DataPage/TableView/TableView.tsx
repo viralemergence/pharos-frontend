@@ -123,13 +123,13 @@ const load = async ({
   records: Row[]
   replaceRecords?: boolean
   filters?: Filter[]
-  setLoading: Dispatch<SetStateAction<boolean>>
+  setLoading: Dispatch<SetStateAction<LoadingState>>
   setFilters: Dispatch<SetStateAction<Filter[]>>
   latestRecordsRequestIdRef: MutableRefObject<number>
   setReachedLastPage: Dispatch<SetStateAction<boolean>>
   setRecords: Dispatch<SetStateAction<Row[]>>
 }) => {
-  setLoading(true)
+  setLoading(replaceRecords ? 'replacing' : 'appending')
 
   const queryStringParameters = new URLSearchParams()
 
@@ -244,6 +244,8 @@ const loadDebounced = debounce(load, loadDebounceDelay, {
   trailing: true,
 })
 
+type LoadingState = false | 'appending' | 'replacing'
+
 const TableView = ({
   filters,
   setFilters,
@@ -251,7 +253,7 @@ const TableView = ({
   isFilterPanelOpen = false,
   enableVirtualization = true,
 }: TableViewProps) => {
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState<LoadingState>(false)
   const [records, setRecords] = useState<Row[]>([])
   const [reachedLastPage, setReachedLastPage] = useState(false)
 
@@ -375,11 +377,12 @@ const TableView = ({
             enableVirtualization={enableVirtualization}
             role="grid"
             data-testid="datagrid"
+            ref={dataGridHandle}
           />
         )}
         {loading && (
           <LoadingMessage>
-            <LoadingSpinner /> Loading {records.length > 0 && ' more rows'}
+            <LoadingSpinner /> Loading {loading === 'appending' && ' more rows'}
           </LoadingMessage>
         )}
       </TableContainer>
