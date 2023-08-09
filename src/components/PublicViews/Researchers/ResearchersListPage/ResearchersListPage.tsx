@@ -2,26 +2,28 @@ import React from 'react'
 import styled from 'styled-components'
 
 import TopBar, {
-  Breadcrumbs,
-  Controls,
-  PublicViewBreadcrumbLink,
   Title,
+  Controls,
+  Breadcrumbs,
+  PublicViewBreadcrumbLink,
 } from 'components/layout/TopBar'
-
-import PublicViewBackground from 'components/PublicViews/PublicViewBackground'
-import AlphabetControl from './AlphabetControl'
 
 import {
   ResearcherPageLayout,
   ResearcherPageMain,
 } from './ResearcherPageLayout'
 
+import PublicViewBackground from 'components/PublicViews/PublicViewBackground'
+import LoadingSpinner from 'components/DataPage/TableView/LoadingSpinner'
+
+import AlphabetControl from './AlphabetControl'
 import SearchControl from './SearchControl'
+import ResearcherBox from './ResearcherBox'
+
 import usePublishedResearchers, {
   PublishedResearchersFilters,
 } from 'hooks/researchers/usePublishedResearchers'
 import { PublishedResearchersStatus } from 'hooks/researchers/fetchPublishedResearchers'
-import ResearcherBox from './ResearcherBox'
 
 const Container = styled.div`
   background-color: ${({ theme }) => theme.publicPagePurpleBackground};
@@ -64,7 +66,10 @@ const ResearchersListPage = () => {
               />
             ))
           ) : (
-            <h3>Loading</h3>
+            <h3>
+              <LoadingSpinner />
+              Loading
+            </h3>
           )}
         </ResearcherPageMain>
       </ResearcherPageLayout>
