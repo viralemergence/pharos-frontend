@@ -1,14 +1,24 @@
 import React from 'react'
+
 import SearchBar from 'components/ui/SearchBar'
 
-const SearchControl = () => {
-  return (
-    <SearchBar
-      type="search"
-      placeholder="Search"
-      style={{ maxWidth: 'calc(100vw - 40px)' }}
-    />
-  )
+import { PublishedResearchersFilters } from 'hooks/researchers/usePublishedResearchers'
+
+interface SearchControlProps {
+  filters: PublishedResearchersFilters
+  setFilters: React.Dispatch<React.SetStateAction<PublishedResearchersFilters>>
 }
+
+const SearchControl = ({ filters, setFilters }: SearchControlProps) => (
+  <SearchBar
+    type="search"
+    placeholder="Search"
+    style={{ maxWidth: 'calc(100vw - 40px)' }}
+    value={filters.searchString}
+    onChange={e => {
+      setFilters(prev => ({ ...prev, searchString: e.target.value }))
+    }}
+  />
+)
 
 export default SearchControl

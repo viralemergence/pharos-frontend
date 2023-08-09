@@ -1,3 +1,5 @@
+import { PublishedResearcher } from 'hooks/researchers/fetchPublishedResearchers'
+import { PublishedResearchersFilters } from 'hooks/researchers/usePublishedResearchers'
 import React from 'react'
 import styled from 'styled-components'
 
@@ -10,7 +12,6 @@ const Container = styled.div`
   padding: 10px;
   border: 1px solid ${({ theme }) => theme.white10PercentOpacity};
   border-radius: 5px;
-
   background-color: ${({ theme }) => theme.mutedPurple1};
 
   @media (max-width: 700px) {
@@ -50,22 +51,65 @@ const LetterButton = styled(Button)<{ selected: boolean }>`
   color: ${({ theme, selected }) => (selected ? theme.mint : theme.white)};
   padding: 10px;
   border: 1px solid rgba(0, 0, 0, 0);
+  text-transform: uppercase;
+  font-weight: 800;
+
+  ${({ theme, selected }) =>
+    selected &&
+    `background-color: ${theme.white10PercentOpacity};
+      border: 1px solid ${theme.white10PercentOpacity};`};
 
   &:disabled {
     ${({ theme }) => theme.bigParagraph};
-    color: ${({ theme }) => theme.lightGray};
+    color: ${({ theme }) => theme.medDarkGray};
+    text-transform: uppercase;
+
+    &:hover {
+      color: ${({ theme }) => theme.medGray};
+      background-color: rgba(0, 0, 0, 0);
+      border: 1px solid ${({ theme }) => theme.white10PercentOpacity};
+    }
   }
 `
 
-const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
+const letters = 'abcdefghijklmnopqrstuvwxyz'.split('')
 
-const AlphabetControl = () => {
+interface AlphabetControlProps {
+  researchers: PublishedResearcher[]
+  filters: PublishedResearchersFilters
+  setFilters: React.Dispatch<React.SetStateAction<PublishedResearchersFilters>>
+}
+
+const AlphabetControl = ({
+  researchers,
+  setFilters,
+  filters,
+}: AlphabetControlProps) => {
+  const handleLetterClick = (letter: string) => {
+    setFilters(prev => ({ ...prev, startsWithLetter: letter }))
+  }
+
   return (
     <Container>
-      <AllButton>ALL</AllButton>
+      <AllButton
+        onClick={() =>
+          setFilters(prev => ({ ...prev, startsWithLetter: undefined }))
+        }
+      >
+        ALL
+      </AllButton>
       <Alphabet>
         {letters.map(letter => (
-          <LetterButton key={letter} selected={false}>
+          <LetterButton
+            key={letter}
+            onClick={() => handleLetterClick(letter)}
+            selected={filters.startsWithLetter === letter}
+            disabled={
+              !researchers.some(researcher =>
+                researcher.name.toLowerCase().startsWith(letter)
+              )
+            }
+          >
             {letter}
           </LetterButton>
         ))}
