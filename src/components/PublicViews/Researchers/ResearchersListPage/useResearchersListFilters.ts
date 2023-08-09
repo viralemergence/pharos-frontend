@@ -25,7 +25,10 @@ const setFiltersInParams = (filters: PublishedResearchersFilters) => {
     if (value) params.append(key, value)
   })
 
-  const nextURL = `${window.location.pathname}?${params.toString()}`
+  console.log('params', params.toString())
+
+  let nextURL = `${window.location.pathname}`
+  if (params.toString() !== '') nextURL += `?${params.toString()}`
   window.history.replaceState({}, '', nextURL)
 }
 
