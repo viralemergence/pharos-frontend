@@ -13,6 +13,7 @@ const Container = styled.div`
   border: 1px solid ${({ theme }) => theme.white10PercentOpacity};
   border-radius: 5px;
   background-color: ${({ theme }) => theme.mutedPurple1};
+  height: fit-content;
 
   @media (max-width: 700px) {
     display: none;
@@ -22,7 +23,6 @@ const Alphabet = styled.div`
   display: grid;
   grid-template-columns: repeat(5, 1fr);
 `
-
 const Button = styled.button`
   background: none;
   border: none;
@@ -37,7 +37,6 @@ const Button = styled.button`
     border: 1px solid ${({ theme }) => theme.white10PercentOpacity};
   }
 `
-
 const AllButton = styled(Button)<{ selected: boolean }>`
   color: ${({ theme, selected }) => (selected ? theme.mint : theme.white)};
   ${({ theme }) => theme.bigParagraphSemibold};
@@ -86,20 +85,14 @@ const AlphabetControl = ({
   filters,
 }: AlphabetControlProps) => {
   const handleLetterClick = (letter: string) => {
-    setFilters(prev => ({
-      ...prev,
-      searchString: '',
-      startsWithLetter: letter,
-    }))
+    setFilters({ startsWithLetter: letter })
   }
 
   return (
     <Container>
       <AllButton
         selected={filters.startsWithLetter === undefined}
-        onClick={() =>
-          setFilters(prev => ({ ...prev, startsWithLetter: undefined }))
-        }
+        onClick={() => setFilters({})}
       >
         ALL
       </AllButton>

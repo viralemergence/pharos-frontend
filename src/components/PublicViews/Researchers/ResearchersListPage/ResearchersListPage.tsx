@@ -19,12 +19,14 @@ import {
 } from './ResearcherPageLayout'
 
 import SearchControl from './SearchControl'
-import ResearcherBox from './ResearcherBox'
+import ResearcherSummary from './ResearcherBox'
 import AlphabetControl from './AlphabetControl'
 
 import usePublishedResearchers from 'hooks/researchers/usePublishedResearchers'
 import { PublishedResearchersStatus } from 'hooks/researchers/fetchPublishedResearchers'
+
 import usePublishedResearchersFilters from './useResearchersListFilters'
+import ResearcherDetail from './ResearcherDetail'
 
 const Container = styled.div`
   background-color: ${({ theme }) => theme.publicPagePurpleBackground};
@@ -51,13 +53,21 @@ const ResearchersListPage = () => {
             <PublicViewBreadcrumbLink to={`/data/`}>
               All data
             </PublicViewBreadcrumbLink>
-            <PublicViewBreadcrumbLink $active to={`/researchers/`}>
+            <PublicViewBreadcrumbLink
+              $active
+              to={`/researchers/`}
+              onClick={() => setFilters({})}
+            >
               Researchers
             </PublicViewBreadcrumbLink>
           </Breadcrumbs>
           <Title>Researchers</Title>
           <Controls>
-            <SearchControl filters={filters} setFilters={setFilters} />
+            <SearchControl
+              filters={filters}
+              setFilters={setFilters}
+              filteredResearchers={publishedResearchers.filtered}
+            />
           </Controls>
         </TopBar>
         <AlphabetControl
@@ -72,13 +82,20 @@ const ResearchersListPage = () => {
               <ErrorBox>{publishedResearchers.error?.message}</ErrorBox>
             </ResearcherPageContentBox>
           )}
-          {publishedResearchers.status === PublishedResearchersStatus.Loaded &&
+          {!filters.researcherID &&
+            publishedResearchers.status === PublishedResearchersStatus.Loaded &&
             publishedResearchers.filtered.map(researcher => (
-              <ResearcherBox
+              <ResearcherSummary
                 key={researcher.researcherID}
                 researcher={researcher}
+                setFilters={setFilters}
               />
             ))}
+          {filters.researcherID &&
+            publishedResearchers.status ===
+              PublishedResearchersStatus.Loaded && (
+              <ResearcherDetail researcher={publishedResearchers.filtered[0]} />
+            )}
           {publishedResearchers.status ===
             PublishedResearchersStatus.Loading && (
             <LoadingSpinnerContainer>

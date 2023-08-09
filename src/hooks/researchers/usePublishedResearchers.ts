@@ -4,17 +4,16 @@ import Fuse from 'fuse.js'
 import fetchPublishedResearchers, {
   PublishedResearcher,
   PublishedResearchersData,
-  PublishedResearchersServerFilters,
   PublishedResearchersStatus,
 } from './fetchPublishedResearchers'
 
 interface PublishedResearchersClientFilters {
   startsWithLetter?: string
-  searchString: string
+  searchString?: string
+  researcherID?: string
 }
 
-export type PublishedResearchersFilters = PublishedResearchersServerFilters &
-  PublishedResearchersClientFilters
+export type PublishedResearchersFilters = PublishedResearchersClientFilters
 
 interface UsePublishedResearchersProps {
   filters: PublishedResearchersFilters
@@ -42,35 +41,39 @@ const usePublishedResearchers = ({
 
     fetchPublishedResearchers({
       setPublishedResearchers,
-      filters: filters?.researcherIDs
-        ? { researcherIDs: filters?.researcherIDs }
-        : {},
+      filters: {},
       ignore,
     })
 
     return () => {
       ignore = true
     }
-  }, [filters?.researcherIDs])
+  }, [])
 
   let publishedResearchersFiltered = publishedResearchers.data
 
   const fuse = new Fuse(publishedResearchersFiltered, {
-    keys: ['name', 'email', 'organization'],
+    keys: ['name', 'organization'],
   })
 
   if (publishedResearchers.status === PublishedResearchersStatus.Loaded) {
-    if (filters?.startsWithLetter) {
+    if (filters.startsWithLetter) {
       const letter = filters.startsWithLetter
       publishedResearchersFiltered = publishedResearchersFiltered.filter(
         researcher => researcher.name.toLowerCase().startsWith(letter)
       )
     }
 
-    if (filters.searchString !== '') {
+    if (filters.searchString) {
       publishedResearchersFiltered = fuse
         .search(filters.searchString)
         .map(result => result.item)
+    }
+
+    if (filters.researcherID) {
+      publishedResearchersFiltered = publishedResearchersFiltered.filter(
+        researcher => researcher.researcherID === filters.researcherID
+      )
     }
   }
 

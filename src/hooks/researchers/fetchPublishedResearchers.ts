@@ -50,7 +50,7 @@ const dataIsPublishedResearchersResponse = (
 }
 
 export interface PublishedResearchersServerFilters {
-  researcherIDs?: string[]
+  researcherID?: string[]
 }
 
 interface FetchPublishedResearchersProps {
@@ -92,6 +92,16 @@ const fetchPublishedResearchers = async ({
   if (ignore || !response) return
 
   const data = await response.json()
+
+  if (!response.ok) {
+    console.log(data)
+    setPublishedResearchers({
+      status: PublishedResearchersStatus.Error,
+      error: new Error(JSON.stringify(data, null, 2)),
+      data: [],
+    })
+    return
+  }
 
   if (!dataIsPublishedResearchersResponse(data)) {
     setPublishedResearchers({
