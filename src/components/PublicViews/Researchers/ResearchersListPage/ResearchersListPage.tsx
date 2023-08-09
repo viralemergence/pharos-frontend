@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 
 import TopBar, {
@@ -22,10 +22,9 @@ import SearchControl from './SearchControl'
 import ResearcherBox from './ResearcherBox'
 import AlphabetControl from './AlphabetControl'
 
-import usePublishedResearchers, {
-  PublishedResearchersFilters,
-} from 'hooks/researchers/usePublishedResearchers'
+import usePublishedResearchers from 'hooks/researchers/usePublishedResearchers'
 import { PublishedResearchersStatus } from 'hooks/researchers/fetchPublishedResearchers'
+import usePublishedResearchersFilters from './useResearchersListFilters'
 
 const Container = styled.div`
   background-color: ${({ theme }) => theme.publicPagePurpleBackground};
@@ -40,9 +39,7 @@ const LoadingSpinnerContainer = styled.div`
 `
 
 const ResearchersListPage = () => {
-  const [filters, setFilters] = React.useState<PublishedResearchersFilters>({
-    searchString: '',
-  })
+  const [filters, setFilters] = usePublishedResearchersFilters()
   const publishedResearchers = usePublishedResearchers({ filters })
 
   return (
