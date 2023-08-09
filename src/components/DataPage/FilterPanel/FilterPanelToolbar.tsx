@@ -26,15 +26,13 @@ const FilterSelector = ({
   filters,
   setIsDropdownOpen,
   addFilterValueSetter,
-  onClick = () => null,
 }: {
   filters: Filter[]
   setIsDropdownOpen: Dispatch<SetStateAction<boolean>>
   addFilterValueSetter: (options: Partial<Filter>) => void
-  onClick?: (e?: React.MouseEvent<HTMLDivElement>) => void
 }) => {
   return (
-    <FilterSelectorDiv onClick={onClick}>
+    <FilterSelectorDiv>
       {filters.map(({ fieldId, type, label, addedToPanel = false }) => (
         <AddFilterToPanelButtonStyled
           key={fieldId}
