@@ -8,7 +8,7 @@ import React, {
 } from 'react'
 import debounce from 'lodash/debounce'
 import styled from 'styled-components'
-import DataGrid, { Column } from 'react-data-grid'
+import DataGrid, { Column, DataGridHandle } from 'react-data-grid'
 
 import LoadingSpinner from './LoadingSpinner'
 import type { Filter } from 'pages/data'
@@ -101,11 +101,12 @@ interface TableViewProps {
   enableVirtualization?: boolean
 }
 
-const divIsAtBottom = ({ currentTarget }: React.UIEvent<HTMLDivElement>) =>
-  currentTarget.scrollTop + 10 >=
-  currentTarget.scrollHeight - currentTarget.clientHeight
+const divIsScrolledToBottom = (div: HTMLDivElement) =>
+  div.scrollTop + 10 >= div.scrollHeight - div.clientHeight
 
 const rowKeyGetter = (row: Row) => row.pharosID
+
+const countPages = (records: Row[]) => Math.floor(records.length / PAGE_SIZE)
 
 /** Load published records. This function prepares the query string and calls
  * fetchRecords() to retrieve records from the API. */
@@ -122,13 +123,13 @@ const load = async ({
   records: Row[]
   replaceRecords?: boolean
   filters?: Filter[]
-  setLoading: Dispatch<SetStateAction<boolean>>
+  setLoading: Dispatch<SetStateAction<LoadingState>>
   setFilters: Dispatch<SetStateAction<Filter[]>>
   latestRecordsRequestIdRef: MutableRefObject<number>
   setReachedLastPage: Dispatch<SetStateAction<boolean>>
   setRecords: Dispatch<SetStateAction<Row[]>>
 }) => {
-  setLoading(true)
+  setLoading(replaceRecords ? 'replacing' : 'appending')
 
   const queryStringParameters = new URLSearchParams()
 
@@ -152,14 +153,14 @@ const load = async ({
     // If we're not replacing the current set of records, load the next
     // page. For example, if there are 100 records, load page 3 (i.e., the
     // records numbered from 101 to 150)
-    pageToLoad = Math.floor(records.length / PAGE_SIZE) + 1
+    pageToLoad = countPages(records) + 1
   }
   queryStringParameters.append('page', pageToLoad.toString())
   queryStringParameters.append('pageSize', PAGE_SIZE.toString())
 
   const success = await fetchRecords({
     queryStringParameters,
-    replaceRecords: replaceRecords,
+    replaceRecords,
     latestRecordsRequestIdRef,
     setRecords,
     setReachedLastPage,
@@ -243,6 +244,8 @@ const loadDebounced = debounce(load, loadDebounceDelay, {
   trailing: true,
 })
 
+type LoadingState = false | 'appending' | 'replacing'
+
 const TableView = ({
   filters,
   setFilters,
@@ -250,7 +253,7 @@ const TableView = ({
   isFilterPanelOpen = false,
   enableVirtualization = true,
 }: TableViewProps) => {
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState<LoadingState>('replacing')
   const [records, setRecords] = useState<Row[]>([])
   const [reachedLastPage, setReachedLastPage] = useState(false)
 
@@ -276,6 +279,10 @@ const TableView = ({
    * since it is not the latest request.)  */
   const latestRecordsRequestIdRef = useRef(0)
 
+  /** This ref will be set to a handle exposed by DataGrid, which allows access
+   * to the underlying div */
+  const dataGridHandle = useRef<DataGridHandle>(null)
+
   const loadOptions = {
     filters,
     latestRecordsRequestIdRef,
@@ -291,6 +298,11 @@ const TableView = ({
     loadDebounced({ ...loadOptions, replaceRecords: true })
   }, [stringifiedFiltersWithValues])
 
+  useEffect(() => {
+    return () => {
+      loadDebounced.cancel()
+    }
+  }, [])
 
   const rowNumberColumn = {
     key: 'rowNumber',
@@ -323,23 +335,37 @@ const TableView = ({
   ]
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
-    if (!loading && !reachedLastPage && divIsAtBottom(event))
+    if (
+      !loading &&
+      !reachedLastPage &&
+      divIsScrolledToBottom(event.currentTarget)
+    )
       load({ ...loadOptions, replaceRecords: false })
   }
 
   // When records finish loading, remove the 'Loading...' indicator
   useEffect(() => {
     setLoading(false)
+
+    // If the table just loaded the first page of records and the grid is
+    // scrolled to the bottom, scroll to the top to avoid loading another page.
+    // ".element" comes from react-data-grid.
+    const dataGrid = dataGridHandle.current?.element
+    if (
+      dataGrid &&
+      countPages(records) === 1 &&
+      divIsScrolledToBottom(dataGrid)
+    ) {
+      dataGrid.scrollTop = 0
+    }
   }, [records])
 
   return (
     <TableViewContainer isOpen={isOpen} isFilterPanelOpen={isFilterPanelOpen}>
       <TableContainer>
-        {!loading && records.length === 0 && (
+        {!loading && records.length === 0 && appliedFilters.length > 0 && (
           <NoRecordsFound role="status">
-            {appliedFilters.length
-              ? 'No matching records found.'
-              : 'No records have been published.'}
+            No matching records found.
           </NoRecordsFound>
         )}
         {records.length > 0 && (
@@ -355,11 +381,12 @@ const TableView = ({
             enableVirtualization={enableVirtualization}
             role="grid"
             data-testid="datagrid"
+            ref={dataGridHandle}
           />
         )}
         {loading && (
           <LoadingMessage>
-            <LoadingSpinner /> Loading {records.length > 0 && ' more rows'}
+            <LoadingSpinner /> Loading {loading === 'appending' && ' more rows'}
           </LoadingMessage>
         )}
       </TableContainer>

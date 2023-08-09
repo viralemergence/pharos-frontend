@@ -24,10 +24,7 @@ jest.mock('cmsHooks/useSiteMetadataQuery', () => jest.fn())
 import React from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
 
-import { server } from '../../../../test/server'
-import { routeThatReturnsNoPublishedRecords } from '../../../../test/serverHandlers'
 import Providers from 'components/layout/Providers'
-
 import TableView from './TableView'
 import { Filter } from 'pages/data'
 
@@ -41,17 +38,6 @@ describe('The public data table', () => {
         <TableView filters={[]} setFilters={jest.fn()} />
       </Providers>
     )
-  })
-
-  it('displays a message if there are no published records', async () => {
-    server.use(routeThatReturnsNoPublishedRecords)
-    render(
-      <Providers>
-        <TableView filters={[]} setFilters={jest.fn()} />
-      </Providers>
-    )
-    const message = await screen.findByText('No records have been published.')
-    expect(message).toBeInTheDocument()
   })
 
   const startDateFilter: Filter = {
