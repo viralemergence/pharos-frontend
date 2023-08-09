@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import fetchPublishedResearchers, {
+  PublishedResearcher,
   PublishedResearchersData,
   PublishedResearchersServerFilters,
   PublishedResearchersStatus,
@@ -18,10 +19,20 @@ interface UsePublishedResearchersProps {
   filters?: PublishedResearchersFilters
 }
 
-const usePublishedResearchers = ({ filters }: UsePublishedResearchersProps) => {
+interface UsePublishedResearchersData {
+  status: PublishedResearchersStatus
+  filtered: PublishedResearcher[]
+  all: PublishedResearcher[]
+}
+
+const usePublishedResearchers = ({
+  filters,
+}: UsePublishedResearchersProps): UsePublishedResearchersData => {
   const [publishedResearchers, setPublishedResearchers] =
     useState<PublishedResearchersData>({
       status: PublishedResearchersStatus.Loading,
+      error: null,
+      data: [],
     })
 
   useEffect(() => {
@@ -40,10 +51,7 @@ const usePublishedResearchers = ({ filters }: UsePublishedResearchersProps) => {
     }
   }, [filters?.researcherIDs])
 
-  let publishedResearchersFiltered =
-    publishedResearchers.status === PublishedResearchersStatus.Loaded
-      ? publishedResearchers.data
-      : []
+  let publishedResearchersFiltered = publishedResearchers.data
 
   if (publishedResearchers.status === PublishedResearchersStatus.Loaded) {
     if (filters?.startsWithLetter) {
@@ -55,8 +63,9 @@ const usePublishedResearchers = ({ filters }: UsePublishedResearchersProps) => {
   }
 
   return {
-    ...publishedResearchers,
+    status: publishedResearchers.status,
     filtered: publishedResearchersFiltered,
+    all: publishedResearchers.data,
   }
 }
 

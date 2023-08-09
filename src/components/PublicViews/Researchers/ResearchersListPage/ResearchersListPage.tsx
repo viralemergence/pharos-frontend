@@ -32,7 +32,6 @@ const ResearchersListPage = () => {
   const [filters, setFilters] = React.useState<PublishedResearchersFilters>({})
   const publishedResearchers = usePublishedResearchers({ filters })
 
-  console.log(publishedResearchers)
   return (
     <Container>
       <PublicViewBackground />
@@ -54,11 +53,7 @@ const ResearchersListPage = () => {
         <AlphabetControl
           filters={filters}
           setFilters={setFilters}
-          researchers={
-            publishedResearchers.status === PublishedResearchersStatus.Loaded
-              ? publishedResearchers.data
-              : []
-          }
+          researchers={publishedResearchers.all}
         />
         <ResearcherPageMain>
           {publishedResearchers.status === PublishedResearchersStatus.Loaded ? (

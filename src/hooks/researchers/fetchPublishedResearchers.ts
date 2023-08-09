@@ -4,24 +4,11 @@ export enum PublishedResearchersStatus {
   Error,
 }
 
-interface PublishedResearchersLoading {
-  status: PublishedResearchersStatus.Loading
-}
-
-interface PublishedResearchersLoaded {
-  status: PublishedResearchersStatus.Loaded
+export interface PublishedResearchersData {
+  status: PublishedResearchersStatus
   data: PublishedResearcher[]
+  error: Error | null
 }
-
-interface PublishedResearchersError {
-  status: PublishedResearchersStatus.Error
-  error: Error
-}
-
-export type PublishedResearchersData =
-  | PublishedResearchersLoading
-  | PublishedResearchersLoaded
-  | PublishedResearchersError
 
 export interface PublishedResearcher {
   researcherID: string
@@ -97,6 +84,7 @@ const fetchPublishedResearchers = async ({
   ).catch(error => {
     setPublishedResearchers({
       status: PublishedResearchersStatus.Error,
+      data: [],
       error,
     })
   })
@@ -107,6 +95,7 @@ const fetchPublishedResearchers = async ({
     setPublishedResearchers({
       status: PublishedResearchersStatus.Error,
       error: new Error('No Response'),
+      data: [],
     })
     return
   }
@@ -117,6 +106,7 @@ const fetchPublishedResearchers = async ({
     setPublishedResearchers({
       status: PublishedResearchersStatus.Error,
       error: new Error('Invalid Response'),
+      data: [],
     })
     return
   }
@@ -124,6 +114,7 @@ const fetchPublishedResearchers = async ({
   setPublishedResearchers({
     status: PublishedResearchersStatus.Loaded,
     data: data.data,
+    error: null,
   })
 }
 
