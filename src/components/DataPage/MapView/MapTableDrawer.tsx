@@ -1,10 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import usePlaceName from 'hooks/mapbox/usePlaceName'
-import LoadingSpinner from '../TableView/LoadingSpinner'
 import CloseButton from 'components/ui/CloseButton'
+import LoadingSpinner from '../TableView/LoadingSpinner'
 import MapTableTitlePointIcon from './MapTableTitlePointIcon'
+
+import usePlaceName from 'hooks/mapbox/usePlaceName'
 import usePublishedRecordsByPharosIDs from 'hooks/publishedRecords/usePublishedRecordsByPharosIDs'
 import PublishedRecordsDataGrid from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 
