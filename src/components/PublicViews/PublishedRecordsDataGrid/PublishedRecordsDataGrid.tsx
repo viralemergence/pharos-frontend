@@ -1,25 +1,25 @@
 import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
-import DataGrid, {
-  Column,
-  DataGridHandle,
-  FormatterProps,
-} from 'react-data-grid'
+import DataGrid, { Column, DataGridHandle } from 'react-data-grid'
 
-import usePublishedRecords from 'hooks/publishedRecords/usePublishedRecords'
+import { darken } from 'polished'
 
 import LoadingSpinner from 'components/DataPage/TableView/LoadingSpinner'
-import { darken } from 'polished'
-import { Link } from 'gatsby'
-import { PublishedRecordsLoadingState } from 'hooks/publishedRecords/fetchPublishedRecords'
 
-interface PublishedRecordsAuthor {
+import RowNumber from './formatters/RowNumber'
+import Author from './formatters/Author'
+import ProjectName from './formatters/ProjectName'
+
+import { PublishedRecordsLoadingState } from 'hooks/publishedRecords/fetchPublishedRecords'
+import usePublishedRecords from 'hooks/publishedRecords/usePublishedRecords'
+
+export interface PublishedRecordsAuthor {
   name: string
   researcherID: string
 }
 
-interface Row {
+export interface Row {
   [key: string]: string | number | PublishedRecordsAuthor[]
 }
 
@@ -68,58 +68,6 @@ const FillDatasetGrid = styled(DataGrid)`
   --rdg-header-background-color: ${({ theme }) => theme.mutedPurple3};
   --rdg-row-hover-background-color: ${({ theme }) => theme.mutedPurple2};
 `
-const CellContainer = styled.div`
-  margin-left: -8px;
-  margin-right: -8px;
-  padding: 0 8px;
-`
-
-const RowNumberContainer = styled(CellContainer)`
-  background-color: ${({ theme }) => theme.mutedPurple3};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`
-
-const RowNumber = ({ row: { rowNumber } }: FormatterProps<Row>) => (
-  <RowNumberContainer>
-    <span>{Number(rowNumber)}</span>
-  </RowNumberContainer>
-)
-
-const LinkContainer = styled(CellContainer)`
-  a {
-    color: ${({ theme }) => theme.white};
-
-    &:hover {
-      color: ${({ theme }) => theme.mint};
-    }
-  }
-`
-const ProjectName = ({ row }: FormatterProps<Row>) => {
-  const projectName = row['Project name'] as string
-  const pharosID = row.pharosID
-  return (
-    <LinkContainer>
-      <Link to={`/projects/#/${pharosID.toString().split('-')[0]}`}>
-        {projectName}
-      </Link>
-    </LinkContainer>
-  )
-}
-
-const Author = ({ row }: FormatterProps<Row>) => (
-  <LinkContainer>
-    {(row.Author as PublishedRecordsAuthor[]).map(author => (
-      <Link
-        key={author.researcherID}
-        to={`/researchers/?researcherID=${author.researcherID}`}
-      >
-        {author.name}
-      </Link>
-    ))}
-  </LinkContainer>
-)
 
 const rowKeyGetter = (row: Row) => row.pharosID
 
