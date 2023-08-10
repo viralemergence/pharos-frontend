@@ -414,5 +414,5 @@ export const DataToolbarDiv = styled.div<{ isFilterPanelOpen: boolean }>`
 export const DateInputRow = styled.div`
   display: flex;
   flex-flow: row nowrap;
-  gap: 10px;
+  gap: 8px;
 `

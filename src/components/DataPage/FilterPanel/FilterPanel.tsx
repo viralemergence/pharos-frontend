@@ -32,6 +32,8 @@ const localizeDate = (dateString: string) => {
   return date.toLocaleDateString()
 }
 
+const dateFilterUpdateDelay = 1000
+
 const DateFilterInputs = ({
   filter,
   updateFilter,
@@ -41,7 +43,7 @@ const DateFilterInputs = ({
   updateFilter: UpdateFilterFunction
   setFilters: Dispatch<SetStateAction<Filter[]>>
 }) => {
-  const updateFilterDebounced = debounce(updateFilter, 2000)
+  const updateFilterDebounced = debounce(updateFilter, dateFilterUpdateDelay)
 
   useEffect(() => {
     // Cancel debounce on unmount
