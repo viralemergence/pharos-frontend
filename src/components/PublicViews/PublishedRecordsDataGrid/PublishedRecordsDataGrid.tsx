@@ -71,7 +71,7 @@ const FillDatasetGrid = styled(DataGrid)`
 
 const rowKeyGetter = (row: Row) => row.pharosID
 
-const formatters = {
+export const formatters = {
   'Project name': ProjectName,
   Author: Author,
 }
