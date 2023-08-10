@@ -14,8 +14,13 @@ import { darken } from 'polished'
 import { Link } from 'gatsby'
 import { PublishedRecordsLoadingState } from 'hooks/publishedRecords/fetchPublishedRecords'
 
+interface PublishedRecordsAuthor {
+  name: string
+  researcherID: string
+}
+
 interface Row {
-  [key: string]: string | number
+  [key: string]: string | number | PublishedRecordsAuthor[]
 }
 
 const TableContainer = styled.div`
@@ -82,7 +87,7 @@ const RowNumber = ({ row: { rowNumber } }: FormatterProps<Row>) => (
   </RowNumberContainer>
 )
 
-const ProjectNameContainer = styled(CellContainer)`
+const LinkContainer = styled(CellContainer)`
   a {
     color: ${({ theme }) => theme.white};
 
@@ -92,21 +97,35 @@ const ProjectNameContainer = styled(CellContainer)`
   }
 `
 const ProjectName = ({ row }: FormatterProps<Row>) => {
-  const projectName = row['Project name']
+  const projectName = row['Project name'] as string
   const pharosID = row.pharosID
   return (
-    <ProjectNameContainer>
+    <LinkContainer>
       <Link to={`/projects/#/${pharosID.toString().split('-')[0]}`}>
         {projectName}
       </Link>
-    </ProjectNameContainer>
+    </LinkContainer>
   )
 }
+
+const Author = ({ row }: FormatterProps<Row>) => (
+  <LinkContainer>
+    {(row.Author as PublishedRecordsAuthor[]).map(author => (
+      <Link
+        key={author.researcherID}
+        to={`/researchers/?researcherID=${author.researcherID}`}
+      >
+        {author.name}
+      </Link>
+    ))}
+  </LinkContainer>
+)
 
 const rowKeyGetter = (row: Row) => row.pharosID
 
 const formatters = {
   'Project name': ProjectName,
+  Author: Author,
 }
 
 const defaultWidthOverride = {
