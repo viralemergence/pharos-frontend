@@ -1,4 +1,5 @@
 import wideMargins from 'components/layout/Margins'
+import { Link } from 'gatsby'
 import styled, { css } from 'styled-components'
 
 export const ResearcherPageLayout = styled.div`
@@ -37,7 +38,7 @@ export const ResearcherPageMain = styled.div`
   gap: 30px;
 `
 
-const ContentBox = css`
+const ContentBox = css<{ interactive?: boolean }>`
   padding: 20px 30px;
   position: relative;
   background-color: ${({ theme }) => theme.mutedPurple2};
@@ -62,6 +63,20 @@ const ContentBox = css`
     border-top-right-radius: 5px;
     background-color: ${({ theme }) => theme.white10PercentOpacity};
   }
+
+  ${({ interactive, theme }) =>
+    interactive &&
+    `
+  &:hover {
+    background-color: ${theme.mutedPurple1};
+    border: 1px solid ${theme.mint};
+    border-top: none;
+  }
+
+  &:before {
+    background-color: ${theme.mint};
+  }
+  `}
 `
 
 export const ResearcherButton = styled.button`
@@ -69,18 +84,12 @@ export const ResearcherButton = styled.button`
   border: none;
 
   ${ContentBox}
-
-  &:hover {
-    background-color: ${({ theme }) => theme.mutedPurple1};
-    border: 1px solid ${({ theme }) => theme.mint};
-    border-top: none;
-  }
-
-  &:before {
-    background-color: ${({ theme }) => theme.mint};
-  }
 `
 
-export const ResearcherPageContentBox = styled.div`
+export const ResearcherPageContentBoxLink = styled(Link)`
+  ${ContentBox}
+`
+
+export const ResearcherPageContentBox = styled.div<{ interactive?: boolean }>`
   ${ContentBox}
 `

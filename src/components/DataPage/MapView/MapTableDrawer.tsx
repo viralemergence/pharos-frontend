@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import PublishedRecordsDataGrid from 'components/PublicViews/PublishedRecordsDataGrid'
+import PublishedRecordsDataGrid from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 
 import usePlaceName from 'hooks/mapbox/usePlaceName'
 import LoadingSpinner from '../TableView/LoadingSpinner'
