@@ -4,10 +4,10 @@ import styled from 'styled-components'
 import CloseButton from 'components/ui/CloseButton'
 import LoadingSpinner from '../TableView/LoadingSpinner'
 import MapTableTitlePointIcon from './MapTableTitlePointIcon'
-import PublishedRecordsDataGrid from 'components/PublicViews/PublishedRecordsDataGrid'
 
 import usePlaceName from 'hooks/mapbox/usePlaceName'
 import usePublishedRecordsByPharosIDs from 'hooks/publishedRecords/usePublishedRecordsByPharosIDs'
+import PublishedRecordsDataGrid from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 
 // slower transition when opening to make loading state feel faster
 // faster transition when closing to make closing feel snappy
