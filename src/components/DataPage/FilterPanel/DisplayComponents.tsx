@@ -268,6 +268,8 @@ export const FieldInput = styled.input`
   color: ${({ theme }) => theme.white};
   font-weight: 600;
   padding: 8px 10px;
+  width: 160px;
+  height: 45px;
   &:invalid {
     border-color: ${({ theme }) => theme.red};
   }
@@ -411,9 +413,6 @@ export const DataToolbarDiv = styled.div<{ isFilterPanelOpen: boolean }>`
 
 export const DateInputRow = styled.div`
   display: flex;
-  flex-flow: row wrap;
-`
-
-export const DateInputSeparator = styled.div`
-  padding: 10px;
+  flex-flow: row nowrap;
+  gap: 10px;
 `

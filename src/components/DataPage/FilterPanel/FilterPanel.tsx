@@ -10,7 +10,6 @@ import debounce from 'lodash/debounce'
 import type { Filter } from 'pages/data'
 import {
   DateInputRow,
-  DateInputSeparator,
   DateTooltip,
   FieldInput,
   FieldName,
@@ -91,13 +90,14 @@ const DateFilterInputs = ({
           index={0}
           value={filter.values?.[0]}
           ref={startDateRef}
+          placeholder="From"
         />
-        <DateInputSeparator>to</DateInputSeparator>
         <DateInput
           {...dateInputProps}
           index={1}
           value={filter.values?.[1]}
           ref={endDateRef}
+          placeholder="To"
         />
       </DateInputRow>
       {someValuesAreInvalid && (
@@ -123,6 +123,7 @@ type DateInputProps = {
   updateFilter: UpdateFilterFunction
   updateFilterDebounced: DebouncedFunc<UpdateFilterFunction>
   setFilters: Dispatch<SetStateAction<Filter[]>>
+  placeholder: string
 }
 
 const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
@@ -136,18 +137,21 @@ const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
       updateFilter,
       updateFilterDebounced,
       setFilters,
+      placeholder,
     },
     ref
   ) => {
+    const [showPlaceholder, setShowPlaceholder] = useState(true)
     return (
       <div>
         <FieldInput
           ref={ref}
-          type="date"
+          type={showPlaceholder ? 'text' : 'date'}
           aria-label={filter.label}
           min={earliestPossibleDate}
           max={latestPossibleDate}
           defaultValue={value}
+          placeholder={placeholder}
           onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
             const valid = e.target.checkValidity()
             const newValues = filter.values ?? []
@@ -191,6 +195,7 @@ const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
             }
           }}
           onFocus={(_e: React.FocusEvent<HTMLInputElement>) => {
+            setShowPlaceholder(false)
             // If this date field is focused and the previous field is a date
             // field with a tooltip, move that tooltip out of the way
             setFilters(prev =>
@@ -202,8 +207,10 @@ const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
                   : f
               })
             )
+            return true
           }}
-          onBlur={(_e: React.FocusEvent<HTMLInputElement>) => {
+          onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+            if (!e.target.value) setShowPlaceholder(true)
             setFilters(prev =>
               prev.map(f =>
                 f.type === 'date' ? { ...f, tooltipOrientation: 'bottom' } : f
