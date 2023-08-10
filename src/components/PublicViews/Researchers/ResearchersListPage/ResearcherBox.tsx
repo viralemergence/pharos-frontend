@@ -24,6 +24,7 @@ interface ResearcherBoxProps {
 
 const ResearcherSummary = ({ researcher, setFilters }: ResearcherBoxProps) => (
   <ResearcherButton
+    interactive
     onClick={() => setFilters({ researcherID: researcher.researcherID })}
   >
     <Name>{researcher.name}</Name>
