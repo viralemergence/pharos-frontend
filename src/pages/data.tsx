@@ -42,12 +42,14 @@ export type Filter = {
   panelIndex: number
   /** The historically earliest collection date that appears among the
    * published records. Only date filters have this property. */
-  earliestDateUsed?: string
+  earliestPossibleDate?: string
   /** The historically latest, furthest-into-the-future collection date that
    * appears among the published records. Only date filters have this property.
    * */
-  latestDateUsed?: string
-  inputIsValid?: boolean
+  latestPossibleDate?: string
+  /** For example, if a date field has a valid start date and an invalid end
+   * date, validityOfValues is [true, false].*/
+  validityOfValues?: boolean[]
   tooltipOrientation?: 'bottom' | 'top'
 }
 
@@ -94,12 +96,14 @@ const DataPage = ({
       console.log(`GET ${METADATA_URL}: malformed response`)
       return
     }
-    const filters = Object.entries(data.fields).map(([fieldId, filter]) => ({
-      fieldId,
-      type: filter.type || 'text',
-      ...filterDefaultProperties,
-      ...filter,
-    }))
+    const filters = Object.entries(data.possibleFilters).map(
+      ([fieldId, filter]) => ({
+        fieldId,
+        type: filter.type || 'text',
+        ...filterDefaultProperties,
+        ...filter,
+      })
+    )
     setFilters(filters)
   }, [setFilters])
 
@@ -194,10 +198,10 @@ const isValidFilterInMetadataResponse = (data: unknown): data is Filter => {
 
 const isValidMetadataResponse = (data: unknown): data is MetadataResponse => {
   if (!isNormalObject(data)) return false
-  const { fields } = data
-  if (!isNormalObject(fields)) return false
-  return Object.values(fields).every?.(field =>
-    isValidFilterInMetadataResponse(field)
+  const { possibleFilters } = data
+  if (!isNormalObject(possibleFilters)) return false
+  return Object.values(possibleFilters).every?.(filter =>
+    isValidFilterInMetadataResponse(filter)
   )
 }
 

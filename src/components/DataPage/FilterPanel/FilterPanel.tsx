@@ -1,6 +1,7 @@
 import React, {
   Dispatch,
   SetStateAction,
+  forwardRef,
   useEffect,
   useRef,
   useState,
@@ -8,15 +9,22 @@ import React, {
 import debounce from 'lodash/debounce'
 import type { Filter } from 'pages/data'
 import {
+  DateInputRow,
+  DateInputSeparator,
+  DateTooltip,
   FieldInput,
   FieldName,
   FilterLabel,
   FilterListItemElement,
-  DateTooltip,
   ListOfAddedFilters,
   Panel,
 } from './DisplayComponents'
 import FilterPanelToolbar from './FilterPanelToolbar'
+
+interface DebouncedFunc<T extends (...args: any[]) => any> extends Function {
+  (...args: Parameters<T>): ReturnType<T>
+  cancel: () => void
+}
 
 /** Localize a date without changing the time zone */
 const localizeDate = (dateString: string) => {
@@ -25,7 +33,7 @@ const localizeDate = (dateString: string) => {
   return date.toLocaleDateString()
 }
 
-const FilterInput = ({
+const DateFilterInputs = ({
   filter,
   updateFilter,
   setFilters,
@@ -34,7 +42,6 @@ const FilterInput = ({
   updateFilter: UpdateFilterFunction
   setFilters: Dispatch<SetStateAction<Filter[]>>
 }) => {
-  const values = filter.values ?? []
   const updateFilterDebounced = debounce(updateFilter, 2000)
 
   useEffect(() => {
@@ -44,87 +51,166 @@ const FilterInput = ({
     }
   }, [])
 
-  let earliestAllowableDate,
-    latestAllowableDate,
-    earliestAllowableDateLocalized,
-    latestAllowableDateLocalized
-  if (filter.earliestDateUsed) {
-    earliestAllowableDate = `${filter.earliestDateUsed.slice(0, 2)}00-01-01`
-    earliestAllowableDateLocalized = localizeDate(earliestAllowableDate)
+  let earliestPossibleDate,
+    latestPossibleDate,
+    earliestPossibleDateLocalized,
+    latestPossibleDateLocalized
+  if (filter.earliestPossibleDate) {
+    earliestPossibleDate = `${filter.earliestPossibleDate.slice(0, 2)}00-01-01`
+    earliestPossibleDateLocalized = localizeDate(earliestPossibleDate)
   }
-  if (filter.latestDateUsed) {
-    latestAllowableDate = `${
-      Number(filter.latestDateUsed.slice(0, 2)) + 1
+  if (filter.latestPossibleDate) {
+    latestPossibleDate = `${
+      Number(filter.latestPossibleDate.slice(0, 2)) + 1
     }00-01-01`
-    latestAllowableDateLocalized = localizeDate(latestAllowableDate)
+    latestPossibleDateLocalized = localizeDate(latestPossibleDate)
   }
+
+  const dateInputProps = {
+    filter,
+    earliestPossibleDate,
+    latestPossibleDate,
+    earliestPossibleDateLocalized,
+    latestPossibleDateLocalized,
+    updateFilter,
+    updateFilterDebounced,
+    setFilters,
+    values: filter.values,
+  }
+  const someValuesAreInvalid = filter.validityOfValues?.some(
+    validity => !validity
+  )
+  const startDateRef = useRef(null)
+  const endDateRef = useRef(null)
   return (
     <FilterLabel>
       <FieldName>{filter.label}</FieldName>
-      <FieldInput
-        // This is a date input if filter.type is 'date'
-        type={filter.type}
-        aria-label={filter.label}
-        min={earliestAllowableDate}
-        max={latestAllowableDate}
-        defaultValue={values.join(',')}
-        onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-          const valid = e.target.checkValidity()
-          const values = valid ? [e.target.value] : []
-          const checkValidity = () => {
-            if (e && e.target && e.target.checkValidity) {
-              return e.target.checkValidity()
-            } else {
-              return false
-            }
-          }
-          if (valid) {
-            updateFilter(filter.fieldId, values, checkValidity)
-            updateFilterDebounced.cancel()
-          } else {
-            // When marking a date as invalid, debounce so that the field isn't
-            // eagerly marked invalid as the user begins to type a valid date.
-            // Check the validity again in the callback to avoid using a stale
-            // value.
-            updateFilterDebounced(filter.fieldId, values, checkValidity)
-          }
-        }}
-        onFocus={(_e: React.FocusEvent<HTMLInputElement>) => {
-          // If this date field is focused and the previous field is a date
-          // field with a tooltip, move that tooltip out of the way
-          setFilters(prev =>
-            prev.map(f => {
-              return f.panelIndex === filter.panelIndex - 1 &&
-                f.type === 'date' &&
-                f.inputIsValid === false
-                ? { ...f, tooltipOrientation: 'top' }
-                : f
-            })
-          )
-        }}
-        onBlur={(_e: React.FocusEvent<HTMLInputElement>) => {
-          setFilters(prev =>
-            prev.map(f =>
-              f.type === 'date' ? { ...f, tooltipOrientation: 'bottom' } : f
-            )
-          )
-        }}
-      />
-      {filter.inputIsValid === false && (
+      <DateInputRow>
+        <DateInput
+          {...dateInputProps}
+          index={0}
+          value={filter.values?.[0]}
+          ref={startDateRef}
+        />
+        <DateInputSeparator>to</DateInputSeparator>
+        <DateInput
+          {...dateInputProps}
+          index={1}
+          value={filter.values?.[1]}
+          ref={endDateRef}
+        />
+      </DateInputRow>
+      {someValuesAreInvalid && (
         <DateTooltip flipped={filter.tooltipOrientation === 'top'}>
-          Date must be between{' '}
-          <span style={{ whiteSpace: 'nowrap' }}>
-            {earliestAllowableDateLocalized}
-          </span>{' '}
-          and{' '}
-          <span style={{ whiteSpace: 'nowrap' }}>
-            {latestAllowableDateLocalized}
-          </span>
+          Date must be between {earliestPossibleDateLocalized} and{' '}
+          {latestPossibleDateLocalized}
         </DateTooltip>
       )}
     </FilterLabel>
   )
 }
+
+type DateInputProps = {
+  filter: Filter
+  earliestPossibleDate?: string
+  latestPossibleDate?: string
+  value?: string
+  index: number
+  updateFilter: UpdateFilterFunction
+  updateFilterDebounced: DebouncedFunc<UpdateFilterFunction>
+  setFilters: Dispatch<SetStateAction<Filter[]>>
+}
+
+const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
+  (
+    {
+      filter,
+      earliestPossibleDate,
+      latestPossibleDate,
+      value,
+      index,
+      updateFilter,
+      updateFilterDebounced,
+      setFilters,
+    },
+    ref
+  ) => {
+    return (
+      <div>
+        <FieldInput
+          ref={ref}
+          type="date"
+          aria-label={filter.label}
+          min={earliestPossibleDate}
+          max={latestPossibleDate}
+          defaultValue={value}
+          onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+            const valid = e.target.checkValidity()
+            const newValues = filter.values ?? []
+            if (valid) {
+              newValues[index] = e.target.value
+            }
+            const getValidityOfValues = () => {
+              if (e && e.target) {
+                // TODO: Perhaps use refs for simplicity
+                const children = Array.from(
+                  Array.from(
+                    e.target.parentElement?.parentElement?.children ?? []
+                  ).flatMap(child => Array.from(child.children))
+                )
+                const validityOfValues = children.reduce<boolean[]>(
+                  (acc, child) =>
+                    child instanceof HTMLInputElement
+                      ? [...acc, child.checkValidity()]
+                      : acc,
+                  []
+                )
+                console.log('validityOfValues', validityOfValues)
+                return validityOfValues
+              } else {
+                return [false, false]
+              }
+            }
+            if (valid) {
+              updateFilter(filter.fieldId, newValues, getValidityOfValues)
+              updateFilterDebounced.cancel()
+            } else {
+              // When marking a date as invalid, debounce so that the field isn't
+              // eagerly marked invalid as the user begins to type a valid date.
+              // Check the validity again in the callback to avoid using a stale
+              // value.
+              updateFilterDebounced(
+                filter.fieldId,
+                newValues,
+                getValidityOfValues
+              )
+            }
+          }}
+          onFocus={(_e: React.FocusEvent<HTMLInputElement>) => {
+            // If this date field is focused and the previous field is a date
+            // field with a tooltip, move that tooltip out of the way
+            setFilters(prev =>
+              prev.map(f => {
+                return f.panelIndex === filter.panelIndex - 1 &&
+                  f.type === 'date' &&
+                  f.validityOfValues?.some(validity => !validity)
+                  ? { ...f, tooltipOrientation: 'top' }
+                  : f
+              })
+            )
+          }}
+          onBlur={(_e: React.FocusEvent<HTMLInputElement>) => {
+            setFilters(prev =>
+              prev.map(f =>
+                f.type === 'date' ? { ...f, tooltipOrientation: 'bottom' } : f
+              )
+            )
+          }}
+        />
+      </div>
+    )
+  }
+)
 
 const FilterUI = ({
   filter,
@@ -141,11 +227,11 @@ const FilterUI = ({
     updateFilter,
     setFilters,
   }
-  return <FilterInput {...props} />
+  return <DateFilterInputs {...props} />
 
   // NOTE: Later this will become:
   // if (useTypeahead) return <FilterTypeahead {...props} />
-  // else return <FilterInput {...props} fieldType={fieldType} />
+  // else return <DateFilterInputs {...props} fieldType={fieldType} />
 }
 
 const FilterListItem = ({ children }: { children: React.ReactNode }) => {
@@ -161,7 +247,7 @@ const FilterListItem = ({ children }: { children: React.ReactNode }) => {
 type UpdateFilterFunction = (
   fieldId: string,
   newFilterValues: string[],
-  getValidity?: () => boolean
+  getValidityOfValues?: () => boolean[]
 ) => void
 
 const FilterPanel = ({
@@ -184,12 +270,17 @@ const FilterPanel = ({
   const updateFilter: UpdateFilterFunction = (
     fieldId,
     newValues,
-    getValidity?: () => boolean
+    getValidityOfValues?: () => boolean[]
   ) => {
     setFilters(prev =>
       prev.map((filter: Filter) =>
         filter.fieldId === fieldId
-          ? { ...filter, values: newValues, inputIsValid: getValidity?.() }
+          ? {
+              ...filter,
+              values: newValues,
+              // TODO: Maybe rename 'validities'
+              validityOfValues: getValidityOfValues?.(),
+            }
           : filter
       )
     )
@@ -237,4 +328,5 @@ const FilterPanel = ({
   )
 }
 
+export default FilterPanel
 export default FilterPanel

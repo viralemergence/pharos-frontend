@@ -272,6 +272,7 @@ export const FieldInput = styled.input`
 
 export const DateTooltip = styled.aside<{ flipped: boolean }>`
   ${({ theme }) => theme.extraSmallParagraph};
+  font-size: 9pt;
   background-color: ${({ theme }) => theme.white};
   border-radius: 5px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1), 0px 1px 3px rgba(0, 0, 0, 0.2);
@@ -390,4 +391,13 @@ export const DataToolbarDiv = styled.div<{ isFilterPanelOpen: boolean }>`
     padding: 10px;
     ${({ isFilterPanelOpen }) => (isFilterPanelOpen ? 'display: none' : '')}
   }
+`
+
+export const DateInputRow = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+`
+
+export const DateInputSeparator = styled.div`
+  padding: 10px;
 `
