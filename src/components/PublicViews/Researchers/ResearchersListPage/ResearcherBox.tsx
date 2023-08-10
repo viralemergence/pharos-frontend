@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { ResearcherButton } from './ResearcherPageLayout'
+import { ContentBoxStyles } from './ResearcherPageLayout'
 
 import { PublishedResearcher } from 'hooks/researchers/fetchPublishedResearchers'
 import { PublishedResearchersFilters } from 'hooks/researchers/usePublishedResearchers'
@@ -22,14 +22,27 @@ interface ResearcherBoxProps {
   setFilters: React.Dispatch<React.SetStateAction<PublishedResearchersFilters>>
 }
 
+const ResearcherSummaryLink = styled.a`
+  ${ContentBoxStyles};
+  text-decoration: none;
+
+  &:hover > h2 {
+    text-decoration: underline;
+  }
+`
+
 const ResearcherSummary = ({ researcher, setFilters }: ResearcherBoxProps) => (
-  <ResearcherButton
+  <ResearcherSummaryLink
     interactive
-    onClick={() => setFilters({ researcherID: researcher.researcherID })}
+    href={`/researchers/?researcherID=${researcher.researcherID}`}
+    onClick={e => {
+      e.preventDefault()
+      setFilters({ researcherID: researcher.researcherID })
+    }}
   >
     <Name>{researcher.name}</Name>
     <Organization>{researcher.organization}</Organization>
-  </ResearcherButton>
+  </ResearcherSummaryLink>
 )
 
 export default ResearcherSummary

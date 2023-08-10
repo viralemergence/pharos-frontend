@@ -38,7 +38,7 @@ export const ResearcherPageMain = styled.div`
   gap: 30px;
 `
 
-const ContentBox = css<{ interactive?: boolean }>`
+export const ContentBoxStyles = css<{ interactive?: boolean }>`
   padding: 20px 30px;
   position: relative;
   background-color: ${({ theme }) => theme.mutedPurple2};
@@ -83,13 +83,13 @@ export const ResearcherButton = styled.button`
   background: none;
   border: none;
 
-  ${ContentBox}
+  ${ContentBoxStyles}
 `
 
 export const ResearcherPageContentBoxLink = styled(Link)`
-  ${ContentBox}
+  ${ContentBoxStyles}
 `
 
 export const ResearcherPageContentBox = styled.div<{ interactive?: boolean }>`
-  ${ContentBox}
+  ${ContentBoxStyles}
 `
