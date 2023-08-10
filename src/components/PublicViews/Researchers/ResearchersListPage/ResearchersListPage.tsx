@@ -60,15 +60,17 @@ const ResearchersListPage = () => {
             >
               Researchers
             </PublicViewBreadcrumbLink>
-            {filters.researcherID && (
-              <PublicViewBreadcrumbLink
-                $active
-                to={`/researchers/`}
-                onClick={() => setFilters({})}
-              >
-                {publishedResearchers.filtered[0].name}
-              </PublicViewBreadcrumbLink>
-            )}
+            {filters.researcherID &&
+              publishedResearchers.status ===
+                PublishedResearchersStatus.Loaded && (
+                <PublicViewBreadcrumbLink
+                  $active
+                  to={`/researchers/`}
+                  onClick={() => setFilters({})}
+                >
+                  {publishedResearchers.filtered[0]?.name}
+                </PublicViewBreadcrumbLink>
+              )}
           </Breadcrumbs>
           <Title>Researchers</Title>
           <Controls>
