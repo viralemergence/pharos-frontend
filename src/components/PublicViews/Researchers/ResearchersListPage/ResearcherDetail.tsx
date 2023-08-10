@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { PublishedResearcher } from 'hooks/researchers/fetchPublishedResearchers'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import { Link } from 'gatsby'
 import { ResearcherPageContentBox } from './ResearcherPageLayout'
 import formatDate from 'utilities/formatDate'
@@ -69,6 +69,7 @@ const ProjectResearcherAuthor = styled(Link)`
 
 const ResearcherDetail = ({ researcher }: ResearcherDetailProps) => {
   console.log(researcher)
+  const theme = useTheme()
   return (
     <Container>
       <Name>{researcher.name}</Name>
@@ -77,7 +78,10 @@ const ResearcherDetail = ({ researcher }: ResearcherDetailProps) => {
       <ProjectsHeader>Projects</ProjectsHeader>
       <ProjectSection>
         {researcher.projects.map(project => (
-          <ResearcherPageContentBox interactive key={project.projectID}>
+          <ResearcherPageContentBox
+            key={project.projectID}
+            style={{ backgroundColor: theme.mutedPurple1 }}
+          >
             <DatePublished>{formatDate(project.datePublished)}</DatePublished>
             <ProjectName>
               <Link to={`/projects/#/${project.projectID}`}>
