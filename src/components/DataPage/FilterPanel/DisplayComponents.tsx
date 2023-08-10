@@ -268,9 +268,16 @@ export const FieldInput = styled.input`
   color: ${({ theme }) => theme.white};
   font-weight: 600;
   padding: 8px 10px;
+  &:invalid {
+    border-color: ${({ theme }) => theme.red};
+  }
 `
 
-export const DateTooltip = styled.aside<{ flipped: boolean }>`
+export const DateTooltip = styled.aside<{
+  flipped: boolean
+  isStartDateInvalid: boolean
+  isEndDateInvalid: boolean
+}>`
   ${({ theme }) => theme.extraSmallParagraph};
   font-size: 9pt;
   background-color: ${({ theme }) => theme.white};
@@ -286,6 +293,16 @@ export const DateTooltip = styled.aside<{ flipped: boolean }>`
   animation: fadeIn 0.15s forwards;
   ${({ flipped }) => (flipped ? 'top: 10px;' : '')}
   &::before {
+    display: ${({ isStartDateInvalid }) =>
+      isStartDateInvalid ? 'flex' : 'none'};
+    transform: translateX(-500%);
+  }
+  &::after {
+    display: ${({ isEndDateInvalid }) => (isEndDateInvalid ? 'flex' : 'none')};
+    transform: translateX(400%);
+  }
+  &::before,
+  &::after {
     border-bottom: 10px solid ${({ theme }) => theme.white};
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
@@ -293,8 +310,7 @@ export const DateTooltip = styled.aside<{ flipped: boolean }>`
     height: 0;
     left: 50%;
     position: absolute;
-    top: -10px;
-    transform: translateX(-700%);
+    top: -9px;
     width: 0;
     ${({ flipped }) =>
       flipped

@@ -140,8 +140,18 @@ const load = async ({
     const validValues = filter.values.filter(
       (value: string) => value !== null && value !== undefined && value !== ''
     )
-    for (const value of validValues) {
-      queryStringParameters.append(filter.fieldId, value)
+    if (filter.fieldId === 'collection_date') {
+      const [startDate, endDate] = filter.values
+      if (startDate) {
+        queryStringParameters.append('collection_start_date', startDate)
+      }
+      if (endDate) {
+        queryStringParameters.append('collection_end_date', endDate)
+      }
+    } else {
+      for (const value of validValues) {
+        queryStringParameters.append(filter.fieldId, value)
+      }
     }
     if (validValues.length > 0) fieldIdsOfAppliedFilters.push(filter.fieldId)
   }

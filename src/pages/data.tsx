@@ -48,7 +48,7 @@ export type Filter = {
    * */
   latestPossibleDate?: string
   /** For example, if a date field has a valid start date and an invalid end
-   * date, validityOfValues is [true, false].*/
+   * date, validityOfValues is [true, true].*/
   validityOfValues?: boolean[]
   tooltipOrientation?: 'bottom' | 'top'
 }
@@ -173,7 +173,7 @@ const DataPage = ({
 }
 
 interface MetadataResponse {
-  fields: Record<string, FilterInMetadata>
+  possibleFilters: Record<string, FilterInMetadata>
 }
 
 interface FilterInMetadata {

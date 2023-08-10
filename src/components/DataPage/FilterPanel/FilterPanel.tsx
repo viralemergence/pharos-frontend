@@ -101,8 +101,12 @@ const DateFilterInputs = ({
         />
       </DateInputRow>
       {someValuesAreInvalid && (
-        <DateTooltip flipped={filter.tooltipOrientation === 'top'}>
-          Date must be between {earliestPossibleDateLocalized} and{' '}
+        <DateTooltip
+          flipped={filter.tooltipOrientation === 'top'}
+          isStartDateInvalid={filter.validityOfValues?.[0] === false}
+          isEndDateInvalid={filter.validityOfValues?.[1] === false}
+        >
+          Dates must be between {earliestPossibleDateLocalized} and{' '}
           {latestPossibleDateLocalized}
         </DateTooltip>
       )}
@@ -328,5 +332,4 @@ const FilterPanel = ({
   )
 }
 
-export default FilterPanel
 export default FilterPanel
