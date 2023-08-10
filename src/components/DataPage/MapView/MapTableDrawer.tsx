@@ -1,13 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import PublishedRecordsDataGrid from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
-
 import usePlaceName from 'hooks/mapbox/usePlaceName'
 import LoadingSpinner from '../TableView/LoadingSpinner'
 import CloseButton from 'components/ui/CloseButton'
 import MapTableTitlePointIcon from './MapTableTitlePointIcon'
 import usePublishedRecordsByPharosIDs from 'hooks/publishedRecords/usePublishedRecordsByPharosIDs'
+import PublishedRecordsDataGrid from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 
 const Container = styled.div<{ drawerOpen: boolean }>`
   position: absolute;
