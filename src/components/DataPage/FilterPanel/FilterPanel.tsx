@@ -1,6 +1,7 @@
 import React, {
   Dispatch,
   SetStateAction,
+  RefObject,
   forwardRef,
   useEffect,
   useRef,
@@ -66,6 +67,8 @@ const DateFilterInputs = ({
     }00-01-01`
     latestPossibleDateLocalized = localizeDate(latestPossibleDate)
   }
+  const startDateRef = useRef(null)
+  const endDateRef = useRef(null)
 
   const dateInputProps = {
     filter,
@@ -77,12 +80,10 @@ const DateFilterInputs = ({
     updateFilterDebounced,
     setFilters,
     values: filter.values,
+    startDateRef,
+    endDateRef,
   }
-  const someValuesAreInvalid = filter.validityOfValues?.some(
-    validity => !validity
-  )
-  const startDateRef = useRef(null)
-  const endDateRef = useRef(null)
+  const someValuesAreInvalid = filter.validities?.some(validity => !validity)
   return (
     <FilterLabel>
       <FieldName>{filter.label}</FieldName>
@@ -105,8 +106,8 @@ const DateFilterInputs = ({
       {someValuesAreInvalid && (
         <DateTooltip
           flipped={filter.tooltipOrientation === 'top'}
-          isStartDateInvalid={filter.validityOfValues?.[0] === false}
-          isEndDateInvalid={filter.validityOfValues?.[1] === false}
+          isStartDateInvalid={filter.validities?.[0] === false}
+          isEndDateInvalid={filter.validities?.[1] === false}
         >
           Dates must be between {earliestPossibleDateLocalized} and{' '}
           {latestPossibleDateLocalized}
@@ -126,6 +127,8 @@ type DateInputProps = {
   updateFilterDebounced: DebouncedFunc<UpdateFilterFunction>
   setFilters: Dispatch<SetStateAction<Filter[]>>
   placeholder: string
+  startDateRef: RefObject<HTMLInputElement>
+  endDateRef: RefObject<HTMLInputElement>
 }
 
 const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
@@ -140,6 +143,8 @@ const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
       updateFilterDebounced,
       setFilters,
       placeholder,
+      startDateRef,
+      endDateRef,
     },
     ref
   ) => {
@@ -155,45 +160,34 @@ const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
           defaultValue={value}
           placeholder={placeholder}
           onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+            console.log('onInput')
             const valid = e.target.checkValidity()
             const newValues = filter.values ?? []
             if (valid) {
               newValues[index] = e.target.value
+            } else {
+              newValues[index] = undefined
             }
-            const getValidityOfValues = () => {
+            const getValidities = () => {
               if (e && e.target) {
-                // TODO: Perhaps use refs for simplicity
-                const children = Array.from(
-                  Array.from(
-                    e.target.parentElement?.parentElement?.children ?? []
-                  ).flatMap(child => Array.from(child.children))
-                )
-                const validityOfValues = children.reduce<boolean[]>(
-                  (acc, child) =>
-                    child instanceof HTMLInputElement
-                      ? [...acc, child.checkValidity()]
-                      : acc,
-                  []
-                )
-                console.log('validityOfValues', validityOfValues)
-                return validityOfValues
+                const validities = [
+                  startDateRef.current?.checkValidity(),
+                  endDateRef.current?.checkValidity(),
+                ]
+                return validities
               } else {
-                return [false, false]
+                return [undefined, undefined]
               }
             }
             if (valid) {
-              updateFilter(filter.fieldId, newValues, getValidityOfValues)
+              updateFilter(filter.fieldId, newValues, getValidities)
               updateFilterDebounced.cancel()
             } else {
               // When marking a date as invalid, debounce so that the field isn't
               // eagerly marked invalid as the user begins to type a valid date.
               // Check the validity again in the callback to avoid using a stale
               // value.
-              updateFilterDebounced(
-                filter.fieldId,
-                newValues,
-                getValidityOfValues
-              )
+              updateFilterDebounced(filter.fieldId, newValues, getValidities)
             }
           }}
           onFocus={(_e: React.FocusEvent<HTMLInputElement>) => {
@@ -204,7 +198,7 @@ const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
               prev.map(f => {
                 return f.panelIndex === filter.panelIndex - 1 &&
                   f.type === 'date' &&
-                  f.validityOfValues?.some(validity => !validity)
+                  f.validities?.some(validity => !validity)
                   ? { ...f, tooltipOrientation: 'top' }
                   : f
               })
@@ -259,8 +253,8 @@ const FilterListItem = ({ children }: { children: React.ReactNode }) => {
 
 type UpdateFilterFunction = (
   fieldId: string,
-  newFilterValues: string[],
-  getValidityOfValues?: () => boolean[]
+  newFilterValues: (string | undefined)[],
+  getValidities?: () => (boolean | undefined)[]
 ) => void
 
 const FilterPanel = ({
@@ -283,7 +277,7 @@ const FilterPanel = ({
   const updateFilter: UpdateFilterFunction = (
     fieldId,
     newValues,
-    getValidityOfValues?: () => boolean[]
+    getValidities
   ) => {
     setFilters(prev =>
       prev.map((filter: Filter) =>
@@ -291,8 +285,7 @@ const FilterPanel = ({
           ? {
               ...filter,
               values: newValues,
-              // TODO: Maybe rename 'validities'
-              validityOfValues: getValidityOfValues?.(),
+              validities: getValidities?.(),
             }
           : filter
       )

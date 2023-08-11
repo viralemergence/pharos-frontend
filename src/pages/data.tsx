@@ -31,7 +31,7 @@ export type Filter = {
   addedToPanel?: boolean
   /** To filter on a specific field, the user sets values for the filter. For
    * example, the host_species filter could receive the value "Bear". */
-  values?: string[]
+  values?: (string | undefined)[]
   /** If a filter has been 'applied', this means that it has been applied to
    * the list of records shown in the table, so that only records matching the
    * filter are shown in the table. For example, if the user sets host_species
@@ -48,8 +48,9 @@ export type Filter = {
    * */
   latestPossibleDate?: string
   /** For example, if a date field has a valid start date and an invalid end
-   * date, validityOfValues is [true, true].*/
-  validityOfValues?: boolean[]
+   * date, validities is [true, true]. If an input has no value its validity
+   * will be undefined. */
+  validities?: (boolean | undefined)[]
   tooltipOrientation?: 'bottom' | 'top'
 }
 
