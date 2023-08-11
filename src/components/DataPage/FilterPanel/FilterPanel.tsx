@@ -1,7 +1,6 @@
 import React, {
   Dispatch,
   SetStateAction,
-  forwardRef,
   useEffect,
   useRef,
   useState,
@@ -163,39 +162,40 @@ const DateInput = ({
       updateFilterDebounced(filter.fieldId, newValues, isDateValid)
     }
   }
-  function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms))
-  }
 
-  // for testing purposes
-  useEffect(() => {
-    if (index > 0) return
-    const keyDownHandler = async e => {
-      console.log('keydown')
-      if (e.key === 't') {
-        console.log('changeDate(index, 0199-01-01)')
-        changeDate(index, '0001-01-01')
-        await sleep(110)
-        changeDate(index, '0019-01-01')
-        await sleep(101)
-        changeDate(index, '0199-01-01')
-        await sleep(517)
-        console.log('changeDate(index, 1995-01-01)')
-        changeDate(index, '1995-01-01')
-        await sleep(50)
-        const panel = document.querySelector('aside[role=form]') as HTMLElement
-        panel?.focus()
+  // function sleep(ms) {
+  //   return new Promise(resolve => setTimeout(resolve, ms))
+  // }
 
-        // Clean up
-        await sleep(1000)
-        changeDate(index, '')
-      }
-    }
-    window.addEventListener('keydown', keyDownHandler)
-    return () => {
-      window.removeEventListener('keydown', keyDownHandler)
-    }
-  }, [])
+  // // for testing purposes
+  // useEffect(() => {
+  //   if (index > 0) return
+  //   const keyDownHandler = async e => {
+  //     console.log('keydown')
+  //     if (e.key === 't') {
+  //       console.log('changeDate(index, 0199-01-01)')
+  //       changeDate(index, '0001-01-01')
+  //       await sleep(110)
+  //       changeDate(index, '0019-01-01')
+  //       await sleep(101)
+  //       changeDate(index, '0199-01-01')
+  //       await sleep(517)
+  //       console.log('changeDate(index, 1995-01-01)')
+  //       changeDate(index, '1995-01-01')
+  //       await sleep(50)
+  //       const panel = document.querySelector('aside[role=form]') as HTMLElement
+  //       panel?.focus()
+
+  //       // Clean up
+  //       await sleep(1000)
+  //       changeDate(index, '')
+  //     }
+  //   }
+  //   window.addEventListener('keydown', keyDownHandler)
+  //   return () => {
+  //     window.removeEventListener('keydown', keyDownHandler)
+  //   }
+  // }, [])
 
   return (
     <div>
@@ -218,15 +218,15 @@ const DateInput = ({
           })
           // If this date field is focused and the previous field is a date
           // field with a tooltip, move that tooltip out of the way
-          // setFilters(prev =>
-          //   prev.map(f => {
-          //     return f.panelIndex === filter.panelIndex - 1 &&
-          //       f.type === 'date' &&
-          //       f.validities?.some(validity => validity === false)
-          //       ? { ...f, tooltipOrientation: 'top' }
-          //       : f
-          //   })
-          // )
+          setFilters(prev =>
+            prev.map(f => {
+              return f.panelIndex === filter.panelIndex - 1 &&
+                f.type === 'date' &&
+                f.validities?.some(validity => validity === false)
+                ? { ...f, tooltipOrientation: 'top' }
+                : f
+            })
+          )
           return true
         }}
         onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
