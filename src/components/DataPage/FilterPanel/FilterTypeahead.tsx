@@ -8,6 +8,7 @@ import { XIcon, FieldName } from './DisplayComponents'
 import InputLabel from '../../ui/InputLabel'
 import { Filter } from 'pages/data'
 import { UpdateFilterFunction } from './FilterPanel'
+import colorPalette from 'figma/colorPalette'
 
 const SelectedTypeaheadValues = styled.ul`
   margin-top: 10px;
@@ -21,8 +22,8 @@ const SelectedTypeaheadValues = styled.ul`
 const SelectedTypeaheadValue = styled.li`
   ${props => props.theme.smallParagraph};
   border-radius: 5px;
-  background-color: #58b7b1;
-  color: #101010;
+  background-color: ${({ theme }) => theme.lightPurple};
+  color: ${({ theme }) => theme.black};
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
@@ -42,7 +43,7 @@ const SelectedTypeaheadValueDeleteButton = styled.button`
   justify-content: center;
   align-items: center;
   &:hover {
-    background: rgba(0, 0, 0, 0.1);
+    background: ${({ theme }) => theme.veryLightPurple};
   }
   &:active {
     outline: 1px solid ${({ theme }) => theme.mint};
@@ -57,7 +58,7 @@ const TypeaheadContainer = styled.div`
   & input[type='search'] {
     ${({ theme }) => theme.smallParagraph}
     &::placeholder {
-      color: #fff !important;
+      color: ${({ theme }) => theme.white} !important;
       opacity: 1 !important;
       font-weight: bold;
     }
@@ -125,9 +126,9 @@ const FilterTypeahead = ({ filter, updateFilter }: FilterTypeaheadProps) => {
           placeholder={
             selectedItems.length ? `${selectedItems.length} selected` : ''
           }
-          backgroundColor="#000"
-          fontColor="white"
-          borderColor="#fff"
+          backgroundColor={colorPalette.mutedPurple1}
+          fontColor={colorPalette.white}
+          borderColor={colorPalette.white}
           RenderItem={({ item, selected }) => (
             <FilterDarkTypeaheadResult {...{ item, selected }} />
           )}
@@ -143,7 +144,7 @@ const FilterTypeahead = ({ filter, updateFilter }: FilterTypeaheadProps) => {
                 onClick={removeItem.bind(null, { key: value, label: value })}
                 aria-label="Remove filter value"
               >
-                <XIcon extraStyle="stroke: #101010" />
+                <XIcon extraStyle={`stroke: ${colorPalette.black}`} />
               </SelectedTypeaheadValueDeleteButton>
             </SelectedTypeaheadValue>
           ))}
