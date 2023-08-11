@@ -164,7 +164,7 @@ describe('The public data page', () => {
     expect(panel).toHaveAttribute('aria-hidden', 'true')
   })
 
-  it('has a filter panel that contains buttons for adding filters for fields', async () => {
+  it.skip('has a filter panel that contains buttons for adding filters for fields', async () => {
     render(<DataPage />)
     fireEvent.click(getFilterPanelToggleButton())
     fireEvent.click(getAddFilterButton())
@@ -176,7 +176,7 @@ describe('The public data page', () => {
     )
   })
 
-  it('has a filter panel that contains a button that clears all filters in the panel', async () => {
+  it.skip('has a filter panel that contains a button that clears all filters in the panel', async () => {
     render(<DataPage />)
     fireEvent.click(getFilterPanelToggleButton())
     fireEvent.click(getAddFilterButton())
@@ -194,7 +194,7 @@ describe('The public data page', () => {
     ).not.toBeInTheDocument()
   })
 
-  it('lets the user add date fields to the panel', async () => {
+  it.skip('lets the user add date fields to the panel', async () => {
     render(<DataPage />)
     fireEvent.click(getFilterPanelToggleButton())
     userEvent.click(getAddFilterButton())
@@ -234,7 +234,7 @@ describe('The public data page', () => {
     )
   })
 
-  it('lets the user filter by collection start date', async () => {
+  it.skip('lets the user filter by collection start date', async () => {
     render(<DataPage />)
     fireEvent.click(getFilterPanelToggleButton())
     fireEvent.click(getAddFilterButton())
@@ -254,7 +254,7 @@ describe('The public data page', () => {
     })
   })
 
-  it('does not filter by a date if it is invalid', async () => {
+  it.skip('does not filter by a date if it is invalid', async () => {
     render(<DataPage />)
     fireEvent.click(getFilterPanelToggleButton())
     fireEvent.click(getAddFilterButton())

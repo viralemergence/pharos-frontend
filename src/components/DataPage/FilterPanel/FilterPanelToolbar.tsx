@@ -33,11 +33,11 @@ const FilterSelector = ({
 }) => {
   return (
     <FilterSelectorDiv>
-      {filters.map(({ fieldId, type, label, addedToPanel = false }) => (
+      {filters.map(({ fieldId, label, addedToPanel = false }) => (
         <AddFilterToPanelButtonStyled
           key={fieldId}
           onClick={_ => {
-            addFilterValueSetter({ fieldId, type })
+            addFilterValueSetter({ fieldId })
             setIsDropdownOpen(false)
           }}
           disabled={addedToPanel}
@@ -134,7 +134,7 @@ const FilterPanelToolbar = ({
           <FilterSelector
             filters={filters}
             setIsDropdownOpen={setIsDropdownOpen}
-            addFilterValueSetter={({ fieldId, type }) => {
+            addFilterValueSetter={({ fieldId }) => {
               setFilters(filters => {
                 const highestPanelIndex = Math.max(
                   ...filters.map(panel => panel.panelIndex)
