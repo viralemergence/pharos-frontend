@@ -168,9 +168,11 @@ describe('The public data page', () => {
     render(<DataPage />)
     fireEvent.click(getFilterPanelToggleButton())
     fireEvent.click(getAddFilterButton())
-    const expectedButtonLabels = Object.values(publishedRecordsMetadata.fields)
+    const expectedButtonLabels = Object.values(
+      publishedRecordsMetadata.possibleFilters
+    ).map(filter => filter.label)
     await Promise.all(
-      expectedButtonLabels.map(({ label }) =>
+      expectedButtonLabels.map(label =>
         screen.findByText(label, { selector: 'button' })
       )
     )
