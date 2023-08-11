@@ -185,7 +185,7 @@ export const filterDefaultProperties = {
   panelIndex: -1,
   applied: false,
   tooltipOrientation: undefined,
-  inputIsValid: undefined,
+  validities: undefined,
 }
 
 export default FilterPanelToolbar
