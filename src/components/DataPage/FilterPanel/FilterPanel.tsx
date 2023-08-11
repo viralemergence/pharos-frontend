@@ -17,6 +17,13 @@ import {
   Panel,
 } from './DisplayComponents'
 import FilterPanelToolbar from './FilterPanelToolbar'
+import FilterTypeahead from './FilterTypeahead'
+
+export type UpdateFilterFunction = (
+  fieldId: string,
+  newFilterValues: string[],
+  getValidity?: () => boolean
+) => void
 
 /** Localize a date without changing the time zone */
 const localizeDate = (dateString: string) => {
@@ -141,11 +148,9 @@ const FilterValueSetter = ({
     updateFilter,
     setFilters,
   }
-  return <FilterInput {...props} />
-
-  // NOTE: Later this will become:
-  // if (useTypeahead) return <FilterTypeahead {...props} />
-  // else return <FilterInput {...props} fieldType={fieldType} />
+  const useTypeahead = filter.type === 'text'
+  if (useTypeahead) return <FilterTypeahead {...props} />
+  else return <FilterInput {...props} />
 }
 
 const FilterListItem = ({ children }: { children: React.ReactNode }) => {
@@ -157,12 +162,6 @@ const FilterListItem = ({ children }: { children: React.ReactNode }) => {
     <FilterListItemElement opacity={opacity}>{children}</FilterListItemElement>
   )
 }
-
-type UpdateFilterFunction = (
-  fieldId: string,
-  newFilterValues: string[],
-  getValidity?: () => boolean
-) => void
 
 const FilterPanel = ({
   isFilterPanelOpen,

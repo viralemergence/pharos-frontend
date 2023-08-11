@@ -4,8 +4,10 @@ import Typeahead, {
   Item as TypeaheadItem,
 } from '@talus-analytics/library.ui.typeahead'
 import FilterDarkTypeaheadResult from './FilterDarkTypeaheadResult'
-import { XIcon, FieldName, FilterValues } from './constants'
+import { XIcon, FieldName } from './DisplayComponents'
 import InputLabel from '../../ui/InputLabel'
+import { Filter } from 'pages/data'
+import { UpdateFilterFunction } from './FilterPanel'
 
 const SelectedTypeaheadValues = styled.ul`
   margin-top: 10px;
@@ -70,32 +72,26 @@ const TypeaheadLabel = styled(InputLabel)`
 `
 
 interface FilterTypeaheadProps {
-  fieldLabel: string
-  values: FilterValues
-  options: string[]
-  updateFilter: (filterIndex: number, values: FilterValues) => void
-  filterIndex: number
+  filter: Filter
+  updateFilter: UpdateFilterFunction
 }
 
 /** A typeahead component for setting the value of a filter */
-const FilterTypeahead = ({
-  fieldLabel,
-  values,
-  options,
-  updateFilter,
-  filterIndex,
-}: FilterTypeaheadProps) => {
-  const selectedItems = values.map(value => ({
+const FilterTypeahead = ({ filter, updateFilter }: FilterTypeaheadProps) => {
+  filter.values ??= []
+  const selectedItems = filter.values.map(value => ({
     key: value,
     label: value,
   }))
   const labelsOfSelectedItems = selectedItems.map(({ label }) => label)
   // Remove selected items from available options
-  options = options.filter(option => !labelsOfSelectedItems.includes(option))
+  const options = filter.options.filter(
+    option => !labelsOfSelectedItems.includes(option)
+  )
 
   const handleTypeaheadChange = (items: TypeaheadItem[]) => {
     updateFilter(
-      filterIndex,
+      filter.fieldId,
       items.map(({ label }) => label)
     )
   }
@@ -112,12 +108,12 @@ const FilterTypeahead = ({
     handleTypeaheadChange(amendedItems)
   }
 
-  const typeaheadInputId = `typeahead-${filterIndex}`
+  const typeaheadInputId = `typeahead-${filter.panelIndex}`
 
   return (
     <>
       <TypeaheadLabel htmlFor={typeaheadInputId}>
-        <FieldName>{fieldLabel}</FieldName>
+        <FieldName>{filter.label}</FieldName>
       </TypeaheadLabel>
       <TypeaheadContainer>
         <Typeahead
@@ -138,9 +134,9 @@ const FilterTypeahead = ({
           iconSVG="%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9L12 15L18 9H6Z' fill='%23FFFFFF'/%3E%3C/svg%3E%0A"
         />
       </TypeaheadContainer>
-      {values.length > 0 && (
+      {filter.values.length > 0 && (
         <SelectedTypeaheadValues>
-          {values.map(value => (
+          {filter.values.map(value => (
             <SelectedTypeaheadValue key={value}>
               {value}
               <SelectedTypeaheadValueDeleteButton
