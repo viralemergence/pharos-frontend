@@ -129,6 +129,7 @@ const load = async ({
   setReachedLastPage: Dispatch<SetStateAction<boolean>>
   setRecords: Dispatch<SetStateAction<Row[]>>
 }) => {
+  console.log('load func invoked')
   setLoading(replaceRecords ? 'replacing' : 'appending')
 
   const queryStringParameters = new URLSearchParams()
@@ -169,23 +170,32 @@ const load = async ({
   queryStringParameters.append('page', pageToLoad.toString())
   queryStringParameters.append('pageSize', PAGE_SIZE.toString())
 
-  const success = await fetchRecords({
-    queryStringParameters,
-    replaceRecords,
-    latestRecordsRequestIdRef,
-    setRecords,
-    setReachedLastPage,
-  })
-
-  if (success) {
-    setFilters(prev =>
-      prev.map(filter => ({
-        ...filter,
-        applied: fieldIdsOfAppliedFilters.includes(filter.fieldId),
-      }))
-    )
-  } else {
-    setLoading(false)
+  let success
+  try {
+    success = await fetchRecords({
+      queryStringParameters,
+      replaceRecords,
+      latestRecordsRequestIdRef,
+      setRecords,
+      setReachedLastPage,
+    })
+  } catch (e) {
+    console.error('fetchRecords threw an error')
+  } finally {
+    if (success) {
+      console.log('noting applied filters')
+      setFilters(prev => {
+        console.log('****** setFilters in load')
+        return prev.map(filter => ({
+          ...filter,
+          applied: fieldIdsOfAppliedFilters.includes(filter.fieldId),
+        }))
+      })
+    } else {
+      console.log('success is false')
+      setLoading(false)
+      console.log('loading set to false')
+    }
   }
 }
 
@@ -211,7 +221,10 @@ const fetchRecords = async ({
   const currentRecordsRequestId = latestRecordsRequestId
 
   const url = `${RECORDS_URL}?${queryStringParameters}`
+  console.log('url', url)
+  console.log('pre fetch')
   const response = await fetch(url)
+  console.log('post fetch')
 
   const isLatestRecordsRequest =
     currentRecordsRequestId === latestRecordsRequestId
@@ -228,6 +241,7 @@ const fetchRecords = async ({
     return false
   }
   setRecords((prev: Row[]) => {
+    console.log('setting records')
     let records = data.publishedRecords
     if (!replaceRecords) {
       // Ensure that no two records have the same id
@@ -304,13 +318,17 @@ const TableView = ({
     setRecords,
   }
 
+  console.log('stringifiedFiltersWithValues', stringifiedFiltersWithValues)
+
   // Load the first page of results when TableView mounts and when the filters' values have changed
   useEffect(() => {
+    console.log('loading debounced')
     loadDebounced({ ...loadOptions, replaceRecords: true })
   }, [stringifiedFiltersWithValues])
 
   useEffect(() => {
     return () => {
+      console.log('canceling load debouncer')
       loadDebounced.cancel()
     }
   }, [])
@@ -352,10 +370,12 @@ const TableView = ({
       divIsScrolledToBottom(event.currentTarget)
     )
       load({ ...loadOptions, replaceRecords: false })
+    console.log('handling scroll')
   }
 
   // When records finish loading, remove the 'Loading...' indicator
   useEffect(() => {
+    console.log('removing loading indicator')
     setLoading(false)
 
     // If the table just loaded the first page of records and the grid is

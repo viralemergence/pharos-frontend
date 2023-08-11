@@ -260,18 +260,31 @@ export const Panel = styled.aside<{ open: boolean }>`
   }
 `
 
-export const FieldInput = styled.input`
+export const FieldInput = styled.input<{
+  showPlaceholder: boolean
+  placeHolder?: string
+}>`
   ${({ theme }) => theme.smallParagraph};
   background-color: ${({ theme }) => theme.mutedPurple1};
   border-radius: 5px;
   border: 1px solid ${({ theme }) => theme.white};
-  color: ${({ theme }) => theme.white};
+  color: ${({ theme, showPlaceholder }) =>
+    showPlaceholder ? 'transparent' : theme.white};
   font-weight: 600;
   padding: 8px 10px;
   width: 160px;
   height: 45px;
   &:invalid {
-    border-color: ${({ theme }) => theme.red};
+    ${({ theme, showPlaceholder }) =>
+      showPlaceholder ? '' : `border-color: ${theme.red}`};
+  }
+  &::before {
+    display: ${({ showPlaceholder }) => (showPlaceholder ? 'flex' : 'none')};
+    color: ${({ theme }) => theme.white};
+    opacity: 0.5;
+    top: 0;
+    left: 20px;
+    content: '${({ placeholder }) => placeholder}';
   }
 `
 

@@ -145,13 +145,17 @@ const FilterPanelToolbar = ({
                 )
                 return filters.map(f => {
                   if (f.fieldId !== fieldId) return f
-                  return {
+                  const newlyAddedFilter: Filter = {
                     ...f,
                     addedToPanel: true,
                     values: [],
                     panelIndex: highestPanelIndex + 1,
                     tooltipOrientation: 'bottom',
                   }
+                  if (newlyAddedFilter.type === 'date') {
+                    newlyAddedFilter.validities = [undefined, undefined]
+                  }
+                  return newlyAddedFilter
                 })
               })
             }}

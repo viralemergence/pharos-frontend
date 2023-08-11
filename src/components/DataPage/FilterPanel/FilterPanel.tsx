@@ -1,7 +1,6 @@
 import React, {
   Dispatch,
   SetStateAction,
-  RefObject,
   forwardRef,
   useEffect,
   useRef,
@@ -33,6 +32,7 @@ const localizeDate = (dateString: string) => {
   return date.toLocaleDateString()
 }
 
+// This doesn't seem to affect the timing of the actions that cause a crash
 const dateFilterUpdateDelay = 1000
 
 const DateFilterInputs = ({
@@ -49,6 +49,7 @@ const DateFilterInputs = ({
   useEffect(() => {
     // Cancel debounce on unmount
     return () => {
+      console.log('canceling debounce on unmount')
       updateFilterDebounced.cancel()
     }
   }, [])
@@ -67,8 +68,6 @@ const DateFilterInputs = ({
     }00-01-01`
     latestPossibleDateLocalized = localizeDate(latestPossibleDate)
   }
-  const startDateRef = useRef(null)
-  const endDateRef = useRef(null)
 
   const dateInputProps = {
     filter,
@@ -80,8 +79,6 @@ const DateFilterInputs = ({
     updateFilterDebounced,
     setFilters,
     values: filter.values,
-    startDateRef,
-    endDateRef,
   }
   const someValuesAreInvalid = filter.validities?.some(
     validity => validity === false
@@ -94,14 +91,12 @@ const DateFilterInputs = ({
           {...dateInputProps}
           index={0}
           value={filter.values?.[0]}
-          ref={startDateRef}
           placeholder="From"
         />
         <DateInput
           {...dateInputProps}
           index={1}
           value={filter.values?.[1]}
-          ref={endDateRef}
           placeholder="To"
         />
       </DateInputRow>
@@ -129,94 +124,126 @@ type DateInputProps = {
   updateFilterDebounced: DebouncedFunc<UpdateFilterFunction>
   setFilters: Dispatch<SetStateAction<Filter[]>>
   placeholder: string
-  startDateRef: RefObject<HTMLInputElement>
-  endDateRef: RefObject<HTMLInputElement>
 }
 
-const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
-  (
-    {
-      filter,
-      earliestPossibleDate,
-      latestPossibleDate,
-      value,
-      index,
-      updateFilter,
-      updateFilterDebounced,
-      setFilters,
-      placeholder,
-      startDateRef,
-      endDateRef,
-    },
-    ref
-  ) => {
-    const isDateValid = (dateStr?: string) => {
-      if (!dateStr) return undefined
-      if (earliestPossibleDate) if (dateStr < earliestPossibleDate) return false
-      if (latestPossibleDate) if (dateStr > latestPossibleDate) return false
-      return true
-    }
-    const [showPlaceholder, setShowPlaceholder] = useState(true)
-    return (
-      <div>
-        <FieldInput
-          ref={ref}
-          type={showPlaceholder ? 'text' : 'date'}
-          aria-label={filter.label}
-          min={earliestPossibleDate}
-          max={latestPossibleDate}
-          defaultValue={value}
-          placeholder={placeholder}
-          onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-            const newValues = filter.values ?? []
-            const value = e.target.value
-            newValues[index] = value
-            if (isDateValid(value)) {
-              console.log('updating filter undebounced')
-              updateFilter(filter.fieldId, newValues, isDateValid)
-              updateFilterDebounced.cancel()
-            } else {
-              // When marking a date as invalid, debounce so that the field isn't
-              // eagerly marked invalid as the user begins to type a valid date.
-              // Check the validity again in the callback to avoid using a stale
-              // value.
-              console.log('updating filter debounced')
-              updateFilterDebounced(filter.fieldId, newValues, isDateValid)
-            }
-            console.log('oninput 10')
-          }}
-          onFocus={(_e: React.FocusEvent<HTMLInputElement>) => {
-            setShowPlaceholder(false)
-            // If this date field is focused and the previous field is a date
-            // field with a tooltip, move that tooltip out of the way
-            setFilters(prev =>
-              prev.map(f => {
-                return f.panelIndex === filter.panelIndex - 1 &&
-                  f.type === 'date' &&
-                  f.validities?.some(validity => validity === false)
-                  ? { ...f, tooltipOrientation: 'top' }
-                  : f
-              })
-            )
-            return true
-          }}
-          onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
-            console.log('onblur 1')
-            if (!e.target.value) setShowPlaceholder(true)
-            console.log('onblur 2')
-            setFilters(prev => {
-              console.log('onblur setFilters 1')
-              return prev.map(f =>
-                f.type === 'date' ? { ...f, tooltipOrientation: 'bottom' } : f
-              )
-            })
-            console.log('onblur 3')
-          }}
-        />
-      </div>
-    )
+const DateInput = ({
+  filter,
+  earliestPossibleDate,
+  latestPossibleDate,
+  value,
+  index,
+  updateFilter,
+  updateFilterDebounced,
+  setFilters,
+  placeholder,
+}: DateInputProps) => {
+  const isDateValid = (dateStr?: string) => {
+    if (!dateStr) return undefined
+    if (earliestPossibleDate) if (dateStr < earliestPossibleDate) return false
+    if (latestPossibleDate) if (dateStr > latestPossibleDate) return false
+    return true
   }
-)
+  // TODO: temporarily false
+  const [showPlaceholder, setShowPlaceholder] = useState(true)
+  const changeDate = (index: number, newValue: string | undefined) => {
+    console.log('changeDate @', Date.now(), newValue)
+    const newValues = filter.values ?? [undefined, undefined]
+    // Don't save a blank value
+    if (!newValue) newValue = undefined
+    newValues[index] = newValue
+    if (isDateValid(value)) {
+      updateFilter(filter.fieldId, newValues, isDateValid)
+      updateFilterDebounced.cancel()
+    } else {
+      // When marking a date as invalid, debounce so that the field isn't
+      // eagerly marked invalid as the user begins to type a valid date.
+      // Check the validity again in the callback to avoid using a stale
+      // value.
+      updateFilterDebounced(filter.fieldId, newValues, isDateValid)
+    }
+  }
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
+
+  // for testing purposes
+  useEffect(() => {
+    if (index > 0) return
+    const keyDownHandler = async e => {
+      console.log('keydown')
+      if (e.key === 't') {
+        console.log('changeDate(index, 0199-01-01)')
+        changeDate(index, '0001-01-01')
+        await sleep(110)
+        changeDate(index, '0019-01-01')
+        await sleep(101)
+        changeDate(index, '0199-01-01')
+        await sleep(517)
+        console.log('changeDate(index, 1995-01-01)')
+        changeDate(index, '1995-01-01')
+        await sleep(50)
+        const panel = document.querySelector('aside[role=form]') as HTMLElement
+        panel?.focus()
+
+        // Clean up
+        await sleep(1000)
+        changeDate(index, '')
+      }
+    }
+    window.addEventListener('keydown', keyDownHandler)
+    return () => {
+      window.removeEventListener('keydown', keyDownHandler)
+    }
+  }, [])
+
+  return (
+    <div>
+      <FieldInput
+        type={'date'}
+        aria-label={filter.label}
+        min={earliestPossibleDate}
+        max={latestPossibleDate}
+        defaultValue={value}
+        placeholder={placeholder}
+        showPlaceholder={showPlaceholder}
+        onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+          changeDate(index, e.target.value)
+        }}
+        onFocus={(_e: React.FocusEvent<HTMLInputElement>) => {
+          // I was able to comment out this whole onFocus function and it still crashes - but I think less often
+          setShowPlaceholder(prev => {
+            console.log('**** set showPlaceholder')
+            return false
+          })
+          // If this date field is focused and the previous field is a date
+          // field with a tooltip, move that tooltip out of the way
+          // setFilters(prev =>
+          //   prev.map(f => {
+          //     return f.panelIndex === filter.panelIndex - 1 &&
+          //       f.type === 'date' &&
+          //       f.validities?.some(validity => validity === false)
+          //       ? { ...f, tooltipOrientation: 'top' }
+          //       : f
+          //   })
+          // )
+          return true
+        }}
+        onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+          // console.log('onblur 1')
+          // if (!e.target.value) setShowPlaceholder(true)
+          // console.log('onblur 2')
+          // setFilters(prev => {
+          //   console.log('onblur setFilters 1')
+          //   return prev.map(f =>
+          //     f.type === 'date' ? { ...f, tooltipOrientation: 'bottom' } : f
+          //   )
+          // })
+          // console.log('onblur 3')
+        }}
+      />
+    </div>
+  )
+}
 
 const FilterUI = ({
   filter,
@@ -279,8 +306,9 @@ const FilterPanel = ({
     isDateValid
   ) => {
     console.log('update filter')
-    setFilters(prev =>
-      prev.map((filter: Filter) =>
+    setFilters(prev => {
+      console.log('**** setFilters')
+      return prev.map((filter: Filter) =>
         filter.fieldId === fieldId
           ? {
               ...filter,
@@ -289,7 +317,7 @@ const FilterPanel = ({
             }
           : filter
       )
-    )
+    })
   }
 
   // When a new filter is added, scroll the filter list to the bottom
@@ -306,6 +334,8 @@ const FilterPanel = ({
       aria-hidden={isFilterPanelOpen ? 'false' : 'true'}
       aria-label="Filters panel"
       id="pharos-filter-panel" // The filter panel toggle button has aria-controls="pharos-filter-panel"
+      // TODO: Temporary
+      onClick={e => console.log('PANEL CLICKED')}
     >
       {isFilterPanelOpen && (
         <>

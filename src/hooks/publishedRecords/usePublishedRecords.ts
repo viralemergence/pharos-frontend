@@ -20,6 +20,7 @@ const usePublishedRecords = ({
 
   useEffect(() => {
     let ignore = false
+    console.log('usePublishedRecords: useEffect')
 
     setPublishedRecordsData(prev => ({
       status: PublishedRecordsLoadingState.LOADING,
