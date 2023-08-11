@@ -49,7 +49,6 @@ const DateFilterInputs = ({
   useEffect(() => {
     // Cancel debounce on unmount
     return () => {
-      console.log('canceling debounce on unmount')
       updateFilterDebounced.cancel()
     }
   }, [])
@@ -143,10 +142,8 @@ const DateInput = ({
     if (latestPossibleDate) if (dateStr > latestPossibleDate) return false
     return true
   }
-  // TODO: temporarily false
   const [showPlaceholder, setShowPlaceholder] = useState(true)
   const changeDate = (index: number, newValue: string | undefined) => {
-    console.log('changeDate @', Date.now(), newValue)
     const newValues = filter.values ?? [undefined, undefined]
     // Don't save a blank value
     if (!newValue) newValue = undefined
@@ -162,39 +159,6 @@ const DateInput = ({
       updateFilterDebounced(filter.fieldId, newValues, isDateValid)
     }
   }
-  function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms))
-  }
-
-  // for testing purposes
-  useEffect(() => {
-    if (index > 0) return
-    const keyDownHandler = async e => {
-      console.log('keydown')
-      if (e.key === 't') {
-        console.log('changeDate(index, 0199-01-01)')
-        changeDate(index, '0001-01-01')
-        await sleep(110)
-        changeDate(index, '0019-01-01')
-        await sleep(101)
-        changeDate(index, '0199-01-01')
-        await sleep(517)
-        console.log('changeDate(index, 1995-01-01)')
-        changeDate(index, '1995-01-01')
-        await sleep(50)
-        const panel = document.querySelector('aside[role=form]') as HTMLElement
-        panel?.focus()
-
-        // Clean up
-        await sleep(1000)
-        changeDate(index, '')
-      }
-    }
-    window.addEventListener('keydown', keyDownHandler)
-    return () => {
-      window.removeEventListener('keydown', keyDownHandler)
-    }
-  }, [])
 
   return (
     <div>
@@ -210,9 +174,7 @@ const DateInput = ({
           changeDate(index, e.target.value)
         }}
         onFocus={(_e: React.FocusEvent<HTMLInputElement>) => {
-          // I was able to comment out this whole onFocus function and it still crashes - but I think less often
-          setShowPlaceholder(prev => {
-            console.log('**** set showPlaceholder')
+          setShowPlaceholder(() => {
             return false
           })
           // If this date field is focused and the previous field is a date
@@ -229,16 +191,12 @@ const DateInput = ({
           return true
         }}
         onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
-          // console.log('onblur 1')
-          // if (!e.target.value) setShowPlaceholder(true)
-          // console.log('onblur 2')
-          // setFilters(prev => {
-          //   console.log('onblur setFilters 1')
-          //   return prev.map(f =>
-          //     f.type === 'date' ? { ...f, tooltipOrientation: 'bottom' } : f
-          //   )
-          // })
-          // console.log('onblur 3')
+          if (!e.target.value) setShowPlaceholder(true)
+          setFilters(prev =>
+            prev.map(f =>
+              f.type === 'date' ? { ...f, tooltipOrientation: 'bottom' } : f
+            )
+          )
         }}
       />
     </div>
@@ -305,18 +263,18 @@ const FilterPanel = ({
     newValues,
     isDateValid
   ) => {
-    console.log('update filter')
     setFilters(prev => {
-      console.log('**** setFilters')
-      return prev.map((filter: Filter) =>
-        filter.fieldId === fieldId
-          ? {
-              ...filter,
-              values: newValues,
-              validities: newValues.map(isDateValid),
-            }
-          : filter
-      )
+      return prev.map((filter: Filter) => {
+        if (filter.fieldId !== fieldId) return filter
+        const updatedFilter = {
+          ...filter,
+          values: newValues,
+        }
+        if (isDateValid) {
+          updatedFilter.validities = newValues.map(isDateValid)
+        }
+        return updatedFilter
+      })
     })
   }
 
@@ -334,8 +292,6 @@ const FilterPanel = ({
       aria-hidden={isFilterPanelOpen ? 'false' : 'true'}
       aria-label="Filters panel"
       id="pharos-filter-panel" // The filter panel toggle button has aria-controls="pharos-filter-panel"
-      // TODO: Temporary
-      onClick={e => console.log('PANEL CLICKED')}
     >
       {isFilterPanelOpen && (
         <>
