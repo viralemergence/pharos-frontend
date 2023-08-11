@@ -83,7 +83,9 @@ const DateFilterInputs = ({
     startDateRef,
     endDateRef,
   }
-  const someValuesAreInvalid = filter.validities?.some(validity => !validity)
+  const someValuesAreInvalid = filter.validities?.some(
+    validity => validity === false
+  )
   return (
     <FilterLabel>
       <FieldName>{filter.label}</FieldName>
@@ -148,6 +150,12 @@ const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
     },
     ref
   ) => {
+    const isDateValid = (dateStr?: string) => {
+      if (!dateStr) return undefined
+      if (earliestPossibleDate) if (dateStr < earliestPossibleDate) return false
+      if (latestPossibleDate) if (dateStr > latestPossibleDate) return false
+      return true
+    }
     const [showPlaceholder, setShowPlaceholder] = useState(true)
     return (
       <div>
@@ -160,35 +168,22 @@ const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
           defaultValue={value}
           placeholder={placeholder}
           onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-            console.log('onInput')
-            const valid = e.target.checkValidity()
             const newValues = filter.values ?? []
-            if (valid) {
-              newValues[index] = e.target.value
-            } else {
-              newValues[index] = undefined
-            }
-            const getValidities = () => {
-              if (e && e.target) {
-                const validities = [
-                  startDateRef.current?.checkValidity(),
-                  endDateRef.current?.checkValidity(),
-                ]
-                return validities
-              } else {
-                return [undefined, undefined]
-              }
-            }
-            if (valid) {
-              updateFilter(filter.fieldId, newValues, getValidities)
+            const value = e.target.value
+            newValues[index] = value
+            if (isDateValid(value)) {
+              console.log('updating filter undebounced')
+              updateFilter(filter.fieldId, newValues, isDateValid)
               updateFilterDebounced.cancel()
             } else {
               // When marking a date as invalid, debounce so that the field isn't
               // eagerly marked invalid as the user begins to type a valid date.
               // Check the validity again in the callback to avoid using a stale
               // value.
-              updateFilterDebounced(filter.fieldId, newValues, getValidities)
+              console.log('updating filter debounced')
+              updateFilterDebounced(filter.fieldId, newValues, isDateValid)
             }
+            console.log('oninput 10')
           }}
           onFocus={(_e: React.FocusEvent<HTMLInputElement>) => {
             setShowPlaceholder(false)
@@ -198,7 +193,7 @@ const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
               prev.map(f => {
                 return f.panelIndex === filter.panelIndex - 1 &&
                   f.type === 'date' &&
-                  f.validities?.some(validity => !validity)
+                  f.validities?.some(validity => validity === false)
                   ? { ...f, tooltipOrientation: 'top' }
                   : f
               })
@@ -206,12 +201,16 @@ const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
             return true
           }}
           onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+            console.log('onblur 1')
             if (!e.target.value) setShowPlaceholder(true)
-            setFilters(prev =>
-              prev.map(f =>
+            console.log('onblur 2')
+            setFilters(prev => {
+              console.log('onblur setFilters 1')
+              return prev.map(f =>
                 f.type === 'date' ? { ...f, tooltipOrientation: 'bottom' } : f
               )
-            )
+            })
+            console.log('onblur 3')
           }}
         />
       </div>
@@ -254,7 +253,7 @@ const FilterListItem = ({ children }: { children: React.ReactNode }) => {
 type UpdateFilterFunction = (
   fieldId: string,
   newFilterValues: (string | undefined)[],
-  getValidities?: () => (boolean | undefined)[]
+  isDateValid: (date?: string) => boolean | undefined
 ) => void
 
 const FilterPanel = ({
@@ -277,15 +276,16 @@ const FilterPanel = ({
   const updateFilter: UpdateFilterFunction = (
     fieldId,
     newValues,
-    getValidities
+    isDateValid
   ) => {
+    console.log('update filter')
     setFilters(prev =>
       prev.map((filter: Filter) =>
         filter.fieldId === fieldId
           ? {
               ...filter,
               values: newValues,
-              validities: getValidities?.(),
+              validities: newValues.map(isDateValid),
             }
           : filter
       )

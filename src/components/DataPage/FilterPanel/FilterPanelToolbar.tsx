@@ -160,7 +160,10 @@ const FilterPanelToolbar = ({
         {addedFilters.length > 0 && (
           <FilterPanelToolbarButtonStyled
             style={{ marginRight: '5px' }}
-            onClick={() => removeAllFilters()}
+            onClick={e => {
+              e.preventDefault()
+              removeAllFilters()
+            }}
           >
             Clear all
           </FilterPanelToolbarButtonStyled>

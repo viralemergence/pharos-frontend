@@ -138,8 +138,9 @@ const load = async ({
     if (!filter.addedToPanel) continue
     if (!filter.values) continue
     const validValues = filter.values.filter(
-      (value: string) => value !== null && value !== undefined && value !== ''
-    )
+      (value: string | undefined) =>
+        value !== null && value !== undefined && value !== ''
+    ) as string[]
     if (filter.fieldId === 'collection_date') {
       const [startDate, endDate] = filter.values
       if (startDate) {
