@@ -80,7 +80,8 @@ interface FilterTypeaheadProps {
 /** A typeahead component for setting the value of a filter */
 const FilterTypeahead = ({ filter, updateFilter }: FilterTypeaheadProps) => {
   filter.values ??= []
-  const selectedItems = filter.values.map(value => ({
+  const values = filter.values.filter(value => value !== undefined) as string[]
+  const selectedItems = values.map(value => ({
     key: value,
     label: value,
   }))
@@ -135,13 +136,15 @@ const FilterTypeahead = ({ filter, updateFilter }: FilterTypeaheadProps) => {
           iconSVG="%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9L12 15L18 9H6Z' fill='%23FFFFFF'/%3E%3C/svg%3E%0A"
         />
       </TypeaheadContainer>
-      {filter.values.length > 0 && (
+      {values.length > 0 && (
         <SelectedTypeaheadValues>
-          {filter.values.map(value => (
+          {values.map(value => (
             <SelectedTypeaheadValue key={value}>
               {value}
               <SelectedTypeaheadValueDeleteButton
-                onClick={removeItem.bind(null, { key: value, label: value })}
+                onClick={() => {
+                  removeItem({ key: value, label: value })
+                }}
                 aria-label="Remove filter value"
               >
                 <XIcon extraStyle={`stroke: ${colorPalette.black}`} />

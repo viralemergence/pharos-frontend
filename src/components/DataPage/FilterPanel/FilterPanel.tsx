@@ -279,7 +279,7 @@ const FilterListItem = ({ children }: { children: React.ReactNode }) => {
 export type UpdateFilterFunction = (
   fieldId: string,
   newFilterValues: (string | undefined)[],
-  isDateValid: (date?: string) => boolean | undefined
+  isDateValid?: (date?: string) => boolean | undefined
 ) => void
 
 const FilterPanel = ({
@@ -307,15 +307,17 @@ const FilterPanel = ({
     console.log('update filter')
     setFilters(prev => {
       console.log('**** setFilters')
-      return prev.map((filter: Filter) =>
-        filter.fieldId === fieldId
-          ? {
-              ...filter,
-              values: newValues,
-              validities: newValues.map(isDateValid),
-            }
-          : filter
-      )
+      return prev.map((filter: Filter) => {
+        if (filter.fieldId !== fieldId) return filter
+        const updatedFilter = {
+          ...filter,
+          values: newValues,
+        }
+        if (isDateValid) {
+          updatedFilter.validities = newValues.map(isDateValid)
+        }
+        return updatedFilter
+      })
     })
   }
 

@@ -37,7 +37,7 @@ const FilterSelector = ({
         <AddFilterToPanelButtonStyled
           key={fieldId}
           onClick={_ => {
-            addFilterUI({ fieldId, type })
+            addFilterUI({ fieldId })
             setIsDropdownOpen(false)
           }}
           disabled={addedToPanel}
