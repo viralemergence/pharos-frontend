@@ -90,12 +90,14 @@ const DateFilterInputs = ({
           index={0}
           value={filter.values?.[0]}
           placeholder="From"
+          ariaLabel={'Collected on this date or later'}
         />
         <DateInput
           {...dateInputProps}
           index={1}
           value={filter.values?.[1]}
           placeholder="To"
+          ariaLabel={'Collected on this date or earlier'}
         />
       </DateInputRow>
       {someValuesAreInvalid && (
@@ -122,6 +124,7 @@ type DateInputProps = {
   updateFilterDebounced: DebouncedFunc<UpdateFilterFunction>
   setFilters: Dispatch<SetStateAction<Filter[]>>
   placeholder: string
+  ariaLabel?: string
 }
 
 const DateInput = ({
@@ -134,6 +137,7 @@ const DateInput = ({
   updateFilterDebounced,
   setFilters,
   placeholder,
+  ariaLabel,
 }: DateInputProps) => {
   const isDateValid = (dateStr?: string) => {
     if (!dateStr) return undefined
@@ -163,7 +167,7 @@ const DateInput = ({
     <div>
       <FieldInput
         type={'date'}
-        aria-label={filter.label}
+        aria-label={ariaLabel}
         min={earliestPossibleDate}
         max={latestPossibleDate}
         defaultValue={value}

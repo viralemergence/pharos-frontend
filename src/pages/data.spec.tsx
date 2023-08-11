@@ -211,7 +211,7 @@ describe('The public data page', () => {
       /^Collected on this date or earlier/
     )
     const filterForAfterDate = await screen.findByLabelText(
-      /^Collected on or after date/
+      /^Collected on this date or later/
     )
     expect(filterForAfterDate).toBeInTheDocument()
     expect(filterForBeforeDate).toBeInTheDocument()
@@ -219,11 +219,11 @@ describe('The public data page', () => {
     const dateFilters = await screen.findAllByLabelText(/^Collected on/)
     expect(dateFilters[0]).toHaveAttribute(
       'aria-label',
-      'Collected on this date or earlier'
+      'Collected on this date or later'
     )
     expect(dateFilters[1]).toHaveAttribute(
       'aria-label',
-      'Collected on this date or later'
+      'Collected on this date or earlier'
     )
   })
 
