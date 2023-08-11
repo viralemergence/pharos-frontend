@@ -260,18 +260,41 @@ export const Panel = styled.aside<{ open: boolean }>`
   }
 `
 
-export const FieldInput = styled.input`
+export const FieldInput = styled.input<{
+  showPlaceholder: boolean
+  placeHolder?: string
+}>`
   ${({ theme }) => theme.smallParagraph};
   background-color: ${({ theme }) => theme.mutedPurple1};
   border-radius: 5px;
   border: 1px solid ${({ theme }) => theme.white};
-  color: ${({ theme }) => theme.white};
+  color: ${({ theme, showPlaceholder }) =>
+    showPlaceholder ? 'transparent' : theme.white};
   font-weight: 600;
   padding: 8px 10px;
+  width: 160px;
+  height: 45px;
+  &:invalid {
+    ${({ theme, showPlaceholder }) =>
+      showPlaceholder ? '' : `border-color: ${theme.red}`};
+  }
+  &::before {
+    display: ${({ showPlaceholder }) => (showPlaceholder ? 'flex' : 'none')};
+    color: ${({ theme }) => theme.white};
+    opacity: 0.5;
+    top: 0;
+    left: 20px;
+    content: '${({ placeholder }) => placeholder}';
+  }
 `
 
-export const DateTooltip = styled.aside<{ flipped: boolean }>`
+export const DateTooltip = styled.aside<{
+  flipped: boolean
+  isStartDateInvalid: boolean
+  isEndDateInvalid: boolean
+}>`
   ${({ theme }) => theme.extraSmallParagraph};
+  font-size: 9pt;
   background-color: ${({ theme }) => theme.white};
   border-radius: 5px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1), 0px 1px 3px rgba(0, 0, 0, 0.2);
@@ -285,6 +308,16 @@ export const DateTooltip = styled.aside<{ flipped: boolean }>`
   animation: fadeIn 0.15s forwards;
   ${({ flipped }) => (flipped ? 'top: 10px;' : '')}
   &::before {
+    display: ${({ isStartDateInvalid }) =>
+      isStartDateInvalid ? 'flex' : 'none'};
+    transform: translateX(-500%);
+  }
+  &::after {
+    display: ${({ isEndDateInvalid }) => (isEndDateInvalid ? 'flex' : 'none')};
+    transform: translateX(400%);
+  }
+  &::before,
+  &::after {
     border-bottom: 10px solid ${({ theme }) => theme.white};
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
@@ -292,8 +325,7 @@ export const DateTooltip = styled.aside<{ flipped: boolean }>`
     height: 0;
     left: 50%;
     position: absolute;
-    top: -10px;
-    transform: translateX(-700%);
+    top: -9px;
     width: 0;
     ${({ flipped }) =>
       flipped
@@ -390,4 +422,10 @@ export const DataToolbarDiv = styled.div<{ isFilterPanelOpen: boolean }>`
     padding: 10px;
     ${({ isFilterPanelOpen }) => (isFilterPanelOpen ? 'display: none' : '')}
   }
+`
+
+export const DateInputRow = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 8px;
 `

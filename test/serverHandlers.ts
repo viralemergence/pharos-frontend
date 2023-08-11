@@ -3435,12 +3435,8 @@ const publishedRecordsMetadata = {
       label: 'Pathogen',
       dataGridKey: 'Pathogen',
     },
-    collection_start_date: {
-      label: 'Collected on or after date',
-      type: 'date',
-    },
-    collection_end_date: {
-      label: 'Collected on or before date',
+    collection_date: {
+      label: 'Collection date',
       type: 'date',
     },
   },
@@ -3457,14 +3453,23 @@ const handlers = [
 
       // Handle some filters for testing purposes
       let recordsToReturn = [...publishedRecords]
-      const collectionStartDate = params.get('collection_start_date')
-      if (collectionStartDate) {
-        recordsToReturn = recordsToReturn.filter(
-          record =>
-            new Date(record['Collection date']) >= new Date(collectionStartDate)
-        )
+      const collectionDate = params.get('collection_date')
+      if (collectionDate && collectionDate.length >= 2) {
+        const [collectionStartDate, collectionEndDate] = collectionDate
+        if (collectionStartDate) {
+          recordsToReturn = recordsToReturn.filter(
+            record =>
+              new Date(record['Collection date']) >=
+              new Date(collectionStartDate)
+          )
+        }
+        if (collectionEndDate) {
+          recordsToReturn = recordsToReturn.filter(
+            record =>
+              new Date(record['Collection date']) >= new Date(collectionEndDate)
+          )
+        }
       }
-
       recordsToReturn = recordsToReturn.slice(
         indexOfFirstRecordWanted,
         indexOfFirstRecordWanted + pageSize
@@ -3481,18 +3486,4 @@ const handlers = [
   ),
 ]
 
-// Define some alternative handlers for use in specific tests
-
-const routeThatReturnsNoPublishedRecords = rest.get(
-  `${process.env.GATSBY_API_URL}/published-records`,
-  async (_req, res, ctx) => {
-    const data = { publishedRecords: [], isLastPage: true }
-    return res(ctx.json(data))
-  }
-)
-
-export {
-  handlers,
-  publishedRecordsMetadata,
-  routeThatReturnsNoPublishedRecords,
-}
+export { handlers, publishedRecordsMetadata }

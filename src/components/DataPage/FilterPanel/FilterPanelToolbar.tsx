@@ -25,11 +25,11 @@ import type { Filter } from 'pages/data'
 const FilterSelector = ({
   filters,
   setIsDropdownOpen,
-  addFilterValueSetter,
+  addFilterUI,
 }: {
   filters: Filter[]
   setIsDropdownOpen: Dispatch<SetStateAction<boolean>>
-  addFilterValueSetter: (options: Partial<Filter>) => void
+  addFilterUI: (options: Partial<Filter>) => void
 }) => {
   return (
     <FilterSelectorDiv>
@@ -37,7 +37,7 @@ const FilterSelector = ({
         <AddFilterToPanelButtonStyled
           key={fieldId}
           onClick={_ => {
-            addFilterValueSetter({ fieldId })
+            addFilterUI({ fieldId, type })
             setIsDropdownOpen(false)
           }}
           disabled={addedToPanel}
@@ -134,20 +134,24 @@ const FilterPanelToolbar = ({
           <FilterSelector
             filters={filters}
             setIsDropdownOpen={setIsDropdownOpen}
-            addFilterValueSetter={({ fieldId }) => {
+            addFilterUI={({ fieldId }) => {
               setFilters(filters => {
                 const highestPanelIndex = Math.max(
                   ...filters.map(panel => panel.panelIndex)
                 )
                 return filters.map(f => {
                   if (f.fieldId !== fieldId) return f
-                  return {
+                  const newlyAddedFilter: Filter = {
                     ...f,
                     addedToPanel: true,
                     values: [],
                     panelIndex: highestPanelIndex + 1,
                     tooltipOrientation: 'bottom',
                   }
+                  if (newlyAddedFilter.type === 'date') {
+                    newlyAddedFilter.validities = [undefined, undefined]
+                  }
+                  return newlyAddedFilter
                 })
               })
             }}
@@ -156,7 +160,10 @@ const FilterPanelToolbar = ({
         {addedFilters.length > 0 && (
           <FilterPanelToolbarButtonStyled
             style={{ marginRight: '5px' }}
-            onClick={() => removeAllFilters()}
+            onClick={e => {
+              e.preventDefault()
+              removeAllFilters()
+            }}
           >
             Clear all
           </FilterPanelToolbarButtonStyled>
@@ -181,7 +188,7 @@ export const filterDefaultProperties = {
   panelIndex: -1,
   applied: false,
   tooltipOrientation: undefined,
-  inputIsValid: undefined,
+  validities: undefined,
 }
 
 export default FilterPanelToolbar
