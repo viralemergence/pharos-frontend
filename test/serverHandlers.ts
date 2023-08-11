@@ -3404,7 +3404,7 @@ const publishedRecords = [
 ]
 
 const publishedRecordsMetadata = {
-  fields: {
+  possibleFilters: {
     project_name: {
       label: 'Project name',
       dataGridKey: 'Project name',
@@ -3438,6 +3438,8 @@ const publishedRecordsMetadata = {
     collection_date: {
       label: 'Collection date',
       type: 'date',
+      earliestPossibleDate: '1900-01-01',
+      latestPossibleDate: '2100-01-01',
     },
   },
 }
