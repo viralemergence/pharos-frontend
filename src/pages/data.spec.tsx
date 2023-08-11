@@ -164,13 +164,15 @@ describe('The public data page', () => {
     expect(panel).toHaveAttribute('aria-hidden', 'true')
   })
 
-  it.skip('has a filter panel that contains buttons for adding filters for fields', async () => {
+  it('has a filter panel that contains buttons for adding filters for fields', async () => {
     render(<DataPage />)
     fireEvent.click(getFilterPanelToggleButton())
     fireEvent.click(getAddFilterButton())
-    const expectedButtonLabels = Object.values(publishedRecordsMetadata.fields)
+    const expectedButtonLabels = Object.values(
+      publishedRecordsMetadata.possibleFilters
+    ).map(filter => filter.label)
     await Promise.all(
-      expectedButtonLabels.map(({ label }) =>
+      expectedButtonLabels.map(label =>
         screen.findByText(label, { selector: 'button' })
       )
     )
