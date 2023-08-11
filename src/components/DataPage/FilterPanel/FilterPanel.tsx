@@ -257,6 +257,8 @@ const FilterPanel = ({
 }) => {
   const filterListRef = useRef<HTMLUListElement | null>(null)
 
+  console.log('FilterPanel says filters are', filters)
+
   const addedFilters = filters
     .filter(f => f.addedToPanel)
     .sort((a, b) => a.panelIndex - b.panelIndex)

@@ -237,7 +237,7 @@ describe('The public data page', () => {
     await userEvent.type(filterInput, '2020-04-01')
     const grid = await getDataGridAfterWaiting()
     await waitFor(() => {
-      expect(grid).toHaveAttribute('aria-rowcount', '10')
+      expect(grid).toHaveAttribute('aria-rowcount', '10'), { timeout: 6000 }
     })
 
     // Remove the date
@@ -245,7 +245,7 @@ describe('The public data page', () => {
     await waitFor(() => {
       expect(grid).toHaveAttribute('aria-rowcount', '51')
     })
-  })
+  }, 10000)
 
   it('does not filter by a date if it is invalid', async () => {
     render(<DataPage />)

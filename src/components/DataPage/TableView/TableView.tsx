@@ -176,6 +176,7 @@ const load = async ({
     setRecords,
     setReachedLastPage,
   })
+
   if (success) {
     setFilters(prev => {
       return prev.map(filter => ({
@@ -210,11 +211,23 @@ const fetchRecords = async ({
   const currentRecordsRequestId = latestRecordsRequestId
 
   const url = `${RECORDS_URL}?${queryStringParameters}`
-  const response = await fetch(url)
+
+  let response
+  console.log('url', url)
+  try {
+    response = await fetch(url)
+  } catch (e) {
+    console.log(`Error when fetching ${url}`)
+  }
+  console.log('fetch completed')
 
   const isLatestRecordsRequest =
     currentRecordsRequestId === latestRecordsRequestId
   if (!isLatestRecordsRequest) return false
+  if (!response) {
+    console.log(`No response when fetching ${url}`)
+    return false
+  }
 
   if (!response.ok) {
     console.log(`GET ${url}: error`)
@@ -243,6 +256,7 @@ const fetchRecords = async ({
     // Sort records by row number, just in case pages come back from the
     // server in the wrong order
     records.sort((a, b) => Number(a.rowNumber) - Number(b.rowNumber))
+    console.log('setting records to an array with length', records.length)
     return records
   })
   setReachedLastPage(data.isLastPage)
@@ -266,6 +280,8 @@ const TableView = ({
   const [loading, setLoading] = useState<LoadingState>('replacing')
   const [records, setRecords] = useState<Row[]>([])
   const [reachedLastPage, setReachedLastPage] = useState(false)
+
+  console.log('records.length in TableView', records.length)
 
   /** Filters that have been added to the panel */
   const addedFilters = filters.filter(f => f.addedToPanel)
