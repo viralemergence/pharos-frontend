@@ -12,12 +12,15 @@ import {
   DateTooltip,
   FieldInput,
   FieldName,
+  FilterDeleteButtonStyled,
   FilterLabel,
   FilterListItemElement,
+  FilterUIContainer,
   ListOfAddedFilters,
   Panel,
+  XIcon,
 } from './DisplayComponents'
-import FilterPanelToolbar from './FilterPanelToolbar'
+import FilterPanelToolbar, { removeOneFilter } from './FilterPanelToolbar'
 
 interface DebouncedFunc<T extends (...args: any[]) => any> extends Function {
   (...args: Parameters<T>): ReturnType<T>
@@ -206,6 +209,22 @@ const DateInput = ({
   )
 }
 
+const FilterDeleteButton = ({
+  filter,
+  setFilters,
+}: {
+  filter: Filter
+  setFilters: Dispatch<SetStateAction<Filter[]>>
+}) => {
+  return (
+    <FilterDeleteButtonStyled
+      onClick={() => removeOneFilter(filter, setFilters)}
+    >
+      <XIcon />
+    </FilterDeleteButtonStyled>
+  )
+}
+
 const FilterUI = ({
   filter,
   updateFilter,
@@ -221,7 +240,12 @@ const FilterUI = ({
     updateFilter,
     setFilters,
   }
-  return <DateFilterInputs {...props} />
+  return (
+    <FilterUIContainer>
+      <DateFilterInputs {...props} />
+      <FilterDeleteButton filter={filter} setFilters={setFilters} />
+    </FilterUIContainer>
+  )
 
   // NOTE: Later this will become:
   // if (useTypeahead) return <FilterTypeahead {...props} />

@@ -228,6 +228,24 @@ export const FilterLabel = styled.label`
   display: block;
 `
 
+export const FilterDeleteButtonStyled = styled.button`
+  background: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 45px;
+  width: 45px;
+  border: none;
+  cursor: pointer;
+`
+
+export const FilterUIContainer = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 5px;
+  align-items: flex-end;
+`
+
 const panelWidth = '410px'
 
 export const Panel = styled.aside<{ open: boolean }>`
