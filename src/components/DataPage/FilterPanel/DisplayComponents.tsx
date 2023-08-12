@@ -142,7 +142,7 @@ export const FilterSelectorDiv = styled.div`
   flex-flow: column nowrap;
   align-items: flex-start;
   background-color: ${({ theme }) => theme.mutedPurple4};
-  border: 1px solid ${({ theme }) => theme.darkGray};
+  border: 2px solid ${({ theme }) => theme.darkGray};
   border-radius: 5px;
   padding: 5px 0;
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
@@ -161,7 +161,7 @@ export const AddFilterToPanelButtonStyled = styled(FilterPanelButton)<{
   margin-bottom: 5px;
   ${({ disabled, theme }) =>
     disabled
-      ? `color: ${theme.veryDarkGray};
+      ? `color: ${theme.white30PercentOpacity};
         cursor: unset;
         &:hover { background-color: inherit; }`
       : `
