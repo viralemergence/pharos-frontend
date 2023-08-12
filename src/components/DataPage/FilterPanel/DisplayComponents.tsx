@@ -141,7 +141,8 @@ export const FilterSelectorDiv = styled.div`
   display: flex;
   flex-flow: column nowrap;
   align-items: flex-start;
-  background-color: ${({ theme }) => theme.medBlack};
+  background-color: ${({ theme }) => theme.mutedPurple4};
+  border: 1px solid ${({ theme }) => theme.darkGray};
   border-radius: 5px;
   padding: 5px 0;
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
