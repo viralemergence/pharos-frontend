@@ -38,7 +38,6 @@ const fetchRecords = async ({
     currentRecordsRequestId === latestRecordsRequestId
   if (!isLatestRecordsRequest) return false
   if (!response) {
-    console.log(`No response when fetching ${url}`)
     return false
   }
 

@@ -32,35 +32,36 @@ describe('The public data table', () => {
   const getDataGridAfterWaiting = async () =>
     await screen.findByTestId('datagrid')
 
-  it('renders', () => {
+  it('renders', async () => {
     render(
       <Providers>
         <TableView filters={[]} setFilters={jest.fn()} />
       </Providers>
     )
+    const grid = await getDataGridAfterWaiting()
+    expect(grid).toBeInTheDocument()
   })
 
-  const startDateFilter: Filter = {
-    fieldId: 'collection_start_date',
-    label: 'Collected on or after',
+  const dateFilter: Filter = {
+    fieldId: 'collection_date',
+    label: 'Collection date',
     type: 'date',
-    values: [],
     addedToPanel: true,
     dataGridKey: 'Collection date',
     options: [],
     panelIndex: 0,
   }
 
-  const startDateFilterMarch2020: Filter = {
-    ...startDateFilter,
-    values: ['2020-03-01'],
+  const dateFilterStartingMarch2020: Filter = {
+    ...dateFilter,
+    values: ['2020-03-01', undefined],
   }
 
-  it.skip('can be filtered by collection start date', async () => {
+  it('can be filtered by collection start date', async () => {
     render(
       <Providers>
         <TableView
-          filters={[startDateFilterMarch2020]}
+          filters={[dateFilterStartingMarch2020]}
           setFilters={jest.fn()}
         />
       </Providers>
