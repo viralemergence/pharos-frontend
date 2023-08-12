@@ -34,7 +34,6 @@ const localizeDate = (dateString: string) => {
   return date.toLocaleDateString()
 }
 
-// This doesn't seem to affect the timing of the actions that cause a crash
 const dateFilterUpdateDelay = 1000
 
 const DateFilterInputs = ({
@@ -246,10 +245,6 @@ const FilterUI = ({
       <FilterDeleteButton filter={filter} setFilters={setFilters} />
     </FilterUIContainer>
   )
-
-  // NOTE: Later this will become:
-  // if (useTypeahead) return <FilterTypeahead {...props} />
-  // else return <DateFilterInputs {...props} fieldType={fieldType} />
 }
 
 const FilterListItem = ({ children }: { children: React.ReactNode }) => {
