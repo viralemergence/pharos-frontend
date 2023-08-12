@@ -206,7 +206,7 @@ export const ListOfAddedFilters = styled.ul`
   right: 0;
   left: 0;
   overflow-y: auto;
-  padding: 34px 40px;
+  padding: 34px 30px;
   flex-grow: 1;
   flex-shrink: 1;
   max-height: 100%;
