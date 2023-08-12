@@ -3453,12 +3453,10 @@ const handlers = [
       const page = Number(params.get('page'))
       const indexOfFirstRecordWanted = (page - 1) * pageSize
 
-      console.log('HELLO FROM HANDLER')
       // Handle some filters for testing purposes
       let recordsToReturn = [...publishedRecords]
       const collectionStartDate = params.get('collection_start_date')
       if (collectionStartDate) {
-        console.log('collectionStartDate found in params', collectionStartDate)
         recordsToReturn = recordsToReturn.filter(
           record => record['Collection date'] >= collectionStartDate
         )

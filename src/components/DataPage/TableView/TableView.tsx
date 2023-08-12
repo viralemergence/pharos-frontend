@@ -112,8 +112,6 @@ const TableView = ({
   const [records, setRecords] = useState<Row[]>([])
   const [reachedLastPage, setReachedLastPage] = useState(false)
 
-  console.log('records.length in TableView', records.length)
-
   /** Filters that have been added to the panel */
   const addedFilters = filters.filter(f => f.addedToPanel)
 
