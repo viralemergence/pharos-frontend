@@ -37,6 +37,7 @@ const FillDatasetGrid = styled(DataGrid)`
   border: 0;
   flex-grow: 1;
   block-size: 100px;
+  background: ${({ theme }) => theme.mutedPurple1};
   .rdg-cell {
     background-color: ${({ theme }) => theme.mutedPurple1};
     // TODO: Put this color in the figma color file
