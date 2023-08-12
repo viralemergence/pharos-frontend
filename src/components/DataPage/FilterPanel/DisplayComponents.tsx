@@ -159,6 +159,9 @@ export const AddFilterToPanelButtonStyled = styled(FilterPanelButton)<{
   width: 100%;
   padding: 5px 15px;
   margin-bottom: 5px;
+  &:last-child {
+    margin-bottom: 0;
+  }
   ${({ disabled, theme }) =>
     disabled
       ? `color: ${theme.white30PercentOpacity};
