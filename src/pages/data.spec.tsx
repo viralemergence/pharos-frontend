@@ -236,13 +236,17 @@ describe('The public data page', () => {
     expect(filterInput).toBeInTheDocument()
     await userEvent.type(filterInput, '2020-04-01')
     const grid = await getDataGridAfterWaiting()
-    await waitFor(() => {
-      expect(grid).toHaveAttribute('aria-rowcount', '10'), { timeout: 6000 }
-    })
+    await waitFor(
+      () => {
+        expect(grid).toHaveAttribute('aria-rowcount', '10')
+      },
+      { timeout: 5000 }
+    )
 
     // Remove the date
     await userEvent.type(filterInput, '{backspace}'.repeat(10))
-    await waitFor(() => {
+    await waitFor(async () => {
+      const grid = await getDataGridAfterWaiting()
       expect(grid).toHaveAttribute('aria-rowcount', '51')
     })
   }, 10000)
