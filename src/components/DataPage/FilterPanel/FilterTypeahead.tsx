@@ -1,14 +1,15 @@
-import React from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 import styled from 'styled-components'
 import Typeahead, {
   Item as TypeaheadItem,
 } from '@talus-analytics/library.ui.typeahead'
-import FilterDarkTypeaheadResult from './FilterDarkTypeaheadResult'
-import { XIcon, FieldName } from './DisplayComponents'
-import InputLabel from '../../ui/InputLabel'
 import { Filter } from 'pages/data'
-import { UpdateFilterFunction } from './FilterPanel'
+import InputLabel from 'components/ui/InputLabel'
 import colorPalette from 'figma/colorPalette'
+import { UpdateFilterFunction } from './FilterPanel'
+import { XIcon, FieldName } from './DisplayComponents'
+import { FilterDeleteButton } from './components'
+import FilterDarkTypeaheadResult from './FilterDarkTypeaheadResult'
 
 const SelectedTypeaheadValues = styled.ul`
   margin-top: 10px;
@@ -74,11 +75,16 @@ const TypeaheadLabel = styled(InputLabel)`
 
 interface FilterTypeaheadProps {
   filter: Filter
+  setFilters: Dispatch<SetStateAction<Filter[]>>
   updateFilter: UpdateFilterFunction
 }
 
 /** A typeahead component for setting the value of a filter */
-const FilterTypeahead = ({ filter, updateFilter }: FilterTypeaheadProps) => {
+const FilterTypeahead = ({
+  filter,
+  setFilters,
+  updateFilter,
+}: FilterTypeaheadProps) => {
   filter.values ??= []
   const values = filter.values.filter(value => value !== undefined) as string[]
   const selectedItems = values.map(value => ({
@@ -135,6 +141,7 @@ const FilterTypeahead = ({ filter, updateFilter }: FilterTypeaheadProps) => {
           )}
           iconSVG="%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9L12 15L18 9H6Z' fill='%23FFFFFF'/%3E%3C/svg%3E%0A"
         />
+        <FilterDeleteButton filter={filter} setFilters={setFilters} />
       </TypeaheadContainer>
       {values.length > 0 && (
         <SelectedTypeaheadValues>
