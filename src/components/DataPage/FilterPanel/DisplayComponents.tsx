@@ -228,14 +228,14 @@ export const FilterLabel = styled.label`
   display: block;
 `
 
-export const FilterDeleteButtonStyled = styled.button`
+export const FilterDeleteButtonStyled = styled(FilterPanelToolbarButtonStyled)`
   background: transparent;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 45px;
-  width: 45px;
   border: none;
+  padding: 10px;
   cursor: pointer;
 `
 
@@ -294,7 +294,7 @@ export const FieldInput = styled.input<{
     showPlaceholder ? 'transparent' : theme.white};
   font-weight: 600;
   padding: 8px 10px;
-  width: 160px;
+  width: 150px;
   height: 45px;
   &:invalid {
     ${({ theme, showPlaceholder }) =>
