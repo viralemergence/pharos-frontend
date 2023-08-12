@@ -340,7 +340,7 @@ export const DateTooltip = styled.aside<{
   @keyframes fadeIn {
     from {
       opacity: 0;
-      transform: translateY(9px) scale(0.95);
+      transform: translateY(9px) scale(0.925);
     }
     to {
       opacity: 1;

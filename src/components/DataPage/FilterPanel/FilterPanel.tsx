@@ -151,7 +151,7 @@ const DateInput = ({
     // Don't save a blank value
     if (!newValue) newValue = undefined
     newValues[index] = newValue
-    if (isDateValid(value)) {
+    if (isDateValid(newValue)) {
       updateFilter(filter.fieldId, newValues, isDateValid)
       updateFilterDebounced.cancel()
     } else {
