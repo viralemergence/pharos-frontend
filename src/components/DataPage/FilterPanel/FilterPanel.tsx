@@ -12,12 +12,15 @@ import {
   DateTooltip,
   FieldInput,
   FieldName,
+  FilterDeleteButtonStyled,
   FilterLabel,
   FilterListItemElement,
+  FilterUIContainer,
   ListOfAddedFilters,
   Panel,
+  XIcon,
 } from './DisplayComponents'
-import FilterPanelToolbar from './FilterPanelToolbar'
+import FilterPanelToolbar, { removeOneFilter } from './FilterPanelToolbar'
 import FilterTypeahead from './FilterTypeahead'
 
 interface DebouncedFunc<T extends (...args: any[]) => any> extends Function {
@@ -32,7 +35,6 @@ const localizeDate = (dateString: string) => {
   return date.toLocaleDateString()
 }
 
-// This doesn't seem to affect the timing of the actions that cause a crash
 const dateFilterUpdateDelay = 1000
 
 const DateFilterInputs = ({
@@ -91,12 +93,14 @@ const DateFilterInputs = ({
           index={0}
           value={filter.values?.[0]}
           placeholder="From"
+          ariaLabel={'Collected on this date or later'}
         />
         <DateInput
           {...dateInputProps}
           index={1}
           value={filter.values?.[1]}
           placeholder="To"
+          ariaLabel={'Collected on this date or earlier'}
         />
       </DateInputRow>
       {someValuesAreInvalid && (
@@ -123,6 +127,7 @@ type DateInputProps = {
   updateFilterDebounced: DebouncedFunc<UpdateFilterFunction>
   setFilters: Dispatch<SetStateAction<Filter[]>>
   placeholder: string
+  ariaLabel?: string
 }
 
 const DateInput = ({
@@ -135,6 +140,7 @@ const DateInput = ({
   updateFilterDebounced,
   setFilters,
   placeholder,
+  ariaLabel,
 }: DateInputProps) => {
   const isDateValid = (dateStr?: string) => {
     if (!dateStr) return undefined
@@ -148,7 +154,7 @@ const DateInput = ({
     // Don't save a blank value
     if (!newValue) newValue = undefined
     newValues[index] = newValue
-    if (isDateValid(value)) {
+    if (isDateValid(newValue)) {
       updateFilter(filter.fieldId, newValues, isDateValid)
       updateFilterDebounced.cancel()
     } else {
@@ -164,7 +170,7 @@ const DateInput = ({
     <div>
       <FieldInput
         type={'date'}
-        aria-label={filter.label}
+        aria-label={ariaLabel}
         min={earliestPossibleDate}
         max={latestPossibleDate}
         defaultValue={value}
@@ -203,6 +209,22 @@ const DateInput = ({
   )
 }
 
+const FilterDeleteButton = ({
+  filter,
+  setFilters,
+}: {
+  filter: Filter
+  setFilters: Dispatch<SetStateAction<Filter[]>>
+}) => {
+  return (
+    <FilterDeleteButtonStyled
+      onClick={() => removeOneFilter(filter, setFilters)}
+    >
+      <XIcon extraStyle="width: 18px; height: 18px;" />
+    </FilterDeleteButtonStyled>
+  )
+}
+
 const FilterUI = ({
   filter,
   updateFilter,
@@ -219,8 +241,16 @@ const FilterUI = ({
     setFilters,
   }
   const useTypeahead = filter.type === 'text'
-  if (useTypeahead) return <FilterTypeahead {...props} />
-  else return <DateFilterInputs {...props} />
+  return (
+    <FilterUIContainer>
+      {useTypeahead ? (
+        <FilterTypeahead {...props} />
+      ) : (
+        <DateFilterInputs {...props} />
+      )}
+      <FilterDeleteButton filter={filter} setFilters={setFilters} />
+    </FilterUIContainer>
+  )
 }
 
 const FilterListItem = ({ children }: { children: React.ReactNode }) => {

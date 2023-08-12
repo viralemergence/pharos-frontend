@@ -141,7 +141,8 @@ export const FilterSelectorDiv = styled.div`
   display: flex;
   flex-flow: column nowrap;
   align-items: flex-start;
-  background-color: ${({ theme }) => theme.mutedPurple1};
+  background-color: ${({ theme }) => theme.mutedPurple4};
+  border: 2px solid ${({ theme }) => theme.darkGray};
   border-radius: 5px;
   padding: 5px 0;
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
@@ -158,9 +159,12 @@ export const AddFilterToPanelButtonStyled = styled(FilterPanelButton)<{
   width: 100%;
   padding: 5px 15px;
   margin-bottom: 5px;
+  &:last-child {
+    margin-bottom: 0;
+  }
   ${({ disabled, theme }) =>
     disabled
-      ? `color: ${theme.veryDarkGray};
+      ? `color: ${theme.white30PercentOpacity};
         cursor: unset;
         &:hover { background-color: inherit; }`
       : `
@@ -206,7 +210,7 @@ export const ListOfAddedFilters = styled.ul`
   right: 0;
   left: 0;
   overflow-y: auto;
-  padding: 34px 40px;
+  padding: 34px 30px;
   flex-grow: 1;
   flex-shrink: 1;
   max-height: 100%;
@@ -222,6 +226,24 @@ export const ListOfAddedFilters = styled.ul`
 export const FilterLabel = styled.label`
   ${({ theme }) => theme.smallParagraph}
   display: block;
+`
+
+export const FilterDeleteButtonStyled = styled(FilterPanelToolbarButtonStyled)`
+  background: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 45px;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+`
+
+export const FilterUIContainer = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 5px;
+  align-items: flex-end;
 `
 
 const panelWidth = '410px'
@@ -272,7 +294,7 @@ export const FieldInput = styled.input<{
     showPlaceholder ? 'transparent' : theme.white};
   font-weight: 600;
   padding: 8px 10px;
-  width: 160px;
+  width: 150px;
   height: 45px;
   &:invalid {
     ${({ theme, showPlaceholder }) =>
@@ -339,7 +361,7 @@ export const DateTooltip = styled.aside<{
   @keyframes fadeIn {
     from {
       opacity: 0;
-      transform: translateY(9px) scale(0.95);
+      transform: translateY(9px) scale(0.925);
     }
     to {
       opacity: 1;

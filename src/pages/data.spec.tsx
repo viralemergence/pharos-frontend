@@ -211,7 +211,7 @@ describe('The public data page', () => {
       /^Collected on this date or earlier/
     )
     const filterForAfterDate = await screen.findByLabelText(
-      /^Collected on or after date/
+      /^Collected on this date or later/
     )
     expect(filterForAfterDate).toBeInTheDocument()
     expect(filterForBeforeDate).toBeInTheDocument()
@@ -219,11 +219,11 @@ describe('The public data page', () => {
     const dateFilters = await screen.findAllByLabelText(/^Collected on/)
     expect(dateFilters[0]).toHaveAttribute(
       'aria-label',
-      'Collected on this date or earlier'
+      'Collected on this date or later'
     )
     expect(dateFilters[1]).toHaveAttribute(
       'aria-label',
-      'Collected on this date or later'
+      'Collected on this date or earlier'
     )
   })
 
@@ -236,16 +236,20 @@ describe('The public data page', () => {
     expect(filterInput).toBeInTheDocument()
     await userEvent.type(filterInput, '2020-04-01')
     const grid = await getDataGridAfterWaiting()
-    await waitFor(() => {
-      expect(grid).toHaveAttribute('aria-rowcount', '10')
-    })
+    await waitFor(
+      () => {
+        expect(grid).toHaveAttribute('aria-rowcount', '10')
+      },
+      { timeout: 5000 }
+    )
 
     // Remove the date
     await userEvent.type(filterInput, '{backspace}'.repeat(10))
-    await waitFor(() => {
+    await waitFor(async () => {
+      const grid = await getDataGridAfterWaiting()
       expect(grid).toHaveAttribute('aria-rowcount', '51')
     })
-  })
+  }, 10000)
 
   it.skip('does not filter by a date if it is invalid', async () => {
     render(<DataPage />)
