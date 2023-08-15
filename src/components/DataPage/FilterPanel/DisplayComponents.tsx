@@ -223,9 +223,10 @@ export const ListOfAddedFilters = styled.ul`
   }
 `
 
-export const FilterLabel = styled.label`
+export const FilterLabel = styled.label<{ hasTooltip?: boolean }>`
   ${({ theme }) => theme.smallParagraph}
   display: block;
+  flex: 1;
 `
 
 export const FilterDeleteButtonStyled = styled(FilterPanelToolbarButtonStyled)`
@@ -239,10 +240,12 @@ export const FilterDeleteButtonStyled = styled(FilterPanelToolbarButtonStyled)`
   cursor: pointer;
 `
 
-export const FilterUIContainer = styled.div`
+export const FilterUIContainer = styled.div<{ hasTooltip?: boolean }>`
   display: flex;
   flex-flow: column nowrap;
   gap: 5px;
+  transition: margin-bottom 0.15s;
+  ${({ hasTooltip }) => (hasTooltip ? 'margin-bottom: 48px;' : '')}
 `
 
 export const FilterUIContainerForTypeahead = styled(FilterUIContainer)`
