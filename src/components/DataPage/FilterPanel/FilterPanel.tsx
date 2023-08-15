@@ -179,20 +179,7 @@ const DateInput = ({
           changeDate(index, e.target.value)
         }}
         onFocus={(_e: React.FocusEvent<HTMLInputElement>) => {
-          setShowPlaceholder(() => {
-            return false
-          })
-          // If this date field is focused and the previous field is a date
-          // field with a tooltip, move that tooltip out of the way
-          // setFilters(prev =>
-          //   prev.map(f => {
-          //     return f.panelIndex === filter.panelIndex - 1 &&
-          //       f.type === 'date' &&
-          //       f.validities?.some(validity => validity === false)
-          //       ? { ...f, tooltipOrientation: 'top' }
-          //       : f
-          //   })
-          // )
+          setShowPlaceholder(false)
           return true
         }}
         onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
