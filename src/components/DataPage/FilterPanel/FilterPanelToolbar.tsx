@@ -171,7 +171,6 @@ const FilterPanelToolbar = ({
         </Dropdown>
         {addedFilters.length > 0 && (
           <FilterPanelToolbarButtonStyled
-            style={{ marginRight: '5px' }}
             onClick={e => {
               e.preventDefault()
               removeAllFilters(setFilters)
