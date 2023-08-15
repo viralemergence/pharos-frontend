@@ -57,9 +57,8 @@ const TypeaheadContainer = styled.div`
   gap: 8px;
   & form {
     flex: 1;
+    margin: 0;
     max-width: 400px !important;
-    margin-bottom: 10px;
-    margin-top: 0;
   }
   & input[type='search'] {
     ${({ theme }) => theme.smallParagraph}
