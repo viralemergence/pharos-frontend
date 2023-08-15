@@ -230,26 +230,28 @@ export const FilterLabel = styled.label<{ hasTooltip?: boolean }>`
 `
 
 export const FilterDeleteButtonStyled = styled(FilterPanelToolbarButtonStyled)`
-  background: transparent;
-  display: flex;
-  justify-content: center;
   align-items: center;
-  height: 45px;
+  background: transparent;
   border: none;
-  padding: 10px;
   cursor: pointer;
+  display: flex;
+  height: 45px;
+  justify-content: center;
+  padding: 10px;
 `
 
 export const FilterUIContainer = styled.div<{ hasTooltip?: boolean }>`
   display: flex;
   flex-flow: column nowrap;
-  gap: 5px;
+  gap: 8px;
   transition: margin-bottom 0.15s;
   ${({ hasTooltip }) => (hasTooltip ? 'margin-bottom: 48px;' : '')}
 `
 
 export const FilterUIContainerForTypeahead = styled(FilterUIContainer)`
+  display: flex;
   gap: 0px;
+  flex-flow: column nowrap;
 `
 
 const panelWidth = '410px'
