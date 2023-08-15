@@ -229,20 +229,20 @@ export const FilterLabel = styled.label`
 `
 
 export const FilterDeleteButtonStyled = styled(FilterPanelToolbarButtonStyled)`
-  background: transparent;
-  display: flex;
-  justify-content: center;
   align-items: center;
-  height: 45px;
+  background: transparent;
   border: none;
-  padding: 10px;
   cursor: pointer;
+  display: flex;
+  height: 45px;
+  justify-content: center;
+  padding: 10px;
 `
 
 export const FilterUIContainer = styled.div`
   display: flex;
   flex-flow: row nowrap;
-  gap: 5px;
+  gap: 8px;
   align-items: flex-end;
 `
 
@@ -294,7 +294,7 @@ export const FieldInput = styled.input<{
     showPlaceholder ? 'transparent' : theme.white};
   font-weight: 600;
   padding: 8px 10px;
-  width: 150px;
+  width: 146px;
   height: 45px;
   &:invalid {
     ${({ theme, showPlaceholder }) =>
