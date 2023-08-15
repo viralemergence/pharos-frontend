@@ -62,7 +62,9 @@ export const FilterUI = ({
       <FilterTypeahead {...props} />
     </FilterUIContainerForTypeahead>
   ) : (
-    <FilterUIContainer>
+    <FilterUIContainer
+      hasTooltip={filter.validities?.some(validity => validity === false)}
+    >
       <DateFilterInputs {...props} />
     </FilterUIContainer>
   )
