@@ -1,11 +1,10 @@
-import React, { Dispatch, SetStateAction
-} from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 import styled from 'styled-components'
 import Typeahead, {
   Item as TypeaheadItem,
 } from '../../../../library/ui/typeahead/Typeahead'
 import FilterDarkTypeaheadResult from './FilterDarkTypeaheadResult'
-import { XIcon, FieldName, } from './DisplayComponents'
+import { XIcon, FieldName } from './DisplayComponents'
 import { Filter } from 'pages/data'
 import InputLabel from 'components/ui/InputLabel'
 import colorPalette from 'figma/colorPalette'
@@ -22,7 +21,6 @@ const SelectedTypeaheadValues = styled.ul`
   gap: 5px;
 `
 const SelectedTypeaheadValue = styled.li`
-  background-color: #58b7b1;
   background-color: ${({ theme }) => theme.lightPurple};
   border-radius: 5px;
   color: ${({ theme }) => theme.black};
@@ -32,7 +30,7 @@ const SelectedTypeaheadValue = styled.li`
   gap: 5px;
   padding-left: 10px;
 `
-  
+
 const SelectedTypeaheadValueDeleteButton = styled.button`
   border: 0;
   background: transparent;
@@ -73,7 +71,6 @@ const TypeaheadContainer = styled.div`
     line-height: 25px !important;
   }
 `
-
 
 const TypeaheadLabel = styled(InputLabel)`
   ${({ theme }) => theme.smallParagraph}
