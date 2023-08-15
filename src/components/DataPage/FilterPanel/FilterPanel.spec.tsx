@@ -4,56 +4,63 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { ThemeProvider } from 'styled-components'
 import textStyles from '../../../figma/textStyles'
 import colorPalette from '../../../figma/colorPalette'
-import zIndexes from '../../../components/layout/ZIndexes'
+import breakpoints from '../../../components/layout/Breakpoints'
+
+const Provider = ({ children }: { children: React.ReactNode }) => (
+  <ThemeProvider theme={{ ...textStyles, ...colorPalette, breakpoints }}>
+    {children}
+  </ThemeProvider>
+)
 
 describe('FilterPanel', () => {
   const getAddFilterButton = () => screen.getByText('Add filter')
 
   it('renders', () => {
     render(
-      <ThemeProvider theme={{ ...textStyles, ...colorPalette, zIndexes }}>
+      <Provider>
         <FilterPanel
           isFilterPanelOpen={true}
           setIsFilterPanelOpen={jest.fn()}
-          fields={{}}
           filters={[]}
           setFilters={jest.fn()}
-          clearFilters={jest.fn()}
-          updateFilter={jest.fn()}
         />
-      </ThemeProvider>
+      </Provider>
     )
   })
 
-  it('renders with fields', () => {
+  it('renders with filters', () => {
     render(
-      <ThemeProvider theme={{ ...textStyles, ...colorPalette, zIndexes }}>
+      <Provider>
         <FilterPanel
           isFilterPanelOpen={true}
           setIsFilterPanelOpen={jest.fn()}
-          fields={{
-            field1: {
+          filters={[
+            {
+              fieldId: 'field1',
               label: 'Field 1',
               type: 'text',
               options: ['field 1, option 1', 'field 1, option 2'],
+              dataGridKey: 'field1',
+              panelIndex: 0,
             },
-            field2: {
+            {
+              fieldId: 'field2',
               label: 'Field 2',
               type: 'text',
               options: ['field 2, option 1', 'field 2, option 2'],
+              dataGridKey: 'field2',
+              panelIndex: 1,
             },
-          }}
-          filters={[]}
+          ]}
           setFilters={jest.fn()}
-          clearFilters={jest.fn()}
-          updateFilter={jest.fn()}
         />
-      </ThemeProvider>
+      </Provider>
     )
     const addFilterButton = getAddFilterButton()
     expect(addFilterButton).toBeInTheDocument()
     expect(screen.queryByText('Field 1')).not.toBeInTheDocument()
     expect(screen.queryByText('Field 2')).not.toBeInTheDocument()
+
     fireEvent.click(addFilterButton)
     expect(screen.getByText('Field 1')).toBeInTheDocument()
     expect(screen.getByText('Field 2')).toBeInTheDocument()

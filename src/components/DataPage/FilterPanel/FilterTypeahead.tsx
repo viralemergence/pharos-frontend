@@ -1,11 +1,16 @@
-import React from 'react'
+import React, { Dispatch, SetStateAction
+} from 'react'
 import styled from 'styled-components'
 import Typeahead, {
   Item as TypeaheadItem,
 } from '../../../../library/ui/typeahead/Typeahead'
 import FilterDarkTypeaheadResult from './FilterDarkTypeaheadResult'
-import { XIcon, FieldName, FilterValues } from './constants'
-import InputLabel from '../../ui/InputLabel'
+import { XIcon, FieldName, } from './DisplayComponents'
+import { Filter } from 'pages/data'
+import InputLabel from 'components/ui/InputLabel'
+import colorPalette from 'figma/colorPalette'
+import { UpdateFilterFunction } from './FilterPanel'
+import { FilterDeleteButton } from './components'
 
 const SelectedTypeaheadValues = styled.ul`
   margin-top: 10px;
@@ -17,16 +22,17 @@ const SelectedTypeaheadValues = styled.ul`
   gap: 5px;
 `
 const SelectedTypeaheadValue = styled.li`
-  ${props => props.theme.smallParagraph};
-  border-radius: 5px;
   background-color: #58b7b1;
-  color: #101010;
+  background-color: ${({ theme }) => theme.lightPurple};
+  border-radius: 5px;
+  color: ${({ theme }) => theme.black};
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
   gap: 5px;
   padding-left: 10px;
 `
+  
 const SelectedTypeaheadValueDeleteButton = styled.button`
   border: 0;
   background: transparent;
@@ -40,7 +46,7 @@ const SelectedTypeaheadValueDeleteButton = styled.button`
   justify-content: center;
   align-items: center;
   &:hover {
-    background: rgba(0, 0, 0, 0.1);
+    background: ${({ theme }) => theme.veryLightPurple};
   }
   &:active {
     outline: 1px solid ${({ theme }) => theme.mint};
@@ -48,14 +54,18 @@ const SelectedTypeaheadValueDeleteButton = styled.button`
 `
 
 const TypeaheadContainer = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 8px;
   & form {
+    flex: 1;
+    margin: 0;
     max-width: 400px !important;
-    margin-bottom: 10px;
   }
   & input[type='search'] {
     ${({ theme }) => theme.smallParagraph}
     &::placeholder {
-      color: #fff !important;
+      color: ${({ theme }) => theme.white} !important;
       opacity: 1 !important;
       font-weight: bold;
     }
@@ -63,39 +73,42 @@ const TypeaheadContainer = styled.div`
     line-height: 25px !important;
   }
 `
+
+
 const TypeaheadLabel = styled(InputLabel)`
   ${({ theme }) => theme.smallParagraph}
-  margin-bottom: 10px;
-  width: fit-content;
+  margin-bottom: 0 ! important;
+  padding-bottom: 0;
+  width: fit-content; // TODO: needed?
 `
 
 interface FilterTypeaheadProps {
-  fieldLabel: string
-  values: FilterValues
-  options: string[]
-  updateFilter: (filterIndex: number, values: FilterValues) => void
-  filterIndex: number
+  filter: Filter
+  setFilters: Dispatch<SetStateAction<Filter[]>>
+  updateFilter: UpdateFilterFunction
 }
 
 /** A typeahead component for setting the value of a filter */
 const FilterTypeahead = ({
-  fieldLabel,
-  values,
-  options,
+  filter,
+  setFilters,
   updateFilter,
-  filterIndex,
 }: FilterTypeaheadProps) => {
+  filter.values ??= []
+  const values = filter.values.filter(value => value !== undefined) as string[]
   const selectedItems = values.map(value => ({
     key: value,
     label: value,
   }))
   const labelsOfSelectedItems = selectedItems.map(({ label }) => label)
   // Remove selected items from available options
-  options = options.filter(option => !labelsOfSelectedItems.includes(option))
+  const options = filter.options.filter(
+    option => !labelsOfSelectedItems.includes(option)
+  )
 
   const handleTypeaheadChange = (items: TypeaheadItem[]) => {
     updateFilter(
-      filterIndex,
+      filter.fieldId,
       items.map(({ label }) => label)
     )
   }
@@ -112,12 +125,12 @@ const FilterTypeahead = ({
     handleTypeaheadChange(amendedItems)
   }
 
-  const typeaheadInputId = `typeahead-${filterIndex}`
+  const typeaheadInputId = `typeahead-${filter.panelIndex}`
 
   return (
     <>
       <TypeaheadLabel htmlFor={typeaheadInputId}>
-        <FieldName>{fieldLabel}</FieldName>
+        <FieldName>{filter.label}</FieldName>
       </TypeaheadLabel>
       <TypeaheadContainer>
         <Typeahead
@@ -129,11 +142,9 @@ const FilterTypeahead = ({
           placeholder={
             selectedItems.length ? `${selectedItems.length} selected` : ''
           }
-          backgroundColor="#000"
-          fontColor="white"
-          borderColor="#fff"
-          selectedHoverColor="#594141"
-          hoverColor="#49515d"
+          backgroundColor={colorPalette.mutedPurple1}
+          fontColor={colorPalette.white}
+          borderColor={colorPalette.white}
           RenderItem={({ item, selected }) => (
             <FilterDarkTypeaheadResult {...{ item, selected }} />
           )}
@@ -141,6 +152,7 @@ const FilterTypeahead = ({
           resultsMaxHeight="300px"
           inputId={typeaheadInputId}
         />
+        <FilterDeleteButton filter={filter} setFilters={setFilters} />
       </TypeaheadContainer>
       {values.length > 0 && (
         <SelectedTypeaheadValues>
@@ -148,10 +160,12 @@ const FilterTypeahead = ({
             <SelectedTypeaheadValue key={value}>
               {value}
               <SelectedTypeaheadValueDeleteButton
-                onClick={removeItem.bind(null, { key: value, label: value })}
+                onClick={() => {
+                  removeItem({ key: value, label: value })
+                }}
                 aria-label="Remove filter value"
               >
-                <XIcon extraStyle="stroke: #101010" />
+                <XIcon extraStyle={`stroke: ${colorPalette.black}`} />
               </SelectedTypeaheadValueDeleteButton>
             </SelectedTypeaheadValue>
           ))}

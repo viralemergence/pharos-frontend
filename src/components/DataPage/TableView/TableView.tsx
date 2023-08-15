@@ -1,34 +1,61 @@
-import React, { useEffect } from 'react'
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import styled from 'styled-components'
-import DataGrid, { Column } from 'react-data-grid'
-import LoadingSpinner from './LoadingSpinner'
-import type { Filter, Field } from '../FilterPanel/constants'
+import DataGrid, { Column, DataGridHandle } from 'react-data-grid'
 
-const TableViewContainer = styled.div`
+import LoadingSpinner from './LoadingSpinner'
+import type { Filter } from 'pages/data'
+import { load, loadDebounced, countPages } from './utilities/load'
+
+const TableViewContainer = styled.div<{
+  isOpen: boolean
+  isFilterPanelOpen: boolean
+}>`
+  pointer-events: auto;
+  display: ${({ isOpen }) => (isOpen ? 'grid' : 'none')};
   padding: 0 30px;
-  z-index: ${({ theme }) => theme.zIndexes.dataTable};
   flex: 1;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    padding: 0 10px;
+    // On mobiles and tablets, hide the table when the filter panel is open
+    ${({ isFilterPanelOpen }) =>
+      isFilterPanelOpen ? 'display: none ! important;' : ''}
+  }
 `
-const TableContaier = styled.div`
-  padding-bottom: 10px;
+const TableContainer = styled.div`
   overflow-x: hidden;
+  display: flex;
+  flex-flow: column nowrap;
 `
 const FillDatasetGrid = styled(DataGrid)`
-  block-size: 100%;
-  height: 100%;
+  color-scheme: only dark;
   border: 0;
+  flex-grow: 1;
+  block-size: 100px;
+  background: ${({ theme }) => theme.mutedPurple1};
   .rdg-cell {
-    background-color: ${({ theme }) => theme.lightBlack};
+    background-color: ${({ theme }) => theme.mutedPurple1};
+    // TODO: Put this color in the figma color file
+    border-color: rgba(216, 218, 220, 0.3);
     &[aria-colindex='1'],
     &[role='columnheader'] {
-      background-color: ${({ theme }) => theme.medBlack};
+      background-color: ${({ theme }) => theme.mutedPurple3};
+    }
+    &[aria-colindex='1'] {
+      text-align: center;
     }
     &.in-filtered-column {
-      background-color: #384f4d;
+      background-color: ${({ theme }) => theme.tableContentHighlight};
     }
   }
 `
 const LoadingMessage = styled.div`
+  ${({ theme }) => theme.gridText}
   position: absolute;
   bottom: 0;
   right: 0;
@@ -59,38 +86,78 @@ const NoRecordsFound = styled.div`
 `
 
 interface TableViewProps {
-  appliedFilters: Filter[]
-  loadPublishedRecords: () => void
-  loading: boolean
-  page: React.MutableRefObject<number>
-  publishedRecords: Row[]
-  reachedLastPage: boolean
-  style?: React.CSSProperties
-  fields: Record<string, Field>
+  filters: Filter[]
+  setFilters: Dispatch<SetStateAction<Filter[]>>
+  isOpen?: boolean
+  isFilterPanelOpen?: boolean
+  /** Virtualization should be disabled in tests via this prop, so that all the
+   * cells are rendered immediately */
+  enableVirtualization?: boolean
 }
 
-export interface Row {
-  [key: string]: string | number
-}
-
-const divIsAtBottom = ({ currentTarget }: React.UIEvent<HTMLDivElement>) =>
-  currentTarget.scrollTop + 10 >=
-  currentTarget.scrollHeight - currentTarget.clientHeight
+const divIsScrolledToBottom = (div: HTMLDivElement) =>
+  div.scrollTop + 10 >= div.scrollHeight - div.clientHeight
 
 const rowKeyGetter = (row: Row) => row.pharosID
 
+export type LoadingState = false | 'appending' | 'replacing'
+
 const TableView = ({
-  style = {},
-  loading,
-  page,
-  publishedRecords,
-  appliedFilters,
-  loadPublishedRecords,
-  reachedLastPage,
-  fields,
+  filters,
+  setFilters,
+  isOpen = true,
+  isFilterPanelOpen = false,
+  enableVirtualization = true,
 }: TableViewProps) => {
+  const [loading, setLoading] = useState<LoadingState>('replacing')
+  const [records, setRecords] = useState<Row[]>([])
+  const [reachedLastPage, setReachedLastPage] = useState(false)
+
+  /** Filters that have been added to the panel */
+  const addedFilters = filters.filter(f => f.addedToPanel)
+
+  /** Filters that have been applied to the table */
+  const appliedFilters = filters.filter(f => f.applied)
+
+  // This is used as a dependency in a useEffect hook below
+  const stringifiedFiltersWithValues = JSON.stringify(
+    addedFilters
+      .filter(f => f.values?.length)
+      .map(({ fieldId, values }) => ({ fieldId, values }))
+  )
+
+  /** This ref ensures that if the GET request that just finished is not the
+   * latest GET request for published records, then the response is discarded.
+   * (Why this matters: Suppose a user sets a value for a filter and then
+   * changes it a second later. Then two GET requests will be sent. But suppose
+   * that the first request takes a while and finishes after the second request
+   * does. In this case, we should ignore the response to the first request,
+   * since it is not the latest request.)  */
+  const latestRecordsRequestIdRef = useRef(0)
+
+  /** This ref will be set to a handle exposed by DataGrid, which allows access
+   * to the underlying div */
+  const dataGridHandle = useRef<DataGridHandle>(null)
+
+  const loadOptions = {
+    filters,
+    latestRecordsRequestIdRef,
+    records,
+    setFilters,
+    setLoading,
+    setReachedLastPage,
+    setRecords,
+  }
+
+  // Load the first page of results when TableView mounts and when the filters' values have changed
   useEffect(() => {
-    loadPublishedRecords()
+    loadDebounced({ ...loadOptions, replaceRecords: true })
+  }, [stringifiedFiltersWithValues])
+
+  useEffect(() => {
+    return () => {
+      loadDebounced.cancel()
+    }
   }, [])
 
   const rowNumberColumn = {
@@ -102,61 +169,90 @@ const TableView = ({
     width: 55,
   }
 
-  const dataGridKeysForFilteredColumns = appliedFilters
-    .filter(({ values }) => values.length > 0)
-    .map(({ fieldId }) => fields[fieldId]?.dataGridKey)
+  const keysOfFilteredColumns = addedFilters.reduce<string[]>(
+    (keys, { applied, dataGridKey }) =>
+      applied ? [...keys, dataGridKey] : keys,
+    []
+  )
 
   const columns: readonly Column<Row>[] = [
     rowNumberColumn,
-    ...Object.keys(publishedRecords?.[0] ?? {})
+    ...Object.keys(records?.[0] ?? {})
       .filter(key => !['pharosID', 'rowNumber'].includes(key))
       .map(key => ({
         key: key,
         name: key,
         width: key.length * 7.5 + 15 + 'px',
         resizable: true,
-        cellClass: dataGridKeysForFilteredColumns.includes(key)
+        cellClass: keysOfFilteredColumns.includes(key)
           ? 'in-filtered-column'
           : undefined,
       })),
   ]
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
-    if (loading || reachedLastPage || !divIsAtBottom(event)) return
-    page.current += 1
-    loadPublishedRecords()
+    if (
+      !loading &&
+      !reachedLastPage &&
+      divIsScrolledToBottom(event.currentTarget)
+    )
+      load({ ...loadOptions, replaceRecords: false })
   }
 
+  // When records finish loading, remove the 'Loading...' indicator
+  useEffect(() => {
+    setLoading(false)
+
+    // If the table just loaded the first page of records and the grid is
+    // scrolled to the bottom, scroll to the top to avoid loading another page.
+    // ".element" comes from react-data-grid.
+    const dataGrid = dataGridHandle.current?.element
+    if (
+      dataGrid &&
+      countPages(records) === 1 &&
+      divIsScrolledToBottom(dataGrid)
+    ) {
+      dataGrid.scrollTop = 0
+    }
+  }, [records])
+
   return (
-    <TableViewContainer style={style}>
-      <TableContaier>
-        {!loading && publishedRecords?.length === 0 ? (
-          <NoRecordsFound>
-            {appliedFilters.length > 0
-              ? 'No matching records found'
-              : 'No records published'}
+    <TableViewContainer isOpen={isOpen} isFilterPanelOpen={isFilterPanelOpen}>
+      <TableContainer>
+        {!loading && records.length === 0 && appliedFilters.length > 0 && (
+          <NoRecordsFound role="status">
+            No matching records found.
           </NoRecordsFound>
-        ) : (
-          // @ts-expect-error: I'm copying this from the docs,
-          // but it doesn't look like their type definitions work
+        )}
+        {records.length > 0 && (
+          // @ts-expect-error: I'm copying this from the docs, but it doesn't
+          // look like their type definitions work
           <FillDatasetGrid
             className={'rdg-dark'}
             style={{ fontFamily: 'Inconsolata' }}
             columns={columns}
-            rows={publishedRecords}
+            rows={records}
             onScroll={handleScroll}
             rowKeyGetter={rowKeyGetter}
+            enableVirtualization={enableVirtualization}
+            role="grid"
+            data-testid="datagrid"
+            ref={dataGridHandle}
           />
         )}
         {loading && (
           <LoadingMessage>
-            <LoadingSpinner />{' '}
-            {page.current > 1 ? 'Loading more rows' : 'Loading'}
+            <LoadingSpinner /> Loading {loading === 'appending' && ' more rows'}
           </LoadingMessage>
         )}
-      </TableContaier>
+      </TableContainer>
     </TableViewContainer>
   )
+}
+
+/** A.k.a. record */
+export interface Row {
+  [key: string]: string | number
 }
 
 export default TableView

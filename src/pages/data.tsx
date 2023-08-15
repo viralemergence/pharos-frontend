@@ -1,328 +1,209 @@
-import React, {
-	Dispatch,
-	MutableRefObject,
-	SetStateAction,
-	useEffect,
-	useRef,
-	useState,
-} from 'react'
-import styled from 'styled-components'
-import debounce from 'lodash/debounce'
-
+import React, { useCallback, useEffect, useState } from 'react'
 import CMS from '@talus-analytics/library.airtable-cms'
+
+import isNormalObject from 'utilities/isNormalObject'
 import Providers from 'components/layout/Providers'
-
 import NavBar from 'components/layout/NavBar/NavBar'
-import MapView from 'components/DataPage/MapView/MapView'
+import MapView, { MapProjection } from 'components/DataPage/MapView/MapView'
 import TableView from 'components/DataPage/TableView/TableView'
-import type { Row } from 'components/DataPage/TableView/TableView'
-import DataToolbar, { View } from 'components/DataPage/Toolbar/Toolbar'
-
+import DataToolbar, { View, isView } from 'components/DataPage/Toolbar/Toolbar'
 import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
+import { filterDefaultProperties } from 'components/DataPage/FilterPanel/FilterPanelToolbar'
 import {
-	loadDebounceDelay,
-	Field,
-	Filter,
-	FilterValues,
-} from 'components/DataPage/FilterPanel/constants'
+  MapOverlay,
+  PageContainer,
+  ScreenReaderOnly,
+  ViewContainer,
+  ViewMain,
+} from 'components/DataPage/DisplayComponents'
 
-const ViewContainer = styled.main`
-	flex: 1;
-	position: relative;
-	width: 100%;
-	display: flex;
-	flex-flow: column nowrap;
-	gap: 20px;
-	.pharos-data-toolbar {
-		flex-basis: 60px;
-		@media (max-width: 768px) {
-			${({ isFilterPanelOpen }) => (isFilterPanelOpen ? 'display: none' : '')}
-		}
-	}
-	main {
-		display: flex;
-		flex-flow: row nowrap;
-		width: 100%;
-		height: calc(100vh - 197px);
-		@media (max-width: 768px) {
-			height: 100%;
-		}
-	}
-	background-color: rgb(5, 10, 55); //#3d434e;
-`
-
-const ViewMain = styled.main`
-	position: relative;
-`
-
-const DataPage = styled.div`
-	display: flex;
-	flex-flow: column nowrap;
-	height: 100vh;
-	width: 100vw;
-`
-
-interface PublishedRecordsResponse {
-	publishedRecords: Row[]
-	isLastPage: boolean
+export type Filter = {
+  fieldId: string
+  label: string
+  type: 'text' | 'date'
+  /** In the table (a.k.a. 'data grid') each column has a distinct id a.k.a.
+   * 'key'. The dataGridKey of a Filter is the key of its associated column. */
+  dataGridKey: string
+  /** The different possible values for a filter - relevant for typeahead fields. */
+  options: string[]
+  /** A filter has been 'added to the panel' when the panel contains an input
+   * (such as a date input or a typeahead) for setting the filter's values. */
+  addedToPanel?: boolean
+  /** To filter on a specific field, the user sets values for the filter. For
+   * example, the host_species filter could receive the value "Bear". */
+  values?: (string | undefined)[]
+  /** If a filter has been 'applied', this means that it has been applied to
+   * the list of records shown in the table, so that only records matching the
+   * filter are shown in the table. For example, if the user sets host_species
+   * to ['Bear'], then, once the table has been populated with bears and bears
+   * only, the host_species filter's 'applied' property will be set to true. */
+  applied?: boolean
+  /* This number determines the order of the filters in the panel. */
+  panelIndex: number
+  /** The historically earliest collection date that appears among the
+   * published records. Only date filters have this property. */
+  earliestPossibleDate?: string
+  /** The historically latest, furthest-into-the-future collection date that
+   * appears among the published records. Only date filters have this property.
+   * */
+  latestPossibleDate?: string
+  /** For example, if a date field has a valid start date and an invalid end
+   * date, validities is [true, true]. If an input has no value its validity
+   * will be undefined. */
+  validities?: (boolean | undefined)[]
+  tooltipOrientation?: 'bottom' | 'top'
 }
 
-const isTruthyObject = (value: unknown): value is Record<string, unknown> =>
-	typeof value === 'object' && !!value
+const METADATA_URL = `${process.env.GATSBY_API_URL}/metadata-for-published-records`
 
-const isValidFieldInMetadataResponse = (data: unknown): data is Field => {
-	if (!isTruthyObject(data)) return false
-	const {
-		label,
-		dataGridKey = '',
-		type = '',
-		options = [],
-	} = data as Partial<Field>
-	if (typeof label !== 'string') return false
-	if (typeof dataGridKey !== 'string') return false
-	if (typeof type !== 'string') return false
-	if (!options.every?.(option => typeof option === 'string')) return false
-	return true
-}
+const DataPage = ({
+  enableTableVirtualization = true,
+}: {
+  /** Virtualization should be disabled in tests via this prop, so that all the
+   * cells in the table are rendered immediately */
+  enableTableVirtualization?: boolean
+}): JSX.Element => {
+  /* The 'view' is controlled by the three radio buttons */
+  const [view, setView] = useState<View>(View.map)
+  /* This variable controls the state of the map. If the user clicks the
+   * 'Globe' radio button, then the 'Table' radio button, the view will be
+   * 'table' and the map projection will be 'globe' */
+  const [mapProjection, setMapProjection] =
+    useState<MapProjection>('naturalEarth')
+  const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
+  const [filters, setFilters] = useState<Filter[]>([])
 
-const isValidRecordsResponse = (
-	data: unknown
-): data is PublishedRecordsResponse => {
-	if (!isTruthyObject(data)) return false
-	const { publishedRecords, isLastPage } =
-		data as Partial<PublishedRecordsResponse>
-	if (!isTruthyObject(publishedRecords)) return false
-	if (typeof isLastPage !== 'boolean') return false
-	return publishedRecords.every(row => typeof row === 'object')
-}
+  const [screenReaderAnnouncement, setScreenReaderAnnouncement] = useState('')
 
-interface Debouncing {
-	on: boolean
-	timeout: ReturnType<typeof setTimeout> | null
-}
+  /** Update the view, and update the map projection view accordingly */
+  const changeView = useCallback(
+    (newView: View, shouldSetHash = true) => {
+      if (shouldSetHash) window.location.hash = newView
+      setView(newView)
+      if (newView === View.globe && mapProjection !== 'globe') {
+        setMapProjection('globe')
+      }
+      if (newView === View.map && mapProjection !== 'naturalEarth') {
+        setMapProjection('naturalEarth')
+      }
+    },
+    [mapProjection]
+  )
 
-interface LoadPublishedRecordsOptions {
-	appendResults?: boolean
-	filters: Filter[]
-	page: MutableRefObject<number>
-	setLoading: Dispatch<SetStateAction<boolean>>
-	setPublishedRecords: Dispatch<SetStateAction<Row[]>>
-	setAppliedFilters: Dispatch<SetStateAction<Filter[]>>
-	setReachedLastPage: Dispatch<SetStateAction<boolean>>
-	debouncing: MutableRefObject<Debouncing>
-}
+  const fetchMetadata = useCallback(async () => {
+    const response = await fetch(METADATA_URL)
+    const data = await response.json()
+    if (!isValidMetadataResponse(data)) {
+      console.log(`GET ${METADATA_URL}: malformed response`)
+      return
+    }
+    const filters = Object.entries(data.possibleFilters).map(
+      ([fieldId, filter]) => ({
+        fieldId,
+        type: filter.type || 'text',
+        ...filterDefaultProperties,
+        ...filter,
+      })
+    )
+    setFilters(filters)
+  }, [setFilters])
 
-const loadPublishedRecords = async ({
-	appendResults = true,
-	filters,
-	page,
-	setLoading,
-	setPublishedRecords,
-	setAppliedFilters,
-	setReachedLastPage,
-	debouncing,
-}: LoadPublishedRecordsOptions) => {
-	const debounceTimeout = 3000
-	// Switch on debouncing for 3 seconds
-	debouncing.current.on = true
-	if (debouncing.current.timeout) clearTimeout(debouncing.current.timeout)
-	debouncing.current.timeout = setTimeout(() => {
-		debouncing.current.on = false
-	}, debounceTimeout)
+  useEffect(() => {
+    const hash = window.location.hash.replace('#', '')
+    if (isView(hash)) changeView(hash, false)
+  }, [changeView])
 
-	if (!appendResults) page.current = 1
-	setLoading(true)
-	const params = new URLSearchParams()
-	const filtersToApply: Filter[] = []
-	for (const filter of filters) {
-		const { fieldId, values } = filter
-		values.forEach(value => {
-			params.append(fieldId, value)
-		})
-		if (values.length > 0) filtersToApply.push(filter)
-	}
-	params.append('page', page.current.toString())
-	params.append('pageSize', '50')
-	const response = await fetch(
-		`${process.env.GATSBY_API_URL}/published-records?` + params
-	)
-	if (!response.ok) {
-		console.log('GET /published-records: error')
-		setLoading(false)
-		return
-	}
-	const data = await response.json()
-	if (!isValidRecordsResponse(data)) {
-		console.log('GET /published-records: malformed response')
-		setLoading(false)
-		return
-	}
-	setPublishedRecords((previousRecords: Row[]) => [
-		...(appendResults ? previousRecords : []),
-		...data.publishedRecords,
-	])
-	setReachedLastPage(data.isLastPage)
-	setTimeout(() => {
-		setAppliedFilters(filtersToApply)
-		setLoading(false)
-	}, 0)
-}
+  useEffect(() => {
+    fetchMetadata()
+  }, [])
 
-const loadPublishedRecordsDebounced = debounce(
-	loadPublishedRecords,
-	loadDebounceDelay
-)
+  useEffect(() => {
+    if (isFilterPanelOpen) {
+      setScreenReaderAnnouncement(
+        prev =>
+          'Filters panel opened' +
+          // Alternate adding and removing a period to make the screen
+          // reader read the announcement
+          (prev.endsWith('.') ? '' : '.')
+      )
+    }
+  }, [isFilterPanelOpen])
 
-const isValidMetadataResponse = (data: unknown): data is MetadataResponse => {
-	if (!isTruthyObject(data)) return false
-	const { fields } = data as Partial<MetadataResponse>
-	if (!isTruthyObject(fields)) return false
-	return Object.values(fields as Record<string, unknown>).every?.(field =>
-		isValidFieldInMetadataResponse(field)
-	)
+  const shouldBlurMap = view === View.table
+
+  return (
+    <Providers>
+      <CMS.SEO />
+      <PageContainer>
+        <NavBar />
+        <ViewContainer
+          shouldBlurMap={shouldBlurMap}
+          isFilterPanelOpen={isFilterPanelOpen}
+        >
+          <MapView projection={mapProjection} />
+          {shouldBlurMap && <MapOverlay />}
+          <DataToolbar
+            view={view}
+            changeView={changeView}
+            isFilterPanelOpen={isFilterPanelOpen}
+            setIsFilterPanelOpen={setIsFilterPanelOpen}
+            filters={filters}
+          />
+          <ViewMain isFilterPanelOpen={isFilterPanelOpen}>
+            <FilterPanel
+              filters={filters}
+              setFilters={setFilters}
+              isFilterPanelOpen={isFilterPanelOpen}
+              setIsFilterPanelOpen={setIsFilterPanelOpen}
+            />
+            <TableView
+              filters={filters}
+              setFilters={setFilters}
+              isOpen={view === View.table}
+              isFilterPanelOpen={isFilterPanelOpen}
+              enableVirtualization={enableTableVirtualization}
+            />
+          </ViewMain>
+        </ViewContainer>
+        <ScreenReaderOnly aria-live="assertive">
+          {screenReaderAnnouncement}
+        </ScreenReaderOnly>
+      </PageContainer>
+    </Providers>
+  )
 }
 
 interface MetadataResponse {
-	fields: Record<string, Field>
+  possibleFilters: Record<string, FilterInMetadata>
 }
 
-const DataView = (): JSX.Element => {
-	const [loading, setLoading] = useState(true)
-	const [publishedRecords, setPublishedRecords] = useState<Row[]>([])
-	const [reachedLastPage, setReachedLastPage] = useState(false)
-	const page = useRef(1)
-	const debouncing = useRef({ on: false, timeout: null })
-	const [view, setView] = useState<View>(View.globe)
-	const [fields, setFields] = useState<Record<string, Field>>({})
-
-	/** Filters that will be applied to the published records */
-	const [filters, setFilters] = useState<Filter[]>([])
-
-	/** Filters that have been successfully applied to the published
-	 * records. That is, these filters have been sent to the server, and it
-	 * responded with an appropriate subset of the records. This is used for
-	 * color-coding the filtered columns. */
-	const [appliedFilters, setAppliedFilters] = useState<Filter[]>([])
-
-	const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(true)
-
-	const changeView = (view: View) => {
-		window.location.hash = view
-		setView(view)
-	}
-
-	useEffect(() => {
-		const hash = window.location.hash.replace('#', '')
-
-		function hashIsView(hash: string): hash is View {
-			return Object.values(View).includes(hash)
-		}
-
-		if (hashIsView(hash)) {
-			setView(hash)
-		}
-
-		const getMetadata = async () => {
-			const response = await fetch(
-				`${process.env.GATSBY_API_URL}/metadata-for-published-records`
-			)
-			const data = await response.json()
-			if (!isValidMetadataResponse(data)) {
-				console.error('GET /metadata-for-published-records: malformed response')
-				return
-			}
-			setFields(data.fields)
-		}
-		getMetadata()
-	}, [])
-
-	const loadFilteredRecords = (filters: Filter[], shouldDebounce = true) => {
-		const options = {
-			appendResults: false,
-			page,
-			filters,
-			setLoading,
-			setPublishedRecords,
-			setAppliedFilters,
-			setReachedLastPage,
-			debouncing,
-		}
-		if (shouldDebounce && debouncing.current.on) {
-			loadPublishedRecordsDebounced(options)
-		} else {
-			loadPublishedRecords(options)
-		}
-	}
-
-	const updateFilter = (
-		indexOfFilterToUpdate: number,
-		newValues: FilterValues
-	) => {
-		const newFilters = [...filters]
-		newFilters[indexOfFilterToUpdate].values = newValues
-		setFilters(newFilters)
-		loadFilteredRecords(newFilters)
-	}
-
-	const clearFilters = () => {
-		setFilters([])
-		if (filters.some(({ values }) => values.length > 0)) {
-			// Don't debounce when clearing filters
-			loadFilteredRecords([], false)
-		}
-	}
-
-	const showEarth = [View.globe, View.map].includes(view)
-
-	return (
-		<Providers>
-			<CMS.SEO />
-			<DataPage>
-				<NavBar />
-				<ViewContainer>
-					<DataToolbar
-						view={view}
-						changeView={changeView}
-						isFilterPanelOpen={isFilterPanelOpen}
-						setIsFilterPanelOpen={setIsFilterPanelOpen}
-						appliedFilters={appliedFilters}
-					/>
-					<MapView
-						projection={view === 'globe' ? 'globe' : 'naturalEarth'}
-						style={{
-							filter: showEarth ? 'none' : 'blur(30px)',
-						}}
-					/>
-					<ViewMain>
-						<FilterPanel
-							isFilterPanelOpen={isFilterPanelOpen}
-							setIsFilterPanelOpen={setIsFilterPanelOpen}
-							fields={fields}
-							filters={filters}
-							updateFilter={updateFilter}
-							setFilters={setFilters}
-							clearFilters={clearFilters}
-						/>
-						<TableView
-							fields={fields}
-							appliedFilters={appliedFilters}
-							loadPublishedRecords={() => {
-								loadFilteredRecords(filters, false)
-								debouncing.current.on = false
-							}}
-							loading={loading}
-							page={page}
-							publishedRecords={publishedRecords}
-							reachedLastPage={reachedLastPage}
-							style={{
-								display: view === View.table ? 'grid' : 'none',
-							}}
-						/>
-					</ViewMain>
-				</ViewContainer>
-			</DataPage>
-		</Providers>
-	)
+interface FilterInMetadata {
+  label: string
+  type?: 'text' | 'date'
+  dataGridKey: string
+  options: string[]
 }
 
-export default DataView
+const isValidFilterInMetadataResponse = (data: unknown): data is Filter => {
+  if (!isNormalObject(data)) return false
+  const { label, dataGridKey = '', type = 'text', options = [] } = data
+  return (
+    typeof label === 'string' &&
+    typeof dataGridKey === 'string' &&
+    typeof type === 'string' &&
+    ['text', 'date'].includes(type) &&
+    Array.isArray(options) &&
+    options.every?.(option => typeof option === 'string')
+  )
+}
+
+const isValidMetadataResponse = (data: unknown): data is MetadataResponse => {
+  if (!isNormalObject(data)) return false
+  const { possibleFilters } = data
+  if (!isNormalObject(possibleFilters)) return false
+  return Object.values(possibleFilters).every?.(filter =>
+    isValidFilterInMetadataResponse(filter)
+  )
+}
+
+export default DataPage

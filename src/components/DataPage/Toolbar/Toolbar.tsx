@@ -1,121 +1,94 @@
-import React from 'react'
-import styled from 'styled-components'
-import type { Filter } from '../FilterPanel/constants'
+import React, { useEffect, useState, useRef } from 'react'
+import type { Filter } from 'pages/data'
+import {
+  FilterPanelLauncher,
+  DataToolbarRadioButton,
+  ContainerForRadioButtons,
+  ContainerForFilterPanelLauncher,
+  DataToolbarDiv,
+} from '../DisplayComponents'
 
 export enum View {
-	map = 'map',
-	globe = 'globe',
-	table = 'table',
+  map = 'map',
+  globe = 'globe',
+  table = 'table',
 }
 
-const DataToolbarButton = styled.button<{
-	selected?: boolean
-	width?: number
-	extraStyle?: string
-}>`
-	${({ theme }) => theme.bigParagraph};
-	z-index: ${({ theme }) => theme.zIndexes.dataToolbarButton};
-	text-shadow: ${({ selected }) => (selected ? 'none' : '0 0 2px #000')};
-	position: relative;
-	font-size: 16px;
-	line-height: 25px;
-	background: none;
-	border: 0;
-	background-color: ${({ selected, theme }) =>
-		selected ? theme.mint : 'transparent'};
-	${({ selected }) =>
-		selected ? '' : ' &:hover { background-color: rgba(50, 48, 48); } '}
-	color: ${({ selected, theme }) => (selected ? theme.black : theme.white)};
-	border-radius: 7px;
-	margin-right: 10px;
-	cursor: pointer;
-	&:last-child {
-		margin-right: 0;
-	}
-	width: ${({ width }) => (width ? width + 'px' : 'auto')};
-	height: 100%;
-	padding: 5px 10px;
-	&:active {
-		outline: 2px solid rgba(255, 255, 255, 0.2);
-		transform: scale(0.98);
-	}
-	${props => props.extraStyle}
-`
-
-const DataToolbarRadioButton = styled(DataToolbarButton)``
-const DataToolbarButtonContainer = styled.div`
-	background-color: #202020;
-	border-radius: 10px;
-	position: relative;
-`
-const DataToolbarRadioButtonContainer = styled(DataToolbarButtonContainer)`
-	box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
-	padding: 5px;
-`
-const DataToolbarDiv = styled.div<{ isFilterPanelOpen: boolean }>`
-	padding: 20px 0px 0 30px;
-	z-index: ${({ theme }) => theme.zIndexes.dataToolbar};
-	display: flex;
-	flex-flow: row wrap;
-	gap: 1rem;
-	flex-basis: 60px;
-	@media (max-width: 768px) {
-		${({ isFilterPanelOpen }) => (isFilterPanelOpen ? 'display: none' : '')}
-	}
-`
+export const isView = (str: string): str is View => {
+  return Object.values(View).includes(str)
+}
 
 const DataToolbar = ({
-	isFilterPanelOpen,
-	setIsFilterPanelOpen,
-	view,
-	changeView,
-	appliedFilters = [],
+  isFilterPanelOpen,
+  setIsFilterPanelOpen,
+  view,
+  changeView,
+  filters = [],
 }: {
-	isFilterPanelOpen: boolean
-	setIsFilterPanelOpen: (open: boolean) => void
-	view: View
-	changeView: (view: View) => void
-	appliedFilters: Filter[]
+  isFilterPanelOpen: boolean
+  setIsFilterPanelOpen: React.Dispatch<React.SetStateAction<boolean>>
+  view: View
+  changeView: (view: View) => void
+  filters: Filter[]
 }) => {
-	const ViewRadioButton = ({
-		forView,
-		label,
-	}: {
-		forView: View
-		label: string
-	}) => (
-		<DataToolbarRadioButton
-			selected={view === forView}
-			onClick={() => changeView(forView)}
-		>
-			{label}
-		</DataToolbarRadioButton>
-	)
+  const RadioButton = ({
+    forView,
+    label,
+  }: {
+    forView: View
+    label: string
+  }) => (
+    <DataToolbarRadioButton
+      selected={view === forView}
+      onClick={() => changeView(forView)}
+    >
+      {label}
+    </DataToolbarRadioButton>
+  )
 
-	return (
-		<DataToolbarDiv isFilterPanelOpen={isFilterPanelOpen}>
-			<DataToolbarButtonContainer>
-				<DataToolbarButton
-					selected={isFilterPanelOpen}
-					onClick={() => {
-						setIsFilterPanelOpen(!isFilterPanelOpen)
-					}}
-					width={100}
-					aria-controls="pharos-filter-panel"
-				>
-					Filters
-					{appliedFilters.length > 0 && (
-						<span style={{ marginLeft: '5px' }}>({appliedFilters.length})</span>
-					)}
-				</DataToolbarButton>
-			</DataToolbarButtonContainer>
-			<DataToolbarRadioButtonContainer>
-				<ViewRadioButton forView={View.map} label="Map" />
-				<ViewRadioButton forView={View.globe} label="Globe" />
-				<ViewRadioButton forView={View.table} label="Table" />
-			</DataToolbarRadioButtonContainer>
-		</DataToolbarDiv>
-	)
+  const filterPanelLauncherRef = useRef<HTMLButtonElement>(null)
+  // Keep track of whether the filter panel was open on last render, to detect
+  // when the panel closes.
+  const [wasFilterPanelOpen, setWasFilterPanelOpen] = useState(false)
+  useEffect(() => {
+    // If the panel just closed, focus the launcher. We need to check both that
+    // the filter panel is currently closed and also that it was previously
+    // open. If we skip the second check, the launcher will be focused when the
+    // Toolbar first renders.
+    if (wasFilterPanelOpen && !isFilterPanelOpen) {
+      filterPanelLauncherRef.current?.focus()
+    }
+    if (isFilterPanelOpen) {
+      setWasFilterPanelOpen(true)
+    }
+  }, [isFilterPanelOpen, wasFilterPanelOpen])
+
+  const appliedFiltersCount = filters.filter(({ applied }) => applied).length
+
+  return (
+    <DataToolbarDiv isFilterPanelOpen={isFilterPanelOpen}>
+      <ContainerForFilterPanelLauncher>
+        <FilterPanelLauncher
+          selected={isFilterPanelOpen}
+          ref={filterPanelLauncherRef}
+          onClick={() => {
+            setIsFilterPanelOpen(prev => !prev)
+          }}
+          aria-controls="pharos-filter-panel"
+        >
+          Filters
+          {appliedFiltersCount > 0 && (
+            <span style={{ marginLeft: '5px' }}>({appliedFiltersCount})</span>
+          )}
+        </FilterPanelLauncher>
+      </ContainerForFilterPanelLauncher>
+      <ContainerForRadioButtons>
+        <RadioButton forView={View.map} label="Map" />
+        <RadioButton forView={View.globe} label="Globe" />
+        <RadioButton forView={View.table} label="Table" />
+      </ContainerForRadioButtons>
+    </DataToolbarDiv>
+  )
 }
 
 export default DataToolbar
