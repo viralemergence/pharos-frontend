@@ -300,7 +300,7 @@ export const FieldInput = styled.input<{
     showPlaceholder ? 'transparent' : theme.white};
   font-weight: 600;
   padding: 8px 10px;
-  width: 150px;
+  width: 147px;
   height: 45px;
   &:invalid {
     ${({ theme, showPlaceholder }) =>
