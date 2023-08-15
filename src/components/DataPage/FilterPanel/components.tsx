@@ -10,6 +10,7 @@ import {
   FilterLabel,
   FilterListItemElement,
   FilterUIContainer,
+  FilterUIContainerForTypeahead,
   XIcon,
 } from './DisplayComponents'
 import { removeOneFilter } from './FilterPanelToolbar'
@@ -56,13 +57,13 @@ export const FilterUI = ({
     setFilters,
   }
   const useTypeahead = filter.type === 'text'
-  return (
+  return useTypeahead ? (
+    <FilterUIContainerForTypeahead>
+      <FilterTypeahead {...props} />
+    </FilterUIContainerForTypeahead>
+  ) : (
     <FilterUIContainer>
-      {useTypeahead ? (
-        <FilterTypeahead {...props} />
-      ) : (
-        <DateFilterInputs {...props} />
-      )}
+      <DateFilterInputs {...props} />
     </FilterUIContainer>
   )
 }

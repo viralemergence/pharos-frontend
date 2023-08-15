@@ -52,9 +52,14 @@ const SelectedTypeaheadValueDeleteButton = styled.button`
 `
 
 const TypeaheadContainer = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 8px;
   & form {
+    flex: 1;
     max-width: 400px !important;
     margin-bottom: 10px;
+    margin-top: 0;
   }
   & input[type='search'] {
     ${({ theme }) => theme.smallParagraph}
@@ -69,7 +74,8 @@ const TypeaheadContainer = styled.div`
 `
 const TypeaheadLabel = styled(InputLabel)`
   ${({ theme }) => theme.smallParagraph}
-  margin-bottom: 10px;
+  margin-bottom: 0 ! important;
+  padding-bottom: 0;
   width: fit-content;
 `
 

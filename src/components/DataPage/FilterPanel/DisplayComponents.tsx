@@ -241,9 +241,12 @@ export const FilterDeleteButtonStyled = styled(FilterPanelToolbarButtonStyled)`
 
 export const FilterUIContainer = styled.div`
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: column nowrap;
   gap: 5px;
-  align-items: flex-end;
+`
+
+export const FilterUIContainerForTypeahead = styled(FilterUIContainer)`
+  gap: 0px;
 `
 
 const panelWidth = '410px'
