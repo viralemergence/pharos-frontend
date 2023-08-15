@@ -170,7 +170,6 @@ const DateInput = ({
         aria-label={ariaLabel}
         min={earliestPossibleDate}
         max={latestPossibleDate}
-        defaultValue={value}
         placeholder={placeholder}
         showPlaceholder={showPlaceholder}
         onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
