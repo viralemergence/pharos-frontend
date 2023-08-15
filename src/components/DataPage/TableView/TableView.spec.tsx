@@ -57,7 +57,7 @@ describe('The public data table', () => {
     values: ['2020-03-01', undefined],
   }
 
-  it.skip('can be filtered by collection start date', async () => {
+  it('can be filtered by collection start date', async () => {
     render(
       <Providers>
         <TableView
