@@ -111,7 +111,7 @@ const FilterInput = ({
         }}
       />
       {filter.inputIsValid === false && (
-        <DateTooltip flipped={filter.tooltipOrientation === 'top'}>
+        <DateTooltip>
           Date must be between{' '}
           <span style={{ whiteSpace: 'nowrap' }}>
             {earliestAllowableDateLocalized}

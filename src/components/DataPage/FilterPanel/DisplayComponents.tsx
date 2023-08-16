@@ -274,7 +274,7 @@ export const FieldInput = styled.input`
   padding: 8px 10px;
 `
 
-export const DateTooltip = styled.aside<{ flipped: boolean }>`
+export const DateTooltip = styled.aside`
   ${({ theme }) => theme.extraSmallParagraph};
   background-color: ${({ theme }) => theme.white};
   border-radius: 5px;
@@ -287,7 +287,6 @@ export const DateTooltip = styled.aside<{ flipped: boolean }>`
   text-align: center;
   transform: translateY(10px);
   animation: fadeIn 0.15s forwards;
-  ${({ flipped }) => (flipped ? 'top: 10px;' : '')}
   &::before {
     border-bottom: 10px solid ${({ theme }) => theme.white};
     border-left: 10px solid transparent;
@@ -299,14 +298,6 @@ export const DateTooltip = styled.aside<{ flipped: boolean }>`
     top: -10px;
     transform: translateX(-700%);
     width: 0;
-    ${({ flipped }) =>
-      flipped
-        ? `
-      transform: translateX(-700%) rotate(180deg);
-      top: unset;
-      bottom: -10px;
-      `
-        : ''}
   }
   @keyframes fadeIn {
     from {
