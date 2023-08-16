@@ -261,10 +261,8 @@ export const FilterUIContainer = styled.div<{ hasTooltip?: boolean }>`
 `
 
 export const FilterUIContainerForTypeahead = styled(FilterUIContainer)`
-  display: flex;
   gap: 0px;
   flex-flow: column nowrap;
-  align-items: flex-end;
 `
 
 const panelWidth = '410px'
