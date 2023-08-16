@@ -36,7 +36,7 @@ export const FilterDeleteButton = ({
     <FilterDeleteButtonStyled
       onClick={() => removeOneFilter(filter, setFilters)}
     >
-      <XIcon extraStyle="width: 18px; height: 18px;" />
+      <XIcon extraStyle="width: 16px; height: 16px;" />
     </FilterDeleteButtonStyled>
   )
 }
