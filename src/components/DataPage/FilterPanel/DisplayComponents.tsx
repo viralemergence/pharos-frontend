@@ -243,11 +243,12 @@ export const FilterDeleteButtonStyled = styled(FilterPanelToolbarButtonStyled)`
   padding: 10px;
 `
 
-export const FilterUIContainer = styled.div`
+export const FilterUIContainer = styled.div<{ hasTooltip?: boolean }>`
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: column nowrap;
   gap: 8px;
-  align-items: flex-end;
+  transition: margin-bottom 0.15s;
+  ${({ hasTooltip }) => (hasTooltip ? 'margin-bottom: 48px;' : '')}
 `
 
 const panelWidth = '410px'

@@ -149,6 +149,7 @@ const DateFilterInputs = ({
           setShowPlaceholder={setShowEndDatePlaceholder}
           ariaLabel={'Collected on this date or earlier'}
         />
+        <FilterDeleteButton filter={filter} setFilters={setFilters} />
       </DateInputRow>
       {someValuesAreInvalid && (
         <DateTooltip
