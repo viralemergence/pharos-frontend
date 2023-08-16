@@ -36,15 +36,14 @@ export const FilterDeleteButton = ({
 }) => {
   return (
     <FilterDeleteButtonContainer>
-    <FilterDeleteButtonStyled
-      onClick={() => removeOneFilter(filter, setFilters)}
-    >
-      <XIcon extraStyle="width: 16px; height: 16px;" />
-    </FilterDeleteButtonStyled>
+      <FilterDeleteButtonStyled
+        onClick={() => removeOneFilter(filter, setFilters)}
+      >
+        <XIcon extraStyle="width: 16px; height: 16px;" />
+      </FilterDeleteButtonStyled>
     </FilterDeleteButtonContainer>
   )
 }
-
 
 export const FilterUI = ({
   filter,
@@ -226,7 +225,6 @@ export const DateInput = ({
         aria-label={ariaLabel}
         min={earliestPossibleDate}
         max={latestPossibleDate}
-        defaultValue={value}
         placeholder={placeholder}
         showPlaceholder={showPlaceholder}
         onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
