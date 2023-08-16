@@ -11,12 +11,15 @@ import {
   FilterLabel,
   FilterListItemElement,
   FilterUIContainer,
-  FilterUIContainerForTypeahead,
   XIcon,
 } from './DisplayComponents'
 import { removeOneFilter } from './FilterPanelToolbar'
-import FilterTypeahead from './FilterTypeahead'
 import type { UpdateFilterFunction } from './FilterPanel'
+
+interface DebouncedFunc<T extends (...args: any[]) => any> extends Function {
+  (...args: Parameters<T>): ReturnType<T>
+  cancel: () => void
+}
 
 /** Localize a date without changing the time zone */
 const localizeDate = (dateString: string) => {
@@ -60,13 +63,8 @@ export const FilterUI = ({
     updateFilter,
     setFilters,
   }
-  const useTypeahead = filter.type === 'text'
   const hasTooltip = filter.validities?.some(validity => validity === false)
-  return useTypeahead ? (
-    <FilterUIContainerForTypeahead hasTooltip={hasTooltip}>
-      <FilterTypeahead {...props} />
-    </FilterUIContainerForTypeahead>
-  ) : (
+  return (
     <FilterUIContainer hasTooltip={hasTooltip}>
       <DateFilterInputs {...props} />
     </FilterUIContainer>
@@ -83,7 +81,7 @@ export const FilterListItem = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
-export const DateFilterInputs = ({
+const DateFilterInputs = ({
   filter,
   updateFilter,
   setFilters,
@@ -124,26 +122,32 @@ export const DateFilterInputs = ({
     latestPossibleDateLocalized,
     updateFilter,
     updateFilterDebounced,
-    setFilters,
     values: filter.values,
   }
   const someValuesAreInvalid = filter.validities?.some(
     validity => validity === false
   )
+
+  const [showStartDatePlaceholder, setShowStartDatePlaceholder] = useState(true)
+  const [showEndDatePlaceholder, setShowEndDatePlaceholder] = useState(true)
   return (
-    <FilterLabel>
+    <FilterLabel onClick={() => setShowStartDatePlaceholder(false)}>
       <FieldName>{filter.label}</FieldName>
       <DateInputRow>
         <DateInput
           {...dateInputProps}
           index={0}
           placeholder="From"
+          showPlaceholder={showStartDatePlaceholder}
+          setShowPlaceholder={setShowStartDatePlaceholder}
           ariaLabel={'Collected on this date or later'}
         />
         <DateInput
           {...dateInputProps}
           index={1}
           placeholder="To"
+          showPlaceholder={showEndDatePlaceholder}
+          setShowPlaceholder={setShowEndDatePlaceholder}
           ariaLabel={'Collected on this date or earlier'}
         />
         <FilterDeleteButton filter={filter} setFilters={setFilters} />
@@ -162,11 +166,6 @@ export const DateFilterInputs = ({
   )
 }
 
-interface DebouncedFunc<T extends (...args: any[]) => any> extends Function {
-  (...args: Parameters<T>): ReturnType<T>
-  cancel: () => void
-}
-
 type DateInputProps = {
   filter: Filter
   earliestPossibleDate?: string
@@ -174,20 +173,22 @@ type DateInputProps = {
   index: number
   updateFilter: UpdateFilterFunction
   updateFilterDebounced: DebouncedFunc<UpdateFilterFunction>
-  setFilters: Dispatch<SetStateAction<Filter[]>>
   placeholder: string
+  showPlaceholder: boolean
+  setShowPlaceholder: Dispatch<SetStateAction<boolean>>
   ariaLabel?: string
 }
 
-export const DateInput = ({
+const DateInput = ({
   filter,
   earliestPossibleDate,
   latestPossibleDate,
   index,
   updateFilter,
   updateFilterDebounced,
-  setFilters,
   placeholder,
+  showPlaceholder,
+  setShowPlaceholder,
   ariaLabel,
 }: DateInputProps) => {
   const isDateValid = (dateStr?: string) => {
@@ -196,7 +197,6 @@ export const DateInput = ({
     if (latestPossibleDate) if (dateStr > latestPossibleDate) return false
     return true
   }
-  const [showPlaceholder, setShowPlaceholder] = useState(true)
   const changeDate = (index: number, newValue: string | undefined) => {
     const newValues = filter.values ?? [undefined, undefined]
     // Don't save a blank value
@@ -213,6 +213,9 @@ export const DateInput = ({
       updateFilterDebounced(filter.fieldId, newValues, isDateValid)
     }
   }
+  const hidePlaceholder = () => {
+    setShowPlaceholder(false)
+  }
 
   return (
     <div>
@@ -226,30 +229,14 @@ export const DateInput = ({
         onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
           changeDate(index, e.target.value)
         }}
-        onFocus={(_e: React.FocusEvent<HTMLInputElement>) => {
-          setShowPlaceholder(() => {
-            return false
-          })
-          // If this date field is focused and the previous field is a date
-          // field with a tooltip, move that tooltip out of the way
-          setFilters(prev =>
-            prev.map(f => {
-              return f.panelIndex === filter.panelIndex - 1 &&
-                f.type === 'date' &&
-                f.validities?.some(validity => validity === false)
-                ? { ...f, tooltipOrientation: 'top' }
-                : f
-            })
-          )
-          return true
-        }}
+        onFocus={hidePlaceholder}
+        // To compensate for Safari's poor support for the focus event, several
+        // other events trigger the focus handler
+        onKeyDown={hidePlaceholder}
+        onKeyUp={hidePlaceholder}
+        onMouseDown={hidePlaceholder}
         onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
           if (!e.target.value) setShowPlaceholder(true)
-          setFilters(prev =>
-            prev.map(f =>
-              f.type === 'date' ? { ...f, tooltipOrientation: 'bottom' } : f
-            )
-          )
         }}
       />
     </div>
