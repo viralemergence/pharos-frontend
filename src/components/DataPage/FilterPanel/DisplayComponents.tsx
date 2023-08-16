@@ -126,9 +126,6 @@ export const FilterPanelCloseButton = styled(FilterPanelToolbarButtonStyled)`
   justify-content: center;
   align-items: center;
   padding: 5px;
-  &:hover {
-    background: inherit;
-  }
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
     width: 45px;
   }
@@ -228,13 +225,20 @@ export const FilterLabel = styled.label`
   display: block;
 `
 
+export const FilterDeleteButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
 export const FilterDeleteButtonStyled = styled(FilterPanelToolbarButtonStyled)`
   align-items: center;
   background: transparent;
   border: none;
   cursor: pointer;
   display: flex;
-  height: 45px;
+  height: 36px;
+  border-radius: 100%;
   justify-content: center;
   padding: 10px;
 `
@@ -294,7 +298,13 @@ export const FieldInput = styled.input<{
     showPlaceholder ? 'transparent' : theme.white};
   font-weight: 600;
   padding: 8px 10px;
+<<<<<<< Updated upstream
   width: 146px;
+||||||| Stash base
+  width: 147px;
+=======
+  width: 148px;
+>>>>>>> Stashed changes
   height: 45px;
   &:invalid {
     ${({ theme, showPlaceholder }) =>
