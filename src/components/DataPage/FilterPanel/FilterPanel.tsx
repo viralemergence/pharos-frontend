@@ -2,7 +2,6 @@ import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react'
 import type { Filter } from 'pages/data'
 import { ListOfAddedFilters, Panel } from './DisplayComponents'
 import FilterPanelToolbar from './FilterPanelToolbar'
-// TODO: Rename this file?
 import { FilterListItem, FilterUI } from './components'
 
 export type UpdateFilterFunction = (
