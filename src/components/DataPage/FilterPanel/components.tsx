@@ -6,6 +6,7 @@ import {
   DateTooltip,
   FieldInput,
   FieldName,
+  FilterDeleteButtonContainer,
   FilterDeleteButtonStyled,
   FilterLabel,
   FilterListItemElement,
@@ -25,6 +26,7 @@ const localizeDate = (dateString: string) => {
 }
 
 const dateFilterUpdateDelay = 1000
+
 export const FilterDeleteButton = ({
   filter,
   setFilters,
@@ -33,13 +35,16 @@ export const FilterDeleteButton = ({
   setFilters: Dispatch<SetStateAction<Filter[]>>
 }) => {
   return (
+    <FilterDeleteButtonContainer>
     <FilterDeleteButtonStyled
       onClick={() => removeOneFilter(filter, setFilters)}
     >
-      <XIcon extraStyle="width: 18px; height: 18px;" />
+      <XIcon extraStyle="width: 16px; height: 16px;" />
     </FilterDeleteButtonStyled>
+    </FilterDeleteButtonContainer>
   )
 }
+
 
 export const FilterUI = ({
   filter,
