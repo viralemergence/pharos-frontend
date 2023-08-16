@@ -137,14 +137,12 @@ export const DateFilterInputs = ({
         <DateInput
           {...dateInputProps}
           index={0}
-          value={filter.values?.[0]}
           placeholder="From"
           ariaLabel={'Collected on this date or later'}
         />
         <DateInput
           {...dateInputProps}
           index={1}
-          value={filter.values?.[1]}
           placeholder="To"
           ariaLabel={'Collected on this date or earlier'}
         />
@@ -173,7 +171,6 @@ type DateInputProps = {
   filter: Filter
   earliestPossibleDate?: string
   latestPossibleDate?: string
-  value?: string
   index: number
   updateFilter: UpdateFilterFunction
   updateFilterDebounced: DebouncedFunc<UpdateFilterFunction>
@@ -186,7 +183,6 @@ export const DateInput = ({
   filter,
   earliestPossibleDate,
   latestPossibleDate,
-  value,
   index,
   updateFilter,
   updateFilterDebounced,
