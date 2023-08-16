@@ -237,6 +237,8 @@ export const FilterDeleteButtonContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  align-self: flex-end;
+  height: 45px;
 `
 
 export const FilterDeleteButtonStyled = styled(FilterPanelToolbarButtonStyled)`
