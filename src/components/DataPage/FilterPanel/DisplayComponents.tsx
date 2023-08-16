@@ -62,6 +62,14 @@ export const FieldName = styled.div`
   margin-bottom: 5px;
 `
 
+export const DateLabel = styled.label`
+  text-transform: uppercase;
+  font-size: 9pt;
+  span {
+    opacity: 0.7;
+  }
+`
+
 export const FilterPanelToolbarNav = styled.nav`
   display: flex;
   flex-flow: row wrap;
@@ -253,10 +261,8 @@ export const FilterUIContainer = styled.div<{ hasTooltip?: boolean }>`
 `
 
 export const FilterUIContainerForTypeahead = styled(FilterUIContainer)`
-  display: flex;
   gap: 0px;
   flex-flow: column nowrap;
-  align-items: flex-end;
 `
 
 const panelWidth = '410px'
@@ -295,31 +301,18 @@ export const Panel = styled.aside<{ open: boolean }>`
   }
 `
 
-export const FieldInput = styled.input<{
-  showPlaceholder: boolean
-  placeHolder?: string
-}>`
+export const FieldInput = styled.input`
   ${({ theme }) => theme.smallParagraph};
   background-color: ${({ theme }) => theme.mutedPurple1};
   border-radius: 5px;
   border: 1px solid ${({ theme }) => theme.white};
-  color: ${({ theme, showPlaceholder }) =>
-    showPlaceholder ? 'transparent' : theme.white};
+  color: ${({ theme }) => theme.white};
   font-weight: 600;
   padding: 8px 10px;
   width: 148px;
   height: 45px;
   &:invalid {
-    ${({ theme, showPlaceholder }) =>
-      showPlaceholder ? '' : `border-color: ${theme.red}`};
-  }
-  &::before {
-    display: ${({ showPlaceholder }) => (showPlaceholder ? 'flex' : 'none')};
-    color: ${({ theme }) => theme.white};
-    opacity: 0.5;
-    top: 0;
-    left: 20px;
-    content: '${({ placeholder }) => placeholder}';
+    border-color: ${({ theme }) => theme.red};
   }
 `
 
