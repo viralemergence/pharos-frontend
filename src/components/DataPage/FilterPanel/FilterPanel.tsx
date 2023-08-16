@@ -81,20 +81,27 @@ const DateFilterInputs = ({
   const someValuesAreInvalid = filter.validities?.some(
     validity => validity === false
   )
+
+  const [showStartDatePlaceholder, setShowStartDatePlaceholder] = useState(true)
+  const [showEndDatePlaceholder, setShowEndDatePlaceholder] = useState(true)
   return (
-    <FilterLabel>
+    <FilterLabel onClick={() => setShowStartDatePlaceholder(false)}>
       <FieldName>{filter.label}</FieldName>
       <DateInputRow>
         <DateInput
           {...dateInputProps}
           index={0}
           placeholder="From"
+          showPlaceholder={showStartDatePlaceholder}
+          setShowPlaceholder={setShowStartDatePlaceholder}
           ariaLabel={'Collected on this date or later'}
         />
         <DateInput
           {...dateInputProps}
           index={1}
           placeholder="To"
+          showPlaceholder={showEndDatePlaceholder}
+          setShowPlaceholder={setShowEndDatePlaceholder}
           ariaLabel={'Collected on this date or earlier'}
         />
       </DateInputRow>
@@ -122,6 +129,8 @@ type DateInputProps = {
   updateFilterDebounced: DebouncedFunc<UpdateFilterFunction>
   setFilters: Dispatch<SetStateAction<Filter[]>>
   placeholder: string
+  showPlaceholder: boolean
+  setShowPlaceholder: Dispatch<SetStateAction<boolean>>
   ariaLabel?: string
 }
 
@@ -134,6 +143,8 @@ const DateInput = ({
   updateFilterDebounced,
   setFilters,
   placeholder,
+  showPlaceholder,
+  setShowPlaceholder,
   ariaLabel,
 }: DateInputProps) => {
   const isDateValid = (dateStr?: string) => {
@@ -142,7 +153,6 @@ const DateInput = ({
     if (latestPossibleDate) if (dateStr > latestPossibleDate) return false
     return true
   }
-  const [showPlaceholder, setShowPlaceholder] = useState(true)
   const changeDate = (index: number, newValue: string | undefined) => {
     const newValues = filter.values ?? [undefined, undefined]
     // Don't save a blank value
@@ -159,6 +169,9 @@ const DateInput = ({
       updateFilterDebounced(filter.fieldId, newValues, isDateValid)
     }
   }
+  const hidePlaceholder = () => {
+    setShowPlaceholder(false)
+  }
 
   return (
     <div>
@@ -172,10 +185,12 @@ const DateInput = ({
         onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
           changeDate(index, e.target.value)
         }}
-        onFocus={(_e: React.FocusEvent<HTMLInputElement>) => {
-          setShowPlaceholder(false)
-          return true
-        }}
+        onFocus={hidePlaceholder}
+        // To compensate for Safari's poor support for the focus event, several
+        // other events trigger the focus handler
+        onKeyDown={hidePlaceholder}
+        onKeyUp={hidePlaceholder}
+        onMouseDown={hidePlaceholder}
         onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
           if (!e.target.value) setShowPlaceholder(true)
           setFilters(prev =>
