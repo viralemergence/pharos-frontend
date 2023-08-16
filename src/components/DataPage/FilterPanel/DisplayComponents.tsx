@@ -319,7 +319,6 @@ export const FieldInput = styled.input`
 `
 
 export const DateTooltip = styled.aside<{
-  flipped: boolean
   isStartDateInvalid: boolean
   isEndDateInvalid: boolean
 }>`
@@ -336,7 +335,6 @@ export const DateTooltip = styled.aside<{
   text-align: center;
   transform: translateY(10px);
   animation: fadeIn 0.15s forwards;
-  ${({ flipped }) => (flipped ? 'top: 10px;' : '')}
   &::before {
     display: ${({ isStartDateInvalid }) =>
       isStartDateInvalid ? 'flex' : 'none'};
@@ -357,14 +355,6 @@ export const DateTooltip = styled.aside<{
     position: absolute;
     top: -9px;
     width: 0;
-    ${({ flipped }) =>
-      flipped
-        ? `
-      transform: translateX(-700%) rotate(180deg);
-      top: unset;
-      bottom: -10px;
-      `
-        : ''}
   }
   @keyframes fadeIn {
     from {

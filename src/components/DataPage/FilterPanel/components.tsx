@@ -163,7 +163,6 @@ const DateFilterInputs = ({
       </DateInputRow>
       {someValuesAreInvalid && (
         <DateTooltip
-          flipped={filter.tooltipOrientation === 'top'}
           isStartDateInvalid={filter.validities?.[0] === false}
           isEndDateInvalid={filter.validities?.[1] === false}
         >
