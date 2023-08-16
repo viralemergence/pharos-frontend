@@ -298,13 +298,7 @@ export const FieldInput = styled.input<{
     showPlaceholder ? 'transparent' : theme.white};
   font-weight: 600;
   padding: 8px 10px;
-<<<<<<< Updated upstream
-  width: 146px;
-||||||| Stash base
-  width: 147px;
-=======
   width: 148px;
->>>>>>> Stashed changes
   height: 45px;
   &:invalid {
     ${({ theme, showPlaceholder }) =>
