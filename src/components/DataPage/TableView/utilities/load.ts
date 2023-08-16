@@ -37,24 +37,28 @@ export const load = async ({
   for (const filter of filters) {
     if (!filter.addedToPanel) continue
     if (!filter.values) continue
-    const validValues = filter.values.filter(
-      (value: string | undefined) =>
-        value !== null && value !== undefined && value !== ''
-    ) as string[]
+    let applyThisFilter = false
     if (filter.fieldId === 'collection_date') {
       const [startDate, endDate] = filter.values
-      if (startDate) {
+      if (startDate && filter.validities?.[0] !== false) {
         queryStringParameters.append('collection_start_date', startDate)
+        applyThisFilter = true
       }
-      if (endDate) {
+      if (endDate && filter.validities?.[1] !== false) {
         queryStringParameters.append('collection_end_date', endDate)
+        applyThisFilter = true
       }
     } else {
+      const validValues = filter.values.filter(
+        (value: string | undefined) =>
+          value !== null && value !== undefined && value !== ''
+      ) as string[]
       for (const value of validValues) {
         queryStringParameters.append(filter.fieldId, value)
+        applyThisFilter = true
       }
     }
-    if (validValues.length > 0) fieldIdsOfAppliedFilters.push(filter.fieldId)
+    if (applyThisFilter) fieldIdsOfAppliedFilters.push(filter.fieldId)
   }
 
   let pageToLoad
