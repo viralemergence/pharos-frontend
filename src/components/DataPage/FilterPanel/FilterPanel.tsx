@@ -9,6 +9,7 @@ import debounce from 'lodash/debounce'
 import type { Filter } from 'pages/data'
 import {
   DateInputRow,
+  DateLabel,
   DateTooltip,
   FieldInput,
   FieldName,
@@ -86,22 +87,22 @@ const DateFilterInputs = ({
     <FilterLabel>
       <FieldName>{filter.label}</FieldName>
       <DateInputRow>
-        <label>
-          From
+        <DateLabel>
+          <span>From</span>
           <DateInput
             {...dateInputProps}
             index={0}
             ariaLabel={'Collected on this date or later'}
           />
-        </label>
-        <label>
-          To
+        </DateLabel>
+        <DateLabel>
+          <span>To</span>
           <DateInput
             {...dateInputProps}
             index={1}
             ariaLabel={'Collected on this date or earlier'}
           />
-        </label>
+        </DateLabel>
       </DateInputRow>
       {someValuesAreInvalid && (
         <DateTooltip

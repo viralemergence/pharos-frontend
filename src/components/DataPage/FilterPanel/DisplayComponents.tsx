@@ -62,6 +62,14 @@ export const FieldName = styled.div`
   margin-bottom: 5px;
 `
 
+export const DateLabel = styled.label`
+  text-transform: uppercase;
+  font-size: 9pt;
+  span {
+    opacity: 0.7;
+  }
+`
+
 export const FilterPanelToolbarNav = styled.nav`
   display: flex;
   flex-flow: row wrap;
