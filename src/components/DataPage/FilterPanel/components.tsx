@@ -3,6 +3,7 @@ import debounce from 'lodash/debounce'
 import type { Filter } from 'pages/data'
 import {
   DateInputRow,
+  DateLabel,
   DateTooltip,
   FieldInput,
   FieldName,
@@ -121,35 +122,33 @@ const DateFilterInputs = ({
     latestPossibleDateLocalized,
     updateFilter,
     updateFilterDebounced,
+    setFilters,
     values: filter.values,
   }
   const someValuesAreInvalid = filter.validities?.some(
     validity => validity === false
   )
 
-  const [showStartDatePlaceholder, setShowStartDatePlaceholder] = useState(true)
-  const [showEndDatePlaceholder, setShowEndDatePlaceholder] = useState(true)
   return (
-    <FilterLabel onClick={() => setShowStartDatePlaceholder(false)}>
+    <FilterLabel>
       <FieldName>{filter.label}</FieldName>
       <DateInputRow>
-        <DateInput
-          {...dateInputProps}
-          index={0}
-          placeholder="From"
-          showPlaceholder={showStartDatePlaceholder}
-          setShowPlaceholder={setShowStartDatePlaceholder}
-          ariaLabel={'Collected on this date or later'}
-        />
-        <DateInput
-          {...dateInputProps}
-          index={1}
-          placeholder="To"
-          showPlaceholder={showEndDatePlaceholder}
-          setShowPlaceholder={setShowEndDatePlaceholder}
-          ariaLabel={'Collected on this date or earlier'}
-        />
-        <FilterDeleteButton filter={filter} setFilters={setFilters} />
+        <DateLabel>
+          <span>From</span>
+          <DateInput
+            {...dateInputProps}
+            index={0}
+            ariaLabel={'Collected on this date or later'}
+          />
+        </DateLabel>
+        <DateLabel>
+          <span>To</span>
+          <DateInput
+            {...dateInputProps}
+            index={1}
+            ariaLabel={'Collected on this date or earlier'}
+          />
+        </DateLabel>
       </DateInputRow>
       {someValuesAreInvalid && (
         <DateTooltip
@@ -173,9 +172,6 @@ type DateInputProps = {
   index: number
   updateFilter: UpdateFilterFunction
   updateFilterDebounced: DebouncedFunc<UpdateFilterFunction>
-  placeholder: string
-  showPlaceholder: boolean
-  setShowPlaceholder: Dispatch<SetStateAction<boolean>>
   ariaLabel?: string
 }
 
@@ -186,9 +182,6 @@ const DateInput = ({
   index,
   updateFilter,
   updateFilterDebounced,
-  placeholder,
-  showPlaceholder,
-  setShowPlaceholder,
   ariaLabel,
 }: DateInputProps) => {
   const isDateValid = (dateStr?: string) => {
@@ -213,9 +206,6 @@ const DateInput = ({
       updateFilterDebounced(filter.fieldId, newValues, isDateValid)
     }
   }
-  const hidePlaceholder = () => {
-    setShowPlaceholder(false)
-  }
 
   return (
     <div>
@@ -224,19 +214,8 @@ const DateInput = ({
         aria-label={ariaLabel}
         min={earliestPossibleDate}
         max={latestPossibleDate}
-        placeholder={placeholder}
-        showPlaceholder={showPlaceholder}
         onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
           changeDate(index, e.target.value)
-        }}
-        onFocus={hidePlaceholder}
-        // To compensate for Safari's poor support for the focus event, several
-        // other events trigger the focus handler
-        onKeyDown={hidePlaceholder}
-        onKeyUp={hidePlaceholder}
-        onMouseDown={hidePlaceholder}
-        onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
-          if (!e.target.value) setShowPlaceholder(true)
         }}
       />
     </div>
