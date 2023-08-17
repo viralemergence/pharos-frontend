@@ -42,14 +42,13 @@ const FillDatasetGrid = styled(DataGrid)`
   flex-grow: 1;
   block-size: 100px;
   background: ${({ theme }) => theme.mutedPurple1};
+
+  --rdg-border-color: rgba(216, 218, 220, 0.3);
+  --rdg-background-color: ${({ theme }) => theme.mutedPurple1};
+  --rdg-header-background-color: ${({ theme }) => theme.mutedPurple3};
+  --rdg-row-hover-background-color: ${({ theme }) => theme.mutedPurple2};
+
   .rdg-cell {
-    background-color: ${({ theme }) => theme.mutedPurple1};
-    // TODO: Put this color in the figma color file
-    border-color: rgba(216, 218, 220, 0.3);
-    &[aria-colindex='1'],
-    &[role='columnheader'] {
-      background-color: ${({ theme }) => theme.mutedPurple3};
-    }
     &[aria-colindex='1'] {
       text-align: center;
     }
