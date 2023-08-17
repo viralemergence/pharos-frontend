@@ -15,7 +15,7 @@ export const Container = styled.form<{
     bottom: 0px;
     left: 12px;
     right: 12px;
-    height: 2px;
+    height: 1px;
     /* background-color: rgba(211, 211, 211, 0); */
     transition-delay: 200ms;
     background-color: ${({ borderColor }) =>
@@ -41,7 +41,7 @@ export const Container = styled.form<{
     &:after {
       background-color: ${({ borderColor }) =>
         borderColor ? borderColor : `rgb(211, 211, 211)`};
-      opacity: 0.8;
+      opacity: 0.33;
       transition-delay: 0s;
     }
   }

@@ -70,6 +70,11 @@ const TypeaheadContainer = styled.div`
     padding: 10px 15px 8px 15px !important;
     line-height: 25px !important;
   }
+
+  // Make border under Typeahead input more opaque
+  &:focus-within &:after {
+    opacity: 1;
+  }
 `
 
 const TypeaheadLabel = styled(InputLabel)`
