@@ -201,7 +201,7 @@ export const FilterPanelCloseButtonWithXIcon = styled(FilterPanelCloseButton)`
 
 export const FilterListItemElement = styled.li<{ opacity: number }>`
   list-style: none;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   opacity: ${({ opacity }) => opacity};
   transition: opacity 0.25s;
   &:last-child {
