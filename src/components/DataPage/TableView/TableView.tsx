@@ -3,6 +3,10 @@ import styled from 'styled-components'
 
 import DataGrid, { Column } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
+import {
+  formatters,
+  Row,
+} from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 
 const TableViewContainer = styled.div<{
   isOpen: boolean
@@ -75,10 +79,6 @@ interface TableViewProps {
   /** Virtualization should be disabled in tests via this prop, so that all the
    * cells are rendered immediately */
   enableVirtualization?: boolean
-}
-
-interface Row {
-  [key: string]: string | number
 }
 
 interface PublishedRecordsResponse {
@@ -169,6 +169,9 @@ const TableView = ({
         name: key,
         width: key.length * 7.5 + 15 + 'px',
         resizable: true,
+        ...(key in formatters
+          ? { formatter: formatters[key as keyof typeof formatters] }
+          : {}),
       })),
   ]
 

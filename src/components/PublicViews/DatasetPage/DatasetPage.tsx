@@ -16,7 +16,7 @@ import TopBar, {
 
 import { UserStatus } from 'reducers/stateReducer/types'
 import { MintButtonLink } from 'components/ui/MintButton'
-import PublishedRecordsDataGrid from '../PublishedRecordsDataGrid'
+import PublishedRecordsDataGrid from '../PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 
 import useAppState from 'hooks/useAppState'
 import usePublishedProject, {
@@ -31,7 +31,7 @@ const GridContainer = styled.div`
   margin: 0 40px;
 `
 
-const HIDECOLUMNS = ['Project name']
+const HIDECOLUMNS = ['Project name', 'Author']
 const PAGESIZE = 50
 
 const DatasetPage = () => {
