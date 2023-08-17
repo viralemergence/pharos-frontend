@@ -51,7 +51,6 @@ export type Filter = {
    * date, validities is [true, true]. If an input has no value its validity
    * will be undefined. */
   validities?: (boolean | undefined)[]
-  tooltipOrientation?: 'bottom' | 'top'
 }
 
 const METADATA_URL = `${process.env.GATSBY_API_URL}/metadata-for-published-records`

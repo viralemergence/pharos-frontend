@@ -158,7 +158,6 @@ const FilterPanelToolbar = ({
                     addedToPanel: true,
                     values: [],
                     panelIndex: highestPanelIndex + 1,
-                    tooltipOrientation: 'bottom',
                   }
                   if (newlyAddedFilter.type === 'date') {
                     newlyAddedFilter.validities = [undefined, undefined]
@@ -198,7 +197,6 @@ export const filterDefaultProperties = {
    * or greater), indicating its order in the panel. */
   panelIndex: -1,
   applied: false,
-  tooltipOrientation: undefined,
   validities: undefined,
 }
 
