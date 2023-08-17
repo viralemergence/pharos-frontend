@@ -70,7 +70,7 @@ export const MapOverlay = styled.div`
   width: 100%;
 `
 
-const DataToolbarButton = styled.button<{
+export const DataToolbarButton = styled.button<{
   selected?: boolean
   width?: number
 }>`
@@ -108,8 +108,6 @@ export const FilterPanelLauncher = styled(DataToolbarButton)`
   margin-left: 0;
   border-radius: 9px;
 `
-
-export const DataToolbarRadioButton = styled(DataToolbarButton)``
 
 const DataToolbarButtonContainer = styled.div`
   background-color: ${({ theme }) => theme.white20PercentOpacity};
