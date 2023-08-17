@@ -72,7 +72,7 @@ export const Results = styled.div<{ resultsMaxHeight: string }>`
   max-height: ${({ resultsMaxHeight }) => resultsMaxHeight};
   overflow-y: scroll;
   flex-direction: column;
-  border-radius: 10px;
+  border-radius: 5px;
   border-top-right-radius: 0;
   border-top-left-radius: 0;
   border: 1px solid #aaa;
