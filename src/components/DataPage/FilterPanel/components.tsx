@@ -1,4 +1,10 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import debounce from 'lodash/debounce'
 import type { Filter } from 'pages/data'
 import {
@@ -148,6 +154,7 @@ const DateFilterInputs = ({
           <DateInput
             {...dateInputProps}
             index={0}
+            initialValue={filter.values?.[0]}
             ariaLabel={'Collected on this date or later'}
           />
         </DateLabel>
@@ -156,6 +163,7 @@ const DateFilterInputs = ({
           <DateInput
             {...dateInputProps}
             index={1}
+            initialValue={filter.values?.[1]}
             ariaLabel={'Collected on this date or earlier'}
           />
         </DateLabel>
@@ -182,6 +190,7 @@ type DateInputProps = {
   updateFilter: UpdateFilterFunction
   updateFilterDebounced: DebouncedFunc<UpdateFilterFunction>
   ariaLabel?: string
+  initialValue?: string
 }
 
 const DateInput = ({
@@ -192,6 +201,7 @@ const DateInput = ({
   updateFilter,
   updateFilterDebounced,
   ariaLabel,
+  initialValue,
 }: DateInputProps) => {
   const isDateValid = (dateStr?: string) => {
     if (!dateStr) return undefined
@@ -216,6 +226,14 @@ const DateInput = ({
     }
   }
 
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (inputRef.current && initialValue) {
+      inputRef.current.value = initialValue
+    }
+  }, [])
+
   return (
     <div>
       <FieldInput
@@ -226,6 +244,7 @@ const DateInput = ({
         onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
           changeDate(index, e.target.value)
         }}
+        ref={inputRef}
       />
     </div>
   )
