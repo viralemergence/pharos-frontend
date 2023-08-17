@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import {
   FilterPanelLauncher,
-  DataToolbarRadioButton,
+  DataToolbarButton,
   ContainerForRadioButtons,
   ContainerForFilterPanelLauncher,
   DataToolbarDiv,
@@ -35,12 +35,12 @@ const DataToolbar = ({
     forView: View
     label: string
   }) => (
-    <DataToolbarRadioButton
+    <DataToolbarButton
       selected={view === forView}
       onClick={() => changeView(forView)}
     >
       {label}
-    </DataToolbarRadioButton>
+    </DataToolbarButton>
   )
 
   const filterPanelLauncherRef = useRef<HTMLButtonElement>(null)
