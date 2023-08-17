@@ -1,7 +1,8 @@
 import { Dispatch, MutableRefObject, SetStateAction } from 'react'
 import type { Filter } from 'pages/data'
 import debounce from 'lodash/debounce'
-import type { Row, LoadingState } from '../TableView'
+import type { LoadingState } from '../TableView'
+import { Row } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 import fetchRecords from 'components/DataPage/TableView/utilities/fetchRecords'
 
 const PAGE_SIZE = 50

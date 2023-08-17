@@ -11,6 +11,10 @@ import DataGrid, { Column, DataGridHandle } from 'react-data-grid'
 import LoadingSpinner from './LoadingSpinner'
 import type { Filter } from 'pages/data'
 import { load, loadDebounced, countPages } from './utilities/load'
+import {
+  formatters,
+  Row,
+} from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 
 const TableViewContainer = styled.div<{
   isOpen: boolean
@@ -187,6 +191,9 @@ const TableView = ({
         cellClass: keysOfFilteredColumns.includes(key)
           ? 'in-filtered-column'
           : undefined,
+        ...(key in formatters
+          ? { formatter: formatters[key as keyof typeof formatters] }
+          : {}),
       })),
   ]
 
@@ -248,11 +255,6 @@ const TableView = ({
       </TableContainer>
     </TableViewContainer>
   )
-}
-
-/** A.k.a. record */
-export interface Row {
-  [key: string]: string | number
 }
 
 export default TableView

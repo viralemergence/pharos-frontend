@@ -1,5 +1,5 @@
 import { Dispatch, MutableRefObject, SetStateAction } from 'react'
-import type { Row } from '../TableView'
+import { Row } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 import isNormalObject from 'utilities/isNormalObject'
 
 const RECORDS_URL = `${process.env.GATSBY_API_URL}/published-records`
