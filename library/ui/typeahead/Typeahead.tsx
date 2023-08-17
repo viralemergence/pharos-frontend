@@ -239,7 +239,7 @@ const Typeahead = ({
         setFocusedElementIndex(prev => {
           // if we are in the input, stay there
           if (prev === -1) return -1
-          // if we are in the results, go down one
+          // if we are in the results, go up one
           return prev - 1
         })
         return
