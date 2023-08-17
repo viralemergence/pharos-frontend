@@ -54,7 +54,7 @@ jest.mock('mapbox-gl', () => ({
   })),
 }))
 
-describe.skip('The public data page', () => {
+describe('The public data page', () => {
   // Make window.location available to tests
   const { location } = window
   beforeEach(() => {
@@ -97,6 +97,18 @@ describe.skip('The public data page', () => {
     expect(grid).toBeInTheDocument()
   })
 
+  it('has a button labeled Table that, when clicked, displays a previously undisplayed grid', async () => {
+    render(<DataPage />)
+    expect(screen.queryByRole('button', { name: 'Filters' })).toBeNull()
+    const tableViewButton = getTableViewButton()
+    expect(tableViewButton).toBeInTheDocument()
+    expect(getDataGrid()).not.toBeInTheDocument()
+    fireEvent.click(getTableViewButton())
+    const grid = await getDataGridAfterWaiting()
+    expect(grid).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Filters' })).not.toBeNull()
+  })
+
   it('has a button labeled Map that sets the projection of the map to naturalEarth', async () => {
     /** Get the projections that have been assigned to the map, in the order in
      * which they were assigned */
@@ -128,8 +140,10 @@ describe.skip('The public data page', () => {
     expect(projections.length).toBe(3)
   })
 
-  it('has a button labeled Filters that toggles the Filter Panel', () => {
+  it('has a button labeled Filters (visible in Table view) that toggles the Filter Panel', () => {
     const { container } = render(<DataPage />)
+
+    fireEvent.click(getTableViewButton())
 
     // Initially, the filter panel should be hidden
     const panel = getFilterPanel(container)
@@ -152,8 +166,9 @@ describe.skip('The public data page', () => {
     expect(panel).toHaveAttribute('aria-hidden', 'true')
   })
 
-  it('has a filter panel that can be closed by clicking a button', () => {
+  it('has a filter panel (visible in Table view) that can be closed by clicking a button', () => {
     const { container } = render(<DataPage />)
+    fireEvent.click(getTableViewButton())
     const filterPanelToggleButton = getFilterPanelToggleButton()
     fireEvent.click(filterPanelToggleButton)
     const panel = getFilterPanel(container)
@@ -164,8 +179,9 @@ describe.skip('The public data page', () => {
     expect(panel).toHaveAttribute('aria-hidden', 'true')
   })
 
-  it('has a filter panel that contains buttons for adding filters for fields', async () => {
+  it('has a filter panel (visible in Table view) that contains buttons for adding filters for fields', async () => {
     render(<DataPage />)
+    fireEvent.click(getTableViewButton())
     fireEvent.click(getFilterPanelToggleButton())
     fireEvent.click(getAddFilterButton())
     const expectedButtonLabels = Object.values(
@@ -178,8 +194,10 @@ describe.skip('The public data page', () => {
     )
   })
 
-  it('has a filter panel that contains a button that clears all filters in the panel', async () => {
+  it('has a filter panel (visible in Table view) that contains a button that clears all filters in the panel', async () => {
     render(<DataPage />)
+
+    fireEvent.click(getTableViewButton())
     fireEvent.click(getFilterPanelToggleButton())
     fireEvent.click(getAddFilterButton())
     const addFilterForCollectionDate = await screen.findByText(
@@ -198,6 +216,7 @@ describe.skip('The public data page', () => {
 
   it('lets the user add date fields to the panel', async () => {
     render(<DataPage />)
+    fireEvent.click(getTableViewButton())
     fireEvent.click(getFilterPanelToggleButton())
     userEvent.click(getAddFilterButton())
     const addFilterForCollectionDate = await screen.findByText(
@@ -229,6 +248,7 @@ describe.skip('The public data page', () => {
 
   it('lets the user filter by collection start date', async () => {
     render(<DataPage />)
+    fireEvent.click(getTableViewButton())
     fireEvent.click(getFilterPanelToggleButton())
     fireEvent.click(getAddFilterButton())
     fireEvent.click(await screen.findByText('Collection date'))
