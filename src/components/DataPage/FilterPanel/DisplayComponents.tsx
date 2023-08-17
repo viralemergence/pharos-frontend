@@ -169,8 +169,9 @@ export const AddFilterToPanelButtonStyled = styled(FilterPanelButton)<{
   }
   ${({ disabled, theme }) =>
     disabled
-      ? `color: ${theme.white30PercentOpacity};
+      ? `color: ${theme.medDarkGray};
         cursor: unset;
+        opacity: .65;
         &:hover { background-color: inherit; }`
       : `
         &:hover {
