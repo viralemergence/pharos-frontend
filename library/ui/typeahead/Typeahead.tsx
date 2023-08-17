@@ -107,6 +107,8 @@ export interface TypeaheadProps {
   fontColor?: string
   /** border color for the control */
   borderColor?: string
+  /** color of border below input */
+  inputBottomBorderColor?: string
   /**
    * background color for the items
    * in the results when hovered or active
@@ -140,6 +142,7 @@ const Typeahead = ({
   borderColor = '#aaa',
   fontColor = 'rgba(51, 51, 51, 1)',
   hoverColor = 'rgba(0, 50, 100, 0.08)',
+  inputBottomBorderColor = '#aaaaaa00',
   selectedHoverColor = 'rgba(100, 0, 50, 0.08)',
   className,
   disabled = false,
@@ -330,6 +333,7 @@ const Typeahead = ({
       onSubmit={e => e.preventDefault()}
       style={{ ...style, backgroundColor }}
       borderColor={borderColor}
+      inputBottomBorderColor={inputBottomBorderColor}
       onKeyDown={handleKeyDownFromContainer}
     >
       <SearchBar
@@ -348,6 +352,7 @@ const Typeahead = ({
         iconLeft={iconLeft}
         style={{ backgroundColor, borderColor }}
         fontColor={fontColor}
+        inputBottomBorderColor={inputBottomBorderColor}
         role="combobox"
         aria-autocomplete="list"
         aria-expanded={showResults}

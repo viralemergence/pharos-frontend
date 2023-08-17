@@ -1,6 +1,9 @@
 import styled from 'styled-components'
 
-export const Container = styled.form<{ borderColor: string }>`
+export const Container = styled.form<{
+  borderColor: string
+  inputBottomBorderColor: string
+}>`
   position: relative;
   margin-top: 0.5rem;
   background-color: #fff;
@@ -44,7 +47,11 @@ export const Container = styled.form<{ borderColor: string }>`
     }
   }
 `
-export const SearchBar = styled.input<{ iconLeft: boolean; fontColor: string }>`
+export const SearchBar = styled.input<{
+  iconLeft: boolean
+  fontColor: string
+  inputBottomBorderColor: string
+}>`
   border: none;
   width: 100%;
   border-radius: 5px;
@@ -57,6 +64,7 @@ export const SearchBar = styled.input<{ iconLeft: boolean; fontColor: string }>`
   font-weight: normal;
   background: none;
   border: 1px solid #aaa;
+  // ${({ inputBottomBorderColor }) => inputBottomBorderColor};
   transition-duration: 0ms;
   transition-delay: 200ms;
   font-family: inherit;
