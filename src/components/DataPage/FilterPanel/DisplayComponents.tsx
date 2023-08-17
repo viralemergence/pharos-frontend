@@ -332,7 +332,7 @@ export const DateTooltip = styled.aside<{
   border: 1px solid ${({ theme }) => theme.black};
   padding: 5px 10px;
   position: absolute;
-  width: 330px;
+  width: 304px;
   text-align: center;
   transform: translateY(10px);
   animation: fadeIn 0.15s forwards;
