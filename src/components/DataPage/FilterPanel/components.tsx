@@ -153,6 +153,7 @@ const DateFilterInputs = ({
           <span>From</span>
           <DateInput
             {...dateInputProps}
+            value={filter.values?.[0]}
             index={0}
             initialValue={filter.values?.[0]}
             ariaLabel={'Collected on this date or later'}
@@ -162,6 +163,7 @@ const DateFilterInputs = ({
           <span>To</span>
           <DateInput
             {...dateInputProps}
+            value={filter.values?.[1]}
             index={1}
             initialValue={filter.values?.[1]}
             ariaLabel={'Collected on this date or earlier'}
@@ -200,6 +202,7 @@ const DateInput = ({
   index,
   updateFilter,
   updateFilterDebounced,
+  value,
   ariaLabel,
   initialValue,
 }: DateInputProps) => {
@@ -241,6 +244,7 @@ const DateInput = ({
         aria-label={ariaLabel}
         min={earliestPossibleDate}
         max={latestPossibleDate}
+        defaultValue={value}
         onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
           changeDate(index, e.target.value)
         }}
