@@ -37,6 +37,8 @@ const TableContainer = styled.div`
   flex-flow: column nowrap;
 `
 const FillDatasetGrid = styled(DataGrid)`
+  ${({ theme }) => theme.gridText};
+
   color-scheme: only dark;
   border: 0;
   flex-grow: 1;
