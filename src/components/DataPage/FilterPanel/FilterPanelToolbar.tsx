@@ -182,7 +182,7 @@ const FilterPanelToolbar = ({
           onClick={() => setIsFilterPanelOpen(false)}
           aria-label="Close the Filters panel"
         >
-          <XIcon extraStyle="width: 18px; height: 18px;" />
+          <XIcon extraStyle="width: 16px; height: 16px;" />
         </FilterPanelCloseButtonWithXIcon>
       </FilterPanelToolbarNav>
     </>
