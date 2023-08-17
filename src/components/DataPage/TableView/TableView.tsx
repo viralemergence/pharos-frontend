@@ -401,11 +401,6 @@ const TableView = ({
   )
 }
 
-/** A.k.a. record */
-export interface Row {
-  [key: string]: string | number
-}
-
 const isValidRecordsResponse = (data: unknown): data is RecordsResponse => {
   if (!isNormalObject(data)) return false
   const { publishedRecords, isLastPage } = data as Partial<RecordsResponse>
