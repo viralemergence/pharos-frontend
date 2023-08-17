@@ -15,7 +15,15 @@ export interface PublishedResearcher {
   name: string
   email: string
   organization: string
-  projects: string[]
+  projects: {
+    projectID: string
+    name: string
+    datePublished: string
+    authors: {
+      researcherID: string
+      name: string
+    }[]
+  }[]
 }
 
 interface PublishedResearchersResponse {
