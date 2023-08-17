@@ -150,12 +150,14 @@ const DataPage = ({
             filters={filters}
           />
           <ViewMain isFilterPanelOpen={isFilterPanelOpen}>
-            <FilterPanel
-              filters={filters}
-              setFilters={setFilters}
-              isFilterPanelOpen={isFilterPanelOpen}
-              setIsFilterPanelOpen={setIsFilterPanelOpen}
-            />
+            {view === View.table && (
+              <FilterPanel
+                filters={filters}
+                setFilters={setFilters}
+                isFilterPanelOpen={isFilterPanelOpen}
+                setIsFilterPanelOpen={setIsFilterPanelOpen}
+              />
+            )}
             <TableView
               filters={filters}
               setFilters={setFilters}
