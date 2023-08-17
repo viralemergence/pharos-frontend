@@ -18,6 +18,10 @@ const loadDebounceDelay = 300
 
 const PAGE_SIZE = 50
 const RECORDS_URL = `${process.env.GATSBY_API_URL}/published-records`
+import {
+  formatters,
+  Row,
+} from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 
 const TableViewContainer = styled.div<{
   isOpen: boolean
@@ -331,6 +335,9 @@ const TableView = ({
         cellClass: keysOfFilteredColumns.includes(key)
           ? 'in-filtered-column'
           : undefined,
+        ...(key in formatters
+          ? { formatter: formatters[key as keyof typeof formatters] }
+          : {}),
       })),
   ]
 
