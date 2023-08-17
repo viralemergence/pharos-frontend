@@ -313,7 +313,8 @@ const Typeahead = ({
     else return 1
   }
 
-  const countOfDisplayedItems = values.length + unselectedItems.length
+  const countOfDisplayedItems =
+    (multiselect ? values.length : 0) + unselectedItems.length
 
   return (
     <Container
@@ -324,7 +325,9 @@ const Typeahead = ({
       onBlur={e => {
         // Ignore blur events where focus moves to another element inside the container
         if (containerRef?.current?.contains(e.relatedTarget)) return
-        reset()
+        // Delay closing the results div slightly to avoid a race condition
+        // that causes the div to close immediately without animation
+        setTimeout(reset, 50)
       }}
       className={className}
       onSubmit={e => e.preventDefault()}
@@ -426,6 +429,12 @@ const Typeahead = ({
                       )
                       setFocusedElementIndex(newFocusedElementIndex)
                     } else {
+                      // Remove focus from the focused button so that the input
+                      // immediately loses its bottom border
+                      setTimeout(() => {
+                        if (document.activeElement instanceof HTMLButtonElement)
+                          document.activeElement.blur()
+                      }, 10)
                       setSearchString(item.label)
                       setShowResults(false)
                     }
