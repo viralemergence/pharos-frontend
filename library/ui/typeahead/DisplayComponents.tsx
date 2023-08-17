@@ -2,7 +2,6 @@ import styled from 'styled-components'
 
 export const Container = styled.form<{
   borderColor: string
-  inputBottomBorderColor: string
 }>`
   position: relative;
   margin-top: 0.5rem;
@@ -16,7 +15,7 @@ export const Container = styled.form<{
     bottom: 0px;
     left: 12px;
     right: 12px;
-    height: 1px;
+    height: 2px;
     /* background-color: rgba(211, 211, 211, 0); */
     transition-delay: 200ms;
     background-color: ${({ borderColor }) =>
@@ -42,7 +41,7 @@ export const Container = styled.form<{
     &:after {
       background-color: ${({ borderColor }) =>
         borderColor ? borderColor : `rgb(211, 211, 211)`};
-      opacity: 0.33;
+      opacity: 0.8;
       transition-delay: 0s;
     }
   }
@@ -50,7 +49,6 @@ export const Container = styled.form<{
 export const SearchBar = styled.input<{
   iconLeft: boolean
   fontColor: string
-  inputBottomBorderColor: string
 }>`
   border: none;
   width: 100%;
@@ -64,7 +62,6 @@ export const SearchBar = styled.input<{
   font-weight: normal;
   background: none;
   border: 1px solid #aaa;
-  // ${({ inputBottomBorderColor }) => inputBottomBorderColor};
   transition-duration: 0ms;
   transition-delay: 200ms;
   font-family: inherit;

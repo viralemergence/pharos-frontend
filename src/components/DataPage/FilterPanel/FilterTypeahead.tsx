@@ -142,7 +142,6 @@ const FilterTypeahead = ({
           backgroundColor={colorPalette.mutedPurple1}
           fontColor={colorPalette.white}
           borderColor={colorPalette.white}
-          inputBottomBorderColor={colorPalette.white}
           hoverColor={colorPalette.darkPurpleWhiter}
           selectedHoverColor={colorPalette.darkPurpleWhiter}
           RenderItem={({ item, selected }) => (
