@@ -17,6 +17,10 @@ const loadDebounceDelay = 300
 
 const PAGE_SIZE = 50
 const RECORDS_URL = `${process.env.GATSBY_API_URL}/published-records`
+import {
+  formatters,
+  Row,
+} from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 
 const TableViewContainer = styled.div<{
   isOpen: boolean
@@ -264,6 +268,9 @@ const TableView = ({
         name: key,
         width: key.length * 7.5 + 15 + 'px',
         resizable: true,
+        ...(key in formatters
+          ? { formatter: formatters[key as keyof typeof formatters] }
+          : {}),
       })),
   ]
 
