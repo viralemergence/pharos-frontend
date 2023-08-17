@@ -70,18 +70,6 @@ const TypeaheadContainer = styled.div`
     padding: 10px 15px 8px 15px !important;
     line-height: 25px !important;
   }
-  [role='listbox']:first-child button:first-child {
-    position: relative;
-    ::before {
-      position: absolute;
-      content: '';
-      height: 1px;
-      background: ${({ theme }) => theme.medGray} !important;
-      top: 0;
-      left: 11px;
-      right: 11px;
-    }
-  }
 `
 
 const TypeaheadLabel = styled(InputLabel)`
