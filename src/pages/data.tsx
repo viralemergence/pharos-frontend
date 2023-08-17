@@ -48,8 +48,8 @@ export type Filter = {
    * */
   latestPossibleDate?: string
   /** For example, if a date field has a valid start date and an invalid end
-   * date, validities is [true, true]. If an input has no value its validity
-   * will be undefined. */
+   * date, validities will be [true, false]. If an input has no value its
+   * validity will be undefined. */
   validities?: (boolean | undefined)[]
   tooltipOrientation?: 'bottom' | 'top'
 }
