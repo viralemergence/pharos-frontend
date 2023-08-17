@@ -73,7 +73,7 @@ const TypeaheadContainer = styled.div`
 
   // Make border under Typeahead input more opaque
   &:focus-within &:after {
-    opacity: 1;
+    opacity: 1 !important;
   }
 `
 
