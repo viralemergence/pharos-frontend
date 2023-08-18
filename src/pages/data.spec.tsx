@@ -295,6 +295,11 @@ describe('The public data page', () => {
       hostSpecies = screen.getByRole('option', { name: /bear/i })
       expect(hostSpecies).toBeInTheDocument()
     })
+
+    // NOTE: When doing more extensive testing of the Typeahead, it may be
+    // necessary to mock out the svg import in
+    // src/components/DataPage/FilterPanel/FilterDarkTypeaheadResult.tsx with something like
+    // jest.mock('assets/darkTypeaheadRemove.svg', () => '')
   }, 10000)
 
   it('has a button labeled Globe that changes the projection of the map to globe', () => {

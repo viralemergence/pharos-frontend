@@ -25,13 +25,11 @@ const DarkTypeaheadResult = ({
   item: { label },
   selected,
 }: RenderItemProps) => {
-  // Workaround because this was causing a TypeError in tests
-  const iconSrc = process.env.NODE_ENV === 'test' ? '' : removeSVG
   return (
     <TypeaheadResultContainer selected={selected}>
       {label}
       {selected && (
-        <img src={iconSrc} style={{ flexShrink: 0 }} alt="Remove item" />
+        <img src={removeSVG} style={{ flexShrink: 0 }} alt="Remove item" />
       )}
     </TypeaheadResultContainer>
   )
