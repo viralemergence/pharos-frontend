@@ -155,7 +155,8 @@ const TableView = ({
     setRecords,
   }
 
-  // Load the first page of results when TableView mounts and when the filters' values have changed
+  // Load the first page of results when TableView mounts or when the filters'
+  // values have changed
   useEffect(() => {
     loadDebounced({ ...loadOptions, replaceRecords: true })
   }, [stringifiedFiltersWithValues])
@@ -193,9 +194,7 @@ const TableView = ({
         cellClass: keysOfFilteredColumns.includes(key)
           ? 'in-filtered-column'
           : undefined,
-        ...(key in formatters
-          ? { formatter: formatters[key as keyof typeof formatters] }
-          : {}),
+        formatter: formatters[key],
       })),
   ]
 
@@ -238,7 +237,6 @@ const TableView = ({
           // look like their type definitions work
           <FillDatasetGrid
             className={'rdg-dark'}
-            style={{ fontFamily: 'Inconsolata' }}
             columns={columns}
             rows={records}
             onScroll={handleScroll}

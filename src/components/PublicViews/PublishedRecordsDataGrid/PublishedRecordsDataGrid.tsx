@@ -1,7 +1,11 @@
 import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
-import DataGrid, { Column, DataGridHandle } from 'react-data-grid'
+import DataGrid, {
+  Column,
+  DataGridHandle,
+  FormatterProps,
+} from 'react-data-grid'
 
 import { darken } from 'polished'
 
@@ -71,7 +75,9 @@ const FillDatasetGrid = styled(DataGrid)`
 
 const rowKeyGetter = (row: Row) => row.pharosID
 
-export const formatters = {
+type DataGridFormatter = (params: FormatterProps<Row>) => JSX.Element
+
+export const formatters: Record<string, DataGridFormatter> = {
   'Project name': ProjectName,
   Author: Author,
 }
