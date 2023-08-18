@@ -7,7 +7,7 @@ import React, {
 } from 'react'
 import styled from 'styled-components'
 import DataGrid, { Column, DataGridHandle } from 'react-data-grid'
-import { opacify } from 'polished'
+import { transparentize } from 'polished'
 
 import LoadingSpinner from './LoadingSpinner'
 import type { Filter } from 'pages/data'
@@ -38,7 +38,7 @@ const TableContainer = styled.div`
   flex-flow: column nowrap;
 `
 const FillDatasetGrid = styled(DataGrid)`
-  --rdg-border-color: ${({ theme }) => opacify(0.3, theme.medGray)};
+  --rdg-border-color: ${({ theme }) => transparentize(0.7, theme.medGray)};
   --rdg-background-color: ${({ theme }) => theme.mutedPurple1};
   --rdg-header-background-color: ${({ theme }) => theme.mutedPurple3};
   --rdg-row-hover-background-color: ${({ theme }) => theme.mutedPurple2};
@@ -72,11 +72,11 @@ const LoadingMessage = styled.div`
   padding: 15px 30px;
   text-align: center;
   backdrop-filter: blur(5px);
-  background-color: ${({ theme }) => opacify(0.5, theme.black)};
+  background-color: ${({ theme }) => transparentize(0.5, theme.black)};
   border-top-left-radius: 5px;
   border-top: 1px solid ${({ theme }) => theme.white10PercentOpacity};
   border-left: 1px solid ${({ theme }) => theme.white10PercentOpacity};
-  box-shadow: 0 0 10px ${({ theme }) => opacify(0.5, theme.black)};
+  box-shadow: 0 0 10px ${({ theme }) => transparentize(0.5, theme.black)};
   display: flex;
   align-items: center;
   gap: 10px;
