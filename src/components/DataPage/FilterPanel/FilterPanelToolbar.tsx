@@ -16,7 +16,7 @@ import {
   FilterPanelCloseButtonWithXIcon,
   FilterPanelToolbarButtonStyled,
   FilterSelectorLauncherStyled,
-  FilterPanelToolbarNav,
+  FilterPanelToolbarStyled,
   PlusIcon,
   XIcon,
 } from './DisplayComponents'
@@ -123,7 +123,7 @@ const FilterPanelToolbar = ({
 
   return (
     <>
-      <FilterPanelToolbarNav>
+      <FilterPanelToolbarStyled>
         <FilterPanelCloseButtonWithBackIcon
           onClick={() => setIsFilterPanelOpen(false)}
           aria-label="Close the Filters panel"
@@ -184,7 +184,7 @@ const FilterPanelToolbar = ({
         >
           <XIcon extraStyle="width: 16px; height: 16px;" />
         </FilterPanelCloseButtonWithXIcon>
-      </FilterPanelToolbarNav>
+      </FilterPanelToolbarStyled>
     </>
   )
 }

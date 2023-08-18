@@ -100,6 +100,9 @@ export const DataToolbarButton = styled.button<{
   &:active {
     outline: 2px solid ${({ theme }) => theme.white20PercentOpacity};
   }
+  &:focus {
+    outline: 1px solid ${({ theme }) => theme.white};
+  }
 `
 
 export const FilterPanelLauncher = styled(DataToolbarButton)`

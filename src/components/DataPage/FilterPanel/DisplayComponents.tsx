@@ -70,7 +70,7 @@ export const DateLabel = styled.label`
   }
 `
 
-export const FilterPanelToolbarNav = styled.nav`
+export const FilterPanelToolbarStyled = styled.nav`
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
@@ -95,6 +95,7 @@ export const FilterSelectorMessage = styled.div`
 
 export const FilterPanelButton = styled.button`
   ${props => props.theme.smallParagraph};
+
   padding: 10px 15px;
   text-align: left;
   background-color: transparent;
@@ -103,6 +104,9 @@ export const FilterPanelButton = styled.button`
   cursor: pointer;
   &:hover {
     background-color: ${({ theme }) => theme.white20PercentOpacity};
+  }
+  &:focus {
+    outline: 1px solid ${({ theme }) => theme.white};
   }
 `
 
