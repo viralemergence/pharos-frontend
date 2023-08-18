@@ -43,7 +43,6 @@ const FillDatasetGrid = styled(DataGrid)`
   --rdg-row-hover-background-color: ${({ theme }) => theme.mutedPurple2};
 
   ${({ theme }) => theme.gridText};
-  font-size: 14px; // TODO: Change to 16px once cell padding issues are resolved
 
   color-scheme: only dark;
   border: 0;
@@ -52,6 +51,7 @@ const FillDatasetGrid = styled(DataGrid)`
   background-color: var(--rdg-background-color);
 
   .rdg-cell {
+    padding-inline: 10px;
     &[aria-colindex='1'] {
       text-align: center;
       background-color: var(--rdg-header-background-color);
@@ -250,6 +250,7 @@ const TableView = ({
             role="grid"
             data-testid="datagrid"
             ref={dataGridHandle}
+            rowHeight={41}
           />
         )}
         {loading && (
