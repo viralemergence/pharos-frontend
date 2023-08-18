@@ -43,6 +43,7 @@ const FillDatasetGrid = styled(DataGrid)`
   --rdg-row-hover-background-color: ${({ theme }) => theme.mutedPurple2};
 
   ${({ theme }) => theme.gridText};
+  font-size: 14px; // TODO: Change to 16px once cell padding issues are resolved
 
   color-scheme: only dark;
   border: 0;
