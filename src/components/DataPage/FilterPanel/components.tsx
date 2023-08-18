@@ -112,7 +112,7 @@ const DateFilterInputs = ({
     return () => {
       updateFilterDebounced.cancel()
     }
-  }, [])
+  }, [updateFilterDebounced])
 
   let earliestPossibleDate,
     latestPossibleDate,
