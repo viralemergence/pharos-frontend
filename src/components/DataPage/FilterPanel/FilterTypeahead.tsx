@@ -115,7 +115,7 @@ const FilterTypeahead = ({
 
   const handleTypeaheadChange = (items: TypeaheadItem[]) => {
     updateFilter(
-      filter.fieldId,
+      filter.id,
       items.map(({ label }) => label)
     )
   }

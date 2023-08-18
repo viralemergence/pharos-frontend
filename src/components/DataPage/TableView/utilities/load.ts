@@ -34,12 +34,12 @@ export const load = async ({
 
   const queryStringParameters = new URLSearchParams()
 
-  const fieldIdsOfAppliedFilters: string[] = []
+  const idsOfAppliedFilters: string[] = []
   for (const filter of filters) {
     if (!filter.addedToPanel) continue
     if (!filter.values) continue
     let applyThisFilter = false
-    if (filter.fieldId === 'collection_date') {
+    if (filter.id === 'collection_date') {
       const [startDate, endDate] = filter.values
       if (startDate && filter.validities?.[0] !== false) {
         if (/,/.test(startDate)) {
@@ -67,11 +67,11 @@ export const load = async ({
           value !== null && value !== undefined && value !== ''
       ) as string[]
       for (const value of validValues) {
-        queryStringParameters.append(filter.fieldId, value)
+        queryStringParameters.append(filter.id, value)
         applyThisFilter = true
       }
     }
-    if (applyThisFilter) fieldIdsOfAppliedFilters.push(filter.fieldId)
+    if (applyThisFilter) idsOfAppliedFilters.push(filter.id)
   }
 
   let pageToLoad
@@ -98,7 +98,7 @@ export const load = async ({
     setFilters(prev => {
       return prev.map(filter => ({
         ...filter,
-        applied: fieldIdsOfAppliedFilters.includes(filter.fieldId),
+        applied: idsOfAppliedFilters.includes(filter.id),
       }))
     })
   } else {

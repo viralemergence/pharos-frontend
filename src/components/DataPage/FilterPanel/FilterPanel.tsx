@@ -5,7 +5,7 @@ import FilterPanelToolbar from './FilterPanelToolbar'
 import { FilterListItem, FilterUI } from './components'
 
 export type UpdateFilterFunction = (
-  fieldId: string,
+  id: string,
   newFilterValues: (string | undefined)[],
   isDateValid?: (date?: string) => boolean | undefined
 ) => void
@@ -29,13 +29,13 @@ const FilterPanel = ({
     .sort((a, b) => a.panelIndex - b.panelIndex)
 
   const updateFilter: UpdateFilterFunction = (
-    fieldId,
+    id,
     newValues,
     isDateValid
   ) => {
     setFilters(prev => {
       return prev.map((filter: Filter) => {
-        if (filter.fieldId !== fieldId) return filter
+        if (filter.id !== id) return filter
         const updatedFilter = {
           ...filter,
           values: newValues,
@@ -74,7 +74,7 @@ const FilterPanel = ({
           <ListOfAddedFilters ref={filterListRef}>
             {addedFilters.map(filter => {
               return (
-                <FilterListItem key={filter.fieldId}>
+                <FilterListItem key={filter.id}>
                   <FilterUI
                     filter={filter}
                     updateFilter={updateFilter}

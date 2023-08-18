@@ -129,7 +129,7 @@ const TableView = ({
   const stringifiedFiltersWithValues = JSON.stringify(
     addedFilters
       .filter(f => f.values?.length)
-      .map(({ fieldId, values }) => ({ fieldId, values }))
+      .map(({ id, values }) => ({ id, values }))
   )
 
   /** This ref ensures that if the GET request that just finished is not the

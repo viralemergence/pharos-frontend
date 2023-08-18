@@ -33,11 +33,11 @@ const FilterSelector = ({
 }) => {
   return (
     <FilterSelectorDiv>
-      {filters.map(({ fieldId, label, addedToPanel = false }) => (
+      {filters.map(({ id, label, addedToPanel = false }) => (
         <AddFilterToPanelButtonStyled
-          key={fieldId}
+          key={id}
           onClick={_ => {
-            addFilterUI({ fieldId })
+            addFilterUI({ id })
             setIsDropdownOpen(false)
           }}
           disabled={addedToPanel}
@@ -93,7 +93,7 @@ export const removeOneFilter = (
   setFilters(prev =>
     prev.map(f => ({
       ...f,
-      ...(f.fieldId === filter.fieldId ? filterDefaultProperties : {}),
+      ...(f.id === filter.id ? filterDefaultProperties : {}),
     }))
   )
 }
@@ -146,13 +146,13 @@ const FilterPanelToolbar = ({
           <FilterSelector
             filters={filters}
             setIsDropdownOpen={setIsDropdownOpen}
-            addFilterUI={({ fieldId }) => {
+            addFilterUI={({ id }) => {
               setFilters(filters => {
                 const highestPanelIndex = Math.max(
                   ...filters.map(panel => panel.panelIndex)
                 )
                 return filters.map(f => {
-                  if (f.fieldId !== fieldId) return f
+                  if (f.id !== id) return f
                   const newlyAddedFilter: Filter = {
                     ...f,
                     addedToPanel: true,

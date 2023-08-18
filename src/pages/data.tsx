@@ -18,7 +18,7 @@ import {
 } from 'components/DataPage/DisplayComponents'
 
 export type Filter = {
-  fieldId: string
+  id: string
   label: string
   type: 'text' | 'date'
   /** In the table (a.k.a. 'data grid') each column has a distinct id a.k.a.
@@ -97,8 +97,8 @@ const DataPage = ({
       return
     }
     const filters = Object.entries(data.possibleFilters).map(
-      ([fieldId, filter]) => ({
-        fieldId,
+      ([id, filter]) => ({
+        id,
         type: filter.type || 'text',
         ...filterDefaultProperties,
         ...filter,

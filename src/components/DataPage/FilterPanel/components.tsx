@@ -215,14 +215,14 @@ const DateInput = ({
     if (!newValue) newValue = undefined
     newValues[index] = newValue
     if (isDateValid(newValue)) {
-      updateFilter(filter.fieldId, newValues, isDateValid)
+      updateFilter(filter.id, newValues, isDateValid)
       updateFilterDebounced.cancel()
     } else {
       // When marking a date as invalid, debounce so that the field isn't
       // eagerly marked invalid as the user begins to type a valid date.
       // Check the validity again in the callback to avoid using a stale
       // value.
-      updateFilterDebounced(filter.fieldId, newValues, isDateValid)
+      updateFilterDebounced(filter.id, newValues, isDateValid)
     }
   }
 

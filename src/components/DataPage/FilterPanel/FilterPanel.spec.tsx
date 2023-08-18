@@ -36,7 +36,7 @@ describe('FilterPanel', () => {
           setIsFilterPanelOpen={jest.fn()}
           filters={[
             {
-              fieldId: 'field1',
+              id: 'field1',
               label: 'Field 1',
               type: 'text',
               options: ['field 1, option 1', 'field 1, option 2'],
@@ -44,7 +44,7 @@ describe('FilterPanel', () => {
               panelIndex: 0,
             },
             {
-              fieldId: 'field2',
+              id: 'field2',
               label: 'Field 2',
               type: 'text',
               options: ['field 2, option 1', 'field 2, option 2'],
