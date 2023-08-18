@@ -37,22 +37,23 @@ const TableContainer = styled.div`
   flex-flow: column nowrap;
 `
 const FillDatasetGrid = styled(DataGrid)`
+  --rdg-border-color: rgba(216, 218, 220, 0.3);
+  --rdg-background-color: ${({ theme }) => theme.mutedPurple1};
+  --rdg-header-background-color: ${({ theme }) => theme.mutedPurple3};
+  --rdg-row-hover-background-color: ${({ theme }) => theme.mutedPurple2};
+
   ${({ theme }) => theme.gridText};
 
   color-scheme: only dark;
   border: 0;
   flex-grow: 1;
   block-size: 100px;
-  background: ${({ theme }) => theme.mutedPurple1};
-
-  --rdg-border-color: rgba(216, 218, 220, 0.3);
-  --rdg-background-color: ${({ theme }) => theme.mutedPurple1};
-  --rdg-header-background-color: ${({ theme }) => theme.mutedPurple3};
-  --rdg-row-hover-background-color: ${({ theme }) => theme.mutedPurple2};
+  background-color: var(--rdg-background-color);
 
   .rdg-cell {
     &[aria-colindex='1'] {
       text-align: center;
+      background-color: var(--rdg-header-background-color);
     }
     &.in-filtered-column {
       background-color: ${({ theme }) => theme.tableContentHighlight};
