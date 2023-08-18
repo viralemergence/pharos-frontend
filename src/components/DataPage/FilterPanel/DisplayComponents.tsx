@@ -85,6 +85,7 @@ export const FilterPanelToolbarStyled = styled.nav`
   @media (max-width: ${({ theme }) => theme.breakpoints.mobileMaxWidth}) {
     gap: 5px;
   }
+  z-index: 20;
 `
 
 export const FilterSelectorMessage = styled.div`

@@ -65,6 +65,12 @@ const FilterPanel = ({
     >
       {isFilterPanelOpen && (
         <>
+          <FilterPanelToolbar
+            isFilterPanelOpen={isFilterPanelOpen}
+            setIsFilterPanelOpen={setIsFilterPanelOpen}
+            filters={filters}
+            setFilters={setFilters}
+          />
           <ListOfAddedFilters ref={filterListRef}>
             {addedFilters.map(filter => (
               <FilterListItem
@@ -75,12 +81,6 @@ const FilterPanel = ({
               />
             ))}
           </ListOfAddedFilters>
-          <FilterPanelToolbar
-            isFilterPanelOpen={isFilterPanelOpen}
-            setIsFilterPanelOpen={setIsFilterPanelOpen}
-            filters={filters}
-            setFilters={setFilters}
-          />
         </>
       )}
     </FilterPanelStyled>
