@@ -54,6 +54,10 @@ jest.mock('mapbox-gl', () => ({
   })),
 }))
 
+const wait = (ms: number) => {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
 describe('The public data page', () => {
   // Make window.location available to tests
   const { location } = window
@@ -264,8 +268,9 @@ describe('The public data page', () => {
     )
   }, 10000)
 
-  it.skip('does not filter by a date if it is invalid', async () => {
+  it('does not filter by a date if it is invalid', async () => {
     render(<DataPage />)
+    fireEvent.click(getTableViewButton())
     fireEvent.click(getFilterPanelToggleButton())
     fireEvent.click(getAddFilterButton())
     fireEvent.click(await screen.findByText('Collection date'))
@@ -277,6 +282,24 @@ describe('The public data page', () => {
       expect(grid).toHaveAttribute('aria-rowcount', '51')
     })
   })
+
+  it('provides a host species filter that offers options corresponding to the metadata', async () => {
+    render(<DataPage />)
+    fireEvent.click(getTableViewButton())
+    fireEvent.click(getFilterPanelToggleButton())
+    fireEvent.click(getAddFilterButton())
+    fireEvent.click(await screen.findByText('Host species'))
+    const typeahead = screen.getByLabelText('Host species')
+    expect(typeahead).toBeInTheDocument()
+    act(() => {
+      typeahead.focus()
+    })
+    let hostSpecies: HTMLElement
+    await waitFor(() => {
+      hostSpecies = screen.getByRole('option', { name: /bear/i })
+      expect(hostSpecies).toBeInTheDocument()
+    })
+  }, 10000)
 
   it('has a button labeled Globe that changes the projection of the map to globe', () => {
     render(<DataPage />)
@@ -321,7 +344,7 @@ describe('The public data page', () => {
     expect(grid).toHaveAttribute('aria-rowcount', '51')
   })
 
-  it('displays the second page of published records when the user scrolls to the bottom', async () => {
+  it('displays the second page of published records when the user scrolls to the bottom of the grid', async () => {
     render(<DataPage enableTableVirtualization={false} />)
     const grid = await getDataGridAfterWaiting()
     expect(grid).toBeInTheDocument()

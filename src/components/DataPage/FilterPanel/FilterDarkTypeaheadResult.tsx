@@ -2,7 +2,6 @@ import React from 'react'
 
 import styled from 'styled-components'
 import { RenderItemProps } from '../../../../library/ui/typeahead'
-
 import removeSVG from '../../../assets/darkTypeaheadRemove.svg'
 
 const TypeaheadResultContainer = styled.span<{ selected?: boolean }>`
@@ -22,16 +21,20 @@ const TypeaheadResultContainer = styled.span<{ selected?: boolean }>`
   ${({ selected }) => selected && ` font-weight: 800; `};
 `
 
-const DarkTypeaheadResult = ({
+export const DarkTypeaheadResult = ({
   item: { label },
   selected,
-}: RenderItemProps) => (
-  <TypeaheadResultContainer selected={selected}>
-    {label}
-    {selected && (
-      <img src={removeSVG} style={{ flexShrink: 0 }} alt="Remove item" />
-    )}
-  </TypeaheadResultContainer>
-)
+}: RenderItemProps) => {
+  // Workaround because this was causing a TypeError in tests
+  const iconSrc = process.env.NODE_ENV === 'test' ? '' : removeSVG
+  return (
+    <TypeaheadResultContainer selected={selected}>
+      {label}
+      {selected && (
+        <img src={iconSrc} style={{ flexShrink: 0 }} alt="Remove item" />
+      )}
+    </TypeaheadResultContainer>
+  )
+}
 
 export default DarkTypeaheadResult
