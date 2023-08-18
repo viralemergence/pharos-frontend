@@ -21,7 +21,7 @@ const TypeaheadResultContainer = styled.span<{ selected?: boolean }>`
   ${({ selected }) => selected && ` font-weight: 800; `};
 `
 
-export const DarkTypeaheadResult = ({
+const DarkTypeaheadResult = ({
   item: { label },
   selected,
 }: RenderItemProps) => {
