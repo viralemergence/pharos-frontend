@@ -84,12 +84,15 @@ const LoadingMessage = styled.div`
 const NoRecordsFound = styled.div`
   ${({ theme }) => theme.bigParagraphSemibold};
   color: ${({ theme }) => theme.white};
-  background-color: ${({ theme }) => theme.mutedPurple1};
+  background-color: ${({ theme }) => transparentize(0.6, theme.black)};
   border-radius: 5px;
   padding: 30px;
-  width: 90%;
   display: flex;
+  width: min(400px, 100%);
+  margin: auto;
+  height: 100px;
   justify-content: center;
+  align-items: center;
 `
 
 interface TableViewProps {
