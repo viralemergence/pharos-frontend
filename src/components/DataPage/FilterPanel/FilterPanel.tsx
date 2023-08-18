@@ -1,8 +1,8 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react'
 import type { Filter } from 'pages/data'
-import { ListOfAddedFilters, FilterPanelStyled } from './DisplayComponents'
+import { FilterPanelStyled, ListOfAddedFilters } from './DisplayComponents'
 import FilterPanelToolbar from './FilterPanelToolbar'
-import { FilterListItem, FilterUI } from './components'
+import { FilterListItem } from './components'
 
 export type UpdateFilterFunction = (
   id: string,
@@ -75,13 +75,12 @@ const FilterPanel = ({
           <ListOfAddedFilters ref={filterListRef}>
             {addedFilters.map(filter => {
               return (
-                <FilterListItem key={filter.id}>
-                  <FilterUI
-                    filter={filter}
-                    updateFilter={updateFilter}
-                    setFilters={setFilters}
-                  />
-                </FilterListItem>
+                <FilterListItem
+                  filter={filter}
+                  updateFilter={updateFilter}
+                  setFilters={setFilters}
+                  key={filter.id}
+                />
               )
             })}
           </ListOfAddedFilters>

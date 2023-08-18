@@ -199,7 +199,7 @@ export const FilterPanelCloseButtonWithXIcon = styled(FilterPanelCloseButton)`
   }
 `
 
-export const FilterListItemElement = styled.li<{ opacity: number }>`
+export const FilterListItemStyled = styled.li<{ opacity: number }>`
   list-style: none;
   margin-bottom: 30px;
   opacity: ${({ opacity }) => opacity};
@@ -270,7 +270,7 @@ export const FilterUIContainerForTypeahead = styled(FilterUIContainer)`
 
 const panelWidth = '410px'
 
-export const Panel = styled.aside<{ open: boolean }>`
+export const FilterPanelStyled = styled.aside<{ open: boolean }>`
   pointer-events: auto;
   position: relative;
   backdrop-filter: blur(47px);

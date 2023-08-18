@@ -16,7 +16,7 @@ import {
   FilterDeleteButtonContainer,
   FilterDeleteButtonStyled,
   FilterLabel,
-  FilterListItemElement,
+  FilterListItemStyled,
   FilterUIContainer,
   FilterUIContainerForTypeahead,
   XIcon,
@@ -58,7 +58,7 @@ export const FilterDeleteButton = ({
   )
 }
 
-export const FilterUI = ({
+export const FilterListItem = ({
   filter,
   updateFilter,
   setFilters,
@@ -67,6 +67,11 @@ export const FilterUI = ({
   updateFilter: UpdateFilterFunction
   setFilters: Dispatch<SetStateAction<Filter[]>>
 }) => {
+  const [opacity, setOpacity] = useState(0)
+  useEffect(() => {
+    setOpacity(1)
+  }, [])
+
   const truthyValues = (filter.values ?? []).filter(value => value)
   const props = {
     filter: { ...filter, values: truthyValues },
@@ -76,24 +81,18 @@ export const FilterUI = ({
 
   const useTypeahead = filter.type === 'text'
   const hasTooltip = filter.validities?.some(validity => validity === false)
-  return useTypeahead ? (
-    <FilterUIContainerForTypeahead hasTooltip={hasTooltip}>
-      <FilterTypeahead {...props} />
-    </FilterUIContainerForTypeahead>
-  ) : (
-    <FilterUIContainer hasTooltip={hasTooltip}>
-      <DateFilterInputs {...props} />
-    </FilterUIContainer>
-  )
-}
-
-export const FilterListItem = ({ children }: { children: React.ReactNode }) => {
-  const [opacity, setOpacity] = useState(0)
-  useEffect(() => {
-    setOpacity(1)
-  }, [])
   return (
-    <FilterListItemElement opacity={opacity}>{children}</FilterListItemElement>
+    <FilterListItemStyled opacity={opacity}>
+      {useTypeahead ? (
+        <FilterUIContainerForTypeahead hasTooltip={hasTooltip}>
+          <FilterTypeahead {...props} />
+        </FilterUIContainerForTypeahead>
+      ) : (
+        <FilterUIContainer hasTooltip={hasTooltip}>
+          <DateFilterInputs {...props} />
+        </FilterUIContainer>
+      )}
+    </FilterListItemStyled>
   )
 }
 
