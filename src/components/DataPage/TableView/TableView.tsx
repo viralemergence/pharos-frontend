@@ -218,7 +218,7 @@ const TableView = ({
   const initialLoadHasOccurredRef = useRef(false)
   // When records finish loading, remove the 'Loading...' indicator
   useEffect(() => {
-    if (initialLoadHasOccurredRef.current) {
+    if (initialLoadHasOccurredRef.current || records.length > 0) {
       setLoading(false)
     }
 
