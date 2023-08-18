@@ -20,15 +20,20 @@ const SelectedTypeaheadValues = styled.ul`
   align-items: flex-start;
   gap: 5px;
 `
+
 const SelectedTypeaheadValue = styled.li`
   background-color: ${({ theme }) => theme.lightPurple};
   border-radius: 5px;
   color: ${({ theme }) => theme.black};
   display: flex;
   flex-flow: row nowrap;
-  align-items: center;
+  align-items: stretch;
   gap: 5px;
-  padding-left: 10px;
+  padding-left: 5px;
+`
+
+const SelectedTypeaheadValueLabel = styled.div`
+  padding: 5px;
 `
 
 const SelectedTypeaheadValueDeleteButton = styled.button`
@@ -37,7 +42,7 @@ const SelectedTypeaheadValueDeleteButton = styled.button`
   cursor: pointer;
   padding: 0 7px;
   margin-left: 3px;
-  height: 30px;
+  flex: 1;
   border-bottom-right-radius: 5px;
   border-top-right-radius: 5px;
   display: flex;
@@ -161,7 +166,9 @@ const FilterTypeahead = ({
         <SelectedTypeaheadValues>
           {values.map(value => (
             <SelectedTypeaheadValue key={value}>
-              {value}
+              <SelectedTypeaheadValueLabel>
+                {value}{' '}
+              </SelectedTypeaheadValueLabel>
               <SelectedTypeaheadValueDeleteButton
                 onClick={() => {
                   removeItem({ key: value, label: value })
