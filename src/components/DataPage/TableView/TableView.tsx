@@ -197,7 +197,7 @@ const TableView = ({
       .map(key => ({
         key: key,
         name: key,
-        width: key.length * 7.5 + 15 + 'px',
+        width: key.length * 10 + 15 + 'px',
         resizable: true,
         cellClass: keysOfFilteredColumns.includes(key)
           ? 'in-filtered-column'
