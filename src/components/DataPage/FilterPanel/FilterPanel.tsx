@@ -73,16 +73,14 @@ const FilterPanel = ({
             setFilters={setFilters}
           />
           <ListOfAddedFilters ref={filterListRef}>
-            {addedFilters.map(filter => {
-              return (
-                <FilterListItem
-                  filter={filter}
-                  updateFilter={updateFilter}
-                  setFilters={setFilters}
-                  key={filter.id}
-                />
-              )
-            })}
+            {addedFilters.map(filter => (
+              <FilterListItem
+                filter={filter}
+                updateFilter={updateFilter}
+                setFilters={setFilters}
+                key={filter.id}
+              />
+            ))}
           </ListOfAddedFilters>
         </>
       )}
