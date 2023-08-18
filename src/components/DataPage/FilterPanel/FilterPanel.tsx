@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react'
 import type { Filter } from 'pages/data'
-import { ListOfAddedFilters, Panel } from './DisplayComponents'
+import { ListOfAddedFilters, FilterPanelStyled } from './DisplayComponents'
 import FilterPanelToolbar from './FilterPanelToolbar'
 import { FilterListItem, FilterUI } from './components'
 
@@ -28,11 +28,7 @@ const FilterPanel = ({
     .filter(f => f.addedToPanel)
     .sort((a, b) => a.panelIndex - b.panelIndex)
 
-  const updateFilter: UpdateFilterFunction = (
-    id,
-    newValues,
-    isDateValid
-  ) => {
+  const updateFilter: UpdateFilterFunction = (id, newValues, isDateValid) => {
     setFilters(prev => {
       return prev.map((filter: Filter) => {
         if (filter.id !== id) return filter
@@ -49,13 +45,18 @@ const FilterPanel = ({
   }
 
   // When a new filter is added, scroll the filter list to the bottom
+  /** The last time the number of added filters changed, how many there were */
+  const previousLengthOfAddedFilters = useRef(0)
   useEffect(() => {
-    const filterList = filterListRef?.current
-    if (filterList) filterList.scrollTop = filterList.scrollHeight
+    if (addedFilters.length > previousLengthOfAddedFilters.current) {
+      const filterList = filterListRef?.current
+      if (filterList) filterList.scrollTop = filterList.scrollHeight
+    }
+    previousLengthOfAddedFilters.current = addedFilters.length
   }, [addedFilters.length])
 
   return (
-    <Panel
+    <FilterPanelStyled
       open={isFilterPanelOpen}
       style={{ colorScheme: 'dark' }}
       role="form"
@@ -86,7 +87,7 @@ const FilterPanel = ({
           </ListOfAddedFilters>
         </>
       )}
-    </Panel>
+    </FilterPanelStyled>
   )
 }
 
