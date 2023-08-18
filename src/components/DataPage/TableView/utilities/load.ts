@@ -40,25 +40,23 @@ export const load = async ({
     if (!filter.values) continue
     let applyThisFilter = false
     if (filter.id === 'collection_date') {
-      const [startDate, endDate] = filter.values
+      let [startDate, endDate] = filter.values
       if (startDate && filter.validities?.[0] !== false) {
         if (/,/.test(startDate)) {
           const fixedDate = fixDate(startDate)
           if (!fixedDate) continue
-          queryStringParameters.append('collection_start_date', fixedDate)
-        } else {
-          queryStringParameters.append('collection_start_date', startDate)
+          startDate = fixedDate
         }
+        queryStringParameters.append('collection_start_date', startDate)
         applyThisFilter = true
       }
       if (endDate && filter.validities?.[1] !== false) {
         if (/,/.test(endDate)) {
           const fixedDate = fixDate(endDate)
           if (!fixedDate) continue
-          queryStringParameters.append('collection_end_date', fixedDate)
-        } else {
-          queryStringParameters.append('collection_end_date', endDate)
+          endDate = fixedDate
         }
+        queryStringParameters.append('collection_end_date', endDate)
         applyThisFilter = true
       }
     } else {
