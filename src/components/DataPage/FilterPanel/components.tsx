@@ -231,7 +231,7 @@ const DateInput = ({
     if (inputRef.current && initialValue) {
       inputRef.current.value = initialValue
     }
-  }, [])
+  }, [inputRef, initialValue])
 
   return (
     <div>
@@ -240,6 +240,7 @@ const DateInput = ({
         aria-label={ariaLabel}
         min={earliestPossibleDate}
         max={latestPossibleDate}
+        // TODO: Use onChange. Note that the type is ChangeEvent
         onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
           changeDate(index, e.target.value)
         }}
