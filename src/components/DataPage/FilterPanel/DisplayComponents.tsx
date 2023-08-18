@@ -310,7 +310,7 @@ export const FilterPanelStyled = styled.aside<{ open: boolean }>`
   }
 `
 
-export const FieldInput = styled.input`
+export const DateInputStyled = styled.input`
   ${({ theme }) => theme.smallParagraph};
   background-color: ${({ theme }) => theme.mutedPurple1};
   border-radius: 5px;

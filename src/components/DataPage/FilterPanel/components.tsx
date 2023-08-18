@@ -11,7 +11,7 @@ import {
   DateInputRow,
   DateLabel,
   DateTooltip,
-  FieldInput,
+  DateInputStyled,
   FieldName,
   FilterDeleteButtonContainer,
   FilterDeleteButtonStyled,
@@ -239,7 +239,7 @@ const DateInput = ({
 
   return (
     <div>
-      <FieldInput
+      <DateInputStyled
         type={'date'}
         aria-label={ariaLabel}
         min={earliestPossibleDate}
