@@ -208,9 +208,13 @@ const TableView = ({
       load({ ...loadOptions, replaceRecords: false })
   }
 
+  const recordsHaveNeverLoaded = useRef(true)
   // When records finish loading, remove the 'Loading...' indicator
   useEffect(() => {
-    setLoading(false)
+    // If records have already loaded, set loading to false when the records change.
+    if (!recordsHaveNeverLoaded.current) setLoading(false)
+
+    if (records.length > 0) recordsHaveNeverLoaded.current = false
 
     // If the table just loaded the first page of records and the grid is
     // scrolled to the bottom, scroll to the top to avoid loading another page.
