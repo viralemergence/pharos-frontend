@@ -86,7 +86,7 @@ const TypeaheadLabel = styled(InputLabel)`
   ${({ theme }) => theme.smallParagraph}
   margin-bottom: 0 ! important;
   padding-bottom: 0;
-  width: fit-content; // TODO: needed?
+  width: fit-content;
 `
 
 interface FilterTypeaheadProps {
@@ -167,9 +167,7 @@ const FilterTypeahead = ({
         <SelectedTypeaheadValues>
           {values.map(value => (
             <SelectedTypeaheadValue key={value}>
-              <SelectedTypeaheadValueLabel>
-                {value}{' '}
-              </SelectedTypeaheadValueLabel>
+              <SelectedTypeaheadValueLabel>{value}</SelectedTypeaheadValueLabel>
               <SelectedTypeaheadValueDeleteButton
                 onClick={() => {
                   removeItem({ key: value, label: value })
