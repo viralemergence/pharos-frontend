@@ -38,7 +38,7 @@ const localizeDate = (dateString: string) => {
   return date.toLocaleDateString()
 }
 
-const dateFilterUpdateDelay = 1000
+const dateFilterUpdateDelayMilliseconds = 1000
 
 export const FilterDeleteButton = ({
   filter,
@@ -72,24 +72,25 @@ export const FilterListItem = ({
     setOpacity(1)
   }, [])
 
-  const truthyValues = (filter.values ?? []).filter(value => value)
-  const props = {
-    filter: { ...filter, values: truthyValues },
-    updateFilter,
-    setFilters,
-  }
-
   const useTypeahead = filter.type === 'text'
   const hasTooltip = filter.validities?.some(validity => validity === false)
   return (
     <FilterListItemStyled opacity={opacity}>
       {useTypeahead ? (
         <FilterUIContainerForTypeahead hasTooltip={hasTooltip}>
-          <FilterTypeahead {...props} />
+          <FilterTypeahead
+            filter={filter}
+            updateFilter={updateFilter}
+            setFilters={setFilters}
+          />
         </FilterUIContainerForTypeahead>
       ) : (
         <FilterUIContainer hasTooltip={hasTooltip}>
-          <DateFilterInputs {...props} />
+          <DateFilterInputs
+            filter={filter}
+            updateFilter={updateFilter}
+            setFilters={setFilters}
+          />
         </FilterUIContainer>
       )}
     </FilterListItemStyled>
@@ -105,7 +106,10 @@ const DateFilterInputs = ({
   updateFilter: UpdateFilterFunction
   setFilters: Dispatch<SetStateAction<Filter[]>>
 }) => {
-  const updateFilterDebounced = debounce(updateFilter, dateFilterUpdateDelay)
+  const updateFilterDebounced = debounce(
+    updateFilter,
+    dateFilterUpdateDelayMilliseconds
+  )
 
   useEffect(() => {
     // Cancel debounce on unmount
@@ -240,8 +244,7 @@ const DateInput = ({
         aria-label={ariaLabel}
         min={earliestPossibleDate}
         max={latestPossibleDate}
-        // TODO: Use onChange. Note that the type is ChangeEvent
-        onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           changeDate(index, e.target.value)
         }}
         ref={inputRef}
