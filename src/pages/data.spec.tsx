@@ -335,6 +335,7 @@ describe('The public data page', () => {
 
   it('displays the first page of published records', async () => {
     render(<DataPage enableTableVirtualization={false} />)
+    fireEvent.click(getTableViewButton())
     const grid = await getDataGridAfterWaiting()
     expect(grid).toBeInTheDocument()
     expect(grid).toHaveAttribute('aria-rowcount', '51')
@@ -342,6 +343,7 @@ describe('The public data page', () => {
 
   it('displays the second page of published records when the user scrolls to the bottom of the grid', async () => {
     render(<DataPage enableTableVirtualization={false} />)
+    fireEvent.click(getTableViewButton())
     const grid = await getDataGridAfterWaiting()
     expect(grid).toBeInTheDocument()
     // Scroll to the bottom of the grid
