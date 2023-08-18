@@ -58,7 +58,6 @@ const FilterPanel = ({
   return (
     <FilterPanelStyled
       open={isFilterPanelOpen}
-      style={{ colorScheme: 'dark' }}
       role="form"
       aria-hidden={isFilterPanelOpen ? 'false' : 'true'}
       aria-label="Filters panel"

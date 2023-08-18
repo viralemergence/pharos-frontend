@@ -277,6 +277,7 @@ export const FilterPanelStyled = styled.aside<{ open: boolean }>`
   background-color: ${({ theme }) => theme.white10PercentOpacity};
   border: 1px solid ${({ theme }) => theme.white10PercentOpacity};
   color: ${({ theme }) => theme.white};
+  color-scheme: dark;
   display: flex;
   height: 100%;
   max-height: 100%;
