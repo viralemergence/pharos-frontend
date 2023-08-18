@@ -7,6 +7,7 @@ import React, {
 } from 'react'
 import styled from 'styled-components'
 import DataGrid, { Column, DataGridHandle } from 'react-data-grid'
+import { opacify } from 'polished'
 
 import LoadingSpinner from './LoadingSpinner'
 import type { Filter } from 'pages/data'
@@ -37,7 +38,7 @@ const TableContainer = styled.div`
   flex-flow: column nowrap;
 `
 const FillDatasetGrid = styled(DataGrid)`
-  --rdg-border-color: rgba(216, 218, 220, 0.3);
+  --rdg-border-color: ${({ theme }) => opacify(0.3, theme.medGray)};
   --rdg-background-color: ${({ theme }) => theme.mutedPurple1};
   --rdg-header-background-color: ${({ theme }) => theme.mutedPurple3};
   --rdg-row-hover-background-color: ${({ theme }) => theme.mutedPurple2};
@@ -71,20 +72,19 @@ const LoadingMessage = styled.div`
   padding: 15px 30px;
   text-align: center;
   backdrop-filter: blur(5px);
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: ${({ theme }) => opacify(0.5, theme.black)};
   border-top-left-radius: 5px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  border-top: 1px solid ${({ theme }) => theme.white10PercentOpacity};
+  border-left: 1px solid ${({ theme }) => theme.white10PercentOpacity};
+  box-shadow: 0 0 10px ${({ theme }) => opacify(0.5, theme.black)};
   display: flex;
   align-items: center;
   gap: 10px;
 `
 const NoRecordsFound = styled.div`
   ${({ theme }) => theme.bigParagraphSemibold};
-  margin: 30px auto;
   color: ${({ theme }) => theme.white};
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: ${({ theme }) => theme.mutedPurple1};
   border-radius: 5px;
   padding: 30px;
   width: 90%;
