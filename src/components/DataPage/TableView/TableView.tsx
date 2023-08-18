@@ -18,18 +18,14 @@ import {
 } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 
 const TableViewContainer = styled.div<{
-  isOpen: boolean
   isFilterPanelOpen: boolean
 }>`
   pointer-events: auto;
-  display: ${({ isOpen }) => (isOpen ? 'grid' : 'none')};
+  display: grid;
   padding: 0 30px;
   flex: 1;
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
     padding: 0 10px;
-    // On mobiles and tablets, hide the table when the filter panel is open
-    ${({ isFilterPanelOpen }) =>
-      isFilterPanelOpen ? 'display: none ! important;' : ''}
   }
 `
 const TableContainer = styled.div`
@@ -37,7 +33,7 @@ const TableContainer = styled.div`
   display: flex;
   flex-flow: column nowrap;
 `
-const FillDatasetGrid = styled(DataGrid)`
+const FillDatasetGrid = styled(DataGrid)<{ isFilterPanelOpen: boolean }>`
   --rdg-border-color: ${({ theme }) => transparentize(0.7, theme.medGray)};
   --rdg-background-color: ${({ theme }) => theme.mutedPurple1};
   --rdg-header-background-color: ${({ theme }) => theme.mutedPurple3};
@@ -61,7 +57,14 @@ const FillDatasetGrid = styled(DataGrid)`
       background-color: ${({ theme }) => theme.tableContentHighlight};
     }
   }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    // On mobiles and tablets, hide the table when the filter panel is open
+    ${({ isFilterPanelOpen }) =>
+      isFilterPanelOpen ? 'display: none ! important;' : ''}
+  }
 `
+
 const LoadingMessage = styled.div`
   ${({ theme }) => theme.gridText}
   position: absolute;
@@ -80,6 +83,7 @@ const LoadingMessage = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
+  z-index: 100; // Above filter panel
 `
 const NoRecordsFound = styled.div`
   ${({ theme }) => theme.bigParagraphSemibold};
@@ -236,14 +240,17 @@ const TableView = ({
   }, [records])
 
   return (
-    <TableViewContainer isOpen={isOpen} isFilterPanelOpen={isFilterPanelOpen}>
+    <TableViewContainer isFilterPanelOpen={isFilterPanelOpen}>
       <TableContainer>
-        {!loading && records.length === 0 && appliedFilters.length > 0 && (
-          <NoRecordsFound role="status">
-            No matching records found.
-          </NoRecordsFound>
-        )}
-        {records.length > 0 && (
+        {isOpen &&
+          !loading &&
+          records.length === 0 &&
+          appliedFilters.length > 0 && (
+            <NoRecordsFound role="status">
+              No matching records found.
+            </NoRecordsFound>
+          )}
+        {isOpen && records.length > 0 && (
           // @ts-expect-error: I'm copying this from the docs, but it doesn't
           // look like their type definitions work
           <FillDatasetGrid
@@ -257,6 +264,7 @@ const TableView = ({
             data-testid="datagrid"
             ref={dataGridHandle}
             rowHeight={41}
+            isFilterPanelOpen={isFilterPanelOpen}
           />
         )}
         {loading && (
