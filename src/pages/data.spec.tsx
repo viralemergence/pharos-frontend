@@ -54,10 +54,6 @@ jest.mock('mapbox-gl', () => ({
   })),
 }))
 
-const wait = (ms: number) => {
-  return new Promise(resolve => setTimeout(resolve, ms))
-}
-
 describe('The public data page', () => {
   // Make window.location available to tests
   const { location } = window
