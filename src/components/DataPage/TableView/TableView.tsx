@@ -18,12 +18,13 @@ import {
 } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 
 const TableViewContainer = styled.div<{
+  isOpen: boolean
   isFilterPanelOpen: boolean
 }>`
-  pointer-events: auto;
-  display: grid;
-  padding: 0 30px;
+  display: ${({ isOpen }) => (isOpen ? 'grid' : 'none')};
   flex: 1;
+  pointer-events: auto;
+  padding: 0 30px;
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
     padding: 0 10px;
   }
@@ -240,17 +241,14 @@ const TableView = ({
   }, [records])
 
   return (
-    <TableViewContainer isFilterPanelOpen={isFilterPanelOpen}>
+    <TableViewContainer isOpen={isOpen} isFilterPanelOpen={isFilterPanelOpen}>
       <TableContainer>
-        {isOpen &&
-          !loading &&
-          records.length === 0 &&
-          appliedFilters.length > 0 && (
-            <NoRecordsFound role="status">
-              No matching records found.
-            </NoRecordsFound>
-          )}
-        {isOpen && records.length > 0 && (
+        {!loading && records.length === 0 && appliedFilters.length > 0 && (
+          <NoRecordsFound role="status">
+            No matching records found.
+          </NoRecordsFound>
+        )}
+        {records.length > 0 && (
           // @ts-expect-error: I'm copying this from the docs, but it doesn't
           // look like their type definitions work
           <FillDatasetGrid

@@ -42,11 +42,11 @@ export type Filter = {
   panelIndex: number
   /** The historically earliest collection date that appears among the
    * published records. Only date filters have this property. */
-  earliestPossibleDate?: string
+  earliestDateInDatabase?: string
   /** The historically latest, furthest-into-the-future collection date that
    * appears among the published records. Only date filters have this property.
    * */
-  latestPossibleDate?: string
+  latestDateInDatabase?: string
   /** For example, if a date field has a valid start date and an invalid end
    * date, validities will be [true, false]. If an input has no value its
    * validity will be undefined. */
