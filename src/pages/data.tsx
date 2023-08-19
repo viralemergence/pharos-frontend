@@ -31,7 +31,7 @@ export type Filter = {
   addedToPanel?: boolean
   /** To filter on a specific field, the user sets values for the filter. For
    * example, the host_species filter could receive the value "Bear". */
-  values?: (string | undefined)[]
+  values: string[]
   /** If a filter has been 'applied', this means that it has been applied to
    * the list of records shown in the table, so that only records matching the
    * filter are shown in the table. For example, if the user sets host_species

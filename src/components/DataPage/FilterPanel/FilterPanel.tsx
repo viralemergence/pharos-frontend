@@ -6,8 +6,8 @@ import { FilterListItem } from './components'
 
 export type UpdateFilterFunction = (
   id: string,
-  newFilterValues: (string | undefined)[],
-  isDateValid?: (date?: string) => boolean | undefined
+  newFilterValues: string[],
+  isDateValid?: (dateStr: string) => boolean
 ) => void
 
 const FilterPanel = ({

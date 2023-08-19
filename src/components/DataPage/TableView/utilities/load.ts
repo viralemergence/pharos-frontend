@@ -50,9 +50,7 @@ export const load = async ({
         applyThisFilter = true
       }
     } else {
-      const validValues = filter.values.filter(
-        (value: string | undefined) => value
-      ) as string[]
+      const validValues = filter.values.filter((value: string) => value)
       for (const value of validValues) {
         queryStringParameters.append(filter.id, value)
         applyThisFilter = true

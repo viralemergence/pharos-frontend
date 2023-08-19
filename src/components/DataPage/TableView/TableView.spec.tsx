@@ -50,11 +50,12 @@ describe('The public data table', () => {
     dataGridKey: 'Collection date',
     options: [],
     panelIndex: 0,
+    values: [],
   }
 
   const dateFilterStartingMarch2020: Filter = {
     ...dateFilter,
-    values: ['2020-03-01', undefined],
+    values: ['2020-03-01', ''],
   }
 
   it('can be filtered by collection start date', async () => {

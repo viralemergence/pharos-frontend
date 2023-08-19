@@ -191,7 +191,7 @@ const FilterPanelToolbar = ({
 
 /** When a filter is removed from the panel, it receives these default properties */
 export const filterDefaultProperties = {
-  values: undefined,
+  values: [],
   addedToPanel: false,
   /** When a filter is added to the panel, it will receive a new panelIndex
    * (zero or greater), indicating its order in the panel. */

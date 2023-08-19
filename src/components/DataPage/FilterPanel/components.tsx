@@ -1,10 +1,4 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import debounce from 'lodash/debounce'
 import type { Filter } from 'pages/data'
 import {
@@ -114,7 +108,8 @@ const DateFilterInputs = ({
     }
   }, [updateFilterDebounced])
 
-  let dateMin: string | undefined, dateMax: string | undefined
+  let dateMin = '',
+    dateMax = ''
   if (filter.earliestDateInDatabase) {
     dateMin = `${filter.earliestDateInDatabase.slice(0, 2)}00-01-01`
   }
@@ -122,33 +117,20 @@ const DateFilterInputs = ({
     dateMax = `${Number(filter.latestDateInDatabase.slice(0, 2)) + 1}00-01-01`
   }
 
-  const dateInputProps = {
-    filterId: filter.id,
-    dateMin,
-    dateMax,
-    updateFilter,
-    updateFilterDebounced,
-    setFilters,
-  }
   const someValuesAreInvalid = filter.validities?.some(
     validity => validity === false
   )
-  const [startDate, setStartDate] = useState<string | undefined>(
-    filter.values?.[0]
-  )
-  const [endDate, setEndDate] = useState<string | undefined>(filter.values?.[1])
+  const [startDate, setStartDate] = useState<string>(filter.values[0])
+  const [endDate, setEndDate] = useState<string>(filter.values[1])
 
-  const isDateValid = (dateStr?: string) => {
-    if (!dateStr) return undefined
+  const isDateValid = (dateStr: string) => {
+    if (!dateStr) return true
     if (dateMin) if (dateStr < dateMin) return false
     if (dateMax) if (dateStr > dateMax) return false
     return true
   }
 
-  const updateDateFilter = (
-    newStartDate: string | undefined,
-    newEndDate: string | undefined
-  ) => {
+  const updateDateFilter = (newStartDate: string, newEndDate: string) => {
     const newDates = [newStartDate, newEndDate]
     const bothDatesValid = isDateValid(newStartDate) && isDateValid(newEndDate)
     // Update immediately if both dates are valid, debounce otherwise
@@ -175,8 +157,8 @@ const DateFilterInputs = ({
         <DateLabel>
           <span>From</span>
           <DateInput
-            {...dateInputProps}
-            initialValue={filter.values?.[0]}
+            dateMin={dateMin}
+            dateMax={dateMax}
             ariaLabel={'Collected on this date or later'}
             setValue={setStartDate}
             value={startDate}
@@ -185,11 +167,11 @@ const DateFilterInputs = ({
         <DateLabel>
           <span>To</span>
           <DateInput
-            {...dateInputProps}
-            initialValue={filter.values?.[1]}
-            ariaLabel={'Collected on this date or earlier'}
-            setValue={setEndDate}
             value={endDate}
+            setValue={setEndDate}
+            dateMin={dateMin}
+            dateMax={dateMax}
+            ariaLabel={'Collected on this date or earlier'}
           />
         </DateLabel>
         <FilterDeleteButton filter={filter} setFilters={setFilters} />
@@ -216,26 +198,16 @@ const DateInput = ({
   setValue,
   value,
   ariaLabel,
-  initialValue,
 }: {
   dateMin?: string
   dateMax?: string
-  setValue: Dispatch<SetStateAction<string | undefined>>
-  value: string | undefined
+  setValue: Dispatch<SetStateAction<string>>
+  value: string
   ariaLabel?: string
-  initialValue?: string
 }) => {
-  const inputRef = useRef<HTMLInputElement>(null)
-  useEffect(() => {
-    if (inputRef.current && initialValue) {
-      inputRef.current.value = initialValue
-    }
-  }, [inputRef, initialValue])
-
   return (
     <div>
       <DateInputStyled
-        ref={inputRef}
         type={'date'}
         aria-label={ariaLabel}
         min={dateMin}
