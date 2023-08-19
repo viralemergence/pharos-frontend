@@ -139,7 +139,6 @@ const DateFilterInputs = ({
   const [endDate, setEndDate] = useState<string | undefined>(filter.values?.[1])
 
   const isDateValid = (dateStr?: string) => {
-    console.log('checking validity of dateStr', dateStr)
     if (!dateStr) return undefined
     if (dateMin) if (dateStr < dateMin) return false
     if (dateMax) if (dateStr > dateMax) return false
