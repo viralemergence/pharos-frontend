@@ -207,6 +207,9 @@ const DateFilterInputs = ({
   )
 }
 
+// TODO: Use null, not undefined. Then controlled inputs will remain controlled
+// throughout their lifetime
+
 const DateInput = ({
   dateMin,
   dateMax,
