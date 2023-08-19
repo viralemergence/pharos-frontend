@@ -179,6 +179,7 @@ const DateFilterInputs = ({
             initialValue={filter.values?.[0]}
             ariaLabel={'Collected on this date or later'}
             setValue={setStartDate}
+            value={startDate}
           />
         </DateLabel>
         <DateLabel>
@@ -188,6 +189,7 @@ const DateFilterInputs = ({
             initialValue={filter.values?.[1]}
             ariaLabel={'Collected on this date or earlier'}
             setValue={setEndDate}
+            value={endDate}
           />
         </DateLabel>
         <FilterDeleteButton filter={filter} setFilters={setFilters} />
@@ -205,21 +207,21 @@ const DateFilterInputs = ({
   )
 }
 
-type DateInputProps = {
-  dateMin?: string
-  dateMax?: string
-  setValue: Dispatch<SetStateAction<string | undefined>>
-  ariaLabel?: string
-  initialValue?: string
-}
-
 const DateInput = ({
   dateMin,
   dateMax,
   setValue,
+  value,
   ariaLabel,
   initialValue,
-}: DateInputProps) => {
+}: {
+  dateMin?: string
+  dateMax?: string
+  setValue: Dispatch<SetStateAction<string | undefined>>
+  value: string | undefined
+  ariaLabel?: string
+  initialValue?: string
+}) => {
   const inputRef = useRef<HTMLInputElement>(null)
   useEffect(() => {
     if (inputRef.current && initialValue) {
@@ -235,6 +237,7 @@ const DateInput = ({
         aria-label={ariaLabel}
         min={dateMin}
         max={dateMax}
+        value={value}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           setValue(e.target.value)
         }}
