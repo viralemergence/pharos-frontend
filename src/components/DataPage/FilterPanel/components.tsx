@@ -1,4 +1,10 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import debounce from 'lodash/debounce'
 import type { Filter } from 'pages/data'
 import {
@@ -152,29 +158,43 @@ const DateRange = ({
     updateDateFilter(!isDateValid(endDate))
   }, [endDate])
 
+  const StartDateInput = useMemo(
+    () => (
+      <DateInput
+        value={startDate}
+        setValue={setStartDate}
+        ariaLabel={'Collected on this date or later'}
+        dateMin={dateMin}
+        dateMax={dateMax}
+      />
+    ),
+    [startDate, dateMin, dateMax]
+  )
+
+  const EndDateInput = useMemo(
+    () => (
+      <DateInput
+        value={endDate}
+        setValue={setEndDate}
+        ariaLabel={'Collected on this date or later'}
+        dateMin={dateMin}
+        dateMax={dateMax}
+      />
+    ),
+    [endDate, dateMin, dateMax]
+  )
+
   return (
     <FilterLabel>
       <FieldName>{filter.label}</FieldName>
       <DateInputRow>
         <DateLabel>
           <span>From</span>
-          <DateInput
-            value={startDate}
-            setValue={setStartDate}
-            ariaLabel={'Collected on this date or later'}
-            dateMin={dateMin}
-            dateMax={dateMax}
-          />
+          <StartDateInput />
         </DateLabel>
         <DateLabel>
           <span>To</span>
-          <DateInput
-            value={endDate}
-            setValue={setEndDate}
-            dateMin={dateMin}
-            dateMax={dateMax}
-            ariaLabel={'Collected on this date or earlier'}
-          />
+          <EndDateInput />
         </DateLabel>
         <FilterDeleteButton filter={filter} setFilters={setFilters} />
       </DateInputRow>
@@ -204,6 +224,7 @@ const DateInput = ({
   value: string
   ariaLabel?: string
 }) => {
+  console.log('dateinput rendered with aria-label', ariaLabel)
   return (
     <div>
       <DateInputStyled
