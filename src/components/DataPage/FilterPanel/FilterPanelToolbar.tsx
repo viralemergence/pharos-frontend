@@ -160,7 +160,7 @@ const FilterPanelToolbar = ({
                     panelIndex: highestPanelIndex + 1,
                   }
                   if (newlyAddedFilter.type === 'date') {
-                    newlyAddedFilter.validities = [undefined, undefined]
+                    newlyAddedFilter.validities = [true, true]
                   }
                   return newlyAddedFilter
                 })
