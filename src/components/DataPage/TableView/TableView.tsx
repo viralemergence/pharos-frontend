@@ -117,6 +117,10 @@ const rowKeyGetter = (row: Row) => row.pharosID
 
 export type LoadingState = false | 'appending' | 'replacing'
 
+const filterHasRealValues = (filter: Filter) =>
+  filter.values.filter(value => value !== null && value !== undefined).length >
+  0
+
 const TableView = ({
   filters,
   setFilters,
@@ -137,9 +141,13 @@ const TableView = ({
   // This is used as a dependency in a useEffect hook below
   const stringifiedFiltersWithValues = JSON.stringify(
     addedFilters
-      .filter(f => f.values?.length)
+      .filter(filterHasRealValues)
       .map(({ id, values }) => ({ id, values }))
   )
+
+  console.log(addedFilters)
+
+  console.log(stringifiedFiltersWithValues)
 
   /** This ref ensures that if the GET request that just finished is not the
    * latest GET request for published records, then the response is discarded.
@@ -167,8 +175,11 @@ const TableView = ({
   // Load the first page of results when TableView mounts or when the filters'
   // values have changed
   useEffect(() => {
+    console.log('loading debounced')
     loadDebounced({ ...loadOptions, replaceRecords: true })
   }, [stringifiedFiltersWithValues])
+
+  console.log('stringifiedFiltersWithValues', stringifiedFiltersWithValues)
 
   useEffect(() => {
     return () => {
@@ -219,6 +230,7 @@ const TableView = ({
   const initialLoadHasOccurredRef = useRef(false)
   // When records finish loading, remove the 'Loading...' indicator
   useEffect(() => {
+    console.log('records changed')
     if (initialLoadHasOccurredRef.current || records.length > 0) {
       setLoading(false)
     }
