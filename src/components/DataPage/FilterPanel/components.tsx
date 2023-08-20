@@ -97,8 +97,7 @@ const DateFilterInputs = ({
 }) => {
   const updateFilterDebounced = debounce(
     updateFilter,
-    dateFilterUpdateDelayInMilliseconds,
-    { leading: true, trailing: true }
+    dateFilterUpdateDelayInMilliseconds
   )
 
   useEffect(() => {
@@ -130,25 +129,27 @@ const DateFilterInputs = ({
     return true
   }
 
-  const updateDateFilter = (newStartDate: string, newEndDate: string) => {
-    const newDates = [newStartDate, newEndDate]
-    const bothDatesValid = isDateValid(newStartDate) && isDateValid(newEndDate)
-    // Update immediately if both dates are valid, debounce otherwise
-    if (bothDatesValid) {
-      updateFilter(filter.id, newDates, isDateValid)
-      updateFilterDebounced.cancel()
-    } else {
+  const updateDateFilter = (shouldDebounce: boolean) => {
+    const newDates = [startDate, endDate]
+    if (shouldDebounce) {
       // When marking a date as invalid, debounce so that the field isn't
       // eagerly marked invalid as the user begins to type a valid date.
       // Check the validity again in the callback to avoid using a stale
       // value.
       updateFilterDebounced(filter.id, newDates, isDateValid)
+    } else {
+      updateFilter(filter.id, newDates, isDateValid)
+      updateFilterDebounced.cancel()
     }
   }
 
   useEffect(() => {
-    updateDateFilter(startDate, endDate)
-  }, [startDate, endDate])
+    updateDateFilter(!isDateValid(startDate))
+  }, [startDate])
+
+  useEffect(() => {
+    updateDateFilter(!isDateValid(endDate))
+  }, [endDate])
 
   return (
     <FilterLabel>
