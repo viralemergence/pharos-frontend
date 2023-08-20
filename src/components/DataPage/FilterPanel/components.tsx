@@ -95,6 +95,7 @@ const DateRange = ({
   updateFilter: UpdateFilterFunction
   setFilters: Dispatch<SetStateAction<Filter[]>>
 }) => {
+  console.log('date range rendered')
   const updateFilterDebounced = debounce(
     updateFilter,
     dateFilterUpdateDelayInMilliseconds
@@ -158,11 +159,11 @@ const DateRange = ({
         <DateLabel>
           <span>From</span>
           <DateInput
+            value={startDate}
+            setValue={setStartDate}
+            ariaLabel={'Collected on this date or later'}
             dateMin={dateMin}
             dateMax={dateMax}
-            ariaLabel={'Collected on this date or later'}
-            setValue={setStartDate}
-            value={startDate}
           />
         </DateLabel>
         <DateLabel>
