@@ -34,7 +34,7 @@ const TableContainer = styled.div`
   display: flex;
   flex-flow: column nowrap;
 `
-const FillDatasetGrid = styled(DataGrid)<{ isFilterPanelOpen: boolean }>`
+const DataGridStyled = styled(DataGrid)<{ isFilterPanelOpen: boolean }>`
   --rdg-border-color: ${({ theme }) => transparentize(0.7, theme.medGray)};
   --rdg-background-color: ${({ theme }) => theme.mutedPurple1};
   --rdg-header-background-color: ${({ theme }) => theme.mutedPurple3};
@@ -86,7 +86,7 @@ const LoadingMessage = styled.div`
   gap: 10px;
   z-index: 100; // Above filter panel
 `
-const NoRecordsFound = styled.div`
+const NoRecordsFoundMessage = styled.div`
   ${({ theme }) => theme.bigParagraphSemibold};
   color: ${({ theme }) => theme.white};
   background-color: ${({ theme }) => transparentize(0.6, theme.black)};
@@ -115,7 +115,7 @@ const divIsScrolledToBottom = (div: HTMLDivElement) =>
 
 const rowKeyGetter = (row: Row) => row.pharosID
 
-export type LoadingState = false | 'appending' | 'replacing'
+export type LoadingState = 'done' | 'appending' | 'replacing'
 
 const filterHasRealValues = (filter: Filter) =>
   filter.values.filter(value => value !== null && value !== undefined).length >
@@ -137,17 +137,6 @@ const TableView = ({
 
   /** Filters that have been applied to the table */
   const appliedFilters = filters.filter(f => f.applied)
-
-  // This is used as a dependency in a useEffect hook below
-  const stringifiedFiltersWithValues = JSON.stringify(
-    addedFilters
-      .filter(filterHasRealValues)
-      .map(({ id, values }) => ({ id, values }))
-  )
-
-  console.log(addedFilters)
-
-  console.log(stringifiedFiltersWithValues)
 
   /** This ref ensures that if the GET request that just finished is not the
    * latest GET request for published records, then the response is discarded.
@@ -172,14 +161,18 @@ const TableView = ({
     setRecords,
   }
 
-  // Load the first page of results when TableView mounts or when the filters'
-  // values have changed
-  useEffect(() => {
-    console.log('loading debounced')
-    loadDebounced({ ...loadOptions, replaceRecords: true })
-  }, [stringifiedFiltersWithValues])
+  // This is used as a dependency in a useEffect hook below
+  const filtersWithRealValuesAsString = JSON.stringify(
+    addedFilters
+      .filter(filterHasRealValues)
+      .map(({ id, values }) => ({ id, values }))
+  )
 
-  console.log('stringifiedFiltersWithValues', stringifiedFiltersWithValues)
+  // Load the first page of results, both when TableView mounts and also when
+  // the filters' values have changed
+  useEffect(() => {
+    loadDebounced({ ...loadOptions, replaceRecords: true })
+  }, [filtersWithRealValuesAsString])
 
   useEffect(() => {
     return () => {
@@ -220,7 +213,7 @@ const TableView = ({
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     if (
-      !loading &&
+      loading == 'done' &&
       !reachedLastPage &&
       divIsScrolledToBottom(event.currentTarget)
     )
@@ -230,9 +223,8 @@ const TableView = ({
   const initialLoadHasOccurredRef = useRef(false)
   // When records finish loading, remove the 'Loading...' indicator
   useEffect(() => {
-    console.log('records changed')
     if (initialLoadHasOccurredRef.current || records.length > 0) {
-      setLoading(false)
+      setLoading('done')
     }
 
     if (records.length > 0) {
@@ -255,15 +247,17 @@ const TableView = ({
   return (
     <TableViewContainer isOpen={isOpen} isFilterPanelOpen={isFilterPanelOpen}>
       <TableContainer>
-        {!loading && records.length === 0 && appliedFilters.length > 0 && (
-          <NoRecordsFound role="status">
-            No matching records found.
-          </NoRecordsFound>
-        )}
+        {loading == 'done' &&
+          records.length === 0 &&
+          appliedFilters.length > 0 && (
+            <NoRecordsFoundMessage role="status">
+              No matching records found.
+            </NoRecordsFoundMessage>
+          )}
         {records.length > 0 && (
           // @ts-expect-error: I'm copying this from the docs, but it doesn't
           // look like their type definitions work
-          <FillDatasetGrid
+          <DataGridStyled
             className={'rdg-dark'}
             columns={columns}
             rows={records}
@@ -277,7 +271,7 @@ const TableView = ({
             isFilterPanelOpen={isFilterPanelOpen}
           />
         )}
-        {loading && (
+        {loading !== 'done' && (
           <LoadingMessage>
             <LoadingSpinner /> Loading {loading === 'appending' && ' more rows'}
           </LoadingMessage>

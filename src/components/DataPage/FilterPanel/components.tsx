@@ -75,7 +75,7 @@ export const FilterListItem = ({
         </FilterUIContainerForTypeahead>
       ) : (
         <FilterUIContainer hasTooltip={hasTooltip}>
-          <DateFilterInputs
+          <DateRange
             filter={filter}
             updateFilter={updateFilter}
             setFilters={setFilters}
@@ -86,7 +86,7 @@ export const FilterListItem = ({
   )
 }
 
-const DateFilterInputs = ({
+const DateRange = ({
   filter,
   updateFilter,
   setFilters,

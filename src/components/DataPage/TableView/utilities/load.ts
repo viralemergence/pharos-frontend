@@ -87,7 +87,7 @@ export const load = async ({
       }))
     })
   } else {
-    setLoading(false)
+    setLoading('done')
   }
 }
 
