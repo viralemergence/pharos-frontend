@@ -176,7 +176,6 @@ const DateRange = ({
           <span>From</span>
           <DateInput
             filter={startDateFilter}
-            initialValue={startDateFilter.values[0]}
             updateDateFilter={updateDateFilter}
             ariaLabel={'Collected on this date or later'}
             dateMin={dateMin}
