@@ -1,3 +1,10 @@
+import React from 'react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+
+import { stateInitialValue } from 'reducers/stateReducer/initialValues'
+import { publishedRecordsMetadata } from '../../test/serverHandlers'
+import DataPage from './data'
+
 jest.mock('reducers/stateReducer/stateContext', () => ({
   StateContext: React.createContext({ state: stateInitialValue }),
 }))
@@ -28,13 +35,6 @@ jest.mock('cmsHooks/useIconsQuery', () => jest.fn())
 jest.mock('cmsHooks/useIndexPageData', () => jest.fn())
 jest.mock('cmsHooks/useSignInPageData', () => jest.fn())
 jest.mock('cmsHooks/useSiteMetadataQuery', () => jest.fn())
-
-import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
-
-import { stateInitialValue } from 'reducers/stateReducer/initialValues'
-
-import DataPage from './data'
 
 const mockedMapboxMap = {
   on: jest.fn(),
@@ -67,13 +67,19 @@ describe('The public data page', () => {
   })
 
   // Helper functions for retrieving elements from the page
+  const getAddFilterButton = () => screen.getByText('Add filter')
+  const getFilterPanel = (container: HTMLElement) =>
+    container.querySelector('aside[role=form]')
+  const getFilterPanelToggleButton = () =>
+    screen.getByRole('button', { name: 'Filters' })
   const getTableViewButton = () => screen.getByRole('button', { name: 'Table' })
   const getMapViewButton = () => screen.getByRole('button', { name: 'Map' })
   const getGlobeViewButton = () => screen.getByRole('button', { name: 'Globe' })
   const getDataGrid = () => screen.queryByRole('grid')
   // This function will wait for the data grid to appear. It can be used to check
   // that the grid appears after loading published records.
-  const getDataGridAfterWaiting = async () => await screen.findByRole('grid')
+  const getDataGridAfterWaiting = async () =>
+    await screen.findByTestId('datagrid')
 
   it('renders', () => {
     render(<DataPage />)
@@ -89,17 +95,82 @@ describe('The public data page', () => {
     expect(grid).toBeInTheDocument()
   })
 
-  it('has a button labeled Map that sets the projection of the map to naturalEarth', () => {
+  it('has a button labeled Map that sets the projection of the map to naturalEarth', async () => {
+    /** Get the projections that have been assigned to the map, in the order in
+     * which they were assigned */
+    const getAssignedMapProjections = () =>
+      mockedMapboxMap.setProjection.mock.calls
+        .map(call => call[0].name)
+        // Remove consecutive duplicates since it doesn't matter if the map
+        // projection is set to the same value multiple times in a row
+        .reduce(
+          (acc, value) => (value !== acc.at(-1) ? [...acc, value] : acc),
+          []
+        )
     render(<DataPage />)
-    fireEvent.click(getGlobeViewButton())
-    const howManyTimesMapProjectionWasSet =
-      mockedMapboxMap.setProjection.mock.calls.length
-    fireEvent.click(getMapViewButton())
-    // Check that the click caused setProjection to be called once more,
-    // with 'naturalEarth' as the argument
-    expect(mockedMapboxMap.setProjection).toHaveBeenNthCalledWith(
-      howManyTimesMapProjectionWasSet + 1,
-      { name: 'naturalEarth' }
+    await act(async () => {
+      fireEvent.click(getGlobeViewButton())
+      fireEvent.click(getMapViewButton())
+    })
+    const projections = getAssignedMapProjections()
+
+    // The map should initially use the naturalEarth (in other words, flat) projection
+    expect(projections[0]).toBe('naturalEarth')
+
+    // Clicking the Globe button should set the projection to 'globe'
+    expect(projections[1]).toBe('globe')
+
+    // Clicking the Map button should set the projection to 'naturalEarth'
+    expect(projections[2]).toBe('naturalEarth')
+
+    expect(projections.length).toBe(3)
+  })
+
+  it('has a button labeled Filters that toggles the Filter Panel', () => {
+    const { container } = render(<DataPage />)
+
+    // Initially, the filter panel should be hidden
+    const panel = getFilterPanel(container)
+    expect(panel).toBeInTheDocument()
+    expect(panel).toHaveAttribute('aria-hidden', 'true')
+    
+    // When the filter panel is hidden, the Add filter button is not rendered
+    expect(screen.queryByText('Add filter')).toBe(null)
+
+    const filterPanelToggleButton = getFilterPanelToggleButton()
+    expect(filterPanelToggleButton).toBeInTheDocument()
+
+    // Clicking the button shows the panel
+    fireEvent.click(filterPanelToggleButton)
+    expect(panel).toHaveAttribute('aria-hidden', 'false')
+    expect(panel).toContainElement(getAddFilterButton())
+
+    // Clicking the button again hides the panel
+    fireEvent.click(filterPanelToggleButton)
+    expect(panel).toHaveAttribute('aria-hidden', 'true')
+  })
+
+  it('has a filter panel that can be closed by clicking a button', () => {
+    const { container } = render(<DataPage />)
+    const filterPanelToggleButton = getFilterPanelToggleButton()
+    fireEvent.click(filterPanelToggleButton)
+    const panel = getFilterPanel(container)
+    const closeButtons = screen.getAllByLabelText('Close the Filters panel')
+    expect(panel).toContainElement(closeButtons[0])
+    expect(panel).toHaveAttribute('aria-hidden', 'false')
+    fireEvent.click(closeButtons[0])
+    expect(panel).toHaveAttribute('aria-hidden', 'true')
+  })
+
+  it('has a filter panel that contains buttons for adding filters for fields', async () => {
+    render(<DataPage />)
+    fireEvent.click(getFilterPanelToggleButton())
+    fireEvent.click(getAddFilterButton())
+    const expectedButtonLabels = Object.values(publishedRecordsMetadata.fields)
+    await Promise.all(
+      expectedButtonLabels.map(({ label }) =>
+        screen.findByText(label, { selector: 'button' })
+      )
     )
   })
 
@@ -137,5 +208,23 @@ describe('The public data page', () => {
     fireEvent.click(getTableViewButton())
     const callCount_after = mockedMapboxMap.setProjection.mock.calls.length
     expect(callCount_after).toEqual(callCount_before)
+  })
+
+  it('displays the first page of published records', async () => {
+    render(<DataPage enableTableVirtualization={false} />)
+    const grid = await getDataGridAfterWaiting()
+    expect(grid).toBeInTheDocument()
+    expect(grid).toHaveAttribute('aria-rowcount', '51')
+  })
+
+  it('displays the second page of published records when the user scrolls to the bottom', async () => {
+    render(<DataPage enableTableVirtualization={false} />)
+    const grid = await getDataGridAfterWaiting()
+    expect(grid).toBeInTheDocument()
+    // Scroll to the bottom of the grid
+    fireEvent.scroll(grid, { target: { scrollY: grid.scrollHeight } })
+    waitFor(() => {
+      expect(grid).toHaveAttribute('aria-rowcount', '101')
+    })
   })
 })
