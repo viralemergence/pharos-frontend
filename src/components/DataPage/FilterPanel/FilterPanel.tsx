@@ -2,12 +2,11 @@ import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react'
 import type { Filter } from 'pages/data'
 import { FilterPanelStyled, ListOfAddedFilters } from './DisplayComponents'
 import FilterPanelToolbar from './FilterPanelToolbar'
-import { FilterListItem } from './components'
+import { DateRangeFilterListItem, TypeaheadFilterListItem } from './components'
 
 export type UpdateFilterFunction = (updateFilterOptions: {
   id: string
-  newValues?: string[]
-  valuesUpdateFunction?: (prev: string[]) => string[]
+  newValues: string[]
   isDateValid?: (dateStr: string) => boolean
 }) => void
 
@@ -32,18 +31,14 @@ const FilterPanel = ({
   const updateFilter: UpdateFilterFunction = ({
     id,
     newValues = [],
-    valuesUpdateFunction,
     isDateValid,
   }) => {
     setFilters(prev => {
       return prev.map((filter: Filter) => {
         if (filter.id !== id) return filter
-        if (valuesUpdateFunction) {
-          newValues = valuesUpdateFunction(filter.values)
-        }
         const updatedFilter = { ...filter, values: newValues }
         if (isDateValid) {
-          updatedFilter.validities = newValues.map(isDateValid)
+          updatedFilter.valid = newValues.every(value => isDateValid(value))
         }
         return updatedFilter
       })
@@ -78,14 +73,31 @@ const FilterPanel = ({
             setFilters={setFilters}
           />
           <ListOfAddedFilters ref={filterListRef}>
-            {addedFilters.map(filter => (
-              <FilterListItem
-                filter={filter}
-                updateFilter={updateFilter}
-                setFilters={setFilters}
-                key={filter.id}
-              />
-            ))}
+            {addedFilters.map(filter => {
+              if (filter.id === 'collection_start_date') {
+                return (
+                  <DateRangeFilterListItem
+                    startDateFilter={filter}
+                    endDateFilter={
+                      filters.find(f => f.id === 'collection_end_date')!
+                    }
+                    updateFilter={updateFilter}
+                    setFilters={setFilters}
+                    key={filter.id}
+                  />
+                )
+              }
+              if (filter.type === 'text') {
+                return (
+                  <TypeaheadFilterListItem
+                    filter={filter}
+                    updateFilter={updateFilter}
+                    setFilters={setFilters}
+                    key={filter.id}
+                  />
+                )
+              }
+            })}
           </ListOfAddedFilters>
         </>
       )}

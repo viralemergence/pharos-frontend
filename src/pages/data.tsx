@@ -47,10 +47,7 @@ export type Filter = {
    * appears among the published records. Only date filters have this property.
    * */
   latestDateInDatabase?: string
-  /** For example, if a date filter has a valid start date and an invalid end
-   * date, validities will be [true, false]. If an input has no value its
-   * validity will be true. */
-  validities?: boolean[]
+  valid: boolean
 }
 
 const METADATA_URL = `${process.env.GATSBY_API_URL}/metadata-for-published-records`

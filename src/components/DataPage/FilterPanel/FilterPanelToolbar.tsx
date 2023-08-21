@@ -164,8 +164,6 @@ const FilterPanelToolbar = ({
                         addedToPanel: true,
                         values: [],
                         panelIndex: highestPanelIndex + 1,
-                        validities:
-                          f.type === 'date' ? [true, true] : undefined,
                       }
                     : f
                 )
@@ -202,8 +200,7 @@ export const filterDefaultProperties = {
    * (zero or greater), indicating its order in the panel. */
   panelIndex: -1,
   applied: false,
-  validities: undefined,
+  valid: true,
 }
 
-export default FilterPanelToolbar
 export default FilterPanelToolbar

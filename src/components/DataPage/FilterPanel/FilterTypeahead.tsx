@@ -158,7 +158,10 @@ const FilterTypeahead = ({
           resultsMaxHeight="300px"
           inputId={typeaheadInputId}
         />
-        <FilterDeleteButton filter={filter} setFilters={setFilters} />
+        <FilterDeleteButton
+          filtersToDelete={[filter]}
+          setFilters={setFilters}
+        />
       </TypeaheadContainer>
       {values.length > 0 && (
         <SelectedTypeaheadValues>
