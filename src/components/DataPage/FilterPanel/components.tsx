@@ -1,10 +1,4 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import debounce from 'lodash/debounce'
 import type { Filter } from 'pages/data'
 import {
@@ -21,11 +15,6 @@ import {
   FilterUIContainerForTypeahead,
   XIcon,
 } from './DisplayComponents'
-
-interface DebouncedFunc<T extends (...args: any[]) => any> extends Function {
-  (...args: Parameters<T>): ReturnType<T>
-  cancel: () => void
-}
 
 import FilterTypeahead from './FilterTypeahead'
 import { removeOneFilter } from './FilterPanelToolbar'
@@ -166,12 +155,12 @@ const DateRange = ({
     const updateOptions = {
       id: filterId,
       newValues: [dateStr],
+      // Check the validity in the callback to avoid using a stale value.
+      isDateValid: (dateStr: string) => isDateValid(dateStr, dateMin, dateMax),
     }
     if (shouldDebounce) {
       // When marking a date as invalid, debounce so that the field isn't
       // eagerly marked invalid as the user begins to type a valid date.
-      // Check the validity again in the callback to avoid using a stale
-      // value.
       updateFilterDebounced(updateOptions)
     } else {
       updateFilter(updateOptions)
@@ -213,8 +202,8 @@ const DateRange = ({
         dateMin &&
         dateMax && (
           <DateTooltip
-            isStartDateInvalid={startDateFilter.valid}
-            isEndDateInvalid={endDateFilter.valid}
+            isStartDateInvalid={!startDateFilter.valid}
+            isEndDateInvalid={!endDateFilter.valid}
           >
             Dates must be between {localizeDate(dateMin)} and{' '}
             {localizeDate(dateMax)}

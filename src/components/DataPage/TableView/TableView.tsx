@@ -118,8 +118,9 @@ const rowKeyGetter = (row: Row) => row.pharosID
 export type LoadingState = 'done' | 'appending' | 'replacing'
 
 const filterHasRealValues = (filter: Filter) =>
+  filter.valid &&
   filter.values.filter(value => value !== null && value !== undefined).length >
-  0
+    0
 
 const TableView = ({
   filters,

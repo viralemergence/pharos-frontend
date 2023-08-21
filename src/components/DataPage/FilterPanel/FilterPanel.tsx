@@ -37,7 +37,7 @@ const FilterPanel = ({
       return prev.map((filter: Filter) => {
         if (filter.id !== id) return filter
         const updatedFilter = { ...filter, values: newValues }
-        if (isDateValid) {
+        if (isDateValid !== undefined) {
           updatedFilter.valid = newValues.every(value => isDateValid(value))
         }
         return updatedFilter
