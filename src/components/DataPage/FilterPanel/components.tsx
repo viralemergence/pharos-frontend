@@ -1,11 +1,12 @@
 import React, {
   Dispatch,
   SetStateAction,
+  memo,
   useEffect,
-  useMemo,
   useState,
 } from 'react'
 import debounce from 'lodash/debounce'
+import isEqual from 'lodash/isEqual'
 import type { Filter } from 'pages/data'
 import {
   DateInputRow,
@@ -155,34 +156,9 @@ const DateRange = ({
   }, [startDate])
 
   useEffect(() => {
+    console.log('end date changed')
     updateDateFilter(!isDateValid(endDate))
   }, [endDate])
-
-  const StartDateInput = useMemo(
-    () => (
-      <DateInput
-        value={startDate}
-        setValue={setStartDate}
-        ariaLabel={'Collected on this date or later'}
-        dateMin={dateMin}
-        dateMax={dateMax}
-      />
-    ),
-    [startDate, dateMin, dateMax]
-  )
-
-  const EndDateInput = useMemo(
-    () => (
-      <DateInput
-        value={endDate}
-        setValue={setEndDate}
-        ariaLabel={'Collected on this date or later'}
-        dateMin={dateMin}
-        dateMax={dateMax}
-      />
-    ),
-    [endDate, dateMin, dateMax]
-  )
 
   return (
     <FilterLabel>
@@ -190,11 +166,23 @@ const DateRange = ({
       <DateInputRow>
         <DateLabel>
           <span>From</span>
-          <StartDateInput />
+          <DateInput
+            value={startDate}
+            setValue={setStartDate}
+            ariaLabel={'Collected on this date or later'}
+            dateMin={dateMin}
+            dateMax={dateMax}
+          />
         </DateLabel>
         <DateLabel>
           <span>To</span>
-          <EndDateInput />
+          <DateInput
+            value={endDate}
+            setValue={setEndDate}
+            dateMin={dateMin}
+            dateMax={dateMax}
+            ariaLabel={'Collected on this date or earlier'}
+          />
         </DateLabel>
         <FilterDeleteButton filter={filter} setFilters={setFilters} />
       </DateInputRow>
@@ -211,32 +199,41 @@ const DateRange = ({
   )
 }
 
-const DateInput = ({
-  dateMin,
-  dateMax,
-  setValue,
-  value,
-  ariaLabel,
-}: {
+type DateInputProps = {
   dateMin?: string
   dateMax?: string
   setValue: Dispatch<SetStateAction<string>>
   value: string
   ariaLabel?: string
-}) => {
-  console.log('dateinput rendered with aria-label', ariaLabel)
-  return (
-    <div>
-      <DateInputStyled
-        type={'date'}
-        aria-label={ariaLabel}
-        min={dateMin}
-        max={dateMax}
-        value={value}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          setValue(e.target.value)
-        }}
-      />
-    </div>
+}
+
+const dateInputUnchanged = (
+  prevProps: DateInputProps,
+  nextProps: DateInputProps
+) => {
+  return isEqual(
+    { ...prevProps, setValue: null },
+    { ...nextProps, setValue: null }
   )
 }
+
+const DateInput = memo(
+  ({ dateMin, dateMax, setValue, value, ariaLabel }: DateInputProps) => {
+    console.log('dateinput rendered with aria-label', ariaLabel)
+    return (
+      <div>
+        <DateInputStyled
+          type={'date'}
+          aria-label={ariaLabel}
+          min={dateMin}
+          max={dateMax}
+          value={value}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            setValue(e.target.value)
+          }}
+        />
+      </div>
+    )
+  },
+  dateInputUnchanged
+)
