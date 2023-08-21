@@ -51,4 +51,46 @@ const FilterPanel = ({
   }
 
   // When a new filter is added, scroll the filter list to the bottom
+  /** The last time the number of added filters changed, how many there were */
+  const previousLengthOfAddedFilters = useRef(0)
+  useEffect(() => {
+    if (addedFilters.length > previousLengthOfAddedFilters.current) {
+      const filterList = filterListRef?.current
+      if (filterList) filterList.scrollTop = filterList.scrollHeight
+    }
+    previousLengthOfAddedFilters.current = addedFilters.length
+  }, [addedFilters.length])
 
+  return (
+    <FilterPanelStyled
+      open={isFilterPanelOpen}
+      role="form"
+      aria-hidden={isFilterPanelOpen ? 'false' : 'true'}
+      aria-label="Filters panel"
+      id="pharos-filter-panel" // The filter panel toggle button has aria-controls="pharos-filter-panel"
+    >
+      {isFilterPanelOpen && (
+        <>
+          <FilterPanelToolbar
+            isFilterPanelOpen={isFilterPanelOpen}
+            setIsFilterPanelOpen={setIsFilterPanelOpen}
+            filters={filters}
+            setFilters={setFilters}
+          />
+          <ListOfAddedFilters ref={filterListRef}>
+            {addedFilters.map(filter => (
+              <FilterListItem
+                filter={filter}
+                updateFilter={updateFilter}
+                setFilters={setFilters}
+                key={filter.id}
+              />
+            ))}
+          </ListOfAddedFilters>
+        </>
+      )}
+    </FilterPanelStyled>
+  )
+}
+
+export default FilterPanel
