@@ -22,9 +22,10 @@ const TableViewContainer = styled.div<{
   isFilterPanelOpen: boolean
 }>`
   display: ${({ isOpen }) => (isOpen ? 'grid' : 'none')};
+  display: grid;
   flex: 1;
-  pointer-events: auto;
   padding: 0 30px;
+  pointer-events: auto;
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
     padding: 0 10px;
   }
