@@ -18,9 +18,10 @@ import {
 } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 
 const TableViewContainer = styled.div<{
+  isOpen: boolean
   isFilterPanelOpen: boolean
 }>`
-  pointer-events: auto;
+  pointer-events: ${({ isOpen }) => (isOpen ? 'auto' : 'none')};
   display: grid;
   padding: 0 30px;
   flex: 1;
@@ -240,7 +241,7 @@ const TableView = ({
   }, [records])
 
   return (
-    <TableViewContainer isFilterPanelOpen={isFilterPanelOpen}>
+    <TableViewContainer isOpen={isOpen} isFilterPanelOpen={isFilterPanelOpen}>
       <TableContainer>
         {isOpen &&
           !loading &&
