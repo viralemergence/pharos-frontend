@@ -135,6 +135,7 @@ const FilterPanelToolbar = ({
         </FilterPanelCloseButtonWithBackIcon>
         <Dropdown
           open={isDropdownOpen}
+          expanderStyle={{ transform: 'translateX(-1px)' }}
           setOpen={setIsDropdownOpen}
           renderButton={(open: boolean) => (
             <FilterSelectorLauncher
