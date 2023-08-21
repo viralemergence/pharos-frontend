@@ -114,10 +114,7 @@ const FilterTypeahead = ({
   )
 
   const handleTypeaheadChange = (items: TypeaheadItem[]) => {
-    updateFilter(
-      filter.id,
-      items.map(({ label }) => label)
-    )
+    updateFilter({ id: filter.id, newValues: items.map(({ label }) => label) })
   }
   const addItem = (itemToAdd: TypeaheadItem) => {
     const itemAlreadyAdded = selectedItems

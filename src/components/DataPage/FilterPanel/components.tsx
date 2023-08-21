@@ -1,12 +1,11 @@
 import React, {
   Dispatch,
   SetStateAction,
-  memo,
+  useCallback,
   useEffect,
   useState,
 } from 'react'
 import debounce from 'lodash/debounce'
-import isEqual from 'lodash/isEqual'
 import type { Filter } from 'pages/data'
 import {
   DateInputRow,
@@ -22,6 +21,11 @@ import {
   FilterUIContainerForTypeahead,
   XIcon,
 } from './DisplayComponents'
+
+interface DebouncedFunc<T extends (...args: any[]) => any> extends Function {
+  (...args: Parameters<T>): ReturnType<T>
+  cancel: () => void
+}
 
 import FilterTypeahead from './FilterTypeahead'
 import { removeOneFilter } from './FilterPanelToolbar'
@@ -93,6 +97,50 @@ export const FilterListItem = ({
   )
 }
 
+type UpdateDateFilterFunction = (
+  filterId: string,
+  dateStr: string,
+  dateIndex: number,
+  dateMin: string,
+  dateMax: string,
+  updateFilter: UpdateFilterFunction,
+  updateFilterDebounced: DebouncedFunc<UpdateFilterFunction>
+) => void
+
+const isDateValid = (dateStr: string, dateMin: string, dateMax: string) => {
+  if (!dateStr) return true
+  if (dateMin) if (dateStr < dateMin) return false
+  if (dateMax) if (dateStr > dateMax) return false
+  return true
+}
+
+const updateDateFilter: UpdateDateFilterFunction = (
+  filterId,
+  dateStr,
+  dateIndex,
+  dateMin,
+  dateMax,
+  updateFilter,
+  updateFilterDebounced
+) => {
+  const shouldDebounce = !isDateValid(dateStr, dateMin, dateMax)
+  const updateOptions = {
+    id: filterId,
+    valuesUpdateFunction: (prevValues: string[]) =>
+      dateIndex === 0 ? [dateStr, prevValues[1]] : [prevValues[0], dateStr],
+  }
+  if (shouldDebounce) {
+    // When marking a date as invalid, debounce so that the field isn't
+    // eagerly marked invalid as the user begins to type a valid date.
+    // Check the validity again in the callback to avoid using a stale
+    // value.
+    updateFilterDebounced(updateOptions)
+  } else {
+    updateFilter(updateOptions)
+    updateFilterDebounced.cancel()
+  }
+}
+
 const DateRange = ({
   filter,
   updateFilter,
@@ -102,7 +150,6 @@ const DateRange = ({
   updateFilter: UpdateFilterFunction
   setFilters: Dispatch<SetStateAction<Filter[]>>
 }) => {
-  console.log('date range rendered')
   const updateFilterDebounced = debounce(
     updateFilter,
     dateFilterUpdateDelayInMilliseconds
@@ -127,38 +174,6 @@ const DateRange = ({
   const someValuesAreInvalid = filter.validities?.some(
     validity => validity === false
   )
-  const [startDate, setStartDate] = useState<string>(filter.values[0])
-  const [endDate, setEndDate] = useState<string>(filter.values[1])
-
-  const isDateValid = (dateStr: string) => {
-    if (!dateStr) return true
-    if (dateMin) if (dateStr < dateMin) return false
-    if (dateMax) if (dateStr > dateMax) return false
-    return true
-  }
-
-  const updateDateFilter = (shouldDebounce: boolean) => {
-    const newDates = [startDate, endDate]
-    if (shouldDebounce) {
-      // When marking a date as invalid, debounce so that the field isn't
-      // eagerly marked invalid as the user begins to type a valid date.
-      // Check the validity again in the callback to avoid using a stale
-      // value.
-      updateFilterDebounced(filter.id, newDates, isDateValid)
-    } else {
-      updateFilter(filter.id, newDates, isDateValid)
-      updateFilterDebounced.cancel()
-    }
-  }
-
-  useEffect(() => {
-    updateDateFilter(!isDateValid(startDate))
-  }, [startDate])
-
-  useEffect(() => {
-    console.log('end date changed')
-    updateDateFilter(!isDateValid(endDate))
-  }, [endDate])
 
   return (
     <FilterLabel>
@@ -167,21 +182,23 @@ const DateRange = ({
         <DateLabel>
           <span>From</span>
           <DateInput
-            value={startDate}
-            setValue={setStartDate}
+            initialValue={filter.values[0]}
+            updateDateFilter={updateDateFilter}
             ariaLabel={'Collected on this date or later'}
             dateMin={dateMin}
             dateMax={dateMax}
+            index={0}
           />
         </DateLabel>
         <DateLabel>
           <span>To</span>
           <DateInput
-            value={endDate}
-            setValue={setEndDate}
+            initialValue={filter.values[1]}
+            updateDateFilter={updateDateFilter}
+            ariaLabel={'Collected on this date or earlier'}
             dateMin={dateMin}
             dateMax={dateMax}
-            ariaLabel={'Collected on this date or earlier'}
+            index={1}
           />
         </DateLabel>
         <FilterDeleteButton filter={filter} setFilters={setFilters} />
@@ -202,38 +219,34 @@ const DateRange = ({
 type DateInputProps = {
   dateMin?: string
   dateMax?: string
-  setValue: Dispatch<SetStateAction<string>>
-  value: string
+  updateDateFilter: UpdateDateFilterFunction
+  initialValue?: string
   ariaLabel?: string
+  index: number
 }
 
-const dateInputUnchanged = (
-  prevProps: DateInputProps,
-  nextProps: DateInputProps
-) => {
-  return isEqual(
-    { ...prevProps, setValue: null },
-    { ...nextProps, setValue: null }
+const DateInput = ({
+  dateMin,
+  dateMax,
+  initialValue,
+  updateDateFilter,
+  ariaLabel,
+  index,
+}: DateInputProps) => {
+  const [value, setValue] = useState(initialValue)
+  return (
+    <div>
+      <DateInputStyled
+        type={'date'}
+        aria-label={ariaLabel}
+        min={dateMin}
+        max={dateMax}
+        value={value}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          setValue(value)
+          updateDateFilter(e.target.value, index)
+        }}
+      />
+    </div>
   )
 }
-
-const DateInput = memo(
-  ({ dateMin, dateMax, setValue, value, ariaLabel }: DateInputProps) => {
-    console.log('dateinput rendered with aria-label', ariaLabel)
-    return (
-      <div>
-        <DateInputStyled
-          type={'date'}
-          aria-label={ariaLabel}
-          min={dateMin}
-          max={dateMax}
-          value={value}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            setValue(e.target.value)
-          }}
-        />
-      </div>
-    )
-  },
-  dateInputUnchanged
-)
