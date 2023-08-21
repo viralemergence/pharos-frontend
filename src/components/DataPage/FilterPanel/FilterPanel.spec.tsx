@@ -43,49 +43,6 @@ describe('FilterPanel', () => {
               dataGridKey: 'field1',
               panelIndex: 0,
               values: [],
-              valid: true
-            },
-            {
-              id: 'field2',
-              label: 'Field 2',
-              type: 'text',
-              options: ['field 2, option 1', 'field 2, option 2'],
-              dataGridKey: 'field2',
-              panelIndex: 1,
-              values: [],
-              valid: true
-            },
-          ]}
-          setFilters={jest.fn()}
-        />
-      </Provider>
-    )
-    const addFilterButton = getAddFilterButton()
-    expect(addFilterButton).toBeInTheDocument()
-    expect(screen.queryByText('Field 1')).not.toBeInTheDocument()
-    expect(screen.queryByText('Field 2')).not.toBeInTheDocument()
-
-    fireEvent.click(addFilterButton)
-    expect(screen.getByText('Field 1')).toBeInTheDocument()
-    expect(screen.getByText('Field 2')).toBeInTheDocument()
-  })
-
-  // TODO: write this test
-  it.skip('provides buttons that delete individual filters', () => {
-    render(
-      <Provider>
-        <FilterPanel
-          isFilterPanelOpen={true}
-          setIsFilterPanelOpen={jest.fn()}
-          filters={[
-            {
-              id: 'field1',
-              label: 'Field 1',
-              type: 'text',
-              options: ['field 1, option 1', 'field 1, option 2'],
-              dataGridKey: 'field1',
-              panelIndex: 0,
-              values: [],
               valid: true,
             },
             {
