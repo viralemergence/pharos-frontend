@@ -37,26 +37,12 @@ export const load = async ({
   const idsOfAppliedFilters: string[] = []
   for (const filter of filters) {
     if (!filter.addedToPanel) continue
-    if (!filter.values) continue
-    let applyThisFilter = false
-    if (filter.id === 'collection_date') {
-      const [startDate, endDate] = filter.values
-      if (startDate && filter.validities?.[0] !== false) {
-        queryStringParameters.append('collection_start_date', startDate)
-        applyThisFilter = true
-      }
-      if (endDate && filter.validities?.[1] !== false) {
-        queryStringParameters.append('collection_end_date', endDate)
-        applyThisFilter = true
-      }
-    } else {
-      const validValues = filter.values.filter((value: string) => value)
-      for (const value of validValues) {
-        queryStringParameters.append(filter.id, value)
-        applyThisFilter = true
-      }
+    if (!filter.valid) continue
+    const validValues = filter.values.filter((value: string) => value)
+    for (const value of validValues) {
+      queryStringParameters.append(filter.id, value)
     }
-    if (applyThisFilter) idsOfAppliedFilters.push(filter.id)
+    if (validValues.length > 0) idsOfAppliedFilters.push(filter.id)
   }
 
   let pageToLoad
