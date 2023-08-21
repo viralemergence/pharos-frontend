@@ -210,12 +210,11 @@ describe('The public data page', () => {
       'Collected on this date or later'
     )
     expect(dateInput).toBeInTheDocument()
-    return
     fireEvent.click(getClearFiltersButton())
     expect(
       screen.queryByLabelText('Collected on this date or later')
     ).not.toBeInTheDocument()
-  }, 10000)
+  })
 
   it('lets the user add date fields to the panel', async () => {
     render(<DataPage />)
