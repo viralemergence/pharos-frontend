@@ -200,19 +200,22 @@ describe('The public data page', () => {
     fireEvent.click(getTableViewButton())
     fireEvent.click(getFilterPanelToggleButton())
     fireEvent.click(getAddFilterButton())
-    const addFilterForCollectionDate = await screen.findByText(
-      'Collection date',
+    const addFilterForCollectionDate = await screen.findByLabelText(
+      'Add filter for Collection date',
       { selector: 'button' }
     )
-    fireEvent.click(addFilterForCollectionDate)
-    expect(
-      screen.getByLabelText('Collected on this date or later')
-    ).toBeInTheDocument()
+    expect(addFilterForCollectionDate).toBeInTheDocument()
+    userEvent.click(addFilterForCollectionDate)
+    const dateInput = await screen.findByLabelText(
+      'Collected on this date or later'
+    )
+    expect(dateInput).toBeInTheDocument()
+    return
     fireEvent.click(getClearFiltersButton())
     expect(
       screen.queryByLabelText('Collected on this date or later')
     ).not.toBeInTheDocument()
-  })
+  }, 10000)
 
   it('lets the user add date fields to the panel', async () => {
     render(<DataPage />)

@@ -229,7 +229,7 @@ const DateInput = ({
   dateMin = '',
   dateMax = '',
 }: DateInputProps) => {
-  const [value, setValue] = useState(filter.values[0])
+  const [value, setValue] = useState(filter.values[0] || '')
 
   return (
     <div>
