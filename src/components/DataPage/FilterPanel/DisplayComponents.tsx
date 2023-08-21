@@ -68,6 +68,7 @@ export const DateLabel = styled.label`
   flex: 1;
   display: flex;
   flex-flow: column nowrap;
+  max-width: 196px;
   span {
     opacity: 0.7;
   }
@@ -321,8 +322,8 @@ export const DateInputStyled = styled.input`
   border: 1px solid ${({ theme }) => theme.white};
   color: ${({ theme }) => theme.white};
   font-weight: 400;
-  padding: 8px 10px;
   height: 45px;
+  padding: 8px 10px;
   &:invalid {
     border-color: ${({ theme }) => theme.red};
   }
