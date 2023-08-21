@@ -15,6 +15,7 @@ const SelectedTypeaheadValues = styled.ul`
   margin-top: 10px;
   list-style: none;
   padding: 0;
+  margin-right: 22px;
   display: flex;
   flex-flow: column nowrap;
   align-items: flex-start;

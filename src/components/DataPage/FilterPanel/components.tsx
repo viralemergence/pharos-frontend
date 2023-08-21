@@ -49,7 +49,7 @@ export const FilterDeleteButton = ({
   )
 }
 
-export const TypeaheadFilterListItem = ({
+export const TypeaheadFilterUI = ({
   filter,
   updateFilter,
   setFilters,
@@ -76,7 +76,7 @@ export const TypeaheadFilterListItem = ({
   )
 }
 
-export const DateRangeFilterListItem = ({
+export const DateRangeFilterUI = ({
   startDateFilter,
   endDateFilter,
   updateFilter,
@@ -231,18 +231,16 @@ const DateInput = ({
   const [value, setValue] = useState(filter.values[0] || '')
 
   return (
-    <div>
-      <DateInputStyled
-        type={'date'}
-        aria-label={ariaLabel}
-        min={dateMin}
-        max={dateMax}
-        value={value}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          setValue(e.target.value)
-          updateDateFilter(filter.id, e.target.value)
-        }}
-      />
-    </div>
+    <DateInputStyled
+      type={'date'}
+      aria-label={ariaLabel}
+      min={dateMin}
+      max={dateMax}
+      value={value}
+      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+        setValue(e.target.value)
+        updateDateFilter(filter.id, e.target.value)
+      }}
+    />
   )
 }
