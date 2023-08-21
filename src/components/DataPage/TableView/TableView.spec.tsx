@@ -51,6 +51,7 @@ describe('The public data table', () => {
     options: [],
     panelIndex: 0,
     values: [],
+    valid: true,
   }
 
   const dateFilterStartingMarch2020: Filter = {

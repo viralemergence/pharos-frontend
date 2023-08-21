@@ -43,6 +43,7 @@ describe('FilterPanel', () => {
               dataGridKey: 'field1',
               panelIndex: 0,
               values: [],
+              valid: true
             },
             {
               id: 'field2',
@@ -52,6 +53,7 @@ describe('FilterPanel', () => {
               dataGridKey: 'field2',
               panelIndex: 1,
               values: [],
+              valid: true
             },
           ]}
           setFilters={jest.fn()}
@@ -84,6 +86,7 @@ describe('FilterPanel', () => {
               dataGridKey: 'field1',
               panelIndex: 0,
               values: [],
+              valid: true,
             },
             {
               id: 'field2',
@@ -93,6 +96,7 @@ describe('FilterPanel', () => {
               dataGridKey: 'field2',
               panelIndex: 1,
               values: [],
+              valid: true,
             },
           ]}
           setFilters={jest.fn()}
