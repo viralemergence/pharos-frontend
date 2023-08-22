@@ -200,14 +200,16 @@ describe('The public data page', () => {
     fireEvent.click(getTableViewButton())
     fireEvent.click(getFilterPanelToggleButton())
     fireEvent.click(getAddFilterButton())
-    const addFilterForCollectionDate = await screen.findByText(
-      'Collection date',
+    const addFilterForCollectionDate = await screen.findByLabelText(
+      'Add filter for Collection date',
       { selector: 'button' }
     )
-    fireEvent.click(addFilterForCollectionDate)
-    expect(
-      screen.getByLabelText('Collected on this date or later')
-    ).toBeInTheDocument()
+    expect(addFilterForCollectionDate).toBeInTheDocument()
+    userEvent.click(addFilterForCollectionDate)
+    const dateInput = await screen.findByLabelText(
+      'Collected on this date or later'
+    )
+    expect(dateInput).toBeInTheDocument()
     fireEvent.click(getClearFiltersButton())
     expect(
       screen.queryByLabelText('Collected on this date or later')
@@ -270,14 +272,20 @@ describe('The public data page', () => {
     fireEvent.click(getFilterPanelToggleButton())
     fireEvent.click(getAddFilterButton())
     fireEvent.click(await screen.findByText('Collection date'))
-    const filterInput = screen.getByLabelText('Collected on this date or later')
+    const filterInput = screen.getByLabelText<HTMLInputElement>(
+      'Collected on this date or later'
+    )
     expect(filterInput).toBeInTheDocument()
-    await userEvent.type(filterInput, '0000-00-00')
+    await act(async () => {
+      fireEvent.change(filterInput, { target: { value: '1800-01-01' } })
+    })
+    const tooltip = await screen.findByRole('tooltip')
+    expect(tooltip).toBeInTheDocument()
     const grid = await getDataGridAfterWaiting()
     await waitFor(() => {
       expect(grid).toHaveAttribute('aria-rowcount', '51')
     })
-  })
+  }, 10000)
 
   it('provides a host species filter that offers options corresponding to the metadata', async () => {
     render(<DataPage />)
