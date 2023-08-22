@@ -7,7 +7,7 @@ import { FilterListItem, FilterUI } from './components'
 export type UpdateFilterFunction = (
   fieldId: string,
   newFilterValues: (string | undefined)[],
-  isDateValid: (date?: string) => boolean | undefined
+  isDateValid?: (date?: string) => boolean | undefined
 ) => void
 
 const FilterPanel = ({

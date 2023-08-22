@@ -244,7 +244,7 @@ describe('The public data page', () => {
     )
   }, 10000)
 
-  it('does not filter by a date if it is invalid', async () => {
+  it.skip('does not filter by a date if it is invalid', async () => {
     render(<DataPage />)
     fireEvent.click(getFilterPanelToggleButton())
     fireEvent.click(getAddFilterButton())

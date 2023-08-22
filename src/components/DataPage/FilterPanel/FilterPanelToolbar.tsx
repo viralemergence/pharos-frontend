@@ -33,11 +33,11 @@ const FilterSelector = ({
 }) => {
   return (
     <FilterSelectorDiv>
-      {filters.map(({ fieldId, type, label, addedToPanel = false }) => (
+      {filters.map(({ fieldId, label, addedToPanel = false }) => (
         <AddFilterToPanelButtonStyled
           key={fieldId}
           onClick={_ => {
-            addFilterUI({ fieldId, type })
+            addFilterUI({ fieldId })
             setIsDropdownOpen(false)
           }}
           disabled={addedToPanel}
@@ -146,11 +146,7 @@ const FilterPanelToolbar = ({
           <FilterSelector
             filters={filters}
             setIsDropdownOpen={setIsDropdownOpen}
-            addFilterUI={({ fieldId, type }) => {
-              if (type !== 'date') {
-                // For now, do not handle filters other than dates
-                return
-              }
+            addFilterUI={({ fieldId }) => {
               setFilters(filters => {
                 const highestPanelIndex = Math.max(
                   ...filters.map(panel => panel.panelIndex)

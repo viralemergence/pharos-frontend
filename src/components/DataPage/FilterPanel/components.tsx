@@ -12,8 +12,11 @@ import {
   FilterLabel,
   FilterListItemElement,
   FilterUIContainer,
+  FilterUIContainerForTypeahead,
   XIcon,
 } from './DisplayComponents'
+
+import FilterTypeahead from './FilterTypeahead'
 import { removeOneFilter } from './FilterPanelToolbar'
 import type { UpdateFilterFunction } from './FilterPanel'
 
@@ -30,6 +33,7 @@ const localizeDate = (dateString: string) => {
 }
 
 const dateFilterUpdateDelay = 1000
+
 export const FilterDeleteButton = ({
   filter,
   setFilters,
@@ -63,8 +67,14 @@ export const FilterUI = ({
     updateFilter,
     setFilters,
   }
+
+  const useTypeahead = filter.type === 'text'
   const hasTooltip = filter.validities?.some(validity => validity === false)
-  return (
+  return useTypeahead ? (
+    <FilterUIContainerForTypeahead hasTooltip={hasTooltip}>
+      <FilterTypeahead {...props} />
+    </FilterUIContainerForTypeahead>
+  ) : (
     <FilterUIContainer hasTooltip={hasTooltip}>
       <DateFilterInputs {...props} />
     </FilterUIContainer>
@@ -168,7 +178,6 @@ type DateInputProps = {
   filter: Filter
   earliestPossibleDate?: string
   latestPossibleDate?: string
-  value?: string
   index: number
   updateFilter: UpdateFilterFunction
   updateFilterDebounced: DebouncedFunc<UpdateFilterFunction>
