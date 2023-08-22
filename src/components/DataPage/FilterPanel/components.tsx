@@ -205,9 +205,9 @@ const DateRange = ({
             filter={startDateFilter}
             updateDateFilter={updateDateFilter}
             ariaLabel={'Collected on this date or later'}
+            ariaDescribedBy={isStartDateInvalid ? tooltipId : undefined}
             dateMin={dateMin}
             dateMax={dateMax}
-            aria-described-by={isStartDateInvalid ? tooltipId : undefined}
           />
         </DateLabel>
         <DateLabel>
@@ -216,9 +216,9 @@ const DateRange = ({
             filter={endDateFilter}
             updateDateFilter={updateDateFilter}
             ariaLabel={'Collected on this date or earlier'}
+            ariaDescribedBy={isEndDateInvalid ? tooltipId : undefined}
             dateMin={dateMin}
             dateMax={dateMax}
-            aria-described-by={isEndDateInvalid ? tooltipId : undefined}
           />
         </DateLabel>
         <FilterDeleteButton
@@ -248,6 +248,7 @@ type DateInputProps = {
   updateDateFilter: UpdateDateFilterFunction
   initialValue?: string
   ariaLabel?: string
+  ariaDescribedBy?: string
 }
 
 const DateInput = ({
@@ -256,6 +257,7 @@ const DateInput = ({
   ariaLabel,
   dateMin = '',
   dateMax = '',
+  ariaDescribedBy,
 }: DateInputProps) => {
   const [value, setValue] = useState(filter.values[0] || '')
 
@@ -263,6 +265,7 @@ const DateInput = ({
     <DateInputStyled
       type={'date'}
       aria-label={ariaLabel}
+      aria-described-by={ariaDescribedBy}
       min={dateMin}
       max={dateMax}
       value={value}
