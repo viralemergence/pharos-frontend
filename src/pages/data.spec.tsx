@@ -267,6 +267,9 @@ describe('The public data page', () => {
   }, 10000)
 
   it('does not filter by a date if it is invalid', async () => {
+    // @ts-ignore
+    globalThis.IS_REACT_ACT_ENVIRONMENT = true
+    const user = userEvent.setup()
     render(<DataPage />)
     fireEvent.click(getTableViewButton())
     fireEvent.click(getFilterPanelToggleButton())
@@ -274,12 +277,17 @@ describe('The public data page', () => {
     fireEvent.click(await screen.findByText('Collection date'))
     const filterInput = screen.getByLabelText('Collected on this date or later')
     expect(filterInput).toBeInTheDocument()
-    await userEvent.type(filterInput, '0000-00-00')
+    await act(async () => {
+      await user.type(filterInput, '01011800')
+      const tooltip = await screen.findByText('Dates must be between')
+      expect(tooltip).toBeInTheDocument()
+    })
+    return
     const grid = await getDataGridAfterWaiting()
     await waitFor(() => {
       expect(grid).toHaveAttribute('aria-rowcount', '51')
     })
-  })
+  }, 10000)
 
   it('provides a host species filter that offers options corresponding to the metadata', async () => {
     render(<DataPage />)

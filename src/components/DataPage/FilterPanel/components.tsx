@@ -251,6 +251,7 @@ const DateInput = ({
         max={dateMax}
         value={value}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          console.log('onchange')
           setValue(e.target.value)
           updateDateFilter(filter.id, e.target.value)
         }}
