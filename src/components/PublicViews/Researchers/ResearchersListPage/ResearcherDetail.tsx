@@ -22,12 +22,8 @@ const Organization = styled.h3`
   ${({ theme }) => theme.smallParagraph};
   margin: 25px 0 0 0;
 `
-const Email = styled.p`
-  ${({ theme }) => theme.smallParagraph};
-  margin: 5px 0 0 0;
-`
 const ProjectsHeader = styled.h3`
-  ${({ theme }) => theme.smallParagraph};
+  ${({ theme }) => theme.bigParagraph};
   margin: 40px 0 0 0;
 `
 const ProjectSection = styled.div`
@@ -74,7 +70,6 @@ const ResearcherDetail = ({ researcher }: ResearcherDetailProps) => {
     <Container>
       <Name>{researcher.name}</Name>
       <Organization>{researcher.organization}</Organization>
-      <Email>{researcher.email}</Email>
       <ProjectsHeader>Projects</ProjectsHeader>
       <ProjectSection>
         {researcher.projects.map(project => (
