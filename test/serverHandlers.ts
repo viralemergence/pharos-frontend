@@ -4,7 +4,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-1',
     rowNumber: 1,
-    'Project name': 'row 1 - project name',
+    'Project': 'row 1 - project name',
     Authors: 'row 1 - author',
     'Collection date': '2020-01-01',
     Latitude: 51.605671213229094,
@@ -38,7 +38,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-2',
     rowNumber: 2,
-    'Project name': 'row 2 - project name',
+    'Project': 'row 2 - project name',
     Authors: 'row 2 - author',
     'Collection date': '2020-01-02',
     Latitude: 44.045060653285155,
@@ -72,7 +72,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-3',
     rowNumber: 3,
-    'Project name': 'row 3 - project name',
+    'Project': 'row 3 - project name',
     Authors: 'row 3 - author',
     'Collection date': '2020-01-03',
     Latitude: 28.463853,
@@ -106,7 +106,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-4',
     rowNumber: 4,
-    'Project name': 'row 4 - project name',
+    'Project': 'row 4 - project name',
     Authors: 'row 4 - author',
     'Collection date': '2020-01-04',
     Latitude: 28.496934,
@@ -140,7 +140,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-5',
     rowNumber: 5,
-    'Project name': 'row 5 - project name',
+    'Project': 'row 5 - project name',
     Authors: 'row 5 - author',
     'Collection date': '2020-01-05',
     Latitude: 28.694163,
@@ -174,7 +174,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-6',
     rowNumber: 6,
-    'Project name': 'row 6 - project name',
+    'Project': 'row 6 - project name',
     Authors: 'row 6 - author',
     'Collection date': '2020-01-06',
     Latitude: 28.839478,
@@ -208,7 +208,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-7',
     rowNumber: 7,
-    'Project name': 'row 7 - project name',
+    'Project': 'row 7 - project name',
     Authors: 'row 7 - author',
     'Collection date': '2020-01-07',
     Latitude: 28.59386,
@@ -242,7 +242,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-8',
     rowNumber: 8,
-    'Project name': 'row 8 - project name',
+    'Project': 'row 8 - project name',
     Authors: 'row 8 - author',
     'Collection date': '2020-01-08',
     Latitude: 28.673795,
@@ -276,7 +276,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-9',
     rowNumber: 9,
-    'Project name': 'row 9 - project name',
+    'Project': 'row 9 - project name',
     Authors: 'row 9 - author',
     'Collection date': '2020-01-09',
     Latitude: 28.645807,
@@ -310,7 +310,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-10',
     rowNumber: 10,
-    'Project name': 'row 10 - project name',
+    'Project': 'row 10 - project name',
     Authors: 'row 10 - author',
     'Collection date': '2020-01-10',
     Latitude: 28.570047,
@@ -344,7 +344,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-11',
     rowNumber: 11,
-    'Project name': 'row 11 - project name',
+    'Project': 'row 11 - project name',
     Authors: 'row 11 - author',
     'Collection date': '2020-01-11',
     Latitude: 28.510703,
@@ -378,7 +378,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-12',
     rowNumber: 12,
-    'Project name': 'row 12 - project name',
+    'Project': 'row 12 - project name',
     Authors: 'row 12 - author',
     'Collection date': '2020-01-12',
     Latitude: 28.566669,
@@ -412,7 +412,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-13',
     rowNumber: 13,
-    'Project name': 'row 13 - project name',
+    'Project': 'row 13 - project name',
     Authors: 'row 13 - author',
     'Collection date': '2020-01-13',
     Latitude: 28.35,
@@ -446,7 +446,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-14',
     rowNumber: 14,
-    'Project name': 'row 14 - project name',
+    'Project': 'row 14 - project name',
     Authors: 'row 14 - author',
     'Collection date': '2020-01-14',
     Latitude: 28.615978,
@@ -480,7 +480,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-15',
     rowNumber: 15,
-    'Project name': 'row 15 - project name',
+    'Project': 'row 15 - project name',
     Authors: 'row 15 - author',
     'Collection date': '2020-01-15',
     Latitude: 28.439358,
@@ -514,7 +514,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-16',
     rowNumber: 16,
-    'Project name': 'row 16 - project name',
+    'Project': 'row 16 - project name',
     Authors: 'row 16 - author',
     'Collection date': '2020-01-16',
     Latitude: 28.415834,
@@ -548,7 +548,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-17',
     rowNumber: 17,
-    'Project name': 'row 17 - project name',
+    'Project': 'row 17 - project name',
     Authors: 'row 17 - author',
     'Collection date': '2020-01-17',
     Latitude: 28.471731,
@@ -582,7 +582,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-18',
     rowNumber: 18,
-    'Project name': 'row 18 - project name',
+    'Project': 'row 18 - project name',
     Authors: 'row 18 - author',
     'Collection date': '2020-01-18',
     Latitude: 28.478661,
@@ -616,7 +616,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-19',
     rowNumber: 19,
-    'Project name': 'row 19 - project name',
+    'Project': 'row 19 - project name',
     Authors: 'row 19 - author',
     'Collection date': '2020-01-19',
     Latitude: 28.477662,
@@ -650,7 +650,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-20',
     rowNumber: 20,
-    'Project name': 'row 20 - project name',
+    'Project': 'row 20 - project name',
     Authors: 'row 20 - author',
     'Collection date': '2020-01-20',
     Latitude: 28.44858,
@@ -684,7 +684,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-21',
     rowNumber: 21,
-    'Project name': 'row 21 - project name',
+    'Project': 'row 21 - project name',
     Authors: 'row 21 - author',
     'Collection date': '2020-01-21',
     Latitude: 28.5543,
@@ -718,7 +718,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-22',
     rowNumber: 22,
-    'Project name': 'row 22 - project name',
+    'Project': 'row 22 - project name',
     Authors: 'row 22 - author',
     'Collection date': '2020-01-22',
     Latitude: 28.529857,
@@ -752,7 +752,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-23',
     rowNumber: 23,
-    'Project name': 'row 23 - project name',
+    'Project': 'row 23 - project name',
     Authors: 'row 23 - author',
     'Collection date': '2020-01-23',
     Latitude: 28.499278,
@@ -786,7 +786,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-24',
     rowNumber: 24,
-    'Project name': 'row 24 - project name',
+    'Project': 'row 24 - project name',
     Authors: 'row 24 - author',
     'Collection date': '2020-01-24',
     Latitude: 28.682253,
@@ -820,7 +820,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-25',
     rowNumber: 25,
-    'Project name': 'row 25 - project name',
+    'Project': 'row 25 - project name',
     Authors: 'row 25 - author',
     'Collection date': '2020-01-25',
     Latitude: 28.470352,
@@ -854,7 +854,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-26',
     rowNumber: 26,
-    'Project name': 'row 26 - project name',
+    'Project': 'row 26 - project name',
     Authors: 'row 26 - author',
     'Collection date': '2020-01-26',
     Latitude: 28.589113,
@@ -888,7 +888,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-27',
     rowNumber: 27,
-    'Project name': 'row 27 - project name',
+    'Project': 'row 27 - project name',
     Authors: 'row 27 - author',
     'Collection date': '2020-01-27',
     Latitude: 28.441595,
@@ -922,7 +922,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-28',
     rowNumber: 28,
-    'Project name': 'row 28 - project name',
+    'Project': 'row 28 - project name',
     Authors: 'row 28 - author',
     'Collection date': '2020-01-28',
     Latitude: 28.521385,
@@ -956,7 +956,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-29',
     rowNumber: 29,
-    'Project name': 'row 29 - project name',
+    'Project': 'row 29 - project name',
     Authors: 'row 29 - author',
     'Collection date': '2020-01-29',
     Latitude: 28.481983,
@@ -990,7 +990,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-30',
     rowNumber: 30,
-    'Project name': 'row 30 - project name',
+    'Project': 'row 30 - project name',
     Authors: 'row 30 - author',
     'Collection date': '2020-01-30',
     Latitude: 28.614506,
@@ -1024,7 +1024,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-31',
     rowNumber: 31,
-    'Project name': 'row 31 - project name',
+    'Project': 'row 31 - project name',
     Authors: 'row 31 - author',
     'Collection date': '2020-01-31',
     Latitude: 28.620566,
@@ -1058,7 +1058,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-32',
     rowNumber: 32,
-    'Project name': 'row 32 - project name',
+    'Project': 'row 32 - project name',
     Authors: 'row 32 - author',
     'Collection date': '2020-02-01',
     Latitude: 28.544908,
@@ -1092,7 +1092,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-33',
     rowNumber: 33,
-    'Project name': 'row 33 - project name',
+    'Project': 'row 33 - project name',
     Authors: 'row 33 - author',
     'Collection date': '2020-02-02',
     Latitude: 28.69197,
@@ -1126,7 +1126,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-34',
     rowNumber: 34,
-    'Project name': 'row 34 - project name',
+    'Project': 'row 34 - project name',
     Authors: 'row 34 - author',
     'Collection date': '2020-02-03',
     Latitude: 28.422051,
@@ -1160,7 +1160,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-35',
     rowNumber: 35,
-    'Project name': 'row 35 - project name',
+    'Project': 'row 35 - project name',
     Authors: 'row 35 - author',
     'Collection date': '2020-02-04',
     Latitude: 28.44581,
@@ -1194,7 +1194,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-36',
     rowNumber: 36,
-    'Project name': 'row 36 - project name',
+    'Project': 'row 36 - project name',
     Authors: 'row 36 - author',
     'Collection date': '2020-02-05',
     Latitude: 28.580132,
@@ -1228,7 +1228,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-37',
     rowNumber: 37,
-    'Project name': 'row 37 - project name',
+    'Project': 'row 37 - project name',
     Authors: 'row 37 - author',
     'Collection date': '2020-02-06',
     Latitude: 28.707297,
@@ -1262,7 +1262,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-38',
     rowNumber: 38,
-    'Project name': 'row 38 - project name',
+    'Project': 'row 38 - project name',
     Authors: 'row 38 - author',
     'Collection date': '2020-02-07',
     Latitude: 28.493215,
@@ -1296,7 +1296,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-39',
     rowNumber: 39,
-    'Project name': 'row 39 - project name',
+    'Project': 'row 39 - project name',
     Authors: 'row 39 - author',
     'Collection date': '2020-02-08',
     Latitude: 28.587982,
@@ -1330,7 +1330,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-40',
     rowNumber: 40,
-    'Project name': 'row 40 - project name',
+    'Project': 'row 40 - project name',
     Authors: 'row 40 - author',
     'Collection date': '2020-02-09',
     Latitude: 28.695509,
@@ -1364,7 +1364,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-41',
     rowNumber: 41,
-    'Project name': 'row 41 - project name',
+    'Project': 'row 41 - project name',
     Authors: 'row 41 - author',
     'Collection date': '2020-02-10',
     Latitude: 28.557907,
@@ -1398,7 +1398,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-42',
     rowNumber: 42,
-    'Project name': 'row 42 - project name',
+    'Project': 'row 42 - project name',
     Authors: 'row 42 - author',
     'Collection date': '2020-02-11',
     Latitude: 28.413112,
@@ -1432,7 +1432,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-43',
     rowNumber: 43,
-    'Project name': 'row 43 - project name',
+    'Project': 'row 43 - project name',
     Authors: 'row 43 - author',
     'Collection date': '2020-02-12',
     Latitude: 28.491899,
@@ -1466,7 +1466,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-44',
     rowNumber: 44,
-    'Project name': 'row 44 - project name',
+    'Project': 'row 44 - project name',
     Authors: 'row 44 - author',
     'Collection date': '2020-02-13',
     Latitude: 28.547371,
@@ -1500,7 +1500,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-45',
     rowNumber: 45,
-    'Project name': 'row 45 - project name',
+    'Project': 'row 45 - project name',
     Authors: 'row 45 - author',
     'Collection date': '2020-02-14',
     Latitude: 28.682368,
@@ -1534,7 +1534,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-46',
     rowNumber: 46,
-    'Project name': 'row 46 - project name',
+    'Project': 'row 46 - project name',
     Authors: 'row 46 - author',
     'Collection date': '2020-02-15',
     Latitude: 28.398559,
@@ -1568,7 +1568,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-47',
     rowNumber: 47,
-    'Project name': 'row 47 - project name',
+    'Project': 'row 47 - project name',
     Authors: 'row 47 - author',
     'Collection date': '2020-02-16',
     Latitude: 28.427187,
@@ -1602,7 +1602,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-48',
     rowNumber: 48,
-    'Project name': 'row 48 - project name',
+    'Project': 'row 48 - project name',
     Authors: 'row 48 - author',
     'Collection date': '2020-02-17',
     Latitude: 28.546955,
@@ -1636,7 +1636,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-49',
     rowNumber: 49,
-    'Project name': 'row 49 - project name',
+    'Project': 'row 49 - project name',
     Authors: 'row 49 - author',
     'Collection date': '2020-02-18',
     Latitude: 28.664242,
@@ -1670,7 +1670,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-50',
     rowNumber: 50,
-    'Project name': 'row 50 - project name',
+    'Project': 'row 50 - project name',
     Authors: 'row 50 - author',
     'Collection date': '2020-02-19',
     Latitude: 28.496311,
@@ -1704,7 +1704,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-51',
     rowNumber: 51,
-    'Project name': 'row 51 - project name',
+    'Project': 'row 51 - project name',
     Authors: 'row 51 - author',
     'Collection date': '2020-02-20',
     Latitude: 51.605671213229094,
@@ -1738,7 +1738,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-52',
     rowNumber: 52,
-    'Project name': 'row 52 - project name',
+    'Project': 'row 52 - project name',
     Authors: 'row 52 - author',
     'Collection date': '2020-02-21',
     Latitude: 44.045060653285155,
@@ -1772,7 +1772,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-53',
     rowNumber: 53,
-    'Project name': 'row 53 - project name',
+    'Project': 'row 53 - project name',
     Authors: 'row 53 - author',
     'Collection date': '2020-02-22',
     Latitude: 28.463853,
@@ -1806,7 +1806,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-54',
     rowNumber: 54,
-    'Project name': 'row 54 - project name',
+    'Project': 'row 54 - project name',
     Authors: 'row 54 - author',
     'Collection date': '2020-02-23',
     Latitude: 28.496934,
@@ -1840,7 +1840,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-55',
     rowNumber: 55,
-    'Project name': 'row 55 - project name',
+    'Project': 'row 55 - project name',
     Authors: 'row 55 - author',
     'Collection date': '2020-02-24',
     Latitude: 28.694163,
@@ -1874,7 +1874,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-56',
     rowNumber: 56,
-    'Project name': 'row 56 - project name',
+    'Project': 'row 56 - project name',
     Authors: 'row 56 - author',
     'Collection date': '2020-02-25',
     Latitude: 28.839478,
@@ -1908,7 +1908,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-57',
     rowNumber: 57,
-    'Project name': 'row 57 - project name',
+    'Project': 'row 57 - project name',
     Authors: 'row 57 - author',
     'Collection date': '2020-02-26',
     Latitude: 28.59386,
@@ -1942,7 +1942,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-58',
     rowNumber: 58,
-    'Project name': 'row 58 - project name',
+    'Project': 'row 58 - project name',
     Authors: 'row 58 - author',
     'Collection date': '2020-02-27',
     Latitude: 28.673795,
@@ -1976,7 +1976,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-59',
     rowNumber: 59,
-    'Project name': 'row 59 - project name',
+    'Project': 'row 59 - project name',
     Authors: 'row 59 - author',
     'Collection date': '2020-02-28',
     Latitude: 28.645807,
@@ -2010,7 +2010,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-60',
     rowNumber: 60,
-    'Project name': 'row 60 - project name',
+    'Project': 'row 60 - project name',
     Authors: 'row 60 - author',
     'Collection date': '2020-02-29',
     Latitude: 28.570047,
@@ -2044,7 +2044,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-61',
     rowNumber: 61,
-    'Project name': 'row 61 - project name',
+    'Project': 'row 61 - project name',
     Authors: 'row 61 - author',
     'Collection date': '2020-03-01',
     Latitude: 28.510703,
@@ -2078,7 +2078,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-62',
     rowNumber: 62,
-    'Project name': 'row 62 - project name',
+    'Project': 'row 62 - project name',
     Authors: 'row 62 - author',
     'Collection date': '2020-03-02',
     Latitude: 28.566669,
@@ -2112,7 +2112,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-63',
     rowNumber: 63,
-    'Project name': 'row 63 - project name',
+    'Project': 'row 63 - project name',
     Authors: 'row 63 - author',
     'Collection date': '2020-03-03',
     Latitude: 28.35,
@@ -2146,7 +2146,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-64',
     rowNumber: 64,
-    'Project name': 'row 64 - project name',
+    'Project': 'row 64 - project name',
     Authors: 'row 64 - author',
     'Collection date': '2020-03-04',
     Latitude: 28.615978,
@@ -2180,7 +2180,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-65',
     rowNumber: 65,
-    'Project name': 'row 65 - project name',
+    'Project': 'row 65 - project name',
     Authors: 'row 65 - author',
     'Collection date': '2020-03-05',
     Latitude: 28.439358,
@@ -2214,7 +2214,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-66',
     rowNumber: 66,
-    'Project name': 'row 66 - project name',
+    'Project': 'row 66 - project name',
     Authors: 'row 66 - author',
     'Collection date': '2020-03-06',
     Latitude: 28.415834,
@@ -2248,7 +2248,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-67',
     rowNumber: 67,
-    'Project name': 'row 67 - project name',
+    'Project': 'row 67 - project name',
     Authors: 'row 67 - author',
     'Collection date': '2020-03-07',
     Latitude: 28.471731,
@@ -2282,7 +2282,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-68',
     rowNumber: 68,
-    'Project name': 'row 68 - project name',
+    'Project': 'row 68 - project name',
     Authors: 'row 68 - author',
     'Collection date': '2020-03-08',
     Latitude: 28.478661,
@@ -2316,7 +2316,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-69',
     rowNumber: 69,
-    'Project name': 'row 69 - project name',
+    'Project': 'row 69 - project name',
     Authors: 'row 69 - author',
     'Collection date': '2020-03-09',
     Latitude: 28.477662,
@@ -2350,7 +2350,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-70',
     rowNumber: 70,
-    'Project name': 'row 70 - project name',
+    'Project': 'row 70 - project name',
     Authors: 'row 70 - author',
     'Collection date': '2020-03-10',
     Latitude: 28.44858,
@@ -2384,7 +2384,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-71',
     rowNumber: 71,
-    'Project name': 'row 71 - project name',
+    'Project': 'row 71 - project name',
     Authors: 'row 71 - author',
     'Collection date': '2020-03-11',
     Latitude: 28.5543,
@@ -2418,7 +2418,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-72',
     rowNumber: 72,
-    'Project name': 'row 72 - project name',
+    'Project': 'row 72 - project name',
     Authors: 'row 72 - author',
     'Collection date': '2020-03-12',
     Latitude: 28.529857,
@@ -2452,7 +2452,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-73',
     rowNumber: 73,
-    'Project name': 'row 73 - project name',
+    'Project': 'row 73 - project name',
     Authors: 'row 73 - author',
     'Collection date': '2020-03-13',
     Latitude: 28.499278,
@@ -2486,7 +2486,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-74',
     rowNumber: 74,
-    'Project name': 'row 74 - project name',
+    'Project': 'row 74 - project name',
     Authors: 'row 74 - author',
     'Collection date': '2020-03-14',
     Latitude: 28.682253,
@@ -2520,7 +2520,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-75',
     rowNumber: 75,
-    'Project name': 'row 75 - project name',
+    'Project': 'row 75 - project name',
     Authors: 'row 75 - author',
     'Collection date': '2020-03-15',
     Latitude: 28.470352,
@@ -2554,7 +2554,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-76',
     rowNumber: 76,
-    'Project name': 'row 76 - project name',
+    'Project': 'row 76 - project name',
     Authors: 'row 76 - author',
     'Collection date': '2020-03-16',
     Latitude: 28.589113,
@@ -2588,7 +2588,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-77',
     rowNumber: 77,
-    'Project name': 'row 77 - project name',
+    'Project': 'row 77 - project name',
     Authors: 'row 77 - author',
     'Collection date': '2020-03-17',
     Latitude: 28.441595,
@@ -2622,7 +2622,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-78',
     rowNumber: 78,
-    'Project name': 'row 78 - project name',
+    'Project': 'row 78 - project name',
     Authors: 'row 78 - author',
     'Collection date': '2020-03-18',
     Latitude: 28.521385,
@@ -2656,7 +2656,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-79',
     rowNumber: 79,
-    'Project name': 'row 79 - project name',
+    'Project': 'row 79 - project name',
     Authors: 'row 79 - author',
     'Collection date': '2020-03-19',
     Latitude: 28.481983,
@@ -2690,7 +2690,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-80',
     rowNumber: 80,
-    'Project name': 'row 80 - project name',
+    'Project': 'row 80 - project name',
     Authors: 'row 80 - author',
     'Collection date': '2020-03-20',
     Latitude: 28.614506,
@@ -2724,7 +2724,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-81',
     rowNumber: 81,
-    'Project name': 'row 81 - project name',
+    'Project': 'row 81 - project name',
     Authors: 'row 81 - author',
     'Collection date': '2020-03-21',
     Latitude: 28.620566,
@@ -2758,7 +2758,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-82',
     rowNumber: 82,
-    'Project name': 'row 82 - project name',
+    'Project': 'row 82 - project name',
     Authors: 'row 82 - author',
     'Collection date': '2020-03-22',
     Latitude: 28.544908,
@@ -2792,7 +2792,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-83',
     rowNumber: 83,
-    'Project name': 'row 83 - project name',
+    'Project': 'row 83 - project name',
     Authors: 'row 83 - author',
     'Collection date': '2020-03-23',
     Latitude: 28.69197,
@@ -2826,7 +2826,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-84',
     rowNumber: 84,
-    'Project name': 'row 84 - project name',
+    'Project': 'row 84 - project name',
     Authors: 'row 84 - author',
     'Collection date': '2020-03-24',
     Latitude: 28.422051,
@@ -2860,7 +2860,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-85',
     rowNumber: 85,
-    'Project name': 'row 85 - project name',
+    'Project': 'row 85 - project name',
     Authors: 'row 85 - author',
     'Collection date': '2020-03-25',
     Latitude: 28.44581,
@@ -2894,7 +2894,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-86',
     rowNumber: 86,
-    'Project name': 'row 86 - project name',
+    'Project': 'row 86 - project name',
     Authors: 'row 86 - author',
     'Collection date': '2020-03-26',
     Latitude: 28.580132,
@@ -2928,7 +2928,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-87',
     rowNumber: 87,
-    'Project name': 'row 87 - project name',
+    'Project': 'row 87 - project name',
     Authors: 'row 87 - author',
     'Collection date': '2020-03-27',
     Latitude: 28.707297,
@@ -2962,7 +2962,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-88',
     rowNumber: 88,
-    'Project name': 'row 88 - project name',
+    'Project': 'row 88 - project name',
     Authors: 'row 88 - author',
     'Collection date': '2020-03-28',
     Latitude: 28.493215,
@@ -2996,7 +2996,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-89',
     rowNumber: 89,
-    'Project name': 'row 89 - project name',
+    'Project': 'row 89 - project name',
     Authors: 'row 89 - author',
     'Collection date': '2020-03-29',
     Latitude: 28.587982,
@@ -3030,7 +3030,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-90',
     rowNumber: 90,
-    'Project name': 'row 90 - project name',
+    'Project': 'row 90 - project name',
     Authors: 'row 90 - author',
     'Collection date': '2020-03-30',
     Latitude: 28.695509,
@@ -3064,7 +3064,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-91',
     rowNumber: 91,
-    'Project name': 'row 91 - project name',
+    'Project': 'row 91 - project name',
     Authors: 'row 91 - author',
     'Collection date': '2020-03-31',
     Latitude: 28.557907,
@@ -3098,7 +3098,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-92',
     rowNumber: 92,
-    'Project name': 'row 92 - project name',
+    'Project': 'row 92 - project name',
     Authors: 'row 92 - author',
     'Collection date': '2020-04-01',
     Latitude: 28.413112,
@@ -3132,7 +3132,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-93',
     rowNumber: 93,
-    'Project name': 'row 93 - project name',
+    'Project': 'row 93 - project name',
     Authors: 'row 93 - author',
     'Collection date': '2020-04-02',
     Latitude: 28.491899,
@@ -3166,7 +3166,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-94',
     rowNumber: 94,
-    'Project name': 'row 94 - project name',
+    'Project': 'row 94 - project name',
     Authors: 'row 94 - author',
     'Collection date': '2020-04-03',
     Latitude: 28.547371,
@@ -3200,7 +3200,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-95',
     rowNumber: 95,
-    'Project name': 'row 95 - project name',
+    'Project': 'row 95 - project name',
     Authors: 'row 95 - author',
     'Collection date': '2020-04-04',
     Latitude: 28.682368,
@@ -3234,7 +3234,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-96',
     rowNumber: 96,
-    'Project name': 'row 96 - project name',
+    'Project': 'row 96 - project name',
     Authors: 'row 96 - author',
     'Collection date': '2020-04-05',
     Latitude: 28.398559,
@@ -3268,7 +3268,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-97',
     rowNumber: 97,
-    'Project name': 'row 97 - project name',
+    'Project': 'row 97 - project name',
     Authors: 'row 97 - author',
     'Collection date': '2020-04-06',
     Latitude: 28.427187,
@@ -3302,7 +3302,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-98',
     rowNumber: 98,
-    'Project name': 'row 98 - project name',
+    'Project': 'row 98 - project name',
     Authors: 'row 98 - author',
     'Collection date': '2020-04-07',
     Latitude: 28.546955,
@@ -3336,7 +3336,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-99',
     rowNumber: 99,
-    'Project name': 'row 99 - project name',
+    'Project': 'row 99 - project name',
     Authors: 'row 99 - author',
     'Collection date': '2020-04-08',
     Latitude: 28.664242,
@@ -3370,7 +3370,7 @@ const publishedRecords = [
   {
     pharosID: 'id-for-row-100',
     rowNumber: 100,
-    'Project name': 'row 100 - project name',
+    'Project': 'row 100 - project name',
     Authors: 'row 100 - author',
     'Collection date': '2020-04-09',
     Latitude: 28.496311,
@@ -3406,8 +3406,8 @@ const publishedRecords = [
 const publishedRecordsMetadata = {
   possibleFilters: {
     project_name: {
-      label: 'Project name',
-      dataGridKey: 'Project name',
+      label: 'Project',
+      dataGridKey: 'Project',
       options: ['Project A', 'Project B', 'Project C'],
     },
     researcher_name: {
