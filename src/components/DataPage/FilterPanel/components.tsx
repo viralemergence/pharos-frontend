@@ -20,11 +20,24 @@ import FilterTypeahead from './FilterTypeahead'
 import { removeOneFilter } from './FilterPanelToolbar'
 import type { UpdateFilterFunction } from './FilterPanel'
 
-/** Localize a date without changing the time zone */
+/** Localize a date without changing the time zone
+ * @param {string} dateString - String in YYYY-MM-DD format
+ * @example localizeDate('2023-01-02')
+ * // output (if locale is en-us): '01-02-2023'
+ * */
 const localizeDate = (dateString: string) => {
   const [year, month, day] = dateString.split('-').map(Number)
   const date = new Date(year, month - 1, day)
   return date.toLocaleDateString()
+}
+
+const LocalizedDate = ({
+  dateString,
+}: {
+  /** Date string in YYYY-MM-DD format */
+  dateString: string
+}) => {
+  return <time dateTime={dateString}>{localizeDate(dateString)}</time>
 }
 
 const dateFilterUpdateDelayInMilliseconds = 1000
@@ -204,8 +217,9 @@ const DateRange = ({
             isStartDateInvalid={!startDateFilter.valid}
             isEndDateInvalid={!endDateFilter.valid}
           >
-            Dates must be between {localizeDate(dateMin)} and{' '}
-            {localizeDate(dateMax)}
+            Dates must be between
+            <LocalizedDate dateString={dateMin} /> and
+            <LocalizedDate dateString={dateMax} />
           </DateTooltip>
         )}
     </FilterLabel>
