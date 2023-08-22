@@ -77,6 +77,27 @@ const FilterSelectorLauncher = ({
   )
 }
 
+const removeAllFilters = (setFilters: Dispatch<SetStateAction<Filter[]>>) => {
+  setFilters(prev =>
+    prev.map(filter => ({
+      ...filter,
+      ...filterDefaultProperties,
+    }))
+  )
+}
+
+export const removeOneFilter = (
+  filter: Filter,
+  setFilters: Dispatch<SetStateAction<Filter[]>>
+) => {
+  setFilters(prev =>
+    prev.map(f => ({
+      ...f,
+      ...(f.fieldId === filter.fieldId ? filterDefaultProperties : {}),
+    }))
+  )
+}
+
 const FilterPanelToolbar = ({
   filters,
   setFilters,
@@ -99,15 +120,6 @@ const FilterPanelToolbar = ({
       addFilterButtonRef.current?.focus()
     }
   }, [isFilterPanelOpen])
-
-  const removeAllFilters = () => {
-    setFilters(prev =>
-      prev.map(filter => ({
-        ...filter,
-        ...filterDefaultProperties,
-      }))
-    )
-  }
 
   return (
     <>
@@ -163,10 +175,9 @@ const FilterPanelToolbar = ({
         </Dropdown>
         {addedFilters.length > 0 && (
           <FilterPanelToolbarButtonStyled
-            style={{ marginRight: '5px' }}
             onClick={e => {
               e.preventDefault()
-              removeAllFilters()
+              removeAllFilters(setFilters)
             }}
           >
             Clear all

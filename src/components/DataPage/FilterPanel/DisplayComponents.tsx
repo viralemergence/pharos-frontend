@@ -134,9 +134,6 @@ export const FilterPanelCloseButton = styled(FilterPanelToolbarButtonStyled)`
   justify-content: center;
   align-items: center;
   padding: 5px;
-  &:hover {
-    background: inherit;
-  }
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
     width: 45px;
   }
@@ -236,6 +233,34 @@ export const FilterLabel = styled.label`
   display: block;
 `
 
+export const FilterDeleteButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: flex-end;
+  height: 45px;
+`
+
+export const FilterDeleteButtonStyled = styled(FilterPanelToolbarButtonStyled)`
+  align-items: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  height: 36px;
+  border-radius: 100%;
+  justify-content: center;
+  padding: 10px;
+`
+
+export const FilterUIContainer = styled.div<{ hasTooltip?: boolean }>`
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 8px;
+  transition: margin-bottom 0.15s;
+  ${({ hasTooltip }) => (hasTooltip ? 'margin-bottom: 48px;' : '')}
+`
+
 const panelWidth = '410px'
 
 export const Panel = styled.aside<{ open: boolean }>`
@@ -280,7 +305,7 @@ export const FieldInput = styled.input`
   color: ${({ theme }) => theme.white};
   font-weight: 600;
   padding: 8px 10px;
-  width: 160px;
+  width: 148px;
   height: 45px;
   &:invalid {
     border-color: ${({ theme }) => theme.red};
