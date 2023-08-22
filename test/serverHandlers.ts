@@ -3404,7 +3404,7 @@ const publishedRecords = [
 ]
 
 const publishedRecordsMetadata = {
-  fields: {
+  possibleFilters: {
     project_name: {
       label: 'Project name',
       dataGridKey: 'Project name',
@@ -3435,13 +3435,11 @@ const publishedRecordsMetadata = {
       label: 'Pathogen',
       dataGridKey: 'Pathogen',
     },
-    collection_start_date: {
-      label: 'Collected on or after date',
+    collection_date: {
+      label: 'Collection date',
       type: 'date',
-    },
-    collection_end_date: {
-      label: 'Collected on or before date',
-      type: 'date',
+      earliestPossibleDate: '1900-01-01',
+      latestPossibleDate: '2100-01-01',
     },
   },
 }
@@ -3460,11 +3458,15 @@ const handlers = [
       const collectionStartDate = params.get('collection_start_date')
       if (collectionStartDate) {
         recordsToReturn = recordsToReturn.filter(
-          record =>
-            new Date(record['Collection date']) >= new Date(collectionStartDate)
+          record => record['Collection date'] >= collectionStartDate
         )
       }
-
+      const collectionEndDate = params.get('collection_end_date')
+      if (collectionEndDate) {
+        recordsToReturn = recordsToReturn.filter(
+          record => record['Collection date'] >= collectionEndDate
+        )
+      }
       recordsToReturn = recordsToReturn.slice(
         indexOfFirstRecordWanted,
         indexOfFirstRecordWanted + pageSize
@@ -3481,18 +3483,4 @@ const handlers = [
   ),
 ]
 
-// Define some alternative handlers for use in specific tests
-
-const routeThatReturnsNoPublishedRecords = rest.get(
-  `${process.env.GATSBY_API_URL}/published-records`,
-  async (_req, res, ctx) => {
-    const data = { publishedRecords: [], isLastPage: true }
-    return res(ctx.json(data))
-  }
-)
-
-export {
-  handlers,
-  publishedRecordsMetadata,
-  routeThatReturnsNoPublishedRecords,
-}
+export { handlers, publishedRecordsMetadata }
