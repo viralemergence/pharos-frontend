@@ -7,7 +7,7 @@ import { DateRangeFilterUI, TypeaheadFilterUI } from './components'
 export type UpdateFilterFunction = (updateFilterOptions: {
   id: string
   newValues: string[]
-  isDateValid?: (dateStr: string) => boolean
+  valid?: boolean
 }) => void
 
 const FilterPanel = ({
@@ -31,16 +31,12 @@ const FilterPanel = ({
   const updateFilter: UpdateFilterFunction = ({
     id,
     newValues = [],
-    isDateValid,
+    valid = true,
   }) => {
     setFilters(prev => {
       return prev.map((filter: Filter) => {
         if (filter.id !== id) return filter
-        const updatedFilter = { ...filter, values: newValues }
-        if (isDateValid !== undefined) {
-          updatedFilter.valid = newValues.every(value => isDateValid(value))
-        }
-        return updatedFilter
+        return { ...filter, values: newValues, valid }
       })
     })
   }
@@ -74,6 +70,9 @@ const FilterPanel = ({
           />
           <ListOfAddedFilters ref={filterListRef}>
             {addedFilters.map(filter => {
+              // Although the collection_end_date filter can be marked as added
+              // to the panel (i.e. can have the property addedToPanel set to
+              // true), we don't create a separate UI for it in the panel.
               if (filter.id === 'collection_start_date') {
                 return (
                   <DateRangeFilterUI

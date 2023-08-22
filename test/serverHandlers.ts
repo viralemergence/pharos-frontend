@@ -3438,14 +3438,14 @@ const publishedRecordsMetadata = {
     collection_start_date: {
       label: 'Collection date',
       type: 'date',
-      earliestPossibleDate: '1900-01-01',
-      latestPossibleDate: '2100-01-01',
+      earliestDateInDatabase: '1900-01-01',
+      latestDateInDatabase: '2100-01-01',
     },
     collection_end_date: {
       label: 'Collection date',
       type: 'date',
-      earliestPossibleDate: '1900-01-01',
-      latestPossibleDate: '2100-01-01',
+      earliestDateInDatabase: '1900-01-01',
+      latestDateInDatabase: '2100-01-01',
     },
   },
 }
