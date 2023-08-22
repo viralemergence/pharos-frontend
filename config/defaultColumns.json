@@ -78,7 +78,7 @@
     },
     "Pathogen": {
       "type": "string",
-      "definition": "The pathogen detected by the test, if any, e.g. 'SARS-CoV-2'. May be different from the detection target."
+      "definition": "The pathogen detected by the test, if any, e.g. ‘SARS-CoV-2’. Pathogen may be different from detection target. If no pathogen is detected it should either be synonymous with detection target or omitted."
     },
     "Pathogen NCBI tax ID": {
       "type": "string",
@@ -106,7 +106,7 @@
     },
     "Life stage": {
       "type": "string",
-      "definition": "The life stage of the animal from which the sample was collection. Must be one of the following: 'adult' or 'juvenile' or 'neo-natal' or 'unknown'."
+      "definition": "The life stage of the animal from which the sample was collection."
     },
     "Age": {
       "type": "string",
