@@ -67,26 +67,28 @@ const DataToolbar = ({
 
   return (
     <DataToolbarDiv isFilterPanelOpen={isFilterPanelOpen}>
-      <ContainerForFilterPanelLauncher>
-        <FilterPanelLauncher
-          selected={isFilterPanelOpen}
-          ref={filterPanelLauncherRef}
-          onClick={() => {
-            setIsFilterPanelOpen(prev => !prev)
-          }}
-          aria-controls="pharos-filter-panel"
-        >
-          Filters
-          {appliedFiltersCount > 0 && (
-            <span style={{ marginLeft: '5px' }}>({appliedFiltersCount})</span>
-          )}
-        </FilterPanelLauncher>
-      </ContainerForFilterPanelLauncher>
       <ContainerForRadioButtons>
         <RadioButton forView={View.map} label="Map" />
         <RadioButton forView={View.globe} label="Globe" />
         <RadioButton forView={View.table} label="Table" />
       </ContainerForRadioButtons>
+      {view === View.table && (
+        <ContainerForFilterPanelLauncher>
+          <FilterPanelLauncher
+            selected={isFilterPanelOpen}
+            ref={filterPanelLauncherRef}
+            onClick={() => {
+              setIsFilterPanelOpen(prev => !prev)
+            }}
+            aria-controls="pharos-filter-panel"
+          >
+            Filters
+            {appliedFiltersCount > 0 && (
+              <span style={{ marginLeft: '5px' }}>({appliedFiltersCount})</span>
+            )}
+          </FilterPanelLauncher>
+        </ContainerForFilterPanelLauncher>
+      )}
     </DataToolbarDiv>
   )
 }

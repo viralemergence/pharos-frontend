@@ -20,15 +20,20 @@ const SelectedTypeaheadValues = styled.ul`
   align-items: flex-start;
   gap: 5px;
 `
+
 const SelectedTypeaheadValue = styled.li`
   background-color: ${({ theme }) => theme.lightPurple};
   border-radius: 5px;
   color: ${({ theme }) => theme.black};
   display: flex;
   flex-flow: row nowrap;
-  align-items: center;
+  align-items: stretch;
   gap: 5px;
-  padding-left: 10px;
+  padding-left: 5px;
+`
+
+const SelectedTypeaheadValueLabel = styled.div`
+  padding: 5px;
 `
 
 const SelectedTypeaheadValueDeleteButton = styled.button`
@@ -37,7 +42,7 @@ const SelectedTypeaheadValueDeleteButton = styled.button`
   cursor: pointer;
   padding: 0 7px;
   margin-left: 3px;
-  height: 30px;
+  flex: 1;
   border-bottom-right-radius: 5px;
   border-top-right-radius: 5px;
   display: flex;
@@ -70,17 +75,10 @@ const TypeaheadContainer = styled.div`
     padding: 10px 15px 8px 15px !important;
     line-height: 25px !important;
   }
-  [role='listbox']:first-child button:first-child {
-    position: relative;
-    ::before {
-      position: absolute;
-      content: '';
-      height: 1px;
-      background: ${({ theme }) => theme.medGray} !important;
-      top: 0;
-      left: 11px;
-      right: 11px;
-    }
+
+  // Make border under Typeahead input more opaque
+  &:focus-within &:after {
+    opacity: 1 !important;
   }
 `
 
@@ -88,7 +86,7 @@ const TypeaheadLabel = styled(InputLabel)`
   ${({ theme }) => theme.smallParagraph}
   margin-bottom: 0 ! important;
   padding-bottom: 0;
-  width: fit-content; // TODO: needed?
+  width: fit-content;
 `
 
 interface FilterTypeaheadProps {
@@ -117,7 +115,7 @@ const FilterTypeahead = ({
 
   const handleTypeaheadChange = (items: TypeaheadItem[]) => {
     updateFilter(
-      filter.fieldId,
+      filter.id,
       items.map(({ label }) => label)
     )
   }
@@ -169,7 +167,7 @@ const FilterTypeahead = ({
         <SelectedTypeaheadValues>
           {values.map(value => (
             <SelectedTypeaheadValue key={value}>
-              {value}
+              <SelectedTypeaheadValueLabel>{value}</SelectedTypeaheadValueLabel>
               <SelectedTypeaheadValueDeleteButton
                 onClick={() => {
                   removeItem({ key: value, label: value })

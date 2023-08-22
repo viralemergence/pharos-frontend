@@ -97,6 +97,18 @@ describe('The public data page', () => {
     expect(grid).toBeInTheDocument()
   })
 
+  it('has a button labeled Table that, when clicked, displays a previously undisplayed grid', async () => {
+    render(<DataPage />)
+    expect(screen.queryByRole('button', { name: 'Filters' })).toBeNull()
+    const tableViewButton = getTableViewButton()
+    expect(tableViewButton).toBeInTheDocument()
+    expect(getDataGrid()).not.toBeInTheDocument()
+    fireEvent.click(getTableViewButton())
+    const grid = await getDataGridAfterWaiting()
+    expect(grid).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Filters' })).not.toBeNull()
+  })
+
   it('has a button labeled Map that sets the projection of the map to naturalEarth', async () => {
     /** Get the projections that have been assigned to the map, in the order in
      * which they were assigned */
@@ -128,8 +140,10 @@ describe('The public data page', () => {
     expect(projections.length).toBe(3)
   })
 
-  it('has a button labeled Filters that toggles the Filter Panel', () => {
+  it('has a button labeled Filters (visible in Table view) that toggles the Filter Panel', () => {
     const { container } = render(<DataPage />)
+
+    fireEvent.click(getTableViewButton())
 
     // Initially, the filter panel should be hidden
     const panel = getFilterPanel(container)
@@ -152,8 +166,9 @@ describe('The public data page', () => {
     expect(panel).toHaveAttribute('aria-hidden', 'true')
   })
 
-  it('has a filter panel that can be closed by clicking a button', () => {
+  it('has a filter panel (visible in Table view) that can be closed by clicking a button', () => {
     const { container } = render(<DataPage />)
+    fireEvent.click(getTableViewButton())
     const filterPanelToggleButton = getFilterPanelToggleButton()
     fireEvent.click(filterPanelToggleButton)
     const panel = getFilterPanel(container)
@@ -164,8 +179,9 @@ describe('The public data page', () => {
     expect(panel).toHaveAttribute('aria-hidden', 'true')
   })
 
-  it('has a filter panel that contains buttons for adding filters for fields', async () => {
+  it('has a filter panel (visible in Table view) that contains buttons for adding filters for fields', async () => {
     render(<DataPage />)
+    fireEvent.click(getTableViewButton())
     fireEvent.click(getFilterPanelToggleButton())
     fireEvent.click(getAddFilterButton())
     const expectedButtonLabels = Object.values(
@@ -178,8 +194,10 @@ describe('The public data page', () => {
     )
   })
 
-  it('has a filter panel that contains a button that clears all filters in the panel', async () => {
+  it('has a filter panel (visible in Table view) that contains a button that clears all filters in the panel', async () => {
     render(<DataPage />)
+
+    fireEvent.click(getTableViewButton())
     fireEvent.click(getFilterPanelToggleButton())
     fireEvent.click(getAddFilterButton())
     const addFilterForCollectionDate = await screen.findByText(
@@ -198,6 +216,7 @@ describe('The public data page', () => {
 
   it('lets the user add date fields to the panel', async () => {
     render(<DataPage />)
+    fireEvent.click(getTableViewButton())
     fireEvent.click(getFilterPanelToggleButton())
     userEvent.click(getAddFilterButton())
     const addFilterForCollectionDate = await screen.findByText(
@@ -229,6 +248,7 @@ describe('The public data page', () => {
 
   it('lets the user filter by collection start date', async () => {
     render(<DataPage />)
+    fireEvent.click(getTableViewButton())
     fireEvent.click(getFilterPanelToggleButton())
     fireEvent.click(getAddFilterButton())
     fireEvent.click(await screen.findByText('Collection date'))
@@ -244,8 +264,9 @@ describe('The public data page', () => {
     )
   }, 10000)
 
-  it.skip('does not filter by a date if it is invalid', async () => {
+  it('does not filter by a date if it is invalid', async () => {
     render(<DataPage />)
+    fireEvent.click(getTableViewButton())
     fireEvent.click(getFilterPanelToggleButton())
     fireEvent.click(getAddFilterButton())
     fireEvent.click(await screen.findByText('Collection date'))
@@ -257,6 +278,29 @@ describe('The public data page', () => {
       expect(grid).toHaveAttribute('aria-rowcount', '51')
     })
   })
+
+  it('provides a host species filter that offers options corresponding to the metadata', async () => {
+    render(<DataPage />)
+    fireEvent.click(getTableViewButton())
+    fireEvent.click(getFilterPanelToggleButton())
+    fireEvent.click(getAddFilterButton())
+    fireEvent.click(await screen.findByText('Host species'))
+    const typeahead = screen.getByLabelText('Host species')
+    expect(typeahead).toBeInTheDocument()
+    act(() => {
+      typeahead.focus()
+    })
+    let hostSpecies: HTMLElement
+    await waitFor(() => {
+      hostSpecies = screen.getByRole('option', { name: /bear/i })
+      expect(hostSpecies).toBeInTheDocument()
+    })
+
+    // NOTE: When doing more extensive testing of the Typeahead, it may be
+    // necessary to mock out the svg import in
+    // src/components/DataPage/FilterPanel/FilterDarkTypeaheadResult.tsx with something like
+    // jest.mock('assets/darkTypeaheadRemove.svg', () => '')
+  }, 10000)
 
   it('has a button labeled Globe that changes the projection of the map to globe', () => {
     render(<DataPage />)
@@ -296,13 +340,15 @@ describe('The public data page', () => {
 
   it('displays the first page of published records', async () => {
     render(<DataPage enableTableVirtualization={false} />)
+    fireEvent.click(getTableViewButton())
     const grid = await getDataGridAfterWaiting()
     expect(grid).toBeInTheDocument()
     expect(grid).toHaveAttribute('aria-rowcount', '51')
   })
 
-  it('displays the second page of published records when the user scrolls to the bottom', async () => {
+  it('displays the second page of published records when the user scrolls to the bottom of the grid', async () => {
     render(<DataPage enableTableVirtualization={false} />)
+    fireEvent.click(getTableViewButton())
     const grid = await getDataGridAfterWaiting()
     expect(grid).toBeInTheDocument()
     // Scroll to the bottom of the grid

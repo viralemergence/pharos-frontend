@@ -1,11 +1,11 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react'
 import type { Filter } from 'pages/data'
-import { ListOfAddedFilters, Panel } from './DisplayComponents'
+import { FilterPanelStyled, ListOfAddedFilters } from './DisplayComponents'
 import FilterPanelToolbar from './FilterPanelToolbar'
-import { FilterListItem, FilterUI } from './components'
+import { FilterListItem } from './components'
 
 export type UpdateFilterFunction = (
-  fieldId: string,
+  id: string,
   newFilterValues: (string | undefined)[],
   isDateValid?: (date?: string) => boolean | undefined
 ) => void
@@ -23,18 +23,15 @@ const FilterPanel = ({
 }) => {
   const filterListRef = useRef<HTMLUListElement | null>(null)
 
+  /** Filters that have been added to the panel */
   const addedFilters = filters
     .filter(f => f.addedToPanel)
     .sort((a, b) => a.panelIndex - b.panelIndex)
 
-  const updateFilter: UpdateFilterFunction = (
-    fieldId,
-    newValues,
-    isDateValid
-  ) => {
+  const updateFilter: UpdateFilterFunction = (id, newValues, isDateValid) => {
     setFilters(prev => {
       return prev.map((filter: Filter) => {
-        if (filter.fieldId !== fieldId) return filter
+        if (filter.id !== id) return filter
         const updatedFilter = {
           ...filter,
           values: newValues,
@@ -48,15 +45,19 @@ const FilterPanel = ({
   }
 
   // When a new filter is added, scroll the filter list to the bottom
+  /** The last time the number of added filters changed, how many there were */
+  const previousLengthOfAddedFilters = useRef(0)
   useEffect(() => {
-    const filterList = filterListRef?.current
-    if (filterList) filterList.scrollTop = filterList.scrollHeight
+    if (addedFilters.length > previousLengthOfAddedFilters.current) {
+      const filterList = filterListRef?.current
+      if (filterList) filterList.scrollTop = filterList.scrollHeight
+    }
+    previousLengthOfAddedFilters.current = addedFilters.length
   }, [addedFilters.length])
 
   return (
-    <Panel
+    <FilterPanelStyled
       open={isFilterPanelOpen}
-      style={{ colorScheme: 'dark' }}
       role="form"
       aria-hidden={isFilterPanelOpen ? 'false' : 'true'}
       aria-label="Filters panel"
@@ -71,21 +72,18 @@ const FilterPanel = ({
             setFilters={setFilters}
           />
           <ListOfAddedFilters ref={filterListRef}>
-            {addedFilters.map(filter => {
-              return (
-                <FilterListItem key={filter.fieldId}>
-                  <FilterUI
-                    filter={filter}
-                    updateFilter={updateFilter}
-                    setFilters={setFilters}
-                  />
-                </FilterListItem>
-              )
-            })}
+            {addedFilters.map(filter => (
+              <FilterListItem
+                filter={filter}
+                updateFilter={updateFilter}
+                setFilters={setFilters}
+                key={filter.id}
+              />
+            ))}
           </ListOfAddedFilters>
         </>
       )}
-    </Panel>
+    </FilterPanelStyled>
   )
 }
 

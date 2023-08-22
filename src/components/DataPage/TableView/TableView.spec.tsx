@@ -43,7 +43,7 @@ describe('The public data table', () => {
   })
 
   const dateFilter: Filter = {
-    fieldId: 'collection_date',
+    id: 'collection_date',
     label: 'Collection date',
     type: 'date',
     addedToPanel: true,

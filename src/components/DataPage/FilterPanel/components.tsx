@@ -1,16 +1,22 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import debounce from 'lodash/debounce'
 import type { Filter } from 'pages/data'
 import {
   DateInputRow,
   DateLabel,
   DateTooltip,
-  FieldInput,
+  DateInputStyled,
   FieldName,
   FilterDeleteButtonContainer,
   FilterDeleteButtonStyled,
   FilterLabel,
-  FilterListItemElement,
+  FilterListItemStyled,
   FilterUIContainer,
   FilterUIContainerForTypeahead,
   XIcon,
@@ -32,7 +38,7 @@ const localizeDate = (dateString: string) => {
   return date.toLocaleDateString()
 }
 
-const dateFilterUpdateDelay = 1000
+const dateFilterUpdateDelayMilliseconds = 1000
 
 export const FilterDeleteButton = ({
   filter,
@@ -52,7 +58,7 @@ export const FilterDeleteButton = ({
   )
 }
 
-export const FilterUI = ({
+export const FilterListItem = ({
   filter,
   updateFilter,
   setFilters,
@@ -61,33 +67,33 @@ export const FilterUI = ({
   updateFilter: UpdateFilterFunction
   setFilters: Dispatch<SetStateAction<Filter[]>>
 }) => {
-  const truthyValues = (filter.values ?? []).filter(value => value)
-  const props = {
-    filter: { ...filter, values: truthyValues },
-    updateFilter,
-    setFilters,
-  }
-
-  const useTypeahead = filter.type === 'text'
-  const hasTooltip = filter.validities?.some(validity => validity === false)
-  return useTypeahead ? (
-    <FilterUIContainerForTypeahead hasTooltip={hasTooltip}>
-      <FilterTypeahead {...props} />
-    </FilterUIContainerForTypeahead>
-  ) : (
-    <FilterUIContainer hasTooltip={hasTooltip}>
-      <DateFilterInputs {...props} />
-    </FilterUIContainer>
-  )
-}
-
-export const FilterListItem = ({ children }: { children: React.ReactNode }) => {
   const [opacity, setOpacity] = useState(0)
   useEffect(() => {
     setOpacity(1)
   }, [])
+
+  const useTypeahead = filter.type === 'text'
+  const hasTooltip = filter.validities?.some(validity => validity === false)
   return (
-    <FilterListItemElement opacity={opacity}>{children}</FilterListItemElement>
+    <FilterListItemStyled opacity={opacity}>
+      {useTypeahead ? (
+        <FilterUIContainerForTypeahead hasTooltip={hasTooltip}>
+          <FilterTypeahead
+            filter={filter}
+            updateFilter={updateFilter}
+            setFilters={setFilters}
+          />
+        </FilterUIContainerForTypeahead>
+      ) : (
+        <FilterUIContainer hasTooltip={hasTooltip}>
+          <DateFilterInputs
+            filter={filter}
+            updateFilter={updateFilter}
+            setFilters={setFilters}
+          />
+        </FilterUIContainer>
+      )}
+    </FilterListItemStyled>
   )
 }
 
@@ -100,14 +106,17 @@ const DateFilterInputs = ({
   updateFilter: UpdateFilterFunction
   setFilters: Dispatch<SetStateAction<Filter[]>>
 }) => {
-  const updateFilterDebounced = debounce(updateFilter, dateFilterUpdateDelay)
+  const updateFilterDebounced = debounce(
+    updateFilter,
+    dateFilterUpdateDelayMilliseconds
+  )
 
   useEffect(() => {
     // Cancel debounce on unmount
     return () => {
       updateFilterDebounced.cancel()
     }
-  }, [])
+  }, [updateFilterDebounced])
 
   let earliestPossibleDate,
     latestPossibleDate,
@@ -148,6 +157,7 @@ const DateFilterInputs = ({
           <DateInput
             {...dateInputProps}
             index={0}
+            initialValue={filter.values?.[0]}
             ariaLabel={'Collected on this date or later'}
           />
         </DateLabel>
@@ -156,6 +166,7 @@ const DateFilterInputs = ({
           <DateInput
             {...dateInputProps}
             index={1}
+            initialValue={filter.values?.[1]}
             ariaLabel={'Collected on this date or earlier'}
           />
         </DateLabel>
@@ -182,6 +193,7 @@ type DateInputProps = {
   updateFilter: UpdateFilterFunction
   updateFilterDebounced: DebouncedFunc<UpdateFilterFunction>
   ariaLabel?: string
+  initialValue?: string
 }
 
 const DateInput = ({
@@ -192,6 +204,7 @@ const DateInput = ({
   updateFilter,
   updateFilterDebounced,
   ariaLabel,
+  initialValue,
 }: DateInputProps) => {
   const isDateValid = (dateStr?: string) => {
     if (!dateStr) return undefined
@@ -205,27 +218,36 @@ const DateInput = ({
     if (!newValue) newValue = undefined
     newValues[index] = newValue
     if (isDateValid(newValue)) {
-      updateFilter(filter.fieldId, newValues, isDateValid)
+      updateFilter(filter.id, newValues, isDateValid)
       updateFilterDebounced.cancel()
     } else {
       // When marking a date as invalid, debounce so that the field isn't
       // eagerly marked invalid as the user begins to type a valid date.
       // Check the validity again in the callback to avoid using a stale
       // value.
-      updateFilterDebounced(filter.fieldId, newValues, isDateValid)
+      updateFilterDebounced(filter.id, newValues, isDateValid)
     }
   }
 
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (inputRef.current && initialValue) {
+      inputRef.current.value = initialValue
+    }
+  }, [inputRef, initialValue])
+
   return (
     <div>
-      <FieldInput
+      <DateInputStyled
         type={'date'}
         aria-label={ariaLabel}
         min={earliestPossibleDate}
         max={latestPossibleDate}
-        onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           changeDate(index, e.target.value)
         }}
+        ref={inputRef}
       />
     </div>
   )

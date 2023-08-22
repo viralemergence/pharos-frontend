@@ -34,44 +34,31 @@ export const load = async ({
 
   const queryStringParameters = new URLSearchParams()
 
-  const fieldIdsOfAppliedFilters: string[] = []
+  const idsOfAppliedFilters: string[] = []
   for (const filter of filters) {
     if (!filter.addedToPanel) continue
     if (!filter.values) continue
     let applyThisFilter = false
-    if (filter.fieldId === 'collection_date') {
+    if (filter.id === 'collection_date') {
       const [startDate, endDate] = filter.values
       if (startDate && filter.validities?.[0] !== false) {
-        if (/,/.test(startDate)) {
-          const fixedDate = fixDate(startDate)
-          if (!fixedDate) continue
-          queryStringParameters.append('collection_start_date', fixedDate)
-        } else {
-          queryStringParameters.append('collection_start_date', startDate)
-        }
+        queryStringParameters.append('collection_start_date', startDate)
         applyThisFilter = true
       }
       if (endDate && filter.validities?.[1] !== false) {
-        if (/,/.test(endDate)) {
-          const fixedDate = fixDate(endDate)
-          if (!fixedDate) continue
-          queryStringParameters.append('collection_end_date', fixedDate)
-        } else {
-          queryStringParameters.append('collection_end_date', endDate)
-        }
+        queryStringParameters.append('collection_end_date', endDate)
         applyThisFilter = true
       }
     } else {
       const validValues = filter.values.filter(
-        (value: string | undefined) =>
-          value !== null && value !== undefined && value !== ''
+        (value: string | undefined) => value
       ) as string[]
       for (const value of validValues) {
-        queryStringParameters.append(filter.fieldId, value)
+        queryStringParameters.append(filter.id, value)
         applyThisFilter = true
       }
     }
-    if (applyThisFilter) fieldIdsOfAppliedFilters.push(filter.fieldId)
+    if (applyThisFilter) idsOfAppliedFilters.push(filter.id)
   }
 
   let pageToLoad
@@ -98,7 +85,7 @@ export const load = async ({
     setFilters(prev => {
       return prev.map(filter => ({
         ...filter,
-        applied: fieldIdsOfAppliedFilters.includes(filter.fieldId),
+        applied: idsOfAppliedFilters.includes(filter.id),
       }))
     })
   } else {
@@ -113,32 +100,3 @@ export const loadDebounced = debounce(load, loadDebounceDelay, {
 
 export const countPages = (records: Row[]) =>
   Math.floor(records.length / PAGE_SIZE)
-
-/** Convert a date formatted like 'Aug 1, 1900' into '1900-08-01' */
-const fixDate = (dateString: string) => {
-  const months = {
-    Jan: '01',
-    Feb: '02',
-    Mar: '03',
-    Apr: '04',
-    May: '05',
-    Jun: '06',
-    Jul: '07',
-    Aug: '08',
-    Sep: '09',
-    Oct: '10',
-    Nov: '11',
-    Dec: '12',
-  }
-
-  // Split the string on spaces and comma.
-  const parts = dateString.split(/[ ,]+/)
-
-  const monthAbbrev = parts[0]
-  if (!(monthAbbrev in months)) return null
-  const month = months[monthAbbrev as keyof typeof months]
-  const day = parts[1].padStart(2, '0')
-  const year = parts[2]
-
-  return `${year}/${month}/${day}`
-}

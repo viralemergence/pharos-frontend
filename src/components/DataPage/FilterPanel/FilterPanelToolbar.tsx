@@ -16,7 +16,7 @@ import {
   FilterPanelCloseButtonWithXIcon,
   FilterPanelToolbarButtonStyled,
   FilterSelectorLauncherStyled,
-  FilterPanelToolbarNav,
+  FilterPanelToolbarStyled,
   PlusIcon,
   XIcon,
 } from './DisplayComponents'
@@ -33,11 +33,11 @@ const FilterSelector = ({
 }) => {
   return (
     <FilterSelectorDiv>
-      {filters.map(({ fieldId, label, addedToPanel = false }) => (
+      {filters.map(({ id, label, addedToPanel = false }) => (
         <AddFilterToPanelButtonStyled
-          key={fieldId}
+          key={id}
           onClick={_ => {
-            addFilterUI({ fieldId })
+            addFilterUI({ id })
             setIsDropdownOpen(false)
           }}
           disabled={addedToPanel}
@@ -93,7 +93,7 @@ export const removeOneFilter = (
   setFilters(prev =>
     prev.map(f => ({
       ...f,
-      ...(f.fieldId === filter.fieldId ? filterDefaultProperties : {}),
+      ...(f.id === filter.id ? filterDefaultProperties : {}),
     }))
   )
 }
@@ -123,7 +123,7 @@ const FilterPanelToolbar = ({
 
   return (
     <>
-      <FilterPanelToolbarNav>
+      <FilterPanelToolbarStyled>
         <FilterPanelCloseButtonWithBackIcon
           onClick={() => setIsFilterPanelOpen(false)}
           aria-label="Close the Filters panel"
@@ -132,6 +132,7 @@ const FilterPanelToolbar = ({
         </FilterPanelCloseButtonWithBackIcon>
         <Dropdown
           open={isDropdownOpen}
+          expanderStyle={{ transform: 'translateX(-1px)' }}
           setOpen={setIsDropdownOpen}
           renderButton={(open: boolean) => (
             <FilterSelectorLauncher
@@ -146,19 +147,18 @@ const FilterPanelToolbar = ({
           <FilterSelector
             filters={filters}
             setIsDropdownOpen={setIsDropdownOpen}
-            addFilterUI={({ fieldId }) => {
+            addFilterUI={({ id }) => {
               setFilters(filters => {
                 const highestPanelIndex = Math.max(
                   ...filters.map(panel => panel.panelIndex)
                 )
                 return filters.map(f => {
-                  if (f.fieldId !== fieldId) return f
+                  if (f.id !== id) return f
                   const newlyAddedFilter: Filter = {
                     ...f,
                     addedToPanel: true,
                     values: [],
                     panelIndex: highestPanelIndex + 1,
-                    tooltipOrientation: 'bottom',
                   }
                   if (newlyAddedFilter.type === 'date') {
                     newlyAddedFilter.validities = [undefined, undefined]
@@ -183,22 +183,21 @@ const FilterPanelToolbar = ({
           onClick={() => setIsFilterPanelOpen(false)}
           aria-label="Close the Filters panel"
         >
-          <XIcon extraStyle="width: 18px; height: 18px;" />
+          <XIcon extraStyle="width: 16px; height: 16px;" />
         </FilterPanelCloseButtonWithXIcon>
-      </FilterPanelToolbarNav>
+      </FilterPanelToolbarStyled>
     </>
   )
 }
 
-/** When a filter is cleared from the panel, it receives these default properties */
+/** When a filter is removed from the panel, it receives these default properties */
 export const filterDefaultProperties = {
   values: undefined,
   addedToPanel: false,
-  /** When a filter is added to the panel, it receives a new panelIndex (zero
-   * or greater), indicating its order in the panel. */
+  /** When a filter is added to the panel, it will receive a new panelIndex
+   * (zero or greater), indicating its order in the panel. */
   panelIndex: -1,
   applied: false,
-  tooltipOrientation: undefined,
   validities: undefined,
 }
 

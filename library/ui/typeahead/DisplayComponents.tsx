@@ -1,6 +1,8 @@
 import styled from 'styled-components'
 
-export const Container = styled.form<{ borderColor: string }>`
+export const Container = styled.form<{
+  borderColor: string
+}>`
   position: relative;
   margin-top: 0.5rem;
   background-color: #fff;
@@ -40,11 +42,15 @@ export const Container = styled.form<{ borderColor: string }>`
       background-color: ${({ borderColor }) =>
         borderColor ? borderColor : `rgb(211, 211, 211)`};
       opacity: 0.33;
+      height: 2px;
       transition-delay: 0s;
     }
   }
 `
-export const SearchBar = styled.input<{ iconLeft: boolean; fontColor: string }>`
+export const SearchBar = styled.input<{
+  iconLeft: boolean
+  fontColor: string
+}>`
   border: none;
   width: 100%;
   border-radius: 5px;

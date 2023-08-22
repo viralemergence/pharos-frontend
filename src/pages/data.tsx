@@ -18,7 +18,7 @@ import {
 } from 'components/DataPage/DisplayComponents'
 
 export type Filter = {
-  fieldId: string
+  id: string
   label: string
   type: 'text' | 'date'
   /** In the table (a.k.a. 'data grid') each column has a distinct id a.k.a.
@@ -51,7 +51,6 @@ export type Filter = {
    * date, validities will be [true, false]. If an input has no value its
    * validity will be undefined. */
   validities?: (boolean | undefined)[]
-  tooltipOrientation?: 'bottom' | 'top'
 }
 
 const METADATA_URL = `${process.env.GATSBY_API_URL}/metadata-for-published-records`
@@ -98,8 +97,8 @@ const DataPage = ({
       return
     }
     const filters = Object.entries(data.possibleFilters).map(
-      ([fieldId, filter]) => ({
-        fieldId,
+      ([id, filter]) => ({
+        id,
         type: filter.type || 'text',
         ...filterDefaultProperties,
         ...filter,
@@ -150,12 +149,14 @@ const DataPage = ({
             filters={filters}
           />
           <ViewMain isFilterPanelOpen={isFilterPanelOpen}>
-            <FilterPanel
-              filters={filters}
-              setFilters={setFilters}
-              isFilterPanelOpen={isFilterPanelOpen}
-              setIsFilterPanelOpen={setIsFilterPanelOpen}
-            />
+            {view === View.table && (
+              <FilterPanel
+                filters={filters}
+                setFilters={setFilters}
+                isFilterPanelOpen={isFilterPanelOpen}
+                setIsFilterPanelOpen={setIsFilterPanelOpen}
+              />
+            )}
             <TableView
               filters={filters}
               setFilters={setFilters}

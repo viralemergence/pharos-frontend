@@ -70,7 +70,7 @@ export const DateLabel = styled.label`
   }
 `
 
-export const FilterPanelToolbarNav = styled.nav`
+export const FilterPanelToolbarStyled = styled.nav`
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
@@ -85,6 +85,7 @@ export const FilterPanelToolbarNav = styled.nav`
   @media (max-width: ${({ theme }) => theme.breakpoints.mobileMaxWidth}) {
     gap: 5px;
   }
+  z-index: 20;
 `
 
 export const FilterSelectorMessage = styled.div`
@@ -95,6 +96,7 @@ export const FilterSelectorMessage = styled.div`
 
 export const FilterPanelButton = styled.button`
   ${props => props.theme.smallParagraph};
+
   padding: 10px 15px;
   text-align: left;
   background-color: transparent;
@@ -103,6 +105,9 @@ export const FilterPanelButton = styled.button`
   cursor: pointer;
   &:hover {
     background-color: ${({ theme }) => theme.white20PercentOpacity};
+  }
+  &:focus {
+    outline: 1px solid ${({ theme }) => theme.white};
   }
 `
 
@@ -199,9 +204,9 @@ export const FilterPanelCloseButtonWithXIcon = styled(FilterPanelCloseButton)`
   }
 `
 
-export const FilterListItemElement = styled.li<{ opacity: number }>`
+export const FilterListItemStyled = styled.li<{ opacity: number }>`
   list-style: none;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   opacity: ${({ opacity }) => opacity};
   transition: opacity 0.25s;
   &:last-child {
@@ -270,13 +275,14 @@ export const FilterUIContainerForTypeahead = styled(FilterUIContainer)`
 
 const panelWidth = '410px'
 
-export const Panel = styled.aside<{ open: boolean }>`
+export const FilterPanelStyled = styled.aside<{ open: boolean }>`
   pointer-events: auto;
   position: relative;
   backdrop-filter: blur(47px);
   background-color: ${({ theme }) => theme.white10PercentOpacity};
   border: 1px solid ${({ theme }) => theme.white10PercentOpacity};
   color: ${({ theme }) => theme.white};
+  color-scheme: dark;
   display: flex;
   height: 100%;
   max-height: 100%;
@@ -304,7 +310,7 @@ export const Panel = styled.aside<{ open: boolean }>`
   }
 `
 
-export const FieldInput = styled.input`
+export const DateInputStyled = styled.input`
   ${({ theme }) => theme.smallParagraph};
   background-color: ${({ theme }) => theme.mutedPurple1};
   border-radius: 5px;
@@ -332,7 +338,7 @@ export const DateTooltip = styled.aside<{
   border: 1px solid ${({ theme }) => theme.black};
   padding: 5px 10px;
   position: absolute;
-  width: 330px;
+  width: 304px;
   text-align: center;
   transform: translateY(10px);
   animation: fadeIn 0.15s forwards;

@@ -7,6 +7,7 @@ import React, {
 } from 'react'
 import styled from 'styled-components'
 import DataGrid, { Column, DataGridHandle } from 'react-data-grid'
+import { transparentize } from 'polished'
 
 import LoadingSpinner from './LoadingSpinner'
 import type { Filter } from 'pages/data'
@@ -20,15 +21,12 @@ const TableViewContainer = styled.div<{
   isOpen: boolean
   isFilterPanelOpen: boolean
 }>`
-  pointer-events: auto;
-  display: ${({ isOpen }) => (isOpen ? 'grid' : 'none')};
+  pointer-events: ${({ isOpen }) => (isOpen ? 'auto' : 'none')};
+  display: grid;
   padding: 0 30px;
   flex: 1;
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
     padding: 0 10px;
-    // On mobiles and tablets, hide the table when the filter panel is open
-    ${({ isFilterPanelOpen }) =>
-      isFilterPanelOpen ? 'display: none ! important;' : ''}
   }
 `
 const TableContainer = styled.div`
@@ -36,28 +34,38 @@ const TableContainer = styled.div`
   display: flex;
   flex-flow: column nowrap;
 `
-const FillDatasetGrid = styled(DataGrid)`
+const FillDatasetGrid = styled(DataGrid)<{ isFilterPanelOpen: boolean }>`
+  --rdg-border-color: ${({ theme }) => transparentize(0.7, theme.medGray)};
+  --rdg-background-color: ${({ theme }) => theme.mutedPurple1};
+  --rdg-header-background-color: ${({ theme }) => theme.mutedPurple3};
+  --rdg-row-hover-background-color: ${({ theme }) => theme.mutedPurple2};
+
+  ${({ theme }) => theme.gridText};
+
   color-scheme: only dark;
   border: 0;
   flex-grow: 1;
   block-size: 100px;
-  background: ${({ theme }) => theme.mutedPurple1};
+  background-color: var(--rdg-background-color);
+
   .rdg-cell {
-    background-color: ${({ theme }) => theme.mutedPurple1};
-    // TODO: Put this color in the figma color file
-    border-color: rgba(216, 218, 220, 0.3);
-    &[aria-colindex='1'],
-    &[role='columnheader'] {
-      background-color: ${({ theme }) => theme.mutedPurple3};
-    }
+    padding-inline: 10px;
     &[aria-colindex='1'] {
       text-align: center;
+      background-color: var(--rdg-header-background-color);
     }
     &.in-filtered-column {
       background-color: ${({ theme }) => theme.tableContentHighlight};
     }
   }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    // On mobiles and tablets, hide the table when the filter panel is open
+    ${({ isFilterPanelOpen }) =>
+      isFilterPanelOpen ? 'display: none ! important;' : ''}
+  }
 `
+
 const LoadingMessage = styled.div`
   ${({ theme }) => theme.gridText}
   position: absolute;
@@ -68,25 +76,28 @@ const LoadingMessage = styled.div`
   padding: 15px 30px;
   text-align: center;
   backdrop-filter: blur(5px);
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: ${({ theme }) => transparentize(0.5, theme.black)};
   border-top-left-radius: 5px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  border-top: 1px solid ${({ theme }) => theme.white10PercentOpacity};
+  border-left: 1px solid ${({ theme }) => theme.white10PercentOpacity};
+  box-shadow: 0 0 10px ${({ theme }) => transparentize(0.5, theme.black)};
   display: flex;
   align-items: center;
   gap: 10px;
+  z-index: 100; // Above filter panel
 `
 const NoRecordsFound = styled.div`
   ${({ theme }) => theme.bigParagraphSemibold};
-  margin: 30px auto;
   color: ${({ theme }) => theme.white};
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: ${({ theme }) => transparentize(0.6, theme.black)};
   border-radius: 5px;
   padding: 30px;
-  width: 90%;
   display: flex;
+  width: min(400px, 100%);
+  margin: auto;
+  height: 100px;
   justify-content: center;
+  align-items: center;
 `
 
 interface TableViewProps {
@@ -127,7 +138,7 @@ const TableView = ({
   const stringifiedFiltersWithValues = JSON.stringify(
     addedFilters
       .filter(f => f.values?.length)
-      .map(({ fieldId, values }) => ({ fieldId, values }))
+      .map(({ id, values }) => ({ id, values }))
   )
 
   /** This ref ensures that if the GET request that just finished is not the
@@ -153,7 +164,8 @@ const TableView = ({
     setRecords,
   }
 
-  // Load the first page of results when TableView mounts and when the filters' values have changed
+  // Load the first page of results when TableView mounts or when the filters'
+  // values have changed
   useEffect(() => {
     loadDebounced({ ...loadOptions, replaceRecords: true })
   }, [stringifiedFiltersWithValues])
@@ -186,14 +198,12 @@ const TableView = ({
       .map(key => ({
         key: key,
         name: key,
-        width: key.length * 7.5 + 15 + 'px',
+        width: key.length * 10 + 15 + 'px',
         resizable: true,
         cellClass: keysOfFilteredColumns.includes(key)
           ? 'in-filtered-column'
           : undefined,
-        ...(key in formatters
-          ? { formatter: formatters[key as keyof typeof formatters] }
-          : {}),
+        formatter: formatters[key],
       })),
   ]
 
@@ -206,9 +216,16 @@ const TableView = ({
       load({ ...loadOptions, replaceRecords: false })
   }
 
+  const initialLoadHasOccurredRef = useRef(false)
   // When records finish loading, remove the 'Loading...' indicator
   useEffect(() => {
-    setLoading(false)
+    if (initialLoadHasOccurredRef.current || records.length > 0) {
+      setLoading(false)
+    }
+
+    if (records.length > 0) {
+      initialLoadHasOccurredRef.current = true
+    }
 
     // If the table just loaded the first page of records and the grid is
     // scrolled to the bottom, scroll to the top to avoid loading another page.
@@ -226,17 +243,19 @@ const TableView = ({
   return (
     <TableViewContainer isOpen={isOpen} isFilterPanelOpen={isFilterPanelOpen}>
       <TableContainer>
-        {!loading && records.length === 0 && appliedFilters.length > 0 && (
-          <NoRecordsFound role="status">
-            No matching records found.
-          </NoRecordsFound>
-        )}
-        {records.length > 0 && (
+        {isOpen &&
+          !loading &&
+          records.length === 0 &&
+          appliedFilters.length > 0 && (
+            <NoRecordsFound role="status">
+              No matching records found.
+            </NoRecordsFound>
+          )}
+        {isOpen && records.length > 0 && (
           // @ts-expect-error: I'm copying this from the docs, but it doesn't
           // look like their type definitions work
           <FillDatasetGrid
             className={'rdg-dark'}
-            style={{ fontFamily: 'Inconsolata' }}
             columns={columns}
             rows={records}
             onScroll={handleScroll}
@@ -245,6 +264,8 @@ const TableView = ({
             role="grid"
             data-testid="datagrid"
             ref={dataGridHandle}
+            rowHeight={41}
+            isFilterPanelOpen={isFilterPanelOpen}
           />
         )}
         {loading && (
