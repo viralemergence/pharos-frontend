@@ -164,22 +164,23 @@ const DateRange = ({
   }
 
   const updateDateFilter: UpdateDateFilterFunction = (filterId, dateStr) => {
-    const shouldDebounce = !isDateValid(dateStr, dateMin, dateMax)
+    const valid = isDateValid(dateStr, dateMin, dateMax)
     const updateOptions = {
       id: filterId,
       newValues: [dateStr],
-      // Check the validity in the callback to avoid using a stale value.
-      isDateValid: (dateStr: string) => isDateValid(dateStr, dateMin, dateMax),
+      valid,
     }
-    if (shouldDebounce) {
-      // When marking a date as invalid, debounce so that the field isn't
-      // eagerly marked invalid as the user begins to type a valid date.
-      updateFilterDebounced(updateOptions)
-    } else {
+    if (valid) {
       updateFilter(updateOptions)
       updateFilterDebounced.cancel()
+    } else {
+      // If the date is invalid, debounce the update, so that the field isn't
+      // eagerly marked invalid while the user is still typing
+      updateFilterDebounced(updateOptions)
     }
   }
+  const isStartDateInvalid = !startDateFilter.valid
+  const isEndDateInvalid = !endDateFilter.valid
 
   return (
     <FilterLabel>
@@ -210,18 +211,15 @@ const DateRange = ({
           setFilters={setFilters}
         />
       </DateInputRow>
-      {(!startDateFilter.valid || !endDateFilter.valid) &&
-        dateMin &&
-        dateMax && (
-          <DateTooltip
-            isStartDateInvalid={!startDateFilter.valid}
-            isEndDateInvalid={!endDateFilter.valid}
-          >
-            Dates must be between
-            <LocalizedDate dateString={dateMin} /> and
-            <LocalizedDate dateString={dateMax} />
-          </DateTooltip>
-        )}
+      {(isStartDateInvalid || isEndDateInvalid) && dateMin && dateMax && (
+        <DateTooltip
+          isStartDateInvalid={isStartDateInvalid}
+          isEndDateInvalid={isEndDateInvalid}
+        >
+          Dates must be between <LocalizedDate dateString={dateMin} /> and{' '}
+          <LocalizedDate dateString={dateMax} />
+        </DateTooltip>
+      )}
     </FilterLabel>
   )
 }
