@@ -62,6 +62,14 @@ export const FieldName = styled.div`
   margin-bottom: 5px;
 `
 
+export const DateLabel = styled.label`
+  text-transform: uppercase;
+  font-size: 9pt;
+  span {
+    opacity: 0.7;
+  }
+`
+
 export const FilterPanelToolbarNav = styled.nav`
   display: flex;
   flex-flow: row wrap;
@@ -272,10 +280,19 @@ export const FieldInput = styled.input`
   color: ${({ theme }) => theme.white};
   font-weight: 600;
   padding: 8px 10px;
+  width: 160px;
+  height: 45px;
+  &:invalid {
+    border-color: ${({ theme }) => theme.red};
+  }
 `
 
-export const DateTooltip = styled.aside`
+export const DateTooltip = styled.aside<{
+  isStartDateInvalid: boolean
+  isEndDateInvalid: boolean
+}>`
   ${({ theme }) => theme.extraSmallParagraph};
+  font-size: 9pt;
   background-color: ${({ theme }) => theme.white};
   border-radius: 5px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1), 0px 1px 3px rgba(0, 0, 0, 0.2);
@@ -288,6 +305,16 @@ export const DateTooltip = styled.aside`
   transform: translateY(10px);
   animation: fadeIn 0.15s forwards;
   &::before {
+    display: ${({ isStartDateInvalid }) =>
+      isStartDateInvalid ? 'flex' : 'none'};
+    transform: translateX(-500%);
+  }
+  &::after {
+    display: ${({ isEndDateInvalid }) => (isEndDateInvalid ? 'flex' : 'none')};
+    transform: translateX(400%);
+  }
+  &::before,
+  &::after {
     border-bottom: 10px solid ${({ theme }) => theme.white};
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
@@ -295,14 +322,13 @@ export const DateTooltip = styled.aside`
     height: 0;
     left: 50%;
     position: absolute;
-    top: -10px;
-    transform: translateX(-700%);
+    top: -9px;
     width: 0;
   }
   @keyframes fadeIn {
     from {
       opacity: 0;
-      transform: translateY(9px) scale(0.95);
+      transform: translateY(9px) scale(0.925);
     }
     to {
       opacity: 1;
@@ -385,4 +411,10 @@ export const DataToolbarDiv = styled.div<{ isFilterPanelOpen: boolean }>`
     padding: 10px;
     ${({ isFilterPanelOpen }) => (isFilterPanelOpen ? 'display: none' : '')}
   }
+`
+
+export const DateInputRow = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 8px;
 `
