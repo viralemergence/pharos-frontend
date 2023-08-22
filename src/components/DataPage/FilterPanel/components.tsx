@@ -1,4 +1,10 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import debounce from 'lodash/debounce'
 import type { Filter } from 'pages/data'
 import {
@@ -179,8 +185,15 @@ const DateRange = ({
       updateFilterDebounced(updateOptions)
     }
   }
+
   const isStartDateInvalid = !startDateFilter.valid
   const isEndDateInvalid = !endDateFilter.valid
+
+  // Used for aria-described-by
+  const tooltipId = useMemo(
+    () => `date-range-tooltip-${Math.random().toString(36).slice(2)}`,
+    []
+  )
 
   return (
     <FilterLabel>
@@ -194,6 +207,7 @@ const DateRange = ({
             ariaLabel={'Collected on this date or later'}
             dateMin={dateMin}
             dateMax={dateMax}
+            aria-described-by={isStartDateInvalid ? tooltipId : undefined}
           />
         </DateLabel>
         <DateLabel>
@@ -204,6 +218,7 @@ const DateRange = ({
             ariaLabel={'Collected on this date or earlier'}
             dateMin={dateMin}
             dateMax={dateMax}
+            aria-described-by={isEndDateInvalid ? tooltipId : undefined}
           />
         </DateLabel>
         <FilterDeleteButton
@@ -215,6 +230,8 @@ const DateRange = ({
         <DateTooltip
           isStartDateInvalid={isStartDateInvalid}
           isEndDateInvalid={isEndDateInvalid}
+          role={'tooltip'}
+          id={tooltipId}
         >
           Dates must be between <LocalizedDate dateString={dateMin} /> and{' '}
           <LocalizedDate dateString={dateMax} />
@@ -251,7 +268,6 @@ const DateInput = ({
         max={dateMax}
         value={value}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          console.log('onchange')
           setValue(e.target.value)
           updateDateFilter(filter.id, e.target.value)
         }}

@@ -267,22 +267,20 @@ describe('The public data page', () => {
   }, 10000)
 
   it('does not filter by a date if it is invalid', async () => {
-    // @ts-ignore
-    globalThis.IS_REACT_ACT_ENVIRONMENT = true
-    const user = userEvent.setup()
     render(<DataPage />)
     fireEvent.click(getTableViewButton())
     fireEvent.click(getFilterPanelToggleButton())
     fireEvent.click(getAddFilterButton())
     fireEvent.click(await screen.findByText('Collection date'))
-    const filterInput = screen.getByLabelText('Collected on this date or later')
+    const filterInput = screen.getByLabelText<HTMLInputElement>(
+      'Collected on this date or later'
+    )
     expect(filterInput).toBeInTheDocument()
     await act(async () => {
-      await user.type(filterInput, '01011800')
-      const tooltip = await screen.findByText('Dates must be between')
-      expect(tooltip).toBeInTheDocument()
+      fireEvent.change(filterInput, { target: { value: '1800-01-01' } })
     })
-    return
+    const tooltip = await screen.findByRole('tooltip')
+    expect(tooltip).toBeInTheDocument()
     const grid = await getDataGridAfterWaiting()
     await waitFor(() => {
       expect(grid).toHaveAttribute('aria-rowcount', '51')
