@@ -8,9 +8,10 @@ import React, {
 } from 'react'
 import debounce from 'lodash/debounce'
 import styled from 'styled-components'
-import DataGrid, { Column } from 'react-data-grid'
+import DataGrid, { Column, DataGridHandle } from 'react-data-grid'
 
 import LoadingSpinner from './LoadingSpinner'
+import type { Filter } from 'pages/data'
 import isNormalObject from 'utilities/isNormalObject'
 
 const loadDebounceDelay = 300
@@ -75,8 +76,8 @@ const LoadingMessage = styled.div`
   backdrop-filter: blur(5px);
   background-color: rgba(0, 0, 0, 0.5);
   border-top-left-radius: 5px;
-  border-top: 1px solid ${({ theme }) => theme.white10PercentOpacity};
-  border-left: 1px solid ${({ theme }) => theme.white10PercentOpacity};
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
@@ -95,6 +96,8 @@ const NoRecordsFound = styled.div`
 `
 
 interface TableViewProps {
+  filters: Filter[]
+  setFilters: Dispatch<SetStateAction<Filter[]>>
   isOpen?: boolean
   isFilterPanelOpen?: boolean
   /** Virtualization should be disabled in tests via this prop, so that all the
@@ -102,32 +105,50 @@ interface TableViewProps {
   enableVirtualization?: boolean
 }
 
-const divIsAtBottom = ({ currentTarget }: React.UIEvent<HTMLDivElement>) =>
-  currentTarget.scrollTop + 10 >=
-  currentTarget.scrollHeight - currentTarget.clientHeight
+const divIsScrolledToBottom = (div: HTMLDivElement) =>
+  div.scrollTop + 10 >= div.scrollHeight - div.clientHeight
 
 const rowKeyGetter = (row: Row) => row.pharosID
+
+const countPages = (records: Row[]) => Math.floor(records.length / PAGE_SIZE)
 
 /** Load published records. This function prepares the query string and calls
  * fetchRecords() to retrieve records from the API. */
 const load = async ({
   records,
   replaceRecords = false,
+  filters = [],
   setLoading,
+  setFilters,
   latestRecordsRequestIdRef,
   setReachedLastPage,
   setRecords,
 }: {
   records: Row[]
   replaceRecords?: boolean
-  setLoading: Dispatch<SetStateAction<boolean>>
+  filters?: Filter[]
+  setLoading: Dispatch<SetStateAction<LoadingState>>
+  setFilters: Dispatch<SetStateAction<Filter[]>>
   latestRecordsRequestIdRef: MutableRefObject<number>
   setReachedLastPage: Dispatch<SetStateAction<boolean>>
   setRecords: Dispatch<SetStateAction<Row[]>>
 }) => {
-  setLoading(true)
+  setLoading(replaceRecords ? 'replacing' : 'appending')
 
   const queryStringParameters = new URLSearchParams()
+
+  const fieldIdsOfAppliedFilters: string[] = []
+  for (const filter of filters) {
+    if (!filter.addedToPanel) continue
+    if (!filter.values) continue
+    const validValues = filter.values.filter(
+      (value: string) => value !== null && value !== undefined && value !== ''
+    )
+    for (const value of validValues) {
+      queryStringParameters.append(filter.fieldId, value)
+    }
+    if (validValues.length > 0) fieldIdsOfAppliedFilters.push(filter.fieldId)
+  }
 
   let pageToLoad
   if (replaceRecords) {
@@ -136,13 +157,12 @@ const load = async ({
     // If we're not replacing the current set of records, load the next
     // page. For example, if there are 100 records, load page 3 (i.e., the
     // records numbered from 101 to 150)
-    pageToLoad = Math.floor(records.length / PAGE_SIZE) + 1
+    pageToLoad = countPages(records) + 1
   }
-
   queryStringParameters.append('page', pageToLoad.toString())
   queryStringParameters.append('pageSize', PAGE_SIZE.toString())
 
-  await fetchRecords({
+  const success = await fetchRecords({
     queryStringParameters,
     replaceRecords,
     latestRecordsRequestIdRef,
@@ -150,7 +170,16 @@ const load = async ({
     setReachedLastPage,
   })
 
-  setLoading(false)
+  if (success) {
+    setFilters(prev =>
+      prev.map(filter => ({
+        ...filter,
+        applied: fieldIdsOfAppliedFilters.includes(filter.fieldId),
+      }))
+    )
+  } else {
+    setLoading(false)
+  }
 }
 
 /**
@@ -191,7 +220,7 @@ const fetchRecords = async ({
     console.log(`GET ${url}: malformed response`)
     return false
   }
-  setRecords(prev => {
+  setRecords((prev: Row[]) => {
     let records = data.publishedRecords
     if (!replaceRecords) {
       // Ensure that no two records have the same id
@@ -219,14 +248,31 @@ const loadDebounced = debounce(load, loadDebounceDelay, {
   trailing: true,
 })
 
+type LoadingState = false | 'appending' | 'replacing'
+
 const TableView = ({
+  filters,
+  setFilters,
   isOpen = true,
   isFilterPanelOpen = false,
   enableVirtualization = true,
 }: TableViewProps) => {
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState<LoadingState>('replacing')
   const [records, setRecords] = useState<Row[]>([])
   const [reachedLastPage, setReachedLastPage] = useState(false)
+
+  /** Filters that have been added to the panel */
+  const addedFilters = filters.filter(f => f.addedToPanel)
+
+  /** Filters that have been applied to the table */
+  const appliedFilters = filters.filter(f => f.applied)
+
+  // This is used as a dependency in a useEffect hook below
+  const stringifiedFiltersWithValues = JSON.stringify(
+    addedFilters
+      .filter(f => f.values?.length)
+      .map(({ fieldId, values }) => ({ fieldId, values }))
+  )
 
   /** This ref ensures that if the GET request that just finished is not the
    * latest GET request for published records, then the response is discarded.
@@ -237,17 +283,29 @@ const TableView = ({
    * since it is not the latest request.)  */
   const latestRecordsRequestIdRef = useRef(0)
 
+  /** This ref will be set to a handle exposed by DataGrid, which allows access
+   * to the underlying div */
+  const dataGridHandle = useRef<DataGridHandle>(null)
+
   const loadOptions = {
+    filters,
     latestRecordsRequestIdRef,
     records,
+    setFilters,
     setLoading,
     setReachedLastPage,
     setRecords,
   }
 
-  // Load the first page of results when TableView mounts
+  // Load the first page of results when TableView mounts and when the filters' values have changed
   useEffect(() => {
     loadDebounced({ ...loadOptions, replaceRecords: true })
+  }, [stringifiedFiltersWithValues])
+
+  useEffect(() => {
+    return () => {
+      loadDebounced.cancel()
+    }
   }, [])
 
   const rowNumberColumn = {
@@ -259,6 +317,12 @@ const TableView = ({
     width: 55,
   }
 
+  const keysOfFilteredColumns = addedFilters.reduce<string[]>(
+    (keys, { applied, dataGridKey }) =>
+      applied ? [...keys, dataGridKey] : keys,
+    []
+  )
+
   const columns: readonly Column<Row>[] = [
     rowNumberColumn,
     ...Object.keys(records?.[0] ?? {})
@@ -268,6 +332,9 @@ const TableView = ({
         name: key,
         width: key.length * 7.5 + 15 + 'px',
         resizable: true,
+        cellClass: keysOfFilteredColumns.includes(key)
+          ? 'in-filtered-column'
+          : undefined,
         ...(key in formatters
           ? { formatter: formatters[key as keyof typeof formatters] }
           : {}),
@@ -275,16 +342,37 @@ const TableView = ({
   ]
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
-    if (!loading && !reachedLastPage && divIsAtBottom(event))
-      load({ ...loadOptions, records, replaceRecords: false })
+    if (
+      !loading &&
+      !reachedLastPage &&
+      divIsScrolledToBottom(event.currentTarget)
+    )
+      load({ ...loadOptions, replaceRecords: false })
   }
+
+  // When records finish loading, remove the 'Loading...' indicator
+  useEffect(() => {
+    setLoading(false)
+
+    // If the table just loaded the first page of records and the grid is
+    // scrolled to the bottom, scroll to the top to avoid loading another page.
+    // ".element" comes from react-data-grid.
+    const dataGrid = dataGridHandle.current?.element
+    if (
+      dataGrid &&
+      countPages(records) === 1 &&
+      divIsScrolledToBottom(dataGrid)
+    ) {
+      dataGrid.scrollTop = 0
+    }
+  }, [records])
 
   return (
     <TableViewContainer isOpen={isOpen} isFilterPanelOpen={isFilterPanelOpen}>
       <TableContainer>
-        {!loading && records.length === 0 && (
+        {!loading && records.length === 0 && appliedFilters.length > 0 && (
           <NoRecordsFound role="status">
-            {'No records have been published.'}
+            No matching records found.
           </NoRecordsFound>
         )}
         {records.length > 0 && (
@@ -300,11 +388,12 @@ const TableView = ({
             enableVirtualization={enableVirtualization}
             role="grid"
             data-testid="datagrid"
+            ref={dataGridHandle}
           />
         )}
         {loading && (
           <LoadingMessage>
-            <LoadingSpinner /> Loading {records.length > 0 && ' more rows'}
+            <LoadingSpinner /> Loading {loading === 'appending' && ' more rows'}
           </LoadingMessage>
         )}
       </TableContainer>

@@ -8,6 +8,7 @@ import MapView, { MapProjection } from 'components/DataPage/MapView/MapView'
 import TableView from 'components/DataPage/TableView/TableView'
 import DataToolbar, { View, isView } from 'components/DataPage/Toolbar/Toolbar'
 import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
+import { filterDefaultProperties } from 'components/DataPage/FilterPanel/FilterPanelToolbar'
 import {
   MapOverlay,
   PageContainer,
@@ -20,8 +21,34 @@ export type Filter = {
   fieldId: string
   label: string
   type: 'text' | 'date'
+  /** In the table (a.k.a. 'data grid') each column has a distinct id a.k.a.
+   * 'key'. The dataGridKey of a Filter is the key of its associated column. */
   dataGridKey: string
+  /** The different possible values for a filter - relevant for typeahead fields. */
   options: string[]
+  /** A filter has been 'added to the panel' when the panel contains an input
+   * (such as a date input or a typeahead) for setting the filter's values. */
+  addedToPanel?: boolean
+  /** To filter on a specific field, the user sets values for the filter. For
+   * example, the host_species filter could receive the value "Bear". */
+  values?: string[]
+  /** If a filter has been 'applied', this means that it has been applied to
+   * the list of records shown in the table, so that only records matching the
+   * filter are shown in the table. For example, if the user sets host_species
+   * to ['Bear'], then, once the table has been populated with bears and bears
+   * only, the host_species filter's 'applied' property will be set to true. */
+  applied?: boolean
+  /* This number determines the order of the filters in the panel. */
+  panelIndex: number
+  /** The historically earliest collection date that appears among the
+   * published records. Only date filters have this property. */
+  earliestDateUsed?: string
+  /** The historically latest, furthest-into-the-future collection date that
+   * appears among the published records. Only date filters have this property.
+   * */
+  latestDateUsed?: string
+  inputIsValid?: boolean
+  tooltipOrientation?: 'bottom' | 'top'
 }
 
 const METADATA_URL = `${process.env.GATSBY_API_URL}/metadata-for-published-records`
@@ -70,6 +97,7 @@ const DataPage = ({
     const filters = Object.entries(data.fields).map(([fieldId, filter]) => ({
       fieldId,
       type: filter.type || 'text',
+      ...filterDefaultProperties,
       ...filter,
     }))
     setFilters(filters)
@@ -78,16 +106,19 @@ const DataPage = ({
   useEffect(() => {
     const hash = window.location.hash.replace('#', '')
     if (isView(hash)) changeView(hash, false)
+  }, [changeView])
+
+  useEffect(() => {
     fetchMetadata()
-  }, [changeView, fetchMetadata])
+  }, [])
 
   useEffect(() => {
     if (isFilterPanelOpen) {
       setScreenReaderAnnouncement(
         prev =>
           'Filters panel opened' +
-          // Alternate adding and removing a period to ensure that the screen
-          // reader reads the announcement
+          // Alternate adding and removing a period to make the screen
+          // reader read the announcement
           (prev.endsWith('.') ? '' : '.')
       )
     }
@@ -111,14 +142,18 @@ const DataPage = ({
             changeView={changeView}
             isFilterPanelOpen={isFilterPanelOpen}
             setIsFilterPanelOpen={setIsFilterPanelOpen}
+            filters={filters}
           />
           <ViewMain isFilterPanelOpen={isFilterPanelOpen}>
             <FilterPanel
               filters={filters}
+              setFilters={setFilters}
               isFilterPanelOpen={isFilterPanelOpen}
               setIsFilterPanelOpen={setIsFilterPanelOpen}
             />
             <TableView
+              filters={filters}
+              setFilters={setFilters}
               isOpen={view === View.table}
               isFilterPanelOpen={isFilterPanelOpen}
               enableVirtualization={enableTableVirtualization}

@@ -3482,6 +3482,7 @@ const handlers = [
 ]
 
 // Define some alternative handlers for use in specific tests
+
 const routeThatReturnsNoPublishedRecords = rest.get(
   `${process.env.GATSBY_API_URL}/published-records`,
   async (_req, res, ctx) => {

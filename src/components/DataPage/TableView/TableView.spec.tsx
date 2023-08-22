@@ -22,31 +22,52 @@ jest.mock('cmsHooks/useSignInPageData', () => jest.fn())
 jest.mock('cmsHooks/useSiteMetadataQuery', () => jest.fn())
 
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 
-import { server } from '../../../../test/server'
-import { routeThatReturnsNoPublishedRecords } from '../../../../test/serverHandlers'
 import Providers from 'components/layout/Providers'
-
 import TableView from './TableView'
+import { Filter } from 'pages/data'
 
 describe('The public data table', () => {
+  const getDataGridAfterWaiting = async () =>
+    await screen.findByTestId('datagrid')
+
   it('renders', () => {
     render(
       <Providers>
-        <TableView />
+        <TableView filters={[]} setFilters={jest.fn()} />
       </Providers>
     )
   })
 
-  it('displays a message if there are no published records', async () => {
-    server.use(routeThatReturnsNoPublishedRecords)
+  const startDateFilter: Filter = {
+    fieldId: 'collection_start_date',
+    label: 'Collected on or after',
+    type: 'date',
+    values: [],
+    addedToPanel: true,
+    dataGridKey: 'Collection date',
+    options: [],
+    panelIndex: 0,
+  }
+
+  const startDateFilterMarch2020: Filter = {
+    ...startDateFilter,
+    values: ['2020-03-01'],
+  }
+
+  it('can be filtered by collection start date', async () => {
     render(
       <Providers>
-        <TableView />
+        <TableView
+          filters={[startDateFilterMarch2020]}
+          setFilters={jest.fn()}
+        />
       </Providers>
     )
-    const message = await screen.findByText('No records have been published.')
-    expect(message).toBeInTheDocument()
+    const grid = await getDataGridAfterWaiting()
+    await waitFor(() => {
+      expect(grid).toHaveAttribute('aria-rowcount', '41')
+    })
   })
 })

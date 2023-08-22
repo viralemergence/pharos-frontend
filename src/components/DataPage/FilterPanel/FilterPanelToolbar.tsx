@@ -14,6 +14,7 @@ import {
   FilterSelectorMessage,
   FilterPanelCloseButtonWithBackIcon,
   FilterPanelCloseButtonWithXIcon,
+  FilterPanelToolbarButtonStyled,
   FilterSelectorLauncherStyled,
   FilterPanelToolbarNav,
   PlusIcon,
@@ -24,19 +25,23 @@ import type { Filter } from 'pages/data'
 const FilterSelector = ({
   filters,
   setIsDropdownOpen,
+  addFilterValueSetter,
 }: {
   filters: Filter[]
   setIsDropdownOpen: Dispatch<SetStateAction<boolean>>
+  addFilterValueSetter: (options: Partial<Filter>) => void
 }) => {
   return (
     <FilterSelectorDiv>
-      {filters.map(({ fieldId, label }) => (
+      {filters.map(({ fieldId, type, label, addedToPanel = false }) => (
         <AddFilterToPanelButtonStyled
           key={fieldId}
-          aria-label={`Add filter for ${label}`}
-          onClick={() => {
+          onClick={_ => {
+            addFilterValueSetter({ fieldId, type })
             setIsDropdownOpen(false)
           }}
+          disabled={addedToPanel}
+          aria-label={`Add filter for ${label}`}
         >
           {label}
         </AddFilterToPanelButtonStyled>
@@ -74,12 +79,35 @@ const FilterSelectorLauncher = ({
 
 const FilterPanelToolbar = ({
   filters,
+  setFilters,
+  isFilterPanelOpen,
   setIsFilterPanelOpen,
 }: {
   filters: Filter[]
+  setFilters: Dispatch<SetStateAction<Filter[]>>
+  isFilterPanelOpen: boolean
   setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const addFilterButtonRef = useRef<HTMLButtonElement>(null)
+
+  const addedFilters = filters.filter(f => f.addedToPanel)
+
+  useEffect(() => {
+    if (isFilterPanelOpen) {
+      // If the panel just opened, focus the add filter button
+      addFilterButtonRef.current?.focus()
+    }
+  }, [isFilterPanelOpen])
+
+  const removeAllFilters = () => {
+    setFilters(prev =>
+      prev.map(filter => ({
+        ...filter,
+        ...filterDefaultProperties,
+      }))
+    )
+  }
 
   return (
     <>
@@ -106,8 +134,37 @@ const FilterPanelToolbar = ({
           <FilterSelector
             filters={filters}
             setIsDropdownOpen={setIsDropdownOpen}
+            addFilterValueSetter={({ fieldId, type }) => {
+              if (type !== 'date') {
+                // For now, do not handle filters other than dates
+                return
+              }
+              setFilters(filters => {
+                const highestPanelIndex = Math.max(
+                  ...filters.map(panel => panel.panelIndex)
+                )
+                return filters.map(f => {
+                  if (f.fieldId !== fieldId) return f
+                  return {
+                    ...f,
+                    addedToPanel: true,
+                    values: [],
+                    panelIndex: highestPanelIndex + 1,
+                    tooltipOrientation: 'bottom',
+                  }
+                })
+              })
+            }}
           />
         </Dropdown>
+        {addedFilters.length > 0 && (
+          <FilterPanelToolbarButtonStyled
+            style={{ marginRight: '5px' }}
+            onClick={() => removeAllFilters()}
+          >
+            Clear all
+          </FilterPanelToolbarButtonStyled>
+        )}
         <FilterPanelCloseButtonWithXIcon
           onClick={() => setIsFilterPanelOpen(false)}
           aria-label="Close the Filters panel"
@@ -117,6 +174,18 @@ const FilterPanelToolbar = ({
       </FilterPanelToolbarNav>
     </>
   )
+}
+
+/** When a filter is cleared from the panel, it receives these default properties */
+export const filterDefaultProperties = {
+  values: undefined,
+  addedToPanel: false,
+  /** When a filter is added to the panel, it receives a new panelIndex (zero
+   * or greater), indicating its order in the panel. */
+  panelIndex: -1,
+  applied: false,
+  tooltipOrientation: undefined,
+  inputIsValid: undefined,
 }
 
 export default FilterPanelToolbar

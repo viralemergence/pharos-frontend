@@ -141,7 +141,8 @@ export const FilterSelectorDiv = styled.div`
   display: flex;
   flex-flow: column nowrap;
   align-items: flex-start;
-  background-color: ${({ theme }) => theme.mutedPurple1};
+  background-color: ${({ theme }) => theme.mutedPurple4};
+  border: 2px solid ${({ theme }) => theme.darkGray};
   border-radius: 5px;
   padding: 5px 0;
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
@@ -158,9 +159,12 @@ export const AddFilterToPanelButtonStyled = styled(FilterPanelButton)<{
   width: 100%;
   padding: 5px 15px;
   margin-bottom: 5px;
+  &:last-child {
+    margin-bottom: 0;
+  }
   ${({ disabled, theme }) =>
     disabled
-      ? `color: ${theme.veryDarkGray};
+      ? `color: ${theme.white30PercentOpacity};
         cursor: unset;
         &:hover { background-color: inherit; }`
       : `
@@ -196,6 +200,26 @@ export const FilterListItemElement = styled.li<{ opacity: number }>`
   transition: opacity 0.25s;
   &:last-child {
     margin-bottom: 0;
+  }
+`
+
+export const ListOfAddedFilters = styled.ul`
+  position: absolute;
+  margin: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  overflow-y: auto;
+  padding: 34px 30px;
+  flex-grow: 1;
+  flex-shrink: 1;
+  max-height: 100%;
+  top: 73px;
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    top: 64px;
+  }
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobileMaxWidth}) {
+    padding: 34px 20px;
   }
 `
 
@@ -242,14 +266,48 @@ export const Panel = styled.aside<{ open: boolean }>`
 
 export const FieldInput = styled.input`
   ${({ theme }) => theme.smallParagraph};
-  background-color: #202020;
+  background-color: ${({ theme }) => theme.mutedPurple1};
   border-radius: 5px;
   border: 1px solid ${({ theme }) => theme.white};
   color: ${({ theme }) => theme.white};
   font-weight: 600;
   padding: 8px 10px;
-  &:invalid {
-    border-color: ${({ theme }) => theme.red};
+`
+
+export const DateTooltip = styled.aside`
+  ${({ theme }) => theme.extraSmallParagraph};
+  background-color: ${({ theme }) => theme.white};
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1), 0px 1px 3px rgba(0, 0, 0, 0.2);
+  color: ${({ theme }) => theme.black};
+  border: 1px solid ${({ theme }) => theme.black};
+  padding: 5px 10px;
+  position: absolute;
+  width: 330px;
+  text-align: center;
+  transform: translateY(10px);
+  animation: fadeIn 0.15s forwards;
+  &::before {
+    border-bottom: 10px solid ${({ theme }) => theme.white};
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    content: '';
+    height: 0;
+    left: 50%;
+    position: absolute;
+    top: -10px;
+    transform: translateX(-700%);
+    width: 0;
+  }
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(9px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(9px) scale(1);
+    }
   }
 `
 
