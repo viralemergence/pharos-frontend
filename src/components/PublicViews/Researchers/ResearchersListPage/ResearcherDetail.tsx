@@ -23,7 +23,7 @@ const Organization = styled.h3`
   margin: 25px 0 0 0;
 `
 const ProjectsHeader = styled.h3`
-  ${({ theme }) => theme.smallParagraph};
+  ${({ theme }) => theme.bigParagraph};
   margin: 40px 0 0 0;
 `
 const ProjectSection = styled.div`
