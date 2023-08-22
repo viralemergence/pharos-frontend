@@ -189,7 +189,7 @@ const DateRange = ({
   const isStartDateInvalid = !startDateFilter.valid
   const isEndDateInvalid = !endDateFilter.valid
 
-  // Used for aria-described-by
+  // Used for aria-describedby
   const tooltipId = useMemo(
     () => `date-range-tooltip-${Math.random().toString(36).slice(2)}`,
     []
@@ -265,7 +265,7 @@ const DateInput = ({
     <DateInputStyled
       type={'date'}
       aria-label={ariaLabel}
-      aria-described-by={ariaDescribedBy}
+      aria-describedby={ariaDescribedBy}
       min={dateMin}
       max={dateMax}
       value={value}
