@@ -42,11 +42,23 @@ export const load = async ({
     if (filter.fieldId === 'collection_date') {
       const [startDate, endDate] = filter.values
       if (startDate && filter.validities?.[0] !== false) {
-        queryStringParameters.append('collection_start_date', startDate)
+        if (/,/.test(startDate)) {
+          const fixedDate = fixDate(startDate)
+          if (!fixedDate) continue
+          queryStringParameters.append('collection_start_date', fixedDate)
+        } else {
+          queryStringParameters.append('collection_start_date', startDate)
+        }
         applyThisFilter = true
       }
       if (endDate && filter.validities?.[1] !== false) {
-        queryStringParameters.append('collection_end_date', endDate)
+        if (/,/.test(endDate)) {
+          const fixedDate = fixDate(endDate)
+          if (!fixedDate) continue
+          queryStringParameters.append('collection_end_date', fixedDate)
+        } else {
+          queryStringParameters.append('collection_end_date', endDate)
+        }
         applyThisFilter = true
       }
     } else {
@@ -101,3 +113,32 @@ export const loadDebounced = debounce(load, loadDebounceDelay, {
 
 export const countPages = (records: Row[]) =>
   Math.floor(records.length / PAGE_SIZE)
+
+/** Convert a date formatted like 'Aug 1, 1900' into '1900-08-01' */
+const fixDate = (dateString: string) => {
+  const months = {
+    Jan: '01',
+    Feb: '02',
+    Mar: '03',
+    Apr: '04',
+    May: '05',
+    Jun: '06',
+    Jul: '07',
+    Aug: '08',
+    Sep: '09',
+    Oct: '10',
+    Nov: '11',
+    Dec: '12',
+  }
+
+  // Split the string on spaces and comma.
+  const parts = dateString.split(/[ ,]+/)
+
+  const monthAbbrev = parts[0]
+  if (!(monthAbbrev in months)) return null
+  const month = months[monthAbbrev as keyof typeof months]
+  const day = parts[1].padStart(2, '0')
+  const year = parts[2]
+
+  return `${year}/${month}/${day}`
+}

@@ -2,14 +2,14 @@ import React, { Dispatch, SetStateAction } from 'react'
 import styled from 'styled-components'
 import Typeahead, {
   Item as TypeaheadItem,
-} from '@talus-analytics/library.ui.typeahead'
+} from '../../../../library/ui/typeahead/Typeahead'
+import FilterDarkTypeaheadResult from './FilterDarkTypeaheadResult'
+import { XIcon, FieldName } from './DisplayComponents'
 import { Filter } from 'pages/data'
 import InputLabel from 'components/ui/InputLabel'
 import colorPalette from 'figma/colorPalette'
 import { UpdateFilterFunction } from './FilterPanel'
-import { XIcon, FieldName } from './DisplayComponents'
 import { FilterDeleteButton } from './components'
-import FilterDarkTypeaheadResult from './FilterDarkTypeaheadResult'
 
 const SelectedTypeaheadValues = styled.ul`
   margin-top: 10px;
@@ -21,9 +21,8 @@ const SelectedTypeaheadValues = styled.ul`
   gap: 5px;
 `
 const SelectedTypeaheadValue = styled.li`
-  ${props => props.theme.smallParagraph};
-  border-radius: 5px;
   background-color: ${({ theme }) => theme.lightPurple};
+  border-radius: 5px;
   color: ${({ theme }) => theme.black};
   display: flex;
   flex-flow: row nowrap;
@@ -31,6 +30,7 @@ const SelectedTypeaheadValue = styled.li`
   gap: 5px;
   padding-left: 10px;
 `
+
 const SelectedTypeaheadValueDeleteButton = styled.button`
   border: 0;
   background: transparent;
@@ -70,12 +70,25 @@ const TypeaheadContainer = styled.div`
     padding: 10px 15px 8px 15px !important;
     line-height: 25px !important;
   }
+  [role='listbox']:first-child button:first-child {
+    position: relative;
+    ::before {
+      position: absolute;
+      content: '';
+      height: 1px;
+      background: ${({ theme }) => theme.medGray} !important;
+      top: 0;
+      left: 11px;
+      right: 11px;
+    }
+  }
 `
+
 const TypeaheadLabel = styled(InputLabel)`
   ${({ theme }) => theme.smallParagraph}
   margin-bottom: 0 ! important;
   padding-bottom: 0;
-  width: fit-content;
+  width: fit-content; // TODO: needed?
 `
 
 interface FilterTypeaheadProps {
@@ -141,10 +154,14 @@ const FilterTypeahead = ({
           backgroundColor={colorPalette.mutedPurple1}
           fontColor={colorPalette.white}
           borderColor={colorPalette.white}
+          hoverColor={colorPalette.darkPurpleWhiter}
+          selectedHoverColor={colorPalette.darkPurpleWhiter}
           RenderItem={({ item, selected }) => (
             <FilterDarkTypeaheadResult {...{ item, selected }} />
           )}
           iconSVG="%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9L12 15L18 9H6Z' fill='%23FFFFFF'/%3E%3C/svg%3E%0A"
+          resultsMaxHeight="300px"
+          inputId={typeaheadInputId}
         />
         <FilterDeleteButton filter={filter} setFilters={setFilters} />
       </TypeaheadContainer>
