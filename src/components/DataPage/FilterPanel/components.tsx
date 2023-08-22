@@ -68,7 +68,7 @@ export const FilterDeleteButton = ({
   )
 }
 
-export const TypeaheadFilterListItem = ({
+export const TypeaheadFilterUI = ({
   filter,
   updateFilter,
   setFilters,
@@ -95,7 +95,7 @@ export const TypeaheadFilterListItem = ({
   )
 }
 
-export const DateRangeFilterListItem = ({
+export const DateRangeFilterUI = ({
   startDateFilter,
   endDateFilter,
   updateFilter,
@@ -205,9 +205,9 @@ const DateRange = ({
             filter={startDateFilter}
             updateDateFilter={updateDateFilter}
             ariaLabel={'Collected on this date or later'}
+            ariaDescribedBy={isStartDateInvalid ? tooltipId : undefined}
             dateMin={dateMin}
             dateMax={dateMax}
-            aria-described-by={isStartDateInvalid ? tooltipId : undefined}
           />
         </DateLabel>
         <DateLabel>
@@ -216,9 +216,9 @@ const DateRange = ({
             filter={endDateFilter}
             updateDateFilter={updateDateFilter}
             ariaLabel={'Collected on this date or earlier'}
+            ariaDescribedBy={isEndDateInvalid ? tooltipId : undefined}
             dateMin={dateMin}
             dateMax={dateMax}
-            aria-described-by={isEndDateInvalid ? tooltipId : undefined}
           />
         </DateLabel>
         <FilterDeleteButton
@@ -248,6 +248,7 @@ type DateInputProps = {
   updateDateFilter: UpdateDateFilterFunction
   initialValue?: string
   ariaLabel?: string
+  ariaDescribedBy?: string
 }
 
 const DateInput = ({
@@ -256,22 +257,22 @@ const DateInput = ({
   ariaLabel,
   dateMin = '',
   dateMax = '',
+  ariaDescribedBy,
 }: DateInputProps) => {
   const [value, setValue] = useState(filter.values[0] || '')
 
   return (
-    <div>
-      <DateInputStyled
-        type={'date'}
-        aria-label={ariaLabel}
-        min={dateMin}
-        max={dateMax}
-        value={value}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          setValue(e.target.value)
-          updateDateFilter(filter.id, e.target.value)
-        }}
-      />
-    </div>
+    <DateInputStyled
+      type={'date'}
+      aria-label={ariaLabel}
+      aria-described-by={ariaDescribedBy}
+      min={dateMin}
+      max={dateMax}
+      value={value}
+      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+        setValue(e.target.value)
+        updateDateFilter(filter.id, e.target.value)
+      }}
+    />
   )
 }

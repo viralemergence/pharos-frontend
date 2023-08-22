@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react'
 import type { Filter } from 'pages/data'
 import { FilterPanelStyled, ListOfAddedFilters } from './DisplayComponents'
 import FilterPanelToolbar from './FilterPanelToolbar'
-import { DateRangeFilterListItem, TypeaheadFilterListItem } from './components'
+import { DateRangeFilterUI, TypeaheadFilterUI } from './components'
 
 export type UpdateFilterFunction = (updateFilterOptions: {
   id: string
@@ -75,7 +75,7 @@ const FilterPanel = ({
               // true), we don't create a separate UI for it in the panel.
               if (filter.id === 'collection_start_date') {
                 return (
-                  <DateRangeFilterListItem
+                  <DateRangeFilterUI
                     startDateFilter={filter}
                     endDateFilter={
                       filters.find(f => f.id === 'collection_end_date')!
@@ -88,7 +88,7 @@ const FilterPanel = ({
               }
               if (filter.type === 'text') {
                 return (
-                  <TypeaheadFilterListItem
+                  <TypeaheadFilterUI
                     filter={filter}
                     updateFilter={updateFilter}
                     setFilters={setFilters}

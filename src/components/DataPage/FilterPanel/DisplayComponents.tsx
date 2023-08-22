@@ -65,6 +65,10 @@ export const FieldName = styled.div`
 export const DateLabel = styled.label`
   text-transform: uppercase;
   font-size: 9pt;
+  flex: 1;
+  display: flex;
+  flex-flow: column nowrap;
+  max-width: 196px;
   span {
     opacity: 0.7;
   }
@@ -221,7 +225,8 @@ export const ListOfAddedFilters = styled.ul`
   right: 0;
   left: 0;
   overflow-y: auto;
-  padding: 34px 30px;
+  overflow-x: hidden;
+  padding: 34px 8px 34px 30px;
   flex-grow: 1;
   flex-shrink: 1;
   max-height: 100%;
@@ -316,10 +321,9 @@ export const DateInputStyled = styled.input`
   border-radius: 5px;
   border: 1px solid ${({ theme }) => theme.white};
   color: ${({ theme }) => theme.white};
-  font-weight: 600;
-  padding: 8px 10px;
-  width: 148px;
+  font-weight: 400;
   height: 45px;
+  padding: 8px 10px;
   &:invalid {
     border-color: ${({ theme }) => theme.red};
   }
@@ -338,7 +342,7 @@ export const DateTooltip = styled.aside<{
   border: 1px solid ${({ theme }) => theme.black};
   padding: 5px 10px;
   position: absolute;
-  width: 304px;
+  width: 326px;
   text-align: center;
   transform: translateY(10px);
   animation: fadeIn 0.15s forwards;
