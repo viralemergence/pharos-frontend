@@ -12,19 +12,19 @@ import { darken } from 'polished'
 import LoadingSpinner from 'components/DataPage/TableView/LoadingSpinner'
 
 import RowNumber from './formatters/RowNumber'
-import Author from './formatters/Author'
+import Researcher from './formatters/Researcher'
 import ProjectName from './formatters/ProjectName'
 
 import { PublishedRecordsLoadingState } from 'hooks/publishedRecords/fetchPublishedRecords'
 import usePublishedRecords from 'hooks/publishedRecords/usePublishedRecords'
 
-export interface PublishedRecordsAuthor {
+export interface PublishedRecordsResearcher {
   name: string
   researcherID: string
 }
 
 export interface Row {
-  [key: string]: string | number | PublishedRecordsAuthor[]
+  [key: string]: string | number | PublishedRecordsResearcher[]
 }
 
 const TableContainer = styled.div`
@@ -79,12 +79,12 @@ type DataGridFormatter = (params: FormatterProps<Row>) => JSX.Element
 
 export const formatters: Record<string, DataGridFormatter> = {
   'Project name': ProjectName,
-  Author: Author,
+  Researcher: Researcher,
 }
 
 const defaultWidthOverride = {
   'Project name': 300,
-  Author: 200,
+  Researcher: 200,
 }
 
 interface FilteredPublishedRecordsDataGridProps {
