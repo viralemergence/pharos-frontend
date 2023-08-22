@@ -29,9 +29,9 @@ export type Filter = {
   /** A filter has been 'added to the panel' when the panel contains an input
    * (such as a date input or a typeahead) for setting the filter's values. */
   addedToPanel?: boolean
-  /** To filter on a specific field, the user sets values for the filter. For
-   * example, the host_species filter could receive the value "Bear". */
-  values?: (string | undefined)[]
+  /** To filter on a specific field, the user sets values for the field. For
+   * example, the host_species filter could receive the values ["Bear", "Wolf"]. */
+  values: string[]
   /** If a filter has been 'applied', this means that it has been applied to
    * the list of records shown in the table, so that only records matching the
    * filter are shown in the table. For example, if the user sets host_species
@@ -42,15 +42,12 @@ export type Filter = {
   panelIndex: number
   /** The historically earliest collection date that appears among the
    * published records. Only date filters have this property. */
-  earliestPossibleDate?: string
+  earliestDateInDatabase?: string
   /** The historically latest, furthest-into-the-future collection date that
    * appears among the published records. Only date filters have this property.
    * */
-  latestPossibleDate?: string
-  /** For example, if a date field has a valid start date and an invalid end
-   * date, validities will be [true, false]. If an input has no value its
-   * validity will be undefined. */
-  validities?: (boolean | undefined)[]
+  latestDateInDatabase?: string
+  valid: boolean
 }
 
 const METADATA_URL = `${process.env.GATSBY_API_URL}/metadata-for-published-records`

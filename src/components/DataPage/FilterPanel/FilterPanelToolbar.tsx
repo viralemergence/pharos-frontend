@@ -33,19 +33,22 @@ const FilterSelector = ({
 }) => {
   return (
     <FilterSelectorDiv>
-      {filters.map(({ id, label, addedToPanel = false }) => (
-        <AddFilterToPanelButtonStyled
-          key={id}
-          onClick={_ => {
-            addFilterUI({ id })
-            setIsDropdownOpen(false)
-          }}
-          disabled={addedToPanel}
-          aria-label={`Add filter for ${label}`}
-        >
-          {label}
-        </AddFilterToPanelButtonStyled>
-      ))}
+      {filters.map(({ id, label, addedToPanel = false }) =>
+        // Don't make a separate button for the collection_end_date
+        id === 'collection_end_date' ? null : (
+          <AddFilterToPanelButtonStyled
+            key={id}
+            onClick={_ => {
+              addFilterUI({ id })
+              setIsDropdownOpen(false)
+            }}
+            disabled={addedToPanel}
+            aria-label={`Add filter for ${label}`}
+          >
+            {label}
+          </AddFilterToPanelButtonStyled>
+        )
+      )}
       {filters.length === 0 && (
         <FilterSelectorMessage>Loading&hellip;</FilterSelectorMessage>
       )}
@@ -152,19 +155,19 @@ const FilterPanelToolbar = ({
                 const highestPanelIndex = Math.max(
                   ...filters.map(panel => panel.panelIndex)
                 )
-                return filters.map(f => {
-                  if (f.id !== id) return f
-                  const newlyAddedFilter: Filter = {
-                    ...f,
-                    addedToPanel: true,
-                    values: [],
-                    panelIndex: highestPanelIndex + 1,
-                  }
-                  if (newlyAddedFilter.type === 'date') {
-                    newlyAddedFilter.validities = [undefined, undefined]
-                  }
-                  return newlyAddedFilter
-                })
+                return filters.map(f =>
+                  id === f.id ||
+                  // If adding collection_start_date to panel, add collection_end_date to the panel as well
+                  (id === 'collection_start_date' &&
+                    f.id === 'collection_end_date')
+                    ? {
+                        ...f,
+                        addedToPanel: true,
+                        values: [],
+                        panelIndex: highestPanelIndex + 1,
+                      }
+                    : f
+                )
               })
             }}
           />
@@ -192,13 +195,13 @@ const FilterPanelToolbar = ({
 
 /** When a filter is removed from the panel, it receives these default properties */
 export const filterDefaultProperties = {
-  values: undefined,
+  values: [],
   addedToPanel: false,
   /** When a filter is added to the panel, it will receive a new panelIndex
    * (zero or greater), indicating its order in the panel. */
   panelIndex: -1,
   applied: false,
-  validities: undefined,
+  valid: true,
 }
 
 export default FilterPanelToolbar

@@ -2,13 +2,13 @@ import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react'
 import type { Filter } from 'pages/data'
 import { FilterPanelStyled, ListOfAddedFilters } from './DisplayComponents'
 import FilterPanelToolbar from './FilterPanelToolbar'
-import { FilterListItem } from './components'
+import { DateRangeFilterListItem, TypeaheadFilterListItem } from './components'
 
-export type UpdateFilterFunction = (
-  id: string,
-  newFilterValues: (string | undefined)[],
-  isDateValid?: (date?: string) => boolean | undefined
-) => void
+export type UpdateFilterFunction = (updateFilterOptions: {
+  id: string
+  newValues: string[]
+  valid?: boolean
+}) => void
 
 const FilterPanel = ({
   isFilterPanelOpen,
@@ -28,18 +28,15 @@ const FilterPanel = ({
     .filter(f => f.addedToPanel)
     .sort((a, b) => a.panelIndex - b.panelIndex)
 
-  const updateFilter: UpdateFilterFunction = (id, newValues, isDateValid) => {
+  const updateFilter: UpdateFilterFunction = ({
+    id,
+    newValues = [],
+    valid = true,
+  }) => {
     setFilters(prev => {
       return prev.map((filter: Filter) => {
         if (filter.id !== id) return filter
-        const updatedFilter = {
-          ...filter,
-          values: newValues,
-        }
-        if (isDateValid) {
-          updatedFilter.validities = newValues.map(isDateValid)
-        }
-        return updatedFilter
+        return { ...filter, values: newValues, valid }
       })
     })
   }
@@ -72,14 +69,34 @@ const FilterPanel = ({
             setFilters={setFilters}
           />
           <ListOfAddedFilters ref={filterListRef}>
-            {addedFilters.map(filter => (
-              <FilterListItem
-                filter={filter}
-                updateFilter={updateFilter}
-                setFilters={setFilters}
-                key={filter.id}
-              />
-            ))}
+            {addedFilters.map(filter => {
+              // Although the collection_end_date filter can be marked as added
+              // to the panel (i.e. can have the property addedToPanel set to
+              // true), we don't create a separate UI for it in the panel.
+              if (filter.id === 'collection_start_date') {
+                return (
+                  <DateRangeFilterListItem
+                    startDateFilter={filter}
+                    endDateFilter={
+                      filters.find(f => f.id === 'collection_end_date')!
+                    }
+                    updateFilter={updateFilter}
+                    setFilters={setFilters}
+                    key={filter.id}
+                  />
+                )
+              }
+              if (filter.type === 'text') {
+                return (
+                  <TypeaheadFilterListItem
+                    filter={filter}
+                    updateFilter={updateFilter}
+                    setFilters={setFilters}
+                    key={filter.id}
+                  />
+                )
+              }
+            })}
           </ListOfAddedFilters>
         </>
       )}

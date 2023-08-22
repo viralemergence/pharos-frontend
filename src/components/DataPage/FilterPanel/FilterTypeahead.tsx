@@ -114,10 +114,7 @@ const FilterTypeahead = ({
   )
 
   const handleTypeaheadChange = (items: TypeaheadItem[]) => {
-    updateFilter(
-      filter.id,
-      items.map(({ label }) => label)
-    )
+    updateFilter({ id: filter.id, newValues: items.map(({ label }) => label) })
   }
   const addItem = (itemToAdd: TypeaheadItem) => {
     const itemAlreadyAdded = selectedItems
@@ -161,7 +158,10 @@ const FilterTypeahead = ({
           resultsMaxHeight="300px"
           inputId={typeaheadInputId}
         />
-        <FilterDeleteButton filter={filter} setFilters={setFilters} />
+        <FilterDeleteButton
+          filtersToDelete={[filter]}
+          setFilters={setFilters}
+        />
       </TypeaheadContainer>
       {values.length > 0 && (
         <SelectedTypeaheadValues>

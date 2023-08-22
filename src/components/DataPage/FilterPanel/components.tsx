@@ -2,7 +2,7 @@ import React, {
   Dispatch,
   SetStateAction,
   useEffect,
-  useRef,
+  useMemo,
   useState,
 } from 'react'
 import debounce from 'lodash/debounce'
@@ -26,31 +26,41 @@ import FilterTypeahead from './FilterTypeahead'
 import { removeOneFilter } from './FilterPanelToolbar'
 import type { UpdateFilterFunction } from './FilterPanel'
 
-interface DebouncedFunc<T extends (...args: any[]) => any> extends Function {
-  (...args: Parameters<T>): ReturnType<T>
-  cancel: () => void
-}
-
-/** Localize a date without changing the time zone */
+/** Localize a date without changing the time zone
+ * @param {string} dateString - String in YYYY-MM-DD format
+ * @example localizeDate('2023-01-02')
+ * // output (if locale is en-us): '01-02-2023'
+ * */
 const localizeDate = (dateString: string) => {
   const [year, month, day] = dateString.split('-').map(Number)
   const date = new Date(year, month - 1, day)
   return date.toLocaleDateString()
 }
 
-const dateFilterUpdateDelayMilliseconds = 1000
+const LocalizedDate = ({
+  dateString,
+}: {
+  /** Date string in YYYY-MM-DD format */
+  dateString: string
+}) => {
+  return <time dateTime={dateString}>{localizeDate(dateString)}</time>
+}
+
+const dateFilterUpdateDelayInMilliseconds = 1000
 
 export const FilterDeleteButton = ({
-  filter,
+  filtersToDelete,
   setFilters,
 }: {
-  filter: Filter
+  filtersToDelete: Filter[]
   setFilters: Dispatch<SetStateAction<Filter[]>>
 }) => {
   return (
     <FilterDeleteButtonContainer>
       <FilterDeleteButtonStyled
-        onClick={() => removeOneFilter(filter, setFilters)}
+        onClick={() =>
+          filtersToDelete.map(filter => removeOneFilter(filter, setFilters))
+        }
       >
         <XIcon extraStyle="width: 16px; height: 16px;" />
       </FilterDeleteButtonStyled>
@@ -58,7 +68,7 @@ export const FilterDeleteButton = ({
   )
 }
 
-export const FilterListItem = ({
+export const TypeaheadFilterListItem = ({
   filter,
   updateFilter,
   setFilters,
@@ -72,43 +82,73 @@ export const FilterListItem = ({
     setOpacity(1)
   }, [])
 
-  const useTypeahead = filter.type === 'text'
-  const hasTooltip = filter.validities?.some(validity => validity === false)
   return (
     <FilterListItemStyled opacity={opacity}>
-      {useTypeahead ? (
-        <FilterUIContainerForTypeahead hasTooltip={hasTooltip}>
-          <FilterTypeahead
-            filter={filter}
-            updateFilter={updateFilter}
-            setFilters={setFilters}
-          />
-        </FilterUIContainerForTypeahead>
-      ) : (
-        <FilterUIContainer hasTooltip={hasTooltip}>
-          <DateFilterInputs
-            filter={filter}
-            updateFilter={updateFilter}
-            setFilters={setFilters}
-          />
-        </FilterUIContainer>
-      )}
+      <FilterUIContainerForTypeahead>
+        <FilterTypeahead
+          filter={filter}
+          updateFilter={updateFilter}
+          setFilters={setFilters}
+        />
+      </FilterUIContainerForTypeahead>
     </FilterListItemStyled>
   )
 }
 
-const DateFilterInputs = ({
-  filter,
+export const DateRangeFilterListItem = ({
+  startDateFilter,
+  endDateFilter,
   updateFilter,
   setFilters,
 }: {
-  filter: Filter
+  startDateFilter: Filter
+  endDateFilter: Filter
+  updateFilter: UpdateFilterFunction
+  setFilters: Dispatch<SetStateAction<Filter[]>>
+}) => {
+  const [opacity, setOpacity] = useState(0)
+  useEffect(() => {
+    setOpacity(1)
+  }, [])
+
+  const hasTooltip = !startDateFilter.valid || !endDateFilter.valid
+  return (
+    <FilterListItemStyled opacity={opacity}>
+      <FilterUIContainer hasTooltip={hasTooltip}>
+        <DateRange
+          startDateFilter={startDateFilter}
+          endDateFilter={endDateFilter}
+          updateFilter={updateFilter}
+          setFilters={setFilters}
+        />
+      </FilterUIContainer>
+    </FilterListItemStyled>
+  )
+}
+
+type UpdateDateFilterFunction = (filterId: string, dateStr: string) => void
+
+const isDateValid = (dateStr: string, dateMin: string, dateMax: string) => {
+  if (!dateStr) return true
+  if (dateMin) if (dateStr < dateMin) return false
+  if (dateMax) if (dateStr > dateMax) return false
+  return true
+}
+
+const DateRange = ({
+  startDateFilter,
+  endDateFilter,
+  updateFilter,
+  setFilters,
+}: {
+  startDateFilter: Filter
+  endDateFilter: Filter
   updateFilter: UpdateFilterFunction
   setFilters: Dispatch<SetStateAction<Filter[]>>
 }) => {
   const updateFilterDebounced = debounce(
     updateFilter,
-    dateFilterUpdateDelayMilliseconds
+    dateFilterUpdateDelayInMilliseconds
   )
 
   useEffect(() => {
@@ -118,67 +158,83 @@ const DateFilterInputs = ({
     }
   }, [updateFilterDebounced])
 
-  let earliestPossibleDate,
-    latestPossibleDate,
-    earliestPossibleDateLocalized,
-    latestPossibleDateLocalized
-  if (filter.earliestPossibleDate) {
-    earliestPossibleDate = `${filter.earliestPossibleDate.slice(0, 2)}00-01-01`
-    earliestPossibleDateLocalized = localizeDate(earliestPossibleDate)
+  let dateMin = '',
+    dateMax = ''
+  if (startDateFilter.earliestDateInDatabase) {
+    dateMin = `${startDateFilter.earliestDateInDatabase.slice(0, 2)}00-01-01`
   }
-  if (filter.latestPossibleDate) {
-    latestPossibleDate = `${
-      Number(filter.latestPossibleDate.slice(0, 2)) + 1
+  if (startDateFilter.latestDateInDatabase) {
+    dateMax = `${
+      Number(startDateFilter.latestDateInDatabase.slice(0, 2)) + 1
     }00-01-01`
-    latestPossibleDateLocalized = localizeDate(latestPossibleDate)
   }
 
-  const dateInputProps = {
-    filter,
-    earliestPossibleDate,
-    latestPossibleDate,
-    earliestPossibleDateLocalized,
-    latestPossibleDateLocalized,
-    updateFilter,
-    updateFilterDebounced,
-    setFilters,
-    values: filter.values,
+  const updateDateFilter: UpdateDateFilterFunction = (filterId, dateStr) => {
+    const valid = isDateValid(dateStr, dateMin, dateMax)
+    const updateOptions = {
+      id: filterId,
+      newValues: [dateStr],
+      valid,
+    }
+    if (valid) {
+      updateFilter(updateOptions)
+      updateFilterDebounced.cancel()
+    } else {
+      // If the date is invalid, debounce the update, so that the field isn't
+      // eagerly marked invalid while the user is still typing
+      updateFilterDebounced(updateOptions)
+    }
   }
-  const someValuesAreInvalid = filter.validities?.some(
-    validity => validity === false
+
+  const isStartDateInvalid = !startDateFilter.valid
+  const isEndDateInvalid = !endDateFilter.valid
+
+  // Used for aria-described-by
+  const tooltipId = useMemo(
+    () => `date-range-tooltip-${Math.random().toString(36).slice(2)}`,
+    []
   )
 
   return (
     <FilterLabel>
-      <FieldName>{filter.label}</FieldName>
+      <FieldName>Collection date</FieldName>
       <DateInputRow>
         <DateLabel>
           <span>From</span>
           <DateInput
-            {...dateInputProps}
-            index={0}
-            initialValue={filter.values?.[0]}
+            filter={startDateFilter}
+            updateDateFilter={updateDateFilter}
             ariaLabel={'Collected on this date or later'}
+            dateMin={dateMin}
+            dateMax={dateMax}
+            aria-described-by={isStartDateInvalid ? tooltipId : undefined}
           />
         </DateLabel>
         <DateLabel>
           <span>To</span>
           <DateInput
-            {...dateInputProps}
-            index={1}
-            initialValue={filter.values?.[1]}
+            filter={endDateFilter}
+            updateDateFilter={updateDateFilter}
             ariaLabel={'Collected on this date or earlier'}
+            dateMin={dateMin}
+            dateMax={dateMax}
+            aria-described-by={isEndDateInvalid ? tooltipId : undefined}
           />
         </DateLabel>
-        <FilterDeleteButton filter={filter} setFilters={setFilters} />
+        <FilterDeleteButton
+          filtersToDelete={[startDateFilter, endDateFilter]}
+          setFilters={setFilters}
+        />
       </DateInputRow>
-      {someValuesAreInvalid && (
+      {(isStartDateInvalid || isEndDateInvalid) && dateMin && dateMax && (
         <DateTooltip
-          isStartDateInvalid={filter.validities?.[0] === false}
-          isEndDateInvalid={filter.validities?.[1] === false}
+          isStartDateInvalid={isStartDateInvalid}
+          isEndDateInvalid={isEndDateInvalid}
+          role={'tooltip'}
+          id={tooltipId}
         >
-          Dates must be between {earliestPossibleDateLocalized} and{' '}
-          {latestPossibleDateLocalized}
+          Dates must be between <LocalizedDate dateString={dateMin} /> and{' '}
+          <LocalizedDate dateString={dateMax} />
         </DateTooltip>
       )}
     </FilterLabel>
@@ -187,67 +243,34 @@ const DateFilterInputs = ({
 
 type DateInputProps = {
   filter: Filter
-  earliestPossibleDate?: string
-  latestPossibleDate?: string
-  index: number
-  updateFilter: UpdateFilterFunction
-  updateFilterDebounced: DebouncedFunc<UpdateFilterFunction>
-  ariaLabel?: string
+  dateMin?: string
+  dateMax?: string
+  updateDateFilter: UpdateDateFilterFunction
   initialValue?: string
+  ariaLabel?: string
 }
 
 const DateInput = ({
   filter,
-  earliestPossibleDate,
-  latestPossibleDate,
-  index,
-  updateFilter,
-  updateFilterDebounced,
+  updateDateFilter,
   ariaLabel,
-  initialValue,
+  dateMin = '',
+  dateMax = '',
 }: DateInputProps) => {
-  const isDateValid = (dateStr?: string) => {
-    if (!dateStr) return undefined
-    if (earliestPossibleDate) if (dateStr < earliestPossibleDate) return false
-    if (latestPossibleDate) if (dateStr > latestPossibleDate) return false
-    return true
-  }
-  const changeDate = (index: number, newValue: string | undefined) => {
-    const newValues = filter.values ?? [undefined, undefined]
-    // Don't save a blank value
-    if (!newValue) newValue = undefined
-    newValues[index] = newValue
-    if (isDateValid(newValue)) {
-      updateFilter(filter.id, newValues, isDateValid)
-      updateFilterDebounced.cancel()
-    } else {
-      // When marking a date as invalid, debounce so that the field isn't
-      // eagerly marked invalid as the user begins to type a valid date.
-      // Check the validity again in the callback to avoid using a stale
-      // value.
-      updateFilterDebounced(filter.id, newValues, isDateValid)
-    }
-  }
-
-  const inputRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    if (inputRef.current && initialValue) {
-      inputRef.current.value = initialValue
-    }
-  }, [inputRef, initialValue])
+  const [value, setValue] = useState(filter.values[0] || '')
 
   return (
     <div>
       <DateInputStyled
         type={'date'}
         aria-label={ariaLabel}
-        min={earliestPossibleDate}
-        max={latestPossibleDate}
+        min={dateMin}
+        max={dateMax}
+        value={value}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          changeDate(index, e.target.value)
+          setValue(e.target.value)
+          updateDateFilter(filter.id, e.target.value)
         }}
-        ref={inputRef}
       />
     </div>
   )

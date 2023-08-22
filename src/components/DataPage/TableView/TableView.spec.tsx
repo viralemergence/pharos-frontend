@@ -42,26 +42,28 @@ describe('The public data table', () => {
     expect(grid).toBeInTheDocument()
   })
 
-  const dateFilter: Filter = {
-    id: 'collection_date',
+  const startDateFilter: Filter = {
+    id: 'collection_start_date',
     label: 'Collection date',
     type: 'date',
     addedToPanel: true,
     dataGridKey: 'Collection date',
     options: [],
     panelIndex: 0,
+    values: [],
+    valid: true,
   }
 
-  const dateFilterStartingMarch2020: Filter = {
-    ...dateFilter,
-    values: ['2020-03-01', undefined],
+  const startDateFilterMarch2020: Filter = {
+    ...startDateFilter,
+    values: ['2020-03-01'],
   }
 
   it('can be filtered by collection start date', async () => {
     render(
       <Providers>
         <TableView
-          filters={[dateFilterStartingMarch2020]}
+          filters={[startDateFilterMarch2020]}
           setFilters={jest.fn()}
         />
       </Providers>
