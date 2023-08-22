@@ -73,4 +73,16 @@ describe('The public data table', () => {
       expect(grid).toHaveAttribute('aria-rowcount', '41')
     })
   })
+
+  it('has clickable researcher names', async () => {
+    render(
+      <Providers>
+        <TableView filters={[]} setFilters={jest.fn()} />
+      </Providers>
+    )
+    const researcherLinks = await screen.findAllByRole('link', {
+      name: 'Researcher Zero',
+    })
+    expect(researcherLinks.length).toBeGreaterThan(0)
+  })
 })

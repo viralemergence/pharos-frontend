@@ -78,12 +78,12 @@ const rowKeyGetter = (row: Row) => row.pharosID
 type DataGridFormatter = (params: FormatterProps<Row>) => JSX.Element
 
 export const formatters: Record<string, DataGridFormatter> = {
-  'Project': ProjectName,
+  Project: ProjectName,
   Researcher: Researcher,
 }
 
 const defaultWidthOverride = {
-  'Project': 300,
+  Project: 300,
   Researcher: 200,
 }
 
