@@ -70,8 +70,6 @@ const DataPage = ({
   const [filters, setFilters] = useState<Filter[]>([])
   const [sortableFields, setSortableFields] = useState<string[]>([])
 
-  console.log('sortableFields', sortableFields)
-
   const [screenReaderAnnouncement, setScreenReaderAnnouncement] = useState('')
 
   /** Update the view, and update the map projection view accordingly */

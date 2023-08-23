@@ -373,7 +373,7 @@ const TableView = ({
           // TODO: support shift-tab and left arrow
           if (e.key === 'Tab' || e.key == 'ArrowRight') {
             if (e.target.getAttribute('role') === 'columnheader') {
-              const column = e.target.getAttribute('aria-colindex')
+              // const column = e.target.getAttribute('aria-colindex')
               const buttons = e.target.querySelectorAll('button')
               const firstButton = Array.from(buttons)[0]
               if (firstButton) {
