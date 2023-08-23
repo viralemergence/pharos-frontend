@@ -1,6 +1,7 @@
 import React, {
   Dispatch,
   SetStateAction,
+  forwardRef,
   useEffect,
   useRef,
   useState,
@@ -106,59 +107,97 @@ const SortButtonStyled = styled.button`
   }
 `
 
-const ColumnHeader = ({
-  dataGridKey,
-  sorts,
-  setSorts,
-  sortable,
-}: {
+type ColumnHeaderProps = {
   dataGridKey: string
   sorts: Sort[]
   setSorts: Dispatch<SetStateAction<Sort[]>>
   sortable: boolean
-}) => {
-  const cycle = [SortStatus.unselected, SortStatus.selected, SortStatus.reverse]
-  const sort = sorts.find(sort => sort[0] == dataGridKey) ?? [
-    dataGridKey,
-    SortStatus.unselected,
-  ]
-
-  const onClick = () => {
-    setSorts(prev => {
-      const currentCycleIndex = cycle.findIndex(
-        sortStatus => sortStatus == sort[1]
-      )
-      const newSortStatus = cycle[(currentCycleIndex + 1) % cycle.length]
-      const newSort: Sort = [dataGridKey, newSortStatus]
-      const previousSortsWithThisSortRemoved = prev.filter(
-        sort => sort[0] !== dataGridKey
-      )
-      if (newSortStatus === SortStatus.unselected) {
-        return previousSortsWithThisSortRemoved
-      } else {
-        return [newSort, ...previousSortsWithThisSortRemoved]
-      }
-    })
-  }
-
-  // TODO: Change sort to an object with "key" and "status" properties
-  return (
-    <>
-      <ColumnLabel>{dataGridKey}</ColumnLabel>
-      {sortable && (
-        <SortButtonStyled onClick={onClick}>
-          <SortIcon
-            status={sort[1] ?? SortStatus.unselected}
-            upArrowSelectedColor={colorPalette.mint}
-            downArrowSelectedColor={colorPalette.mint}
-            upArrowUnselectedColor={colorPalette.gridLines}
-            downArrowUnselectedColor={colorPalette.gridLines}
-          />
-        </SortButtonStyled>
-      )}
-    </>
-  )
 }
+
+const ColumnHeader = forwardRef<HTMLDivElement, ColumnHeaderProps>(
+  ({ dataGridKey, sorts, setSorts, sortable }, headerRef) => {
+    const cycle = [
+      SortStatus.unselected,
+      SortStatus.selected,
+      SortStatus.reverse,
+    ]
+    const sort = sorts.find(sort => sort[0] == dataGridKey) ?? [
+      dataGridKey,
+      SortStatus.unselected,
+    ]
+
+    const sortButtonOnClick = () => {
+      setSorts(prev => {
+        const currentCycleIndex = cycle.findIndex(
+          sortStatus => sortStatus == sort[1]
+        )
+        const newSortStatus = cycle[(currentCycleIndex + 1) % cycle.length]
+        const newSort: Sort = [dataGridKey, newSortStatus]
+        const previousSortsWithThisSortRemoved = prev.filter(
+          sort => sort[0] !== dataGridKey
+        )
+        if (newSortStatus === SortStatus.unselected) {
+          return previousSortsWithThisSortRemoved
+        } else {
+          return [newSort, ...previousSortsWithThisSortRemoved]
+        }
+      })
+    }
+
+    const tableHeaderOnKeyDown = (e: React.KeyboardEvent) => {
+      if (!(e.target instanceof HTMLDivElement)) return
+      if (e.key === 'Tab' || e.key == 'ArrowRight' || e.key === 'ArrowLeft') {
+        if (e.target.getAttribute('role') === 'columnheader') {
+          let buttonToFocus: HTMLButtonElement | undefined
+          if ((e.shiftKey && e.key === 'Tab') || e.key === 'ArrowLeft') {
+            // Tabbing backwards
+            const column = Number(e.target.getAttribute('aria-colindex'))
+            const row = e.target.parentNode
+            if (!row) return
+            const headerToTheLeft = row.querySelector<HTMLDivElement>(
+              `[aria-colindex='${column - 1}']`
+            )
+            if (!headerToTheLeft) return
+            const buttons =
+              headerToTheLeft.querySelectorAll<HTMLButtonElement>('button')
+            if (buttons.length === 0) return
+            buttonToFocus = Array.from(buttons).at(-1)
+          } else {
+            // Tabbing forwards
+            const buttons = e.target.querySelectorAll('button')
+            buttonToFocus = Array.from(buttons)[0]
+          }
+          if (!buttonToFocus) return
+          setTimeout(() => {
+            buttonToFocus?.focus()
+            const header = buttonToFocus?.parentNode
+            if (header instanceof HTMLDivElement) header.click()
+          })
+          e.preventDefault()
+          e.stopPropagation()
+        }
+      }
+    }
+
+    // TODO: Change sort to an object with "key" and "status" properties
+    return (
+      <div ref={headerRef}>
+        <ColumnLabel>{dataGridKey}</ColumnLabel>
+        {sortable && (
+          <SortButtonStyled onClick={sortButtonOnClick}>
+            <SortIcon
+              status={sort[1] ?? SortStatus.unselected}
+              upArrowSelectedColor={colorPalette.mint}
+              downArrowSelectedColor={colorPalette.mint}
+              upArrowUnselectedColor={colorPalette.gridLines}
+              downArrowUnselectedColor={colorPalette.gridLines}
+            />
+          </SortButtonStyled>
+        )}
+      </div>
+    )
+  }
+)
 
 const LoadingMessage = styled.div`
   ${({ theme }) => theme.gridText}
@@ -306,11 +345,13 @@ const TableView = ({
     []
   )
 
+  const columnHeadersRef = useRef<HTMLDivElement[]>([])
+
   const columns: readonly Column<Row>[] = [
     rowNumberColumn,
     ...Object.keys(records?.[0] ?? {})
       .filter(key => !['pharosID', 'rowNumber'].includes(key))
-      .map(key => ({
+      .map((key, index) => ({
         key: key,
         name: (
           <ColumnHeader
@@ -318,6 +359,8 @@ const TableView = ({
             sorts={sorts}
             setSorts={setSorts}
             sortable={sortableFields.includes(key)}
+            headerToTheLeft={columnHeadersRef.current[index - 1]}
+            ref={(el: HTMLDivElement) => (columnHeadersRef.current[index] = el)}
           />
         ),
         width: key.length * 10 + 35 + 'px',
@@ -359,54 +402,6 @@ const TableView = ({
       divIsScrolledToBottom(dataGrid)
     ) {
       dataGrid.scrollTop = 0
-    }
-
-    // Set keydown handler to place sort icon into the tab order
-    if (dataGrid) {
-      const headers = Array.from(
-        dataGrid.querySelectorAll('[role=columnheader]')
-      )
-      for (const header of headers) {
-        if (!(header instanceof HTMLDivElement)) continue
-        header.addEventListener('keydown', e => {
-          if (!(e.target instanceof HTMLDivElement)) return
-          if (
-            e.key === 'Tab' ||
-            e.key == 'ArrowRight' ||
-            e.key === 'ArrowLeft'
-          ) {
-            if (e.target.getAttribute('role') === 'columnheader') {
-              let buttonToFocus: HTMLButtonElement | undefined
-              if ((e.shiftKey && e.key === 'Tab') || e.key === 'ArrowLeft') {
-                // Tabbing backwards
-                const column = Number(e.target.getAttribute('aria-colindex'))
-                const row = e.target.parentNode
-                if (!row) return
-                const headerToTheLeft = row.querySelector<HTMLDivElement>(
-                  `[aria-colindex='${column - 1}']`
-                )
-                if (!headerToTheLeft) return
-                const buttons =
-                  headerToTheLeft.querySelectorAll<HTMLButtonElement>('button')
-                if (buttons.length === 0) return
-                buttonToFocus = Array.from(buttons).at(-1)
-              } else {
-                // Tabbing forwards
-                const buttons = e.target.querySelectorAll('button')
-                buttonToFocus = Array.from(buttons)[0]
-              }
-              if (!buttonToFocus) return
-              setTimeout(() => {
-                buttonToFocus?.focus()
-                const header = buttonToFocus?.parentNode
-                if (header instanceof HTMLDivElement) header.click()
-              })
-              e.preventDefault()
-              e.stopPropagation()
-            }
-          }
-        })
-      }
     }
   }, [records])
 
