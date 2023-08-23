@@ -7,15 +7,24 @@ import DataGrid, {
   FormatterProps,
 } from 'react-data-grid'
 
-import usePublishedRecords from 'hooks/publishedRecords/usePublishedRecords'
+import { darken } from 'polished'
 
 import LoadingSpinner from 'components/DataPage/TableView/LoadingSpinner'
-import { darken } from 'polished'
-import { Link } from 'gatsby'
-import { PublishedRecordsLoadingState } from 'hooks/publishedRecords/fetchPublishedRecords'
 
-interface Row {
-  [key: string]: string | number
+import RowNumber from './formatters/RowNumber'
+import Researcher from './formatters/Researcher'
+import ProjectName from './formatters/ProjectName'
+
+import { PublishedRecordsLoadingState } from 'hooks/publishedRecords/fetchPublishedRecords'
+import usePublishedRecords from 'hooks/publishedRecords/usePublishedRecords'
+
+export interface PublishedRecordsResearcher {
+  name: string
+  researcherID: string
+}
+
+export interface Row {
+  [key: string]: string | number | PublishedRecordsResearcher[]
 }
 
 const TableContainer = styled.div`
@@ -63,55 +72,19 @@ const FillDatasetGrid = styled(DataGrid)`
   --rdg-header-background-color: ${({ theme }) => theme.mutedPurple3};
   --rdg-row-hover-background-color: ${({ theme }) => theme.mutedPurple2};
 `
-const CellContainer = styled.div`
-  margin-left: -8px;
-  margin-right: -8px;
-  padding: 0 8px;
-`
-
-const RowNumberContainer = styled(CellContainer)`
-  background-color: ${({ theme }) => theme.mutedPurple3};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`
-
-const RowNumber = ({ row: { rowNumber } }: FormatterProps<Row>) => (
-  <RowNumberContainer>
-    <span>{Number(rowNumber)}</span>
-  </RowNumberContainer>
-)
-
-const ProjectNameContainer = styled(CellContainer)`
-  a {
-    color: ${({ theme }) => theme.white};
-
-    &:hover {
-      color: ${({ theme }) => theme.mint};
-    }
-  }
-`
-const ProjectName = ({ row }: FormatterProps<Row>) => {
-  const projectName = row['Project name']
-  const pharosID = row.pharosID
-  return (
-    <ProjectNameContainer>
-      <Link to={`/projects/#/${pharosID.toString().split('-')[0]}`}>
-        {projectName}
-      </Link>
-    </ProjectNameContainer>
-  )
-}
 
 const rowKeyGetter = (row: Row) => row.pharosID
 
-const formatters = {
+type DataGridFormatter = (params: FormatterProps<Row>) => JSX.Element
+
+export const formatters: Record<string, DataGridFormatter> = {
   'Project name': ProjectName,
+  Researcher: Researcher,
 }
 
 const defaultWidthOverride = {
   'Project name': 300,
-  Author: 200,
+  Researcher: 200,
 }
 
 interface FilteredPublishedRecordsDataGridProps {

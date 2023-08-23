@@ -4,9 +4,7 @@
   "private": true,
   "description": "talus-gatsby-starter",
   "author": "Ryan",
-  "keywords": [
-    "gatsby"
-  ],
+  "keywords": ["gatsby"],
   "scripts": {
     "develop": "scripts/start.sh",
     "start": "scripts/start.sh",
@@ -15,6 +13,7 @@
     "preinstall": "scripts/preinstall.sh",
     "postinstall": "scripts/postinstall.sh",
     "test": "GATSBY_API_URL='http://localhost:3000' jest",
+    "test-with-debugger": "GATSBY_API_URL='http://localhost:3000' node --inspect-brk node_modules/.bin/jest --runInBand",
     "coverage": "GATSBY_API_URL='http://localhost:3000' jest --coverage"
   },
   "browserslist": [
@@ -33,9 +32,13 @@
     "@talus-analytics/library.airtable-cms": "^0.0.32",
     "@talus-analytics/library.ui.dropdown": "^0.0.10",
     "@talus-analytics/library.ui.expander": "^0.0.6",
-    "@talus-analytics/library.ui.typeahead": "^0.0.6",
+    "@talus-analytics/library.ui.typeahead": "file:library/ui/typeahead",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^14.0.0",
+    "@types/jest": "^29.5.2",
     "@types/react": "18",
     "babel-plugin-styled-components": "^2.0.7",
+    "fuse.js": "^6.6.2",
     "gatsby": "^5.11.0",
     "gatsby-plugin-gtag": "^1.0.13",
     "gatsby-plugin-image": "^3.11.0",

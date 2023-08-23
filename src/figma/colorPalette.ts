@@ -25,7 +25,7 @@ export default {
   veryLightPurple: `rgba(246,247,255,1)`,
   hoverRed: `rgba(254,230,229,1)`,
   hoverOrange: `rgba(254,242,229,1)`,
-  tableContentHighlight: `rgba(85,85,85,1)`,
+  tableContentHighlight: `rgba(57,60,80,1)`,
   tableHeaderHighlight: `rgba(33,36,61,1)`,
   white20PercentOpacity: `rgba(255,255,255,0.200)`,
   white10PercentOpacity: `rgba(255,255,255,0.100)`,
