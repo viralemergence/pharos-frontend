@@ -103,9 +103,7 @@ const DataPage = ({
       })
     )
     setFilters(filters)
-    setSortableFields(data.sortableFields)
-
-    console.log('data.sortableFields', data.sortableFields)
+    if ('sortableFields' in data) setSortableFields(data.sortableFields)
   }, [setFilters])
 
   useEffect(() => {
@@ -178,7 +176,7 @@ const DataPage = ({
 
 interface MetadataResponse {
   possibleFilters: Record<string, FilterInMetadata>
-  sortableFields: string[]
+  sortableFields?: string[]
 }
 
 interface FilterInMetadata {
@@ -203,7 +201,7 @@ const isValidFilterInMetadataResponse = (data: unknown): data is Filter => {
 
 const isValidMetadataResponse = (data: unknown): data is MetadataResponse => {
   if (!isNormalObject(data)) return false
-  const { possibleFilters, sortableFields } = data
+  const { possibleFilters, sortableFields = [] } = data
   if (!isNormalObject(possibleFilters)) return false
   if (!Array.isArray(sortableFields)) return false
   if (!sortableFields.every(field => typeof field === 'string')) return false
