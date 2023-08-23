@@ -10,7 +10,7 @@ import DataGrid, { Column, DataGridHandle } from 'react-data-grid'
 import { transparentize } from 'polished'
 
 import LoadingSpinner from './LoadingSpinner'
-import { SortStatus } from './SortIcon'
+import SortIcon, { SortStatus } from './SortIcon'
 import type { Filter } from 'pages/data'
 import { load, loadDebounced, countPages } from './utilities/load'
 import {
@@ -58,6 +58,19 @@ const DataGridStyled = styled(DataGrid)<{ isFilterPanelOpen: boolean }>`
     &.in-filtered-column {
       background-color: ${({ theme }) => theme.tableContentHighlight};
     }
+    &[role='columnheader'] {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+    }
+  }
+
+  svg.sortIcon {
+    width: 19px;
+    height: 19px;
+    margin-left: 5px;
+    align-self: center;
+    flex-shrink: 0;
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
@@ -66,6 +79,46 @@ const DataGridStyled = styled(DataGrid)<{ isFilterPanelOpen: boolean }>`
       isFilterPanelOpen ? 'display: none ! important;' : ''}
   }
 `
+
+const ColumnLabel = styled.div`
+  text-overflow: ellipsis;
+  overflow: clip;
+`
+
+const ColumnHeader = ({
+  dataGridKey,
+  sorts,
+  setSorts,
+}: {
+  dataGridKey: string
+  sorts: Sort[]
+  setSorts: Dispatch<SetStateAction<Sort[]>>
+}) => {
+  const cycle = [SortStatus.unselected, SortStatus.selected, SortStatus.reverse]
+  const sort = sorts.find(sort => sort[0] == dataGridKey) ?? [
+    dataGridKey,
+    SortStatus.unselected,
+  ]
+  // TODO: Change sort to an object with "key" and "status" properties
+  return (
+    <>
+      <ColumnLabel>{dataGridKey}</ColumnLabel>
+      <SortIcon
+        status={sort[1] ?? SortStatus.unselected}
+        onClick={() => {
+          setSorts(prev => {
+            const currentCycleIndex = cycle.findIndex(
+              sortStatus => sortStatus == sort[1]
+            )
+            const newSortStatus = cycle[(currentCycleIndex + 1) % cycle.length]
+            const newSort: Sort = [dataGridKey, newSortStatus]
+            return [newSort, ...prev.filter(sort => sort[0] !== dataGridKey)]
+          })
+        }}
+      />
+    </>
+  )
+}
 
 const LoadingMessage = styled.div`
   ${({ theme }) => theme.gridText}
@@ -182,12 +235,13 @@ const TableView = ({
       .filter(filterHasRealValues)
       .map(({ id, values }) => ({ id, values }))
   )
+  const sortsAsString = JSON.stringify(sorts)
 
   // Load the first page of results, both when TableView mounts and also when
   // the filters' values have changed
   useEffect(() => {
     loadDebounced({ ...loadOptions, replaceRecords: true })
-  }, [filtersWithRealValuesAsString])
+  }, [filtersWithRealValuesAsString, sortsAsString])
 
   useEffect(() => {
     return () => {
@@ -217,12 +271,9 @@ const TableView = ({
       .map(key => ({
         key: key,
         name: (
-          <>
-            {key}
-            <u>asc</u>
-          </>
+          <ColumnHeader dataGridKey={key} sorts={sorts} setSorts={setSorts} />
         ),
-        width: key.length * 10 + 15 + 'px',
+        width: key.length * 10 + 33 + 'px',
         resizable: true,
         cellClass: keysOfFilteredColumns.includes(key)
           ? 'in-filtered-column'
