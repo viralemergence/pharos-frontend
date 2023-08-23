@@ -2,6 +2,7 @@ import React, {
   Dispatch,
   SetStateAction,
   forwardRef,
+  useImperativeHandle,
   useEffect,
   useRef,
   useState,
@@ -112,10 +113,23 @@ type ColumnHeaderProps = {
   sorts: Sort[]
   setSorts: Dispatch<SetStateAction<Sort[]>>
   sortable: boolean
+  /** Button that receives focus when shift-tabbing out of this header */
+  moveFocusLeft: () => void
 }
 
-const ColumnHeader = forwardRef<HTMLDivElement, ColumnHeaderProps>(
-  ({ dataGridKey, sorts, setSorts, sortable }, headerRef) => {
+type ColumnHeaderHandle = {
+  focusLastFocusableElement: () => void
+}
+
+const ColumnHeader = forwardRef<ColumnHeaderHandle, ColumnHeaderProps>(
+  ({ dataGridKey, sorts, setSorts, sortable, moveFocusLeft }, ref) => {
+    useImperativeHandle(ref, () => ({
+      focusLastFocusableElement: () => {
+        lastFocusableElementRef.current?.focus()
+      },
+    }))
+    const lastFocusableElementRef = useRef<HTMLButtonElement>(null)
+
     const cycle = [
       SortStatus.unselected,
       SortStatus.selected,
@@ -146,45 +160,32 @@ const ColumnHeader = forwardRef<HTMLDivElement, ColumnHeaderProps>(
 
     const tableHeaderOnKeyDown = (e: React.KeyboardEvent) => {
       if (!(e.target instanceof HTMLDivElement)) return
-      if (e.key === 'Tab' || e.key == 'ArrowRight' || e.key === 'ArrowLeft') {
-        if (e.target.getAttribute('role') === 'columnheader') {
-          let buttonToFocus: HTMLButtonElement | undefined
-          if ((e.shiftKey && e.key === 'Tab') || e.key === 'ArrowLeft') {
-            // Tabbing backwards
-            const column = Number(e.target.getAttribute('aria-colindex'))
-            const row = e.target.parentNode
-            if (!row) return
-            const headerToTheLeft = row.querySelector<HTMLDivElement>(
-              `[aria-colindex='${column - 1}']`
-            )
-            if (!headerToTheLeft) return
-            const buttons =
-              headerToTheLeft.querySelectorAll<HTMLButtonElement>('button')
-            if (buttons.length === 0) return
-            buttonToFocus = Array.from(buttons).at(-1)
-          } else {
-            // Tabbing forwards
-            const buttons = e.target.querySelectorAll('button')
-            buttonToFocus = Array.from(buttons)[0]
-          }
-          if (!buttonToFocus) return
-          setTimeout(() => {
-            buttonToFocus?.focus()
-            const header = buttonToFocus?.parentNode
-            if (header instanceof HTMLDivElement) header.click()
-          })
-          e.preventDefault()
-          e.stopPropagation()
+      const tab = e.key === 'Tab'
+      const right = e.key === 'ArrowRight'
+      const left = e.key === 'ArrowLeft'
+      if (tab || right || left) {
+        if (e.target.getAttribute('role') !== 'columnheader') return
+        if ((e.shiftKey && tab) || left) {
+          moveFocusLeft()
+        } else {
+          // Tabbing forwards
+          if (!lastFocusableElementRef) return
+          lastFocusableElementRef.current?.focus()
         }
+        e.preventDefault()
+        e.stopPropagation()
       }
     }
-
     // TODO: Change sort to an object with "key" and "status" properties
     return (
-      <div ref={headerRef}>
+      <div onKeyDown={tableHeaderOnKeyDown}>
         <ColumnLabel>{dataGridKey}</ColumnLabel>
         {sortable && (
-          <SortButtonStyled onClick={sortButtonOnClick}>
+          <SortButtonStyled
+            // This is the first and last focusable element
+            ref={lastFocusableElementRef}
+            onClick={sortButtonOnClick}
+          >
             <SortIcon
               status={sort[1] ?? SortStatus.unselected}
               upArrowSelectedColor={colorPalette.mint}
@@ -345,7 +346,8 @@ const TableView = ({
     []
   )
 
-  const columnHeadersRef = useRef<HTMLDivElement[]>([])
+  /** Array of headers, used for making shift-tab work */
+  const headersRef = useRef<ColumnHeaderHandle[]>([])
 
   const columns: readonly Column<Row>[] = [
     rowNumberColumn,
@@ -359,8 +361,12 @@ const TableView = ({
             sorts={sorts}
             setSorts={setSorts}
             sortable={sortableFields.includes(key)}
-            headerToTheLeft={columnHeadersRef.current[index - 1]}
-            ref={(el: HTMLDivElement) => (columnHeadersRef.current[index] = el)}
+            moveFocusLeft={() =>
+              headersRef.current[index - 1].focusLastFocusableElement()
+            }
+            ref={(handle: ColumnHeaderHandle) =>
+              (headersRef.current[index] = handle)
+            }
           />
         ),
         width: key.length * 10 + 35 + 'px',
