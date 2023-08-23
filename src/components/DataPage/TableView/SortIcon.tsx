@@ -29,10 +29,12 @@ const SortIcon = ({
 
   switch (status) {
     case SortStatus.selected:
+      console.log('selected')
       upArrowFill = transparent
       downArrowFill = downArrowSelectedColor
       break
     case SortStatus.reverse:
+      console.log('reverse')
       upArrowFill = upArrowSelectedColor
       downArrowFill = transparent
       break
@@ -54,11 +56,11 @@ const SortIcon = ({
     >
       <g clipPath="url(#clip0_1831_13593)">
         <path
-          d="M5.83325 11.6666L9.99992 15.8333L14.1666 11.6666H5.83325Z"
+          d="M14.1667 8.33337L10.0001 4.16671L5.83341 8.33337L14.1667 8.33337Z"
           fill={upArrowFill}
         />
         <path
-          d="M14.1667 8.33337L10.0001 4.16671L5.83341 8.33337L14.1667 8.33337Z"
+          d="M5.83325 11.6666L9.99992 15.8333L14.1666 11.6666H5.83325Z"
           fill={downArrowFill}
         />
       </g>

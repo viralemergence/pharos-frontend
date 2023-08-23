@@ -100,6 +100,7 @@ const ColumnHeader = ({
     dataGridKey,
     SortStatus.unselected,
   ]
+  console.log('sort', sort)
   // TODO: Change sort to an object with "key" and "status" properties
   return (
     <>
@@ -117,11 +118,12 @@ const ColumnHeader = ({
             )
             const newSortStatus = cycle[(currentCycleIndex + 1) % cycle.length]
             const newSort: Sort = [dataGridKey, newSortStatus]
-            const previousSortsWithThisSortRemoved = prev.filter(sort => sort[0] !== dataGridKey)
+            const previousSortsWithThisSortRemoved = prev.filter(
+              sort => sort[0] !== dataGridKey
+            )
             if (newSortStatus === SortStatus.unselected) {
               return previousSortsWithThisSortRemoved
-            }
-            else {
+            } else {
               return [newSort, ...previousSortsWithThisSortRemoved]
             }
           })
