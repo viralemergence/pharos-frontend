@@ -376,28 +376,33 @@ const TableView = ({
             e.key === 'ArrowLeft'
           ) {
             if (e.target.getAttribute('role') === 'columnheader') {
-              let firstButton: HTMLButtonElement
+              let buttonToFocus: HTMLButtonElement | undefined
               if ((e.shiftKey && e.key === 'Tab') || e.key === 'ArrowLeft') {
                 // Tabbing backwards
                 const column = Number(e.target.getAttribute('aria-colindex'))
-                if (!e.target.parentNode?.parentNode) return
+                const row = e.target.parentNode
+                if (!row) return
+                const headerToTheLeft = row.querySelector<HTMLDivElement>(
+                  `[aria-colindex='${column - 1}']`
+                )
+                if (!headerToTheLeft) return
                 const buttons =
-                  e.target.parentNode.parentNode.querySelectorAll<HTMLButtonElement>(
-                    `[aria-colindex=${column - 1}] button`
-                  )
-                firstButton = Array.from(buttons)[0]
+                  headerToTheLeft.querySelectorAll<HTMLButtonElement>('button')
+                if (buttons.length === 0) return
+                buttonToFocus = Array.from(buttons).at(-1)
               } else {
                 // Tabbing forwards
                 const buttons = e.target.querySelectorAll('button')
-                firstButton = Array.from(buttons)[0]
+                buttonToFocus = Array.from(buttons)[0]
               }
-              if (firstButton) {
-                setTimeout(() => {
-                  firstButton.focus()
-                })
-                e.preventDefault()
-                e.stopPropagation()
-              }
+              if (!buttonToFocus) return
+              setTimeout(() => {
+                buttonToFocus?.focus()
+                const header = buttonToFocus?.parentNode
+                if (header instanceof HTMLDivElement) header.click()
+              })
+              e.preventDefault()
+              e.stopPropagation()
             }
           }
         })
