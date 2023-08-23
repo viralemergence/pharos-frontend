@@ -1,9 +1,10 @@
 import { Dispatch, MutableRefObject, SetStateAction } from 'react'
 import type { Filter } from 'pages/data'
 import debounce from 'lodash/debounce'
-import type { LoadingState } from '../TableView'
+import type { LoadingState, Sort } from '../TableView'
 import type { Row } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 import fetchRecords from 'components/DataPage/TableView/utilities/fetchRecords'
+import { SortStatus } from '../SortIcon'
 
 const PAGE_SIZE = 50
 
@@ -20,6 +21,7 @@ export const load = async ({
   latestRecordsRequestIdRef,
   setReachedLastPage,
   setRecords,
+  sorts,
 }: {
   records: Row[]
   replaceRecords?: boolean
@@ -29,11 +31,13 @@ export const load = async ({
   latestRecordsRequestIdRef: MutableRefObject<number>
   setReachedLastPage: Dispatch<SetStateAction<boolean>>
   setRecords: Dispatch<SetStateAction<Row[]>>
+  sorts: Sort[]
 }) => {
   setLoading(replaceRecords ? 'replacing' : 'appending')
 
   const queryStringParameters = new URLSearchParams()
 
+  // Add filters to the query string
   const idsOfAppliedFilters: string[] = []
   for (const filter of filters) {
     if (!filter.addedToPanel) continue
@@ -44,6 +48,16 @@ export const load = async ({
     }
     if (validValues.length > 0) idsOfAppliedFilters.push(filter.id)
   }
+
+  // Add sorts to the query string
+  const sortsReformatted = []
+  for (const sort of sorts) {
+    const [columnName, sortStatus] = sort
+    const sortReformatted =
+      (sortStatus === SortStatus.reverse ? '-' : '') + columnName
+    sortsReformatted.append(sortReformatted)
+  }
+  queryStringParameters.append(columnName, sortStatus.toString())
 
   let pageToLoad
   if (replaceRecords) {
