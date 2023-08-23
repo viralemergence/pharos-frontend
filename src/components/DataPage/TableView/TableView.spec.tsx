@@ -35,7 +35,11 @@ describe('The public data table', () => {
   it('renders', async () => {
     render(
       <Providers>
-        <TableView filters={[]} setFilters={jest.fn()} />
+        <TableView
+          filters={[]}
+          setFilters={jest.fn()}
+          enableVirtualization={false}
+        />
       </Providers>
     )
     const grid = await getDataGridAfterWaiting()
@@ -65,6 +69,7 @@ describe('The public data table', () => {
         <TableView
           filters={[startDateFilterMarch2020]}
           setFilters={jest.fn()}
+          enableVirtualization={false}
         />
       </Providers>
     )
@@ -74,15 +79,23 @@ describe('The public data table', () => {
     })
   })
 
-  it('has clickable researcher names', async () => {
+  it('has clickable project names and researcher names', async () => {
     render(
       <Providers>
-        <TableView filters={[]} setFilters={jest.fn()} />
+        <TableView
+          filters={[]}
+          setFilters={jest.fn()}
+          enableVirtualization={false}
+        />
       </Providers>
     )
+    const projectLinks = await screen.findAllByRole('link', {
+      name: 'Project Zero',
+    })
+    expect(projectLinks.length).toBeGreaterThan(10)
     const researcherLinks = await screen.findAllByRole('link', {
       name: 'Researcher Zero',
     })
-    expect(researcherLinks.length).toBeGreaterThan(0)
+    expect(researcherLinks.length).toBeGreaterThan(10)
   })
 })
