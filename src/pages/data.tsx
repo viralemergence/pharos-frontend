@@ -103,7 +103,7 @@ const DataPage = ({
       })
     )
     setFilters(filters)
-    if ('sortableFields' in data) setSortableFields(data.sortableFields)
+    if (data.sortableFields) setSortableFields(data.sortableFields)
   }, [setFilters])
 
   useEffect(() => {

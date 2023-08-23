@@ -320,7 +320,7 @@ const TableView = ({
             sortable={sortableFields.includes(key)}
           />
         ),
-        width: key.length * 10 + 33 + 'px',
+        width: key.length * 10 + 35 + 'px',
         resizable: true,
         cellClass: keysOfFilteredColumns.includes(key)
           ? 'in-filtered-column'
