@@ -9,9 +9,20 @@ export enum SortStatus {
 
 interface SortIconProps extends React.SVGProps<SVGSVGElement> {
   status: SortStatus
+  upArrowSelectedColor?: string
+  downArrowSelectedColor?: string
+  upArrowUnselectedColor?: string
+  downArrowUnselectedColor?: string
 }
 
-const SortIcon = ({ status, ...props }: SortIconProps) => {
+const SortIcon = ({
+  status,
+  upArrowSelectedColor = colorPalette.black,
+  downArrowSelectedColor = colorPalette.black,
+  upArrowUnselectedColor = colorPalette.medGray,
+  downArrowUnselectedColor = colorPalette.medGray,
+  ...props
+}: SortIconProps) => {
   const transparent = 'rgba(0, 0, 0, 0)'
 
   let upArrowFill: string, downArrowFill: string
@@ -19,15 +30,15 @@ const SortIcon = ({ status, ...props }: SortIconProps) => {
   switch (status) {
     case SortStatus.selected:
       upArrowFill = transparent
-      downArrowFill = colorPalette.black
+      downArrowFill = downArrowSelectedColor
       break
     case SortStatus.reverse:
-      upArrowFill = colorPalette.black
+      upArrowFill = upArrowSelectedColor
       downArrowFill = transparent
       break
     case SortStatus.unselected:
-      upArrowFill = colorPalette.medGray
-      downArrowFill = colorPalette.medGray
+      upArrowFill = upArrowUnselectedColor
+      downArrowFill = upArrowUnselectedColor
       break
   }
 

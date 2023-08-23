@@ -9,6 +9,7 @@ import styled from 'styled-components'
 import DataGrid, { Column, DataGridHandle } from 'react-data-grid'
 import { transparentize } from 'polished'
 
+import colorPalette from 'figma/colorPalette'
 import LoadingSpinner from './LoadingSpinner'
 import SortIcon, { SortStatus } from './SortIcon'
 import type { Filter } from 'pages/data'
@@ -105,6 +106,10 @@ const ColumnHeader = ({
       <ColumnLabel>{dataGridKey}</ColumnLabel>
       <SortIcon
         status={sort[1] ?? SortStatus.unselected}
+        upArrowSelectedColor={colorPalette.mint}
+        downArrowSelectedColor={colorPalette.mint}
+        upArrowUnselectedColor={colorPalette.gridLines}
+        downArrowUnselectedColor={colorPalette.gridLines}
         onClick={() => {
           setSorts(prev => {
             const currentCycleIndex = cycle.findIndex(
@@ -112,7 +117,13 @@ const ColumnHeader = ({
             )
             const newSortStatus = cycle[(currentCycleIndex + 1) % cycle.length]
             const newSort: Sort = [dataGridKey, newSortStatus]
-            return [newSort, ...prev.filter(sort => sort[0] !== dataGridKey)]
+            const previousSortsWithThisSortRemoved = prev.filter(sort => sort[0] !== dataGridKey)
+            if (newSortStatus === SortStatus.unselected) {
+              return previousSortsWithThisSortRemoved
+            }
+            else {
+              return [newSort, ...previousSortsWithThisSortRemoved]
+            }
           })
         }}
       />
