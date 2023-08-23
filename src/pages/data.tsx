@@ -68,6 +68,9 @@ const DataPage = ({
     useState<MapProjection>('naturalEarth')
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
   const [filters, setFilters] = useState<Filter[]>([])
+  const [sortableFields, setSortableFields] = useState<string[]>([])
+
+  console.log('sortableFields', sortableFields)
 
   const [screenReaderAnnouncement, setScreenReaderAnnouncement] = useState('')
 
@@ -102,6 +105,9 @@ const DataPage = ({
       })
     )
     setFilters(filters)
+    setSortableFields(data.sortableFields)
+
+    console.log('data.sortableFields', data.sortableFields)
   }, [setFilters])
 
   useEffect(() => {
@@ -160,6 +166,7 @@ const DataPage = ({
               isOpen={view === View.table}
               isFilterPanelOpen={isFilterPanelOpen}
               enableVirtualization={enableTableVirtualization}
+              sortableFields={sortableFields}
             />
           </ViewMain>
         </ViewContainer>
@@ -173,6 +180,7 @@ const DataPage = ({
 
 interface MetadataResponse {
   possibleFilters: Record<string, FilterInMetadata>
+  sortableFields: string[]
 }
 
 interface FilterInMetadata {
@@ -197,11 +205,17 @@ const isValidFilterInMetadataResponse = (data: unknown): data is Filter => {
 
 const isValidMetadataResponse = (data: unknown): data is MetadataResponse => {
   if (!isNormalObject(data)) return false
-  const { possibleFilters } = data
+  const { possibleFilters, sortableFields } = data
   if (!isNormalObject(possibleFilters)) return false
-  return Object.values(possibleFilters).every?.(filter =>
-    isValidFilterInMetadataResponse(filter)
+  if (!Array.isArray(sortableFields)) return false
+  if (!sortableFields.every(field => typeof field === 'string')) return false
+  if (
+    !Object.values(possibleFilters).every?.(filter =>
+      isValidFilterInMetadataResponse(filter)
+    )
   )
+    return false
+  return true
 }
 
 export default DataPage

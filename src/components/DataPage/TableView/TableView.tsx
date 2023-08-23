@@ -63,15 +63,11 @@ const DataGridStyled = styled(DataGrid)<{ isFilterPanelOpen: boolean }>`
       display: flex;
       flex-flow: row nowrap;
       justify-content: space-between;
+      padding-right: 0;
+      &::after {
+        width: 9px;
+      }
     }
-  }
-
-  svg.sortIcon {
-    width: 19px;
-    height: 19px;
-    margin-left: 5px;
-    align-self: center;
-    flex-shrink: 0;
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
@@ -90,56 +86,76 @@ const SortButtonStyled = styled.button`
   background: transparent;
   border: 0;
   cursor: pointer;
-  margin: 0;
-  padding: 0;
+  padding: 0 3px;
+  padding-top: 3px;
+  margin-right: 10px;
+  margin-top: 5px;
+  margin-bottom: 4px;
+  border-radius: 7px;
+
+  svg {
+    width: 19px;
+    height: 19px;
+    align-self: center;
+    flex-shrink: 0;
+  }
+
+  &:hover,
+  &:focus {
+    outline: 1px solid rgba(255, 255, 255, 0.4);
+  }
 `
 
 const ColumnHeader = ({
   dataGridKey,
   sorts,
   setSorts,
+  sortable,
 }: {
   dataGridKey: string
   sorts: Sort[]
   setSorts: Dispatch<SetStateAction<Sort[]>>
+  sortable: boolean
 }) => {
   const cycle = [SortStatus.unselected, SortStatus.selected, SortStatus.reverse]
   const sort = sorts.find(sort => sort[0] == dataGridKey) ?? [
     dataGridKey,
     SortStatus.unselected,
   ]
-  console.log('sort', sort)
+
+  const onClick = () => {
+    setSorts(prev => {
+      const currentCycleIndex = cycle.findIndex(
+        sortStatus => sortStatus == sort[1]
+      )
+      const newSortStatus = cycle[(currentCycleIndex + 1) % cycle.length]
+      const newSort: Sort = [dataGridKey, newSortStatus]
+      const previousSortsWithThisSortRemoved = prev.filter(
+        sort => sort[0] !== dataGridKey
+      )
+      if (newSortStatus === SortStatus.unselected) {
+        return previousSortsWithThisSortRemoved
+      } else {
+        return [newSort, ...previousSortsWithThisSortRemoved]
+      }
+    })
+  }
+
   // TODO: Change sort to an object with "key" and "status" properties
   return (
     <>
       <ColumnLabel>{dataGridKey}</ColumnLabel>
-      <SortButtonStyled>
-        <SortIcon
-          status={sort[1] ?? SortStatus.unselected}
-          upArrowSelectedColor={colorPalette.mint}
-          downArrowSelectedColor={colorPalette.mint}
-          upArrowUnselectedColor={colorPalette.gridLines}
-          downArrowUnselectedColor={colorPalette.gridLines}
-          onClick={() => {
-            setSorts(prev => {
-              const currentCycleIndex = cycle.findIndex(
-                sortStatus => sortStatus == sort[1]
-              )
-              const newSortStatus =
-                cycle[(currentCycleIndex + 1) % cycle.length]
-              const newSort: Sort = [dataGridKey, newSortStatus]
-              const previousSortsWithThisSortRemoved = prev.filter(
-                sort => sort[0] !== dataGridKey
-              )
-              if (newSortStatus === SortStatus.unselected) {
-                return previousSortsWithThisSortRemoved
-              } else {
-                return [newSort, ...previousSortsWithThisSortRemoved]
-              }
-            })
-          }}
-        />
-      </SortButtonStyled>
+      {sortable && (
+        <SortButtonStyled onClick={onClick}>
+          <SortIcon
+            status={sort[1] ?? SortStatus.unselected}
+            upArrowSelectedColor={colorPalette.mint}
+            downArrowSelectedColor={colorPalette.mint}
+            upArrowUnselectedColor={colorPalette.gridLines}
+            downArrowUnselectedColor={colorPalette.gridLines}
+          />
+        </SortButtonStyled>
+      )}
     </>
   )
 }
@@ -183,6 +199,7 @@ interface TableViewProps {
   setFilters: Dispatch<SetStateAction<Filter[]>>
   isOpen?: boolean
   isFilterPanelOpen?: boolean
+  sortableFields?: string[]
   /** Virtualization should be disabled in tests via this prop, so that all the
    * cells are rendered immediately */
   enableVirtualization?: boolean
@@ -207,6 +224,7 @@ const TableView = ({
   setFilters,
   isOpen = true,
   isFilterPanelOpen = false,
+  sortableFields = [],
   enableVirtualization = true,
 }: TableViewProps) => {
   const [loading, setLoading] = useState<LoadingState>('replacing')
@@ -295,7 +313,12 @@ const TableView = ({
       .map(key => ({
         key: key,
         name: (
-          <ColumnHeader dataGridKey={key} sorts={sorts} setSorts={setSorts} />
+          <ColumnHeader
+            dataGridKey={key}
+            sorts={sorts}
+            setSorts={setSorts}
+            sortable={sortableFields.includes(key)}
+          />
         ),
         width: key.length * 10 + 33 + 'px',
         resizable: true,
@@ -336,6 +359,34 @@ const TableView = ({
       divIsScrolledToBottom(dataGrid)
     ) {
       dataGrid.scrollTop = 0
+    }
+
+    // Set keydown handler to place sort icon into the tab order
+    if (dataGrid) {
+      const headers = Array.from(
+        dataGrid.querySelectorAll('[role=columnheader]')
+      )
+      for (const header of headers) {
+        if (!(header instanceof HTMLDivElement)) continue
+        header.addEventListener('keydown', e => {
+          if (!(e.target instanceof HTMLDivElement)) return
+          // TODO: support shift-tab and left arrow
+          if (e.key === 'Tab' || e.key == 'ArrowRight') {
+            if (e.target.getAttribute('role') === 'columnheader') {
+              const column = e.target.getAttribute('aria-colindex')
+              const buttons = e.target.querySelectorAll('button')
+              const firstButton = Array.from(buttons)[0]
+              if (firstButton) {
+                setTimeout(() => {
+                  firstButton.focus()
+                })
+                e.preventDefault()
+                e.stopPropagation()
+              }
+            }
+          }
+        })
+      }
     }
   }, [records])
 
