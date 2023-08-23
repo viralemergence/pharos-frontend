@@ -86,6 +86,14 @@ const ColumnLabel = styled.div`
   overflow: clip;
 `
 
+const SortButtonStyled = styled.button`
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+`
+
 const ColumnHeader = ({
   dataGridKey,
   sorts,
@@ -105,30 +113,33 @@ const ColumnHeader = ({
   return (
     <>
       <ColumnLabel>{dataGridKey}</ColumnLabel>
-      <SortIcon
-        status={sort[1] ?? SortStatus.unselected}
-        upArrowSelectedColor={colorPalette.mint}
-        downArrowSelectedColor={colorPalette.mint}
-        upArrowUnselectedColor={colorPalette.gridLines}
-        downArrowUnselectedColor={colorPalette.gridLines}
-        onClick={() => {
-          setSorts(prev => {
-            const currentCycleIndex = cycle.findIndex(
-              sortStatus => sortStatus == sort[1]
-            )
-            const newSortStatus = cycle[(currentCycleIndex + 1) % cycle.length]
-            const newSort: Sort = [dataGridKey, newSortStatus]
-            const previousSortsWithThisSortRemoved = prev.filter(
-              sort => sort[0] !== dataGridKey
-            )
-            if (newSortStatus === SortStatus.unselected) {
-              return previousSortsWithThisSortRemoved
-            } else {
-              return [newSort, ...previousSortsWithThisSortRemoved]
-            }
-          })
-        }}
-      />
+      <SortButtonStyled>
+        <SortIcon
+          status={sort[1] ?? SortStatus.unselected}
+          upArrowSelectedColor={colorPalette.mint}
+          downArrowSelectedColor={colorPalette.mint}
+          upArrowUnselectedColor={colorPalette.gridLines}
+          downArrowUnselectedColor={colorPalette.gridLines}
+          onClick={() => {
+            setSorts(prev => {
+              const currentCycleIndex = cycle.findIndex(
+                sortStatus => sortStatus == sort[1]
+              )
+              const newSortStatus =
+                cycle[(currentCycleIndex + 1) % cycle.length]
+              const newSort: Sort = [dataGridKey, newSortStatus]
+              const previousSortsWithThisSortRemoved = prev.filter(
+                sort => sort[0] !== dataGridKey
+              )
+              if (newSortStatus === SortStatus.unselected) {
+                return previousSortsWithThisSortRemoved
+              } else {
+                return [newSort, ...previousSortsWithThisSortRemoved]
+              }
+            })
+          }}
+        />
+      </SortButtonStyled>
     </>
   )
 }
