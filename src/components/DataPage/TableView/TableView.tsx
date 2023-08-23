@@ -370,12 +370,27 @@ const TableView = ({
         if (!(header instanceof HTMLDivElement)) continue
         header.addEventListener('keydown', e => {
           if (!(e.target instanceof HTMLDivElement)) return
-          // TODO: support shift-tab and left arrow
-          if (e.key === 'Tab' || e.key == 'ArrowRight') {
+          if (
+            e.key === 'Tab' ||
+            e.key == 'ArrowRight' ||
+            e.key === 'ArrowLeft'
+          ) {
             if (e.target.getAttribute('role') === 'columnheader') {
-              // const column = e.target.getAttribute('aria-colindex')
-              const buttons = e.target.querySelectorAll('button')
-              const firstButton = Array.from(buttons)[0]
+              let firstButton: HTMLButtonElement
+              if ((e.shiftKey && e.key === 'Tab') || e.key === 'ArrowLeft') {
+                // Tabbing backwards
+                const column = Number(e.target.getAttribute('aria-colindex'))
+                if (!e.target.parentNode?.parentNode) return
+                const buttons =
+                  e.target.parentNode.parentNode.querySelectorAll<HTMLButtonElement>(
+                    `[aria-colindex=${column - 1}] button`
+                  )
+                firstButton = Array.from(buttons)[0]
+              } else {
+                // Tabbing forwards
+                const buttons = e.target.querySelectorAll('button')
+                firstButton = Array.from(buttons)[0]
+              }
               if (firstButton) {
                 setTimeout(() => {
                   firstButton.focus()
