@@ -35,41 +35,19 @@ export const load = async ({
 }) => {
   setLoading(replaceRecords ? 'replacing' : 'appending')
 
-  const queryStringParameters = new URLSearchParams()
+  const filtersToApply = filters.filter(
+    f =>
+      f.addedToPanel &&
+      f.valid &&
+      f.values.filter((value: string) => value).length > 0
+  )
 
-  // Add filters to the query string
-  const idsOfAppliedFilters: string[] = []
-  for (const filter of filters) {
-    if (!filter.addedToPanel) continue
-    if (!filter.valid) continue
-    const validValues = filter.values.filter((value: string) => value)
-    for (const value of validValues) {
-      queryStringParameters.append(filter.id, value)
-    }
-    if (validValues.length > 0) idsOfAppliedFilters.push(filter.id)
-  }
-
-  // Add sorts to the query string
-  const sortsReformatted = []
-  for (const sort of sorts) {
-    const [columnName, sortStatus] = sort
-    const sortReformatted =
-      (sortStatus === SortStatus.reverse ? '-' : '') + columnName
-    sortsReformatted.append(sortReformatted)
-  }
-  queryStringParameters.append(columnName, sortStatus.toString())
-
-  let pageToLoad
-  if (replaceRecords) {
-    pageToLoad = 1
-  } else {
-    // If we're not replacing the current set of records, load the next
-    // page. For example, if there are 100 records, load page 3 (i.e., the
-    // records numbered from 101 to 150)
-    pageToLoad = countPages(records) + 1
-  }
-  queryStringParameters.append('page', pageToLoad.toString())
-  queryStringParameters.append('pageSize', PAGE_SIZE.toString())
+  const queryStringParameters = getQueryStringParameters(
+    filtersToApply,
+    sorts,
+    records,
+    replaceRecords
+  )
 
   const success = await fetchRecords({
     queryStringParameters,
@@ -78,6 +56,8 @@ export const load = async ({
     setRecords,
     setReachedLastPage,
   })
+
+  const idsOfAppliedFilters = filtersToApply.map(f => f.id)
 
   if (success) {
     setFilters(prev => {
@@ -98,3 +78,38 @@ export const loadDebounced = debounce(load, loadDebounceDelay, {
 
 export const countPages = (records: Row[]) =>
   Math.floor(records.length / PAGE_SIZE)
+
+export const getQueryStringParameters = (
+  filters: Filter[],
+  sorts: Sort[],
+  records: Row[],
+  replaceRecords: boolean
+) => {
+  const params = new URLSearchParams()
+
+  // Add filters to the query string
+  for (const filter of filters) {
+    const validValues = filter.values.filter((value: string) => value)
+    for (const value of validValues) {
+      params.append(filter.id, value)
+    }
+  }
+
+  // Add sorts to the query string
+  for (const sort of sorts) {
+    params.append('sort', (sort[1] === SortStatus.reverse ? '-' : '') + sort[0])
+  }
+
+  let pageToLoad
+  if (replaceRecords) {
+    pageToLoad = 1
+  } else {
+    // If we're not replacing the current set of records, load the next
+    // page. For example, if there are 100 records, load page 3 (i.e., the
+    // records numbered from 101 to 150)
+    pageToLoad = countPages(records) + 1
+  }
+  params.append('page', pageToLoad.toString())
+  params.append('pageSize', PAGE_SIZE.toString())
+  return params
+}

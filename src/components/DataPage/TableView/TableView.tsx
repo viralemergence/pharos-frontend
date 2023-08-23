@@ -167,6 +167,7 @@ const TableView = ({
 
   const loadOptions = {
     filters,
+    sorts,
     latestRecordsRequestIdRef,
     records,
     setFilters,
