@@ -14,7 +14,7 @@ import {
   ViewContainer,
   ViewMain,
 } from 'components/DataPage/DisplayComponents'
-import usePublishedRecordsMetadata from 'hooks/publishedRecords/fetchMetadata'
+import usePublishedRecordsMetadata from 'hooks/publishedRecords/usePublishedRecordsMetadata'
 
 export type Filter = {
   id: string
@@ -85,8 +85,6 @@ const DataPage = ({
 
   const { possibleFilters, sortableFields } =
     usePublishedRecordsMetadata() ?? {}
-
-  console.log('possibleFilters', possibleFilters)
 
   useEffect(() => {
     if (possibleFilters) setFilters(possibleFilters)
