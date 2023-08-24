@@ -247,7 +247,7 @@ const TableView = ({
             headersRef={headersRef}
           />
         ),
-        width: key.length * 10 + 35 + 'px',
+        width: key.length * 10 + 50 + 'px',
         resizable: true,
         cellClass: keysOfFilteredColumns.includes(key)
           ? 'in-filtered-column'
