@@ -16,6 +16,7 @@ import {
   ViewContainer,
   ViewMain,
 } from 'components/DataPage/DisplayComponents'
+import { isValidMetadataResponse } from 'hooks/publishedRecords/fetchMetadata'
 
 export type Filter = {
   id: string
@@ -172,46 +173,6 @@ const DataPage = ({
       </PageContainer>
     </Providers>
   )
-}
-
-interface MetadataResponse {
-  possibleFilters: Record<string, FilterInMetadata>
-  sortableFields?: string[]
-}
-
-interface FilterInMetadata {
-  label: string
-  type?: 'text' | 'date'
-  dataGridKey: string
-  options: string[]
-}
-
-const isValidFilterInMetadataResponse = (data: unknown): data is Filter => {
-  if (!isNormalObject(data)) return false
-  const { label, dataGridKey = '', type = 'text', options = [] } = data
-  return (
-    typeof label === 'string' &&
-    typeof dataGridKey === 'string' &&
-    typeof type === 'string' &&
-    ['text', 'date'].includes(type) &&
-    Array.isArray(options) &&
-    options.every?.(option => typeof option === 'string')
-  )
-}
-
-const isValidMetadataResponse = (data: unknown): data is MetadataResponse => {
-  if (!isNormalObject(data)) return false
-  const { possibleFilters, sortableFields = [] } = data
-  if (!isNormalObject(possibleFilters)) return false
-  if (!Array.isArray(sortableFields)) return false
-  if (!sortableFields.every(field => typeof field === 'string')) return false
-  if (
-    !Object.values(possibleFilters).every?.(filter =>
-      isValidFilterInMetadataResponse(filter)
-    )
-  )
-    return false
-  return true
 }
 
 export default DataPage

@@ -1,10 +1,11 @@
-import React, { useEffect, useRef } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
 import DataGrid, {
   Column,
   DataGridHandle,
   FormatterProps,
+  HeaderRendererProps,
 } from 'react-data-grid'
 
 import { darken } from 'polished'
@@ -17,6 +18,9 @@ import ProjectName from './formatters/ProjectName'
 
 import { PublishedRecordsLoadingState } from 'hooks/publishedRecords/fetchPublishedRecords'
 import usePublishedRecords from 'hooks/publishedRecords/usePublishedRecords'
+
+import type { Sort } from 'components/DataPage/TableView/TableView'
+import ColumnHeader from 'components/PublicViews/PublishedRecordsDataGrid/ColumnHeader'
 
 export interface PublishedRecordsResearcher {
   name: string
@@ -91,12 +95,24 @@ interface FilteredPublishedRecordsDataGridProps {
   publishedRecordsData: ReturnType<typeof usePublishedRecords>[0]
   loadMore: ReturnType<typeof usePublishedRecords>[1]
   hideColumns?: string[]
+  sortableFields?: string[]
+}
+
+const rowNumberColumn = {
+  key: 'rowNumber',
+  name: '',
+  frozen: true,
+  resizable: false,
+  minWidth: 55,
+  width: 55,
+  formatter: RowNumber,
 }
 
 const PublishedRecordsDataGrid = ({
   publishedRecordsData,
   loadMore,
   hideColumns = [],
+  sortableFields = [],
 }: FilteredPublishedRecordsDataGridProps) => {
   const gridRef = useRef<DataGridHandle>(null)
 
@@ -108,16 +124,6 @@ const PublishedRecordsDataGrid = ({
     )
       gridRef.current.scrollToRow(0)
   }, [publishedRecordsData.status])
-
-  const rowNumberColumn = {
-    key: 'rowNumber',
-    name: '',
-    frozen: true,
-    resizable: false,
-    minWidth: 55,
-    width: 55,
-    formatter: RowNumber,
-  }
 
   if (publishedRecordsData.status === PublishedRecordsLoadingState.ERROR) {
     return (
@@ -182,6 +188,41 @@ const PublishedRecordsDataGrid = ({
       )}
     </TableContainer>
   )
+}
+
+export const getColumns = (
+  records: Row[],
+  sortableFields: string[],
+  sorts: Sort[],
+  setSorts: Dispatch<SetStateAction<Sort[]>>,
+  keysOfFilteredColumns: string[]
+): readonly Column<Row>[] => {
+  return [
+    rowNumberColumn,
+    ...Object.keys(records?.[0] ?? {})
+      .filter(key => !['pharosID', 'rowNumber'].includes(key))
+      .map(key => {
+        const sortable = sortableFields.includes(key)
+        return {
+          key: key,
+          name: key,
+          headerRenderer: (_props: HeaderRendererProps<Row>) => (
+            <ColumnHeader
+              dataGridKey={key}
+              sorts={sorts}
+              setSorts={setSorts}
+              sortable={sortable}
+            />
+          ),
+          width: key.length * 10 + (sortable ? 50 : 30) + 'px',
+          resizable: true,
+          cellClass: keysOfFilteredColumns.includes(key)
+            ? 'in-filtered-column'
+            : undefined,
+          formatter: formatters[key],
+        }
+      }),
+  ]
 }
 
 export default PublishedRecordsDataGrid

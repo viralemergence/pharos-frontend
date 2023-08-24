@@ -6,21 +6,16 @@ import React, {
   useState,
 } from 'react'
 import styled from 'styled-components'
-import DataGrid, {
-  Column,
-  DataGridHandle,
-  HeaderRendererProps,
-} from 'react-data-grid'
+import DataGrid, { DataGridHandle } from 'react-data-grid'
 import { transparentize } from 'polished'
 import LoadingSpinner from './LoadingSpinner'
 import type { SortStatus } from '../../PublicViews/PublishedRecordsDataGrid/SortIcon'
 import type { Filter } from 'pages/data'
 import { load, loadDebounced, countPages } from './utilities/load'
 import {
-  formatters,
   Row,
+  getColumns,
 } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
-import ColumnHeader from 'components/PublicViews/PublishedRecordsDataGrid/ColumnHeader'
 
 const TableViewContainer = styled.div<{
   isOpen: boolean
@@ -229,35 +224,13 @@ const TableView = ({
     []
   )
 
-  /*
-   */
-
-  const columns: readonly Column<Row>[] = [
-    rowNumberColumn,
-    ...Object.keys(records?.[0] ?? {})
-      .filter(key => !['pharosID', 'rowNumber'].includes(key))
-      .map(key => {
-        const sortable = sortableFields.includes(key)
-        return {
-          key: key,
-          name: key,
-          headerRenderer: (_props: HeaderRendererProps<Row>) => (
-            <ColumnHeader
-              dataGridKey={key}
-              sorts={sorts}
-              setSorts={setSorts}
-              sortable={sortable}
-            />
-          ),
-          width: key.length * 10 + (sortable ? 50 : 30) + 'px',
-          resizable: true,
-          cellClass: keysOfFilteredColumns.includes(key)
-            ? 'in-filtered-column'
-            : undefined,
-          formatter: formatters[key],
-        }
-      }),
-  ]
+  const columns = getColumns(
+    records,
+    sortableFields,
+    sorts,
+    setSorts,
+    keysOfFilteredColumns
+  )
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     if (

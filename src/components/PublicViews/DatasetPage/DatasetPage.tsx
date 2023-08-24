@@ -23,6 +23,7 @@ import usePublishedProject, {
   ProjectDataStatus,
 } from '../ProjectPage/usePublishedProject'
 import usePublishedRecords from 'hooks/publishedRecords/usePublishedRecords'
+import usePublishedRecordsMetadata from 'hooks/publishedRecords/usePublishedRecordsMetadata'
 import { PublicProjectPageContentBox } from '../ProjectPage/ProjectPage'
 
 const GridContainer = styled.div`
@@ -48,6 +49,8 @@ const DatasetPage = () => {
     pageSize: PAGESIZE,
     filters,
   })
+
+  const { sortableFields } = usePublishedRecordsMetadata()
 
   const dataset =
     status === ProjectDataStatus.Loaded &&
