@@ -1,5 +1,6 @@
 import React from 'react'
 import colorPalette from 'figma/colorPalette'
+import styled from 'styled-components'
 
 export enum SortStatus {
   selected,
@@ -15,13 +16,19 @@ interface SortIconProps extends React.SVGProps<SVGSVGElement> {
   downArrowUnselectedColor?: string
 }
 
+const SortIconSVGStyled = styled.svg`
+  width: 19px;
+  height: 19px;
+  align-self: center;
+  flex-shrink: 0;
+`
+
 const SortIcon = ({
   status,
   upArrowSelectedColor = colorPalette.black,
   downArrowSelectedColor = colorPalette.black,
   upArrowUnselectedColor = colorPalette.medGray,
   downArrowUnselectedColor = colorPalette.medGray,
-  ...props
 }: SortIconProps) => {
   const transparent = 'rgba(0, 0, 0, 0)'
 
@@ -40,19 +47,17 @@ const SortIcon = ({
       break
     case SortStatus.unselected:
       upArrowFill = upArrowUnselectedColor
-      downArrowFill = upArrowUnselectedColor
+      downArrowFill = downArrowUnselectedColor
       break
   }
 
   return (
-    <svg
+    <SortIconSVGStyled
       width="20"
       height="20"
       viewBox="0 0 20 20"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="sortIcon"
-      {...props}
     >
       <g clipPath="url(#clip0_1831_13593)">
         <path
@@ -69,7 +74,7 @@ const SortIcon = ({
           <rect width="20" height="20" fill="white" />
         </clipPath>
       </defs>
-    </svg>
+    </SortIconSVGStyled>
   )
 }
 

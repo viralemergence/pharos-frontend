@@ -7,8 +7,9 @@ import React, {
   useRef,
 } from 'react'
 import styled from 'styled-components'
+import { transparentize } from 'polished'
 import colorPalette from 'figma/colorPalette'
-import SortIcon, { SortStatus } from './SortIcon'
+import SortIconSVGStyled, { SortStatus } from './SortIcon'
 import type { Sort } from 'components/DataPage/TableView/TableView'
 
 const ColumnLabel = styled.div`
@@ -16,7 +17,7 @@ const ColumnLabel = styled.div`
   overflow: clip;
 `
 
-const SortButtonStyled = styled.button<{ sortPriority: number }>`
+const SortButtonStyled = styled.button<{ sortPriority: number | undefined }>`
   border: 0;
   cursor: pointer;
   padding: 0 3px;
@@ -28,21 +29,15 @@ const SortButtonStyled = styled.button<{ sortPriority: number }>`
   margin-left: 3px;
   transition: background-color 0.15s;
   background-color: ${({ sortPriority, theme }) => {
-    if (sortPriority === 0) return 'rgba(0,0,0,0.3)'
-    if (sortPriority > 0) return 'rgba(0,0,0,0.15)'
+    if (sortPriority === 0) return theme.mutedPurple1
+    if (sortPriority && sortPriority > 0)
+      return transparentize(0.5, theme.mutedPurple1)
     return 'transparent'
   }};
 
-  svg {
-    width: 19px;
-    height: 19px;
-    align-self: center;
-    flex-shrink: 0;
-  }
-
   &:hover,
   &:focus {
-    outline: 1px solid rgba(255, 255, 255, 0.4);
+    outline: 1px solid ${({ theme }) => theme.white};
   }
 `
 
@@ -51,8 +46,6 @@ type ColumnHeaderProps = {
   sorts: Sort[]
   setSorts: Dispatch<SetStateAction<Sort[]>>
   sortable: boolean
-  index: number
-  headersRef: React.MutableRefObject<ColumnHeaderHandle[]>
 }
 
 export type ColumnHeaderHandle = {
@@ -68,6 +61,8 @@ const ColumnHeader = ({
   const firstFocusableElementRef: React.MutableRefObject<HTMLButtonElement | null> =
     useRef(null)
 
+  /** Ensures that when user presses tab or the right arrow, the sort button
+   * receives the focus */
   const cellKeyDownHandler = useCallback(
     (e: KeyboardEvent) => {
       const cell = e.target
@@ -85,8 +80,8 @@ const ColumnHeader = ({
 
   const columnLabelRef = useRef<HTMLDivElement>(null)
 
-  // Accessing the header cell via DOM since react-data-grid doesn't give us
-  // a ref pointing to it
+  /** Get the header cell via the DOM, since react-data-grid doesn't give us a
+   * ref pointing to it */
   const getHeaderCell = useCallback(
     () => columnLabelRef.current?.parentNode,
     [columnLabelRef]
@@ -96,9 +91,11 @@ const ColumnHeader = ({
   const [sort, sortPriority] = useMemo(() => {
     const index = sorts.findIndex(sort => sort[0] == dataGridKey)
     if (index === -1) {
+      // Table is not sorted on this header's column
       const sort: Sort = [dataGridKey, SortStatus.unselected]
       return [sort, undefined]
     } else {
+      // Table is sorted on this header's column
       const sort = sorts[index]
       return [sort, index]
     }
@@ -141,21 +138,12 @@ const ColumnHeader = ({
     }
   }, [sort, sortable, getHeaderCell, cellKeyDownHandler])
 
-  const columnIsPrimarySort = sortPriority === 0
-
-  const sortIconColorProps = columnIsPrimarySort
-    ? {
-        upArrowSelectedColor: colorPalette.mint,
-        downArrowSelectedColor: colorPalette.mint,
-        upArrowUnselectedColor: colorPalette.gridLines,
-        downArrowUnselectedColor: colorPalette.gridLines,
-      }
-    : {
-        upArrowSelectedColor: colorPalette.mint,
-        downArrowSelectedColor: colorPalette.mint,
-        upArrowUnselectedColor: colorPalette.gridLines,
-        downArrowUnselectedColor: colorPalette.gridLines,
-      }
+  const sortIconColorProps = {
+    upArrowSelectedColor: colorPalette.mint,
+    downArrowSelectedColor: colorPalette.mint,
+    upArrowUnselectedColor: colorPalette.gridLines,
+    downArrowUnselectedColor: colorPalette.gridLines,
+  }
 
   // TODO: Change sort to an object with "key" and "status" properties
   return (
@@ -167,7 +155,7 @@ const ColumnHeader = ({
           onClick={sortButtonClickHandler}
           sortPriority={sortPriority}
         >
-          <SortIcon
+          <SortIconSVGStyled
             status={sort[1] ?? SortStatus.unselected}
             {...sortIconColorProps}
           />

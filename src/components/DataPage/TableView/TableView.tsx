@@ -240,11 +240,6 @@ const TableView = ({
             sorts={sorts}
             setSorts={setSorts}
             sortable={sortableFields.includes(key)}
-            ref={(handle: ColumnHeaderHandle) =>
-              (headersRef.current[index] = handle)
-            }
-            index={index}
-            headersRef={headersRef}
           />
         ),
         width: key.length * 10 + 50 + 'px',
