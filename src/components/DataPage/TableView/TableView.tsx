@@ -1,8 +1,7 @@
 import React, {
   Dispatch,
   SetStateAction,
-  forwardRef,
-  useImperativeHandle,
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -10,16 +9,17 @@ import React, {
 import styled from 'styled-components'
 import DataGrid, { Column, DataGridHandle } from 'react-data-grid'
 import { transparentize } from 'polished'
-
-import colorPalette from 'figma/colorPalette'
 import LoadingSpinner from './LoadingSpinner'
-import SortIcon, { SortStatus } from './SortIcon'
+import type { SortStatus } from '../../PublicViews/PublishedRecordsDataGrid/SortIcon'
 import type { Filter } from 'pages/data'
 import { load, loadDebounced, countPages } from './utilities/load'
 import {
   formatters,
   Row,
 } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
+import ColumnHeader, {
+  ColumnHeaderHandle,
+} from 'components/PublicViews/PublishedRecordsDataGrid/ColumnHeader'
 
 const TableViewContainer = styled.div<{
   isOpen: boolean
@@ -78,127 +78,6 @@ const DataGridStyled = styled(DataGrid)<{ isFilterPanelOpen: boolean }>`
       isFilterPanelOpen ? 'display: none ! important;' : ''}
   }
 `
-
-const ColumnLabel = styled.div`
-  text-overflow: ellipsis;
-  overflow: clip;
-`
-
-const SortButtonStyled = styled.button`
-  background: transparent;
-  border: 0;
-  cursor: pointer;
-  padding: 0 3px;
-  padding-top: 3px;
-  margin-right: 10px;
-  margin-top: 5px;
-  margin-bottom: 4px;
-  border-radius: 7px;
-
-  svg {
-    width: 19px;
-    height: 19px;
-    align-self: center;
-    flex-shrink: 0;
-  }
-
-  &:hover,
-  &:focus {
-    outline: 1px solid rgba(255, 255, 255, 0.4);
-  }
-`
-
-type ColumnHeaderProps = {
-  dataGridKey: string
-  sorts: Sort[]
-  setSorts: Dispatch<SetStateAction<Sort[]>>
-  sortable: boolean
-  /** Button that receives focus when shift-tabbing out of this header */
-  moveFocusLeft: () => void
-}
-
-type ColumnHeaderHandle = {
-  focusLastFocusableElement: () => void
-}
-
-const ColumnHeader = forwardRef<ColumnHeaderHandle, ColumnHeaderProps>(
-  ({ dataGridKey, sorts, setSorts, sortable, moveFocusLeft }, ref) => {
-    useImperativeHandle(ref, () => ({
-      focusLastFocusableElement: () => {
-        lastFocusableElementRef.current?.focus()
-      },
-    }))
-    const lastFocusableElementRef = useRef<HTMLButtonElement>(null)
-
-    const cycle = [
-      SortStatus.unselected,
-      SortStatus.selected,
-      SortStatus.reverse,
-    ]
-    const sort = sorts.find(sort => sort[0] == dataGridKey) ?? [
-      dataGridKey,
-      SortStatus.unselected,
-    ]
-
-    const sortButtonOnClick = () => {
-      setSorts(prev => {
-        const currentCycleIndex = cycle.findIndex(
-          sortStatus => sortStatus == sort[1]
-        )
-        const newSortStatus = cycle[(currentCycleIndex + 1) % cycle.length]
-        const newSort: Sort = [dataGridKey, newSortStatus]
-        const previousSortsWithThisSortRemoved = prev.filter(
-          sort => sort[0] !== dataGridKey
-        )
-        if (newSortStatus === SortStatus.unselected) {
-          return previousSortsWithThisSortRemoved
-        } else {
-          return [newSort, ...previousSortsWithThisSortRemoved]
-        }
-      })
-    }
-
-    const tableHeaderOnKeyDown = (e: React.KeyboardEvent) => {
-      if (!(e.target instanceof HTMLDivElement)) return
-      const tab = e.key === 'Tab'
-      const right = e.key === 'ArrowRight'
-      const left = e.key === 'ArrowLeft'
-      if (tab || right || left) {
-        if (e.target.getAttribute('role') !== 'columnheader') return
-        if ((e.shiftKey && tab) || left) {
-          moveFocusLeft()
-        } else {
-          // Tabbing forwards
-          if (!lastFocusableElementRef) return
-          lastFocusableElementRef.current?.focus()
-        }
-        e.preventDefault()
-        e.stopPropagation()
-      }
-    }
-    // TODO: Change sort to an object with "key" and "status" properties
-    return (
-      <div onKeyDown={tableHeaderOnKeyDown}>
-        <ColumnLabel>{dataGridKey}</ColumnLabel>
-        {sortable && (
-          <SortButtonStyled
-            // This is the first and last focusable element
-            ref={lastFocusableElementRef}
-            onClick={sortButtonOnClick}
-          >
-            <SortIcon
-              status={sort[1] ?? SortStatus.unselected}
-              upArrowSelectedColor={colorPalette.mint}
-              downArrowSelectedColor={colorPalette.mint}
-              upArrowUnselectedColor={colorPalette.gridLines}
-              downArrowUnselectedColor={colorPalette.gridLines}
-            />
-          </SortButtonStyled>
-        )}
-      </div>
-    )
-  }
-)
 
 const LoadingMessage = styled.div`
   ${({ theme }) => theme.gridText}
@@ -361,12 +240,11 @@ const TableView = ({
             sorts={sorts}
             setSorts={setSorts}
             sortable={sortableFields.includes(key)}
-            moveFocusLeft={() =>
-              headersRef.current[index - 1].focusLastFocusableElement()
-            }
             ref={(handle: ColumnHeaderHandle) =>
               (headersRef.current[index] = handle)
             }
+            index={index}
+            headersRef={headersRef}
           />
         ),
         width: key.length * 10 + 35 + 'px',

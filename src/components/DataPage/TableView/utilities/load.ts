@@ -4,7 +4,7 @@ import debounce from 'lodash/debounce'
 import type { LoadingState, Sort } from '../TableView'
 import type { Row } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 import fetchRecords from 'components/DataPage/TableView/utilities/fetchRecords'
-import { SortStatus } from '../SortIcon'
+import type { SortStatus } from 'components/PublicViews/PublishedRecordsDataGrid/SortIcon'
 
 const PAGE_SIZE = 50
 
