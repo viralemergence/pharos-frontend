@@ -3,6 +3,21 @@ import { SortStatus } from '../SortIcon'
 import type { Filter } from 'pages/data'
 
 describe('getQueryStringParameters', () => {
+  it('adds sorts to the query string', () => {
+    const actual = getQueryStringParameters(
+      [],
+      [
+        ['Host species', SortStatus.selected],
+        ['Collection date', SortStatus.reverse],
+      ],
+      [],
+      true
+    )
+    const expected =
+      'sort=Host+species&sort=-Collection+date&page=1&pageSize=50'
+    expect(actual.toString()).toEqual(expected)
+  })
+
   it('adds filters to the query string', () => {
     const filters: Filter[] = [
       {
@@ -33,20 +48,6 @@ describe('getQueryStringParameters', () => {
     const actual = getQueryStringParameters(filters, [], [], true)
     const expected =
       'host_species=Species+A&host_species=Species+B&researcher=Researcher+One&page=1&pageSize=50'
-    expect(actual.toString()).toEqual(expected)
-  })
-  it('adds sorts to the query string', () => {
-    const actual = getQueryStringParameters(
-      [],
-      [
-        ['Host species', SortStatus.selected],
-        ['Collection date', SortStatus.reverse],
-      ],
-      [],
-      true
-    )
-    const expected =
-      'sort=Host+species&sort=-Collection+date&page=1&pageSize=50'
     expect(actual.toString()).toEqual(expected)
   })
 })

@@ -156,7 +156,7 @@ const TableView = ({
   /** Filters that have been applied to the table */
   const appliedFilters = filters.filter(f => f.applied)
 
-  /** Sorts applied to the table. For example, if sorts is
+  /** Sorts applied to the table. For example, if the sorts are
    *  [
    *    ['Project': SortStatus.selected],
    *    ['Collection date': SortStatus.reverse],
@@ -198,8 +198,8 @@ const TableView = ({
   )
   const sortsAsString = JSON.stringify(sorts)
 
-  // Load the first page of results, both when TableView mounts and also when
-  // the filters' values have changed
+  // When the TableView mounts, when the filters' values have been changed, and
+  // when the sorts have changed, load the first page of results
   useEffect(() => {
     loadDebounced({ ...loadOptions, replaceRecords: true })
   }, [filtersWithRealValuesAsString, sortsAsString])
@@ -225,14 +225,11 @@ const TableView = ({
     []
   )
 
-  /** Array of headers, used for making shift-tab work */
-  const headersRef = useRef<ColumnHeaderHandle[]>([])
-
   const columns: readonly Column<Row>[] = [
     rowNumberColumn,
     ...Object.keys(records?.[0] ?? {})
       .filter(key => !['pharosID', 'rowNumber'].includes(key))
-      .map((key, index) => ({
+      .map(key => ({
         key: key,
         name: (
           <ColumnHeader
