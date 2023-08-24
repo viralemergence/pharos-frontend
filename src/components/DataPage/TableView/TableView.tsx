@@ -6,13 +6,14 @@ import React, {
   useState,
 } from 'react'
 import styled from 'styled-components'
-import DataGrid, { DataGridHandle } from 'react-data-grid'
+import { DataGridHandle } from 'react-data-grid'
 import { transparentize } from 'polished'
 import LoadingSpinner from './LoadingSpinner'
 import type { SortStatus } from '../../PublicViews/PublishedRecordsDataGrid/SortIcon'
 import type { Filter } from 'pages/data'
 import { load, loadDebounced, countPages } from './utilities/load'
 import {
+  DataGridStyled,
   Row,
   getColumns,
 } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
@@ -33,46 +34,6 @@ const TableContainer = styled.div`
   overflow-x: hidden;
   display: flex;
   flex-flow: column nowrap;
-`
-const DataGridStyled = styled(DataGrid)<{ isFilterPanelOpen: boolean }>`
-  --rdg-border-color: ${({ theme }) => transparentize(0.7, theme.medGray)};
-  --rdg-background-color: ${({ theme }) => theme.mutedPurple1};
-  --rdg-header-background-color: ${({ theme }) => theme.mutedPurple3};
-  --rdg-row-hover-background-color: ${({ theme }) => theme.mutedPurple2};
-
-  ${({ theme }) => theme.gridText};
-
-  color-scheme: only dark;
-  border: 0;
-  flex-grow: 1;
-  block-size: 100px;
-  background-color: var(--rdg-background-color);
-
-  .rdg-cell {
-    padding-inline: 10px;
-    &[aria-colindex='1'] {
-      text-align: center;
-      background-color: var(--rdg-header-background-color);
-    }
-    &.in-filtered-column {
-      background-color: ${({ theme }) => theme.tableContentHighlight};
-    }
-    &[role='columnheader'] {
-      display: flex;
-      flex-flow: row nowrap;
-      justify-content: space-between;
-      padding-right: 0;
-      &::after {
-        width: 9px;
-      }
-    }
-  }
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
-    // On mobiles and tablets, hide the table when the filter panel is open
-    ${({ isFilterPanelOpen }) =>
-      isFilterPanelOpen ? 'display: none ! important;' : ''}
-  }
 `
 
 const LoadingMessage = styled.div`
@@ -220,7 +181,8 @@ const TableView = ({
     sortableFields,
     sorts,
     setSorts,
-    keysOfFilteredColumns
+    keysOfFilteredColumns,
+    []
   )
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
@@ -271,6 +233,7 @@ const TableView = ({
           // look like their type definitions work
           <DataGridStyled
             className={'rdg-dark'}
+            rowHeight={41}
             columns={columns}
             rows={records}
             onScroll={handleScroll}
@@ -279,7 +242,6 @@ const TableView = ({
             role="grid"
             data-testid="datagrid"
             ref={dataGridHandle}
-            rowHeight={41}
             isFilterPanelOpen={isFilterPanelOpen}
           />
         )}

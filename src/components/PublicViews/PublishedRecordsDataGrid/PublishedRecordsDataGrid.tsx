@@ -1,4 +1,10 @@
-import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react'
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import styled from 'styled-components'
 
 import DataGrid, {
@@ -8,7 +14,7 @@ import DataGrid, {
   HeaderRendererProps,
 } from 'react-data-grid'
 
-import { darken } from 'polished'
+import { darken, transparentize } from 'polished'
 
 import LoadingSpinner from 'components/DataPage/TableView/LoadingSpinner'
 
@@ -66,15 +72,54 @@ const ErrorMessageContainer = styled.div`
   padding: 15px 30px;
 `
 
-const FillDatasetGrid = styled(DataGrid)`
-  block-size: 100%;
-  height: 100%;
-  border: 0;
-
-  --rdg-border-color: rgba(216, 218, 220, 0.3);
+export const DataGridStyled = styled(DataGrid).attrs(
+  ({ rowHeight, className }) => ({
+    className: className ?? 'rdg-dark',
+    rowHeight: rowHeight ?? 41,
+  })
+)<{ isFilterPanelOpen?: boolean }>`
+  --rdg-border-color: ${({ theme }) => transparentize(0.7, theme.medGray)};
   --rdg-background-color: ${({ theme }) => theme.mutedPurple1};
   --rdg-header-background-color: ${({ theme }) => theme.mutedPurple3};
   --rdg-row-hover-background-color: ${({ theme }) => theme.mutedPurple2};
+
+  ${({ theme }) => theme.gridText};
+
+  color-scheme: only dark;
+  border: 0;
+  flex-grow: 1;
+  block-size: 100px;
+  background-color: var(--rdg-background-color);
+
+  .rdg-cell {
+    padding-inline: 10px;
+    &[aria-colindex='1'] {
+      text-align: center;
+      background-color: var(--rdg-header-background-color);
+    }
+    &.in-filtered-column {
+      background-color: ${({ theme }) => theme.tableContentHighlight};
+    }
+    &[role='columnheader'] {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+      padding-right: 0;
+      &::after {
+        width: 9px;
+      }
+    }
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    // On mobiles and tablets, hide the table when the filter panel is open
+    ${({ isFilterPanelOpen }) =>
+      isFilterPanelOpen ? 'display: none ! important;' : ''}
+  }
+`
+
+const TallDataGridStyled = styled(DataGridStyled)`
+  height: 100%;
 `
 
 const rowKeyGetter = (row: Row) => row.pharosID
@@ -114,6 +159,10 @@ const PublishedRecordsDataGrid = ({
   hideColumns = [],
   sortableFields = [],
 }: FilteredPublishedRecordsDataGridProps) => {
+  const [sorts, setSorts] = useState<Sort[]>([])
+
+  console.log('sortableFields in prdg', sortableFields)
+
   const gridRef = useRef<DataGridHandle>(null)
 
   // when we are loading a full new set of records, scroll to the top
@@ -134,23 +183,14 @@ const PublishedRecordsDataGrid = ({
     )
   }
 
-  const columns: readonly Column<Row>[] = [
-    rowNumberColumn,
-    ...Object.keys(publishedRecordsData.data.publishedRecords[0] ?? {})
-      .filter(key => !['pharosID', 'rowNumber', ...hideColumns].includes(key))
-      .map(key => ({
-        key: key,
-        name: key,
-        width:
-          key in defaultWidthOverride
-            ? defaultWidthOverride[key as keyof typeof defaultWidthOverride]
-            : key.length * 7.5 + 15 + 'px',
-        resizable: true,
-        ...(key in formatters
-          ? { formatter: formatters[key as keyof typeof formatters] }
-          : {}),
-      })),
-  ]
+  const columns = getColumns(
+    publishedRecordsData.data.publishedRecords,
+    sortableFields,
+    sorts,
+    setSorts,
+    [],
+    hideColumns
+  )
 
   const handleScroll = ({ currentTarget }: React.UIEvent<HTMLDivElement>) => {
     if (
@@ -165,7 +205,7 @@ const PublishedRecordsDataGrid = ({
       {publishedRecordsData.data.publishedRecords.length > 0 && (
         // @ts-expect-error: I'm copying this from the docs,
         // but it doesn't look like their type definitions work
-        <FillDatasetGrid
+        <TallDataGridStyled
           ref={gridRef}
           className={'rdg-dark'}
           style={{ fontFamily: 'Inconsolata' }}
@@ -195,12 +235,13 @@ export const getColumns = (
   sortableFields: string[],
   sorts: Sort[],
   setSorts: Dispatch<SetStateAction<Sort[]>>,
-  keysOfFilteredColumns: string[]
+  keysOfFilteredColumns: string[],
+  hideColumns: string[]
 ): readonly Column<Row>[] => {
   return [
     rowNumberColumn,
     ...Object.keys(records?.[0] ?? {})
-      .filter(key => !['pharosID', 'rowNumber'].includes(key))
+      .filter(key => !['pharosID', 'rowNumber', ...hideColumns].includes(key))
       .map(key => {
         const sortable = sortableFields.includes(key)
         return {
@@ -214,7 +255,10 @@ export const getColumns = (
               sortable={sortable}
             />
           ),
-          width: key.length * 10 + (sortable ? 50 : 30) + 'px',
+          width:
+            key in defaultWidthOverride
+              ? defaultWidthOverride[key as keyof typeof defaultWidthOverride]
+              : key.length * 10 + (sortable ? 50 : 30) + 'px',
           resizable: true,
           cellClass: keysOfFilteredColumns.includes(key)
             ? 'in-filtered-column'

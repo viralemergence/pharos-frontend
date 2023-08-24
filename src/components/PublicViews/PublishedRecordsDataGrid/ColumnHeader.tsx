@@ -145,6 +145,8 @@ const ColumnHeader = ({
     downArrowUnselectedColor: colorPalette.gridLines,
   }
 
+  console.log('sortable?', sortable)
+
   return (
     <>
       <ColumnLabel ref={columnLabelRef}>{dataGridKey}</ColumnLabel>

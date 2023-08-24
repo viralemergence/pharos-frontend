@@ -54,6 +54,8 @@ const DatasetPage = () => {
     status === ProjectDataStatus.Loaded &&
     project.datasets.find(dataset => dataset.datasetID === datasetID)
 
+  const { sortableFields } = usePublishedRecordsMetadata() ?? {}
+
   if (
     status === ProjectDataStatus.Error ||
     (status === ProjectDataStatus.Loaded && !dataset)
@@ -143,6 +145,7 @@ const DatasetPage = () => {
           publishedRecordsData={publishedRecordsData}
           hideColumns={HIDECOLUMNS}
           loadMore={loadMore}
+          sortableFields={sortableFields}
         />
       </GridContainer>
     </>

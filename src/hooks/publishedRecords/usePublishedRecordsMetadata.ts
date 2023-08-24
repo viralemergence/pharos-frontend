@@ -122,6 +122,7 @@ interface FilterInMetadataResponse {
 }
 
 const useMetadata = () => {
+  console.log('useMetadata')
   const [result, setResult] = useState<Result>({
     status: FetchStates.loading,
     metadata: initialMetadata,
@@ -134,6 +135,8 @@ const useMetadata = () => {
     })
     fetchMetadata({ setResult })
   }, [])
+
+  console.log('metadata', metadata)
   return metadata
 }
 
