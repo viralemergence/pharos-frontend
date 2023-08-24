@@ -209,15 +209,6 @@ const TableView = ({
     }
   }, [])
 
-  const rowNumberColumn = {
-    key: 'rowNumber',
-    name: '',
-    frozen: true,
-    resizable: false,
-    minWidth: 55,
-    width: 55,
-  }
-
   const keysOfFilteredColumns = addedFilters.reduce<string[]>(
     (keys, { applied, dataGridKey }) =>
       applied ? [...keys, dataGridKey] : keys,
