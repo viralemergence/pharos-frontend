@@ -97,7 +97,8 @@ export const getQueryStringParameters = (
 
   // Add sorts to the query string
   for (const sort of sorts) {
-    params.append('sort', (sort[1] === SortStatus.reverse ? '-' : '') + sort[0])
+    const prefix = sort.status === SortStatus.reverse ? '-' : ''
+    params.append('sort', prefix + sort.dataGridKey)
   }
 
   let pageToLoad

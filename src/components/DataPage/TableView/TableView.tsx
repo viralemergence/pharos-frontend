@@ -1,13 +1,16 @@
 import React, {
   Dispatch,
   SetStateAction,
-  useCallback,
   useEffect,
   useRef,
   useState,
 } from 'react'
 import styled from 'styled-components'
-import DataGrid, { Column, DataGridHandle } from 'react-data-grid'
+import DataGrid, {
+  Column,
+  DataGridHandle,
+  HeaderRendererProps,
+} from 'react-data-grid'
 import { transparentize } from 'polished'
 import LoadingSpinner from './LoadingSpinner'
 import type { SortStatus } from '../../PublicViews/PublishedRecordsDataGrid/SortIcon'
@@ -17,9 +20,7 @@ import {
   formatters,
   Row,
 } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
-import ColumnHeader, {
-  ColumnHeaderHandle,
-} from 'components/PublicViews/PublishedRecordsDataGrid/ColumnHeader'
+import ColumnHeader from 'components/PublicViews/PublishedRecordsDataGrid/ColumnHeader'
 
 const TableViewContainer = styled.div<{
   isOpen: boolean
@@ -136,7 +137,10 @@ const filterHasRealValues = (filter: Filter) =>
   filter.values.filter(value => value !== null && value !== undefined).length >
     0
 
-export type Sort = [string, SortStatus]
+export type Sort = {
+  dataGridKey: string
+  status: SortStatus
+}
 
 const TableView = ({
   filters,
@@ -158,8 +162,8 @@ const TableView = ({
 
   /** Sorts applied to the table. For example, if the sorts are
    *  [
-   *    ['Project': SortStatus.selected],
-   *    ['Collection date': SortStatus.reverse],
+   *    [{dataGridKey: 'Project', status: SortStatus.selected}],
+   *    [{dataGridKey: 'Collection date', status: SortStatus.reverse}],
    *  ]
    * then the table will be sorted primarily on project name (descending) and
    * secondarily on collection date (ascending).
@@ -225,27 +229,34 @@ const TableView = ({
     []
   )
 
+  /*
+   */
+
   const columns: readonly Column<Row>[] = [
     rowNumberColumn,
     ...Object.keys(records?.[0] ?? {})
       .filter(key => !['pharosID', 'rowNumber'].includes(key))
-      .map(key => ({
-        key: key,
-        name: (
-          <ColumnHeader
-            dataGridKey={key}
-            sorts={sorts}
-            setSorts={setSorts}
-            sortable={sortableFields.includes(key)}
-          />
-        ),
-        width: key.length * 10 + 50 + 'px',
-        resizable: true,
-        cellClass: keysOfFilteredColumns.includes(key)
-          ? 'in-filtered-column'
-          : undefined,
-        formatter: formatters[key],
-      })),
+      .map(key => {
+        const sortable = sortableFields.includes(key)
+        return {
+          key: key,
+          name: key,
+          headerRenderer: (_props: HeaderRendererProps<Row>) => (
+            <ColumnHeader
+              dataGridKey={key}
+              sorts={sorts}
+              setSorts={setSorts}
+              sortable={sortable}
+            />
+          ),
+          width: key.length * 10 + (sortable ? 50 : 30) + 'px',
+          resizable: true,
+          cellClass: keysOfFilteredColumns.includes(key)
+            ? 'in-filtered-column'
+            : undefined,
+          formatter: formatters[key],
+        }
+      }),
   ]
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {

@@ -1,5 +1,5 @@
 import { getQueryStringParameters } from './load'
-import { SortStatus } from '../SortIcon'
+import { SortStatus } from 'components/PublicViews/PublishedRecordsDataGrid/SortIcon'
 import type { Filter } from 'pages/data'
 
 describe('getQueryStringParameters', () => {
@@ -7,8 +7,8 @@ describe('getQueryStringParameters', () => {
     const actual = getQueryStringParameters(
       [],
       [
-        ['Host species', SortStatus.selected],
-        ['Collection date', SortStatus.reverse],
+        { dataGridKey: 'Host species', status: SortStatus.selected },
+        { dataGridKey: 'Collection date', status: SortStatus.reverse },
       ],
       [],
       true

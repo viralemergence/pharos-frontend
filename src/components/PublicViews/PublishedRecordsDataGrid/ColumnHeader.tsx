@@ -80,8 +80,6 @@ const ColumnHeader = ({
 
   const columnLabelRef = useRef<HTMLDivElement>(null)
 
-  // TODO: perhaps solvable with HeaderRenderer
-  
   /** Get the header cell via the DOM, since react-data-grid doesn't give us a
    * ref pointing to it */
   const getHeaderCell = useCallback(
@@ -91,10 +89,10 @@ const ColumnHeader = ({
 
   const cycle = [SortStatus.unselected, SortStatus.selected, SortStatus.reverse]
   const [sort, sortPriority] = useMemo(() => {
-    const index = sorts.findIndex(sort => sort[0] == dataGridKey)
+    const index = sorts.findIndex(sort => sort.dataGridKey == dataGridKey)
     if (index === -1) {
       // Table is not sorted on this header's column
-      const sort: Sort = [dataGridKey, SortStatus.unselected]
+      const sort: Sort = { dataGridKey, status: SortStatus.unselected }
       return [sort, undefined]
     } else {
       // Table is sorted on this header's column
@@ -106,12 +104,12 @@ const ColumnHeader = ({
   const sortButtonClickHandler = () => {
     setSorts(prev => {
       const currentCycleIndex = cycle.findIndex(
-        sortStatus => sortStatus == sort[1]
+        sortStatus => sortStatus == sort.status
       )
       const newSortStatus = cycle[(currentCycleIndex + 1) % cycle.length]
-      const newSort: Sort = [dataGridKey, newSortStatus]
+      const newSort: Sort = { dataGridKey, status: newSortStatus }
       const previousSortsWithThisSortRemoved = prev.filter(
-        sort => sort[0] !== dataGridKey
+        sort => sort.dataGridKey !== dataGridKey
       )
       if (newSortStatus === SortStatus.unselected) {
         return previousSortsWithThisSortRemoved
@@ -126,9 +124,9 @@ const ColumnHeader = ({
     if (!sortable) return
     if (!(headerCell instanceof HTMLDivElement)) return
     headerCell.addEventListener('keydown', cellKeyDownHandler)
-    if (sort[1] === SortStatus.selected) {
+    if (sort.status === SortStatus.selected) {
       headerCell.setAttribute('aria-sort', 'descending')
-    } else if (sort[1] === SortStatus.reverse) {
+    } else if (sort.status === SortStatus.reverse) {
       headerCell.setAttribute('aria-sort', 'ascending')
     } else {
       headerCell.removeAttribute('aria-sort')
@@ -147,7 +145,6 @@ const ColumnHeader = ({
     downArrowUnselectedColor: colorPalette.gridLines,
   }
 
-  // TODO: Change sort to an object with "key" and "status" properties
   return (
     <>
       <ColumnLabel ref={columnLabelRef}>{dataGridKey}</ColumnLabel>
@@ -158,7 +155,7 @@ const ColumnHeader = ({
           sortPriority={sortPriority}
         >
           <SortIconSVGStyled
-            status={sort[1] ?? SortStatus.unselected}
+            status={sort.status ?? SortStatus.unselected}
             {...sortIconColorProps}
           />
         </SortButtonStyled>

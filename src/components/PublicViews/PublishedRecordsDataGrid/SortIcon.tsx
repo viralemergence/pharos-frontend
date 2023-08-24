@@ -36,12 +36,10 @@ const SortIcon = ({
 
   switch (status) {
     case SortStatus.selected:
-      console.log('selected')
       upArrowFill = transparent
       downArrowFill = downArrowSelectedColor
       break
     case SortStatus.reverse:
-      console.log('reverse')
       upArrowFill = upArrowSelectedColor
       downArrowFill = transparent
       break
