@@ -194,7 +194,13 @@ const FilterPanelToolbar = ({
 }
 
 /** When a filter is removed from the panel, it receives these default properties */
-export const filterDefaultProperties = {
+export const filterDefaultProperties: Partial<Filter> & {
+  type: 'text' | 'date'
+  values: string[]
+  panelIndex: number
+  valid: boolean
+} = {
+  type: 'text',
   values: [],
   addedToPanel: false,
   /** When a filter is added to the panel, it will receive a new panelIndex

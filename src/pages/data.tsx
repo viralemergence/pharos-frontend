@@ -1,14 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import CMS from '@talus-analytics/library.airtable-cms'
 
-import isNormalObject from 'utilities/isNormalObject'
 import Providers from 'components/layout/Providers'
 import NavBar from 'components/layout/NavBar/NavBar'
 import MapView, { MapProjection } from 'components/DataPage/MapView/MapView'
 import TableView from 'components/DataPage/TableView/TableView'
 import DataToolbar, { View, isView } from 'components/DataPage/Toolbar/Toolbar'
 import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
-import { filterDefaultProperties } from 'components/DataPage/FilterPanel/FilterPanelToolbar'
 import {
   MapOverlay,
   PageContainer,
@@ -16,7 +14,7 @@ import {
   ViewContainer,
   ViewMain,
 } from 'components/DataPage/DisplayComponents'
-import { isValidMetadataResponse } from 'hooks/publishedRecords/fetchMetadata'
+import usePublishedRecordsMetadata from 'hooks/publishedRecords/fetchMetadata'
 
 export type Filter = {
   id: string
@@ -51,8 +49,6 @@ export type Filter = {
   valid: boolean
 }
 
-const METADATA_URL = `${process.env.GATSBY_API_URL}/metadata-for-published-records`
-
 const DataPage = ({
   enableTableVirtualization = true,
 }: {
@@ -69,7 +65,6 @@ const DataPage = ({
     useState<MapProjection>('naturalEarth')
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
   const [filters, setFilters] = useState<Filter[]>([])
-  const [sortableFields, setSortableFields] = useState<string[]>([])
 
   const [screenReaderAnnouncement, setScreenReaderAnnouncement] = useState('')
 
@@ -88,33 +83,19 @@ const DataPage = ({
     [mapProjection]
   )
 
-  const fetchMetadata = useCallback(async () => {
-    const response = await fetch(METADATA_URL)
-    const data = await response.json()
-    if (!isValidMetadataResponse(data)) {
-      console.log(`GET ${METADATA_URL}: malformed response`)
-      return
-    }
-    const filters = Object.entries(data.possibleFilters).map(
-      ([id, filter]) => ({
-        id,
-        type: filter.type || 'text',
-        ...filterDefaultProperties,
-        ...filter,
-      })
-    )
-    setFilters(filters)
-    if (data.sortableFields) setSortableFields(data.sortableFields)
-  }, [setFilters])
+  const { possibleFilters, sortableFields } =
+    usePublishedRecordsMetadata() ?? {}
+
+  console.log('possibleFilters', possibleFilters)
+
+  useEffect(() => {
+    if (possibleFilters) setFilters(possibleFilters)
+  }, [possibleFilters])
 
   useEffect(() => {
     const hash = window.location.hash.replace('#', '')
     if (isView(hash)) changeView(hash, false)
   }, [changeView])
-
-  useEffect(() => {
-    fetchMetadata()
-  }, [])
 
   useEffect(() => {
     if (isFilterPanelOpen) {

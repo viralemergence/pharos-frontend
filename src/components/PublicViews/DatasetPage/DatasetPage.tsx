@@ -50,8 +50,6 @@ const DatasetPage = () => {
     filters,
   })
 
-  const { sortableFields } = usePublishedRecordsMetadata()
-
   const dataset =
     status === ProjectDataStatus.Loaded &&
     project.datasets.find(dataset => dataset.datasetID === datasetID)
