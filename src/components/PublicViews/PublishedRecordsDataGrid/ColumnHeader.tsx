@@ -80,6 +80,8 @@ const ColumnHeader = ({
 
   const columnLabelRef = useRef<HTMLDivElement>(null)
 
+  // TODO: perhaps solvable with HeaderRenderer
+  
   /** Get the header cell via the DOM, since react-data-grid doesn't give us a
    * ref pointing to it */
   const getHeaderCell = useCallback(
