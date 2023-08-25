@@ -137,7 +137,15 @@ const filterHasRealValues = (filter: Filter) =>
   filter.values.filter(value => value !== null && value !== undefined).length >
     0
 
-export type Sort = {
+/** Sorts applied to the table. For example, if the sorts are
+ *  [
+ *    [{dataGridKey: 'Project', status: SortStatus.selected}],
+ *    [{dataGridKey: 'Collection date', status: SortStatus.reverse}],
+ *  ]
+ * then the table will be sorted primarily on project name (descending) and
+ * secondarily on collection date (ascending).
+ **/
+export interface Sort {
   dataGridKey: string
   status: SortStatus
 }
@@ -160,14 +168,6 @@ const TableView = ({
   /** Filters that have been applied to the table */
   const appliedFilters = filters.filter(f => f.applied)
 
-  /** Sorts applied to the table. For example, if the sorts are
-   *  [
-   *    [{dataGridKey: 'Project', status: SortStatus.selected}],
-   *    [{dataGridKey: 'Collection date', status: SortStatus.reverse}],
-   *  ]
-   * then the table will be sorted primarily on project name (descending) and
-   * secondarily on collection date (ascending).
-   **/
   const [sorts, setSorts] = useState<Sort[]>([])
 
   /** This ref ensures that if the GET request that just finished is not the
