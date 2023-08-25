@@ -20,7 +20,7 @@ import {
   Row,
   Sort,
 } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
-import ColumnHeaderCellContent from 'components/PublicViews/PublishedRecordsDataGrid/ColumnHeaderCellContent'
+import HeaderCellContent from 'components/PublicViews/PublishedRecordsDataGrid/HeaderCellContent'
 
 const TableViewContainer = styled.div<{
   isOpen: boolean
@@ -192,6 +192,8 @@ const TableView = ({
   useEffect(() => {
     loadDebounced({ ...loadOptions, replaceRecords: true })
   }, [filtersWithRealValuesAsString, sorts])
+  // NOTE: If `filters` or `records` was in the dependency array, loadDebounced
+  // would be called too often.
 
   useEffect(() => {
     return () => {
@@ -224,7 +226,7 @@ const TableView = ({
           key: key,
           name: key,
           headerRenderer: (_props: HeaderRendererProps<Row>) => (
-            <ColumnHeaderCellContent
+            <HeaderCellContent
               dataGridKey={key}
               sorts={sorts}
               setSorts={setSorts}

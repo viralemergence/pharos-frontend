@@ -38,23 +38,23 @@ const SortButtonStyled = styled.button<{ sortPriority: number | undefined }>`
   }
 `
 
-type ColumnHeaderCellContentProps = {
+type HeaderCellContentProps = {
   dataGridKey: string
   sorts: Sort[]
   setSorts: Dispatch<SetStateAction<Sort[]>>
   sortable: boolean
 }
 
-export type ColumnHeaderCellContentHandle = {
+export type HeaderCellContentHandle = {
   focusLastFocusableElement: () => void
 }
 
-const ColumnHeaderCellContent = ({
+const HeaderCellContent = ({
   dataGridKey,
   sorts,
   setSorts,
   sortable,
-}: ColumnHeaderCellContentProps) => {
+}: HeaderCellContentProps) => {
   const firstFocusableElementRef: React.MutableRefObject<HTMLButtonElement | null> =
     useRef(null)
 
@@ -136,4 +136,4 @@ const ColumnHeaderCellContent = ({
   )
 }
 
-export default ColumnHeaderCellContent
+export default HeaderCellContent
