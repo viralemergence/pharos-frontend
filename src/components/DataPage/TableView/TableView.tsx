@@ -20,7 +20,7 @@ import {
   Row,
   Sort,
 } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
-import ColumnHeader from 'components/PublicViews/PublishedRecordsDataGrid/ColumnHeader'
+import ColumnHeaderCellContent from 'components/PublicViews/PublishedRecordsDataGrid/ColumnHeaderCellContent'
 
 const TableViewContainer = styled.div<{
   isOpen: boolean
@@ -224,7 +224,7 @@ const TableView = ({
           key: key,
           name: key,
           headerRenderer: (_props: HeaderRendererProps<Row>) => (
-            <ColumnHeader
+            <ColumnHeaderCellContent
               dataGridKey={key}
               sorts={sorts}
               setSorts={setSorts}
