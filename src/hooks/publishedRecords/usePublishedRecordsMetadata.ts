@@ -5,7 +5,7 @@ import { filterDefaultProperties } from 'components/DataPage/FilterPanel/FilterP
 
 const METADATA_URL = `${process.env.GATSBY_API_URL}/metadata-for-published-records`
 
-const isValidFilterInMetadataResponse = (data: unknown): data is Filter => {
+const isValidFilterInResponse = (data: unknown): data is Filter => {
   if (!isNormalObject(data)) return false
   const { label, dataGridKey = '', type = 'text', options = [] } = data
   return (
@@ -27,7 +27,7 @@ const isResponseValid = (data: unknown): data is MetadataResponse => {
   if (!sortableFields.every(field => typeof field === 'string')) return false
   if (
     !Object.values(possibleFilters).every?.(filter =>
-      isValidFilterInMetadataResponse(filter)
+      isValidFilterInResponse(filter)
     )
   )
     return false
