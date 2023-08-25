@@ -63,6 +63,7 @@ const ErrorMessageContainer = styled.div`
 `
 
 const FillDatasetGrid = styled(DataGrid)`
+  ${({ theme }) => theme.gridText};
   block-size: 100%;
   height: 100%;
   border: 0;
@@ -162,7 +163,6 @@ const PublishedRecordsDataGrid = ({
         <FillDatasetGrid
           ref={gridRef}
           className={'rdg-dark'}
-          style={{ fontFamily: 'Inconsolata' }}
           columns={columns}
           rows={publishedRecordsData.data.publishedRecords}
           onScroll={handleScroll}
