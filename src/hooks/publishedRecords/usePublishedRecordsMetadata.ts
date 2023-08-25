@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Filter } from 'pages/data'
 import isNormalObject from 'utilities/isNormalObject'
 import { filterDefaultProperties } from 'components/DataPage/FilterPanel/FilterPanelToolbar'
@@ -34,7 +34,7 @@ const isResponseValid = (data: unknown): data is MetadataResponse => {
   return true
 }
 
-export enum FetchStates {
+enum FetchStates {
   initial,
   loading,
   done,
@@ -46,18 +46,13 @@ interface ErrorWithMessage {
 }
 
 /** Result of an attempt to fetch published records metadata */
-export type Result = {
+type Result = {
   status: FetchStates
   metadata: Metadata | null
   error?: Error
 }
 
-export interface FetchMetadataProps {
-  setMetadata: React.Dispatch<React.SetStateAction<Result>>
-  ignore: boolean
-}
-
-export const initialMetadata = {
+const initialMetadata = {
   possibleFilters: [],
   sortableFields: [],
 }
