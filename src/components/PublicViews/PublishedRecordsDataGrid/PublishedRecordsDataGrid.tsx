@@ -96,8 +96,12 @@ interface FilteredPublishedRecordsDataGridProps {
 const PublishedRecordsDataGrid = ({
   publishedRecordsData,
   loadMore,
-  hideColumns = [],
-}: FilteredPublishedRecordsDataGridProps) => {
+  hiddenFields = [],
+  sortableFields = [],
+  sorts = [],
+  setSorts = () => undefined,
+  columnWidths = {},
+}: PublishedRecordsDataGridProps) => {
   const gridRef = useRef<DataGridHandle>(null)
 
   // when we are loading a full new set of records, scroll to the top
