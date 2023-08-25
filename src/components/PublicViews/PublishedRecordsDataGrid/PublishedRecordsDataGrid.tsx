@@ -125,18 +125,14 @@ export const formatters: Record<string, DataGridFormatter> = {
   Researcher: Researcher,
 }
 
-const defaultWidthOverride = {
-  'Project name': 300,
-  Researcher: 200,
-}
-
-interface FilteredPublishedRecordsDataGridProps {
+interface PublishedRecordsDataGridProps {
   publishedRecordsData: ReturnType<typeof usePublishedRecords>[0]
   loadMore: ReturnType<typeof usePublishedRecords>[1]
   hiddenFields?: string[]
   sortableFields?: string[]
   sorts?: Sort[]
   setSorts?: Dispatch<SetStateAction<Sort[]>>
+  columnWidths?: Record<string, number>
 }
 
 const rowNumberColumn = {
@@ -161,7 +157,8 @@ const PublishedRecordsDataGrid = ({
   sortableFields = [],
   sorts = [],
   setSorts = () => {},
-}: FilteredPublishedRecordsDataGridProps) => {
+  columnWidths = {},
+}: PublishedRecordsDataGridProps) => {
   const gridRef = useRef<DataGridHandle>(null)
 
   // when we are loading a full new set of records, scroll to the top
@@ -188,6 +185,7 @@ const PublishedRecordsDataGrid = ({
     sorts,
     setSorts,
     hiddenFields,
+    columnWidths,
   })
 
   const handleScroll = ({ currentTarget }: React.UIEvent<HTMLDivElement>) => {
@@ -235,6 +233,7 @@ export const getColumns = ({
   setSorts = () => null,
   filteredFields = [],
   hiddenFields = [],
+  columnWidths = {},
 }: {
   records: Row[]
   sortableFields: string[]
@@ -242,6 +241,7 @@ export const getColumns = ({
   setSorts?: Dispatch<SetStateAction<Sort[]>>
   filteredFields?: string[]
   hiddenFields?: string[]
+  columnWidths?: Record<string, number>
 }): readonly Column<Row>[] => {
   return [
     rowNumberColumn,
@@ -261,9 +261,7 @@ export const getColumns = ({
             />
           ),
           width:
-            key in defaultWidthOverride
-              ? defaultWidthOverride[key as keyof typeof defaultWidthOverride]
-              : key.length * 10 + (sortable ? 50 : 30) + 'px',
+            columnWidths[key] ?? key.length * 10 + (sortable ? 50 : 30) + 'px',
           resizable: true,
           cellClass: filteredFields.includes(key)
             ? 'in-filtered-column'
