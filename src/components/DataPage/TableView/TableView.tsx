@@ -229,9 +229,6 @@ const TableView = ({
     []
   )
 
-  /*
-   */
-
   const columns: readonly Column<Row>[] = [
     rowNumberColumn,
     ...Object.keys(records?.[0] ?? {})
