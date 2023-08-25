@@ -37,4 +37,5 @@ export default {
   publicPagePurpleBackground: `rgba(15,19,41,1)`,
   orange: `rgba(207,109,13,1)`,
   red: 'rgba(176,33,24,1)',
+  gridLines: 'rgba(216,218,220,0.300)',
 }
