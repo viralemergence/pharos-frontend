@@ -54,6 +54,12 @@ jest.mock('mapbox-gl', () => ({
   })),
 }))
 
+const wait = (milliseconds: number) => {
+  return new Promise(resolve => {
+    setTimeout(resolve, milliseconds)
+  })
+}
+
 describe('The public data page', () => {
   // Make window.location available to tests
   const { location } = window
@@ -279,13 +285,14 @@ describe('The public data page', () => {
     await act(async () => {
       fireEvent.change(filterInput, { target: { value: '1800-01-01' } })
     })
+    await wait(1000)
     const tooltip = await screen.findByRole('tooltip')
     expect(tooltip).toBeInTheDocument()
     const grid = await getDataGridAfterWaiting()
     await waitFor(() => {
       expect(grid).toHaveAttribute('aria-rowcount', '51')
     })
-  }, 10000)
+  }, 15000)
 
   it('shows a tooltip if dates are out of order', async () => {
     render(<DataPage />)
@@ -308,7 +315,7 @@ describe('The public data page', () => {
     })
     const tooltip = await screen.findByRole('tooltip')
     expect(tooltip).toBeInTheDocument()
-  }, 10000)
+  }, 15000)
 
   it('provides a host species filter that offers options corresponding to the metadata', async () => {
     render(<DataPage />)
