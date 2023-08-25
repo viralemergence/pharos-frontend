@@ -26,7 +26,7 @@ const FilterPanel = ({
   /** Filters that have been added to the panel */
   const addedFilters = filters
     .filter(f => f.addedToPanel)
-    .sort((a, b) => a.panelIndex - b.panelIndex)
+    .sort((a, b) => a.panelIndex - b.p)anelIndex)
 
   const updateFilter: UpdateFilterFunction = ({
     id,

@@ -25,8 +25,9 @@ import ProjectName from './formatters/ProjectName'
 import { PublishedRecordsLoadingState } from 'hooks/publishedRecords/fetchPublishedRecords'
 import usePublishedRecords from 'hooks/publishedRecords/usePublishedRecords'
 
-import type { Sort } from 'components/DataPage/TableView/TableView'
 import ColumnHeader from 'components/PublicViews/PublishedRecordsDataGrid/ColumnHeader'
+import type { SortStatus } from '../../PublicViews/PublishedRecordsDataGrid/SortIcon'
+
 
 export interface PublishedRecordsResearcher {
   name: string
@@ -139,7 +140,7 @@ const defaultWidthOverride = {
 interface FilteredPublishedRecordsDataGridProps {
   publishedRecordsData: ReturnType<typeof usePublishedRecords>[0]
   loadMore: ReturnType<typeof usePublishedRecords>[1]
-  hideColumns?: string[]
+  hiddenFields?: string[]
   sortableFields?: string[]
   sorts?: Sort[]
   setSorts?: Dispatch<SetStateAction<Sort[]>>
@@ -155,10 +156,15 @@ const rowNumberColumn = {
   formatter: RowNumber,
 }
 
+export type Sort = {
+  dataGridKey: string
+  status: SortStatus
+}
+
 const PublishedRecordsDataGrid = ({
   publishedRecordsData,
   loadMore,
-  hideColumns = [],
+  hiddenFields = [],
   sortableFields = [],
   sorts = [],
   setSorts = () => {},
@@ -188,7 +194,7 @@ const PublishedRecordsDataGrid = ({
     sortableFields,
     sorts,
     setSorts,
-    hideColumns,
+    hiddenFields,
   })
 
   const handleScroll = ({ currentTarget }: React.UIEvent<HTMLDivElement>) => {
@@ -234,20 +240,20 @@ export const getColumns = ({
   sortableFields = [],
   sorts = [],
   setSorts = () => null,
-  keysOfFilteredColumns = [],
-  hideColumns = [],
+  filteredFields = [],
+  hiddenFields = [],
 }: {
   records: Row[]
   sortableFields: string[]
   sorts?: Sort[]
   setSorts?: Dispatch<SetStateAction<Sort[]>>
-  keysOfFilteredColumns?: string[]
-  hideColumns?: string[]
+  filteredFields?: string[]
+  hiddenFields?: string[]
 }): readonly Column<Row>[] => {
   return [
     rowNumberColumn,
     ...Object.keys(records?.[0] ?? {})
-      .filter(key => !['pharosID', 'rowNumber', ...hideColumns].includes(key))
+      .filter(key => !['pharosID', 'rowNumber', ...hiddenFields].includes(key))
       .map(key => {
         const sortable = sortableFields.includes(key)
         return {
@@ -266,7 +272,7 @@ export const getColumns = ({
               ? defaultWidthOverride[key as keyof typeof defaultWidthOverride]
               : key.length * 10 + (sortable ? 50 : 30) + 'px',
           resizable: true,
-          cellClass: keysOfFilteredColumns.includes(key)
+          cellClass: filteredFields.includes(key)
             ? 'in-filtered-column'
             : undefined,
           formatter: formatters[key],

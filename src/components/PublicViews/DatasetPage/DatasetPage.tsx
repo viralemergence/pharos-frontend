@@ -25,7 +25,7 @@ import usePublishedProject, {
 import usePublishedRecords from 'hooks/publishedRecords/usePublishedRecords'
 import usePublishedRecordsMetadata from 'hooks/publishedRecords/usePublishedRecordsMetadata'
 import { PublicProjectPageContentBox } from '../ProjectPage/ProjectPage'
-import type { Filter } from 'pages/data'
+import type { SimpleFilter } from 'pages/data'
 
 const GridContainer = styled.div`
   height: calc(100vh - 265px);
@@ -33,7 +33,7 @@ const GridContainer = styled.div`
   margin: 0 40px;
 `
 
-const HIDECOLUMNS = ['Project name', 'Author']
+const HIDDEN_FIELDS = ['Project name', 'Author']
 const PAGESIZE = 50
 
 const DatasetPage = () => {
@@ -42,7 +42,7 @@ const DatasetPage = () => {
   const { status, data: project } = usePublishedProject()
   const { user } = useAppState()
 
-  const [filters] = useState<Filter[]>(() => [
+  const [filters] = useState<SimpleFilter[]>(() => [
     { id: 'dataset_id', values: [datasetID] },
   ])
   const [sorts, setSorts] = useState<Sort[]>([])
@@ -146,7 +146,7 @@ const DatasetPage = () => {
       <GridContainer>
         <PublishedRecordsDataGrid
           publishedRecordsData={publishedRecordsData}
-          hideColumns={HIDECOLUMNS}
+          hiddenFields={HIDDEN_FIELDS}
           loadMore={loadMore}
           sortableFields={sortableFields}
           sorts={sorts}
