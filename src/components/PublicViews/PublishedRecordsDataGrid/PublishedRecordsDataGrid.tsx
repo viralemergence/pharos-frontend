@@ -100,15 +100,17 @@ const defaultWidthOverride = {
   Researcher: 200,
 }
 
+interface FilteredPublishedRecordsDataGridProps {
+  publishedRecordsData: ReturnType<typeof usePublishedRecords>[0]
+  loadMore: ReturnType<typeof usePublishedRecords>[1]
+  hideColumns?: string[]
+}
+
 const PublishedRecordsDataGrid = ({
   publishedRecordsData,
   loadMore,
-  hiddenFields = [],
-  sortableFields = [],
-  sorts = [],
-  setSorts = () => undefined,
-  columnWidths = {},
-}: PublishedRecordsDataGridProps) => {
+  hideColumns = [],
+}: FilteredPublishedRecordsDataGridProps) => {
   const gridRef = useRef<DataGridHandle>(null)
 
   // when we are loading a full new set of records, scroll to the top
