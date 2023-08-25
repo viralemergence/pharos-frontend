@@ -54,6 +54,12 @@ jest.mock('mapbox-gl', () => ({
   })),
 }))
 
+const wait = (milliseconds: number) => {
+  return new Promise(resolve => {
+    setTimeout(resolve, milliseconds)
+  })
+}
+
 describe('The public data page', () => {
   // Make window.location available to tests
   const { location } = window
@@ -279,6 +285,7 @@ describe('The public data page', () => {
     await act(async () => {
       fireEvent.change(filterInput, { target: { value: '1800-01-01' } })
     })
+    await wait(1000)
     const tooltip = await screen.findByRole('tooltip')
     expect(tooltip).toBeInTheDocument()
     const grid = await getDataGridAfterWaiting()
