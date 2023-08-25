@@ -14,7 +14,7 @@ const ColumnLabel = styled.div`
   overflow: clip;
 `
 
-const SortButtonStyled = styled.button<{ sortPriority: number | undefined }>`
+const SortButtonStyled = styled.button<{ sortPriority?: number }>`
   border: 0;
   cursor: pointer;
   padding: 0 3px;
