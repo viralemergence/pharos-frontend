@@ -121,7 +121,7 @@ const rowKeyGetter = (row: Row) => row.pharosID
 type DataGridFormatter = (params: FormatterProps<Row>) => JSX.Element
 
 export const formatters: Record<string, DataGridFormatter> = {
-  'Project name': ProjectName,
+  Project: ProjectName,
   Researcher: Researcher,
 }
 
