@@ -89,7 +89,7 @@ export default {
 	text-transform: none;
 `,
 	gridText: `
-	font-size: 16px;
+	font-size: 14px;
 	font-family: "Inconsolata", menlo, monospace;
 	font-weight: 400;
 	font-style: normal;
