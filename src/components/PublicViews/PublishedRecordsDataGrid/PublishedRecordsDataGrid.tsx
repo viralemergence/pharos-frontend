@@ -27,6 +27,19 @@ export interface Row {
   [key: string]: string | number | PublishedRecordsResearcher[]
 }
 
+/** Sorts applied to the table. For example, if the sorts are
+ *  [
+ *    [{dataGridKey: 'Project', status: SortStatus.Selected}],
+ *    [{dataGridKey: 'Collection date', status: SortStatus.Reverse}],
+ *  ]
+ * then the table will be sorted primarily on project name (descending) and
+ * secondarily on collection date (ascending).
+ **/
+export interface Sort {
+  dataGridKey: string
+  status: SortStatus
+}
+
 const TableContainer = styled.div`
   position: relative;
   width: 100%;
@@ -85,12 +98,6 @@ export const formatters: Record<string, DataGridFormatter> = {
 const defaultWidthOverride = {
   'Project name': 300,
   Researcher: 200,
-}
-
-interface FilteredPublishedRecordsDataGridProps {
-  publishedRecordsData: ReturnType<typeof usePublishedRecords>[0]
-  loadMore: ReturnType<typeof usePublishedRecords>[1]
-  hideColumns?: string[]
 }
 
 const PublishedRecordsDataGrid = ({

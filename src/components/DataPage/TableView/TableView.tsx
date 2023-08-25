@@ -13,12 +13,12 @@ import DataGrid, {
 } from 'react-data-grid'
 import { transparentize } from 'polished'
 import LoadingSpinner from './LoadingSpinner'
-import type { SortStatus } from '../../PublicViews/PublishedRecordsDataGrid/SortIcon'
 import type { Filter } from 'pages/data'
 import { load, loadDebounced, countPages } from './utilities/load'
 import {
   formatters,
   Row,
+  Sort,
 } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 import ColumnHeader from 'components/PublicViews/PublishedRecordsDataGrid/ColumnHeader'
 
@@ -136,20 +136,6 @@ const filterHasRealValues = (filter: Filter) =>
   filter.valid &&
   filter.values.filter(value => value !== null && value !== undefined).length >
     0
-
-/** Sorts applied to the table. For example, if the sorts are
- *  [
- *    [{dataGridKey: 'Project', status: SortStatus.selected}],
- *    [{dataGridKey: 'Collection date', status: SortStatus.reverse}],
- *  ]
- * then the table will be sorted primarily on project name (descending) and
- * secondarily on collection date (ascending).
- **/
-export interface Sort {
-  dataGridKey: string
-  status: SortStatus
-}
-
 const TableView = ({
   filters,
   setFilters,

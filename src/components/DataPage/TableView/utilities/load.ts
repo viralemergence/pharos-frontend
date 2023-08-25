@@ -1,8 +1,11 @@
 import { Dispatch, MutableRefObject, SetStateAction } from 'react'
 import type { Filter } from 'pages/data'
 import debounce from 'lodash/debounce'
-import type { LoadingState, Sort } from '../TableView'
-import type { Row } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
+import type { LoadingState } from '../TableView'
+import type {
+  Row,
+  Sort,
+} from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 import fetchRecords from 'components/DataPage/TableView/utilities/fetchRecords'
 import { SortStatus } from 'components/PublicViews/PublishedRecordsDataGrid/SortIcon'
 
@@ -97,7 +100,7 @@ export const getQueryStringParameters = (
 
   // Add sorts to the query string
   for (const sort of sorts) {
-    const prefix = sort.status === SortStatus.reverse ? '-' : ''
+    const prefix = sort.status === SortStatus.Reverse ? '-' : ''
     params.append('sort', prefix + sort.dataGridKey)
   }
 
