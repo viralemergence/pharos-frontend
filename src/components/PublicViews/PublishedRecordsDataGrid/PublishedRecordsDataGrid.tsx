@@ -156,7 +156,7 @@ const PublishedRecordsDataGrid = ({
   hiddenFields = [],
   sortableFields = [],
   sorts = [],
-  setSorts = () => {},
+  setSorts = () => undefined,
   columnWidths = {},
 }: PublishedRecordsDataGridProps) => {
   const gridRef = useRef<DataGridHandle>(null)

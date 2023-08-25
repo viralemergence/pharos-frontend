@@ -151,13 +151,12 @@ const TableView = ({
       .filter(filterHasRealValues)
       .map(({ id, values }) => ({ id, values }))
   )
-  const sortsAsString = JSON.stringify(sorts)
 
   // When the TableView mounts, when the filters' values have been changed, and
   // when the sorts have changed, load the first page of results
   useEffect(() => {
     loadDebounced({ ...loadOptions, replaceRecords: true })
-  }, [filtersWithRealValuesAsString, sortsAsString])
+  }, [filtersWithRealValuesAsString, sorts])
 
   useEffect(() => {
     return () => {
