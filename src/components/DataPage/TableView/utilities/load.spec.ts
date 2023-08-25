@@ -7,8 +7,8 @@ describe('getQueryStringParameters', () => {
     const actual = getQueryStringParameters(
       [],
       [
-        { dataGridKey: 'Host species', status: SortStatus.selected },
-        { dataGridKey: 'Collection date', status: SortStatus.reverse },
+        { dataGridKey: 'Host species', status: SortStatus.Selected },
+        { dataGridKey: 'Collection date', status: SortStatus.Reverse },
       ],
       [],
       true

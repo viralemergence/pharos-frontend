@@ -59,7 +59,7 @@ const ColumnHeader = ({
   let sort: Sort, sortPriority: number | undefined
   const index = sorts.findIndex(sort => sort.dataGridKey == dataGridKey)
   // Table is not sorted on this header's column
-  if (index === -1) sort = { dataGridKey, status: SortStatus.unselected }
+  if (index === -1) sort = { dataGridKey, status: SortStatus.Unselected }
   // Table is sorted on this header's column
   else [sort, sortPriority] = [sorts[index], index]
 
@@ -73,7 +73,7 @@ const ColumnHeader = ({
       const previousSortsWithThisSortRemoved = prev.filter(
         sort => sort.dataGridKey !== dataGridKey
       )
-      if (newSortStatus === SortStatus.unselected) {
+      if (newSortStatus === SortStatus.Unselected) {
         return previousSortsWithThisSortRemoved
       } else {
         return [newSort, ...previousSortsWithThisSortRemoved]
@@ -100,9 +100,9 @@ const ColumnHeader = ({
     if (!sortable) return
     if (!(headerCell instanceof HTMLDivElement)) return
     headerCell.addEventListener('keydown', cellKeyDownHandler)
-    if (sort.status === SortStatus.selected) {
+    if (sort.status === SortStatus.Selected) {
       headerCell.setAttribute('aria-sort', 'descending')
-    } else if (sort.status === SortStatus.reverse) {
+    } else if (sort.status === SortStatus.Reverse) {
       headerCell.setAttribute('aria-sort', 'ascending')
     } else {
       headerCell.removeAttribute('aria-sort')
@@ -123,7 +123,7 @@ const ColumnHeader = ({
           sortPriority={sortPriority}
         >
           <SortIcon
-            status={sort.status ?? SortStatus.unselected}
+            status={sort.status ?? SortStatus.Unselected}
             upArrowSelectedColor={colorPalette.mint}
             downArrowSelectedColor={colorPalette.mint}
             upArrowUnselectedColor={colorPalette.gridLines}
