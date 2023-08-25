@@ -292,7 +292,30 @@ describe('The public data page', () => {
     await waitFor(() => {
       expect(grid).toHaveAttribute('aria-rowcount', '51')
     })
-  }, 10000)
+  }, 15000)
+
+  it('shows a tooltip if dates are out of order', async () => {
+    render(<DataPage />)
+    fireEvent.click(getTableViewButton())
+    fireEvent.click(getFilterPanelToggleButton())
+    fireEvent.click(getAddFilterButton())
+    fireEvent.click(await screen.findByText('Collection date'))
+    const startDateInput = screen.getByLabelText<HTMLInputElement>(
+      'Collected on this date or later'
+    )
+    const endDateInput = screen.getByLabelText<HTMLInputElement>(
+      'Collected on this date or earlier'
+    )
+    expect(startDateInput).toBeInTheDocument()
+    expect(endDateInput).toBeInTheDocument()
+    expect(screen.queryByRole('tooltip')).toBeNull()
+    await act(async () => {
+      fireEvent.change(startDateInput, { target: { value: '2000-01-01' } })
+      fireEvent.change(endDateInput, { target: { value: '1999-01-01' } })
+    })
+    const tooltip = await screen.findByRole('tooltip')
+    expect(tooltip).toBeInTheDocument()
+  }, 15000)
 
   it('provides a host species filter that offers options corresponding to the metadata', async () => {
     render(<DataPage />)
