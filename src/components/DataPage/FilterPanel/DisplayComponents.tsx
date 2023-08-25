@@ -330,8 +330,8 @@ export const DateInputStyled = styled.input`
 `
 
 export const DateTooltip = styled.aside<{
-  isStartDateInvalid: boolean
-  isEndDateInvalid: boolean
+  isStartDateInvalid?: boolean
+  isEndDateInvalid?: boolean
 }>`
   ${({ theme }) => theme.extraSmallParagraph};
   font-size: 9pt;
