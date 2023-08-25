@@ -226,8 +226,6 @@ const TableView = ({
           // @ts-expect-error: I'm copying this from the docs, but it doesn't
           // look like their type definitions work
           <DataGridStyled
-            className={'rdg-dark'}
-            rowHeight={41}
             columns={columns}
             rows={records}
             onScroll={handleScroll}
