@@ -56,7 +56,7 @@ export type PublishedRecordsData =
   | PublishedRecordsError
 
 export interface UsePublishedRecordsProps {
-  pageSize: number
+  pageSize?: number
   filters: SimpleFilter[]
   sorts: Sort[]
 }
@@ -76,6 +76,7 @@ export interface FetchPublishedRecordsProps {
   filters: SimpleFilter[]
   sorts?: Sort[]
   page: number
+  pageSize?: number
   setPublishedRecordsData: React.Dispatch<
     React.SetStateAction<PublishedRecordsData>
   >
@@ -97,6 +98,7 @@ const fetchPublishedRecords = async ({
   filters,
   sorts,
   page,
+  pageSize,
   setPublishedRecordsData,
   overwriteRowNumber = false,
 }: FetchPublishedRecordsProps) => {
@@ -104,6 +106,7 @@ const fetchPublishedRecords = async ({
     filters,
     sorts,
     pageToLoad: page,
+    pageSize,
     replaceRecords: !append,
   })
   const response = await fetch(

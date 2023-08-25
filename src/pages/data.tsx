@@ -36,13 +36,13 @@ export type Filter = SimpleFilter & {
   valid: boolean
   /** A filter has been 'added to the panel' when the panel contains an input
    * (such as a date input or a typeahead) for setting the filter's values. */
-  addedToPanel: boolean
+  addedToPanel?: boolean
   /** If a filter has been 'applied', this means that it has been applied to
    * the list of records shown in the table, so that only records matching the
    * filter are shown in the table. For example, if the user sets host_species
    * to ['Bear'], then, once the table has been populated with bears and bears
    * only, the host_species filter's 'applied' property will be set to true. */
-  applied: boolean
+  applied?: boolean
   /* This number determines the order of the filters in the panel. */
   panelIndex: number
   /** The historically earliest collection date that appears among the

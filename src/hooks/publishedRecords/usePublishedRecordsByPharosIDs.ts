@@ -36,7 +36,6 @@ const usePublishedRecordsByPharosIDs = ({
       ignore,
       filters: [{ id: 'pharos_id', values: pharosIDs.slice(0, pageSize) }],
       page: 1,
-      pageSize,
       setPublishedRecordsData,
       append: false,
     })
@@ -79,7 +78,6 @@ const usePublishedRecordsByPharosIDs = ({
         ignore: false,
         filters,
         page: 1,
-        pageSize,
         setPublishedRecordsData,
         append: true,
         overwriteRowNumber: true,

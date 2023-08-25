@@ -3,6 +3,7 @@ import styled, { useTheme } from 'styled-components'
 
 import PublicViewBackground from '../PublicViewBackground'
 import { DatasetTopSection } from 'components/DatasetPage/DatasetPageLayout'
+import type { Sort } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 
 import useDatasetID from 'hooks/dataset/useDatasetID'
 

@@ -7,6 +7,7 @@ import fetchPublishedRecords, {
 } from './fetchPublishedRecords'
 
 import { useEffect, useState } from 'react'
+import { countPages } from 'components/DataPage/TableView/utilities/load'
 
 const usePublishedRecords = ({
   pageSize,
@@ -43,7 +44,7 @@ const usePublishedRecords = ({
     return () => {
       ignore = true
     }
-  }, [filters, pageSize])
+  }, [filters, sorts, pageSize])
 
   const loadMore: LoadMore = () => {
     if (
@@ -65,8 +66,8 @@ const usePublishedRecords = ({
         ignore: false,
         filters,
         sorts,
-        page: publishedRecordsData.data.publishedRecords.length / pageSize + 1,
-        pageSize,
+        page:
+          countPages(publishedRecordsData.data.publishedRecords, pageSize) + 1,
         setPublishedRecordsData,
         append: true,
       })

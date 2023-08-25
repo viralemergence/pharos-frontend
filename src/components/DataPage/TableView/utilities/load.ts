@@ -1,12 +1,15 @@
 import { Dispatch, MutableRefObject, SetStateAction } from 'react'
 import type { SimpleFilter, Filter } from 'pages/data'
 import debounce from 'lodash/debounce'
-import type { LoadingState, Sort } from '../TableView'
-import type { Row } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
+import type { LoadingState } from '../TableView'
+import type {
+  Row,
+  Sort,
+} from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 import fetchRecords from 'components/DataPage/TableView/utilities/fetchRecords'
 import { SortStatus } from 'components/PublicViews/PublishedRecordsDataGrid/SortIcon'
 
-const PAGE_SIZE = 50
+const DEFAULT_PAGE_SIZE = 50
 
 const loadDebounceDelay = 300
 
@@ -42,12 +45,12 @@ export const load = async ({
       f.values.filter((value: string) => value).length > 0
   )
 
-  const queryStringParameters = getQueryStringParameters(
-    filtersToApply,
+  const queryStringParameters = getQueryStringParameters({
+    filters: filtersToApply,
     sorts,
     records,
-    replaceRecords
-  )
+    replaceRecords,
+  })
 
   const success = await fetchRecords({
     queryStringParameters,
@@ -76,14 +79,15 @@ export const loadDebounced = debounce(load, loadDebounceDelay, {
   trailing: true,
 })
 
-export const countPages = (records: Row[]) =>
-  Math.floor(records.length / PAGE_SIZE)
+export const countPages = (records: Row[], pageSize = DEFAULT_PAGE_SIZE) =>
+  Math.floor(records.length / pageSize)
 
 type GetQueryStringParametersProps = {
   filters?: SimpleFilter[]
   sorts?: Sort[]
   // TODO: Use append for consistency
   replaceRecords: boolean
+  pageSize?: number
   // Require either pageToLoad or records to be present
 } & (
   | { pageToLoad: number; records?: never }
@@ -96,6 +100,7 @@ export const getQueryStringParameters = ({
   replaceRecords,
   records,
   pageToLoad,
+  pageSize = DEFAULT_PAGE_SIZE,
 }: GetQueryStringParametersProps) => {
   const params = new URLSearchParams()
 
@@ -120,10 +125,10 @@ export const getQueryStringParameters = ({
       // If we're not replacing the current set of records, load the next
       // page. For example, if there are 100 records, load page 3 (i.e., the
       // records numbered from 101 to 150)
-      pageToLoad = countPages(records) + 1
+      pageToLoad = countPages(records, pageSize) + 1
     }
   }
   params.append('page', pageToLoad.toString())
-  params.append('pageSize', PAGE_SIZE.toString())
+  params.append('pageSize', pageSize.toString())
   return params
 }

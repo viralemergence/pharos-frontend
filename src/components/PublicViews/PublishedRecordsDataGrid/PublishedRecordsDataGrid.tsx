@@ -1,10 +1,4 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
 import DataGrid, {
@@ -27,7 +21,6 @@ import usePublishedRecords from 'hooks/publishedRecords/usePublishedRecords'
 
 import ColumnHeader from 'components/PublicViews/PublishedRecordsDataGrid/ColumnHeader'
 import type { SortStatus } from '../../PublicViews/PublishedRecordsDataGrid/SortIcon'
-
 
 export interface PublishedRecordsResearcher {
   name: string
