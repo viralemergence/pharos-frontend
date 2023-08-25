@@ -1,10 +1,4 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import debounce from 'lodash/debounce'
 import type { Filter } from 'pages/data'
 import {
