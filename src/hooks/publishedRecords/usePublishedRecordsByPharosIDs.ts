@@ -34,7 +34,7 @@ const usePublishedRecordsByPharosIDs = ({
 
     fetchPublishedRecords({
       ignore,
-      filters: { pharos_id: pharosIDs.slice(0, pageSize) },
+      filters: [{ id: 'pharos_id', values: pharosIDs.slice(0, pageSize) }],
       page: 1,
       pageSize,
       setPublishedRecordsData,
@@ -59,11 +59,14 @@ const usePublishedRecordsByPharosIDs = ({
       publishedRecordsData.data.publishedRecords.length / pageSize
     )
 
-    const filters = {
-      pharos_id: pharosIDs.slice(page * pageSize, pageSize * (page + 1)),
-    }
+    const filters = [
+      {
+        id: 'pharos_id',
+        values: pharosIDs.slice(page * pageSize, pageSize * (page + 1)),
+      },
+    ]
 
-    if (filters.pharos_id.length > 0) {
+    if (filters[0].values.length > 0) {
       setPublishedRecordsData(prev => ({
         status: PublishedRecordsLoadingState.LOADING_MORE,
         data:

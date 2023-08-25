@@ -1,5 +1,5 @@
 import { Dispatch, MutableRefObject, SetStateAction } from 'react'
-import type { Filter } from 'pages/data'
+import type { SimpleFilter, Filter } from 'pages/data'
 import debounce from 'lodash/debounce'
 import type { LoadingState, Sort } from '../TableView'
 import type { Row } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
@@ -79,12 +79,24 @@ export const loadDebounced = debounce(load, loadDebounceDelay, {
 export const countPages = (records: Row[]) =>
   Math.floor(records.length / PAGE_SIZE)
 
-export const getQueryStringParameters = (
-  filters: Filter[],
-  sorts: Sort[],
-  records: Row[],
+type GetQueryStringParametersProps = {
+  filters?: SimpleFilter[]
+  sorts?: Sort[]
+  // TODO: Use append for consistency
   replaceRecords: boolean
-) => {
+  // Require either pageToLoad or records to be present
+} & (
+  | { pageToLoad: number; records?: never }
+  | { records: Row[]; pageToLoad?: never }
+)
+
+export const getQueryStringParameters = ({
+  filters = [],
+  sorts = [],
+  replaceRecords,
+  records,
+  pageToLoad,
+}: GetQueryStringParametersProps) => {
   const params = new URLSearchParams()
 
   // Add filters to the query string
@@ -101,14 +113,15 @@ export const getQueryStringParameters = (
     params.append('sort', prefix + sort.dataGridKey)
   }
 
-  let pageToLoad
-  if (replaceRecords) {
-    pageToLoad = 1
-  } else {
-    // If we're not replacing the current set of records, load the next
-    // page. For example, if there are 100 records, load page 3 (i.e., the
-    // records numbered from 101 to 150)
-    pageToLoad = countPages(records) + 1
+  if (pageToLoad === undefined) {
+    if (replaceRecords) {
+      pageToLoad = 1
+    } else {
+      // If we're not replacing the current set of records, load the next
+      // page. For example, if there are 100 records, load page 3 (i.e., the
+      // records numbered from 101 to 150)
+      pageToLoad = countPages(records) + 1
+    }
   }
   params.append('page', pageToLoad.toString())
   params.append('pageSize', PAGE_SIZE.toString())

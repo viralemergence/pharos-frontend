@@ -197,8 +197,10 @@ const FilterPanelToolbar = ({
 export const filterDefaultProperties: Partial<Filter> & {
   type: 'text' | 'date'
   values: string[]
+  addedToPanel: boolean
   panelIndex: number
   valid: boolean
+  applied: boolean
 } = {
   type: 'text',
   values: [],
