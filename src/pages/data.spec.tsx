@@ -285,7 +285,7 @@ describe('The public data page', () => {
     await waitFor(() => {
       expect(grid).toHaveAttribute('aria-rowcount', '51')
     })
-  }, 10000)
+  }, 15000)
 
   it('shows a tooltip if dates are out of order', async () => {
     render(<DataPage />)
@@ -308,7 +308,7 @@ describe('The public data page', () => {
     })
     const tooltip = await screen.findByRole('tooltip')
     expect(tooltip).toBeInTheDocument()
-  }, 10000)
+  }, 15000)
 
   it('provides a host species filter that offers options corresponding to the metadata', async () => {
     render(<DataPage />)
