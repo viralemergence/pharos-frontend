@@ -1,16 +1,9 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-} from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { transparentize } from 'polished'
 import colorPalette from 'figma/colorPalette'
-import SortIcon, { SortStatus } from './SortIcon'
-import type { Sort } from 'components/DataPage/TableView/TableView'
+import SortIcon, { CYCLE, SortStatus } from './SortIcon'
+import type { Sort } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 
 const ColumnLabel = styled.div`
   text-overflow: ellipsis;
@@ -61,52 +54,21 @@ const ColumnHeader = ({
   const firstFocusableElementRef: React.MutableRefObject<HTMLButtonElement | null> =
     useRef(null)
 
-  /** Ensures that when user presses tab or the right arrow, the sort button
-   * receives the focus */
-  const cellKeyDownHandler = useCallback(
-    (e: KeyboardEvent) => {
-      const cell = e.target
-      if (!(cell instanceof HTMLDivElement)) return
-      const tab = e.key === 'Tab'
-      const right = e.key === 'ArrowRight'
-      if ((!e.shiftKey && tab) || right) {
-        firstFocusableElementRef.current?.focus()
-        e.preventDefault()
-        e.stopPropagation()
-      }
-    },
-    [firstFocusableElementRef]
-  )
-
   const columnLabelRef = useRef<HTMLDivElement>(null)
 
-  /** Get the header cell via the DOM, since react-data-grid doesn't give us a
-   * ref pointing to it */
-  const getHeaderCell = useCallback(
-    () => columnLabelRef.current?.parentNode,
-    [columnLabelRef]
-  )
-
-  const cycle = [SortStatus.unselected, SortStatus.selected, SortStatus.reverse]
-  const [sort, sortPriority] = useMemo(() => {
-    const index = sorts.findIndex(sort => sort.dataGridKey == dataGridKey)
-    if (index === -1) {
-      // Table is not sorted on this header's column
-      const sort: Sort = { dataGridKey, status: SortStatus.unselected }
-      return [sort, undefined]
-    } else {
-      // Table is sorted on this header's column
-      const sort = sorts[index]
-      return [sort, index]
-    }
-  }, [sorts, dataGridKey])
+  let sort: Sort, sortPriority: number | undefined
+  const index = sorts.findIndex(sort => sort.dataGridKey == dataGridKey)
+  // Table is not sorted on this header's column
+  if (index === -1) sort = { dataGridKey, status: SortStatus.unselected }
+  // Table is sorted on this header's column
+  else [sort, sortPriority] = [sorts[index], index]
 
   const sortButtonClickHandler = () => {
     setSorts(prev => {
-      const currentCycleIndex = cycle.findIndex(
+      const currentCycleIndex = CYCLE.findIndex(
         sortStatus => sortStatus == sort.status
       )
-      const newSortStatus = cycle[(currentCycleIndex + 1) % cycle.length]
+      const newSortStatus = CYCLE[(currentCycleIndex + 1) % CYCLE.length]
       const newSort: Sort = { dataGridKey, status: newSortStatus }
       const previousSortsWithThisSortRemoved = prev.filter(
         sort => sort.dataGridKey !== dataGridKey
@@ -120,7 +82,21 @@ const ColumnHeader = ({
   }
 
   useEffect(() => {
-    const headerCell = getHeaderCell()
+    /** Ensures that when user presses tab or the right arrow, the sort button
+     * receives the focus */
+    const cellKeyDownHandler = (e: KeyboardEvent) => {
+      const cell = e.target
+      if (!(cell instanceof HTMLDivElement)) return
+      const tab = e.key === 'Tab'
+      const right = e.key === 'ArrowRight'
+      if ((!e.shiftKey && tab) || right) {
+        firstFocusableElementRef.current?.focus()
+        e.preventDefault()
+        e.stopPropagation()
+      }
+    }
+
+    const headerCell = columnLabelRef.current?.parentNode
     if (!sortable) return
     if (!(headerCell instanceof HTMLDivElement)) return
     headerCell.addEventListener('keydown', cellKeyDownHandler)
@@ -132,11 +108,10 @@ const ColumnHeader = ({
       headerCell.removeAttribute('aria-sort')
     }
     return () => {
-      const headerCell = getHeaderCell()
       if (!(headerCell instanceof HTMLDivElement)) return
       headerCell.removeEventListener('keydown', cellKeyDownHandler)
     }
-  }, [sort, sortable, getHeaderCell, cellKeyDownHandler])
+  }, [sort, sortable])
 
   return (
     <>
