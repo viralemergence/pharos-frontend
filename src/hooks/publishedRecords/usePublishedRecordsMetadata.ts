@@ -1,11 +1,11 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Filter } from 'pages/data'
 import isNormalObject from 'utilities/isNormalObject'
 import { filterDefaultProperties } from 'components/DataPage/FilterPanel/FilterPanelToolbar'
 
 const METADATA_URL = `${process.env.GATSBY_API_URL}/metadata-for-published-records`
 
-const isValidFilterInMetadataResponse = (data: unknown): data is Filter => {
+const isValidFilterInResponse = (data: unknown): data is Filter => {
   if (!isNormalObject(data)) return false
   const { label, dataGridKey = '', type = 'text', options = [] } = data
   return (
@@ -27,14 +27,14 @@ const isResponseValid = (data: unknown): data is MetadataResponse => {
   if (!sortableFields.every(field => typeof field === 'string')) return false
   if (
     !Object.values(possibleFilters).every?.(filter =>
-      isValidFilterInMetadataResponse(filter)
+      isValidFilterInResponse(filter)
     )
   )
     return false
   return true
 }
 
-export enum FetchStates {
+enum FetchStates {
   initial,
   loading,
   done,
@@ -46,18 +46,13 @@ interface ErrorWithMessage {
 }
 
 /** Result of an attempt to fetch published records metadata */
-export type Result = {
+type Result = {
   status: FetchStates
   metadata: Metadata | null
   error?: Error
 }
 
-export interface FetchMetadataProps {
-  setMetadata: React.Dispatch<React.SetStateAction<Result>>
-  ignore: boolean
-}
-
-export const initialMetadata = {
+const initialMetadata = {
   possibleFilters: [],
   sortableFields: [],
 }
