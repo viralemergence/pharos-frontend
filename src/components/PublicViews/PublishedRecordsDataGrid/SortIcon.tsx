@@ -31,7 +31,6 @@ const SortIcon = ({
   downArrowUnselectedColor = colorPalette.medGray,
 }: SortIconProps) => {
   const transparent = 'rgba(0, 0, 0, 0)'
-  console.log('sorticon sez hi')
 
   let upArrowFill: string, downArrowFill: string
 

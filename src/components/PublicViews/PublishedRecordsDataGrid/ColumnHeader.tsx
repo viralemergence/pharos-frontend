@@ -9,8 +9,8 @@ import React, {
 import styled from 'styled-components'
 import { transparentize } from 'polished'
 import colorPalette from 'figma/colorPalette'
-import SortIconSVGStyled, { SortStatus } from './SortIcon'
-import type { Sort } from 'components/DataPage/TableView/TableView'
+import SortIcon, { SortStatus } from './SortIcon'
+import type { Sort } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 
 const ColumnLabel = styled.div`
   text-overflow: ellipsis;
@@ -138,15 +138,6 @@ const ColumnHeader = ({
     }
   }, [sort, sortable, getHeaderCell, cellKeyDownHandler])
 
-  const sortIconColorProps = {
-    upArrowSelectedColor: colorPalette.mint,
-    downArrowSelectedColor: colorPalette.mint,
-    upArrowUnselectedColor: colorPalette.gridLines,
-    downArrowUnselectedColor: colorPalette.gridLines,
-  }
-
-  console.log('sortable?', sortable)
-
   return (
     <>
       <ColumnLabel ref={columnLabelRef}>{dataGridKey}</ColumnLabel>
@@ -156,9 +147,12 @@ const ColumnHeader = ({
           onClick={sortButtonClickHandler}
           sortPriority={sortPriority}
         >
-          <SortIconSVGStyled
+          <SortIcon
             status={sort.status ?? SortStatus.unselected}
-            {...sortIconColorProps}
+            upArrowSelectedColor={colorPalette.mint}
+            downArrowSelectedColor={colorPalette.mint}
+            upArrowUnselectedColor={colorPalette.gridLines}
+            downArrowUnselectedColor={colorPalette.gridLines}
           />
         </SortButtonStyled>
       )}

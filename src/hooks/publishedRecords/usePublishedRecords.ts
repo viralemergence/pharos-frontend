@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react'
 const usePublishedRecords = ({
   pageSize,
   filters,
+  sorts,
 }: UsePublishedRecordsProps): [PublishedRecordsData, LoadMore] => {
   const [publishedRecordsData, setPublishedRecordsData] =
     useState<PublishedRecordsData>({
@@ -32,6 +33,7 @@ const usePublishedRecords = ({
     fetchPublishedRecords({
       ignore,
       filters,
+      sorts,
       page: 1,
       pageSize,
       setPublishedRecordsData,
@@ -62,6 +64,7 @@ const usePublishedRecords = ({
       fetchPublishedRecords({
         ignore: false,
         filters,
+        sorts,
         page: publishedRecordsData.data.publishedRecords.length / pageSize + 1,
         pageSize,
         setPublishedRecordsData,

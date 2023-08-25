@@ -110,7 +110,7 @@ const FilterTypeahead = ({
   }))
   const labelsOfSelectedItems = selectedItems.map(({ label }) => label)
   // Remove selected items from available options
-  const options = filter.options.filter(
+  const options = (filter.options ?? []).filter(
     option => !labelsOfSelectedItems.includes(option)
   )
 

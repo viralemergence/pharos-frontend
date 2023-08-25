@@ -9,12 +9,12 @@ import styled from 'styled-components'
 import { DataGridHandle } from 'react-data-grid'
 import { transparentize } from 'polished'
 import LoadingSpinner from './LoadingSpinner'
-import type { SortStatus } from '../../PublicViews/PublishedRecordsDataGrid/SortIcon'
 import type { Filter } from 'pages/data'
 import { load, loadDebounced, countPages } from './utilities/load'
 import {
   DataGridStyled,
   Row,
+  Sort,
   getColumns,
 } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 
@@ -93,11 +93,6 @@ const filterHasRealValues = (filter: Filter) =>
   filter.values.filter(value => value !== null && value !== undefined).length >
     0
 
-export type Sort = {
-  dataGridKey: string
-  status: SortStatus
-}
-
 const TableView = ({
   filters,
   setFilters,
@@ -170,20 +165,19 @@ const TableView = ({
     }
   }, [])
 
-  const keysOfFilteredColumns = addedFilters.reduce<string[]>(
+  const filteredFields = addedFilters.reduce<string[]>(
     (keys, { applied, dataGridKey }) =>
       applied ? [...keys, dataGridKey] : keys,
     []
   )
 
-  const columns = getColumns(
+  const columns = getColumns({
     records,
     sortableFields,
     sorts,
     setSorts,
-    keysOfFilteredColumns,
-    []
-  )
+    filteredFields,
+  })
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     if (

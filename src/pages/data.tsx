@@ -16,27 +16,33 @@ import {
 } from 'components/DataPage/DisplayComponents'
 import usePublishedRecordsMetadata from 'hooks/publishedRecords/usePublishedRecordsMetadata'
 
-export type Filter = {
+export type SimpleFilter = {
   id: string
-  label: string
-  type: 'text' | 'date'
-  /** In the table (a.k.a. 'data grid') each column has a distinct id a.k.a.
-   * 'key'. The dataGridKey of a Filter is the key of its associated column. */
-  dataGridKey: string
-  /** The different possible values for a filter - relevant for typeahead fields. */
-  options: string[]
-  /** A filter has been 'added to the panel' when the panel contains an input
-   * (such as a date input or a typeahead) for setting the filter's values. */
-  addedToPanel?: boolean
   /** To filter on a specific field, the user sets values for the field. For
    * example, the host_species filter could receive the values ["Bear", "Wolf"]. */
   values: string[]
+}
+
+export type Filter = SimpleFilter & {
+  label: string
+  type: 'text' | 'date'
+  /** In the table (a.k.a. 'data grid') each column has a distinct id a.k.a.
+   * 'key'. The dataGridKey of a Filter is the key of its associated
+   * column. These keys are also the labels of the columns, e.g.
+   * "Collection date". */
+  dataGridKey: string
+  /** The different possible values for a filter - relevant for typeahead fields. */
+  options: string[]
+  valid: boolean
+  /** A filter has been 'added to the panel' when the panel contains an input
+   * (such as a date input or a typeahead) for setting the filter's values. */
+  addedToPanel: boolean
   /** If a filter has been 'applied', this means that it has been applied to
    * the list of records shown in the table, so that only records matching the
    * filter are shown in the table. For example, if the user sets host_species
    * to ['Bear'], then, once the table has been populated with bears and bears
    * only, the host_species filter's 'applied' property will be set to true. */
-  applied?: boolean
+  applied: boolean
   /* This number determines the order of the filters in the panel. */
   panelIndex: number
   /** The historically earliest collection date that appears among the
@@ -46,7 +52,6 @@ export type Filter = {
    * appears among the published records. Only date filters have this property.
    * */
   latestDateInDatabase?: string
-  valid: boolean
 }
 
 const DataPage = ({

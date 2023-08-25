@@ -141,6 +141,8 @@ interface FilteredPublishedRecordsDataGridProps {
   loadMore: ReturnType<typeof usePublishedRecords>[1]
   hideColumns?: string[]
   sortableFields?: string[]
+  sorts?: Sort[]
+  setSorts?: Dispatch<SetStateAction<Sort[]>>
 }
 
 const rowNumberColumn = {
@@ -158,11 +160,9 @@ const PublishedRecordsDataGrid = ({
   loadMore,
   hideColumns = [],
   sortableFields = [],
+  sorts = [],
+  setSorts = () => {},
 }: FilteredPublishedRecordsDataGridProps) => {
-  const [sorts, setSorts] = useState<Sort[]>([])
-
-  console.log('sortableFields in prdg', sortableFields)
-
   const gridRef = useRef<DataGridHandle>(null)
 
   // when we are loading a full new set of records, scroll to the top
@@ -183,14 +183,13 @@ const PublishedRecordsDataGrid = ({
     )
   }
 
-  const columns = getColumns(
-    publishedRecordsData.data.publishedRecords,
+  const columns = getColumns({
+    records: publishedRecordsData.data.publishedRecords,
     sortableFields,
     sorts,
     setSorts,
-    [],
-    hideColumns
-  )
+    hideColumns,
+  })
 
   const handleScroll = ({ currentTarget }: React.UIEvent<HTMLDivElement>) => {
     if (
@@ -230,14 +229,21 @@ const PublishedRecordsDataGrid = ({
   )
 }
 
-export const getColumns = (
-  records: Row[],
-  sortableFields: string[],
-  sorts: Sort[],
-  setSorts: Dispatch<SetStateAction<Sort[]>>,
-  keysOfFilteredColumns: string[],
-  hideColumns: string[]
-): readonly Column<Row>[] => {
+export const getColumns = ({
+  records,
+  sortableFields = [],
+  sorts = [],
+  setSorts = () => null,
+  keysOfFilteredColumns = [],
+  hideColumns = [],
+}: {
+  records: Row[]
+  sortableFields: string[]
+  sorts?: Sort[]
+  setSorts?: Dispatch<SetStateAction<Sort[]>>
+  keysOfFilteredColumns?: string[]
+  hideColumns?: string[]
+}): readonly Column<Row>[] => {
   return [
     rowNumberColumn,
     ...Object.keys(records?.[0] ?? {})

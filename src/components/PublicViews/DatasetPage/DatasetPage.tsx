@@ -25,6 +25,7 @@ import usePublishedProject, {
 import usePublishedRecords from 'hooks/publishedRecords/usePublishedRecords'
 import usePublishedRecordsMetadata from 'hooks/publishedRecords/usePublishedRecordsMetadata'
 import { PublicProjectPageContentBox } from '../ProjectPage/ProjectPage'
+import type { Filter } from 'pages/data'
 
 const GridContainer = styled.div`
   height: calc(100vh - 265px);
@@ -41,13 +42,15 @@ const DatasetPage = () => {
   const { status, data: project } = usePublishedProject()
   const { user } = useAppState()
 
-  const [filters] = useState(() => ({
-    dataset_id: [datasetID],
-  }))
+  const [filters] = useState<Filter[]>(() => [
+    { id: 'dataset_id', values: [datasetID] },
+  ])
+  const [sorts, setSorts] = useState<Sort[]>([])
 
   const [publishedRecordsData, loadMore] = usePublishedRecords({
     pageSize: PAGESIZE,
     filters,
+    sorts,
   })
 
   const dataset =
@@ -146,6 +149,8 @@ const DatasetPage = () => {
           hideColumns={HIDECOLUMNS}
           loadMore={loadMore}
           sortableFields={sortableFields}
+          sorts={sorts}
+          setSorts={setSorts}
         />
       </GridContainer>
     </>
