@@ -2,12 +2,12 @@ import { Dispatch, MutableRefObject, SetStateAction } from 'react'
 import type { Filter } from 'pages/data'
 import debounce from 'lodash/debounce'
 import type { LoadingState } from '../TableView'
-import type {
+import {
   Row,
   Sort,
+  SortStatus,
 } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 import fetchRecords from 'components/DataPage/TableView/utilities/fetchRecords'
-import { SortStatus } from 'components/PublicViews/PublishedRecordsDataGrid/SortIcon'
 
 const PAGE_SIZE = 50
 

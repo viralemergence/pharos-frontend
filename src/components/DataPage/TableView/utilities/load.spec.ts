@@ -1,5 +1,5 @@
 import { getQueryStringParameters } from './load'
-import { SortStatus } from 'components/PublicViews/PublishedRecordsDataGrid/SortIcon'
+import { SortStatus } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 import type { Filter } from 'pages/data'
 
 describe('getQueryStringParameters', () => {

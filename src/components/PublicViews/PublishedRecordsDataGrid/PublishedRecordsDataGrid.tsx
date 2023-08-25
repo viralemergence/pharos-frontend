@@ -40,6 +40,25 @@ export interface Sort {
   status: SortStatus
 }
 
+export enum SortStatus {
+  Selected = 'selected',
+  Reverse = 'reverse',
+  Unselected = 'unselected',
+}
+
+export const SORT_CYCLE = [
+  SortStatus.Unselected,
+  SortStatus.Selected,
+  SortStatus.Reverse,
+]
+
+export const getNextSortStatus = (currentSortStatus: SortStatus) => {
+  const currentCycleIndex = SORT_CYCLE.findIndex(
+    sortStatus => sortStatus == currentSortStatus
+  )
+  return SORT_CYCLE[(currentCycleIndex + 1) % SORT_CYCLE.length]
+}
+
 const TableContainer = styled.div`
   position: relative;
   width: 100%;

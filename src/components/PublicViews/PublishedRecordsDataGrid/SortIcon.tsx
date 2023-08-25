@@ -1,18 +1,7 @@
 import React from 'react'
 import colorPalette from 'figma/colorPalette'
 import styled from 'styled-components'
-
-export enum SortStatus {
-  Selected = 'selected',
-  Reverse = 'reverse',
-  Unselected = 'unselected',
-}
-
-export const CYCLE = [
-  SortStatus.Unselected,
-  SortStatus.Selected,
-  SortStatus.Reverse,
-]
+import { SortStatus } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 
 interface SortIconProps extends React.SVGProps<SVGSVGElement> {
   status: SortStatus

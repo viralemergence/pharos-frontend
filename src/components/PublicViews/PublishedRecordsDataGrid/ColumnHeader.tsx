@@ -2,8 +2,12 @@ import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { transparentize } from 'polished'
 import colorPalette from 'figma/colorPalette'
-import SortIcon, { CYCLE, SortStatus } from './SortIcon'
-import type { Sort } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
+import SortIcon from './SortIcon'
+import {
+  Sort,
+  getNextSortStatus,
+  SortStatus,
+} from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 
 const ColumnLabel = styled.div`
   text-overflow: ellipsis;
@@ -65,15 +69,12 @@ const ColumnHeader = ({
 
   const sortButtonClickHandler = () => {
     setSorts(prev => {
-      const currentCycleIndex = CYCLE.findIndex(
-        sortStatus => sortStatus == sort.status
-      )
-      const newSortStatus = CYCLE[(currentCycleIndex + 1) % CYCLE.length]
-      const newSort: Sort = { dataGridKey, status: newSortStatus }
+      const nextSortStatus = getNextSortStatus(sort.status)
+      const newSort: Sort = { dataGridKey, status: nextSortStatus }
       const previousSortsWithThisSortRemoved = prev.filter(
         sort => sort.dataGridKey !== dataGridKey
       )
-      if (newSortStatus === SortStatus.Unselected) {
+      if (nextSortStatus === SortStatus.Unselected) {
         return previousSortsWithThisSortRemoved
       } else {
         return [newSort, ...previousSortsWithThisSortRemoved]
