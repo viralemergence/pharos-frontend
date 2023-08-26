@@ -101,7 +101,7 @@ const NoRecordsFoundMessage = styled.div`
 `
 
 interface TableViewProps {
-  filters: Filter[]
+  filters?: Filter[]
   setFilters: Dispatch<SetStateAction<Filter[]>>
   isOpen?: boolean
   isFilterPanelOpen?: boolean
@@ -123,7 +123,7 @@ const filterHasRealValues = (filter: Filter) =>
     0
 
 const TableView = ({
-  filters,
+  filters = [],
   setFilters,
   isOpen = true,
   isFilterPanelOpen = false,

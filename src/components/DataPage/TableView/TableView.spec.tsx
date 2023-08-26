@@ -24,6 +24,9 @@ jest.mock('cmsHooks/useSiteMetadataQuery', () => jest.fn())
 import React from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
 
+import { server } from '../../../../test/server'
+import { oneMillionRecordsHandler } from '../../../../test/serverHandlers'
+
 import Providers from 'components/layout/Providers'
 import TableView from './TableView'
 import { Filter } from 'pages/data'
@@ -32,14 +35,18 @@ describe('The public data table', () => {
   const getDataGridAfterWaiting = async () =>
     await screen.findByTestId('datagrid')
 
+  const tableViewProps = {
+    setFilters: jest.fn(),
+    /** By default react-data-grid only puts the visible rows in the DOM, and
+     * creates more DOM elements as you scroll. This prop turns off this
+     * 'virtualization' functionality for testing purposes. */
+    enableVirtualization: false,
+  }
+
   it('renders', async () => {
     render(
       <Providers>
-        <TableView
-          filters={[]}
-          setFilters={jest.fn()}
-          enableVirtualization={false}
-        />
+        <TableView {...tableViewProps} />
       </Providers>
     )
     const grid = await getDataGridAfterWaiting()
@@ -66,11 +73,7 @@ describe('The public data table', () => {
   it('can be filtered by collection start date', async () => {
     render(
       <Providers>
-        <TableView
-          filters={[startDateFilterMarch2020]}
-          setFilters={jest.fn()}
-          enableVirtualization={false}
-        />
+        <TableView {...tableViewProps} filters={[startDateFilterMarch2020]} />
       </Providers>
     )
     const grid = await getDataGridAfterWaiting()
@@ -82,11 +85,7 @@ describe('The public data table', () => {
   it('has clickable project names and researcher names', async () => {
     render(
       <Providers>
-        <TableView
-          filters={[]}
-          setFilters={jest.fn()}
-          enableVirtualization={false}
-        />
+        <TableView {...tableViewProps} />
       </Providers>
     )
     const projectLinks = await screen.findAllByRole('link', {
@@ -97,5 +96,31 @@ describe('The public data table', () => {
       name: 'Researcher Zero',
     })
     expect(researcherLinks.length).toBeGreaterThan(10)
+  })
+
+  it('provides a summary of the records when no filters are used', async () => {
+    server.use(oneMillionRecordsHandler)
+    render(
+      <Providers>
+        <TableView {...tableViewProps} />
+      </Providers>
+    )
+    const summary = await screen.findByRole('aside', {
+      name: '1,234,567 records',
+    })
+    expect(summary).toBeInTheDocument()
+  })
+
+  it('provides a summary of the records when a filter is used', async () => {
+    server.use(oneMillionRecordsHandler)
+    render(
+      <Providers>
+        <TableView filters={[startDateFilterMarch2020]} {...tableViewProps} />
+      </Providers>
+    )
+    const summary = await screen.findByRole('aside', {
+      name: '567 of 1,234,567 records',
+    })
+    expect(summary).toBeInTheDocument()
   })
 })

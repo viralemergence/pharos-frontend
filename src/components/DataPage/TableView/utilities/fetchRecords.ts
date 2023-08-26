@@ -74,19 +74,43 @@ const fetchRecords = async ({
   return true
 }
 
-const isValidRecordsResponse = (data: unknown): data is RecordsResponse => {
-  if (!isNormalObject(data)) return false
-  const { publishedRecords, isLastPage } = data as Partial<RecordsResponse>
-  if (!Array.isArray(publishedRecords)) return false
-  if (typeof isLastPage !== 'boolean') return false
-  return publishedRecords.every(
-    row => typeof row === 'object' && typeof row.rowNumber === 'number'
+const isValidPublishedRecordsArray = (arr: unknown): arr is Row[] => {
+  return (
+    Array.isArray(arr) &&
+    arr.every(row => {
+      return (
+        typeof row === 'object' &&
+        row &&
+        'rowNumber' in row &&
+        typeof row.rowNumber === 'number'
+      )
+    })
   )
 }
 
-interface RecordsResponse {
+const isValidRecordsResponse = (
+  data: unknown
+): data is PublishedRecordsResponse => {
+  if (!isNormalObject(data)) return false
+  const {
+    publishedRecords,
+    isLastPage,
+    totalRecordsCount,
+    matchingRecordsCount,
+  } = data as Partial<PublishedRecordsResponse>
+  return (
+    isValidPublishedRecordsArray(publishedRecords) &&
+    typeof isLastPage === 'boolean' &&
+    ['undefined', 'number'].includes(typeof totalRecordsCount) &&
+    ['undefined', 'number'].includes(typeof matchingRecordsCount)
+  )
+}
+
+export interface PublishedRecordsResponse {
   publishedRecords: Row[]
   isLastPage: boolean
+  totalRecordsCount?: number
+  matchingRecordsCount?: number
 }
 
 export default fetchRecords
