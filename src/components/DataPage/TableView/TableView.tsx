@@ -106,7 +106,7 @@ interface TableViewProps {
   setFilters: Dispatch<SetStateAction<Filter[]>>
   isOpen?: boolean
   isFilterPanelOpen?: boolean
-  summaryOfRecords: SummaryOfRecords
+  summaryOfRecords?: SummaryOfRecords
   setSummaryOfRecords: Dispatch<SetStateAction<SummaryOfRecords>>
   /** Virtualization should be disabled in tests via this prop, so that all the
    * cells are rendered immediately */
@@ -131,7 +131,7 @@ const TableView = ({
   isOpen = true,
   isFilterPanelOpen = false,
   enableVirtualization = true,
-  summaryOfRecords,
+  summaryOfRecords = { isLastPage: false },
   setSummaryOfRecords,
 }: TableViewProps) => {
   const [loading, setLoading] = useState<LoadingState>('replacing')

@@ -13,7 +13,6 @@ import {
   MapOverlay,
   PageContainer,
   ScreenReaderOnly,
-  SummaryOfRecordsStyled,
   ViewContainer,
   ViewMain,
 } from 'components/DataPage/DisplayComponents'
@@ -54,9 +53,6 @@ export type Filter = {
 
 const METADATA_URL = `${process.env.GATSBY_API_URL}/metadata-for-published-records`
 
-/** For example, convert 1000000 to "1,000,000" */
-const addCommasToNumber = (num: number) => num.toLocaleString('en-US')
-
 const DataPage = ({
   enableTableVirtualization = true,
 }: {
@@ -76,7 +72,6 @@ const DataPage = ({
   const [summaryOfRecords, setSummaryOfRecords] = useState<SummaryOfRecords>({
     isLastPage: false,
   })
-  const { recordCount, matchingRecordCount } = summaryOfRecords
 
   const [screenReaderAnnouncement, setScreenReaderAnnouncement] = useState('')
 
@@ -136,9 +131,6 @@ const DataPage = ({
 
   const shouldBlurMap = view === View.table
 
-  /** Filters that have been applied to the table */
-  const appliedFilters = filters.filter(f => f.applied)
-
   return (
     <Providers>
       <CMS.SEO />
@@ -156,20 +148,8 @@ const DataPage = ({
             isFilterPanelOpen={isFilterPanelOpen}
             setIsFilterPanelOpen={setIsFilterPanelOpen}
             filters={filters}
+            summaryOfRecords={summaryOfRecords}
           />
-          {recordCount !== undefined && (
-            <SummaryOfRecordsStyled
-              role="status"
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              {matchingRecordCount !== undefined &&
-                appliedFilters.length > 0 && (
-                  <>{addCommasToNumber(matchingRecordCount)} of</>
-                )}
-              {addCommasToNumber(recordCount)} records
-            </SummaryOfRecordsStyled>
-          )}
           <ViewMain isFilterPanelOpen={isFilterPanelOpen}>
             {view === View.table && (
               <FilterPanel
@@ -184,6 +164,7 @@ const DataPage = ({
               setFilters={setFilters}
               isOpen={view === View.table}
               isFilterPanelOpen={isFilterPanelOpen}
+              summaryOfRecords={summaryOfRecords}
               setSummaryOfRecords={setSummaryOfRecords}
               enableVirtualization={enableTableVirtualization}
             />

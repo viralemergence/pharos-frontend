@@ -3,8 +3,12 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 import { stateInitialValue } from 'reducers/stateReducer/initialValues'
-import { publishedRecordsMetadata } from '../../test/serverHandlers'
+import {
+  oneMillionRecordsHandler,
+  publishedRecordsMetadata,
+} from '../../test/serverHandlers'
 import DataPage from './data'
+import { server } from '../../test/server'
 
 jest.mock('reducers/stateReducer/stateContext', () => ({
   StateContext: React.createContext({ state: stateInitialValue }),
@@ -365,4 +369,30 @@ describe('The public data page', () => {
       expect(grid).toHaveAttribute('aria-rowcount', '101')
     })
   })
+
+  it('provides a summary of the records, when no filters are used', async () => {
+    server.use(oneMillionRecordsHandler)
+    render(<DataPage />)
+    fireEvent.click(getTableViewButton())
+    const summary = await screen.findByRole('status', {
+      name: '1,234,567',
+    })
+    expect(summary).toBeInTheDocument()
+  })
+  it('provides a summary of the records, when a filter is used', async () => {
+    server.use(oneMillionRecordsHandler)
+    render(<DataPage />)
+    fireEvent.click(getTableViewButton())
+    fireEvent.click(getFilterPanelToggleButton())
+    fireEvent.click(getAddFilterButton())
+    fireEvent.click(await screen.findByText('Collection date'))
+    const startDateInput = screen.getByLabelText(
+      'Collected on this date or later'
+    )
+    await userEvent.type(startDateInput, '2020-04-01')
+    const summary = await screen.findByRole('status', {
+      name: '567 of 1,234,567 records',
+    })
+    expect(summary).toBeInTheDocument()
+  }, 10000)
 })
