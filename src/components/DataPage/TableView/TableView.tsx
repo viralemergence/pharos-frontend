@@ -106,6 +106,8 @@ interface TableViewProps {
   setFilters: Dispatch<SetStateAction<Filter[]>>
   isOpen?: boolean
   isFilterPanelOpen?: boolean
+  summaryOfRecords: SummaryOfRecords
+  setSummaryOfRecords: Dispatch<SetStateAction<SummaryOfRecords>>
   /** Virtualization should be disabled in tests via this prop, so that all the
    * cells are rendered immediately */
   enableVirtualization?: boolean
@@ -129,13 +131,11 @@ const TableView = ({
   isOpen = true,
   isFilterPanelOpen = false,
   enableVirtualization = true,
+  summaryOfRecords,
+  setSummaryOfRecords,
 }: TableViewProps) => {
   const [loading, setLoading] = useState<LoadingState>('replacing')
   const [records, setRecords] = useState<Row[]>([])
-  const [summaryOfRecords, setSummaryOfRecords] = useState<SummaryOfRecords>({
-    isLastPage: false,
-  })
-  const { isLastPage, recordCount, matchingRecordCount } = summaryOfRecords
 
   /** Filters that have been added to the panel */
   const addedFilters = filters.filter(f => f.addedToPanel)
@@ -219,7 +219,7 @@ const TableView = ({
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     if (
       loading == 'done' &&
-      !isLastPage &&
+      !summaryOfRecords.isLastPage &&
       divIsScrolledToBottom(event.currentTarget)
     )
       load({ ...loadOptions, replaceRecords: false })
@@ -249,9 +249,6 @@ const TableView = ({
     }
   }, [records])
 
-  /** For example, convert 1000000 to "1,000,000" */
-  const addCommasToNumber = (num: number) => num.toLocaleString('en-US')
-
   return (
     <TableViewContainer isOpen={isOpen} isFilterPanelOpen={isFilterPanelOpen}>
       <TableContainer>
@@ -262,14 +259,6 @@ const TableView = ({
               No matching records found.
             </NoRecordsFoundMessage>
           )}
-        {recordCount !== undefined && (
-          <aside role="status" aria-live="polite" aria-atomic="true">
-            {matchingRecordCount !== undefined && appliedFilters.length > 0 && (
-              <>{addCommasToNumber(matchingRecordCount)} of</>
-            )}
-            {addCommasToNumber(recordCount)} records
-          </aside>
-        )}
         {records.length > 0 && (
           // @ts-expect-error: I'm copying this from the docs, but it doesn't
           // look like their type definitions work

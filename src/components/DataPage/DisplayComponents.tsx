@@ -155,3 +155,7 @@ export const ScreenReaderOnly = styled.div`
   position: absolute;
   width: 0px;
 `
+
+export const SummaryOfRecordsStyled = styled.aside`
+  color: ${({ theme }) => theme.white};
+`

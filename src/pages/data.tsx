@@ -13,9 +13,11 @@ import {
   MapOverlay,
   PageContainer,
   ScreenReaderOnly,
+  SummaryOfRecordsStyled,
   ViewContainer,
   ViewMain,
 } from 'components/DataPage/DisplayComponents'
+import { SummaryOfRecords } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 
 export type Filter = {
   id: string
@@ -52,6 +54,9 @@ export type Filter = {
 
 const METADATA_URL = `${process.env.GATSBY_API_URL}/metadata-for-published-records`
 
+/** For example, convert 1000000 to "1,000,000" */
+const addCommasToNumber = (num: number) => num.toLocaleString('en-US')
+
 const DataPage = ({
   enableTableVirtualization = true,
 }: {
@@ -68,6 +73,10 @@ const DataPage = ({
     useState<MapProjection>('naturalEarth')
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
   const [filters, setFilters] = useState<Filter[]>([])
+  const [summaryOfRecords, setSummaryOfRecords] = useState<SummaryOfRecords>({
+    isLastPage: false,
+  })
+  const { recordCount, matchingRecordCount } = summaryOfRecords
 
   const [screenReaderAnnouncement, setScreenReaderAnnouncement] = useState('')
 
@@ -127,6 +136,9 @@ const DataPage = ({
 
   const shouldBlurMap = view === View.table
 
+  /** Filters that have been applied to the table */
+  const appliedFilters = filters.filter(f => f.applied)
+
   return (
     <Providers>
       <CMS.SEO />
@@ -145,6 +157,19 @@ const DataPage = ({
             setIsFilterPanelOpen={setIsFilterPanelOpen}
             filters={filters}
           />
+          {recordCount !== undefined && (
+            <SummaryOfRecordsStyled
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              {matchingRecordCount !== undefined &&
+                appliedFilters.length > 0 && (
+                  <>{addCommasToNumber(matchingRecordCount)} of</>
+                )}
+              {addCommasToNumber(recordCount)} records
+            </SummaryOfRecordsStyled>
+          )}
           <ViewMain isFilterPanelOpen={isFilterPanelOpen}>
             {view === View.table && (
               <FilterPanel
@@ -159,6 +184,7 @@ const DataPage = ({
               setFilters={setFilters}
               isOpen={view === View.table}
               isFilterPanelOpen={isFilterPanelOpen}
+              setSummaryOfRecords={setSummaryOfRecords}
               enableVirtualization={enableTableVirtualization}
             />
           </ViewMain>
