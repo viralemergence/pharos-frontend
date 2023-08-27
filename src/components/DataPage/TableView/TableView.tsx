@@ -250,7 +250,7 @@ const TableView = ({
   }, [records])
 
   /** For example, convert 1000000 to "1,000,000" */
-  const americanize = (num: number) => num.toLocaleString('en-US')
+  const addCommasToNumber = (num: number) => num.toLocaleString('en-US')
 
   return (
     <TableViewContainer isOpen={isOpen} isFilterPanelOpen={isFilterPanelOpen}>
@@ -264,10 +264,10 @@ const TableView = ({
           )}
         {recordCount !== undefined && (
           <aside role="status" aria-live="polite" aria-atomic="true">
-            {matchingRecordCount !== undefined && (
-              <>{americanize(matchingRecordCount)} of</>
+            {matchingRecordCount !== undefined && appliedFilters.length > 0 && (
+              <>{addCommasToNumber(matchingRecordCount)} of</>
             )}
-            {americanize(recordCount)} records
+            {addCommasToNumber(recordCount)} records
           </aside>
         )}
         {records.length > 0 && (
