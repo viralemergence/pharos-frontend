@@ -15,6 +15,7 @@ import { load, loadDebounced, countPages } from './utilities/load'
 import {
   formatters,
   Row,
+  SummaryOfRecords,
 } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 
 const TableViewContainer = styled.div<{
@@ -131,7 +132,10 @@ const TableView = ({
 }: TableViewProps) => {
   const [loading, setLoading] = useState<LoadingState>('replacing')
   const [records, setRecords] = useState<Row[]>([])
-  const [reachedLastPage, setReachedLastPage] = useState(false)
+  const [summaryOfRecords, setSummaryOfRecords] = useState<SummaryOfRecords>({
+    isLastPage: false,
+  })
+  const { isLastPage, recordCount, matchingRecordCount } = summaryOfRecords
 
   /** Filters that have been added to the panel */
   const addedFilters = filters.filter(f => f.addedToPanel)
@@ -158,8 +162,8 @@ const TableView = ({
     records,
     setFilters,
     setLoading,
-    setReachedLastPage,
     setRecords,
+    setSummaryOfRecords,
   }
 
   // This is used as a dependency in a useEffect hook below
@@ -215,7 +219,7 @@ const TableView = ({
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     if (
       loading == 'done' &&
-      !reachedLastPage &&
+      !isLastPage &&
       divIsScrolledToBottom(event.currentTarget)
     )
       load({ ...loadOptions, replaceRecords: false })
@@ -245,6 +249,9 @@ const TableView = ({
     }
   }, [records])
 
+  /** For example, convert 1000000 to "1,000,000" */
+  const americanize = (num: number) => num.toLocaleString('en-US')
+
   return (
     <TableViewContainer isOpen={isOpen} isFilterPanelOpen={isFilterPanelOpen}>
       <TableContainer>
@@ -255,6 +262,14 @@ const TableView = ({
               No matching records found.
             </NoRecordsFoundMessage>
           )}
+        {recordCount !== undefined && (
+          <aside role="status" aria-live="polite" aria-atomic="true">
+            {matchingRecordCount !== undefined && (
+              <>{americanize(matchingRecordCount)} of</>
+            )}
+            {americanize(recordCount)} records
+          </aside>
+        )}
         {records.length > 0 && (
           // @ts-expect-error: I'm copying this from the docs, but it doesn't
           // look like their type definitions work

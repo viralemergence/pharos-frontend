@@ -2,7 +2,10 @@ import { Dispatch, MutableRefObject, SetStateAction } from 'react'
 import type { Filter } from 'pages/data'
 import debounce from 'lodash/debounce'
 import type { LoadingState } from '../TableView'
-import type { Row } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
+import type {
+  Row,
+  SummaryOfRecords,
+} from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 import fetchRecords from 'components/DataPage/TableView/utilities/fetchRecords'
 
 const PAGE_SIZE = 50
@@ -18,8 +21,8 @@ export const load = async ({
   setLoading,
   setFilters,
   latestRecordsRequestIdRef,
-  setReachedLastPage,
   setRecords,
+  setSummaryOfRecords,
 }: {
   records: Row[]
   replaceRecords?: boolean
@@ -27,8 +30,8 @@ export const load = async ({
   setLoading: Dispatch<SetStateAction<LoadingState>>
   setFilters: Dispatch<SetStateAction<Filter[]>>
   latestRecordsRequestIdRef: MutableRefObject<number>
-  setReachedLastPage: Dispatch<SetStateAction<boolean>>
   setRecords: Dispatch<SetStateAction<Row[]>>
+  setSummaryOfRecords: Dispatch<SetStateAction<SummaryOfRecords>>
 }) => {
   setLoading(replaceRecords ? 'replacing' : 'appending')
 
@@ -62,7 +65,7 @@ export const load = async ({
     replaceRecords,
     latestRecordsRequestIdRef,
     setRecords,
-    setReachedLastPage,
+    setSummaryOfRecords,
   })
 
   if (success) {

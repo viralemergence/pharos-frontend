@@ -98,27 +98,26 @@ describe('The public data table', () => {
     expect(researcherLinks.length).toBeGreaterThan(10)
   })
 
-  it('provides a summary of the records when no filters are used', async () => {
+  it('provides a summary of the records, when no filters are used', async () => {
     server.use(oneMillionRecordsHandler)
     render(
       <Providers>
         <TableView {...tableViewProps} />
       </Providers>
     )
-    const summary = await screen.findByRole('aside', {
+    const summary = await screen.findByRole('status', {
       name: '1,234,567 records',
     })
     expect(summary).toBeInTheDocument()
   })
-
-  it('provides a summary of the records when a filter is used', async () => {
+  it('provides a summary of the records, when a filter is used', async () => {
     server.use(oneMillionRecordsHandler)
     render(
       <Providers>
         <TableView filters={[startDateFilterMarch2020]} {...tableViewProps} />
       </Providers>
     )
-    const summary = await screen.findByRole('aside', {
+    const summary = await screen.findByRole('status', {
       name: '567 of 1,234,567 records',
     })
     expect(summary).toBeInTheDocument()

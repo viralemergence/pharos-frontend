@@ -27,6 +27,15 @@ export interface Row {
   [key: string]: string | number | PublishedRecordsResearcher[]
 }
 
+export interface SummaryOfRecords {
+  /** Has the user scrolled to the last page of records? */
+  isLastPage: boolean
+  /** The total number of records in the database */
+  recordCount?: number
+  /** THe number of records that match the current filters */
+  matchingRecordCount?: number
+}
+
 const TableContainer = styled.div`
   position: relative;
   width: 100%;

@@ -3513,8 +3513,8 @@ export const oneMillionRecordsHandler = rest.get(
   async (req, res, ctx) => {
     const data = await getTypicalPublishedRecordsResponse(req, res, ctx)
     const params = req.url.searchParams
-    data.totalRecordsCount = 1234567
-    if (params.get('host_species')) data.matchingRecordsCount = 567
+    data.recordCount = 1234567
+    if (params.get('host_species')) data.matchingRecordCount = 567
     return res(ctx.json(data))
   }
 )
