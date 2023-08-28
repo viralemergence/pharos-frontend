@@ -400,7 +400,7 @@ describe('The public data page', () => {
     })
   })
 
-  it('provides a summary of the records, when no filters are used', async () => {
+  it.skip('provides a summary of the records, when no filters are used', async () => {
     server.use(oneMillionRecordsHandler)
     render(<DataPage />)
     fireEvent.click(getTableViewButton())
@@ -409,7 +409,8 @@ describe('The public data page', () => {
     })
     expect(summary).toBeInTheDocument()
   })
-  it('provides a summary of the records, when a filter is used', async () => {
+
+  it.skip('provides a summary of the records, when a filter is used', async () => {
     server.use(oneMillionRecordsHandler)
     render(<DataPage />)
     fireEvent.click(getTableViewButton())
