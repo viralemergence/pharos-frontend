@@ -1,14 +1,16 @@
 import { Dispatch, MutableRefObject, SetStateAction } from 'react'
-import type { Filter } from 'pages/data'
+import type { SimpleFilter, Filter } from 'pages/data'
 import debounce from 'lodash/debounce'
 import type { LoadingState } from '../TableView'
 import type {
   Row,
+  Sort,
   SummaryOfRecords,
 } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 import fetchRecords from 'components/DataPage/TableView/utilities/fetchRecords'
+import { SortStatus } from 'components/PublicViews/PublishedRecordsDataGrid/SortIcon'
 
-const PAGE_SIZE = 50
+const DEFAULT_PAGE_SIZE = 50
 
 const loadDebounceDelay = 300
 
@@ -23,6 +25,7 @@ export const load = async ({
   latestRecordsRequestIdRef,
   setRecords,
   setSummaryOfRecords,
+  sorts,
 }: {
   records: Row[]
   replaceRecords?: boolean
@@ -32,33 +35,23 @@ export const load = async ({
   latestRecordsRequestIdRef: MutableRefObject<number>
   setRecords: Dispatch<SetStateAction<Row[]>>
   setSummaryOfRecords: Dispatch<SetStateAction<SummaryOfRecords>>
+  sorts: Sort[]
 }) => {
   setLoading(replaceRecords ? 'replacing' : 'appending')
 
-  const queryStringParameters = new URLSearchParams()
+  const filtersToApply = filters.filter(
+    f =>
+      f.addedToPanel &&
+      f.valid &&
+      f.values.filter((value: string) => value).length > 0
+  )
 
-  const idsOfAppliedFilters: string[] = []
-  for (const filter of filters) {
-    if (!filter.addedToPanel) continue
-    if (!filter.valid) continue
-    const validValues = filter.values.filter((value: string) => value)
-    for (const value of validValues) {
-      queryStringParameters.append(filter.id, value)
-    }
-    if (validValues.length > 0) idsOfAppliedFilters.push(filter.id)
-  }
-
-  let pageToLoad
-  if (replaceRecords) {
-    pageToLoad = 1
-  } else {
-    // If we're not replacing the current set of records, load the next
-    // page. For example, if there are 100 records, load page 3 (i.e., the
-    // records numbered from 101 to 150)
-    pageToLoad = countPages(records) + 1
-  }
-  queryStringParameters.append('page', pageToLoad.toString())
-  queryStringParameters.append('pageSize', PAGE_SIZE.toString())
+  const queryStringParameters = getQueryStringParameters({
+    filters: filtersToApply,
+    sorts,
+    records,
+    replaceRecords,
+  })
 
   const success = await fetchRecords({
     queryStringParameters,
@@ -67,6 +60,8 @@ export const load = async ({
     setRecords,
     setSummaryOfRecords,
   })
+
+  const idsOfAppliedFilters = filtersToApply.map(f => f.id)
 
   if (success) {
     setFilters(prev => {
@@ -85,5 +80,56 @@ export const loadDebounced = debounce(load, loadDebounceDelay, {
   trailing: true,
 })
 
-export const countPages = (records: Row[]) =>
-  Math.floor(records.length / PAGE_SIZE)
+export const countPages = (records: Row[], pageSize = DEFAULT_PAGE_SIZE) =>
+  Math.floor(records.length / pageSize)
+
+type GetQueryStringParametersProps = {
+  filters?: SimpleFilter[]
+  sorts?: Sort[]
+  // TODO: Use append for consistency
+  replaceRecords: boolean
+  pageSize?: number
+  // Require either pageToLoad or records to be present
+} & (
+  | { pageToLoad: number; records?: never }
+  | { records: Row[]; pageToLoad?: never }
+)
+
+export const getQueryStringParameters = ({
+  filters = [],
+  sorts = [],
+  replaceRecords,
+  records,
+  pageToLoad,
+  pageSize = DEFAULT_PAGE_SIZE,
+}: GetQueryStringParametersProps) => {
+  const params = new URLSearchParams()
+
+  // Add filters to the query string
+  for (const filter of filters) {
+    const validValues = filter.values.filter((value: string) => value)
+    for (const value of validValues) {
+      params.append(filter.id, value)
+    }
+  }
+
+  // Add sorts to the query string
+  for (const sort of sorts) {
+    const prefix = sort.status === SortStatus.reverse ? '-' : ''
+    params.append('sort', prefix + sort.dataGridKey)
+  }
+
+  if (pageToLoad === undefined) {
+    if (replaceRecords) {
+      pageToLoad = 1
+    } else {
+      // If we're not replacing the current set of records, load the next
+      // page. For example, if there are 100 records, load page 3 (i.e., the
+      // records numbered from 101 to 150)
+      pageToLoad = countPages(records, pageSize) + 1
+    }
+  }
+  params.append('page', pageToLoad.toString())
+  params.append('pageSize', pageSize.toString())
+  return params
+}

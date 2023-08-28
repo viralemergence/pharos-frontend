@@ -1,14 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import CMS from '@talus-analytics/library.airtable-cms'
 
-import isNormalObject from 'utilities/isNormalObject'
 import Providers from 'components/layout/Providers'
 import NavBar from 'components/layout/NavBar/NavBar'
 import MapView, { MapProjection } from 'components/DataPage/MapView/MapView'
 import TableView from 'components/DataPage/TableView/TableView'
 import DataToolbar, { View, isView } from 'components/DataPage/Toolbar/Toolbar'
 import FilterPanel from 'components/DataPage/FilterPanel/FilterPanel'
-import { filterDefaultProperties } from 'components/DataPage/FilterPanel/FilterPanelToolbar'
 import {
   MapOverlay,
   PageContainer,
@@ -17,22 +15,29 @@ import {
   ViewMain,
 } from 'components/DataPage/DisplayComponents'
 import { SummaryOfRecords } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
+import usePublishedRecordsMetadata from 'hooks/publishedRecords/usePublishedRecordsMetadata'
 
-export type Filter = {
+export type SimpleFilter = {
   id: string
-  label: string
-  type: 'text' | 'date'
-  /** In the table (a.k.a. 'data grid') each column has a distinct id a.k.a.
-   * 'key'. The dataGridKey of a Filter is the key of its associated column. */
-  dataGridKey: string
-  /** The different possible values for a filter - relevant for typeahead fields. */
-  options: string[]
-  /** A filter has been 'added to the panel' when the panel contains an input
-   * (such as a date input or a typeahead) for setting the filter's values. */
-  addedToPanel?: boolean
   /** To filter on a specific field, the user sets values for the field. For
    * example, the host_species filter could receive the values ["Bear", "Wolf"]. */
   values: string[]
+}
+
+export type Filter = SimpleFilter & {
+  label: string
+  type: 'text' | 'date'
+  /** In the table (a.k.a. 'data grid') each column has a distinct id a.k.a.
+   * 'key'. The dataGridKey of a Filter is the key of its associated
+   * column. These keys are also the labels of the columns, e.g.
+   * "Collection date". */
+  dataGridKey: string
+  /** The different possible values for a filter - relevant for typeahead fields. */
+  options: string[]
+  valid: boolean
+  /** A filter has been 'added to the panel' when the panel contains an input
+   * (such as a date input or a typeahead) for setting the filter's values. */
+  addedToPanel?: boolean
   /** If a filter has been 'applied', this means that it has been applied to
    * the list of records shown in the table, so that only records matching the
    * filter are shown in the table. For example, if the user sets host_species
@@ -48,10 +53,7 @@ export type Filter = {
    * appears among the published records. Only date filters have this property.
    * */
   latestDateInDatabase?: string
-  valid: boolean
 }
-
-const METADATA_URL = `${process.env.GATSBY_API_URL}/metadata-for-published-records`
 
 const DataPage = ({
   enableTableVirtualization = true,
@@ -90,32 +92,17 @@ const DataPage = ({
     [mapProjection]
   )
 
-  const fetchMetadata = useCallback(async () => {
-    const response = await fetch(METADATA_URL)
-    const data = await response.json()
-    if (!isValidMetadataResponse(data)) {
-      console.log(`GET ${METADATA_URL}: malformed response`)
-      return
-    }
-    const filters = Object.entries(data.possibleFilters).map(
-      ([id, filter]) => ({
-        id,
-        type: filter.type || 'text',
-        ...filterDefaultProperties,
-        ...filter,
-      })
-    )
-    setFilters(filters)
-  }, [setFilters])
+  const { possibleFilters, sortableFields } =
+    usePublishedRecordsMetadata() ?? {}
+
+  useEffect(() => {
+    if (possibleFilters) setFilters(possibleFilters)
+  }, [possibleFilters])
 
   useEffect(() => {
     const hash = window.location.hash.replace('#', '')
     if (isView(hash)) changeView(hash, false)
   }, [changeView])
-
-  useEffect(() => {
-    fetchMetadata()
-  }, [])
 
   useEffect(() => {
     if (isFilterPanelOpen) {
@@ -167,6 +154,7 @@ const DataPage = ({
               summaryOfRecords={summaryOfRecords}
               setSummaryOfRecords={setSummaryOfRecords}
               enableVirtualization={enableTableVirtualization}
+              sortableFields={sortableFields}
             />
           </ViewMain>
         </ViewContainer>
@@ -175,39 +163,6 @@ const DataPage = ({
         </ScreenReaderOnly>
       </PageContainer>
     </Providers>
-  )
-}
-
-interface MetadataResponse {
-  possibleFilters: Record<string, FilterInMetadata>
-}
-
-interface FilterInMetadata {
-  label: string
-  type?: 'text' | 'date'
-  dataGridKey: string
-  options: string[]
-}
-
-const isValidFilterInMetadataResponse = (data: unknown): data is Filter => {
-  if (!isNormalObject(data)) return false
-  const { label, dataGridKey = '', type = 'text', options = [] } = data
-  return (
-    typeof label === 'string' &&
-    typeof dataGridKey === 'string' &&
-    typeof type === 'string' &&
-    ['text', 'date'].includes(type) &&
-    Array.isArray(options) &&
-    options.every?.(option => typeof option === 'string')
-  )
-}
-
-const isValidMetadataResponse = (data: unknown): data is MetadataResponse => {
-  if (!isNormalObject(data)) return false
-  const { possibleFilters } = data
-  if (!isNormalObject(possibleFilters)) return false
-  return Object.values(possibleFilters).every?.(filter =>
-    isValidFilterInMetadataResponse(filter)
   )
 }
 

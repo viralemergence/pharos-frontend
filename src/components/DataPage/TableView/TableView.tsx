@@ -6,16 +6,17 @@ import React, {
   useState,
 } from 'react'
 import styled from 'styled-components'
-import DataGrid, { Column, DataGridHandle } from 'react-data-grid'
+import { DataGridHandle } from 'react-data-grid'
 import { transparentize } from 'polished'
-
 import LoadingSpinner from './LoadingSpinner'
 import type { Filter } from 'pages/data'
 import { load, loadDebounced, countPages } from './utilities/load'
 import {
-  formatters,
+  DataGridStyled,
   Row,
+  Sort,
   SummaryOfRecords,
+  getColumns,
 } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 
 const TableViewContainer = styled.div<{
@@ -34,37 +35,6 @@ const TableContainer = styled.div`
   overflow-x: hidden;
   display: flex;
   flex-flow: column nowrap;
-`
-const DataGridStyled = styled(DataGrid)<{ isFilterPanelOpen: boolean }>`
-  --rdg-border-color: ${({ theme }) => transparentize(0.7, theme.medGray)};
-  --rdg-background-color: ${({ theme }) => theme.mutedPurple1};
-  --rdg-header-background-color: ${({ theme }) => theme.mutedPurple3};
-  --rdg-row-hover-background-color: ${({ theme }) => theme.mutedPurple2};
-
-  ${({ theme }) => theme.gridText};
-
-  color-scheme: only dark;
-  border: 0;
-  flex-grow: 1;
-  block-size: 100px;
-  background-color: var(--rdg-background-color);
-
-  .rdg-cell {
-    padding-inline: 10px;
-    &[aria-colindex='1'] {
-      text-align: center;
-      background-color: var(--rdg-header-background-color);
-    }
-    &.in-filtered-column {
-      background-color: ${({ theme }) => theme.tableContentHighlight};
-    }
-  }
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
-    // On mobiles and tablets, hide the table when the filter panel is open
-    ${({ isFilterPanelOpen }) =>
-      isFilterPanelOpen ? 'display: none ! important;' : ''}
-  }
 `
 
 const LoadingMessage = styled.div`
@@ -108,6 +78,7 @@ interface TableViewProps {
   isFilterPanelOpen?: boolean
   summaryOfRecords?: SummaryOfRecords
   setSummaryOfRecords: Dispatch<SetStateAction<SummaryOfRecords>>
+  sortableFields?: string[]
   /** Virtualization should be disabled in tests via this prop, so that all the
    * cells are rendered immediately */
   enableVirtualization?: boolean
@@ -130,6 +101,7 @@ const TableView = ({
   setFilters,
   isOpen = true,
   isFilterPanelOpen = false,
+  sortableFields = [],
   enableVirtualization = true,
   summaryOfRecords = { isLastPage: false },
   setSummaryOfRecords,
@@ -142,6 +114,16 @@ const TableView = ({
 
   /** Filters that have been applied to the table */
   const appliedFilters = filters.filter(f => f.applied)
+
+  /** Sorts applied to the table. For example, if the sorts are
+   *  [
+   *    [{dataGridKey: 'Project', status: SortStatus.selected}],
+   *    [{dataGridKey: 'Collection date', status: SortStatus.reverse}],
+   *  ]
+   * then the table will be sorted primarily on project name (descending) and
+   * secondarily on collection date (ascending).
+   **/
+  const [sorts, setSorts] = useState<Sort[]>([])
 
   /** This ref ensures that if the GET request that just finished is not the
    * latest GET request for published records, then the response is discarded.
@@ -158,6 +140,7 @@ const TableView = ({
 
   const loadOptions = {
     filters,
+    sorts,
     latestRecordsRequestIdRef,
     records,
     setFilters,
@@ -172,12 +155,13 @@ const TableView = ({
       .filter(filterHasRealValues)
       .map(({ id, values }) => ({ id, values }))
   )
+  const sortsAsString = JSON.stringify(sorts)
 
-  // Load the first page of results, both when TableView mounts and also when
-  // the filters' values have changed
+  // When the TableView mounts, when the filters' values have been changed, and
+  // when the sorts have changed, load the first page of results
   useEffect(() => {
     loadDebounced({ ...loadOptions, replaceRecords: true })
-  }, [filtersWithRealValuesAsString])
+  }, [filtersWithRealValuesAsString, sortsAsString])
 
   useEffect(() => {
     return () => {
@@ -185,36 +169,19 @@ const TableView = ({
     }
   }, [])
 
-  const rowNumberColumn = {
-    key: 'rowNumber',
-    name: '',
-    frozen: true,
-    resizable: false,
-    minWidth: 55,
-    width: 55,
-  }
-
-  const keysOfFilteredColumns = addedFilters.reduce<string[]>(
+  const filteredFields = addedFilters.reduce<string[]>(
     (keys, { applied, dataGridKey }) =>
       applied ? [...keys, dataGridKey] : keys,
     []
   )
 
-  const columns: readonly Column<Row>[] = [
-    rowNumberColumn,
-    ...Object.keys(records?.[0] ?? {})
-      .filter(key => !['pharosID', 'rowNumber'].includes(key))
-      .map(key => ({
-        key: key,
-        name: key,
-        width: key.length * 8 + 15 + 'px',
-        resizable: true,
-        cellClass: keysOfFilteredColumns.includes(key)
-          ? 'in-filtered-column'
-          : undefined,
-        formatter: formatters[key],
-      })),
-  ]
+  const columns = getColumns({
+    records,
+    sortableFields,
+    sorts,
+    setSorts,
+    filteredFields,
+  })
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     if (
@@ -263,7 +230,6 @@ const TableView = ({
           // @ts-expect-error: I'm copying this from the docs, but it doesn't
           // look like their type definitions work
           <DataGridStyled
-            className={'rdg-dark'}
             columns={columns}
             rows={records}
             onScroll={handleScroll}
@@ -272,7 +238,6 @@ const TableView = ({
             role="grid"
             data-testid="datagrid"
             ref={dataGridHandle}
-            rowHeight={41}
             isFilterPanelOpen={isFilterPanelOpen}
           />
         )}
