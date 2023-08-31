@@ -123,7 +123,7 @@ const DataToolbar = ({
           </FilterPanelLauncher>
         </ContainerForFilterPanelLauncher>
       )}
-      {recordCount !== undefined && (
+      {view === View.table && recordCount !== undefined && (
         <SummaryOfRecordsStyled
           role="status"
           aria-live="polite"
