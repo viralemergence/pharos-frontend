@@ -1,10 +1,10 @@
 version: 2.1
 
 credentials: &credentials
-  - Verena AWS Credentials
   - Airtable Credentials
   - Bit Credentials
   - Mapbox Credentials
+  - Verena AWS Credentials
 
 workflows:
   version: 2
