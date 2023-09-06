@@ -1,7 +1,7 @@
 version: 2.1
 
 credentials: &credentials
-  - AWS Credentials
+  - Verena AWS Credentials
   - Airtable Credentials
   - Bit Credentials
   - Mapbox Credentials
@@ -15,18 +15,19 @@ workflows:
           # Examples:
           # bucket: 's3://dev-projectname'
           # distribution: 'E31RXXXXXXXXXX'
-          bucket: 's3://dev-pharos-frontend'
-          distribution: 'EWN5TGLCXWM1V'
+          bucket: 's3://dev-pharos-2-frontend'
+          distribution: 'E29CT6PE5VEJB6'
           api: https://9itsn2ewjb.execute-api.us-west-1.amazonaws.com/Prod
           context: *credentials
           filters:
             branches:
               only:
                 - dev
+                - feature/pharos-2-deployment
       # review site
       - deploy:
-          bucket: 's3://review-pharos-frontend'
-          distribution: 'E2TXCAC010VLUK'
+          bucket: 's3://review-pharos-2-frontend'
+          distribution: 'E3IAEIH8QM2RIN'
           api: https://wc85irdg5d.execute-api.us-west-1.amazonaws.com/Prod
           context: *credentials
           filters:
@@ -35,8 +36,8 @@ workflows:
                 - review
       # staging site
       - deploy:
-          bucket: 's3://staging-pharos-frontend'
-          distribution: 'E1MZX90GFW3KQ6'
+          bucket: 's3://staging-pharos-2-frontend'
+          distribution: 'E6PVRC1XI187A'
           api: https://x77ethnbni.execute-api.us-west-1.amazonaws.com/Prod
           context: *credentials
           filters:
@@ -45,8 +46,8 @@ workflows:
                 - staging
       # prod site
       - deploy:
-          bucket: 's3://prod-pharos-frontend'
-          distribution: 'EG631FGRI2307'
+          bucket: 's3://prod-pharos-2-frontend'
+          distribution: 'E61Z0UI7AL8G1'
           api: https://rt036ira4i.execute-api.us-west-1.amazonaws.com/Prod
           context: *credentials
           filters:
