@@ -4,7 +4,7 @@ import { Row } from '../PublishedRecordsDataGrid'
 import { DataGridLink } from './DisplayComponents'
 
 const ProjectName = ({ row }: FormatterProps<Row>) => {
-  const projectName = row['Project name'] as string
+  const projectName = row['Project'] as string
   const pharosID = row.pharosID
   return (
     <DataGridLink to={`/projects/#/${pharosID.toString().split('-')[0]}`}>
