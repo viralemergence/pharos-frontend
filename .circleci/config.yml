@@ -13,7 +13,7 @@ workflows:
           # Examples:
           # bucket: 's3://dev-projectname'
           # distribution: 'E31RXXXXXXXXXX'
-          bucket: 's3://dev-pharos-2-frontend'
+          bucket: 's3://dev-pharos-frontend-2'
           distribution: 'E29CT6PE5VEJB6'
           api: https://9itsn2ewjb.execute-api.us-west-1.amazonaws.com/Prod
           context: *credentials
@@ -24,7 +24,7 @@ workflows:
                 - feature/pharos-2-deployment
       # review site
       - deploy:
-          bucket: 's3://review-pharos-2-frontend'
+          bucket: 's3://review-pharos-frontend-2'
           distribution: 'E3IAEIH8QM2RIN'
           api: https://wc85irdg5d.execute-api.us-west-1.amazonaws.com/Prod
           context: *credentials
@@ -34,7 +34,7 @@ workflows:
                 - review
       # staging site
       - deploy:
-          bucket: 's3://staging-pharos-2-frontend'
+          bucket: 's3://staging-pharos-frontend-2'
           distribution: 'E6PVRC1XI187A'
           api: https://x77ethnbni.execute-api.us-west-1.amazonaws.com/Prod
           context: *credentials
@@ -44,7 +44,7 @@ workflows:
                 - staging
       # prod site
       - deploy:
-          bucket: 's3://prod-pharos-2-frontend'
+          bucket: 's3://prod-pharos-frontend-2'
           distribution: 'E61Z0UI7AL8G1'
           api: https://rt036ira4i.execute-api.us-west-1.amazonaws.com/Prod
           context: *credentials
