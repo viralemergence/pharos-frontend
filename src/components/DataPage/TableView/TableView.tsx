@@ -6,16 +6,21 @@ import React, {
   useState,
 } from 'react'
 import styled from 'styled-components'
-import DataGrid, { Column, DataGridHandle } from 'react-data-grid'
+import DataGrid, {
+  Column,
+  DataGridHandle,
+  HeaderRendererProps,
+} from 'react-data-grid'
 import { transparentize } from 'polished'
-
 import LoadingSpinner from './LoadingSpinner'
 import type { Filter } from 'pages/data'
 import { load, loadDebounced, countPages } from './utilities/load'
 import {
   formatters,
   Row,
+  Sort,
 } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
+import HeaderCellContent from 'components/PublicViews/PublishedRecordsDataGrid/HeaderCellContent'
 
 const TableViewContainer = styled.div<{
   isOpen: boolean
@@ -56,6 +61,15 @@ const DataGridStyled = styled(DataGrid)<{ isFilterPanelOpen: boolean }>`
     }
     &.in-filtered-column {
       background-color: ${({ theme }) => theme.tableContentHighlight};
+    }
+    &[role='columnheader'] {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+      padding-right: 0;
+      &::after {
+        width: 9px;
+      }
     }
   }
 
@@ -105,6 +119,7 @@ interface TableViewProps {
   setFilters: Dispatch<SetStateAction<Filter[]>>
   isOpen?: boolean
   isFilterPanelOpen?: boolean
+  sortableFields?: string[]
   /** Virtualization should be disabled in tests via this prop, so that all the
    * cells are rendered immediately */
   enableVirtualization?: boolean
@@ -121,12 +136,12 @@ const filterHasRealValues = (filter: Filter) =>
   filter.valid &&
   filter.values.filter(value => value !== null && value !== undefined).length >
     0
-
 const TableView = ({
   filters,
   setFilters,
   isOpen = true,
   isFilterPanelOpen = false,
+  sortableFields = [],
   enableVirtualization = true,
 }: TableViewProps) => {
   const [loading, setLoading] = useState<LoadingState>('replacing')
@@ -138,6 +153,8 @@ const TableView = ({
 
   /** Filters that have been applied to the table */
   const appliedFilters = filters.filter(f => f.applied)
+
+  const [sorts, setSorts] = useState<Sort[]>([])
 
   /** This ref ensures that if the GET request that just finished is not the
    * latest GET request for published records, then the response is discarded.
@@ -154,6 +171,7 @@ const TableView = ({
 
   const loadOptions = {
     filters,
+    sorts,
     latestRecordsRequestIdRef,
     records,
     setFilters,
@@ -169,11 +187,13 @@ const TableView = ({
       .map(({ id, values }) => ({ id, values }))
   )
 
-  // Load the first page of results, both when TableView mounts and also when
-  // the filters' values have changed
+  // When the TableView mounts, when the filters' values have been changed, and
+  // when the sorts have changed, load the first page of results
   useEffect(() => {
     loadDebounced({ ...loadOptions, replaceRecords: true })
-  }, [filtersWithRealValuesAsString])
+  }, [filtersWithRealValuesAsString, sorts])
+  // NOTE: If `filters` or `records` was in the dependency array, loadDebounced
+  // would be called too often.
 
   useEffect(() => {
     return () => {
@@ -200,16 +220,27 @@ const TableView = ({
     rowNumberColumn,
     ...Object.keys(records?.[0] ?? {})
       .filter(key => !['pharosID', 'rowNumber'].includes(key))
-      .map(key => ({
-        key: key,
-        name: key,
-        width: key.length * 8 + 15 + 'px',
-        resizable: true,
-        cellClass: keysOfFilteredColumns.includes(key)
-          ? 'in-filtered-column'
-          : undefined,
-        formatter: formatters[key],
-      })),
+      .map(key => {
+        const sortable = sortableFields.includes(key)
+        return {
+          key: key,
+          name: key,
+          headerRenderer: (_props: HeaderRendererProps<Row>) => (
+            <HeaderCellContent
+              dataGridKey={key}
+              sorts={sorts}
+              setSorts={setSorts}
+              sortable={sortable}
+            />
+          ),
+          width: key.length * 10 + (sortable ? 50 : 30) + 'px',
+          resizable: true,
+          cellClass: keysOfFilteredColumns.includes(key)
+            ? 'in-filtered-column'
+            : undefined,
+          formatter: formatters[key],
+        }
+      }),
   ]
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {

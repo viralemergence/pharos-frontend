@@ -27,6 +27,38 @@ export interface Row {
   [key: string]: string | number | PublishedRecordsResearcher[]
 }
 
+/** Sorts applied to the table. For example, if the sorts are
+ *  [
+ *    [{dataGridKey: 'Project', status: SortStatus.Selected}],
+ *    [{dataGridKey: 'Collection date', status: SortStatus.Reverse}],
+ *  ]
+ * then the table will be sorted primarily on project name (descending) and
+ * secondarily on collection date (ascending).
+ **/
+export interface Sort {
+  dataGridKey: string
+  status: SortStatus
+}
+
+export enum SortStatus {
+  Selected = 'selected',
+  Reverse = 'reverse',
+  Unselected = 'unselected',
+}
+
+export const SORT_CYCLE = [
+  SortStatus.Unselected,
+  SortStatus.Selected,
+  SortStatus.Reverse,
+]
+
+export const getNextSortStatus = (currentSortStatus: SortStatus) => {
+  const currentCycleIndex = SORT_CYCLE.findIndex(
+    sortStatus => sortStatus == currentSortStatus
+  )
+  return SORT_CYCLE[(currentCycleIndex + 1) % SORT_CYCLE.length]
+}
+
 const TableContainer = styled.div`
   position: relative;
   width: 100%;
