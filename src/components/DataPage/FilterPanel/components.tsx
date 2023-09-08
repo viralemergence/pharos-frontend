@@ -1,17 +1,11 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import debounce from 'lodash/debounce'
 import type { Filter } from 'pages/data'
 import {
   DateInputRow,
+  DateInputStyled,
   DateLabel,
   DateTooltip,
-  DateInputStyled,
   FieldName,
   FilterDeleteButtonContainer,
   FilterDeleteButtonStyled,
@@ -189,11 +183,11 @@ const DateRange = ({
   const isStartDateInvalid = !startDateFilter.valid
   const isEndDateInvalid = !endDateFilter.valid
 
-  // Used for aria-described-by
-  const tooltipId = useMemo(
-    () => `date-range-tooltip-${Math.random().toString(36).slice(2)}`,
-    []
-  )
+  // Used for aria-describedby
+  const tooltipId = 'date-range-tooltip'
+
+  const shouldShowInvalidDateTooltip =
+    (isStartDateInvalid || isEndDateInvalid) && dateMin && dateMax
 
   return (
     <FilterLabel>
@@ -226,17 +220,23 @@ const DateRange = ({
           setFilters={setFilters}
         />
       </DateInputRow>
-      {(isStartDateInvalid || isEndDateInvalid) && dateMin && dateMax && (
+      {shouldShowInvalidDateTooltip && (
         <DateTooltip
           isStartDateInvalid={isStartDateInvalid}
           isEndDateInvalid={isEndDateInvalid}
           role={'tooltip'}
           id={tooltipId}
         >
-          Dates must be between <LocalizedDate dateString={dateMin} /> and{' '}
+          Choose a date between <LocalizedDate dateString={dateMin} /> and{' '}
           <LocalizedDate dateString={dateMax} />
         </DateTooltip>
       )}
+      {startDateFilter.values[0] > endDateFilter.values[0] &&
+        !shouldShowInvalidDateTooltip && (
+          <DateTooltip role={'tooltip'} id={tooltipId}>
+            Pick a 'To' date that comes after the 'From' date
+          </DateTooltip>
+        )}
     </FilterLabel>
   )
 }
@@ -265,7 +265,7 @@ const DateInput = ({
     <DateInputStyled
       type={'date'}
       aria-label={ariaLabel}
-      aria-described-by={ariaDescribedBy}
+      aria-describedby={ariaDescribedBy}
       min={dateMin}
       max={dateMax}
       value={value}
