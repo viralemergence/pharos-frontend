@@ -25,7 +25,7 @@ export default {
   veryLightPurple: `rgba(246,247,255,1)`,
   hoverRed: `rgba(254,230,229,1)`,
   hoverOrange: `rgba(254,242,229,1)`,
-  tableContentHighlight: `rgba(85,85,85,1)`,
+  tableContentHighlight: `rgba(57,60,80,1)`,
   tableHeaderHighlight: `rgba(33,36,61,1)`,
   white20PercentOpacity: `rgba(255,255,255,0.200)`,
   white10PercentOpacity: `rgba(255,255,255,0.100)`,
@@ -37,4 +37,5 @@ export default {
   publicPagePurpleBackground: `rgba(15,19,41,1)`,
   orange: `rgba(207,109,13,1)`,
   red: 'rgba(176,33,24,1)',
+  gridLines: 'rgba(216,218,220,0.300)',
 }

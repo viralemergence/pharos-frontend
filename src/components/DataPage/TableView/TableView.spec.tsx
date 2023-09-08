@@ -22,108 +22,77 @@ jest.mock('cmsHooks/useSignInPageData', () => jest.fn())
 jest.mock('cmsHooks/useSiteMetadataQuery', () => jest.fn())
 
 import React from 'react'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 
-import { server } from '../../../../test/server'
-import { routeThatReturnsNoPublishedRecords } from '../../../../test/serverHandlers'
 import Providers from 'components/layout/Providers'
-
 import TableView from './TableView'
+import { Filter } from 'pages/data'
 
 describe('The public data table', () => {
-  it('renders', () => {
-    render(
-      <Providers>
-        <TableView />
-      </Providers>
-    )
-  })
-  const getDataGridAfterWaiting = async () => await screen.findByRole('grid')
+  const getDataGridAfterWaiting = async () =>
+    await screen.findByTestId('datagrid')
 
-  it('displays the first page of published records', async () => {
+  const tableViewProps = {
+    setFilters: jest.fn(),
+    setSummaryOfRecords: jest.fn(),
+    /** By default react-data-grid only puts the visible rows in the DOM, and
+     * creates more DOM elements as you scroll. This prop turns off this
+     * 'virtualization' functionality for testing purposes. */
+    enableVirtualization: false,
+  }
+
+  it('renders', async () => {
     render(
       <Providers>
-        <TableView enableVirtualization={false} />
+        <TableView {...tableViewProps} />
       </Providers>
     )
     const grid = await getDataGridAfterWaiting()
     expect(grid).toBeInTheDocument()
-    await waitFor(async () => {
-      const rows = await screen.findAllByRole('row')
-      expect(rows).toHaveLength(51) // 50 rows plus the header
-      expect(
-        await screen.findByText('row 1 - project name')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 1 - host species')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 1 - spatial uncertainty')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 50 - project name')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 50 - host species')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 50 - spatial uncertainty')
-      ).toBeInTheDocument()
-    })
   })
 
-  // Skipping this test since fireEvent.scroll does not work well when circleci runs `yarn run test`
-  it.skip('displays the second page of published records when the user scrolls to the bottom', async () => {
+  const startDateFilter: Filter = {
+    id: 'collection_start_date',
+    label: 'Collection date',
+    type: 'date',
+    addedToPanel: true,
+    dataGridKey: 'Collection date',
+    options: [],
+    panelIndex: 0,
+    values: [],
+    valid: true,
+  }
+
+  const startDateFilterMarch2020: Filter = {
+    ...startDateFilter,
+    values: ['2020-03-01'],
+  }
+
+  it('can be filtered by collection start date', async () => {
     render(
       <Providers>
-        <TableView enableVirtualization={false} />
+        <TableView {...tableViewProps} filters={[startDateFilterMarch2020]} />
       </Providers>
     )
     const grid = await getDataGridAfterWaiting()
-    expect(grid).toBeInTheDocument()
-    // Scroll to the bottom of the grid
-    fireEvent.scroll(grid, { target: { scrollY: grid.scrollHeight } })
-    await waitFor(async () => {
-      const rows = await screen.findAllByRole('row')
-      expect(rows).toHaveLength(101) // 100 rows plus the header
-      expect(
-        await screen.findByText('row 1 - project name')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 1 - host species')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 1 - spatial uncertainty')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 50 - project name')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 50 - host species')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 50 - spatial uncertainty')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 100 - project name')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 100 - host species')
-      ).toBeInTheDocument()
-      expect(
-        await screen.findByText('row 100 - spatial uncertainty')
-      ).toBeInTheDocument()
+    await waitFor(() => {
+      expect(grid).toHaveAttribute('aria-rowcount', '41')
     })
   })
 
-  it('displays a message if there are no published records', async () => {
-    server.use(routeThatReturnsNoPublishedRecords)
+  it('has clickable project names and researcher names', async () => {
     render(
       <Providers>
-        <TableView />
+        <TableView {...tableViewProps} />
       </Providers>
     )
-    const message = await screen.findByText('No records have been published.')
-    expect(message).toBeInTheDocument()
+    const projectLinks = await screen.findAllByRole('link', {
+      name: 'Project Zero',
+    })
+    expect(projectLinks.length).toBeGreaterThan(10)
+    const researcherLinks = await screen.findAllByRole('link', {
+      name: 'Researcher Zero',
+    })
+    expect(researcherLinks.length).toBeGreaterThan(10)
   })
 })

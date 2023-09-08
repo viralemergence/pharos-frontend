@@ -26,6 +26,7 @@ import useAppState from 'hooks/useAppState'
 import { UserStatus } from 'reducers/stateReducer/types'
 import DatasetsTable from 'components/AuthenticatedViews/ProjectPage/DatasetsTable/DatasetsTable'
 import ClickToCopy from 'components/ui/ClickToCopy'
+import { Link } from 'gatsby-link'
 
 const Container = styled.div`
   background-color: ${({ theme }) => theme.publicPagePurpleBackground};
@@ -63,10 +64,16 @@ const Author = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 10px;
+  align-items: flex-start;
 `
-const AuthorName = styled.div`
+const AuthorName = styled(Link)`
   ${({ theme }) => theme.smallParagraphSemibold};
   color: ${({ theme }) => theme.mint};
+  text-decoration: none !important;
+
+  &:hover {
+    text-decoration: underline !important;
+  }
 `
 const AuthorOrganization = styled.div`
   ${({ theme }) => theme.extraSmallParagraph};
@@ -190,7 +197,11 @@ const ProjectPage = () => {
                 <h2>{project.authors.length === 1 ? 'Author' : 'Authors'}</h2>
                 {project.authors.map(author => (
                   <Author key={author.name}>
-                    <AuthorName>{author.name}</AuthorName>
+                    <AuthorName
+                      to={`/researchers/?researcherID=${author.researcherID}`}
+                    >
+                      {author.name}
+                    </AuthorName>
                     <AuthorOrganization>
                       {author.organization}
                     </AuthorOrganization>
