@@ -20,7 +20,10 @@ import { PublishedRecordsLoadingState } from 'hooks/publishedRecords/fetchPublis
 import usePublishedRecords from 'hooks/publishedRecords/usePublishedRecords'
 
 import ColumnHeader from 'components/PublicViews/PublishedRecordsDataGrid/ColumnHeader'
-import type { SortStatus } from '../../PublicViews/PublishedRecordsDataGrid/SortIcon'
+import {
+  SortStatus,
+  SORT_CYCLE,
+} from '../../PublicViews/PublishedRecordsDataGrid/SortIcon'
 
 export interface PublishedRecordsResearcher {
   name: string
@@ -39,22 +42,11 @@ export interface Row {
  * then the table will be sorted primarily on project name (descending) and
  * secondarily on collection date (ascending).
  **/
+
 export interface Sort {
   dataGridKey: string
   status: SortStatus
 }
-
-export enum SortStatus {
-  Selected = 'selected',
-  Reverse = 'reverse',
-  Unselected = 'unselected',
-}
-
-export const SORT_CYCLE = [
-  SortStatus.Unselected,
-  SortStatus.Selected,
-  SortStatus.Reverse,
-]
 
 export const getNextSortStatus = (currentSortStatus: SortStatus) => {
   const currentCycleIndex = SORT_CYCLE.findIndex(
@@ -179,11 +171,6 @@ const rowNumberColumn = {
   minWidth: 55,
   width: 55,
   formatter: RowNumber,
-}
-
-export type Sort = {
-  dataGridKey: string
-  status: SortStatus
 }
 
 const PublishedRecordsDataGrid = ({

@@ -2,8 +2,11 @@ import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { transparentize } from 'polished'
 import colorPalette from 'figma/colorPalette'
-import SortIcon, { CYCLE, SortStatus } from './SortIcon'
-import type { Sort } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
+import SortIcon, { SortStatus } from './SortIcon'
+import {
+  Sort,
+  getNextSortStatus,
+} from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 
 const ColumnLabel = styled.div`
   text-overflow: ellipsis;

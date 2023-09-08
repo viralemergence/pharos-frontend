@@ -8,7 +8,7 @@ export enum SortStatus {
   Unselected = 'unselected',
 }
 
-export const CYCLE = [
+export const SORT_CYCLE = [
   SortStatus.Unselected,
   SortStatus.Selected,
   SortStatus.Reverse,
