@@ -5,6 +5,7 @@ import type { LoadingState } from '../TableView'
 import type {
   Row,
   Sort,
+  SummaryOfRecords,
 } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 import fetchRecords from 'components/DataPage/TableView/utilities/fetchRecords'
 import { SortStatus } from 'components/PublicViews/PublishedRecordsDataGrid/SortIcon'
@@ -22,8 +23,8 @@ export const load = async ({
   setLoading,
   setFilters,
   latestRecordsRequestIdRef,
-  setReachedLastPage,
   setRecords,
+  setSummaryOfRecords,
   sorts,
 }: {
   records: Row[]
@@ -32,8 +33,8 @@ export const load = async ({
   setLoading: Dispatch<SetStateAction<LoadingState>>
   setFilters: Dispatch<SetStateAction<Filter[]>>
   latestRecordsRequestIdRef: MutableRefObject<number>
-  setReachedLastPage: Dispatch<SetStateAction<boolean>>
   setRecords: Dispatch<SetStateAction<Row[]>>
+  setSummaryOfRecords: Dispatch<SetStateAction<SummaryOfRecords>>
   sorts: Sort[]
 }) => {
   setLoading(replaceRecords ? 'replacing' : 'appending')
@@ -57,7 +58,7 @@ export const load = async ({
     replaceRecords,
     latestRecordsRequestIdRef,
     setRecords,
-    setReachedLastPage,
+    setSummaryOfRecords,
   })
 
   const idsOfAppliedFilters = filtersToApply.map(f => f.id)

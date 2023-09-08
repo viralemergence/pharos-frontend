@@ -32,14 +32,19 @@ describe('The public data table', () => {
   const getDataGridAfterWaiting = async () =>
     await screen.findByTestId('datagrid')
 
+  const tableViewProps = {
+    setFilters: jest.fn(),
+    setSummaryOfRecords: jest.fn(),
+    /** By default react-data-grid only puts the visible rows in the DOM, and
+     * creates more DOM elements as you scroll. This prop turns off this
+     * 'virtualization' functionality for testing purposes. */
+    enableVirtualization: false,
+  }
+
   it('renders', async () => {
     render(
       <Providers>
-        <TableView
-          filters={[]}
-          setFilters={jest.fn()}
-          enableVirtualization={false}
-        />
+        <TableView {...tableViewProps} />
       </Providers>
     )
     const grid = await getDataGridAfterWaiting()
@@ -66,11 +71,7 @@ describe('The public data table', () => {
   it('can be filtered by collection start date', async () => {
     render(
       <Providers>
-        <TableView
-          filters={[startDateFilterMarch2020]}
-          setFilters={jest.fn()}
-          enableVirtualization={false}
-        />
+        <TableView {...tableViewProps} filters={[startDateFilterMarch2020]} />
       </Providers>
     )
     const grid = await getDataGridAfterWaiting()
@@ -82,11 +83,7 @@ describe('The public data table', () => {
   it('has clickable project names and researcher names', async () => {
     render(
       <Providers>
-        <TableView
-          filters={[]}
-          setFilters={jest.fn()}
-          enableVirtualization={false}
-        />
+        <TableView {...tableViewProps} />
       </Providers>
     )
     const projectLinks = await screen.findAllByRole('link', {
