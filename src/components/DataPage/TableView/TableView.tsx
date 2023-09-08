@@ -17,7 +17,6 @@ import {
   Sort,
   getColumns,
 } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
-import HeaderCellContent from 'components/PublicViews/PublishedRecordsDataGrid/HeaderCellContent'
 
 const TableViewContainer = styled.div<{
   isOpen: boolean

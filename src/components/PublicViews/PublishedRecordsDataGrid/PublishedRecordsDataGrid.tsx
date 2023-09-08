@@ -19,11 +19,12 @@ import ProjectName from './formatters/ProjectName'
 import { PublishedRecordsLoadingState } from 'hooks/publishedRecords/fetchPublishedRecords'
 import usePublishedRecords from 'hooks/publishedRecords/usePublishedRecords'
 
-import ColumnHeader from 'components/PublicViews/PublishedRecordsDataGrid/ColumnHeader'
+// import ColumnHeader from 'components/PublicViews/PublishedRecordsDataGrid/ColumnHeader'
 import {
   SortStatus,
   SORT_CYCLE,
 } from '../../PublicViews/PublishedRecordsDataGrid/SortIcon'
+import HeaderCellContent from './HeaderCellContent'
 
 export interface PublishedRecordsResearcher {
   name: string
@@ -278,7 +279,7 @@ export const getColumns = ({
           key: key,
           name: key,
           headerRenderer: (_props: HeaderRendererProps<Row>) => (
-            <ColumnHeader
+            <HeaderCellContent
               dataGridKey={key}
               sorts={sorts}
               setSorts={setSorts}
