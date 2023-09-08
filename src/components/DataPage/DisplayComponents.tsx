@@ -135,7 +135,7 @@ export const ContainerForFilterPanelLauncher = styled(
 `
 
 export const DataToolbarDiv = styled.div<{ isFilterPanelOpen: boolean }>`
-  padding: 20px 0 0 30px;
+  padding: 20px 30px 0 30px;
   display: flex;
   flex-flow: row wrap;
   gap: 10px;
@@ -154,4 +154,10 @@ export const ScreenReaderOnly = styled.div`
   overflow: hidden;
   position: absolute;
   width: 0px;
+`
+
+export const SummaryOfRecordsStyled = styled.aside`
+  color: ${({ theme }) => theme.white};
+  margin-left: auto;
+  position: relative;
 `

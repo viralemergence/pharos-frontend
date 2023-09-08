@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  Dispatch,
+  SetStateAction,
+} from 'react'
 import type { Filter } from 'pages/data'
 import {
   FilterPanelLauncher,
@@ -6,7 +12,9 @@ import {
   ContainerForRadioButtons,
   ContainerForFilterPanelLauncher,
   DataToolbarDiv,
+  SummaryOfRecordsStyled,
 } from '../DisplayComponents'
+import { SummaryOfRecords } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 
 export enum View {
   map = 'map',
@@ -18,34 +26,43 @@ export const isView = (str: string): str is View => {
   return Object.values(View).includes(str)
 }
 
+/** For example, convert 1000000 to "1,000,000" */
+const addCommasToNumber = (num: number) => num.toLocaleString('en-US')
+
+const RadioButton = ({
+  currentView,
+  forView,
+  label,
+  changeView,
+}: {
+  currentView: View
+  forView: View
+  label: string
+  changeView: (view: View) => void
+}) => (
+  <DataToolbarButton
+    selected={currentView === forView}
+    onClick={() => changeView(forView)}
+  >
+    {label}
+  </DataToolbarButton>
+)
+
 const DataToolbar = ({
   isFilterPanelOpen,
   setIsFilterPanelOpen,
   view,
   changeView,
   filters = [],
+  summaryOfRecords,
 }: {
   isFilterPanelOpen: boolean
-  setIsFilterPanelOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setIsFilterPanelOpen: Dispatch<SetStateAction<boolean>>
   view: View
   changeView: (view: View) => void
   filters: Filter[]
+  summaryOfRecords: SummaryOfRecords
 }) => {
-  const RadioButton = ({
-    forView,
-    label,
-  }: {
-    forView: View
-    label: string
-  }) => (
-    <DataToolbarButton
-      selected={view === forView}
-      onClick={() => changeView(forView)}
-    >
-      {label}
-    </DataToolbarButton>
-  )
-
   const filterPanelLauncherRef = useRef<HTMLButtonElement>(null)
   // Keep track of whether the filter panel was open on last render, to detect
   // when the panel closes.
@@ -65,12 +82,29 @@ const DataToolbar = ({
 
   const appliedFiltersCount = filters.filter(({ applied }) => applied).length
 
+  const { recordCount, matchingRecordCount } = summaryOfRecords ?? {}
+
   return (
     <DataToolbarDiv isFilterPanelOpen={isFilterPanelOpen}>
       <ContainerForRadioButtons>
-        <RadioButton forView={View.map} label="Map" />
-        <RadioButton forView={View.globe} label="Globe" />
-        <RadioButton forView={View.table} label="Table" />
+        <RadioButton
+          forView={View.map}
+          currentView={view}
+          changeView={changeView}
+          label="Map"
+        />
+        <RadioButton
+          forView={View.globe}
+          currentView={view}
+          changeView={changeView}
+          label="Globe"
+        />
+        <RadioButton
+          forView={View.table}
+          currentView={view}
+          changeView={changeView}
+          label="Table"
+        />
       </ContainerForRadioButtons>
       {view === View.table && (
         <ContainerForFilterPanelLauncher>
@@ -88,6 +122,18 @@ const DataToolbar = ({
             )}
           </FilterPanelLauncher>
         </ContainerForFilterPanelLauncher>
+      )}
+      {view === View.table && recordCount !== undefined && (
+        <SummaryOfRecordsStyled
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {matchingRecordCount !== undefined && appliedFiltersCount > 0 && (
+            <>{addCommasToNumber(matchingRecordCount)} of </>
+          )}
+          {addCommasToNumber(recordCount)} records
+        </SummaryOfRecordsStyled>
       )}
     </DataToolbarDiv>
   )

@@ -1,5 +1,8 @@
 import { Dispatch, MutableRefObject, SetStateAction } from 'react'
-import type { Row } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
+import type {
+  Row,
+  SummaryOfRecords,
+} from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 import isNormalObject from 'utilities/isNormalObject'
 
 const RECORDS_URL = `${process.env.GATSBY_API_URL}/published-records`
@@ -11,15 +14,15 @@ const RECORDS_URL = `${process.env.GATSBY_API_URL}/published-records`
 const fetchRecords = async ({
   queryStringParameters,
   replaceRecords,
-  setReachedLastPage,
   setRecords,
+  setSummaryOfRecords,
   latestRecordsRequestIdRef,
 }: {
   queryStringParameters: URLSearchParams
   replaceRecords: boolean
   latestRecordsRequestIdRef: MutableRefObject<number>
   setRecords: Dispatch<SetStateAction<Row[]>>
-  setReachedLastPage: Dispatch<SetStateAction<boolean>>
+  setSummaryOfRecords: Dispatch<SetStateAction<SummaryOfRecords>>
 }): Promise<boolean> => {
   latestRecordsRequestIdRef.current += 1
   const latestRecordsRequestId = latestRecordsRequestIdRef.current
@@ -37,10 +40,7 @@ const fetchRecords = async ({
   const isLatestRecordsRequest =
     currentRecordsRequestId === latestRecordsRequestId
   if (!isLatestRecordsRequest) return false
-  if (!response) {
-    return false
-  }
-
+  if (!response) return false
   if (!response.ok) {
     console.log(`GET ${url}: error`)
     return false
@@ -70,23 +70,47 @@ const fetchRecords = async ({
     records.sort((a: Row, b: Row) => Number(a.rowNumber) - Number(b.rowNumber))
     return records
   })
-  setReachedLastPage(data.isLastPage)
+  setSummaryOfRecords({
+    isLastPage: data.isLastPage,
+    recordCount: data.recordCount,
+    matchingRecordCount: data.matchingRecordCount,
+  })
   return true
 }
 
-const isValidRecordsResponse = (data: unknown): data is RecordsResponse => {
-  if (!isNormalObject(data)) return false
-  const { publishedRecords, isLastPage } = data as Partial<RecordsResponse>
-  if (!Array.isArray(publishedRecords)) return false
-  if (typeof isLastPage !== 'boolean') return false
-  return publishedRecords.every(
-    row => typeof row === 'object' && typeof row.rowNumber === 'number'
+const isValidPublishedRecordsArray = (arr: unknown): arr is Row[] => {
+  return (
+    Array.isArray(arr) &&
+    arr.every(row => {
+      return (
+        typeof row === 'object' &&
+        row &&
+        'rowNumber' in row &&
+        typeof row.rowNumber === 'number'
+      )
+    })
   )
 }
 
-interface RecordsResponse {
+const isValidRecordsResponse = (
+  data: unknown
+): data is PublishedRecordsResponse => {
+  if (!isNormalObject(data)) return false
+  const { publishedRecords, isLastPage, recordCount, matchingRecordCount } =
+    data as Partial<PublishedRecordsResponse>
+  return (
+    isValidPublishedRecordsArray(publishedRecords) &&
+    typeof isLastPage === 'boolean' &&
+    ['undefined', 'number'].includes(typeof recordCount) &&
+    ['undefined', 'number'].includes(typeof matchingRecordCount)
+  )
+}
+
+export interface PublishedRecordsResponse {
   publishedRecords: Row[]
   isLastPage: boolean
+  recordCount?: number
+  matchingRecordCount?: number
 }
 
 export default fetchRecords

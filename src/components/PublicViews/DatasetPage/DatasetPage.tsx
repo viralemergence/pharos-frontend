@@ -3,6 +3,7 @@ import styled, { useTheme } from 'styled-components'
 
 import PublicViewBackground from '../PublicViewBackground'
 import { DatasetTopSection } from 'components/DatasetPage/DatasetPageLayout'
+import type { Sort } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 
 import useDatasetID from 'hooks/dataset/useDatasetID'
 
@@ -23,7 +24,9 @@ import usePublishedProject, {
   ProjectDataStatus,
 } from '../ProjectPage/usePublishedProject'
 import usePublishedRecords from 'hooks/publishedRecords/usePublishedRecords'
+import usePublishedRecordsMetadata from 'hooks/publishedRecords/usePublishedRecordsMetadata'
 import { PublicProjectPageContentBox } from '../ProjectPage/ProjectPage'
+import type { SimpleFilter } from 'pages/data'
 
 const GridContainer = styled.div`
   height: calc(100vh - 265px);
@@ -31,7 +34,7 @@ const GridContainer = styled.div`
   margin: 0 40px;
 `
 
-const HIDECOLUMNS = ['Project name', 'Author']
+const HIDDEN_FIELDS = ['Project']
 const PAGESIZE = 50
 
 const DatasetPage = () => {
@@ -40,18 +43,22 @@ const DatasetPage = () => {
   const { status, data: project } = usePublishedProject()
   const { user } = useAppState()
 
-  const [filters] = useState(() => ({
-    dataset_id: [datasetID],
-  }))
+  const [filters] = useState<SimpleFilter[]>(() => [
+    { id: 'dataset_id', values: [datasetID] },
+  ])
+  const [sorts, setSorts] = useState<Sort[]>([])
 
   const [publishedRecordsData, loadMore] = usePublishedRecords({
     pageSize: PAGESIZE,
     filters,
+    sorts,
   })
 
   const dataset =
     status === ProjectDataStatus.Loaded &&
     project.datasets.find(dataset => dataset.datasetID === datasetID)
+
+  const { sortableFields } = usePublishedRecordsMetadata() ?? {}
 
   if (
     status === ProjectDataStatus.Error ||
@@ -140,8 +147,11 @@ const DatasetPage = () => {
       <GridContainer>
         <PublishedRecordsDataGrid
           publishedRecordsData={publishedRecordsData}
-          hideColumns={HIDECOLUMNS}
+          hiddenFields={HIDDEN_FIELDS}
           loadMore={loadMore}
+          sortableFields={sortableFields}
+          sorts={sorts}
+          setSorts={setSorts}
         />
       </GridContainer>
     </>

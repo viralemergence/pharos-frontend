@@ -3,8 +3,12 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 import { stateInitialValue } from 'reducers/stateReducer/initialValues'
-import { publishedRecordsMetadata } from '../../test/serverHandlers'
+import {
+  oneMillionRecordsHandler,
+  publishedRecordsMetadata,
+} from '../../test/serverHandlers'
 import DataPage from './data'
+import { server } from '../../test/server'
 
 jest.mock('reducers/stateReducer/stateContext', () => ({
   StateContext: React.createContext({ state: stateInitialValue }),
@@ -53,6 +57,12 @@ jest.mock('mapbox-gl', () => ({
     addTo: jest.fn(),
   })),
 }))
+
+const wait = (milliseconds: number) => {
+  return new Promise(resolve => {
+    setTimeout(resolve, milliseconds)
+  })
+}
 
 describe('The public data page', () => {
   // Make window.location available to tests
@@ -279,13 +289,37 @@ describe('The public data page', () => {
     await act(async () => {
       fireEvent.change(filterInput, { target: { value: '1800-01-01' } })
     })
+    await wait(1000)
     const tooltip = await screen.findByRole('tooltip')
     expect(tooltip).toBeInTheDocument()
     const grid = await getDataGridAfterWaiting()
     await waitFor(() => {
       expect(grid).toHaveAttribute('aria-rowcount', '51')
     })
-  }, 10000)
+  }, 15000)
+
+  it('shows a tooltip if dates are out of order', async () => {
+    render(<DataPage />)
+    fireEvent.click(getTableViewButton())
+    fireEvent.click(getFilterPanelToggleButton())
+    fireEvent.click(getAddFilterButton())
+    fireEvent.click(await screen.findByText('Collection date'))
+    const startDateInput = screen.getByLabelText<HTMLInputElement>(
+      'Collected on this date or later'
+    )
+    const endDateInput = screen.getByLabelText<HTMLInputElement>(
+      'Collected on this date or earlier'
+    )
+    expect(startDateInput).toBeInTheDocument()
+    expect(endDateInput).toBeInTheDocument()
+    expect(screen.queryByRole('tooltip')).toBeNull()
+    await act(async () => {
+      fireEvent.change(startDateInput, { target: { value: '2000-01-01' } })
+      fireEvent.change(endDateInput, { target: { value: '1999-01-01' } })
+    })
+    const tooltip = await screen.findByRole('tooltip')
+    expect(tooltip).toBeInTheDocument()
+  }, 15000)
 
   it('provides a host species filter that offers options corresponding to the metadata', async () => {
     render(<DataPage />)
@@ -365,4 +399,31 @@ describe('The public data page', () => {
       expect(grid).toHaveAttribute('aria-rowcount', '101')
     })
   })
+
+  it.skip('provides a summary of the records, when no filters are used', async () => {
+    server.use(oneMillionRecordsHandler)
+    render(<DataPage />)
+    fireEvent.click(getTableViewButton())
+    const summary = await screen.findByRole('status', {
+      name: '1,234,567',
+    })
+    expect(summary).toBeInTheDocument()
+  })
+
+  it.skip('provides a summary of the records, when a filter is used', async () => {
+    server.use(oneMillionRecordsHandler)
+    render(<DataPage />)
+    fireEvent.click(getTableViewButton())
+    fireEvent.click(getFilterPanelToggleButton())
+    fireEvent.click(getAddFilterButton())
+    fireEvent.click(await screen.findByText('Collection date'))
+    const startDateInput = screen.getByLabelText(
+      'Collected on this date or later'
+    )
+    await userEvent.type(startDateInput, '2020-04-01')
+    const summary = await screen.findByRole('status', {
+      name: '567 of 1,234,567 records',
+    })
+    expect(summary).toBeInTheDocument()
+  }, 10000)
 })

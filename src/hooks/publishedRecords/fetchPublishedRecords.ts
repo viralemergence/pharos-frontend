@@ -1,3 +1,7 @@
+import type { Sort } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
+import type { SimpleFilter } from 'pages/data'
+import { getQueryStringParameters } from 'components/DataPage/TableView/utilities/load'
+
 export interface PublishedRecord {
   [key: string]: string | number
 }
@@ -52,10 +56,9 @@ export type PublishedRecordsData =
   | PublishedRecordsError
 
 export interface UsePublishedRecordsProps {
-  pageSize: number
-  filters: {
-    [key: string]: string[]
-  }
+  pageSize?: number
+  filters: SimpleFilter[]
+  sorts: Sort[]
 }
 
 const dataIsPublishedRecordsResponse = (
@@ -70,11 +73,10 @@ const dataIsPublishedRecordsResponse = (
 }
 
 export interface FetchPublishedRecordsProps {
-  filters: {
-    [key: string]: string[]
-  }
+  filters: SimpleFilter[]
+  sorts?: Sort[]
   page: number
-  pageSize: number
+  pageSize?: number
   setPublishedRecordsData: React.Dispatch<
     React.SetStateAction<PublishedRecordsData>
   >
@@ -94,21 +96,19 @@ const fetchPublishedRecords = async ({
   ignore,
   append,
   filters,
+  sorts,
   page,
   pageSize,
   setPublishedRecordsData,
   overwriteRowNumber = false,
 }: FetchPublishedRecordsProps) => {
-  const params = new URLSearchParams()
-  params.append('page', page.toString())
-  params.append('pageSize', pageSize.toString())
-
-  Object.entries(filters).forEach(([key, value]) => {
-    value.forEach(v => {
-      params.append(key, v)
-    })
+  const params = getQueryStringParameters({
+    filters,
+    sorts,
+    pageToLoad: page,
+    pageSize,
+    replaceRecords: !append,
   })
-
   const response = await fetch(
     `${process.env.GATSBY_API_URL}/published-records/?` + params.toString()
   ).catch(error => {
