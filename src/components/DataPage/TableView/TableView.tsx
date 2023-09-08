@@ -6,21 +6,17 @@ import React, {
   useState,
 } from 'react'
 import styled from 'styled-components'
-import DataGrid, {
-  Column,
-  DataGridHandle,
-  HeaderRendererProps,
-} from 'react-data-grid'
+import { DataGridHandle } from 'react-data-grid'
 import { transparentize } from 'polished'
 import LoadingSpinner from './LoadingSpinner'
 import type { Filter } from 'pages/data'
 import { load, loadDebounced, countPages } from './utilities/load'
 import {
-  formatters,
+  DataGridStyled,
   Row,
   Sort,
+  getColumns,
 } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
-import HeaderCellContent from 'components/PublicViews/PublishedRecordsDataGrid/HeaderCellContent'
 
 const TableViewContainer = styled.div<{
   isOpen: boolean
@@ -38,46 +34,6 @@ const TableContainer = styled.div`
   overflow-x: hidden;
   display: flex;
   flex-flow: column nowrap;
-`
-const DataGridStyled = styled(DataGrid)<{ isFilterPanelOpen: boolean }>`
-  --rdg-border-color: ${({ theme }) => transparentize(0.7, theme.medGray)};
-  --rdg-background-color: ${({ theme }) => theme.mutedPurple1};
-  --rdg-header-background-color: ${({ theme }) => theme.mutedPurple3};
-  --rdg-row-hover-background-color: ${({ theme }) => theme.mutedPurple2};
-
-  ${({ theme }) => theme.gridText};
-
-  color-scheme: only dark;
-  border: 0;
-  flex-grow: 1;
-  block-size: 100px;
-  background-color: var(--rdg-background-color);
-
-  .rdg-cell {
-    padding-inline: 10px;
-    &[aria-colindex='1'] {
-      text-align: center;
-      background-color: var(--rdg-header-background-color);
-    }
-    &.in-filtered-column {
-      background-color: ${({ theme }) => theme.tableContentHighlight};
-    }
-    &[role='columnheader'] {
-      display: flex;
-      flex-flow: row nowrap;
-      justify-content: space-between;
-      padding-right: 0;
-      &::after {
-        width: 9px;
-      }
-    }
-  }
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
-    // On mobiles and tablets, hide the table when the filter panel is open
-    ${({ isFilterPanelOpen }) =>
-      isFilterPanelOpen ? 'display: none ! important;' : ''}
-  }
 `
 
 const LoadingMessage = styled.div`
@@ -136,6 +92,7 @@ const filterHasRealValues = (filter: Filter) =>
   filter.valid &&
   filter.values.filter(value => value !== null && value !== undefined).length >
     0
+
 const TableView = ({
   filters,
   setFilters,
@@ -201,47 +158,19 @@ const TableView = ({
     }
   }, [])
 
-  const rowNumberColumn = {
-    key: 'rowNumber',
-    name: '',
-    frozen: true,
-    resizable: false,
-    minWidth: 55,
-    width: 55,
-  }
-
-  const keysOfFilteredColumns = addedFilters.reduce<string[]>(
+  const filteredFields = addedFilters.reduce<string[]>(
     (keys, { applied, dataGridKey }) =>
       applied ? [...keys, dataGridKey] : keys,
     []
   )
 
-  const columns: readonly Column<Row>[] = [
-    rowNumberColumn,
-    ...Object.keys(records?.[0] ?? {})
-      .filter(key => !['pharosID', 'rowNumber'].includes(key))
-      .map(key => {
-        const sortable = sortableFields.includes(key)
-        return {
-          key: key,
-          name: key,
-          headerRenderer: (_props: HeaderRendererProps<Row>) => (
-            <HeaderCellContent
-              dataGridKey={key}
-              sorts={sorts}
-              setSorts={setSorts}
-              sortable={sortable}
-            />
-          ),
-          width: key.length * 10 + (sortable ? 50 : 30) + 'px',
-          resizable: true,
-          cellClass: keysOfFilteredColumns.includes(key)
-            ? 'in-filtered-column'
-            : undefined,
-          formatter: formatters[key],
-        }
-      }),
-  ]
+  const columns = getColumns({
+    records,
+    sortableFields,
+    sorts,
+    setSorts,
+    filteredFields,
+  })
 
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     if (

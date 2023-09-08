@@ -1,13 +1,14 @@
-import React, { useEffect, useRef } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
 import DataGrid, {
   Column,
   DataGridHandle,
   FormatterProps,
+  HeaderRendererProps,
 } from 'react-data-grid'
 
-import { darken } from 'polished'
+import { darken, transparentize } from 'polished'
 
 import LoadingSpinner from 'components/DataPage/TableView/LoadingSpinner'
 
@@ -17,6 +18,13 @@ import ProjectName from './formatters/ProjectName'
 
 import { PublishedRecordsLoadingState } from 'hooks/publishedRecords/fetchPublishedRecords'
 import usePublishedRecords from 'hooks/publishedRecords/usePublishedRecords'
+
+// import ColumnHeader from 'components/PublicViews/PublishedRecordsDataGrid/ColumnHeader'
+import {
+  SortStatus,
+  SORT_CYCLE,
+} from '../../PublicViews/PublishedRecordsDataGrid/SortIcon'
+import HeaderCellContent from './HeaderCellContent'
 
 export interface PublishedRecordsResearcher {
   name: string
@@ -35,22 +43,11 @@ export interface Row {
  * then the table will be sorted primarily on project name (descending) and
  * secondarily on collection date (ascending).
  **/
+
 export interface Sort {
   dataGridKey: string
   status: SortStatus
 }
-
-export enum SortStatus {
-  Selected = 'selected',
-  Reverse = 'reverse',
-  Unselected = 'unselected',
-}
-
-export const SORT_CYCLE = [
-  SortStatus.Unselected,
-  SortStatus.Selected,
-  SortStatus.Reverse,
-]
 
 export const getNextSortStatus = (currentSortStatus: SortStatus) => {
   const currentCycleIndex = SORT_CYCLE.findIndex(
@@ -94,16 +91,54 @@ const ErrorMessageContainer = styled.div`
   padding: 15px 30px;
 `
 
-const FillDatasetGrid = styled(DataGrid)`
-  ${({ theme }) => theme.gridText};
-  block-size: 100%;
-  height: 100%;
-  border: 0;
-
-  --rdg-border-color: rgba(216, 218, 220, 0.3);
+export const DataGridStyled = styled(DataGrid).attrs(
+  ({ rowHeight, className }) => ({
+    className: className ?? 'rdg-dark',
+    rowHeight: rowHeight ?? 41,
+  })
+)<{ isFilterPanelOpen?: boolean }>`
+  --rdg-border-color: ${({ theme }) => transparentize(0.7, theme.medGray)};
   --rdg-background-color: ${({ theme }) => theme.mutedPurple1};
   --rdg-header-background-color: ${({ theme }) => theme.mutedPurple3};
   --rdg-row-hover-background-color: ${({ theme }) => theme.mutedPurple2};
+
+  ${({ theme }) => theme.gridText};
+
+  color-scheme: only dark;
+  border: 0;
+  flex-grow: 1;
+  block-size: 100px;
+  background-color: var(--rdg-background-color);
+
+  .rdg-cell {
+    padding-inline: 10px;
+    &[aria-colindex='1'] {
+      text-align: center;
+      background-color: var(--rdg-header-background-color);
+    }
+    &.in-filtered-column {
+      background-color: ${({ theme }) => theme.tableContentHighlight};
+    }
+    &[role='columnheader'] {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+      padding-right: 0;
+      &::after {
+        width: 9px;
+      }
+    }
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.tabletMaxWidth}) {
+    // On mobiles and tablets, hide the table when the filter panel is open
+    ${({ isFilterPanelOpen }) =>
+      isFilterPanelOpen ? 'display: none ! important;' : ''}
+  }
+`
+
+const TallDataGridStyled = styled(DataGridStyled)`
+  height: 100%;
 `
 
 const rowKeyGetter = (row: Row) => row.pharosID
@@ -120,17 +155,33 @@ const defaultWidthOverride = {
   Researcher: 200,
 }
 
-interface FilteredPublishedRecordsDataGridProps {
+interface PublishedRecordsDataGridProps {
   publishedRecordsData: ReturnType<typeof usePublishedRecords>[0]
   loadMore: ReturnType<typeof usePublishedRecords>[1]
-  hideColumns?: string[]
+  hiddenFields?: string[]
+  sortableFields?: string[]
+  sorts?: Sort[]
+  setSorts?: Dispatch<SetStateAction<Sort[]>>
+}
+
+const rowNumberColumn = {
+  key: 'rowNumber',
+  name: '',
+  frozen: true,
+  resizable: false,
+  minWidth: 55,
+  width: 55,
+  formatter: RowNumber,
 }
 
 const PublishedRecordsDataGrid = ({
   publishedRecordsData,
   loadMore,
-  hideColumns = [],
-}: FilteredPublishedRecordsDataGridProps) => {
+  hiddenFields = [],
+  sortableFields = [],
+  sorts = [],
+  setSorts = () => undefined,
+}: PublishedRecordsDataGridProps) => {
   const gridRef = useRef<DataGridHandle>(null)
 
   // when we are loading a full new set of records, scroll to the top
@@ -142,16 +193,6 @@ const PublishedRecordsDataGrid = ({
       gridRef.current.scrollToRow(0)
   }, [publishedRecordsData.status])
 
-  const rowNumberColumn = {
-    key: 'rowNumber',
-    name: '',
-    frozen: true,
-    resizable: false,
-    minWidth: 55,
-    width: 55,
-    formatter: RowNumber,
-  }
-
   if (publishedRecordsData.status === PublishedRecordsLoadingState.ERROR) {
     return (
       <ErrorMessageContainer>
@@ -161,23 +202,13 @@ const PublishedRecordsDataGrid = ({
     )
   }
 
-  const columns: readonly Column<Row>[] = [
-    rowNumberColumn,
-    ...Object.keys(publishedRecordsData.data.publishedRecords[0] ?? {})
-      .filter(key => !['pharosID', 'rowNumber', ...hideColumns].includes(key))
-      .map(key => ({
-        key: key,
-        name: key,
-        width:
-          key in defaultWidthOverride
-            ? defaultWidthOverride[key as keyof typeof defaultWidthOverride]
-            : key.length * 7.5 + 15 + 'px',
-        resizable: true,
-        ...(key in formatters
-          ? { formatter: formatters[key as keyof typeof formatters] }
-          : {}),
-      })),
-  ]
+  const columns = getColumns({
+    records: publishedRecordsData.data.publishedRecords,
+    sortableFields,
+    sorts,
+    setSorts,
+    hiddenFields,
+  })
 
   const handleScroll = ({ currentTarget }: React.UIEvent<HTMLDivElement>) => {
     if (
@@ -192,7 +223,7 @@ const PublishedRecordsDataGrid = ({
       {publishedRecordsData.data.publishedRecords.length > 0 && (
         // @ts-expect-error: I'm copying this from the docs,
         // but it doesn't look like their type definitions work
-        <FillDatasetGrid
+        <TallDataGridStyled
           ref={gridRef}
           className={'rdg-dark'}
           columns={columns}
@@ -214,6 +245,56 @@ const PublishedRecordsDataGrid = ({
       )}
     </TableContainer>
   )
+}
+
+const estimateColumnWidth = (key: string, sortable: boolean) => {
+  if (key in defaultWidthOverride)
+    return defaultWidthOverride[key as keyof typeof defaultWidthOverride]
+  else return key.length * 10 + (sortable ? 50 : 30) + 'px'
+}
+
+export const getColumns = ({
+  records,
+  sortableFields = [],
+  sorts = [],
+  setSorts = () => null,
+  filteredFields = [],
+  hiddenFields = [],
+}: {
+  records: Row[]
+  sortableFields: string[]
+  sorts?: Sort[]
+  setSorts?: Dispatch<SetStateAction<Sort[]>>
+  filteredFields?: string[]
+  hiddenFields?: string[]
+  columnWidths?: Record<string, number>
+}): readonly Column<Row>[] => {
+  return [
+    rowNumberColumn,
+    ...Object.keys(records?.[0] ?? {})
+      .filter(key => !['pharosID', 'rowNumber', ...hiddenFields].includes(key))
+      .map(key => {
+        const sortable = sortableFields.includes(key)
+        return {
+          key: key,
+          name: key,
+          headerRenderer: (_props: HeaderRendererProps<Row>) => (
+            <HeaderCellContent
+              dataGridKey={key}
+              sorts={sorts}
+              setSorts={setSorts}
+              sortable={sortable}
+            />
+          ),
+          width: estimateColumnWidth(key, sortable),
+          resizable: true,
+          cellClass: filteredFields.includes(key)
+            ? 'in-filtered-column'
+            : undefined,
+          formatter: formatters[key],
+        }
+      }),
+  ]
 }
 
 export default PublishedRecordsDataGrid

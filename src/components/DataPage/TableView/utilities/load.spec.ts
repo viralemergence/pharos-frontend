@@ -1,18 +1,17 @@
 import { getQueryStringParameters } from './load'
-import { SortStatus } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
+import { SortStatus } from 'components/PublicViews/PublishedRecordsDataGrid/SortIcon'
 import type { Filter } from 'pages/data'
 
 describe('getQueryStringParameters', () => {
   it('adds sorts to the query string', () => {
-    const actual = getQueryStringParameters(
-      [],
-      [
+    const actual = getQueryStringParameters({
+      sorts: [
         { dataGridKey: 'Host species', status: SortStatus.Selected },
         { dataGridKey: 'Collection date', status: SortStatus.Reverse },
       ],
-      [],
-      true
-    )
+      records: [],
+      replaceRecords: true,
+    })
     const expected =
       'sort=Host+species&sort=-Collection+date&page=1&pageSize=50'
     expect(actual.toString()).toEqual(expected)
@@ -45,9 +44,13 @@ describe('getQueryStringParameters', () => {
         valid: true,
       },
     ]
-    const actual = getQueryStringParameters(filters, [], [], true)
+    const actual = getQueryStringParameters({
+      filters,
+      replaceRecords: true,
+      pageToLoad: 2,
+    })
     const expected =
-      'host_species=Species+A&host_species=Species+B&researcher=Researcher+One&page=1&pageSize=50'
+      'host_species=Species+A&host_species=Species+B&researcher=Researcher+One&page=2&pageSize=50'
     expect(actual.toString()).toEqual(expected)
   })
 })
