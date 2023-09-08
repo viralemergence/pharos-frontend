@@ -19,8 +19,11 @@ import ProjectName from './formatters/ProjectName'
 import { PublishedRecordsLoadingState } from 'hooks/publishedRecords/fetchPublishedRecords'
 import usePublishedRecords from 'hooks/publishedRecords/usePublishedRecords'
 
-import ColumnHeader from 'components/PublicViews/PublishedRecordsDataGrid/ColumnHeader'
-import type { SortStatus } from '../../PublicViews/PublishedRecordsDataGrid/SortIcon'
+import {
+  SortStatus,
+  SORT_CYCLE,
+} from '../../PublicViews/PublishedRecordsDataGrid/SortIcon'
+import HeaderCellContent from './HeaderCellContent'
 
 export interface PublishedRecordsResearcher {
   name: string
@@ -31,6 +34,27 @@ export interface Row {
   [key: string]: string | number | PublishedRecordsResearcher[]
 }
 
+/** Sorts applied to the table. For example, if the sorts are
+ *  [
+ *    [{dataGridKey: 'Project', status: SortStatus.Selected}],
+ *    [{dataGridKey: 'Collection date', status: SortStatus.Reverse}],
+ *  ]
+ * then the table will be sorted primarily on project name (descending) and
+ * secondarily on collection date (ascending).
+ **/
+
+export interface Sort {
+  dataGridKey: string
+  status: SortStatus
+}
+
+export const getNextSortStatus = (currentSortStatus: SortStatus) => {
+  const currentCycleIndex = SORT_CYCLE.findIndex(
+    sortStatus => sortStatus == currentSortStatus
+  )
+  return SORT_CYCLE[(currentCycleIndex + 1) % SORT_CYCLE.length]
+}
+
 export interface SummaryOfRecords {
   /** Has the user scrolled to the last page of records? */
   isLastPage: boolean
@@ -39,6 +63,8 @@ export interface SummaryOfRecords {
   /** THe number of records that match the current filters */
   matchingRecordCount?: number
 }
+
+
 
 const TableContainer = styled.div`
   position: relative;
@@ -141,7 +167,6 @@ interface PublishedRecordsDataGridProps {
   sortableFields?: string[]
   sorts?: Sort[]
   setSorts?: Dispatch<SetStateAction<Sort[]>>
-  columnWidths?: Record<string, number>
 }
 
 const rowNumberColumn = {
@@ -154,19 +179,13 @@ const rowNumberColumn = {
   formatter: RowNumber,
 }
 
-export type Sort = {
-  dataGridKey: string
-  status: SortStatus
-}
-
 const PublishedRecordsDataGrid = ({
   publishedRecordsData,
   loadMore,
   hiddenFields = [],
   sortableFields = [],
   sorts = [],
-  setSorts = () => {},
-  columnWidths = {},
+  setSorts = () => undefined,
 }: PublishedRecordsDataGridProps) => {
   const gridRef = useRef<DataGridHandle>(null)
 
@@ -194,7 +213,6 @@ const PublishedRecordsDataGrid = ({
     sorts,
     setSorts,
     hiddenFields,
-    columnWidths,
   })
 
   const handleScroll = ({ currentTarget }: React.UIEvent<HTMLDivElement>) => {
@@ -233,6 +251,17 @@ const PublishedRecordsDataGrid = ({
   )
 }
 
+const defaultWidthOverride = {
+  Project: 300,
+  Researcher: 200,
+}
+
+const estimateColumnWidth = (key: string, sortable: boolean) => {
+  if (key in defaultWidthOverride)
+    return defaultWidthOverride[key as keyof typeof defaultWidthOverride]
+  else return key.length * 10 + (sortable ? 50 : 30) + 'px'
+}
+
 export const getColumns = ({
   records,
   sortableFields = [],
@@ -240,7 +269,6 @@ export const getColumns = ({
   setSorts = () => null,
   filteredFields = [],
   hiddenFields = [],
-  columnWidths = {},
 }: {
   records: Row[]
   sortableFields: string[]
@@ -260,15 +288,14 @@ export const getColumns = ({
           key: key,
           name: key,
           headerRenderer: (_props: HeaderRendererProps<Row>) => (
-            <ColumnHeader
+            <HeaderCellContent
               dataGridKey={key}
               sorts={sorts}
               setSorts={setSorts}
               sortable={sortable}
             />
           ),
-          width:
-            columnWidths[key] ?? key.length * 8 + (sortable ? 50 : 30) + 'px',
+          width: estimateColumnWidth(key, sortable),
           resizable: true,
           cellClass: filteredFields.includes(key)
             ? 'in-filtered-column'

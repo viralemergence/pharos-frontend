@@ -1,23 +1,19 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-} from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { transparentize } from 'polished'
 import colorPalette from 'figma/colorPalette'
 import SortIcon, { SortStatus } from './SortIcon'
-import type { Sort } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
+import {
+  Sort,
+  getNextSortStatus,
+} from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 
 const ColumnLabel = styled.div`
   text-overflow: ellipsis;
   overflow: clip;
 `
 
-const SortButtonStyled = styled.button<{ sortPriority: number | undefined }>`
+const SortButtonStyled = styled.button<{ sortPriority?: number }>`
   border: 0;
   cursor: pointer;
   padding: 0 3px;
@@ -41,30 +37,54 @@ const SortButtonStyled = styled.button<{ sortPriority: number | undefined }>`
   }
 `
 
-type ColumnHeaderProps = {
+type HeaderCellContentProps = {
   dataGridKey: string
   sorts: Sort[]
   setSorts: Dispatch<SetStateAction<Sort[]>>
   sortable: boolean
 }
 
-export type ColumnHeaderHandle = {
+export type HeaderCellContentHandle = {
   focusLastFocusableElement: () => void
 }
 
-const ColumnHeader = ({
+const HeaderCellContent = ({
   dataGridKey,
   sorts,
   setSorts,
   sortable,
-}: ColumnHeaderProps) => {
+}: HeaderCellContentProps) => {
   const firstFocusableElementRef: React.MutableRefObject<HTMLButtonElement | null> =
     useRef(null)
 
-  /** Ensures that when user presses tab or the right arrow, the sort button
-   * receives the focus */
-  const cellKeyDownHandler = useCallback(
-    (e: KeyboardEvent) => {
+  const columnLabelRef = useRef<HTMLDivElement>(null)
+
+  let sort: Sort, sortPriority: number | undefined
+  const index = sorts.findIndex(sort => sort.dataGridKey == dataGridKey)
+  // Table is not sorted on this header's column
+  if (index === -1) sort = { dataGridKey, status: SortStatus.Unselected }
+  // Table is sorted on this header's column
+  else [sort, sortPriority] = [sorts[index], index]
+
+  const sortButtonClickHandler = () => {
+    setSorts(prev => {
+      const nextSortStatus = getNextSortStatus(sort.status)
+      const newSort: Sort = { dataGridKey, status: nextSortStatus }
+      const previousSortsWithThisSortRemoved = prev.filter(
+        sort => sort.dataGridKey !== dataGridKey
+      )
+      if (nextSortStatus === SortStatus.Unselected) {
+        return previousSortsWithThisSortRemoved
+      } else {
+        return [newSort, ...previousSortsWithThisSortRemoved]
+      }
+    })
+  }
+
+  useEffect(() => {
+    /** Ensures that when user presses tab or the right arrow, the sort button
+     * receives the focus */
+    const cellKeyDownHandler = (e: KeyboardEvent) => {
       const cell = e.target
       if (!(cell instanceof HTMLDivElement)) return
       const tab = e.key === 'Tab'
@@ -74,69 +94,24 @@ const ColumnHeader = ({
         e.preventDefault()
         e.stopPropagation()
       }
-    },
-    [firstFocusableElementRef]
-  )
-
-  const columnLabelRef = useRef<HTMLDivElement>(null)
-
-  /** Get the header cell via the DOM, since react-data-grid doesn't give us a
-   * ref pointing to it */
-  const getHeaderCell = useCallback(
-    () => columnLabelRef.current?.parentNode,
-    [columnLabelRef]
-  )
-
-  const cycle = [SortStatus.unselected, SortStatus.selected, SortStatus.reverse]
-  const [sort, sortPriority] = useMemo(() => {
-    const index = sorts.findIndex(sort => sort.dataGridKey == dataGridKey)
-    if (index === -1) {
-      // Table is not sorted on this header's column
-      const sort: Sort = { dataGridKey, status: SortStatus.unselected }
-      return [sort, undefined]
-    } else {
-      // Table is sorted on this header's column
-      const sort = sorts[index]
-      return [sort, index]
     }
-  }, [sorts, dataGridKey])
 
-  const sortButtonClickHandler = () => {
-    setSorts(prev => {
-      const currentCycleIndex = cycle.findIndex(
-        sortStatus => sortStatus == sort.status
-      )
-      const newSortStatus = cycle[(currentCycleIndex + 1) % cycle.length]
-      const newSort: Sort = { dataGridKey, status: newSortStatus }
-      const previousSortsWithThisSortRemoved = prev.filter(
-        sort => sort.dataGridKey !== dataGridKey
-      )
-      if (newSortStatus === SortStatus.unselected) {
-        return previousSortsWithThisSortRemoved
-      } else {
-        return [newSort, ...previousSortsWithThisSortRemoved]
-      }
-    })
-  }
-
-  useEffect(() => {
-    const headerCell = getHeaderCell()
+    const headerCell = columnLabelRef.current?.parentNode
     if (!sortable) return
     if (!(headerCell instanceof HTMLDivElement)) return
     headerCell.addEventListener('keydown', cellKeyDownHandler)
-    if (sort.status === SortStatus.selected) {
+    if (sort.status === SortStatus.Selected) {
       headerCell.setAttribute('aria-sort', 'descending')
-    } else if (sort.status === SortStatus.reverse) {
+    } else if (sort.status === SortStatus.Reverse) {
       headerCell.setAttribute('aria-sort', 'ascending')
     } else {
       headerCell.removeAttribute('aria-sort')
     }
     return () => {
-      const headerCell = getHeaderCell()
       if (!(headerCell instanceof HTMLDivElement)) return
       headerCell.removeEventListener('keydown', cellKeyDownHandler)
     }
-  }, [sort, sortable, getHeaderCell, cellKeyDownHandler])
+  }, [sort, sortable])
 
   return (
     <>
@@ -148,7 +123,7 @@ const ColumnHeader = ({
           sortPriority={sortPriority}
         >
           <SortIcon
-            status={sort.status ?? SortStatus.unselected}
+            status={sort.status ?? SortStatus.Unselected}
             upArrowSelectedColor={colorPalette.mint}
             downArrowSelectedColor={colorPalette.mint}
             upArrowUnselectedColor={colorPalette.gridLines}
@@ -160,4 +135,4 @@ const ColumnHeader = ({
   )
 }
 
-export default ColumnHeader
+export default HeaderCellContent
