@@ -17,6 +17,7 @@ import {
   Sort,
   getColumns,
 } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
+import HeaderCellContent from 'components/PublicViews/PublishedRecordsDataGrid/HeaderCellContent'
 
 const TableViewContainer = styled.div<{
   isOpen: boolean
@@ -111,14 +112,6 @@ const TableView = ({
   /** Filters that have been applied to the table */
   const appliedFilters = filters.filter(f => f.applied)
 
-  /** Sorts applied to the table. For example, if the sorts are
-   *  [
-   *    [{dataGridKey: 'Project', status: SortStatus.selected}],
-   *    [{dataGridKey: 'Collection date', status: SortStatus.reverse}],
-   *  ]
-   * then the table will be sorted primarily on project name (descending) and
-   * secondarily on collection date (ascending).
-   **/
   const [sorts, setSorts] = useState<Sort[]>([])
 
   /** This ref ensures that if the GET request that just finished is not the
@@ -157,6 +150,8 @@ const TableView = ({
   useEffect(() => {
     loadDebounced({ ...loadOptions, replaceRecords: true })
   }, [filtersWithRealValuesAsString, sorts])
+  // NOTE: If `filters` or `records` was in the dependency array, loadDebounced
+  // would be called too often.
 
   useEffect(() => {
     return () => {
@@ -225,6 +220,7 @@ const TableView = ({
           // @ts-expect-error: I'm copying this from the docs, but it doesn't
           // look like their type definitions work
           <DataGridStyled
+            className={'rdg-dark'}
             columns={columns}
             rows={records}
             onScroll={handleScroll}
@@ -233,6 +229,7 @@ const TableView = ({
             role="grid"
             data-testid="datagrid"
             ref={dataGridHandle}
+            rowHeight={41}
             isFilterPanelOpen={isFilterPanelOpen}
           />
         )}

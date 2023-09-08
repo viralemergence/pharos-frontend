@@ -3,15 +3,15 @@ import colorPalette from 'figma/colorPalette'
 import styled from 'styled-components'
 
 export enum SortStatus {
-  selected = 'selected',
-  reverse = 'reverse',
-  unselected = 'unselected',
+  Selected = 'selected',
+  Reverse = 'reverse',
+  Unselected = 'unselected',
 }
 
 export const CYCLE = [
-  SortStatus.unselected,
-  SortStatus.selected,
-  SortStatus.reverse,
+  SortStatus.Unselected,
+  SortStatus.Selected,
+  SortStatus.Reverse,
 ]
 
 interface SortIconProps extends React.SVGProps<SVGSVGElement> {
@@ -41,15 +41,15 @@ const SortIcon = ({
   let upArrowFill: string, downArrowFill: string
 
   switch (status) {
-    case SortStatus.selected:
+    case SortStatus.Selected:
       upArrowFill = transparent
       downArrowFill = downArrowSelectedColor
       break
-    case SortStatus.reverse:
+    case SortStatus.Reverse:
       upArrowFill = upArrowSelectedColor
       downArrowFill = transparent
       break
-    case SortStatus.unselected:
+    case SortStatus.Unselected:
       upArrowFill = upArrowUnselectedColor
       downArrowFill = downArrowUnselectedColor
       break

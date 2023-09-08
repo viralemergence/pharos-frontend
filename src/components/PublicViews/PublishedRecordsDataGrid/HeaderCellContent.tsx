@@ -10,7 +10,7 @@ const ColumnLabel = styled.div`
   overflow: clip;
 `
 
-const SortButtonStyled = styled.button<{ sortPriority: number | undefined }>`
+const SortButtonStyled = styled.button<{ sortPriority?: number }>`
   border: 0;
   cursor: pointer;
   padding: 0 3px;
@@ -34,23 +34,23 @@ const SortButtonStyled = styled.button<{ sortPriority: number | undefined }>`
   }
 `
 
-type ColumnHeaderProps = {
+type HeaderCellContentProps = {
   dataGridKey: string
   sorts: Sort[]
   setSorts: Dispatch<SetStateAction<Sort[]>>
   sortable: boolean
 }
 
-export type ColumnHeaderHandle = {
+export type HeaderCellContentHandle = {
   focusLastFocusableElement: () => void
 }
 
-const ColumnHeader = ({
+const HeaderCellContent = ({
   dataGridKey,
   sorts,
   setSorts,
   sortable,
-}: ColumnHeaderProps) => {
+}: HeaderCellContentProps) => {
   const firstFocusableElementRef: React.MutableRefObject<HTMLButtonElement | null> =
     useRef(null)
 
@@ -59,21 +59,18 @@ const ColumnHeader = ({
   let sort: Sort, sortPriority: number | undefined
   const index = sorts.findIndex(sort => sort.dataGridKey == dataGridKey)
   // Table is not sorted on this header's column
-  if (index === -1) sort = { dataGridKey, status: SortStatus.unselected }
+  if (index === -1) sort = { dataGridKey, status: SortStatus.Unselected }
   // Table is sorted on this header's column
   else [sort, sortPriority] = [sorts[index], index]
 
   const sortButtonClickHandler = () => {
     setSorts(prev => {
-      const currentCycleIndex = CYCLE.findIndex(
-        sortStatus => sortStatus == sort.status
-      )
-      const newSortStatus = CYCLE[(currentCycleIndex + 1) % CYCLE.length]
-      const newSort: Sort = { dataGridKey, status: newSortStatus }
+      const nextSortStatus = getNextSortStatus(sort.status)
+      const newSort: Sort = { dataGridKey, status: nextSortStatus }
       const previousSortsWithThisSortRemoved = prev.filter(
         sort => sort.dataGridKey !== dataGridKey
       )
-      if (newSortStatus === SortStatus.unselected) {
+      if (nextSortStatus === SortStatus.Unselected) {
         return previousSortsWithThisSortRemoved
       } else {
         return [newSort, ...previousSortsWithThisSortRemoved]
@@ -100,9 +97,9 @@ const ColumnHeader = ({
     if (!sortable) return
     if (!(headerCell instanceof HTMLDivElement)) return
     headerCell.addEventListener('keydown', cellKeyDownHandler)
-    if (sort.status === SortStatus.selected) {
+    if (sort.status === SortStatus.Selected) {
       headerCell.setAttribute('aria-sort', 'descending')
-    } else if (sort.status === SortStatus.reverse) {
+    } else if (sort.status === SortStatus.Reverse) {
       headerCell.setAttribute('aria-sort', 'ascending')
     } else {
       headerCell.removeAttribute('aria-sort')
@@ -123,7 +120,7 @@ const ColumnHeader = ({
           sortPriority={sortPriority}
         >
           <SortIcon
-            status={sort.status ?? SortStatus.unselected}
+            status={sort.status ?? SortStatus.Unselected}
             upArrowSelectedColor={colorPalette.mint}
             downArrowSelectedColor={colorPalette.mint}
             upArrowUnselectedColor={colorPalette.gridLines}
@@ -135,4 +132,4 @@ const ColumnHeader = ({
   )
 }
 
-export default ColumnHeader
+export default HeaderCellContent

@@ -34,7 +34,7 @@ const GridContainer = styled.div`
   margin: 0 40px;
 `
 
-const HIDDEN_FIELDS = ['Project name', 'Author']
+const HIDECOLUMNS = ['Project']
 const PAGESIZE = 50
 
 const DatasetPage = () => {
