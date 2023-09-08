@@ -15,6 +15,7 @@ import {
   DataGridStyled,
   Row,
   Sort,
+  SummaryOfRecords,
   getColumns,
 } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 
@@ -71,10 +72,12 @@ const NoRecordsFoundMessage = styled.div`
 `
 
 interface TableViewProps {
-  filters: Filter[]
+  filters?: Filter[]
   setFilters: Dispatch<SetStateAction<Filter[]>>
   isOpen?: boolean
   isFilterPanelOpen?: boolean
+  summaryOfRecords?: SummaryOfRecords
+  setSummaryOfRecords: Dispatch<SetStateAction<SummaryOfRecords>>
   sortableFields?: string[]
   /** Virtualization should be disabled in tests via this prop, so that all the
    * cells are rendered immediately */
@@ -94,16 +97,17 @@ const filterHasRealValues = (filter: Filter) =>
     0
 
 const TableView = ({
-  filters,
+  filters = [],
   setFilters,
   isOpen = true,
   isFilterPanelOpen = false,
   sortableFields = [],
   enableVirtualization = true,
+  summaryOfRecords = { isLastPage: false },
+  setSummaryOfRecords,
 }: TableViewProps) => {
   const [loading, setLoading] = useState<LoadingState>('replacing')
   const [records, setRecords] = useState<Row[]>([])
-  const [reachedLastPage, setReachedLastPage] = useState(false)
 
   /** Filters that have been added to the panel */
   const addedFilters = filters.filter(f => f.addedToPanel)
@@ -133,8 +137,8 @@ const TableView = ({
     records,
     setFilters,
     setLoading,
-    setReachedLastPage,
     setRecords,
+    setSummaryOfRecords,
   }
 
   // This is used as a dependency in a useEffect hook below
@@ -175,7 +179,7 @@ const TableView = ({
   const handleScroll = async (event: React.UIEvent<HTMLDivElement>) => {
     if (
       loading == 'done' &&
-      !reachedLastPage &&
+      !summaryOfRecords.isLastPage &&
       divIsScrolledToBottom(event.currentTarget)
     )
       load({ ...loadOptions, replaceRecords: false })

@@ -14,6 +14,7 @@ import {
   ViewContainer,
   ViewMain,
 } from 'components/DataPage/DisplayComponents'
+import { SummaryOfRecords } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 import usePublishedRecordsMetadata from 'hooks/publishedRecords/usePublishedRecordsMetadata'
 
 export type SimpleFilter = {
@@ -70,6 +71,9 @@ const DataPage = ({
     useState<MapProjection>('naturalEarth')
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
   const [filters, setFilters] = useState<Filter[]>([])
+  const [summaryOfRecords, setSummaryOfRecords] = useState<SummaryOfRecords>({
+    isLastPage: false,
+  })
 
   const [screenReaderAnnouncement, setScreenReaderAnnouncement] = useState('')
 
@@ -131,6 +135,7 @@ const DataPage = ({
             isFilterPanelOpen={isFilterPanelOpen}
             setIsFilterPanelOpen={setIsFilterPanelOpen}
             filters={filters}
+            summaryOfRecords={summaryOfRecords}
           />
           <ViewMain isFilterPanelOpen={isFilterPanelOpen}>
             {view === View.table && (
@@ -146,6 +151,8 @@ const DataPage = ({
               setFilters={setFilters}
               isOpen={view === View.table}
               isFilterPanelOpen={isFilterPanelOpen}
+              summaryOfRecords={summaryOfRecords}
+              setSummaryOfRecords={setSummaryOfRecords}
               enableVirtualization={enableTableVirtualization}
               sortableFields={sortableFields}
             />

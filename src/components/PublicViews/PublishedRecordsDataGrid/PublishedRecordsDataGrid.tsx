@@ -19,7 +19,6 @@ import ProjectName from './formatters/ProjectName'
 import { PublishedRecordsLoadingState } from 'hooks/publishedRecords/fetchPublishedRecords'
 import usePublishedRecords from 'hooks/publishedRecords/usePublishedRecords'
 
-// import ColumnHeader from 'components/PublicViews/PublishedRecordsDataGrid/ColumnHeader'
 import {
   SortStatus,
   SORT_CYCLE,
@@ -55,6 +54,17 @@ export const getNextSortStatus = (currentSortStatus: SortStatus) => {
   )
   return SORT_CYCLE[(currentCycleIndex + 1) % SORT_CYCLE.length]
 }
+
+export interface SummaryOfRecords {
+  /** Has the user scrolled to the last page of records? */
+  isLastPage: boolean
+  /** The total number of records in the database */
+  recordCount?: number
+  /** THe number of records that match the current filters */
+  matchingRecordCount?: number
+}
+
+
 
 const TableContainer = styled.div`
   position: relative;
@@ -150,11 +160,6 @@ export const formatters: Record<string, DataGridFormatter> = {
   Researcher: Researcher,
 }
 
-const defaultWidthOverride = {
-  Project: 300,
-  Researcher: 200,
-}
-
 interface PublishedRecordsDataGridProps {
   publishedRecordsData: ReturnType<typeof usePublishedRecords>[0]
   loadMore: ReturnType<typeof usePublishedRecords>[1]
@@ -225,7 +230,6 @@ const PublishedRecordsDataGrid = ({
         // but it doesn't look like their type definitions work
         <TallDataGridStyled
           ref={gridRef}
-          className={'rdg-dark'}
           columns={columns}
           rows={publishedRecordsData.data.publishedRecords}
           onScroll={handleScroll}
@@ -245,6 +249,11 @@ const PublishedRecordsDataGrid = ({
       )}
     </TableContainer>
   )
+}
+
+const defaultWidthOverride = {
+  Project: 300,
+  Researcher: 200,
 }
 
 const estimateColumnWidth = (key: string, sortable: boolean) => {
