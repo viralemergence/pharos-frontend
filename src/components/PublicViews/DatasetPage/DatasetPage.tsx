@@ -106,11 +106,6 @@ const DatasetPage = () => {
     )
   }
 
-  const columnWidths = {
-    'Project name': 300,
-    Researcher: 200,
-  }
-
   return (
     <>
       <PublicViewBackground />
@@ -157,7 +152,6 @@ const DatasetPage = () => {
           sortableFields={sortableFields}
           sorts={sorts}
           setSorts={setSorts}
-          columnWidths={columnWidths}
         />
       </GridContainer>
     </>
