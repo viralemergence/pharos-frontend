@@ -29,6 +29,14 @@ import useProject from 'hooks/project/useProject'
 import { commaSeparatedList } from 'utilities/grammar'
 import useDatasets from 'hooks/dataset/useDatasets'
 import ClickToCopy from 'components/ui/ClickToCopy'
+import MintToolbar, {
+  MintToolbarButton,
+  MintToolbarButtonLink,
+} from 'components/ui/MintToolbar/MintToolbar'
+import EditIcon from 'components/ui/MintToolbar/MintToolbarIcons/EditIcon'
+import PreviewIcon from 'components/ui/MintToolbar/MintToolbarIcons/PreviewIcon'
+import DownloadIcon from 'components/ui/MintToolbar/MintToolbarIcons/DownloadIcon'
+import { ProjectPublishStatus } from 'reducers/stateReducer/types'
 
 const LoggedInProjectPageContentBox = styled(ProjectPageContentBox)`
   background-color: ${({ theme }) => theme.isThisGrayEvenHereItsSoLight};
@@ -82,6 +90,24 @@ const ProjectPage = () => {
         <Title>{project.name}</Title>
         <Controls>
           <PublishUnpublishButtons />
+          <MintToolbar>
+            <MintToolbarButton tooltip="Edit">
+              <EditIcon />
+            </MintToolbarButton>
+            {project.publishStatus === ProjectPublishStatus.Published && (
+              <MintToolbarButtonLink
+                to={`/projects/#/${project.projectID}/`}
+                tooltip="Switch to public page"
+              >
+                View published
+              </MintToolbarButtonLink>
+            )}
+            {
+              // <MintToolbarButton tooltip="Download (MAYBE)">
+              //   <DownloadIcon />
+              // </MintToolbarButton>
+            }
+          </MintToolbar>
         </Controls>
       </TopBar>
       <ProjectPageMain>
