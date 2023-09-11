@@ -34,8 +34,6 @@ import MintToolbar, {
   MintToolbarButtonLink,
 } from 'components/ui/MintToolbar/MintToolbar'
 import EditIcon from 'components/ui/MintToolbar/MintToolbarIcons/EditIcon'
-import PreviewIcon from 'components/ui/MintToolbar/MintToolbarIcons/PreviewIcon'
-import DownloadIcon from 'components/ui/MintToolbar/MintToolbarIcons/DownloadIcon'
 import { ProjectPublishStatus } from 'reducers/stateReducer/types'
 
 const LoggedInProjectPageContentBox = styled(ProjectPageContentBox)`
