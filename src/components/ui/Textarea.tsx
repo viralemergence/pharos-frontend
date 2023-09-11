@@ -12,6 +12,7 @@ const Textarea = styled.textarea`
   background: ${({ theme }) => theme.veryLightGray};
   color: ${({ theme }) => theme.darkPurpleWhiter};
   ${({ theme }) => theme.smallParagraph};
+  height: 120px;
 `
 
 export default Textarea
