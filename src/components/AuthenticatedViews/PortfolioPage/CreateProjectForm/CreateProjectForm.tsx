@@ -72,7 +72,7 @@ export interface FormData {
 
 const CreateProjectForm = () => {
   const doCreateProject = useDoCreateProject()
-  const [formMessage, setFormMessage] = useState('')
+  const [formMessage, setFormMessage] = useState('Project name cannot be blank')
   const theme = useTheme()
 
   const setModal = useModal()
