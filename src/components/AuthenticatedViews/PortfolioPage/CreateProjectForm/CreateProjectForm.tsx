@@ -104,6 +104,10 @@ const CreateProjectForm = () => {
     key: keyof typeof formData,
     index = 0
   ) => {
+    if (key === 'name')
+      if (value === '') setFormMessage('Project name cannot be blank')
+      else setFormMessage('')
+
     setFormData(prev => {
       // if the type of state is just a string, replace it
       if (typeof prev[key] === 'string') return { ...prev, [key]: value }
@@ -141,10 +145,7 @@ const CreateProjectForm = () => {
         type="text"
         autoFocus
         value={formData.name}
-        onChange={e => {
-          setFormMessage('')
-          updateProjectData(e.target.value, 'name')
-        }}
+        onChange={e => updateProjectData(e.target.value, 'name')}
         placeholder="Project name"
       />
 
@@ -266,9 +267,11 @@ const CreateProjectForm = () => {
         </AddMoreButton>
       )}
 
-      <ColorMessage status={ColorMessageStatus.Danger}>
-        {formMessage}
-      </ColorMessage>
+      {formMessage && (
+        <ColorMessage status={ColorMessageStatus.Danger}>
+          {formMessage}
+        </ColorMessage>
+      )}
 
       <MintButton
         onClick={handleSubmit}
