@@ -12,8 +12,9 @@ import TopBar, {
 } from 'components/layout/TopBar'
 
 import useModal from 'hooks/useModal/useModal'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import wideMargins from 'components/layout/Margins'
+import DownloadIcon from 'components/ui/icons/DownloadIcon'
 
 const PortfolioPageLayout = styled.div`
   ${wideMargins}
@@ -26,6 +27,7 @@ const PortfolioPageLayout = styled.div`
 
 const ProjectList = () => {
   const setModal = useModal()
+  const theme = useTheme()
 
   return (
     <PortfolioPageLayout>
@@ -39,6 +41,10 @@ const ProjectList = () => {
             onClick={() => setModal(<CreateProjectForm />, { closeable: true })}
           >
             + New Project
+          </MintButton>
+          <MintButton secondary>
+            <DownloadIcon fill={theme.black} />
+            Download dataset template
           </MintButton>
         </Controls>
       </TopBar>
