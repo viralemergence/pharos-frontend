@@ -10,9 +10,13 @@ const Textarea = styled.textarea`
   padding: 10px 20px;
   margin-top: 5px;
   background: ${({ theme }) => theme.veryLightGray};
-  color: ${({ theme }) => theme.darkPurpleWhiter};
+  color: ${({ theme }) => theme.black};
   ${({ theme }) => theme.smallParagraph};
   height: 120px;
+
+  &::placeholder {
+    color: ${({ theme }) => theme.darkGray};
+  }
 `
 
 export default Textarea

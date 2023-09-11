@@ -208,9 +208,8 @@ const CreateProjectForm = () => {
 
       <Label htmlFor="Your project publications">Project publications</Label>
       {formData.projectPublications.map((string, index) => (
-        <Input
+        <Textarea
           key={index}
-          type="text"
           id="Your project publications"
           name="Your project publications"
           value={string}
@@ -237,9 +236,8 @@ const CreateProjectForm = () => {
         Publications citing this project
       </Label>
       {formData.othersCiting.map((string, index) => (
-        <Input
+        <Textarea
           key={index}
-          type="text"
           id="Other projects citing"
           name="Other projects citing"
           value={string}
