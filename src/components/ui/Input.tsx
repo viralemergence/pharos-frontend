@@ -10,6 +10,9 @@ const Input = styled.input`
   margin-top: 5px;
   background: ${({ theme }) => theme.veryLightGray};
   color: ${({ theme }) => theme.black};
+  &::placeholder {
+    color: ${({ theme }) => theme.darkGray};
+  }
 `
 
 export default Input

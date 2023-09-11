@@ -16,6 +16,13 @@ const Section = styled.section`
   display: flex;
   flex-direction: column;
   padding: 0 15px 15px 15px;
+
+  input {
+    ${({ theme }) => theme.smallParagraph};
+    &::placeholder {
+      color: ${({ theme }) => theme.darkGray};
+    }
+  }
 `
 const H1 = styled.h1`
   ${({ theme }) => theme.h3}
@@ -132,6 +139,7 @@ const CreateProjectForm = () => {
         autoFocus
         value={formData.name}
         onChange={e => updateProjectData(e.target.value, 'name')}
+        placeholder="Project name"
       />
 
       <Label htmlFor="Project type">Project type</Label>
@@ -139,6 +147,7 @@ const CreateProjectForm = () => {
         inputId="Project type"
         items={projectTypes}
         placeholder="Project type"
+        placeholderColor={theme.darkGray}
         borderColor={theme.darkPurple}
         backgroundColor={theme.veryLightGray}
         onAdd={item => updateProjectData(item.label, 'projectType')}
@@ -152,6 +161,7 @@ const CreateProjectForm = () => {
         inputId="Surveillance status"
         items={surveillanceStatuses}
         placeholder="Surveillance status"
+        placeholderColor={theme.darkGray}
         borderColor={theme.darkPurple}
         backgroundColor={theme.veryLightGray}
         onAdd={item => updateProjectData(item.label, 'surveillanceStatus')}
@@ -170,6 +180,7 @@ const CreateProjectForm = () => {
           onChange={e =>
             updateProjectData(e.target.value, 'relatedMaterials', index)
           }
+          placeholder="e.g. github link"
         />
       ))}
       {formData.relatedMaterials.slice(-1)[0] !== '' && (
@@ -190,6 +201,7 @@ const CreateProjectForm = () => {
         id="Description"
         value={formData.description}
         onChange={e => updateProjectData(e.target.value, 'description')}
+        placeholder="Description of the project"
       />
 
       <Label htmlFor="Your project publications">Project publications</Label>
@@ -199,11 +211,11 @@ const CreateProjectForm = () => {
           type="text"
           id="Your project publications"
           name="Your project publications"
-          placeholder="Publication citation"
           value={string}
           onChange={e =>
             updateProjectData(e.target.value, 'projectPublications', index)
           }
+          placeholder="Publication by the resarcher about this project"
         />
       ))}
       {formData.projectPublications.slice(-1)[0] !== '' && (
@@ -228,11 +240,11 @@ const CreateProjectForm = () => {
           type="text"
           id="Other projects citing"
           name="Other projects citing"
-          placeholder="Publication citation"
           value={string}
           onChange={e =>
             updateProjectData(e.target.value, 'othersCiting', index)
           }
+          placeholder="Publication by the researcher about this project"
         />
       ))}
       {formData.othersCiting.slice(-1)[0] !== '' && (
