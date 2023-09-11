@@ -12,7 +12,7 @@ const DowloadTemplateButton = () => {
     e.preventDefault()
 
     const content = Object.keys(defaultColumns.columns).join(',') + '\n,'
-    const fileName = 'Pharos Datatset Template.csv'
+    const fileName = 'Pharos Dataset Template.csv'
 
     const downloadLink = document.createElement('a')
 
