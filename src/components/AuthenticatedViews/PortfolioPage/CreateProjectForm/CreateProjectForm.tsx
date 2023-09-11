@@ -9,6 +9,9 @@ import Typeahead from '../../../../../library/ui/typeahead/Typeahead'
 
 import useDoCreateProject from 'reducers/stateReducer/hooks/useDoCreateProject'
 import useModal from 'hooks/useModal/useModal'
+import ColorMessage, {
+  ColorMessageStatus,
+} from 'components/ui/Modal/ColorMessage'
 
 const Section = styled.section`
   width: 800px;
@@ -40,12 +43,6 @@ const AddMoreButton = styled.button`
 // const DividerLine = styled.div`
 //   border-bottom: 1px solid ${({ theme }) => theme.lightGray};
 // `
-
-const FormMessage = styled.p`
-  margin-top: 30px;
-  margin-bottom: 0px;
-  padding: 0px;
-`
 
 const projectTypes = [
   { key: '1', label: 'Routine surveillance' },
@@ -266,7 +263,9 @@ const CreateProjectForm = () => {
         </AddMoreButton>
       )}
 
-      <FormMessage>{formMessage}</FormMessage>
+      <ColorMessage status={ColorMessageStatus.Danger}>
+        {formMessage}
+      </ColorMessage>
 
       <MintButton
         onClick={handleSubmit}
