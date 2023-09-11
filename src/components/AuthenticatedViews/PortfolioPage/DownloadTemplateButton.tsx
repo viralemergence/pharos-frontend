@@ -5,7 +5,7 @@ import React from 'react'
 import { useTheme } from 'styled-components'
 import defaultColumns from '../../../../config/defaultColumns.json'
 
-const DowloadTemplateButton = () => {
+const DownloadTemplateButton = () => {
   const theme = useTheme()
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -34,4 +34,4 @@ const DowloadTemplateButton = () => {
   )
 }
 
-export default DowloadTemplateButton
+export default DownloadTemplateButton
