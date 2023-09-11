@@ -265,6 +265,7 @@ const CreateProjectForm = () => {
       <MintButton
         onClick={handleSubmit}
         style={{ marginRight: 'auto', marginTop: 30 }}
+        disabled={formData.name === ''}
       >
         Create new project
       </MintButton>
