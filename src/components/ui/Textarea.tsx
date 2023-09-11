@@ -8,7 +8,7 @@ const Textarea = styled.textarea`
   max-width: 100%;
   min-width: 100%;
   padding: 10px 20px;
-  margin-top: 5px;
+  margin-top: 8px;
   background: ${({ theme }) => theme.veryLightGray};
   color: ${({ theme }) => theme.black};
   ${({ theme }) => theme.smallParagraph};

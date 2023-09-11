@@ -7,7 +7,7 @@ const Input = styled.input`
   border-radius: 5px;
   width: 100%;
   padding: 10px 15px;
-  margin-top: 5px;
+  margin-top: 8px;
   background: ${({ theme }) => theme.veryLightGray};
   color: ${({ theme }) => theme.black};
   &::placeholder {
