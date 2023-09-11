@@ -1,5 +1,7 @@
 import { Link } from 'gatsby'
+import React from 'react'
 import styled, { css } from 'styled-components'
+import ThreeDotsIcon from './MintToolbarIcons/ThreeDotsIcon'
 
 const MintToolbar = styled.div`
   display: flex;
@@ -19,6 +21,9 @@ const MintToolbarButtonStyle = css<{ tooltip: string }>`
   border-radius: 5px;
   transition: 150ms ease;
   background: ${({ theme }) => theme.lightMint};
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     background: ${({ theme }) => theme.hoverMint2};
@@ -49,5 +54,30 @@ export const MintToolbarButton = styled.button<{ tooltip: string }>`
 export const MintToolbarButtonLink = styled(Link)<{ tooltip: string }>`
   ${MintToolbarButtonStyle}
 `
+
+const MintToolbarMoreButton = styled(MintToolbarButton)<{ tooltip: string }>`
+  margin-top: 3px;
+  margin-bottom: 3px;
+  aspect-ratio: 1 / 1;
+  padding: 7px 10px;
+
+  &:hover {
+    &:before {
+      top: -2px;
+    }
+  }
+`
+
+interface MintToolbarMoreButtonProps {
+  children: React.ReactNode
+}
+
+export const MintToolbarMore = ({ children }: MintToolbarMoreButtonProps) => {
+  return (
+    <MintToolbarMoreButton tooltip="More">
+      <ThreeDotsIcon />
+    </MintToolbarMoreButton>
+  )
+}
 
 export default MintToolbar

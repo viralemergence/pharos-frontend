@@ -32,9 +32,11 @@ import ClickToCopy from 'components/ui/ClickToCopy'
 import MintToolbar, {
   MintToolbarButton,
   MintToolbarButtonLink,
+  MintToolbarMore,
 } from 'components/ui/MintToolbar/MintToolbar'
 import EditIcon from 'components/ui/MintToolbar/MintToolbarIcons/EditIcon'
 import { ProjectPublishStatus } from 'reducers/stateReducer/types'
+import DownloadIcon from 'components/ui/MintToolbar/MintToolbarIcons/DownloadIcon'
 
 const LoggedInProjectPageContentBox = styled(ProjectPageContentBox)`
   background-color: ${({ theme }) => theme.isThisGrayEvenHereItsSoLight};
@@ -101,11 +103,14 @@ const ProjectPage = () => {
               </MintToolbarButtonLink>
             )}
             {
-              // <MintToolbarButton tooltip="Download (MAYBE)">
-              //   <DownloadIcon />
-              // </MintToolbarButton>
+              <MintToolbarButton tooltip="Download (MAYBE)">
+                <DownloadIcon />
+              </MintToolbarButton>
             }
           </MintToolbar>
+          <MintToolbarMore>
+            <p>hi</p>
+          </MintToolbarMore>
         </Controls>
       </TopBar>
       <ProjectPageMain>
