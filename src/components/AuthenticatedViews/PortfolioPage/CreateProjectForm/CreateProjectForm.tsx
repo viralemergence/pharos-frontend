@@ -150,6 +150,7 @@ const CreateProjectForm = () => {
         placeholderColor={theme.darkGray}
         borderColor={theme.darkPurple}
         backgroundColor={theme.veryLightGray}
+        style={{ boxShadow: 'none' }}
         onAdd={item => updateProjectData(item.label, 'projectType')}
         values={projectTypes.filter(
           item => item.label === formData.projectType
@@ -165,6 +166,7 @@ const CreateProjectForm = () => {
         borderColor={theme.darkPurple}
         backgroundColor={theme.veryLightGray}
         onAdd={item => updateProjectData(item.label, 'surveillanceStatus')}
+        style={{ boxShadow: 'none' }}
         values={surveillanceStatuses.filter(
           item => item.label === formData.surveillanceStatus
         )}
@@ -244,7 +246,7 @@ const CreateProjectForm = () => {
           onChange={e =>
             updateProjectData(e.target.value, 'othersCiting', index)
           }
-          placeholder="Publication by the researcher about this project"
+          placeholder="Publications by other researchers that reference this project"
         />
       ))}
       {formData.othersCiting.slice(-1)[0] !== '' && (
@@ -261,8 +263,12 @@ const CreateProjectForm = () => {
       )}
 
       <p style={{ margin: 0, padding: 0 }}>{formMessage}</p>
-      <MintButton onClick={handleSubmit} style={{ marginLeft: 'auto' }}>
-        Create Project
+
+      <MintButton
+        onClick={handleSubmit}
+        style={{ marginRight: 'auto', marginTop: 30 }}
+      >
+        Create new project
       </MintButton>
     </Section>
   )
