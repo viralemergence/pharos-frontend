@@ -216,7 +216,7 @@ const CreateProjectForm = () => {
           onChange={e =>
             updateProjectData(e.target.value, 'projectPublications', index)
           }
-          placeholder="Publications by the resarcher about this project"
+          placeholder="Publications by the researcher about this project"
         />
       ))}
       {formData.projectPublications.slice(-1)[0] !== '' && (
