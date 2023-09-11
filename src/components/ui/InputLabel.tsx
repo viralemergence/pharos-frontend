@@ -2,9 +2,8 @@ import styled from 'styled-components'
 
 const Label = styled.label`
   ${({ theme }) => theme.extraSmallParagraph};
-  color: ${({ theme }) => theme.black};
   display: block;
-  margin-bottom: 15px;
+  margin-top: 30px;
 `
 
 export default Label
