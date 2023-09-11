@@ -50,6 +50,7 @@ export const Container = styled.form<{
 export const SearchBar = styled.input<{
   iconLeft: boolean
   fontColor: string
+  placeholderColor: string
 }>`
   border: none;
   width: 100%;
@@ -69,8 +70,13 @@ export const SearchBar = styled.input<{
 
   color: ${({ fontColor }) => fontColor};
   &::placeholder {
-    color: ${({ fontColor }) => fontColor};
-    opacity: 0.66;
+    ${({ fontColor, placeholderColor }) =>
+      placeholderColor
+        ? `color: ${placeholderColor}`
+        : `
+            color: ${fontColor};
+            opacity: 0.66
+          `};
   }
 `
 export const Results = styled.div<{ resultsMaxHeight: string }>`
