@@ -141,7 +141,10 @@ const CreateProjectForm = () => {
         type="text"
         autoFocus
         value={formData.name}
-        onChange={e => updateProjectData(e.target.value, 'name')}
+        onChange={e => {
+          setFormMessage('')
+          updateProjectData(e.target.value, 'name')
+        }}
         placeholder="Project name"
       />
 
