@@ -19,11 +19,7 @@ const DownloadDefinitionsButton = () => {
       Definition: value.definition,
     }))
 
-    console.log(columns)
-    console.log(rows)
-
     const content = Papa.unparse(rows, { columns })
-    console.log(content)
 
     const fileName = 'Pharos Column Definitions.csv'
 
