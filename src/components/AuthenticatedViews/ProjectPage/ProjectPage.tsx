@@ -108,7 +108,7 @@ const ProjectPage = () => {
           <p>{user.name}</p>
         </LoggedInProjectPageContentBox>
         <LoggedInProjectPageContentBox>
-          <h2>Project perminant link</h2>
+          <h2>Permanent project link</h2>
           <ClickToCopy
             copyContentString={`${window.location.origin}/#/projects/${project.projectID}`}
             style={{ marginTop: 10 }}
