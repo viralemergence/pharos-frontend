@@ -129,7 +129,7 @@ const CreateProjectForm = () => {
 
   return (
     <Section>
-      <H1>Create Project</H1>
+      <H1>New Project</H1>
 
       <Label htmlFor="Name">Project name *</Label>
       <Input
