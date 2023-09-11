@@ -15,11 +15,11 @@ const Section = styled.section`
   max-width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 15px;
   padding: 0 15px 15px 15px;
 `
 const H1 = styled.h1`
   ${({ theme }) => theme.h3}
+  margin-bottom: 0;
 `
 const AddMoreButton = styled.button`
   background: none;
@@ -28,7 +28,7 @@ const AddMoreButton = styled.button`
   margin-right: auto;
   ${({ theme }) => theme.extraSmallParagraph};
   color: ${({ theme }) => theme.darkGray};
-  margin-top: -20px;
+  margin-top: 10px;
 `
 // const DividerLine = styled.div`
 //   border-bottom: 1px solid ${({ theme }) => theme.lightGray};
@@ -123,25 +123,20 @@ const CreateProjectForm = () => {
   return (
     <Section>
       <H1>Create Project</H1>
-      <Label>
-        Project name *
-        <Input
-          type="text"
-          name="name"
-          autoFocus
-          value={formData.name}
-          onChange={e => updateProjectData(e.target.value, 'name')}
-        />
-      </Label>
-      <Label>
-        Description
-        <Textarea
-          value={formData.description}
-          onChange={e => updateProjectData(e.target.value, 'description')}
-        />
-      </Label>
-      <Label style={{ margin: '0px 0px -15px 0px' }}>Project type</Label>
+
+      <Label htmlFor="Name">Project name *</Label>
+      <Input
+        id="Name"
+        name="Name"
+        type="text"
+        autoFocus
+        value={formData.name}
+        onChange={e => updateProjectData(e.target.value, 'name')}
+      />
+
+      <Label htmlFor="Project type">Project type</Label>
       <Typeahead
+        inputId="Project type"
         items={projectTypes}
         placeholder="Project type"
         borderColor={theme.darkPurple}
@@ -151,11 +146,10 @@ const CreateProjectForm = () => {
           item => item.label === formData.projectType
         )}
       />
-      <Label style={{ margin: '15px 0px -15px 0px' }}>
-        Surveillance status
-      </Label>
+
+      <Label htmlFor="Surveillance status">Surveillance status</Label>
       <Typeahead
-        style={{ marginBottom: 15 }}
+        inputId="Surveillance status"
         items={surveillanceStatuses}
         placeholder="Surveillance status"
         borderColor={theme.darkPurple}
@@ -165,27 +159,19 @@ const CreateProjectForm = () => {
           item => item.label === formData.surveillanceStatus
         )}
       />
-      <Label>
-        Cite this project
-        <Textarea
-          name="citation"
-          onChange={e => updateProjectData(e.target.value, 'citation')}
+
+      <Label htmlFor="Related materials">Related material</Label>
+      {formData.relatedMaterials.map((string, index) => (
+        <Input
+          key={index}
+          type="text"
+          name="Related materials"
+          value={string}
+          onChange={e =>
+            updateProjectData(e.target.value, 'relatedMaterials', index)
+          }
         />
-      </Label>
-      <Label>
-        Related materials
-        {formData.relatedMaterials.map((string, index) => (
-          <Input
-            key={index}
-            type="text"
-            name="name"
-            value={string}
-            onChange={e =>
-              updateProjectData(e.target.value, 'relatedMaterials', index)
-            }
-          />
-        ))}
-      </Label>
+      ))}
       {formData.relatedMaterials.slice(-1)[0] !== '' && (
         <AddMoreButton
           onClick={() =>
@@ -195,24 +181,31 @@ const CreateProjectForm = () => {
             }))
           }
         >
-          + Add more related laterial
+          + Add another
         </AddMoreButton>
       )}
-      <Label>
-        Your project publications
-        {formData.projectPublications.map((string, index) => (
-          <Input
-            key={index}
-            type="text"
-            name="your project publications"
-            placeholder="Publication citation"
-            value={string}
-            onChange={e =>
-              updateProjectData(e.target.value, 'projectPublications', index)
-            }
-          />
-        ))}
-      </Label>
+
+      <Label htmlFor="Description">Description</Label>
+      <Textarea
+        id="Description"
+        value={formData.description}
+        onChange={e => updateProjectData(e.target.value, 'description')}
+      />
+
+      <Label htmlFor="Your project publications">Project publications</Label>
+      {formData.projectPublications.map((string, index) => (
+        <Input
+          key={index}
+          type="text"
+          id="Your project publications"
+          name="Your project publications"
+          placeholder="Publication citation"
+          value={string}
+          onChange={e =>
+            updateProjectData(e.target.value, 'projectPublications', index)
+          }
+        />
+      ))}
       {formData.projectPublications.slice(-1)[0] !== '' && (
         <AddMoreButton
           onClick={() =>
@@ -222,24 +215,26 @@ const CreateProjectForm = () => {
             }))
           }
         >
-          + Add more related material
+          + Add another
         </AddMoreButton>
       )}
-      <Label>
-        Other publications citing this project
-        {formData.othersCiting.map((string, index) => (
-          <Input
-            key={index}
-            type="text"
-            name="other projects citing"
-            placeholder="Publication citation"
-            value={string}
-            onChange={e =>
-              updateProjectData(e.target.value, 'othersCiting', index)
-            }
-          />
-        ))}
+
+      <Label htmlFor="Other projects citing">
+        Publications citing this project
       </Label>
+      {formData.othersCiting.map((string, index) => (
+        <Input
+          key={index}
+          type="text"
+          id="Other projects citing"
+          name="Other projects citing"
+          placeholder="Publication citation"
+          value={string}
+          onChange={e =>
+            updateProjectData(e.target.value, 'othersCiting', index)
+          }
+        />
+      ))}
       {formData.othersCiting.slice(-1)[0] !== '' && (
         <AddMoreButton
           onClick={() =>
@@ -249,9 +244,10 @@ const CreateProjectForm = () => {
             }))
           }
         >
-          + Add more related material
+          + Add another
         </AddMoreButton>
       )}
+
       <p style={{ margin: 0, padding: 0 }}>{formMessage}</p>
       <MintButton onClick={handleSubmit} style={{ marginLeft: 'auto' }}>
         Create Project
