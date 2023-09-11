@@ -1,6 +1,8 @@
+import React from 'react'
+import Papa from 'papaparse'
+
 import DownloadIcon from 'components/ui/icons/DownloadIcon'
 import MintButton from 'components/ui/MintButton'
-import React from 'react'
 
 import { useTheme } from 'styled-components'
 import defaultColumns from '../../../../config/defaultColumns.json'
@@ -11,10 +13,17 @@ const DownloadDefinitionsButton = () => {
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
 
-    let content = 'Column, Definition\n'
-    for (const [key, value] of Object.entries(defaultColumns.columns)) {
-      content += `${key}, ${value.definition}\n`
-    }
+    const columns = ['Column', 'Definition']
+    const rows = Object.entries(defaultColumns.columns).map(([key, value]) => ({
+      Column: key,
+      Definition: value.definition,
+    }))
+
+    console.log(columns)
+    console.log(rows)
+
+    const content = Papa.unparse(rows, { columns })
+    console.log(content)
 
     const fileName = 'Pharos Column Definitions.csv'
 
