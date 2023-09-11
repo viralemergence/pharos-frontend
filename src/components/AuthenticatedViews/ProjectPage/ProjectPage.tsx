@@ -104,7 +104,7 @@ const ProjectPage = () => {
           <ProjectStatus />
         </WideProjectStatus>
         <LoggedInProjectPageContentBox>
-          <h2>Author</h2>
+          <h2>Researcher</h2>
           <p>{user.name}</p>
         </LoggedInProjectPageContentBox>
         <LoggedInProjectPageContentBox>
