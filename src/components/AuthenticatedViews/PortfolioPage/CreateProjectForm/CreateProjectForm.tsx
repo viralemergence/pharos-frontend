@@ -41,6 +41,12 @@ const AddMoreButton = styled.button`
 //   border-bottom: 1px solid ${({ theme }) => theme.lightGray};
 // `
 
+const FormMessage = styled.p`
+  margin-top: 30px;
+  margin-bottom: 0px;
+  padding: 0px;
+`
+
 const projectTypes = [
   { key: '1', label: 'Routine surveillance' },
   { key: '2', label: 'Opportunistic' },
@@ -260,7 +266,7 @@ const CreateProjectForm = () => {
         </AddMoreButton>
       )}
 
-      <p style={{ margin: 0, padding: 0 }}>{formMessage}</p>
+      <FormMessage>{formMessage}</FormMessage>
 
       <MintButton
         onClick={handleSubmit}
