@@ -50,7 +50,7 @@ export const Container = styled.form<{
 export const SearchBar = styled.input<{
   iconLeft: boolean
   fontColor: string
-  placeholderColor: string
+  placeholderColor?: string
 }>`
   border: none;
   width: 100%;
