@@ -151,6 +151,7 @@ export const MintToolbarMore = ({ children }: MintToolbarMoreProps) => {
         right: '0px',
         background: 'rgba(0,0,0,0)',
       }}
+      animDuration={100}
       renderButton={() => (
         <ToolbarThreeDotsButton tooltip="More">
           <ToolbarThreeDotsVisibleButton tooltip="More">
