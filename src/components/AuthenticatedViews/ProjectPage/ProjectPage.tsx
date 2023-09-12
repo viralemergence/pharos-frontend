@@ -37,7 +37,6 @@ import MintToolbar, {
 } from 'components/ui/MintToolbar/MintToolbar'
 import EditIcon from 'components/ui/MintToolbar/MintToolbarIcons/EditIcon'
 import { ProjectPublishStatus } from 'reducers/stateReducer/types'
-import DownloadIcon from 'components/ui/MintToolbar/MintToolbarIcons/DownloadIcon'
 import UnpublishIcon from 'components/ui/MintToolbar/MintToolbarIcons/UnpublishIcon'
 import DeleteIcon from 'components/ui/MintToolbar/MintToolbarIcons/DeleteIcon'
 import PreviewIcon from 'components/ui/MintToolbar/MintToolbarIcons/PreviewIcon'
