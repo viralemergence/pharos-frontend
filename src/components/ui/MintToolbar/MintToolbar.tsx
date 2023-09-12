@@ -130,6 +130,13 @@ export const MintToolbarMoreMenuButton = styled.button`
   &:hover {
     background-color: ${({ theme }) => theme.lightBlack};
   }
+
+  &:disabled {
+    opacity: 0.5;
+    &:hover {
+      background-color: ${({ theme }) => theme.black};
+    }
+  }
 `
 
 interface MintToolbarMoreProps {
