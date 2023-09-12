@@ -112,7 +112,11 @@ const ProjectPage = () => {
             }
           </MintToolbar>
           <MintToolbarMore>
-            <MintToolbarMoreMenuButton>
+            <MintToolbarMoreMenuButton
+              disabled={
+                project.publishStatus !== ProjectPublishStatus.Published
+              }
+            >
               <UnpublishIcon /> Unpublish project
             </MintToolbarMoreMenuButton>
             <MintToolbarMoreMenuButton>
