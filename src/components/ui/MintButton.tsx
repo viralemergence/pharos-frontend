@@ -12,7 +12,7 @@ const buttonStyle = css<{
   ${({ theme }) => theme.smallParagraph}
   color: ${({ theme }) => theme.black};
   border: 2px solid;
-  padding: 10px 20px;
+  padding: 8px 20px;
   transition: 150ms ease;
   display: flex;
   align-items: center;

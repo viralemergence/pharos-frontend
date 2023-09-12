@@ -92,7 +92,7 @@ const ProjectPage = () => {
         </Breadcrumbs>
         <Title>{project.name}</Title>
         <Controls>
-          <PublishUnpublishButtons />
+          {<PublishUnpublishButtons />}
           <MintToolbar>
             <MintToolbarButton tooltip="Edit">
               <EditIcon />

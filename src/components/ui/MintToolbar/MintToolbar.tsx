@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'gatsby'
-import styled, { css } from 'styled-components'
+import styled, { css, useTheme } from 'styled-components'
 
 import Dropdown from '@talus-analytics/library.ui.dropdown'
 import ThreeDotsIcon from './MintToolbarIcons/ThreeDotsIcon'
@@ -35,6 +35,7 @@ const MintToolbarButtonStyle = css<{ tooltip: string }>`
       ${({ theme }) => theme.extraSmallParagraph};
       content: '${({ tooltip }) => tooltip}';
       position: absolute;
+      // top: -7px;
       top: -5px;
       left: 50%;
       padding: 3px 10px;
@@ -57,16 +58,51 @@ export const MintToolbarButtonLink = styled(Link)<{ tooltip: string }>`
   ${MintToolbarButtonStyle}
 `
 
-const ToolbarThreeDotsButton = styled(MintToolbarButton)<{ tooltip: string }>`
-  margin-top: 3px;
-  margin-bottom: 3px;
-  aspect-ratio: 1 / 1;
-  padding: 7px 10px;
+const ToolbarThreeDotsButton = styled.button<{ tooltip: string }>`
+  position: relative;
+  padding: 0px;
+  background: none;
+  border: none;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     &:before {
-      top: -2px;
+      ${({ theme }) => theme.extraSmallParagraph};
+      content: '${({ tooltip }) => tooltip}';
+      position: absolute;
+      // top: -2px;
+      top: 0px;
+      left: 50%;
+      padding: 3px 10px;
+      transform: translate(-50%, -100%);
+      background-color: ${({ theme }) => theme.black};
+      color: ${({ theme }) => theme.white};
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: max-content;
     }
+  }
+`
+
+const ToolbarThreeDotsVisibleButton = styled.div<{ tooltip: string }>`
+  aspect-ratio: 1 / 1;
+  position: relative;
+  margin: 0;
+  padding: 9px;
+  border-radius: 5px;
+  transition: 150ms ease;
+  background: ${({ theme }) => theme.lightMint};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: ${({ theme }) => theme.hoverMint2};
+    transition: 250ms ease;
   }
 `
 
@@ -77,6 +113,7 @@ const ToolbarMoreMenu = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: stretch;
+  position: relative;
 `
 
 export const MintToolbarMoreMenuButton = styled.button`
@@ -102,10 +139,16 @@ interface MintToolbarMoreProps {
 export const MintToolbarMore = ({ children }: MintToolbarMoreProps) => {
   return (
     <Dropdown
-      expanderStyle={{ left: 'unset', right: '0px' }}
+      expanderStyle={{
+        left: 'unset',
+        right: '0px',
+        background: 'rgba(0,0,0,0)',
+      }}
       renderButton={() => (
         <ToolbarThreeDotsButton tooltip="More">
-          <ThreeDotsIcon />
+          <ToolbarThreeDotsVisibleButton tooltip="More">
+            <ThreeDotsIcon />
+          </ToolbarThreeDotsVisibleButton>
         </ToolbarThreeDotsButton>
       )}
     >
