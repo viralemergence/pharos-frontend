@@ -1,6 +1,8 @@
-import { Link } from 'gatsby'
 import React from 'react'
+import { Link } from 'gatsby'
 import styled, { css } from 'styled-components'
+
+import Dropdown from '@talus-analytics/library.ui.dropdown'
 import ThreeDotsIcon from './MintToolbarIcons/ThreeDotsIcon'
 
 const MintToolbar = styled.div`
@@ -55,7 +57,7 @@ export const MintToolbarButtonLink = styled(Link)<{ tooltip: string }>`
   ${MintToolbarButtonStyle}
 `
 
-const MintToolbarMoreButton = styled(MintToolbarButton)<{ tooltip: string }>`
+const ToolbarThreeDotsButton = styled(MintToolbarButton)<{ tooltip: string }>`
   margin-top: 3px;
   margin-bottom: 3px;
   aspect-ratio: 1 / 1;
@@ -68,15 +70,47 @@ const MintToolbarMoreButton = styled(MintToolbarButton)<{ tooltip: string }>`
   }
 `
 
-interface MintToolbarMoreButtonProps {
+const ToolbarMoreMenu = styled.div`
+  background-color: ${({ theme }) => theme.black};
+  border-radius: 5px;
+  padding: 5px 0px;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+`
+
+export const MintToolbarMoreMenuButton = styled.button`
+  background: none;
+  border: none;
+  ${({ theme }) => theme.smallParagraph};
+  color: ${({ theme }) => theme.white};
+  background-color: ${({ theme }) => theme.black};
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 20px;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.lightBlack};
+  }
+`
+
+interface MintToolbarMoreProps {
   children: React.ReactNode
 }
 
-export const MintToolbarMore = ({ children }: MintToolbarMoreButtonProps) => {
+export const MintToolbarMore = ({ children }: MintToolbarMoreProps) => {
   return (
-    <MintToolbarMoreButton tooltip="More">
-      <ThreeDotsIcon />
-    </MintToolbarMoreButton>
+    <Dropdown
+      expanderStyle={{ left: 'unset', right: '0px' }}
+      renderButton={() => (
+        <ToolbarThreeDotsButton tooltip="More">
+          <ThreeDotsIcon />
+        </ToolbarThreeDotsButton>
+      )}
+    >
+      <ToolbarMoreMenu>{children}</ToolbarMoreMenu>
+    </Dropdown>
   )
 }
 

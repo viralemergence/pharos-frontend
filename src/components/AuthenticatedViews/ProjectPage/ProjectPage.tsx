@@ -33,10 +33,13 @@ import MintToolbar, {
   MintToolbarButton,
   MintToolbarButtonLink,
   MintToolbarMore,
+  MintToolbarMoreMenuButton,
 } from 'components/ui/MintToolbar/MintToolbar'
 import EditIcon from 'components/ui/MintToolbar/MintToolbarIcons/EditIcon'
 import { ProjectPublishStatus } from 'reducers/stateReducer/types'
 import DownloadIcon from 'components/ui/MintToolbar/MintToolbarIcons/DownloadIcon'
+import UnpublishIcon from 'components/ui/MintToolbar/MintToolbarIcons/UnpublishIcon'
+import DeleteIcon from 'components/ui/MintToolbar/MintToolbarIcons/DeleteIcon'
 
 const LoggedInProjectPageContentBox = styled(ProjectPageContentBox)`
   background-color: ${({ theme }) => theme.isThisGrayEvenHereItsSoLight};
@@ -109,7 +112,12 @@ const ProjectPage = () => {
             }
           </MintToolbar>
           <MintToolbarMore>
-            <p>hi</p>
+            <MintToolbarMoreMenuButton>
+              <UnpublishIcon /> Unpublish project
+            </MintToolbarMoreMenuButton>
+            <MintToolbarMoreMenuButton>
+              <DeleteIcon /> Delete project
+            </MintToolbarMoreMenuButton>
           </MintToolbarMore>
         </Controls>
       </TopBar>
