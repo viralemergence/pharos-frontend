@@ -40,6 +40,7 @@ import { ProjectPublishStatus } from 'reducers/stateReducer/types'
 import DownloadIcon from 'components/ui/MintToolbar/MintToolbarIcons/DownloadIcon'
 import UnpublishIcon from 'components/ui/MintToolbar/MintToolbarIcons/UnpublishIcon'
 import DeleteIcon from 'components/ui/MintToolbar/MintToolbarIcons/DeleteIcon'
+import PreviewIcon from 'components/ui/MintToolbar/MintToolbarIcons/PreviewIcon'
 
 const LoggedInProjectPageContentBox = styled(ProjectPageContentBox)`
   background-color: ${({ theme }) => theme.isThisGrayEvenHereItsSoLight};
@@ -102,13 +103,13 @@ const ProjectPage = () => {
                 to={`/projects/#/${project.projectID}/`}
                 tooltip="Switch to public page"
               >
-                View published
+                <PreviewIcon />
               </MintToolbarButtonLink>
             )}
             {
-              <MintToolbarButton tooltip="Download (MAYBE)">
-                <DownloadIcon />
-              </MintToolbarButton>
+              // <MintToolbarButton tooltip="Download (MAYBE)">
+              //   <DownloadIcon />
+              // </MintToolbarButton>
             }
           </MintToolbar>
           <MintToolbarMore>
