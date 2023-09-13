@@ -12,7 +12,13 @@ import useModal from 'hooks/useModal/useModal'
 import ColorMessage, {
   ColorMessageStatus,
 } from 'components/ui/Modal/ColorMessage'
-import { Project } from 'reducers/stateReducer/types'
+import { Project, ProjectPublishStatus } from 'reducers/stateReducer/types'
+import useDispatch from 'hooks/useDispatch'
+import { useNavigate } from 'react-router-dom'
+import generateID from 'utilities/generateID'
+import useUser from 'hooks/useUser'
+import getTimestamp from 'utilities/getTimestamp'
+import { StateActions } from 'reducers/stateReducer/stateReducer'
 
 const Section = styled.section`
   width: 800px;
@@ -88,11 +94,13 @@ type CreateProjectFormProps =
   | EditCreateProjectFormProps
 
 const CreateProjectForm = ({ mode, project }: CreateProjectFormProps) => {
-  const doCreateProject = useDoCreateProject()
-  const [formMessage, setFormMessage] = useState('Project name cannot be blank')
+  const user = useUser()
   const theme = useTheme()
-
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
   const setModal = useModal()
+
+  const [formMessage, setFormMessage] = useState('Project name cannot be blank')
 
   const [formData, setFormData] = useState<FormData>(
     mode === CreateProjectFormMode.New
@@ -127,8 +135,32 @@ const CreateProjectForm = ({ mode, project }: CreateProjectFormProps) => {
       return
     }
 
-    if (mode === CreateProjectFormMode.New) doCreateProject(formData)
-    if (mode === CreateProjectFormMode.Edit) alert('save updated project')
+    if (mode === CreateProjectFormMode.New) {
+      const projectID = generateID.projectID()
+      const projectData = {
+        ...formData,
+        projectID,
+        authors: [
+          {
+            researcherID: user.researcherID,
+            role: 'owner',
+          },
+        ],
+        datasetIDs: [],
+        lastUpdated: getTimestamp(),
+        publishStatus: ProjectPublishStatus.Unpublished,
+      }
+
+      dispatch({
+        type: StateActions.CreateProject,
+        payload: projectData,
+      })
+
+      navigate(`/projects/${projectID}`)
+    }
+    if (mode === CreateProjectFormMode.Edit) {
+      alert('save project')
+    }
 
     setModal(null)
   }
