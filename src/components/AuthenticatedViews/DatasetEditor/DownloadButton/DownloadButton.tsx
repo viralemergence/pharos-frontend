@@ -7,6 +7,7 @@ import useVersionedRows from 'hooks/register/useVersionedRows'
 import useDataset from 'hooks/dataset/useDataset'
 import { Datapoint } from 'reducers/stateReducer/types'
 import { useTheme } from 'styled-components'
+import DownloadIcon from 'components/ui/icons/DownloadIcon'
 
 const downloadFile = (fileName: string, data: Blob) => {
   const downloadLink = document.createElement('a')
@@ -56,17 +57,7 @@ const DownloadButton = () => {
 
   return (
     <MintButton secondary onClick={e => handleClick(e)}>
-      <svg
-        width="18"
-        height="18"
-        viewBox="0 0 18 18"
-        style={{ marginRight: 10 }}
-      >
-        <path
-          fill={theme.black}
-          d="M14.25 6.75H11.25V2.25H6.75V6.75H3.75L9 12L14.25 6.75ZM3.75 13.5V15H14.25V13.5H3.75Z"
-        />
-      </svg>
+      <DownloadIcon fill={theme.black} />
       Download CSV
     </MintButton>
   )

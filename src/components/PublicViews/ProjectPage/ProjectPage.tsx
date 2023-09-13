@@ -194,7 +194,9 @@ const ProjectPage = () => {
           <PublicProjectPageContentBox>
             {status === ProjectDataStatus.Loaded ? (
               <>
-                <h2>{project.authors.length === 1 ? 'Author' : 'Authors'}</h2>
+                <h2>
+                  {project.authors.length === 1 ? 'Researcher' : 'Researchers'}
+                </h2>
                 {project.authors.map(author => (
                   <Author key={author.name}>
                     <AuthorName
@@ -209,7 +211,7 @@ const ProjectPage = () => {
                 ))}
               </>
             ) : (
-              <h2>Authors</h2>
+              <h2>Researchers</h2>
             )}
           </PublicProjectPageContentBox>
           <PublicProjectPageContentBox>

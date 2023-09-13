@@ -23,7 +23,9 @@ const useVersionedRows = () => {
   const dataset = useDataset()
 
   // load colNames from config json
-  const colNames: { [key: string]: { type: string } } = defaultColumns.columns
+  const colNames: { [key: string]: { type: string } } = {
+    ...defaultColumns.columns,
+  }
 
   // if the register is not available, return empty []
   if (!dataset || !register || Object.keys(register).length === 0)

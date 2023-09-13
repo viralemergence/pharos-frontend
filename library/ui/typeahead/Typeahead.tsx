@@ -105,6 +105,8 @@ export interface TypeaheadProps {
   backgroundColor?: string
   /** font color for the control */
   fontColor?: string
+  /** font color for the input placeholder */
+  placeholderColor?: string
   /** border color for the control */
   borderColor?: string
   /**
@@ -132,6 +134,7 @@ const Typeahead = ({
   onAdd,
   onRemove,
   placeholder = '',
+  placeholderColor,
   RenderItem = props => <TypeaheadResult {...props} />,
   searchKeys = ['key', 'label'],
   iconSVG,
@@ -351,6 +354,7 @@ const Typeahead = ({
         iconLeft={iconLeft}
         style={{ backgroundColor, borderColor }}
         fontColor={fontColor}
+        placeholderColor={placeholderColor}
         role="combobox"
         aria-autocomplete="list"
         aria-expanded={showResults}
