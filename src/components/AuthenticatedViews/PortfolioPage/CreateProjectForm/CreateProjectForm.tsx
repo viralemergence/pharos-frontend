@@ -159,7 +159,14 @@ const CreateProjectForm = ({ mode, project }: CreateProjectFormProps) => {
       navigate(`/projects/${projectID}`)
     }
     if (mode === CreateProjectFormMode.Edit) {
-      alert('save project')
+      dispatch({
+        type: StateActions.EditProject,
+        payload: {
+          ...project,
+          ...formData,
+          lastUpdated: getTimestamp(),
+        },
+      })
     }
 
     setModal(null)
