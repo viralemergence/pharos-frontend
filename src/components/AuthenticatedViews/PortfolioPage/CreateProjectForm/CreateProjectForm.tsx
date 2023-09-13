@@ -100,7 +100,9 @@ const CreateProjectForm = ({ mode, project }: CreateProjectFormProps) => {
   const navigate = useNavigate()
   const setModal = useModal()
 
-  const [formMessage, setFormMessage] = useState('Project name cannot be blank')
+  const [formMessage, setFormMessage] = useState(
+    mode === CreateProjectFormMode.New ? 'Project name cannot be blank' : ''
+  )
 
   const [formData, setFormData] = useState<FormData>(
     mode === CreateProjectFormMode.New
