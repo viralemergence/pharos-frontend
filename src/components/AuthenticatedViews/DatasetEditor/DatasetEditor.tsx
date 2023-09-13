@@ -1,5 +1,4 @@
 import React from 'react'
-import styled from 'styled-components'
 
 import DatasetGrid from './DatasetGrid/DatasetsGrid'
 import CSVUploader from './CSVParser/CSVUploader'
@@ -20,12 +19,6 @@ import PreReleaseButton from './ReleaseButton/PreReleaseButton'
 
 import useProject from 'hooks/project/useProject'
 import { DatasetTopSection } from 'components/DatasetPage/DatasetPageLayout'
-
-const DatasetControls = styled(Controls)`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-`
 
 const DatasetEditor = () => {
   const dataset = useDataset()
@@ -49,11 +42,11 @@ const DatasetEditor = () => {
             <DatasetStatusMessage />
           </Breadcrumbs>
           <Title>{dataset ? dataset.name : 'Loading dataset'}</Title>
-          <DatasetControls>
+          <Controls>
             <PreReleaseButton />
             <DownloadButton />
             <CSVUploader />
-          </DatasetControls>
+          </Controls>
         </TopBar>
       </DatasetTopSection>
 

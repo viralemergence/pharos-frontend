@@ -1,5 +1,5 @@
 import React from 'react'
-import Modal from 'components/ui/Modal'
+import Modal from 'components/ui/Modal/Modal'
 import { Datapoint, ReportScore } from 'reducers/stateReducer/types'
 import styled from 'styled-components'
 import cellHighlightColors from '../../../../../../config/cellHighlightColors'

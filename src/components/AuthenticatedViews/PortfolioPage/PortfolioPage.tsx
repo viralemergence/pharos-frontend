@@ -14,6 +14,8 @@ import TopBar, {
 import useModal from 'hooks/useModal/useModal'
 import styled from 'styled-components'
 import wideMargins from 'components/layout/Margins'
+import DownloadTemplateButton from './DownloadTemplateButton'
+import DownloadDefinitionsButton from './DownloadDefinitionsButton'
 
 const PortfolioPageLayout = styled.div`
   ${wideMargins}
@@ -40,6 +42,8 @@ const ProjectList = () => {
           >
             + New Project
           </MintButton>
+          <DownloadTemplateButton />
+          <DownloadDefinitionsButton />
         </Controls>
       </TopBar>
       <ProjectsTable />

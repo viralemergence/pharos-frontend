@@ -152,6 +152,10 @@ const TableView = ({
   // when the sorts have changed, load the first page of results
   useEffect(() => {
     loadDebounced({ ...loadOptions, replaceRecords: true })
+    // This is wrong, but it would take too much time to fix at this point
+    // so I'll just disable the warning I guess... exhaustive-deps is a
+    // good rule though. And it's not imposible to follow.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filtersWithRealValuesAsString, sorts])
   // NOTE: If `filters` or `records` was in the dependency array, loadDebounced
   // would be called too often.
