@@ -1,5 +1,5 @@
 import React, { createContext, useState } from 'react'
-import Modal from 'components/ui/Modal'
+import Modal from 'components/ui/Modal/Modal'
 
 export type SetModalContentWithOpts = (
   content: React.SetStateAction<React.ReactNode>,

@@ -17,6 +17,7 @@ const buttonStyle = css<{
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 5px;
 
   ${({ theme, secondary, warning }) => {
     switch (true) {
