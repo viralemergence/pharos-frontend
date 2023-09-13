@@ -12,6 +12,7 @@ import useModal from 'hooks/useModal/useModal'
 import ColorMessage, {
   ColorMessageStatus,
 } from 'components/ui/Modal/ColorMessage'
+import { Project } from 'reducers/stateReducer/types'
 
 const Section = styled.section`
   width: 800px;
@@ -67,23 +68,55 @@ export interface FormData {
   othersCiting: string[]
 }
 
-const CreateProjectForm = () => {
+enum CreateProjectFormMode {
+  New = 'new',
+  Edit = 'edit',
+}
+
+interface NewCreateProjectFormProps {
+  status: CreateProjectFormMode.New
+  project?: undefined
+}
+
+interface EditCreateProjectFormProps {
+  status: CreateProjectFormMode.Edit
+  project: Project
+}
+
+type CreateProjectFormProps =
+  | NewCreateProjectFormProps
+  | EditCreateProjectFormProps
+
+const CreateProjectForm = ({ status, project }: CreateProjectFormProps) => {
   const doCreateProject = useDoCreateProject()
   const [formMessage, setFormMessage] = useState('Project name cannot be blank')
   const theme = useTheme()
 
   const setModal = useModal()
 
-  const [formData, setFormData] = useState<FormData>({
-    name: '',
-    description: '',
-    projectType: '',
-    citation: '',
-    surveillanceStatus: '',
-    relatedMaterials: [''],
-    projectPublications: [''],
-    othersCiting: [''],
-  })
+  const [formData, setFormData] = useState<FormData>(
+    status === CreateProjectFormMode.New
+      ? {
+          name: '',
+          description: '',
+          projectType: '',
+          citation: '',
+          surveillanceStatus: '',
+          relatedMaterials: [''],
+          projectPublications: [''],
+          othersCiting: [''],
+        }
+      : {
+          name: project.name,
+          description: project.description ?? '',
+          projectType: project.projectType ?? '',
+          citation: project.citation ?? '',
+          surveillanceStatus: project.surveillanceStatus ?? '',
+          relatedMaterials: project.relatedMaterials ?? [''],
+          projectPublications: project.projectPublications ?? [''],
+          othersCiting: project.othersCiting ?? [''],
+        }
+  )
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -136,7 +169,9 @@ const CreateProjectForm = () => {
 
   return (
     <Section>
-      <H1>New Project</H1>
+      <H1>
+        {status === CreateProjectFormMode.New ? 'New Project' : 'Edit Project'}
+      </H1>
 
       <Label htmlFor="Name">Project name *</Label>
       <Input
