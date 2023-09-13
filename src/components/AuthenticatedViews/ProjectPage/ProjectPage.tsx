@@ -40,6 +40,10 @@ import { ProjectPublishStatus } from 'reducers/stateReducer/types'
 import UnpublishIcon from 'components/ui/MintToolbar/MintToolbarIcons/UnpublishIcon'
 import DeleteIcon from 'components/ui/MintToolbar/MintToolbarIcons/DeleteIcon'
 import PreviewIcon from 'components/ui/MintToolbar/MintToolbarIcons/PreviewIcon'
+import useModal from 'hooks/useModal/useModal'
+import CreateProjectForm, {
+  CreateProjectFormMode,
+} from '../PortfolioPage/CreateProjectForm/CreateProjectForm'
 
 const LoggedInProjectPageContentBox = styled(ProjectPageContentBox)`
   background-color: ${({ theme }) => theme.isThisGrayEvenHereItsSoLight};
@@ -77,6 +81,8 @@ const ProjectPage = () => {
   const project = useProject()
   const datasets = useDatasets()
 
+  const setModal = useModal()
+
   const relatedMaterials = project.relatedMaterials
     ? commaSeparatedList(project.relatedMaterials)
     : '—'
@@ -94,7 +100,18 @@ const ProjectPage = () => {
         <Controls>
           {<PublishUnpublishButtons />}
           <MintToolbar>
-            <MintToolbarButton tooltip="Edit">
+            <MintToolbarButton
+              tooltip="Edit"
+              onClick={() =>
+                setModal(
+                  <CreateProjectForm
+                    mode={CreateProjectFormMode.Edit}
+                    project={project}
+                  />,
+                  { closeable: true }
+                )
+              }
+            >
               <EditIcon />
             </MintToolbarButton>
             {project.publishStatus === ProjectPublishStatus.Published && (

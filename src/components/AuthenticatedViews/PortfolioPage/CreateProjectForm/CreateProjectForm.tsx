@@ -68,18 +68,18 @@ export interface FormData {
   othersCiting: string[]
 }
 
-enum CreateProjectFormMode {
+export enum CreateProjectFormMode {
   New = 'new',
   Edit = 'edit',
 }
 
 interface NewCreateProjectFormProps {
-  status: CreateProjectFormMode.New
+  mode: CreateProjectFormMode.New
   project?: undefined
 }
 
 interface EditCreateProjectFormProps {
-  status: CreateProjectFormMode.Edit
+  mode: CreateProjectFormMode.Edit
   project: Project
 }
 
@@ -87,7 +87,7 @@ type CreateProjectFormProps =
   | NewCreateProjectFormProps
   | EditCreateProjectFormProps
 
-const CreateProjectForm = ({ status, project }: CreateProjectFormProps) => {
+const CreateProjectForm = ({ mode, project }: CreateProjectFormProps) => {
   const doCreateProject = useDoCreateProject()
   const [formMessage, setFormMessage] = useState('Project name cannot be blank')
   const theme = useTheme()
@@ -95,7 +95,7 @@ const CreateProjectForm = ({ status, project }: CreateProjectFormProps) => {
   const setModal = useModal()
 
   const [formData, setFormData] = useState<FormData>(
-    status === CreateProjectFormMode.New
+    mode === CreateProjectFormMode.New
       ? {
           name: '',
           description: '',
@@ -127,7 +127,8 @@ const CreateProjectForm = ({ status, project }: CreateProjectFormProps) => {
       return
     }
 
-    doCreateProject(formData)
+    if (mode === CreateProjectFormMode.New) doCreateProject(formData)
+    if (mode === CreateProjectFormMode.Edit) alert('save updated project')
 
     setModal(null)
   }
@@ -170,7 +171,7 @@ const CreateProjectForm = ({ status, project }: CreateProjectFormProps) => {
   return (
     <Section>
       <H1>
-        {status === CreateProjectFormMode.New ? 'New Project' : 'Edit Project'}
+        {mode === CreateProjectFormMode.New ? 'New Project' : 'Edit Project'}
       </H1>
 
       <Label htmlFor="Name">Project name *</Label>
@@ -313,7 +314,8 @@ const CreateProjectForm = ({ status, project }: CreateProjectFormProps) => {
         style={{ marginRight: 'auto', marginTop: 30 }}
         disabled={formData.name === ''}
       >
-        Create new project
+        {mode === CreateProjectFormMode.New && 'Create new project'}
+        {mode === CreateProjectFormMode.Edit && 'Save changes'}
       </MintButton>
     </Section>
   )
