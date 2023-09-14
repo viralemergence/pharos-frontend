@@ -29,6 +29,12 @@ const createDataset: ActionFunction<CreateDatasetPayload> = (
     ],
   }
 
+  const dataset = {
+    ...payload.dataset,
+    lastUpdated: payload.timestamp,
+    releaseStatus: DatasetReleaseStatus.Unreleased,
+  }
+
   return {
     ...state,
     projects: {
@@ -42,11 +48,7 @@ const createDataset: ActionFunction<CreateDatasetPayload> = (
       ...state.datasets,
       data: {
         ...state.datasets.data,
-        [payload.dataset.datasetID]: {
-          ...payload.dataset,
-          lastUpdated: payload.timestamp,
-          releaseStatus: DatasetReleaseStatus.Unreleased,
-        },
+        [payload.dataset.datasetID]: dataset,
       },
     },
     messageStack: {
@@ -55,13 +57,13 @@ const createDataset: ActionFunction<CreateDatasetPayload> = (
         route: APIRoutes.saveDataset,
         target: 'local',
         status: StorageMessageStatus.Initial,
-        data: payload.dataset,
+        data: dataset,
       },
       [`${APIRoutes.saveDataset}_${payload.dataset.datasetID}_remote`]: {
         route: APIRoutes.saveDataset,
         target: 'remote',
         status: StorageMessageStatus.Initial,
-        data: payload.dataset,
+        data: dataset,
       },
       [`${APIRoutes.saveProject}_${payload.projectID}_local`]: {
         route: APIRoutes.saveProject,
