@@ -58,6 +58,13 @@ export const MintToolbarButtonLink = styled(Link)<{ tooltip: string }>`
   ${MintToolbarButtonStyle}
 `
 
+const ToolbarMoreContainer = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
 const ToolbarThreeDotsButton = styled.button<{ tooltip: string }>`
   position: relative;
   padding: 0px;
@@ -67,25 +74,6 @@ const ToolbarThreeDotsButton = styled.button<{ tooltip: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
-
-  &:hover {
-    &:before {
-      ${({ theme }) => theme.extraSmallParagraph};
-      content: '${({ tooltip }) => tooltip}';
-      position: absolute;
-      // top: -2px;
-      top: 0px;
-      left: 50%;
-      padding: 3px 10px;
-      transform: translate(-50%, -100%);
-      background-color: ${({ theme }) => theme.black};
-      color: ${({ theme }) => theme.white};
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: max-content;
-    }
-  }
 `
 
 const ToolbarThreeDotsVisibleButton = styled.div<{ tooltip: string }>`
@@ -114,6 +102,8 @@ const ToolbarMoreMenu = styled.div`
   flex-direction: column;
   justify-content: stretch;
   position: relative;
+  min-width: 240px;
+  top: 5px;
 `
 
 export const MintToolbarMoreMenuButton = styled.button`
@@ -145,23 +135,26 @@ interface MintToolbarMoreProps {
 
 export const MintToolbarMore = ({ children }: MintToolbarMoreProps) => {
   return (
-    <Dropdown
-      expanderStyle={{
-        left: 'unset',
-        right: '0px',
-        background: 'rgba(0,0,0,0)',
-      }}
-      animDuration={100}
-      renderButton={() => (
-        <ToolbarThreeDotsButton tooltip="More">
-          <ToolbarThreeDotsVisibleButton tooltip="More">
-            <ThreeDotsIcon />
-          </ToolbarThreeDotsVisibleButton>
-        </ToolbarThreeDotsButton>
-      )}
-    >
-      <ToolbarMoreMenu>{children}</ToolbarMoreMenu>
-    </Dropdown>
+    <ToolbarMoreContainer>
+      <Dropdown
+        expanderStyle={{
+          left: 'unset',
+          right: '0px',
+          background: 'rgba(0,0,0,0)',
+        }}
+        hover
+        animDuration={100}
+        renderButton={() => (
+          <ToolbarThreeDotsButton tooltip="More">
+            <ToolbarThreeDotsVisibleButton tooltip="More">
+              <ThreeDotsIcon />
+            </ToolbarThreeDotsVisibleButton>
+          </ToolbarThreeDotsButton>
+        )}
+      >
+        <ToolbarMoreMenu>{children}</ToolbarMoreMenu>
+      </Dropdown>
+    </ToolbarMoreContainer>
   )
 }
 
