@@ -44,6 +44,7 @@ import useModal from 'hooks/useModal/useModal'
 import CreateProjectForm, {
   CreateProjectFormMode,
 } from '../PortfolioPage/CreateProjectForm/CreateProjectForm'
+import usePublishing from './usePublishing'
 
 const LoggedInProjectPageContentBox = styled(ProjectPageContentBox)`
   background-color: ${({ theme }) => theme.isThisGrayEvenHereItsSoLight};
@@ -87,6 +88,9 @@ const ProjectPage = () => {
     ? commaSeparatedList(project.relatedMaterials)
     : '—'
 
+  const { publish, unpublish, requestedPublishing, unPublishing } =
+    usePublishing()
+
   return (
     <ProjectPageLayout>
       <TopBar>
@@ -98,7 +102,16 @@ const ProjectPage = () => {
         </Breadcrumbs>
         <Title>{project.name}</Title>
         <Controls>
-          {<PublishUnpublishButtons />}
+          {
+            <PublishUnpublishButtons
+              {...{
+                publish,
+                unpublish,
+                requestedPublishing,
+                unPublishing,
+              }}
+            />
+          }
           <MintToolbar>
             <MintToolbarButton
               tooltip="Edit"
@@ -131,8 +144,12 @@ const ProjectPage = () => {
           <MintToolbarMore>
             <MintToolbarMoreMenuButton
               disabled={
-                project.publishStatus !== ProjectPublishStatus.Published
+                [
+                  ProjectPublishStatus.Unpublished,
+                  ProjectPublishStatus.Publishing,
+                ].includes(project.publishStatus) || unPublishing
               }
+              onClick={() => unpublish()}
             >
               <UnpublishIcon /> Unpublish project
             </MintToolbarMoreMenuButton>
