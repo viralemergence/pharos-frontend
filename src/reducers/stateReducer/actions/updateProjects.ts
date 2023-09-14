@@ -24,6 +24,13 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
   for (const [key, nextProject] of Object.entries(payload.projects)) {
     const prevProject = state.projects.data[key]
 
+    // get the union of all datasets in both prev and next
+    const nextDatasetIDs = [
+      ...new Set(nextProject.datasetIDs.concat(prevProject.datasetIDs)),
+    ]
+
+    nextProject.datasetIDs = nextDatasetIDs
+
     // if the project already exists in state
     if (prevProject) {
       const prevDate = new Date(prevProject.lastUpdated ?? 0)
@@ -36,10 +43,10 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
       if (prevDate.getTime() < nextDate.getTime()) {
         nextState.projects.data = {
           ...nextState.projects.data,
-          [key]: nextProject,
+          [key]: { ...nextProject, datasetIDs: nextDatasetIDs },
         }
 
-        // if the newer incomeing project
+        // if the newer incoming project
         // is from the remote save it to local
         if (payload.source === 'remote')
           nextState.messageStack = {
@@ -48,15 +55,27 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
               route: APIRoutes.saveProject,
               target: 'local',
               status: StorageMessageStatus.Initial,
-              data: nextProject,
+              data: {
+                ...nextProject,
+                datasetIDs: nextDatasetIDs,
+              },
             },
+          }
+      } else {
+        // if the incoming project is older than the one in state
+        // but the union of datasets is larger, keep the newer one
+        // but use the union of datasets from both prev and next
+        if (nextDatasetIDs.length > prevProject.datasetIDs.length)
+          nextState.projects.data = {
+            ...nextState.projects.data,
+            [key]: { ...prevProject, datasetIDs: nextDatasetIDs },
           }
       }
     } else {
       // if the project is new in state, add it
       nextState.projects.data = {
         ...nextState.projects.data,
-        [key]: nextProject,
+        [key]: { ...nextProject, datasetIDs: nextDatasetIDs },
       }
 
       // and add to the queue to store it
@@ -67,7 +86,10 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
             route: APIRoutes.saveProject,
             target: 'local',
             status: StorageMessageStatus.Initial,
-            data: nextProject,
+            data: {
+              ...nextProject,
+              datasetIDs: nextDatasetIDs,
+            },
           },
         }
       }
