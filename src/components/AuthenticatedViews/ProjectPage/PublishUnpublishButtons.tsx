@@ -3,7 +3,6 @@ import React from 'react'
 import MintButton from 'components/ui/MintButton'
 
 import styled from 'styled-components'
-import usePublishing from './usePublishing'
 import { ProjectPublishStatus } from 'reducers/stateReducer/types'
 import useProject from 'hooks/project/useProject'
 
@@ -14,16 +13,12 @@ const ButtonContainer = styled.div`
 
 interface PublishUnpublishButtonsProps {
   publish: () => void
-  unpublish: () => void
   requestedPublishing: boolean
-  unPublishing: boolean
 }
 
 const PublishUnpublishButtons = ({
   publish,
-  unpublish,
   requestedPublishing,
-  unPublishing,
 }: PublishUnpublishButtonsProps) => {
   const project = useProject()
 

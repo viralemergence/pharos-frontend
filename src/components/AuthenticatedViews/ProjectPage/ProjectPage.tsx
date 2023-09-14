@@ -106,9 +106,7 @@ const ProjectPage = () => {
             <PublishUnpublishButtons
               {...{
                 publish,
-                unpublish,
                 requestedPublishing,
-                unPublishing,
               }}
             />
           }
