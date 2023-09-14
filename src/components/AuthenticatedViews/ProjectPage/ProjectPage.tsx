@@ -136,7 +136,7 @@ const ProjectPage = () => {
             >
               <UnpublishIcon /> Unpublish project
             </MintToolbarMoreMenuButton>
-            <MintToolbarMoreMenuButton>
+            <MintToolbarMoreMenuButton disabled>
               <DeleteIcon /> Delete project
             </MintToolbarMoreMenuButton>
           </MintToolbarMore>
