@@ -27,6 +27,7 @@ import extendRegister, { ExtendRegisterAction } from './actions/extendRegister'
 import setProjectPublishingStatus, {
   SetProjectPublishingStatusAction,
 } from './actions/setProjectPublishing'
+import editProject, { EditProjectAction } from './actions/editProject'
 
 // reducer actions
 export enum StateActions {
@@ -45,6 +46,7 @@ export enum StateActions {
   // project actions
   UpdateProjects,
   CreateProject,
+  EditProject,
   SetProjectPublishingStatus,
 
   // dataset actions
@@ -74,6 +76,7 @@ export type StateAction =
   // project actions
   | UpdateProjectsAction
   | CreateProjectAction
+  | EditProjectAction
   | SetProjectPublishingStatusAction
 
   // dataset actions
@@ -118,10 +121,12 @@ const stateReducer = (state: AppState, action: StateAction) => {
       return removeStorageMessage(state, action.payload)
 
     // project actions
-    case StateActions.CreateProject:
-      return createProject(state, action.payload)
     case StateActions.UpdateProjects:
       return updateProjects(state, action.payload)
+    case StateActions.CreateProject:
+      return createProject(state, action.payload)
+    case StateActions.EditProject:
+      return editProject(state, action.payload)
     case StateActions.SetProjectPublishingStatus:
       return setProjectPublishingStatus(state, action.payload)
 

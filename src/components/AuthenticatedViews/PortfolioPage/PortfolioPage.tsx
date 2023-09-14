@@ -2,7 +2,9 @@ import React from 'react'
 
 import MintButton from 'components/ui/MintButton'
 import ProjectsTable from './ProjectsTable/ProjectsTable'
-import CreateProjectForm from './CreateProjectForm/CreateProjectForm'
+import CreateProjectForm, {
+  CreateProjectFormMode,
+} from './CreateProjectForm/CreateProjectForm'
 
 import TopBar, {
   Title,
@@ -38,7 +40,11 @@ const ProjectList = () => {
         <Title>My Projects</Title>
         <Controls>
           <MintButton
-            onClick={() => setModal(<CreateProjectForm />, { closeable: true })}
+            onClick={() =>
+              setModal(<CreateProjectForm mode={CreateProjectFormMode.New} />, {
+                closeable: true,
+              })
+            }
           >
             + New Project
           </MintButton>

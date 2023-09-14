@@ -29,6 +29,22 @@ import useProject from 'hooks/project/useProject'
 import { commaSeparatedList } from 'utilities/grammar'
 import useDatasets from 'hooks/dataset/useDatasets'
 import ClickToCopy from 'components/ui/ClickToCopy'
+import MintToolbar, {
+  MintToolbarButton,
+  MintToolbarButtonLink,
+  MintToolbarMore,
+  MintToolbarMoreMenuButton,
+} from 'components/ui/MintToolbar/MintToolbar'
+import EditIcon from 'components/ui/MintToolbar/MintToolbarIcons/EditIcon'
+import { ProjectPublishStatus } from 'reducers/stateReducer/types'
+import UnpublishIcon from 'components/ui/MintToolbar/MintToolbarIcons/UnpublishIcon'
+import DeleteIcon from 'components/ui/MintToolbar/MintToolbarIcons/DeleteIcon'
+import PreviewIcon from 'components/ui/MintToolbar/MintToolbarIcons/PreviewIcon'
+import useModal from 'hooks/useModal/useModal'
+import CreateProjectForm, {
+  CreateProjectFormMode,
+} from '../PortfolioPage/CreateProjectForm/CreateProjectForm'
+import usePublishing from './usePublishing'
 
 const LoggedInProjectPageContentBox = styled(ProjectPageContentBox)`
   background-color: ${({ theme }) => theme.isThisGrayEvenHereItsSoLight};
@@ -66,9 +82,14 @@ const ProjectPage = () => {
   const project = useProject()
   const datasets = useDatasets()
 
+  const setModal = useModal()
+
   const relatedMaterials = project.relatedMaterials
     ? commaSeparatedList(project.relatedMaterials)
     : '—'
+
+  const { publish, unpublish, requestedPublishing, unPublishing } =
+    usePublishing()
 
   return (
     <ProjectPageLayout>
@@ -81,7 +102,59 @@ const ProjectPage = () => {
         </Breadcrumbs>
         <Title>{project.name}</Title>
         <Controls>
-          <PublishUnpublishButtons />
+          {
+            <PublishUnpublishButtons
+              {...{
+                publish,
+                requestedPublishing,
+              }}
+            />
+          }
+          <MintToolbar>
+            <MintToolbarButton
+              tooltip="Edit"
+              onClick={() =>
+                setModal(
+                  <CreateProjectForm
+                    mode={CreateProjectFormMode.Edit}
+                    project={project}
+                  />,
+                  { closeable: true }
+                )
+              }
+            >
+              <EditIcon />
+            </MintToolbarButton>
+            {project.publishStatus === ProjectPublishStatus.Published && (
+              <MintToolbarButtonLink
+                to={`/projects/#/${project.projectID}/`}
+                tooltip="Switch to public page"
+              >
+                <PreviewIcon />
+              </MintToolbarButtonLink>
+            )}
+            {
+              // <MintToolbarButton tooltip="Download (MAYBE)">
+              //   <DownloadIcon />
+              // </MintToolbarButton>
+            }
+          </MintToolbar>
+          <MintToolbarMore>
+            <MintToolbarMoreMenuButton
+              disabled={
+                [
+                  ProjectPublishStatus.Unpublished,
+                  ProjectPublishStatus.Publishing,
+                ].includes(project.publishStatus) || unPublishing
+              }
+              onClick={() => unpublish()}
+            >
+              <UnpublishIcon /> Unpublish project
+            </MintToolbarMoreMenuButton>
+            <MintToolbarMoreMenuButton disabled>
+              <DeleteIcon /> Delete project
+            </MintToolbarMoreMenuButton>
+          </MintToolbarMore>
         </Controls>
       </TopBar>
       <ProjectPageMain>
