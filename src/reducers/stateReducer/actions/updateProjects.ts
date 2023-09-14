@@ -24,15 +24,14 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
   for (const [key, nextProject] of Object.entries(payload.projects)) {
     const prevProject = state.projects.data[key]
 
-    // get the union of all datasets in both prev and next
-    const nextDatasetIDs = [
-      ...new Set(nextProject.datasetIDs.concat(prevProject.datasetIDs)),
-    ]
-
-    nextProject.datasetIDs = nextDatasetIDs
-
     // if the project already exists in state
     if (prevProject) {
+      // get the union of all datasets in both prev and next
+      const nextDatasetIDs = [
+        ...new Set(nextProject.datasetIDs.concat(prevProject.datasetIDs)),
+      ]
+
+      nextProject.datasetIDs = nextDatasetIDs
       const prevDate = new Date(prevProject.lastUpdated ?? 0)
       const nextDate = new Date(nextProject.lastUpdated ?? 0)
 
@@ -75,7 +74,7 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
       // if the project is new in state, add it
       nextState.projects.data = {
         ...nextState.projects.data,
-        [key]: { ...nextProject, datasetIDs: nextDatasetIDs },
+        [key]: nextProject,
       }
 
       // and add to the queue to store it
@@ -86,10 +85,7 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
             route: APIRoutes.saveProject,
             target: 'local',
             status: StorageMessageStatus.Initial,
-            data: {
-              ...nextProject,
-              datasetIDs: nextDatasetIDs,
-            },
+            data: nextProject,
           },
         }
       }
