@@ -26,20 +26,29 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
 
     // if the project already exists in state
     if (prevProject) {
+      // get the union of all datasets in both prev and next
+      const nextDatasetIDs = [
+        ...new Set(nextProject.datasetIDs.concat(prevProject.datasetIDs)),
+      ]
+
       const prevDate = new Date(prevProject.lastUpdated ?? 0)
       const nextDate = new Date(nextProject.lastUpdated ?? 0)
 
       // short-circuit if it's identical
-      if (prevDate.getTime() === nextDate.getTime()) continue
+      if (
+        prevDate.getTime() === nextDate.getTime() &&
+        prevProject.datasetIDs.length === nextProject.datasetIDs.length
+      )
+        continue
 
       // if the incoming project is newer than the one in state
       if (prevDate.getTime() < nextDate.getTime()) {
         nextState.projects.data = {
           ...nextState.projects.data,
-          [key]: nextProject,
+          [key]: { ...nextProject, datasetIDs: nextDatasetIDs },
         }
 
-        // if the newer incomeing project
+        // if the newer incoming project
         // is from the remote save it to local
         if (payload.source === 'remote')
           nextState.messageStack = {
@@ -48,9 +57,34 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
               route: APIRoutes.saveProject,
               target: 'local',
               status: StorageMessageStatus.Initial,
-              data: nextProject,
+              data: {
+                ...nextProject,
+                datasetIDs: nextDatasetIDs,
+              },
             },
           }
+      } else {
+        // if the incoming project is older than the one in state
+        // but the union of datasets is larger, keep the newer one
+        // but use the union of datasets from both prev and next
+        if (nextDatasetIDs.length > prevProject.datasetIDs.length) {
+          nextState.projects.data = {
+            ...nextState.projects.data,
+            [key]: { ...prevProject, datasetIDs: nextDatasetIDs },
+          }
+          nextState.messageStack = {
+            ...nextState.messageStack,
+            [`${APIRoutes.saveProject}_${nextProject.projectID}_local`]: {
+              route: APIRoutes.saveProject,
+              target: 'local',
+              status: StorageMessageStatus.Initial,
+              data: {
+                ...nextProject,
+                datasetIDs: nextDatasetIDs,
+              },
+            },
+          }
+        }
       }
     } else {
       // if the project is new in state, add it
