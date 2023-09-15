@@ -16,8 +16,8 @@ const AddMoreIcon = () => {
       />
       <path
         fill={theme.black}
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M4.33076 12.25H6.16924V14.8308H8.75V16.6692H6.16924V19.25H4.33076V16.6692H1.75V14.8308H4.33076V12.25Z"
       />
     </svg>
