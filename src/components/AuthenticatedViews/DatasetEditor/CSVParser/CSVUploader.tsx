@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { FileUploader } from 'react-drag-drop-files'
 import useUpdateRegisterFromCSV from './useUpdateRegisterFromCSV'
 import useModal from 'hooks/useModal/useModal'
+import MintButton from 'components/ui/MintButton'
 
 // import useUser from 'hooks/useUser'
 // import useDatasetID from 'hooks/dataset/useDatasetID'
@@ -20,13 +21,15 @@ const H1 = styled.h1`
 
 const Container = styled.div`
   min-width: 400px;
-  filter: hue-rotate(309deg) brightness(1.75) saturate(0.25) contrast(1.5);
   margin: 20px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   gap: 20px;
+`
 
+const ControlWrapper = styled.div`
+  filter: hue-rotate(309deg) brightness(1.75) saturate(0.25) contrast(1.5);
   // These styles are just a temporary cludge
   // to make this controll smaller until we
   // make the toolbar system.
@@ -62,13 +65,22 @@ const CSVUploader = () => {
   return (
     <Container>
       <H1>Add rows from CSV</H1>
-      <FileUploader
-        multiple={false}
-        handleChange={handleChange}
-        name="file"
-        types={fileTypes}
-        label="Upload"
-      />
+      <ControlWrapper>
+        <FileUploader
+          multiple={false}
+          handleChange={handleChange}
+          name="file"
+          types={fileTypes}
+          label="Upload"
+        />
+      </ControlWrapper>
+      <MintButton
+        secondary
+        onClick={() => setModal(null)}
+        style={{ alignSelf: 'flex-start' }}
+      >
+        Cancel
+      </MintButton>
     </Container>
   )
 }
