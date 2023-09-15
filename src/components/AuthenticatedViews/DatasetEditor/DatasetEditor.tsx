@@ -66,7 +66,7 @@ const DatasetEditor = () => {
                 <AddMoreIcon />
               </MintToolbarButton>
               <DownloadButton />
-              <MintToolbarButton tooltip="Edit dataset details">
+              <MintToolbarButton tooltip="Edit dataset details" disabled>
                 <EditIcon />
               </MintToolbarButton>
             </MintToolbar>
