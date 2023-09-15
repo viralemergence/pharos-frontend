@@ -56,7 +56,7 @@ const DatasetEditor = () => {
           <Controls>
             <PreReleaseButton />
             <MintToolbar>
-              <MintToolbarButton tooltip="Validate">
+              <MintToolbarButton tooltip="Validate" disabled>
                 <ValidateIcon />
               </MintToolbarButton>
               <MintToolbarButton
