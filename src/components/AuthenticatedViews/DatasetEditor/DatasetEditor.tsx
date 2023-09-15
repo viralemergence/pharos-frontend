@@ -25,14 +25,15 @@ import MintToolbar, {
   MintToolbarMoreMenuButton,
 } from 'components/ui/MintToolbar/MintToolbar'
 import EditIcon from 'components/ui/MintToolbar/MintToolbarIcons/EditIcon'
-import DownloadIcon from 'components/ui/MintToolbar/MintToolbarIcons/DownloadIcon'
 import DeleteIcon from 'components/ui/MintToolbar/MintToolbarIcons/DeleteIcon'
 import AddMoreIcon from 'components/ui/MintToolbar/MintToolbarIcons/AddMoreIcon'
 import ValidateIcon from 'components/ui/MintToolbar/MintToolbarIcons/ValidateIcon'
+import useModal from 'hooks/useModal/useModal'
 
 const DatasetEditor = () => {
   const dataset = useDataset()
   const project = useProject()
+  const setModal = useModal()
 
   return (
     <>
@@ -54,12 +55,14 @@ const DatasetEditor = () => {
           <Title>{dataset ? dataset.name : 'Loading dataset'}</Title>
           <Controls>
             <PreReleaseButton />
-            <CSVUploader />
             <MintToolbar>
               <MintToolbarButton tooltip="Validate">
                 <ValidateIcon />
               </MintToolbarButton>
-              <MintToolbarButton tooltip="Add rows from CSV">
+              <MintToolbarButton
+                tooltip="Add rows from CSV"
+                onClick={() => setModal(<CSVUploader />, { closeable: true })}
+              >
                 <AddMoreIcon />
               </MintToolbarButton>
               <DownloadButton />

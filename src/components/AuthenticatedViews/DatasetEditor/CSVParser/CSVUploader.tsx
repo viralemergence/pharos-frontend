@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { FileUploader } from 'react-drag-drop-files'
 import useUpdateRegisterFromCSV from './useUpdateRegisterFromCSV'
+import useModal from 'hooks/useModal/useModal'
 
 // import useUser from 'hooks/useUser'
 // import useDatasetID from 'hooks/dataset/useDatasetID'
@@ -11,14 +12,30 @@ import useUpdateRegisterFromCSV from './useUpdateRegisterFromCSV'
 
 const fileTypes = ['CSV']
 
+const H1 = styled.h1`
+  ${({ theme }) => theme.h3};
+  color: ${({ theme }) => theme.black};
+  margin-top: 0;
+`
+
 const Container = styled.div`
+  min-width: 400px;
   filter: hue-rotate(309deg) brightness(1.75) saturate(0.25) contrast(1.5);
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 20px;
 
   // These styles are just a temporary cludge
   // to make this controll smaller until we
   // make the toolbar system.
   > label {
     min-width: unset !important;
+
+    > div {
+      justify-content: flex-start;
+    }
 
     > div > span:first-child > span:first-child {
       display: none;
@@ -31,6 +48,7 @@ const Container = styled.div`
 `
 
 const CSVUploader = () => {
+  const setModal = useModal()
   const updateRegisterFromCSV = useUpdateRegisterFromCSV()
   // const user = useUser()
   // const datasetID = useDatasetID()
@@ -38,10 +56,12 @@ const CSVUploader = () => {
 
   const handleChange = (file: File) => {
     updateRegisterFromCSV(file)
+    setModal(null)
   }
 
   return (
     <Container>
+      <H1>Add rows from CSV</H1>
       <FileUploader
         multiple={false}
         handleChange={handleChange}
