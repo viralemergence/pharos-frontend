@@ -29,11 +29,17 @@ import DeleteIcon from 'components/ui/MintToolbar/MintToolbarIcons/DeleteIcon'
 import AddMoreIcon from 'components/ui/MintToolbar/MintToolbarIcons/AddMoreIcon'
 import ValidateIcon from 'components/ui/MintToolbar/MintToolbarIcons/ValidateIcon'
 import useModal from 'hooks/useModal/useModal'
+import useDispatch from 'hooks/useDispatch'
+import { StateActions } from 'reducers/stateReducer/stateReducer'
+import getTimestamp from 'utilities/getTimestamp'
+import { useNavigate } from 'react-router-dom'
 
 const DatasetEditor = () => {
   const dataset = useDataset()
   const project = useProject()
   const setModal = useModal()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   return (
     <>
@@ -71,7 +77,19 @@ const DatasetEditor = () => {
               </MintToolbarButton>
             </MintToolbar>
             <MintToolbarMore>
-              <MintToolbarMoreMenuButton>
+              <MintToolbarMoreMenuButton
+                onClick={() => {
+                  dispatch({
+                    type: StateActions.DeleteDataset,
+                    payload: {
+                      timestamp: getTimestamp(),
+                      projectID: project.projectID,
+                      dataset,
+                    },
+                  })
+                  navigate(`/projects/${project.projectID}`)
+                }}
+              >
                 <DeleteIcon /> Delete dataset
               </MintToolbarMoreMenuButton>
             </MintToolbarMore>
