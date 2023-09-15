@@ -54,7 +54,6 @@ const DatasetEditor = () => {
           <Title>{dataset ? dataset.name : 'Loading dataset'}</Title>
           <Controls>
             <PreReleaseButton />
-            <DownloadButton />
             <CSVUploader />
             <MintToolbar>
               <MintToolbarButton tooltip="Validate">
@@ -63,9 +62,7 @@ const DatasetEditor = () => {
               <MintToolbarButton tooltip="Add rows from CSV">
                 <AddMoreIcon />
               </MintToolbarButton>
-              <MintToolbarButton tooltip="Download CSV">
-                <DownloadIcon />
-              </MintToolbarButton>
+              <DownloadButton />
               <MintToolbarButton tooltip="Edit dataset details">
                 <EditIcon />
               </MintToolbarButton>
