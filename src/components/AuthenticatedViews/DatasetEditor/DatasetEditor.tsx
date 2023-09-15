@@ -33,6 +33,7 @@ import useDispatch from 'hooks/useDispatch'
 import { StateActions } from 'reducers/stateReducer/stateReducer'
 import getTimestamp from 'utilities/getTimestamp'
 import { useNavigate } from 'react-router-dom'
+import { DatasetReleaseStatus } from 'reducers/stateReducer/types'
 
 const DatasetEditor = () => {
   const dataset = useDataset()
@@ -68,6 +69,10 @@ const DatasetEditor = () => {
               <MintToolbarButton
                 tooltip="Add rows from CSV"
                 onClick={() => setModal(<CSVUploader />, { closeable: true })}
+                disabled={
+                  dataset.releaseStatus === DatasetReleaseStatus.Published ||
+                  dataset.releaseStatus === DatasetReleaseStatus.Publishing
+                }
               >
                 <AddMoreIcon />
               </MintToolbarButton>
