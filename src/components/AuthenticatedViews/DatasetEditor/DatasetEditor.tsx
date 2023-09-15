@@ -19,6 +19,16 @@ import PreReleaseButton from './ReleaseButton/PreReleaseButton'
 
 import useProject from 'hooks/project/useProject'
 import { DatasetTopSection } from 'components/DatasetPage/DatasetPageLayout'
+import MintToolbar, {
+  MintToolbarButton,
+  MintToolbarMore,
+  MintToolbarMoreMenuButton,
+} from 'components/ui/MintToolbar/MintToolbar'
+import EditIcon from 'components/ui/MintToolbar/MintToolbarIcons/EditIcon'
+import DownloadIcon from 'components/ui/MintToolbar/MintToolbarIcons/DownloadIcon'
+import DeleteIcon from 'components/ui/MintToolbar/MintToolbarIcons/DeleteIcon'
+import AddMoreIcon from 'components/ui/MintToolbar/MintToolbarIcons/AddMoreIcon'
+import ValidateIcon from 'components/ui/MintToolbar/MintToolbarIcons/ValidateIcon'
 
 const DatasetEditor = () => {
   const dataset = useDataset()
@@ -46,6 +56,25 @@ const DatasetEditor = () => {
             <PreReleaseButton />
             <DownloadButton />
             <CSVUploader />
+            <MintToolbar>
+              <MintToolbarButton tooltip="Validate">
+                <ValidateIcon />
+              </MintToolbarButton>
+              <MintToolbarButton tooltip="Add rows from CSV">
+                <AddMoreIcon />
+              </MintToolbarButton>
+              <MintToolbarButton tooltip="Download CSV">
+                <DownloadIcon />
+              </MintToolbarButton>
+              <MintToolbarButton tooltip="Edit dataset details">
+                <EditIcon />
+              </MintToolbarButton>
+            </MintToolbar>
+            <MintToolbarMore>
+              <MintToolbarMoreMenuButton>
+                <DeleteIcon /> Delete dataset
+              </MintToolbarMoreMenuButton>
+            </MintToolbarMore>
           </Controls>
         </TopBar>
       </DatasetTopSection>
