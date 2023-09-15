@@ -4,6 +4,7 @@ import {
   APIRoutes,
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
+import { datasetInitialValue } from '../initialValues'
 
 interface SetProjectsActionPayload {
   source: 'local' | 'remote'
@@ -21,6 +22,8 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
 ) => {
   const nextState = { ...state }
 
+  const nextMessageStack: typeof state.messageStack = {}
+
   for (const [key, nextProject] of Object.entries(payload.projects)) {
     const prevProject = state.projects.data[key]
 
@@ -30,6 +33,29 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
       const nextDatasetIDs = [
         ...new Set(nextProject.datasetIDs.concat(prevProject.datasetIDs)),
       ]
+
+      const nextDeletedDatasetIDs = [
+        ...new Set(
+          (nextProject.deletedDatasetIDs ?? []).concat(
+            prevProject.deletedDatasetIDs ?? []
+          )
+        ),
+      ]
+
+      for (const datasetID of nextDeletedDatasetIDs) {
+        // make sure all deleted datasets are deleted from indexedDB
+        nextMessageStack[`${APIRoutes.deleteDataset}_${datasetID}_local`] = {
+          route: APIRoutes.deleteDataset,
+          target: 'local',
+          status: StorageMessageStatus.Initial,
+          data: {
+            // can use placeholder values here because only the datasetID
+            // is required for deleting datasets and registers from indexedDB
+            ...datasetInitialValue,
+            datasetID,
+          },
+        }
+      }
 
       const prevDate = new Date(prevProject.lastUpdated ?? 0)
       const nextDate = new Date(nextProject.lastUpdated ?? 0)
@@ -72,16 +98,15 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
             ...nextState.projects.data,
             [key]: { ...prevProject, datasetIDs: nextDatasetIDs },
           }
-          nextState.messageStack = {
-            ...nextState.messageStack,
-            [`${APIRoutes.saveProject}_${nextProject.projectID}_local`]: {
-              route: APIRoutes.saveProject,
-              target: 'local',
-              status: StorageMessageStatus.Initial,
-              data: {
-                ...nextProject,
-                datasetIDs: nextDatasetIDs,
-              },
+          nextMessageStack[
+            `${APIRoutes.saveProject}_${nextProject.projectID}_local`
+          ] = {
+            route: APIRoutes.saveProject,
+            target: 'local',
+            status: StorageMessageStatus.Initial,
+            data: {
+              ...nextProject,
+              datasetIDs: nextDatasetIDs,
             },
           }
         }
@@ -95,18 +120,19 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
 
       // and add to the queue to store it
       if (payload.source === 'remote') {
-        nextState.messageStack = {
-          ...nextState.messageStack,
-          [`${APIRoutes.saveProject}_${nextProject.projectID}_local`]: {
-            route: APIRoutes.saveProject,
-            target: 'local',
-            status: StorageMessageStatus.Initial,
-            data: nextProject,
-          },
+        nextMessageStack[
+          `${APIRoutes.saveProject}_${nextProject.projectID}_local`
+        ] = {
+          route: APIRoutes.saveProject,
+          target: 'local',
+          status: StorageMessageStatus.Initial,
+          data: nextProject,
         }
       }
     }
   }
+
+  nextState.messageStack = nextMessageStack
 
   return nextState
 }
