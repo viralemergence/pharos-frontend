@@ -121,7 +121,6 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
             deletedDatasetIDs: nextDeletedDatasetIDs,
           },
         }
-        // }
       }
     } else {
       // if the project is new in state, add it

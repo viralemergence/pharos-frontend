@@ -18,33 +18,36 @@ import getTimestamp from 'utilities/getTimestamp'
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 400px;
+  max-width: 550px;
+  gap: 20px;
+  padding: 25px;
 `
 const H1 = styled.h1`
   ${({ theme }) => theme.h3};
+  margin: 0px;
 `
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-start;
   gap: 15px;
 `
-
 const Paragraph = styled.p`
   ${({ theme }) => theme.smallParagraph};
   color: ${({ theme }) => theme.black};
+  margin: 10px 0px;
 `
 
 const DeleteDatasetModal = () => {
   const setModal = useModal()
-  const dispatch = useDispatch()
   const project = useProject()
   const dataset = useDataset()
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   return (
     <Container>
       <H1>Delete dataset</H1>
-      <ColorMessage status={ColorMessageStatus.Danger}>
+      <ColorMessage status={ColorMessageStatus.Danger} style={{ margin: 0 }}>
         Are you sure you want to permanently delete your dataset?
       </ColorMessage>
       <Paragraph>
@@ -66,7 +69,7 @@ const DeleteDatasetModal = () => {
             navigate(`/projects/${project.projectID}`)
           }}
         >
-          Delete project
+          Delete dataset
         </MintButton>
         <MintButton secondary onClick={() => setModal(null)}>
           Cancel
