@@ -10,37 +10,33 @@ import TopBar, {
   BreadcrumbLink,
 } from 'components/layout/TopBar'
 
-import DownloadButton from './DownloadButton/DownloadButton'
-
-import useDataset from 'hooks/dataset/useDataset'
-
+import { DatasetTopSection } from 'components/DatasetPage/DatasetPageLayout'
 import DatasetStatusMessage from './DatasetStatusMessage/DatasetStatusMessage'
 import PreReleaseButton from './ReleaseButton/PreReleaseButton'
 
-import useProject from 'hooks/project/useProject'
-import { DatasetTopSection } from 'components/DatasetPage/DatasetPageLayout'
 import MintToolbar, {
   MintToolbarButton,
   MintToolbarMore,
   MintToolbarMoreMenuButton,
 } from 'components/ui/MintToolbar/MintToolbar'
+
 import EditIcon from 'components/ui/MintToolbar/MintToolbarIcons/EditIcon'
 import DeleteIcon from 'components/ui/MintToolbar/MintToolbarIcons/DeleteIcon'
 import AddMoreIcon from 'components/ui/MintToolbar/MintToolbarIcons/AddMoreIcon'
 import ValidateIcon from 'components/ui/MintToolbar/MintToolbarIcons/ValidateIcon'
+import DownloadButton from './DownloadButton/DownloadButton'
+
 import useModal from 'hooks/useModal/useModal'
-import useDispatch from 'hooks/useDispatch'
-import { StateActions } from 'reducers/stateReducer/stateReducer'
-import getTimestamp from 'utilities/getTimestamp'
-import { useNavigate } from 'react-router-dom'
+import useProject from 'hooks/project/useProject'
+import useDataset from 'hooks/dataset/useDataset'
+
 import { DatasetReleaseStatus } from 'reducers/stateReducer/types'
+import DeleteDatasetModal from './DeleteDatasetModal/DeleteDatasetModal'
 
 const DatasetEditor = () => {
   const dataset = useDataset()
   const project = useProject()
   const setModal = useModal()
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
 
   return (
     <>
@@ -83,17 +79,9 @@ const DatasetEditor = () => {
             </MintToolbar>
             <MintToolbarMore>
               <MintToolbarMoreMenuButton
-                onClick={() => {
-                  dispatch({
-                    type: StateActions.DeleteDataset,
-                    payload: {
-                      timestamp: getTimestamp(),
-                      projectID: project.projectID,
-                      dataset,
-                    },
-                  })
-                  navigate(`/projects/${project.projectID}`)
-                }}
+                onClick={() =>
+                  setModal(<DeleteDatasetModal />, { closeable: true })
+                }
               >
                 <DeleteIcon /> Delete dataset
               </MintToolbarMoreMenuButton>
@@ -101,7 +89,6 @@ const DatasetEditor = () => {
           </Controls>
         </TopBar>
       </DatasetTopSection>
-
       <DatasetGrid />
     </>
   )
