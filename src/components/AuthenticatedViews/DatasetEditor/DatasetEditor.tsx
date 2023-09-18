@@ -16,12 +16,9 @@ import PreReleaseButton from './ReleaseButton/PreReleaseButton'
 
 import MintToolbar, {
   MintToolbarButton,
-  MintToolbarMore,
-  MintToolbarMoreMenuButton,
 } from 'components/ui/MintToolbar/MintToolbar'
 
 import EditIcon from 'components/ui/MintToolbar/MintToolbarIcons/EditIcon'
-import DeleteIcon from 'components/ui/MintToolbar/MintToolbarIcons/DeleteIcon'
 import AddMoreIcon from 'components/ui/MintToolbar/MintToolbarIcons/AddMoreIcon'
 import ValidateIcon from 'components/ui/MintToolbar/MintToolbarIcons/ValidateIcon'
 import DownloadButton from './DownloadButton/DownloadButton'
@@ -32,6 +29,7 @@ import useDataset from 'hooks/dataset/useDataset'
 
 import { DatasetReleaseStatus } from 'reducers/stateReducer/types'
 import DeleteDatasetModal from './DeleteDatasetModal/DeleteDatasetModal'
+import DeleteIcon from 'components/ui/MintToolbar/MintToolbarIcons/DeleteIcon'
 
 const DatasetEditor = () => {
   const dataset = useDataset()
@@ -76,16 +74,15 @@ const DatasetEditor = () => {
               <MintToolbarButton tooltip="Edit dataset details" disabled>
                 <EditIcon />
               </MintToolbarButton>
-            </MintToolbar>
-            <MintToolbarMore>
-              <MintToolbarMoreMenuButton
+              <MintToolbarButton
+                tooltip="Delete dataset"
                 onClick={() =>
                   setModal(<DeleteDatasetModal />, { closeable: true })
                 }
               >
-                <DeleteIcon /> Delete dataset
-              </MintToolbarMoreMenuButton>
-            </MintToolbarMore>
+                <DeleteIcon />
+              </MintToolbarButton>
+            </MintToolbar>
           </Controls>
         </TopBar>
       </DatasetTopSection>
