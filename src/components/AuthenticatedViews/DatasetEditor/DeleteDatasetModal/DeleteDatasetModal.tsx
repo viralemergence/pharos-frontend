@@ -14,6 +14,7 @@ import useProject from 'hooks/project/useProject'
 import useDataset from 'hooks/dataset/useDataset'
 
 import getTimestamp from 'utilities/getTimestamp'
+import { DatasetReleaseStatus } from 'reducers/stateReducer/types'
 
 const Container = styled.div`
   display: flex;
@@ -53,6 +54,10 @@ const DeleteDatasetModal = () => {
       <Paragraph>
         Deleting your dataset will permanently remove it from the Pharos
         database. You cannot undo this action.
+        {dataset.releaseStatus === DatasetReleaseStatus.Published &&
+          'If the data from this dataset was previously downloaded, ' +
+            'these data will still be publicly accessible through the ' +
+            'download citation link.'}
       </Paragraph>
       <ButtonContainer>
         <MintButton
