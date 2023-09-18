@@ -10,19 +10,31 @@ import TopBar, {
   BreadcrumbLink,
 } from 'components/layout/TopBar'
 
-import DownloadButton from './DownloadButton/DownloadButton'
-
-import useDataset from 'hooks/dataset/useDataset'
-
+import { DatasetTopSection } from 'components/DatasetPage/DatasetPageLayout'
 import DatasetStatusMessage from './DatasetStatusMessage/DatasetStatusMessage'
 import PreReleaseButton from './ReleaseButton/PreReleaseButton'
 
+import MintToolbar, {
+  MintToolbarButton,
+} from 'components/ui/MintToolbar/MintToolbar'
+
+import EditIcon from 'components/ui/MintToolbar/MintToolbarIcons/EditIcon'
+import AddMoreIcon from 'components/ui/MintToolbar/MintToolbarIcons/AddMoreIcon'
+import ValidateIcon from 'components/ui/MintToolbar/MintToolbarIcons/ValidateIcon'
+import DownloadButton from './DownloadButton/DownloadButton'
+
+import useModal from 'hooks/useModal/useModal'
 import useProject from 'hooks/project/useProject'
-import { DatasetTopSection } from 'components/DatasetPage/DatasetPageLayout'
+import useDataset from 'hooks/dataset/useDataset'
+
+import { DatasetReleaseStatus } from 'reducers/stateReducer/types'
+import DeleteDatasetModal from './DeleteDatasetModal/DeleteDatasetModal'
+import DeleteIcon from 'components/ui/MintToolbar/MintToolbarIcons/DeleteIcon'
 
 const DatasetEditor = () => {
   const dataset = useDataset()
   const project = useProject()
+  const setModal = useModal()
 
   return (
     <>
@@ -44,12 +56,36 @@ const DatasetEditor = () => {
           <Title>{dataset ? dataset.name : 'Loading dataset'}</Title>
           <Controls>
             <PreReleaseButton />
-            <DownloadButton />
-            <CSVUploader />
+            <MintToolbar>
+              <MintToolbarButton tooltip="Validate" disabled>
+                <ValidateIcon />
+              </MintToolbarButton>
+              <MintToolbarButton
+                tooltip="Add rows from CSV"
+                onClick={() => setModal(<CSVUploader />, { closeable: true })}
+                disabled={
+                  dataset.releaseStatus === DatasetReleaseStatus.Published ||
+                  dataset.releaseStatus === DatasetReleaseStatus.Publishing
+                }
+              >
+                <AddMoreIcon />
+              </MintToolbarButton>
+              <DownloadButton />
+              <MintToolbarButton tooltip="Edit dataset details" disabled>
+                <EditIcon />
+              </MintToolbarButton>
+              <MintToolbarButton
+                tooltip="Delete dataset"
+                onClick={() =>
+                  setModal(<DeleteDatasetModal />, { closeable: true })
+                }
+              >
+                <DeleteIcon />
+              </MintToolbarButton>
+            </MintToolbar>
           </Controls>
         </TopBar>
       </DatasetTopSection>
-
       <DatasetGrid />
     </>
   )
