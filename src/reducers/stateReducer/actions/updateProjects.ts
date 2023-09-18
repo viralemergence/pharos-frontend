@@ -47,21 +47,20 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
 
       const nextDeletedDatasetIDs = [...nextDeletedDatasetIDSet]
 
-      console.log('nextDatasetIDs', nextDatasetIDs)
-      console.log('nextDeletedDatasetIDs', nextDeletedDatasetIDs)
-
       for (const datasetID of nextDeletedDatasetIDs) {
-        // make sure all deleted datasets are deleted from indexedDB
-        nextMessageStack[`${APIRoutes.deleteDataset}_${datasetID}_local`] = {
-          route: APIRoutes.deleteDataset,
-          target: 'local',
-          status: StorageMessageStatus.Initial,
-          data: {
-            // can use placeholder values here because only the datasetID
-            // is required for deleting datasets and registers from indexedDB
-            ...datasetInitialValue,
-            datasetID,
-          },
+        // make sure all newly deleted datasets are deleted from indexedDB
+        if (!prevProject.deletedDatasetIDs?.includes(datasetID)) {
+          nextMessageStack[`${APIRoutes.deleteDataset}_${datasetID}_local`] = {
+            route: APIRoutes.deleteDataset,
+            target: 'local',
+            status: StorageMessageStatus.Initial,
+            data: {
+              // can use placeholder values here because only the datasetID
+              // is required for deleting datasets and registers from indexedDB
+              ...datasetInitialValue,
+              datasetID,
+            },
+          }
         }
       }
 
