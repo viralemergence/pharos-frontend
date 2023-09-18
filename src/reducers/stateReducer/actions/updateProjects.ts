@@ -30,17 +30,25 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
     // if the project already exists in state
     if (prevProject) {
       // get the union of all datasets in both prev and next
-      const nextDatasetIDs = [
-        ...new Set(nextProject.datasetIDs.concat(prevProject.datasetIDs)),
-      ]
 
-      const nextDeletedDatasetIDs = [
+      const nextDeletedDatasetIDSet = new Set(
+        (nextProject.deletedDatasetIDs ?? []).concat(
+          prevProject.deletedDatasetIDs ?? []
+        )
+      )
+
+      const nextDatasetIDs = [
         ...new Set(
-          (nextProject.deletedDatasetIDs ?? []).concat(
-            prevProject.deletedDatasetIDs ?? []
-          )
+          nextProject.datasetIDs
+            .concat(prevProject.datasetIDs)
+            .filter(id => !nextDeletedDatasetIDSet.has(id))
         ),
       ]
+
+      const nextDeletedDatasetIDs = [...nextDeletedDatasetIDSet]
+
+      console.log('nextDatasetIDs', nextDatasetIDs)
+      console.log('nextDeletedDatasetIDs', nextDeletedDatasetIDs)
 
       for (const datasetID of nextDeletedDatasetIDs) {
         // make sure all deleted datasets are deleted from indexedDB
@@ -86,30 +94,34 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
               data: {
                 ...nextProject,
                 datasetIDs: nextDatasetIDs,
+                deletedDatasetIDs: nextDeletedDatasetIDs,
               },
             },
           }
       } else {
         // if the incoming project is older than the one in state
-        // but the union of datasets is larger, keep the newer one
-        // but use the union of datasets from both prev and next
-        if (nextDatasetIDs.length > prevProject.datasetIDs.length) {
-          nextState.projects.data = {
-            ...nextState.projects.data,
-            [key]: { ...prevProject, datasetIDs: nextDatasetIDs },
-          }
-          nextMessageStack[
-            `${APIRoutes.saveProject}_${nextProject.projectID}_local`
-          ] = {
-            route: APIRoutes.saveProject,
-            target: 'local',
-            status: StorageMessageStatus.Initial,
-            data: {
-              ...nextProject,
-              datasetIDs: nextDatasetIDs,
-            },
-          }
+        // still store the merge of the datasetID and deleted DatasetIDs
+        nextState.projects.data = {
+          ...nextState.projects.data,
+          [key]: {
+            ...prevProject,
+            datasetIDs: nextDatasetIDs,
+            deletedDatasetIDs: nextDeletedDatasetIDs,
+          },
         }
+        nextMessageStack[
+          `${APIRoutes.saveProject}_${nextProject.projectID}_local`
+        ] = {
+          route: APIRoutes.saveProject,
+          target: 'local',
+          status: StorageMessageStatus.Initial,
+          data: {
+            ...nextProject,
+            datasetIDs: nextDatasetIDs,
+            deletedDatasetIDs: nextDeletedDatasetIDs,
+          },
+        }
+        // }
       }
     } else {
       // if the project is new in state, add it
