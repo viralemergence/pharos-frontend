@@ -46,7 +46,7 @@ const ProjectList = () => {
               })
             }
           >
-            + New Project
+            + New project
           </MintButton>
           <DownloadTemplateButton />
           <DownloadDefinitionsButton />

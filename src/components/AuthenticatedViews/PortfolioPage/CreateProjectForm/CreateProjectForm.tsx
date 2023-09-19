@@ -212,7 +212,7 @@ const CreateProjectForm = ({ mode, project }: CreateProjectFormProps) => {
   return (
     <Section>
       <H1>
-        {mode === CreateProjectFormMode.New ? 'New Project' : 'Edit Project'}
+        {mode === CreateProjectFormMode.New ? 'New project' : 'Edit project'}
       </H1>
 
       <Label htmlFor="Name">Project name *</Label>

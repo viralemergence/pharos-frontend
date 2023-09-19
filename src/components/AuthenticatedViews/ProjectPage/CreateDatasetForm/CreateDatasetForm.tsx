@@ -68,7 +68,7 @@ const CreateDatasetForm = () => {
 
   return (
     <Form onSubmit={handleSubmit}>
-      <H1>Create Dataset</H1>
+      <H1>Create dataset</H1>
       <Label>
         Dataset Name
         <Input type="text" name="name" autoFocus />
