@@ -71,7 +71,7 @@ const CreateDatasetForm = () => {
     <Form onSubmit={handleSubmit}>
       <H1>Create dataset</H1>
       <Label style={{ marginTop: 10 }}>
-        Dataset Name
+        Dataset name
         <Input type="text" name="name" autoFocus />
       </Label>
       <p style={{ margin: 0, padding: 0 }}>{formMessage}</p>
