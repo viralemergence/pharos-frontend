@@ -38,7 +38,7 @@ import MintToolbar, {
 import EditIcon from 'components/ui/MintToolbar/MintToolbarIcons/EditIcon'
 import { ProjectPublishStatus } from 'reducers/stateReducer/types'
 import UnpublishIcon from 'components/ui/MintToolbar/MintToolbarIcons/UnpublishIcon'
-import DeleteIcon from 'components/ui/MintToolbar/MintToolbarIcons/DeleteIcon'
+import MoreMenuDeleteIcon from 'components/ui/MintToolbar/MintToolbarIcons/MoreMenuDeleteIcon'
 import PreviewIcon from 'components/ui/MintToolbar/MintToolbarIcons/PreviewIcon'
 import useModal from 'hooks/useModal/useModal'
 import CreateProjectForm, {
@@ -152,7 +152,7 @@ const ProjectPage = () => {
               <UnpublishIcon /> Unpublish project
             </MintToolbarMoreMenuButton>
             <MintToolbarMoreMenuButton disabled>
-              <DeleteIcon /> Delete project
+              <MoreMenuDeleteIcon /> Delete project
             </MintToolbarMoreMenuButton>
           </MintToolbarMore>
         </Controls>

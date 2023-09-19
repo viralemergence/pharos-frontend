@@ -24,6 +24,7 @@ const Form = styled.form`
 `
 const H1 = styled.h1`
   ${({ theme }) => theme.h3}
+  margin-bottom: 0;
 `
 
 const CreateDatasetForm = () => {
@@ -68,13 +69,13 @@ const CreateDatasetForm = () => {
 
   return (
     <Form onSubmit={handleSubmit}>
-      <H1>Create Dataset</H1>
-      <Label>
-        Dataset Name
+      <H1>Create dataset</H1>
+      <Label style={{ marginTop: 10 }}>
+        Dataset name
         <Input type="text" name="name" autoFocus />
       </Label>
       <p style={{ margin: 0, padding: 0 }}>{formMessage}</p>
-      <MintButton type="submit" style={{ marginLeft: 'auto' }}>
+      <MintButton type="submit" style={{ marginRight: 'auto' }}>
         Create
       </MintButton>
     </Form>

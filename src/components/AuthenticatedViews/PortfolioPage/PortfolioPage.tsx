@@ -18,6 +18,7 @@ import styled from 'styled-components'
 import wideMargins from 'components/layout/Margins'
 import DownloadTemplateButton from './DownloadTemplateButton'
 import DownloadDefinitionsButton from './DownloadDefinitionsButton'
+import NewProjectIcon from 'components/ui/icons/NewProjectIcon'
 
 const PortfolioPageLayout = styled.div`
   ${wideMargins}
@@ -46,7 +47,7 @@ const ProjectList = () => {
               })
             }
           >
-            + New Project
+            <NewProjectIcon /> New project
           </MintButton>
           <DownloadTemplateButton />
           <DownloadDefinitionsButton />

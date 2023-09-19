@@ -52,6 +52,10 @@ const MintToolbarButtonStyle = css<{ tooltip: string }>`
 
 export const MintToolbarButton = styled.button<{ tooltip: string }>`
   ${MintToolbarButtonStyle}
+
+  &:disabled {
+    opacity: 0.5;
+  }
 `
 
 export const MintToolbarButtonLink = styled(Link)<{ tooltip: string }>`
