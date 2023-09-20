@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 
 import MintButton from 'components/ui/MintButton'
 import Label from 'components/ui/InputLabel'
@@ -13,41 +13,65 @@ import useProjectID from 'hooks/project/useProjectID'
 import { useNavigate } from 'react-router-dom'
 import generateID from 'utilities/generateID'
 import { datasetInitialValue } from 'reducers/stateReducer/initialValues'
+import Typeahead from '../../../../../library/ui/typeahead'
+import ColorMessage, {
+  ColorMessageStatus,
+} from 'components/ui/Modal/ColorMessage'
 
-const Form = styled.form`
-  width: 500px;
+const Section = styled.section`
+  width: 800px;
   max-width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 15px;
   padding: 0 15px 15px 15px;
+
+  input {
+    ${({ theme }) => theme.smallParagraph};
+    &::placeholder {
+      color: ${({ theme }) => theme.darkGray};
+    }
+  }
 `
 const H1 = styled.h1`
   ${({ theme }) => theme.h3}
-  margin-bottom: 0;
+  margin-bottom: 15px;
 `
 
 const CreateDatasetForm = () => {
+  const navigate = useNavigate()
+  const theme = useTheme()
+
   const dispatch = useDispatch()
   const setModal = useModal()
   const projectID = useProjectID()
   const datasetID = generateID.datasetID()
 
-  const navigate = useNavigate()
-
   const [formMessage, setFormMessage] = useState('')
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    animalAgeUnits: '',
+    animalMassUnits: '',
+    animalLengthUnits: '',
+  })
+
+  const updateFormData = (value: string, key: keyof typeof formData) => {
+    if (key === 'name')
+      if (value === '') setFormMessage('Dataset name cannot be blank')
+      else setFormMessage('')
+
+    setFormData({ ...formData, [key]: value })
+  }
+
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
 
-    const target = e.target as typeof e.target & {
-      name: { value: string }
-    }
-
-    if (!target.name.value) {
-      setFormMessage('Please enter dataset name')
+    if (formData.name === '') {
+      setFormMessage('Dataset name cannot be blank')
       return null
     }
+
+    setFormMessage('')
 
     dispatch({
       type: StateActions.CreateDataset,
@@ -58,7 +82,7 @@ const CreateDatasetForm = () => {
           ...datasetInitialValue,
           datasetID,
           projectID,
-          name: target.name.value,
+          name: formData.name,
         },
       },
     })
@@ -68,17 +92,71 @@ const CreateDatasetForm = () => {
   }
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Section onSubmit={handleSubmit}>
       <H1>Create dataset</H1>
-      <Label style={{ marginTop: 10 }}>
+      <Label htmlFor="name" style={{ marginTop: 10 }}>
         Dataset name
-        <Input type="text" name="name" autoFocus />
       </Label>
-      <p style={{ margin: 0, padding: 0 }}>{formMessage}</p>
-      <MintButton type="submit" style={{ marginRight: 'auto' }}>
-        Create
+      <Input
+        id="name"
+        type="text"
+        name="name"
+        autoFocus
+        onChange={e => updateFormData(e.target.value, 'name')}
+      />
+
+      <Label htmlFor="Animal age units">Animal age units *</Label>
+      <Typeahead
+        disabled
+        inputId="Animal age units"
+        items={[]}
+        placeholder="Seconds"
+        placeholderColor={theme.darkGray}
+        borderColor={theme.darkPurple}
+        backgroundColor={theme.veryLightGray}
+        style={{ boxShadow: 'none' }}
+        onAdd={_ => null}
+      />
+
+      <Label htmlFor="Animal mass units">Animal mass units *</Label>
+      <Typeahead
+        disabled
+        inputId="Animal mass units"
+        items={[]}
+        placeholder="Kilograms"
+        placeholderColor={theme.darkGray}
+        borderColor={theme.darkPurple}
+        backgroundColor={theme.veryLightGray}
+        style={{ boxShadow: 'none' }}
+        onAdd={_ => null}
+      />
+
+      <Label htmlFor="Animal length units">Animal length units *</Label>
+      <Typeahead
+        disabled
+        inputId="Animal length units"
+        items={[]}
+        placeholder="Meters"
+        placeholderColor={theme.darkGray}
+        borderColor={theme.darkPurple}
+        backgroundColor={theme.veryLightGray}
+        style={{ boxShadow: 'none' }}
+        onAdd={_ => null}
+      />
+
+      {formMessage && (
+        <ColorMessage status={ColorMessageStatus.Danger}>
+          {formMessage}
+        </ColorMessage>
+      )}
+
+      <MintButton
+        onClick={handleSubmit}
+        style={{ marginRight: 'auto', marginTop: 30 }}
+      >
+        Create new dataset
       </MintButton>
-    </Form>
+    </Section>
   )
 }
 
