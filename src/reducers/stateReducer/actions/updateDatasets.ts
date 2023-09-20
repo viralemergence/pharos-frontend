@@ -20,6 +20,7 @@ const updateDatasets: ActionFunction<UpdateDatasetsAction['payload']> = (
   payload
 ) => {
   const { data, source } = payload
+  console.log('updateDatasets ' + source)
 
   const nextState = { ...state }
 
@@ -31,6 +32,12 @@ const updateDatasets: ActionFunction<UpdateDatasetsAction['payload']> = (
       if (prevData) {
         const prevDate = new Date(prevData.lastUpdated ?? 0)
         const nextDate = new Date(nextData.lastUpdated ?? 0)
+
+        console.log(nextData.datasetID)
+        console.log(prevData.name)
+        console.log(nextData.name)
+        console.log('prevDate', prevDate.toString())
+        console.log('nextDate', nextDate.toString())
 
         // short-circuit if it's identical
         if (prevDate.getTime() === nextDate.getTime()) continue

@@ -13,7 +13,7 @@ const useLoadDatasets = () => {
   const { researcherID } = useUser()
 
   const {
-    datasets: { status, data },
+    datasets: { status },
   } = useAppState()
 
   useEffect(() => {
@@ -43,10 +43,10 @@ const useLoadDatasets = () => {
     const loadLocalDatasets = async () => {
       if (datasetIDs.length === 0) return
 
-      // early return if the project has the same number of datasets
-      // loaded as are currently loaded; this happens when a new
-      // dataset is created so we don't need to pull from storage
-      if (datasetIDs.length === Object.keys(data).length) return
+      // // early return if the project has the same number of datasets
+      // // loaded as are currently loaded; this happens when a new
+      // // dataset is created so we don't need to pull from storage
+      // if (datasetIDs.length === Object.keys(data).length) return
 
       const localDatasets = (await localforage.getItems(datasetIDs)) as {
         [key: string]: Dataset
@@ -62,7 +62,7 @@ const useLoadDatasets = () => {
         })
     }
     loadLocalDatasets()
-  }, [projectID, datasetIDs, data, dispatch])
+  }, [projectID, datasetIDs, dispatch])
 
   // effect for loading datasets from remote server
   useEffect(() => {

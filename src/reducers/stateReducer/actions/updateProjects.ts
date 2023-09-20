@@ -67,13 +67,6 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
       const prevDate = new Date(prevProject.lastUpdated ?? 0)
       const nextDate = new Date(nextProject.lastUpdated ?? 0)
 
-      // short-circuit if it's identical
-      if (
-        prevDate.getTime() === nextDate.getTime() &&
-        prevProject.datasetIDs.length === nextProject.datasetIDs.length
-      )
-        continue
-
       // if the incoming project is newer than the one in state
       if (prevDate.getTime() < nextDate.getTime()) {
         nextState.projects.data = {
@@ -98,7 +91,7 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
             },
           }
       } else {
-        // if the incoming project is older than the one in state
+        // even if the incoming project is older than the one in state
         // still store the merge of the datasetID and deleted DatasetIDs
         nextState.projects.data = {
           ...nextState.projects.data,
