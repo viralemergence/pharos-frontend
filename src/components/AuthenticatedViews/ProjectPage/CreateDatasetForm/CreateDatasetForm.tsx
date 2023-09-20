@@ -17,6 +17,7 @@ import Typeahead from '../../../../../library/ui/typeahead'
 import ColorMessage, {
   ColorMessageStatus,
 } from 'components/ui/Modal/ColorMessage'
+import { Dataset } from 'reducers/stateReducer/types'
 
 const Section = styled.section`
   width: 800px;
@@ -37,7 +38,26 @@ const H1 = styled.h1`
   margin-bottom: 15px;
 `
 
-const CreateDatasetForm = () => {
+export enum CreateDatasetFormMode {
+  New = 'New',
+  Edit = 'Edit',
+}
+
+interface NewCreateDatasetFormProps {
+  mode: CreateDatasetFormMode.New
+  dataset?: undefined
+}
+
+interface EditCreateDatasetFormProps {
+  mode: CreateDatasetFormMode.Edit
+  dataset: Dataset
+}
+
+type CreateDatasetFormProps =
+  | NewCreateDatasetFormProps
+  | EditCreateDatasetFormProps
+
+const CreateDatasetForm = ({ mode, dataset }: CreateDatasetFormProps) => {
   const navigate = useNavigate()
   const theme = useTheme()
 
@@ -48,12 +68,21 @@ const CreateDatasetForm = () => {
 
   const [formMessage, setFormMessage] = useState('')
 
-  const [formData, setFormData] = useState({
-    name: '',
-    animalAgeUnits: '',
-    animalMassUnits: '',
-    animalLengthUnits: '',
-  })
+  const [formData, setFormData] = useState(
+    mode === CreateDatasetFormMode.New
+      ? {
+          name: '',
+          animalAgeUnits: '',
+          animalMassUnits: '',
+          animalLengthUnits: '',
+        }
+      : {
+          name: dataset.name,
+          animalAgeUnits: '',
+          animalMassUnits: '',
+          animalLengthUnits: '',
+        }
+  )
 
   const updateFormData = (value: string, key: keyof typeof formData) => {
     if (key === 'name')
@@ -93,7 +122,9 @@ const CreateDatasetForm = () => {
 
   return (
     <Section onSubmit={handleSubmit}>
-      <H1>Create dataset</H1>
+      <H1>
+        {mode === CreateDatasetFormMode.New ? 'Create dataset' : 'Edit dataset'}
+      </H1>
       <Label htmlFor="name" style={{ marginTop: 10 }}>
         Dataset name
       </Label>
