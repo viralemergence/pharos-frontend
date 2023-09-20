@@ -60,7 +60,6 @@ type CreateDatasetFormProps =
 const CreateDatasetForm = ({ mode, dataset }: CreateDatasetFormProps) => {
   const navigate = useNavigate()
   const theme = useTheme()
-
   const dispatch = useDispatch()
   const setModal = useModal()
   const projectID = useProjectID()
@@ -121,7 +120,16 @@ const CreateDatasetForm = ({ mode, dataset }: CreateDatasetFormProps) => {
         break
 
       case CreateDatasetFormMode.Edit:
-        alert('Edit dataset')
+        dispatch({
+          type: StateActions.EditDataset,
+          payload: {
+            timestamp: getTimestamp(),
+            dataset: {
+              ...dataset,
+              name: formData.name,
+            },
+          },
+        })
         break
     }
 
