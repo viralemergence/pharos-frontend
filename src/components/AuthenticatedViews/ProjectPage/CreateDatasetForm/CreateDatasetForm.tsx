@@ -102,22 +102,30 @@ const CreateDatasetForm = ({ mode, dataset }: CreateDatasetFormProps) => {
 
     setFormMessage('')
 
-    dispatch({
-      type: StateActions.CreateDataset,
-      payload: {
-        timestamp: getTimestamp(),
-        projectID,
-        dataset: {
-          ...datasetInitialValue,
-          datasetID,
-          projectID,
-          name: formData.name,
-        },
-      },
-    })
+    switch (mode) {
+      case CreateDatasetFormMode.New:
+        dispatch({
+          type: StateActions.CreateDataset,
+          payload: {
+            timestamp: getTimestamp(),
+            projectID,
+            dataset: {
+              ...datasetInitialValue,
+              datasetID,
+              projectID,
+              name: formData.name,
+            },
+          },
+        })
+        navigate(`/projects/${projectID}/${datasetID}`)
+        break
+
+      case CreateDatasetFormMode.Edit:
+        alert('Edit dataset')
+        break
+    }
 
     setModal(null)
-    navigate(`/projects/${projectID}/${datasetID}`)
   }
 
   return (
@@ -133,6 +141,7 @@ const CreateDatasetForm = ({ mode, dataset }: CreateDatasetFormProps) => {
         type="text"
         name="name"
         autoFocus
+        value={formData.name}
         onChange={e => updateFormData(e.target.value, 'name')}
       />
 
@@ -185,7 +194,9 @@ const CreateDatasetForm = ({ mode, dataset }: CreateDatasetFormProps) => {
         onClick={handleSubmit}
         style={{ marginRight: 'auto', marginTop: 30 }}
       >
-        Create new dataset
+        {CreateDatasetFormMode.New === mode
+          ? 'Create new dataset'
+          : 'Save changes'}
       </MintButton>
     </Section>
   )

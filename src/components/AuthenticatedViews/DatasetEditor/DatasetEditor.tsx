@@ -30,6 +30,9 @@ import useDataset from 'hooks/dataset/useDataset'
 import { DatasetReleaseStatus } from 'reducers/stateReducer/types'
 import DeleteDatasetModal from './DeleteDatasetModal/DeleteDatasetModal'
 import DeleteIcon from 'components/ui/MintToolbar/MintToolbarIcons/DeleteIcon'
+import CreateDatasetForm, {
+  CreateDatasetFormMode,
+} from '../ProjectPage/CreateDatasetForm/CreateDatasetForm'
 
 const DatasetEditor = () => {
   const dataset = useDataset()
@@ -71,7 +74,18 @@ const DatasetEditor = () => {
                 <AddMoreIcon />
               </MintToolbarButton>
               <DownloadButton />
-              <MintToolbarButton tooltip="Edit dataset details" disabled>
+              <MintToolbarButton
+                tooltip="Edit dataset details"
+                onClick={() =>
+                  setModal(
+                    <CreateDatasetForm
+                      mode={CreateDatasetFormMode.Edit}
+                      dataset={dataset}
+                    />,
+                    { closeable: true }
+                  )
+                }
+              >
                 <EditIcon />
               </MintToolbarButton>
               <MintToolbarButton
