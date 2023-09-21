@@ -74,7 +74,7 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
 
       const nextDeletedDatasetIDSet = new Set(nextDeletedDatasetIDs)
 
-      if (datasetIDsChanged)
+      if (datasetIDsChanged) {
         nextDatasetIDs = [
           ...new Set(
             nextProject.datasetIDs
@@ -82,6 +82,7 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
               .filter(id => !nextDeletedDatasetIDSet.has(id))
           ),
         ]
+      }
 
       const prevDate = new Date(prevProject.lastUpdated ?? 0)
       const nextDate = new Date(nextProject.lastUpdated ?? 0)
@@ -90,25 +91,29 @@ const updateProjects: ActionFunction<SetProjectsActionPayload> = (
       if (prevDate.getTime() < nextDate.getTime()) {
         nextState.projects.data = {
           ...nextState.projects.data,
-          [key]: { ...nextProject, datasetIDs: nextDatasetIDs },
+          [key]: {
+            ...nextProject,
+            datasetIDs: nextDatasetIDs,
+            deletedDatasetIDs: nextDeletedDatasetIDs,
+          },
         }
 
         // if the newer incoming project
         // is from the remote save it to local
-        if (payload.source === 'remote')
-          nextState.messageStack = {
-            ...nextState.messageStack,
-            [`${APIRoutes.saveProject}_${nextProject.projectID}_local`]: {
-              route: APIRoutes.saveProject,
-              target: 'local',
-              status: StorageMessageStatus.Initial,
-              data: {
-                ...nextProject,
-                datasetIDs: nextDatasetIDs,
-                deletedDatasetIDs: nextDeletedDatasetIDs,
-              },
+        if (payload.source === 'remote') {
+          nextMessageStack[
+            `${APIRoutes.saveProject}_${nextProject.projectID}_local`
+          ] = {
+            route: APIRoutes.saveProject,
+            target: 'local',
+            status: StorageMessageStatus.Initial,
+            data: {
+              ...nextProject,
+              datasetIDs: nextDatasetIDs,
+              deletedDatasetIDs: nextDeletedDatasetIDs,
             },
           }
+        }
       } else {
         // even if the incoming project is older than the one in state
         // still store the merge of the datasetID and deleted DatasetIDs
