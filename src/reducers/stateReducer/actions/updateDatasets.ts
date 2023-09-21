@@ -20,6 +20,7 @@ const updateDatasets: ActionFunction<UpdateDatasetsAction['payload']> = (
   payload
 ) => {
   const { data, source } = payload
+  console.log('updateDatasets ' + source)
 
   const nextState = { ...state }
 

@@ -116,6 +116,7 @@ const useLoadProjects = () => {
         })
       }
     }
+
     loadProjects()
   }, [user, status, dispatch])
 }
