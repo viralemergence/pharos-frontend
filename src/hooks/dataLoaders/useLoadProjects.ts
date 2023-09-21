@@ -80,7 +80,7 @@ const useLoadProjects = () => {
         `${'[API]'.padEnd(15)} Response: /list-projects: ${response?.status}`
       )
 
-      if (!response || !response.ok) {
+      if (!response || !response.ok || ignore) {
         dispatch({
           type: StateActions.SetMetadataObjStatus,
           payload: {
@@ -116,7 +116,14 @@ const useLoadProjects = () => {
         })
       }
     }
+
+    let ignore = false
+
     loadProjects()
+
+    return () => {
+      ignore = true
+    }
   }, [user, status, dispatch])
 }
 

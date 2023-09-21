@@ -101,6 +101,8 @@ const CreateDatasetForm = ({ mode, dataset }: CreateDatasetFormProps) => {
 
     setFormMessage('')
 
+    console.log(formData)
+
     switch (mode) {
       case CreateDatasetFormMode.New:
         dispatch({
