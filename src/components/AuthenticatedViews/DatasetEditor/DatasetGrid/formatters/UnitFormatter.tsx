@@ -48,8 +48,7 @@ const UnitFormatter = ({
   return (
     <CellContainer style={{ backgroundColor }}>
       <span>
-        {Math.round(unit.fromSIUnits(Number(datapoint.dataValue)) * 1000) /
-          1000}{' '}
+        {unit.fromSIUnits(Number(datapoint.dataValue)).toPrecision(4)}{' '}
         {unit.shortLabel}
       </span>
       <ExpandButton onClick={() => setOpen(true)}>+</ExpandButton>

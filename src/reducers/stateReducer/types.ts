@@ -1,5 +1,5 @@
 import { StorageMessage } from 'storage/synchronizeMessageQueue'
-import units from '../../config/units'
+import units from 'config/units'
 
 export type ProjectID = string
 export type RecordID = string
