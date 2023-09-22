@@ -19,6 +19,8 @@ import ColorMessage, {
 } from 'components/ui/Modal/ColorMessage'
 import { Dataset } from 'reducers/stateReducer/types'
 
+import units from '../../../../../config/units'
+
 const Section = styled.section`
   width: 800px;
   max-width: 100%;
@@ -57,6 +59,26 @@ type CreateDatasetFormProps =
   | NewCreateDatasetFormProps
   | EditCreateDatasetFormProps
 
+interface FormData {
+  name: string
+  animalAgeUnits: keyof typeof units.age
+  animalMassUnits: keyof typeof units.mass
+  animalLengthUnits: keyof typeof units.length
+}
+
+const ageUnitOptions = Object.entries(units.age).map(([k, v]) => ({
+  key: k,
+  ...v,
+}))
+const massUnitOptions = Object.entries(units.mass).map(([k, v]) => ({
+  key: k,
+  ...v,
+}))
+const lengthUnitOptions = Object.entries(units.length).map(([k, v]) => ({
+  key: k,
+  ...v,
+}))
+
 const CreateDatasetForm = ({ mode, dataset }: CreateDatasetFormProps) => {
   const navigate = useNavigate()
   const theme = useTheme()
@@ -67,19 +89,19 @@ const CreateDatasetForm = ({ mode, dataset }: CreateDatasetFormProps) => {
 
   const [formMessage, setFormMessage] = useState('')
 
-  const [formData, setFormData] = useState(
+  const [formData, setFormData] = useState<FormData>(
     mode === CreateDatasetFormMode.New
       ? {
           name: '',
-          animalAgeUnits: '',
-          animalMassUnits: '',
-          animalLengthUnits: '',
+          animalAgeUnits: 'seconds',
+          animalMassUnits: 'kilograms',
+          animalLengthUnits: 'meters',
         }
       : {
           name: dataset.name,
-          animalAgeUnits: '',
-          animalMassUnits: '',
-          animalLengthUnits: '',
+          animalAgeUnits: dataset.animalAgeUnits ?? 'seconds',
+          animalMassUnits: dataset.animalMassUnits ?? 'kilograms',
+          animalLengthUnits: dataset.animalLengthUnits ?? 'meters',
         }
   )
 
@@ -114,7 +136,7 @@ const CreateDatasetForm = ({ mode, dataset }: CreateDatasetFormProps) => {
               ...datasetInitialValue,
               datasetID,
               projectID,
-              name: formData.name,
+              ...formData,
             },
           },
         })
@@ -128,7 +150,7 @@ const CreateDatasetForm = ({ mode, dataset }: CreateDatasetFormProps) => {
             timestamp: getTimestamp(),
             dataset: {
               ...dataset,
-              name: formData.name,
+              ...formData,
             },
           },
         })
@@ -157,41 +179,56 @@ const CreateDatasetForm = ({ mode, dataset }: CreateDatasetFormProps) => {
 
       <Label htmlFor="Animal age units">Animal age units *</Label>
       <Typeahead
-        disabled
         inputId="Animal age units"
-        items={[]}
+        items={ageUnitOptions}
+        values={[
+          {
+            key: formData.animalAgeUnits,
+            label: units.age[formData.animalAgeUnits].label,
+          },
+        ]}
         placeholder="Seconds"
         placeholderColor={theme.darkGray}
         borderColor={theme.darkPurple}
         backgroundColor={theme.veryLightGray}
         style={{ boxShadow: 'none' }}
-        onAdd={_ => null}
+        onAdd={item => updateFormData(item.key, 'animalAgeUnits')}
       />
 
       <Label htmlFor="Animal mass units">Animal mass units *</Label>
       <Typeahead
-        disabled
         inputId="Animal mass units"
-        items={[]}
+        items={massUnitOptions}
+        values={[
+          {
+            key: formData.animalMassUnits,
+            label: units.mass[formData.animalMassUnits].label,
+          },
+        ]}
         placeholder="Kilograms"
         placeholderColor={theme.darkGray}
         borderColor={theme.darkPurple}
         backgroundColor={theme.veryLightGray}
         style={{ boxShadow: 'none' }}
-        onAdd={_ => null}
+        onAdd={item => updateFormData(item.key, 'animalMassUnits')}
       />
 
       <Label htmlFor="Animal length units">Animal length units *</Label>
       <Typeahead
-        disabled
         inputId="Animal length units"
-        items={[]}
+        items={lengthUnitOptions}
+        values={[
+          {
+            key: formData.animalLengthUnits,
+            label: units.length[formData.animalLengthUnits].label,
+          },
+        ]}
         placeholder="Meters"
         placeholderColor={theme.darkGray}
         borderColor={theme.darkPurple}
         backgroundColor={theme.veryLightGray}
         style={{ boxShadow: 'none' }}
-        onAdd={_ => null}
+        onAdd={item => updateFormData(item.key, 'animalLengthUnits')}
       />
 
       {formMessage && (
