@@ -1,6 +1,8 @@
 import React from 'react'
 
-import CreateDatasetForm from '../CreateDatasetForm/CreateDatasetForm'
+import CreateDatasetForm, {
+  CreateDatasetFormMode,
+} from '../CreateDatasetForm/CreateDatasetForm'
 
 import styled from 'styled-components'
 
@@ -44,7 +46,9 @@ const CreateNewDatasetRow = (): JSX.Element => {
       key="0"
       onClick={e => {
         e.preventDefault()
-        setModal(<CreateDatasetForm />, { closeable: true })
+        setModal(<CreateDatasetForm mode={CreateDatasetFormMode.New} />, {
+          closeable: true,
+        })
       }}
     >
       <Text>

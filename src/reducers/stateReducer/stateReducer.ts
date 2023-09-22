@@ -29,6 +29,7 @@ import setProjectPublishingStatus, {
 } from './actions/setProjectPublishing'
 import editProject, { EditProjectAction } from './actions/editProject'
 import deleteDataset, { DeleteDatasetAction } from './actions/deleteDataset'
+import editDataset, { EditDatasetAction } from './actions/editDataset'
 
 // reducer actions
 export enum StateActions {
@@ -52,6 +53,7 @@ export enum StateActions {
 
   // dataset actions
   CreateDataset,
+  EditDataset,
   DeleteDataset,
   UpdateDatasets,
   SetDatasetReleaseStatus,
@@ -83,6 +85,7 @@ export type StateAction =
 
   // dataset actions
   | CreateDatasetAction
+  | EditDatasetAction
   | DeleteDatasetAction
   | UpdateDatasetsAction
   | SetDatasetReleaseStatusAction
@@ -138,6 +141,8 @@ const stateReducer = (state: AppState, action: StateAction) => {
       return updateDatasets(state, action.payload)
     case StateActions.CreateDataset:
       return createDataset(state, action.payload)
+    case StateActions.EditDataset:
+      return editDataset(state, action.payload)
     case StateActions.DeleteDataset:
       return deleteDataset(state, action.payload)
     case StateActions.SetDatasetReleaseStatus:
