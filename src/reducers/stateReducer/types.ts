@@ -1,4 +1,5 @@
 import { StorageMessage } from 'storage/synchronizeMessageQueue'
+import units from '../../../config/units'
 
 export type ProjectID = string
 export type RecordID = string
@@ -98,6 +99,11 @@ export interface Dataset {
   // earliest and latest date in the dataset
   earliestDate?: string
   latestDate?: string
+
+  // optional user-specified display units
+  animalAgeUnits?: keyof typeof units.age
+  animalMassUnits?: keyof typeof units.mass
+  animalLengthUnits?: keyof typeof units.length
 }
 
 export interface ReleaseReport {
