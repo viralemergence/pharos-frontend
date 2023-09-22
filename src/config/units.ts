@@ -1,5 +1,19 @@
 import convert from 'convert'
 
+// general Units interface, making programmatic
+// access easier with typescript... there's got to
+// be a better way to do this with the as const obj
+export interface Units {
+  readonly [key: string]: {
+    readonly [key: string]: {
+      readonly label: string
+      readonly shortLabel: string
+      readonly toSIUnits: (val: number) => number
+      readonly fromSIUnits: (val: number) => number
+    }
+  }
+}
+
 const units = {
   age: {
     seconds: {
@@ -47,7 +61,6 @@ const units = {
       fromSIUnits: (val: number) => convert(val, 'kilograms').to('grams'),
     },
     ounces: {
-      key: 'ounces',
       label: 'Ounces',
       shortLabel: 'oz',
       toSIUnits: (val: number) => convert(val, 'ounces').to('kilograms'),
@@ -65,6 +78,7 @@ const units = {
       label: 'Meters',
       shortLabel: 'm',
       toSIUnits: (val: number) => val,
+      fromSIUnits: (val: number) => val,
     },
     centimeters: {
       label: 'Centimeters',

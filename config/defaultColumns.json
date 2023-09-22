@@ -109,16 +109,19 @@
       "definition": "The life stage of the animal from which the sample was collection."
     },
     "Age": {
-      "type": "string",
-      "definition": "The numeric age of the animal from which the sample was collected, at the time of sample collection. For now, age must be expressed in seconds. Units will eventually be configured in the dataset settings."
+      "type": "unit",
+      "definition": "The numeric age of the animal from which the sample was collected, at the time of sample collection. For now, age must be expressed in seconds. Units will eventually be configured in the dataset settings.",
+      "units": "age"
     },
     "Mass": {
-      "type": "string",
-      "definition": "The numeric mass of the animal from which the sample was collected, at the time of sample collection. Mass must be expressed in kilograms. Units will eventually be configured in the dataset settings."
+      "type": "unit",
+      "definition": "The numeric mass of the animal from which the sample was collected, at the time of sample collection. Mass must be expressed in kilograms. Units will eventually be configured in the dataset settings.",
+      "units": "mass"
     },
     "Length": {
-      "type": "string",
-      "definition": "The numeric length of the animal from which the sample was collected, at the time of sample collection. Length must be expressed in meters. Units will eventually be configured in the dataset settings."
+      "type": "unit",
+      "definition": "The numeric length of the animal from which the sample was collected, at the time of sample collection. Length must be expressed in meters. Units will eventually be configured in the dataset settings.",
+      "units": "length"
     }
   }
 }

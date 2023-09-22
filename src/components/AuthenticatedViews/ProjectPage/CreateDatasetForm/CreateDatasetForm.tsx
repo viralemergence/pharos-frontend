@@ -19,7 +19,7 @@ import ColorMessage, {
 } from 'components/ui/Modal/ColorMessage'
 import { Dataset } from 'reducers/stateReducer/types'
 
-import units from '../../../../../config/units'
+import units from '../../../../config/units'
 
 const Section = styled.section`
   width: 800px;
@@ -61,9 +61,9 @@ type CreateDatasetFormProps =
 
 interface FormData {
   name: string
-  animalAgeUnits: keyof typeof units.age
-  animalMassUnits: keyof typeof units.mass
-  animalLengthUnits: keyof typeof units.length
+  age: keyof typeof units.age
+  mass: keyof typeof units.mass
+  length: keyof typeof units.length
 }
 
 const ageUnitOptions = Object.entries(units.age).map(([k, v]) => ({
@@ -93,15 +93,15 @@ const CreateDatasetForm = ({ mode, dataset }: CreateDatasetFormProps) => {
     mode === CreateDatasetFormMode.New
       ? {
           name: '',
-          animalAgeUnits: 'seconds',
-          animalMassUnits: 'kilograms',
-          animalLengthUnits: 'meters',
+          age: 'seconds',
+          mass: 'kilograms',
+          length: 'meters',
         }
       : {
           name: dataset.name,
-          animalAgeUnits: dataset.animalAgeUnits ?? 'seconds',
-          animalMassUnits: dataset.animalMassUnits ?? 'kilograms',
-          animalLengthUnits: dataset.animalLengthUnits ?? 'meters',
+          age: dataset.age ?? 'seconds',
+          mass: dataset.mass ?? 'kilograms',
+          length: dataset.length ?? 'meters',
         }
   )
 
@@ -183,8 +183,8 @@ const CreateDatasetForm = ({ mode, dataset }: CreateDatasetFormProps) => {
         items={ageUnitOptions}
         values={[
           {
-            key: formData.animalAgeUnits,
-            label: units.age[formData.animalAgeUnits].label,
+            key: formData.age,
+            label: units.age[formData.age].label,
           },
         ]}
         placeholder="Seconds"
@@ -192,7 +192,7 @@ const CreateDatasetForm = ({ mode, dataset }: CreateDatasetFormProps) => {
         borderColor={theme.darkPurple}
         backgroundColor={theme.veryLightGray}
         style={{ boxShadow: 'none' }}
-        onAdd={item => updateFormData(item.key, 'animalAgeUnits')}
+        onAdd={item => updateFormData(item.key, 'age')}
       />
 
       <Label htmlFor="Animal mass units">Animal mass units *</Label>
@@ -201,8 +201,8 @@ const CreateDatasetForm = ({ mode, dataset }: CreateDatasetFormProps) => {
         items={massUnitOptions}
         values={[
           {
-            key: formData.animalMassUnits,
-            label: units.mass[formData.animalMassUnits].label,
+            key: formData.mass,
+            label: units.mass[formData.mass].label,
           },
         ]}
         placeholder="Kilograms"
@@ -210,7 +210,7 @@ const CreateDatasetForm = ({ mode, dataset }: CreateDatasetFormProps) => {
         borderColor={theme.darkPurple}
         backgroundColor={theme.veryLightGray}
         style={{ boxShadow: 'none' }}
-        onAdd={item => updateFormData(item.key, 'animalMassUnits')}
+        onAdd={item => updateFormData(item.key, 'mass')}
       />
 
       <Label htmlFor="Animal length units">Animal length units *</Label>
@@ -219,8 +219,8 @@ const CreateDatasetForm = ({ mode, dataset }: CreateDatasetFormProps) => {
         items={lengthUnitOptions}
         values={[
           {
-            key: formData.animalLengthUnits,
-            label: units.length[formData.animalLengthUnits].label,
+            key: formData.length,
+            label: units.length[formData.length].label,
           },
         ]}
         placeholder="Meters"
@@ -228,7 +228,7 @@ const CreateDatasetForm = ({ mode, dataset }: CreateDatasetFormProps) => {
         borderColor={theme.darkPurple}
         backgroundColor={theme.veryLightGray}
         style={{ boxShadow: 'none' }}
-        onAdd={item => updateFormData(item.key, 'animalLengthUnits')}
+        onAdd={item => updateFormData(item.key, 'length')}
       />
 
       {formMessage && (

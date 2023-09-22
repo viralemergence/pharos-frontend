@@ -11,11 +11,15 @@ import SimpleFormatter from './formatters/SimpleFormatter'
 import useVersionedRows from 'hooks/register/useVersionedRows'
 import generateID from 'utilities/generateID'
 
+import defaultColumns from '../../../../../config/defaultColumns.json'
+
 import 'react-data-grid/lib/styles.css'
 import RowNumber from './formatters/RowNumber'
 import useDataset from 'hooks/dataset/useDataset'
 import EditingDisabledEditor from './editors/EditingDisabledEditor'
 import { DATASET_LENGTH_LIMIT } from '../DatasetLengthExceededModal/DatasetLengthExceededModal'
+import UnitFormatter from './formatters/UnitFormatter'
+import UnitEditor from './editors/UnitEditor'
 
 const FillDatasetGrid = styled(DataGrid)`
   block-size: 100%;
@@ -48,8 +52,15 @@ const DatasetGrid = () => {
       editor:
         dataset.releaseStatus === DatasetReleaseStatus.Published
           ? EditingDisabledEditor
+          : defaultColumns.columns[name as keyof typeof defaultColumns.columns]
+              .type === 'unit'
+          ? UnitEditor
           : TextEditor,
-      formatter: SimpleFormatter,
+      formatter:
+        defaultColumns.columns[name as keyof typeof defaultColumns.columns]
+          .type === 'unit'
+          ? UnitFormatter
+          : SimpleFormatter,
       width: name.length * 10 + 15 + 'px',
       resizable: true,
       sortable: true,
