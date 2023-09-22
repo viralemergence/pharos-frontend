@@ -145,6 +145,21 @@ const NavBar = () => {
             {links.map(link => (
               <NavLink key={link.to} {...link} />
             ))}
+            {user.status === UserStatus.loggedIn && (
+              <LogoutButton
+                onClick={() => {
+                  // this is a very aggressive temporary implementation
+                  // of "log out" because it deletes all the local data
+                  // without warning the user; this way we can use it
+                  // as a "reset" button if a bug traps the user.
+                  localforage.clear()
+                  window.location.href = '/'
+                  window.location.reload()
+                }}
+              >
+                Logout
+              </LogoutButton>
+            )}
           </MobileLinkList>
         </MobileMenu>
       </Container>

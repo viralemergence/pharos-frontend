@@ -62,7 +62,7 @@ const useLoadDatasets = () => {
         })
     }
     loadLocalDatasets()
-  }, [projectID, datasetIDs, data, dispatch])
+  }, [projectID, data, datasetIDs, dispatch])
 
   // effect for loading datasets from remote server
   useEffect(() => {

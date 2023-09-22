@@ -20,6 +20,7 @@ const updateDatasets: ActionFunction<UpdateDatasetsAction['payload']> = (
   payload
 ) => {
   const { data, source } = payload
+  console.log('updateDatasets ' + source)
 
   const nextState = { ...state }
 
@@ -27,7 +28,7 @@ const updateDatasets: ActionFunction<UpdateDatasetsAction['payload']> = (
     for (const [key, nextData] of Object.entries(data)) {
       const prevData = state.datasets.data[nextData.datasetID]
 
-      // if the project already exists in state
+      // if the dataset already exists in state
       if (prevData) {
         const prevDate = new Date(prevData.lastUpdated ?? 0)
         const nextDate = new Date(nextData.lastUpdated ?? 0)
@@ -35,7 +36,7 @@ const updateDatasets: ActionFunction<UpdateDatasetsAction['payload']> = (
         // short-circuit if it's identical
         if (prevDate.getTime() === nextDate.getTime()) continue
 
-        // if the incoming project is newer than the one in state
+        // if the incoming dataset is newer than the one in state
         if (prevDate.getTime() < nextDate.getTime()) {
           nextState.datasets.data = {
             ...nextState.datasets.data,
@@ -53,7 +54,7 @@ const updateDatasets: ActionFunction<UpdateDatasetsAction['payload']> = (
           }
         }
       } else {
-        // if the project is new in state, add it
+        // if the dataset is new in state, add it
         nextState.datasets.data = {
           ...nextState.datasets.data,
           [key]: nextData,

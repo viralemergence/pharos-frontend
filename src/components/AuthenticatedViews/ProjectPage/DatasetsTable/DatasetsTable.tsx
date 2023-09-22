@@ -90,7 +90,7 @@ const DatasetsTable = ({
           <TableCell>Dataset</TableCell>
           {!publicView && (
             <>
-              <TableCell hideMedium>Collection Dates</TableCell>
+              <TableCell hideMedium>Collection dates</TableCell>
               <TableCell>Status</TableCell>
             </>
           )}

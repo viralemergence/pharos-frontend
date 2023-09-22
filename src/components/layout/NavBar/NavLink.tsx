@@ -36,6 +36,7 @@ export const LogoutButton = styled.button`
   background: none;
   border: none;
   ${linkStyle}
+  display: flex;
 `
 
 const defaultActiveStyle = {

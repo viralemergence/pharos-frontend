@@ -7,11 +7,18 @@ import Input from 'components/ui/Input'
 import Textarea from 'components/ui/Textarea'
 import Typeahead from '../../../../../library/ui/typeahead/Typeahead'
 
-import useDoCreateProject from 'reducers/stateReducer/hooks/useDoCreateProject'
 import useModal from 'hooks/useModal/useModal'
+
 import ColorMessage, {
   ColorMessageStatus,
 } from 'components/ui/Modal/ColorMessage'
+import { Project, ProjectPublishStatus } from 'reducers/stateReducer/types'
+import useDispatch from 'hooks/useDispatch'
+import { useNavigate } from 'react-router-dom'
+import generateID from 'utilities/generateID'
+import useUser from 'hooks/useUser'
+import getTimestamp from 'utilities/getTimestamp'
+import { StateActions } from 'reducers/stateReducer/stateReducer'
 
 const Section = styled.section`
   width: 800px;
@@ -67,23 +74,59 @@ export interface FormData {
   othersCiting: string[]
 }
 
-const CreateProjectForm = () => {
-  const doCreateProject = useDoCreateProject()
-  const [formMessage, setFormMessage] = useState('Project name cannot be blank')
-  const theme = useTheme()
+export enum CreateProjectFormMode {
+  New = 'new',
+  Edit = 'edit',
+}
 
+interface NewCreateProjectFormProps {
+  mode: CreateProjectFormMode.New
+  project?: undefined
+}
+
+interface EditCreateProjectFormProps {
+  mode: CreateProjectFormMode.Edit
+  project: Project
+}
+
+type CreateProjectFormProps =
+  | NewCreateProjectFormProps
+  | EditCreateProjectFormProps
+
+const CreateProjectForm = ({ mode, project }: CreateProjectFormProps) => {
+  const user = useUser()
+  const theme = useTheme()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
   const setModal = useModal()
 
-  const [formData, setFormData] = useState<FormData>({
-    name: '',
-    description: '',
-    projectType: '',
-    citation: '',
-    surveillanceStatus: '',
-    relatedMaterials: [''],
-    projectPublications: [''],
-    othersCiting: [''],
-  })
+  const [formMessage, setFormMessage] = useState(
+    mode === CreateProjectFormMode.New ? 'Project name cannot be blank' : ''
+  )
+
+  const [formData, setFormData] = useState<FormData>(
+    mode === CreateProjectFormMode.New
+      ? {
+          name: '',
+          description: '',
+          projectType: '',
+          citation: '',
+          surveillanceStatus: '',
+          relatedMaterials: [''],
+          projectPublications: [''],
+          othersCiting: [''],
+        }
+      : {
+          name: project.name,
+          description: project.description ?? '',
+          projectType: project.projectType ?? '',
+          citation: project.citation ?? '',
+          surveillanceStatus: project.surveillanceStatus ?? '',
+          relatedMaterials: project.relatedMaterials ?? [''],
+          projectPublications: project.projectPublications ?? [''],
+          othersCiting: project.othersCiting ?? [''],
+        }
+  )
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -94,7 +137,39 @@ const CreateProjectForm = () => {
       return
     }
 
-    doCreateProject(formData)
+    if (mode === CreateProjectFormMode.New) {
+      const projectID = generateID.projectID()
+      const projectData = {
+        ...formData,
+        projectID,
+        authors: [
+          {
+            researcherID: user.researcherID,
+            role: 'owner',
+          },
+        ],
+        datasetIDs: [],
+        lastUpdated: getTimestamp(),
+        publishStatus: ProjectPublishStatus.Unpublished,
+      }
+
+      dispatch({
+        type: StateActions.CreateProject,
+        payload: projectData,
+      })
+
+      navigate(`/projects/${projectID}`)
+    }
+    if (mode === CreateProjectFormMode.Edit) {
+      dispatch({
+        type: StateActions.EditProject,
+        payload: {
+          ...project,
+          ...formData,
+          lastUpdated: getTimestamp(),
+        },
+      })
+    }
 
     setModal(null)
   }
@@ -136,7 +211,9 @@ const CreateProjectForm = () => {
 
   return (
     <Section>
-      <H1>New Project</H1>
+      <H1>
+        {mode === CreateProjectFormMode.New ? 'New project' : 'Edit project'}
+      </H1>
 
       <Label htmlFor="Name">Project name *</Label>
       <Input
@@ -278,7 +355,8 @@ const CreateProjectForm = () => {
         style={{ marginRight: 'auto', marginTop: 30 }}
         disabled={formData.name === ''}
       >
-        Create new project
+        {mode === CreateProjectFormMode.New && 'Create new project'}
+        {mode === CreateProjectFormMode.Edit && 'Save changes'}
       </MintButton>
     </Section>
   )

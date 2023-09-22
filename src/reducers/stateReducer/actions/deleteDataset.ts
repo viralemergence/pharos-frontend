@@ -3,36 +3,33 @@ import {
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
 import { ActionFunction, StateActions } from '../stateReducer'
-import { Project, Dataset, DatasetReleaseStatus } from '../types'
+import { NodeStatus, Project, Dataset } from '../types'
 
-interface CreateDatasetPayload {
+interface DeleteDatasetPayload {
   timestamp: string
   projectID: string
   dataset: Dataset
 }
 
-export interface CreateDatasetAction {
-  type: StateActions.CreateDataset
-  payload: CreateDatasetPayload
+export interface DeleteDatasetAction {
+  type: StateActions.DeleteDataset
+  payload: DeleteDatasetPayload
 }
 
-const createDataset: ActionFunction<CreateDatasetPayload> = (
+const deleteDataset: ActionFunction<DeleteDatasetPayload> = (
   state,
   payload
 ) => {
   const nextProject: Project = {
     ...state.projects.data[payload.projectID],
     lastUpdated: payload.timestamp,
-    datasetIDs: [
-      ...state.projects.data[payload.projectID].datasetIDs,
+    datasetIDs: state.projects.data[payload.projectID].datasetIDs.filter(
+      id => id !== payload.dataset.datasetID
+    ),
+    deletedDatasetIDs: [
+      ...(state.projects.data[payload.projectID].deletedDatasetIDs ?? []),
       payload.dataset.datasetID,
     ],
-  }
-
-  const dataset = {
-    ...payload.dataset,
-    lastUpdated: payload.timestamp,
-    releaseStatus: DatasetReleaseStatus.Unreleased,
   }
 
   return {
@@ -45,25 +42,23 @@ const createDataset: ActionFunction<CreateDatasetPayload> = (
       },
     },
     datasets: {
-      ...state.datasets,
-      data: {
-        ...state.datasets.data,
-        [payload.dataset.datasetID]: dataset,
-      },
+      status: NodeStatus.Initial,
+      data: {},
     },
+
     messageStack: {
       ...state.messageStack,
-      [`${APIRoutes.saveDataset}_${payload.dataset.datasetID}_local`]: {
-        route: APIRoutes.saveDataset,
+      [`${APIRoutes.deleteDataset}_${payload.dataset.datasetID}_local`]: {
+        route: APIRoutes.deleteDataset,
         target: 'local',
         status: StorageMessageStatus.Initial,
-        data: dataset,
+        data: payload.dataset,
       },
-      [`${APIRoutes.saveDataset}_${payload.dataset.datasetID}_remote`]: {
-        route: APIRoutes.saveDataset,
+      [`${APIRoutes.deleteDataset}_${payload.dataset.datasetID}_remote`]: {
+        route: APIRoutes.deleteDataset,
         target: 'remote',
         status: StorageMessageStatus.Initial,
-        data: dataset,
+        data: payload.dataset,
       },
       [`${APIRoutes.saveProject}_${payload.projectID}_local`]: {
         route: APIRoutes.saveProject,
@@ -81,4 +76,4 @@ const createDataset: ActionFunction<CreateDatasetPayload> = (
   }
 }
 
-export default createDataset
+export default deleteDataset
