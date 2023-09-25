@@ -58,23 +58,26 @@ const UnitEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
 
   const projectDispatch = useDispatch()
 
+  const columnUnitType = columns[column.key as keyof UnitColumns].unitType
+
+  const selectedUnit =
+    dataset[columnUnitType] ??
+    (Object.keys(
+      units[columnUnitType]
+    )[0] as keyof (typeof units)[typeof columnUnitType])
+
+  const unit = columnUnitType && (units as Units)[columnUnitType][selectedUnit]
+
   const datapoint = row[column.key] as Datapoint | undefined
 
-  const [editValue, setEditValue] = useState(datapoint?.dataValue ?? '')
+  const [editValue, setEditValue] = useState(
+    (datapoint?.dataValue &&
+      unit.fromSIUnits(Number(datapoint.dataValue)).toString()) ??
+      ''
+  )
 
   const dispatchValue = () => {
     const lastUpdated = getTimestamp()
-
-    const columnUnitType = columns[column.key as keyof UnitColumns].unitType
-
-    const selectedUnit =
-      dataset[columnUnitType] ??
-      (Object.keys(
-        units[columnUnitType]
-      )[0] as keyof (typeof units)[typeof columnUnitType])
-
-    const unit =
-      columnUnitType && (units as Units)[columnUnitType][selectedUnit]
 
     projectDispatch({
       type: StateActions.SetDatapoint,

@@ -10,12 +10,20 @@ import { CellContainer, ExpandButton } from '../DisplayComponents'
 import units, { Units } from '../../../../../config/units'
 import columns from 'config/defaultColumns'
 import useDataset from 'hooks/dataset/useDataset'
+import styled from 'styled-components'
 
 type UnitColumns = {
   Age: (typeof columns)['Age']
   Mass: (typeof columns)['Mass']
   Length: (typeof columns)['Length']
 }
+
+const LabelContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 3px;
+`
 
 const UnitFormatter = ({
   column,
@@ -47,10 +55,13 @@ const UnitFormatter = ({
 
   return (
     <CellContainer style={{ backgroundColor }}>
-      <span>
-        {unit.fromSIUnits(Number(datapoint.dataValue)).toPrecision(4)}{' '}
-        {unit.shortLabel}
-      </span>
+      <LabelContainer>
+        <span>
+          {Math.round(unit.fromSIUnits(Number(datapoint.dataValue)) * 1000) /
+            1000}
+        </span>
+        <span style={{ color: 'ghtgray' }}>{unit.shortLabel}</span>
+      </LabelContainer>
       <ExpandButton onClick={() => setOpen(true)}>+</ExpandButton>
       <SimpleCellModal
         {...{ datapointID: column.key, datapoint, open, setOpen }}
