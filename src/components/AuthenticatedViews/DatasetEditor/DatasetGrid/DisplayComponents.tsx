@@ -11,7 +11,9 @@ export const CellContainer = styled.div`
 
   &:hover > button {
     right: 6px;
-    background-color: ${({ theme }) => theme.hoverMint2};
+    background-color: ${({ theme }) => theme.hoverMint};
+    border: 1px solid ${({ theme }) => theme.mint};
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.025);
   }
 
   > div {
@@ -30,17 +32,24 @@ const ExpandButtonStyle = styled.button`
   top: 50%;
   transform: translateY(-50%);
   background: none;
-  border: none;
+  border: 1px solid rgba(0, 0, 0, 0);
   padding: 4px;
   border-radius: 3px;
   display: flex;
   align-items: center;
   justify-content: center;
-
   transition: 250ms ease;
+
+  path {
+    transition: 250ms ease;
+  }
 
   &:hover {
     background-color: ${({ theme }) => theme.mint} !important;
+
+    path {
+      fill: ${({ theme }) => theme.black};
+    }
   }
 `
 
@@ -52,7 +61,7 @@ const ExpandButtonIcon = () => {
       <g clipPath="url(#clip0_56_135)">
         <path
           d="M20 13.6H13.6V20H10.4V13.6H4V10.4H10.4V4H13.6V10.4H20V13.6Z"
-          fill={theme.black}
+          fill={theme.veryDarkGray}
         />
       </g>
       <defs>
