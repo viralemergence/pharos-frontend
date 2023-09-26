@@ -11,8 +11,8 @@ export const CellContainer = styled.div`
 
   &:hover > button {
     right: 6px;
-    background-color: ${({ theme }) => theme.hoverMint};
-    border: 1px solid ${({ theme }) => theme.mint};
+    background-color: ${({ theme }) => theme.lightGray};
+    border: 1px solid ${({ theme }) => theme.medGray};
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.025);
   }
 
@@ -42,10 +42,11 @@ const ExpandButtonStyle = styled.button`
 
   path {
     transition: 250ms ease;
+    fill: ${({ theme }) => theme.darkGray};
   }
 
   &:hover {
-    background-color: ${({ theme }) => theme.mint} !important;
+    background-color: ${({ theme }) => theme.medGray} !important;
 
     path {
       fill: ${({ theme }) => theme.black};
@@ -53,25 +54,18 @@ const ExpandButtonStyle = styled.button`
   }
 `
 
-const ExpandButtonIcon = () => {
-  const theme = useTheme()
-
-  return (
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-      <g clipPath="url(#clip0_56_135)">
-        <path
-          d="M20 13.6H13.6V20H10.4V13.6H4V10.4H10.4V4H13.6V10.4H20V13.6Z"
-          fill={theme.veryDarkGray}
-        />
-      </g>
-      <defs>
-        <clipPath id="clip0_56_135">
-          <rect width="24" height="24" fill="white" />
-        </clipPath>
-      </defs>
-    </svg>
-  )
-}
+const ExpandButtonIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+    <g clipPath="url(#clip0_56_135)">
+      <path d="M20 13.6H13.6V20H10.4V13.6H4V10.4H10.4V4H13.6V10.4H20V13.6Z" />
+    </g>
+    <defs>
+      <clipPath id="clip0_56_135">
+        <rect width="24" height="24" fill="white" />
+      </clipPath>
+    </defs>
+  </svg>
+)
 
 export const ExpandButton = ({
   ...props
