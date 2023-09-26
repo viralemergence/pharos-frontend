@@ -51,6 +51,27 @@ const autoFocusAndSelect = (input: HTMLInputElement | null) => {
   input?.select()
 }
 
+const valueFromSIUnits = (
+  value: string | undefined,
+  unit: Units[keyof Units][string]
+) => {
+  let converted = value ? value.trim() : ''
+  const convertedValue = unit.fromSIUnits(Number(converted))
+  if (!isNaN(convertedValue)) converted = convertedValue.toString()
+  return converted
+}
+
+const valueToSIUnits = (
+  value: string | undefined,
+  unit: Units[keyof Units][string]
+) => {
+  let converted = value ? value.trim() : ''
+  if (converted === '') return converted
+  const convertedValue = unit.toSIUnits(Number(converted))
+  if (!isNaN(convertedValue)) converted = convertedValue.toString()
+  return converted
+}
+
 const UnitEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
   const dataset = useDataset()
   const projectID = useProjectID()
@@ -67,13 +88,10 @@ const UnitEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
     )[0] as keyof (typeof units)[typeof columnUnitType])
 
   const unit = columnUnitType && (units as Units)[columnUnitType][selectedUnit]
-
   const datapoint = row[column.key] as Datapoint | undefined
 
   const [editValue, setEditValue] = useState(
-    (datapoint?.dataValue &&
-      unit.fromSIUnits(Number(datapoint.dataValue)).toString()) ??
-      ''
+    valueFromSIUnits(datapoint?.dataValue, unit)
   )
 
   const dispatchValue = () => {
@@ -88,7 +106,7 @@ const UnitEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
         datapointID: column.key,
         lastUpdated,
         datapoint: {
-          dataValue: unit.toSIUnits(Number(editValue.trim())).toString(),
+          dataValue: valueToSIUnits(editValue, unit),
           modifiedBy,
         },
       },

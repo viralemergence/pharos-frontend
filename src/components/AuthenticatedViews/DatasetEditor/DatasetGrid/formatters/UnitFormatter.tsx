@@ -53,14 +53,18 @@ const UnitFormatter = ({
   // the full union of all possible units from all types
   const unit = columnUnitType && (units as Units)[columnUnitType][selectedUnit]
 
+  let value = datapoint.dataValue
+  const convertedValue = Math.round(
+    unit.fromSIUnits(Number(datapoint.dataValue))
+  )
+
+  if (!isNaN(convertedValue)) value = convertedValue.toString()
+
   return (
     <CellContainer style={{ backgroundColor }}>
       <LabelContainer>
-        <span>
-          {Math.round(unit.fromSIUnits(Number(datapoint.dataValue)) * 1000) /
-            1000}
-        </span>
-        <span style={{ color: 'ghtgray' }}>{unit.shortLabel}</span>
+        <span>{value}</span>
+        <span>{unit.shortLabel}</span>
       </LabelContainer>
       <ExpandButton onClick={() => setOpen(true)}>+</ExpandButton>
       <SimpleCellModal
