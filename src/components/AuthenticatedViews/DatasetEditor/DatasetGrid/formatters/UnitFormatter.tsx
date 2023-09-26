@@ -66,7 +66,7 @@ const UnitFormatter = ({
         <span>{value}</span>
         <span>{unit.shortLabel}</span>
       </LabelContainer>
-      <ExpandButton onClick={() => setOpen(true)}>+</ExpandButton>
+      <ExpandButton onClick={() => setOpen(true)} />
       <SimpleCellModal
         {...{ datapointID: column.key, datapoint, open, setOpen }}
       />
