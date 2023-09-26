@@ -8,14 +8,14 @@ import SimpleCellModal from './SimpleCellModal'
 import { CellContainer, ExpandButton } from '../DisplayComponents'
 
 import units, { Units } from '../../../../../config/units'
-import columns from 'config/defaultColumns'
+import defaultColumns from 'config/defaultColumns'
 import useDataset from 'hooks/dataset/useDataset'
 import styled from 'styled-components'
 
 type UnitColumns = {
-  Age: (typeof columns)['Age']
-  Mass: (typeof columns)['Mass']
-  Length: (typeof columns)['Length']
+  Age: (typeof defaultColumns)['Age']
+  Mass: (typeof defaultColumns)['Mass']
+  Length: (typeof defaultColumns)['Length']
 }
 
 const LabelContainer = styled.div`
@@ -23,6 +23,10 @@ const LabelContainer = styled.div`
   justify-content: space-between;
   width: 100%;
   gap: 3px;
+`
+
+const Label = styled.span`
+  color: ${({ theme }) => theme.medDarkGray};
 `
 
 const UnitFormatter = ({
@@ -40,7 +44,8 @@ const UnitFormatter = ({
     ? cellHighlightColors[datapoint.report.status]
     : 'rgba(0,0,0,0)'
 
-  const columnUnitType = columns[column.key as keyof UnitColumns].unitType
+  const columnUnitType =
+    defaultColumns[column.key as keyof UnitColumns].unitType
 
   const selectedUnit =
     dataset[columnUnitType] ??
@@ -64,7 +69,7 @@ const UnitFormatter = ({
     <CellContainer style={{ backgroundColor }}>
       <LabelContainer>
         <span>{value}</span>
-        <span>{unit.shortLabel}</span>
+        <Label>{unit.shortLabel}</Label>
       </LabelContainer>
       <ExpandButton onClick={() => setOpen(true)} />
       <SimpleCellModal

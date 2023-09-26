@@ -1,4 +1,4 @@
-const columns = {
+const defaultColumns = {
   'Sample ID': {
     type: 'string',
     definition: 'The researcher generated unique ID of the sample collected.',
@@ -150,4 +150,4 @@ const columns = {
   },
 } as const
 
-export default columns
+export default defaultColumns

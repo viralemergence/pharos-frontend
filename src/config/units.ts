@@ -99,6 +99,14 @@ const units = {
       fromSIUnits: (val: number) => convert(val, 'meters').to('feet'),
     },
   },
+  spatialUncertainty: {
+    meters: {
+      label: 'Meters',
+      shortLabel: 'm',
+      toSIUnits: (val: number) => val,
+      fromSIUnits: (val: number) => val,
+    },
+  },
 } as const
 
 export default units

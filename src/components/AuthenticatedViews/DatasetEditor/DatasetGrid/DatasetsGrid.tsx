@@ -11,7 +11,7 @@ import SimpleFormatter from './formatters/SimpleFormatter'
 import useVersionedRows from 'hooks/register/useVersionedRows'
 import generateID from 'utilities/generateID'
 
-import defaultColumns from '../../../../../config/defaultColumns.json'
+import defaultColumns from 'config/defaultColumns'
 
 import 'react-data-grid/lib/styles.css'
 import RowNumber from './formatters/RowNumber'
@@ -52,13 +52,11 @@ const DatasetGrid = () => {
       editor:
         dataset.releaseStatus === DatasetReleaseStatus.Published
           ? EditingDisabledEditor
-          : defaultColumns.columns[name as keyof typeof defaultColumns.columns]
-              .type === 'unit'
+          : defaultColumns[name as keyof typeof defaultColumns].type === 'unit'
           ? UnitEditor
           : TextEditor,
       formatter:
-        defaultColumns.columns[name as keyof typeof defaultColumns.columns]
-          .type === 'unit'
+        defaultColumns[name as keyof typeof defaultColumns].type === 'unit'
           ? UnitFormatter
           : SimpleFormatter,
       width: name.length * 10 + 15 + 'px',

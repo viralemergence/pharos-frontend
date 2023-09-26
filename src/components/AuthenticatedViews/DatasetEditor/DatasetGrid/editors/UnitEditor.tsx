@@ -14,13 +14,13 @@ import getTimestamp from 'utilities/getTimestamp'
 import { StateActions } from 'reducers/stateReducer/stateReducer'
 import useDispatch from 'hooks/useDispatch'
 import useProjectID from 'hooks/project/useProjectID'
-import columns from 'config/defaultColumns'
+import defaultColumns from 'config/defaultColumns'
 import units, { Units } from 'config/units'
 
 type UnitColumns = {
-  Age: (typeof columns)['Age']
-  Mass: (typeof columns)['Mass']
-  Length: (typeof columns)['Length']
+  Age: (typeof defaultColumns)['Age']
+  Mass: (typeof defaultColumns)['Mass']
+  Length: (typeof defaultColumns)['Length']
 }
 
 const TextInput = styled.input`
@@ -79,7 +79,8 @@ const UnitEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
 
   const projectDispatch = useDispatch()
 
-  const columnUnitType = columns[column.key as keyof UnitColumns].unitType
+  const columnUnitType =
+    defaultColumns[column.key as keyof UnitColumns].unitType
 
   const selectedUnit =
     dataset[columnUnitType] ??
