@@ -179,6 +179,7 @@ const CreateDatasetForm = ({ mode, dataset }: CreateDatasetFormProps) => {
 
       <Label htmlFor="Animal age units">Animal age units *</Label>
       <Typeahead
+        disabled
         inputId="Animal age units"
         items={ageUnitOptions}
         values={[
@@ -197,6 +198,7 @@ const CreateDatasetForm = ({ mode, dataset }: CreateDatasetFormProps) => {
 
       <Label htmlFor="Animal mass units">Animal mass units *</Label>
       <Typeahead
+        disabled
         inputId="Animal mass units"
         items={massUnitOptions}
         values={[
@@ -215,6 +217,7 @@ const CreateDatasetForm = ({ mode, dataset }: CreateDatasetFormProps) => {
 
       <Label htmlFor="Animal length units">Animal length units *</Label>
       <Typeahead
+        disabled
         inputId="Animal length units"
         items={lengthUnitOptions}
         values={[
