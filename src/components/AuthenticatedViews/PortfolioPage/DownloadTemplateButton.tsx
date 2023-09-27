@@ -3,7 +3,7 @@ import MintButton from 'components/ui/MintButton'
 import React from 'react'
 
 import { useTheme } from 'styled-components'
-import defaultColumns from '../../../../config/defaultColumns.json'
+import defaultColumns from 'config/defaultColumns'
 
 const DownloadTemplateButton = () => {
   const theme = useTheme()
@@ -11,7 +11,7 @@ const DownloadTemplateButton = () => {
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
 
-    const content = Object.keys(defaultColumns.columns).join(',') + '\n,'
+    const content = Object.keys(defaultColumns).join(',') + '\n,'
     const fileName = 'Pharos Dataset Template.csv'
 
     const downloadLink = document.createElement('a')
