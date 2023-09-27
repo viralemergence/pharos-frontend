@@ -7,16 +7,10 @@ import cellHighlightColors from '../../../../../../config/cellHighlightColors'
 import SimpleCellModal from './SimpleCellModal'
 import { CellContainer, ExpandButton } from '../DisplayComponents'
 
-import units, { Units } from '../../../../../config/units'
+import units, { UnitColumns, Units } from '../../../../../config/units'
 import defaultColumns from 'config/defaultColumns'
 import useDataset from 'hooks/dataset/useDataset'
 import styled from 'styled-components'
-
-type UnitColumns = {
-  Age: (typeof defaultColumns)['Age']
-  Mass: (typeof defaultColumns)['Mass']
-  Length: (typeof defaultColumns)['Length']
-}
 
 const LabelContainer = styled.div`
   display: flex;

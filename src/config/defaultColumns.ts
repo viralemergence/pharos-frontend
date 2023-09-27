@@ -30,6 +30,7 @@ const defaultColumns = {
     type: 'string',
     definition:
       'Coordinate uncertainty from GPS recordings or post-hoc digitization, expressed in meters.',
+    unitType: 'length',
   },
   'Collection day': {
     type: 'string',

@@ -1,4 +1,12 @@
 import convert from 'convert'
+import defaultColumns from './defaultColumns'
+
+export type UnitColumns = {
+  Age: (typeof defaultColumns)['Age']
+  Mass: (typeof defaultColumns)['Mass']
+  Length: (typeof defaultColumns)['Length']
+  'Spatial uncertainty': (typeof defaultColumns)['Spatial uncertainty']
+}
 
 // general Units interface, making programmatic
 // access easier with typescript... there's got to
