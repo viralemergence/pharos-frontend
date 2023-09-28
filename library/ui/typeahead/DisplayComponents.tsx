@@ -78,6 +78,11 @@ export const SearchBar = styled.input<{
             opacity: 0.66
           `};
   }
+
+  &:disabled {
+    opacity: 0.5;
+    border: 1px solid #bdbdbd !important;
+  }
 `
 export const Results = styled.div<{ resultsMaxHeight: string }>`
   display: flex;
