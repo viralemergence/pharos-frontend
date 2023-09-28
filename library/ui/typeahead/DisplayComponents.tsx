@@ -81,7 +81,7 @@ export const SearchBar = styled.input<{
 
   &:disabled {
     opacity: 0.5;
-    border: 1px solid #eee !important;
+    border: 1px solid #bdbdbd !important;
   }
 `
 export const Results = styled.div<{ resultsMaxHeight: string }>`
