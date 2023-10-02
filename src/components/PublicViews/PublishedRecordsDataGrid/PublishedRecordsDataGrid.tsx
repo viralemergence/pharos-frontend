@@ -12,6 +12,7 @@ import { darken, transparentize } from 'polished'
 
 import LoadingSpinner from 'components/DataPage/TableView/LoadingSpinner'
 
+import Unit from './formatters/Unit'
 import RowNumber from './formatters/RowNumber'
 import Researcher from './formatters/Researcher'
 import ProjectName from './formatters/ProjectName'
@@ -63,8 +64,6 @@ export interface SummaryOfRecords {
   /** THe number of records that match the current filters */
   matchingRecordCount?: number
 }
-
-
 
 const TableContainer = styled.div`
   position: relative;
@@ -158,6 +157,10 @@ type DataGridFormatter = (params: FormatterProps<Row>) => JSX.Element
 export const formatters: Record<string, DataGridFormatter> = {
   Project: ProjectName,
   Researcher: Researcher,
+  Age: Unit,
+  Length: Unit,
+  Mass: Unit,
+  'Spatial uncertainty': Unit,
 }
 
 interface PublishedRecordsDataGridProps {

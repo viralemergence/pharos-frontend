@@ -5,7 +5,7 @@ import DownloadIcon from 'components/ui/icons/DownloadIcon'
 import MintButton from 'components/ui/MintButton'
 
 import { useTheme } from 'styled-components'
-import defaultColumns from '../../../../config/defaultColumns.json'
+import defaultColumns from 'config/defaultColumns'
 
 const DownloadDefinitionsButton = () => {
   const theme = useTheme()
@@ -14,7 +14,7 @@ const DownloadDefinitionsButton = () => {
     e.preventDefault()
 
     const columns = ['Column', 'Definition']
-    const rows = Object.entries(defaultColumns.columns).map(([key, value]) => ({
+    const rows = Object.entries(defaultColumns).map(([key, value]) => ({
       Column: key,
       Definition: value.definition,
     }))
