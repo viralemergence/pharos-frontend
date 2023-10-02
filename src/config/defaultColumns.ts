@@ -27,7 +27,7 @@ const defaultColumns = {
     definition: '(Required) The east west position of a collection site.',
   },
   'Spatial uncertainty': {
-    type: 'string',
+    type: 'unit',
     definition:
       'Coordinate uncertainty from GPS recordings or post-hoc digitization, expressed in meters.',
     unitType: 'length',
