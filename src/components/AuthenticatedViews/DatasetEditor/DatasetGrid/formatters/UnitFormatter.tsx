@@ -52,12 +52,14 @@ const UnitFormatter = ({
   // the full union of all possible units from all types
   const unit = columnUnitType && (units as Units)[columnUnitType][selectedUnit]
 
-  let value = datapoint.dataValue
-  const convertedValue = Math.round(
-    unit.fromSIUnits(Number(datapoint.dataValue))
-  )
+  const value = datapoint.dataValue
 
-  if (!isNaN(convertedValue)) value = convertedValue.toString()
+  // don't convert values at all right now, just use strings
+  // const convertedValue = Math.round(
+  //   unit.fromSIUnits(Number(datapoint.dataValue))
+  // )
+
+  // if (!isNaN(convertedValue)) value = convertedValue.toString()
 
   return (
     <CellContainer style={{ backgroundColor }}>

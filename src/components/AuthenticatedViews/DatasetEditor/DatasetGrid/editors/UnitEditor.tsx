@@ -14,14 +14,15 @@ import getTimestamp from 'utilities/getTimestamp'
 import { StateActions } from 'reducers/stateReducer/stateReducer'
 import useDispatch from 'hooks/useDispatch'
 import useProjectID from 'hooks/project/useProjectID'
-import defaultColumns from 'config/defaultColumns'
-import units, { Units } from 'config/units'
+// import defaultColumns from 'config/defaultColumns'
+// import units, { Units } from 'config/units'
 
-type UnitColumns = {
-  Age: (typeof defaultColumns)['Age']
-  Mass: (typeof defaultColumns)['Mass']
-  Length: (typeof defaultColumns)['Length']
-}
+// type UnitColumns = {
+//   Age: (typeof defaultColumns)['Age']
+//   Mass: (typeof defaultColumns)['Mass']
+//   Length: (typeof defaultColumns)['Length']
+//   'Spatial uncertainty': (typeof defaultColumns)['Spatial uncertainty']
+// }
 
 const TextInput = styled.input`
   appearance: none;
@@ -51,24 +52,26 @@ const autoFocusAndSelect = (input: HTMLInputElement | null) => {
   input?.select()
 }
 
+// removing conversion for now
 const valueFromSIUnits = (
-  value: string | undefined,
-  unit: Units[keyof Units][string]
+  value: string | undefined
+  // unit: Units[keyof Units][string]
 ) => {
-  let converted = value ? value.trim() : ''
-  const convertedValue = unit.fromSIUnits(Number(converted))
-  if (!isNaN(convertedValue)) converted = convertedValue.toString()
+  const converted = value ? value.trim() : ''
+  // const convertedValue = unit.fromSIUnits(Number(converted))
+  // if (!isNaN(convertedValue)) converted = convertedValue.toString()
   return converted
 }
 
+// removing conversion for now
 const valueToSIUnits = (
-  value: string | undefined,
-  unit: Units[keyof Units][string]
+  value: string | undefined
+  // unit: Units[keyof Units][string]
 ) => {
-  let converted = value ? value.trim() : ''
-  if (converted === '') return converted
-  const convertedValue = unit.toSIUnits(Number(converted))
-  if (!isNaN(convertedValue)) converted = convertedValue.toString()
+  const converted = value ? value.trim() : ''
+  // if (converted === '') return converted
+  // const convertedValue = unit.toSIUnits(Number(converted))
+  // if (!isNaN(convertedValue)) converted = convertedValue.toString()
   return converted
 }
 
@@ -79,20 +82,20 @@ const UnitEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
 
   const projectDispatch = useDispatch()
 
-  const columnUnitType =
-    defaultColumns[column.key as keyof UnitColumns].unitType
+  // const columnUnitType =
+  //   defaultColumns[column.key as keyof UnitColumns].unitType
 
-  const selectedUnit =
-    dataset[columnUnitType] ??
-    (Object.keys(
-      units[columnUnitType]
-    )[0] as keyof (typeof units)[typeof columnUnitType])
+  // const selectedUnit =
+  //   dataset[columnUnitType] ??
+  //   (Object.keys(
+  //     units[columnUnitType]
+  //   )[0] as keyof (typeof units)[typeof columnUnitType])
 
-  const unit = columnUnitType && (units as Units)[columnUnitType][selectedUnit]
+  // const unit = columnUnitType && (units as Units)[columnUnitType][selectedUnit]
   const datapoint = row[column.key] as Datapoint | undefined
 
   const [editValue, setEditValue] = useState(
-    valueFromSIUnits(datapoint?.dataValue, unit)
+    valueFromSIUnits(datapoint?.dataValue)
   )
 
   const dispatchValue = () => {
@@ -107,7 +110,7 @@ const UnitEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
         datapointID: column.key,
         lastUpdated,
         datapoint: {
-          dataValue: valueToSIUnits(editValue, unit),
+          dataValue: valueToSIUnits(editValue),
           modifiedBy,
         },
       },
