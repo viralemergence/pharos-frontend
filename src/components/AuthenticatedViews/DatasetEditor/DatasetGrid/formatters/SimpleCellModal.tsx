@@ -1,9 +1,9 @@
 import React from 'react'
-import Modal from 'components/ui/Modal'
+import Modal from 'components/ui/Modal/Modal'
 import { Datapoint, ReportScore } from 'reducers/stateReducer/types'
 import styled from 'styled-components'
 import cellHighlightColors from '../../../../../../config/cellHighlightColors'
-import columnsMetadata from '../../../../../../config/defaultColumns.json'
+import defaultColumns from 'config/defaultColumns'
 
 interface SimpleCellModalProps {
   datapointID: string
@@ -96,7 +96,7 @@ const SimpleCellModal = ({
 
   const history = getDatapointHistory(datapoint)
 
-  type ColumnKey = keyof typeof columnsMetadata.columns
+  type ColumnKey = keyof typeof defaultColumns
 
   return (
     <Modal closeable {...{ open, setOpen }}>
@@ -115,9 +115,7 @@ const SimpleCellModal = ({
           </ReportContainer>
           <Instructions>
             <SectionHeader>Definition</SectionHeader>
-            <p>
-              {columnsMetadata.columns[datapointID as ColumnKey].definition}
-            </p>
+            <p>{defaultColumns[datapointID as ColumnKey].definition}</p>
           </Instructions>
         </Data>
         <History>

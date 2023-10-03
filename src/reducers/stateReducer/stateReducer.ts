@@ -27,6 +27,9 @@ import extendRegister, { ExtendRegisterAction } from './actions/extendRegister'
 import setProjectPublishingStatus, {
   SetProjectPublishingStatusAction,
 } from './actions/setProjectPublishing'
+import editProject, { EditProjectAction } from './actions/editProject'
+import deleteDataset, { DeleteDatasetAction } from './actions/deleteDataset'
+import editDataset, { EditDatasetAction } from './actions/editDataset'
 
 // reducer actions
 export enum StateActions {
@@ -45,10 +48,13 @@ export enum StateActions {
   // project actions
   UpdateProjects,
   CreateProject,
+  EditProject,
   SetProjectPublishingStatus,
 
   // dataset actions
   CreateDataset,
+  EditDataset,
+  DeleteDataset,
   UpdateDatasets,
   SetDatasetReleaseStatus,
 
@@ -74,10 +80,13 @@ export type StateAction =
   // project actions
   | UpdateProjectsAction
   | CreateProjectAction
+  | EditProjectAction
   | SetProjectPublishingStatusAction
 
   // dataset actions
   | CreateDatasetAction
+  | EditDatasetAction
+  | DeleteDatasetAction
   | UpdateDatasetsAction
   | SetDatasetReleaseStatusAction
 
@@ -118,10 +127,12 @@ const stateReducer = (state: AppState, action: StateAction) => {
       return removeStorageMessage(state, action.payload)
 
     // project actions
-    case StateActions.CreateProject:
-      return createProject(state, action.payload)
     case StateActions.UpdateProjects:
       return updateProjects(state, action.payload)
+    case StateActions.CreateProject:
+      return createProject(state, action.payload)
+    case StateActions.EditProject:
+      return editProject(state, action.payload)
     case StateActions.SetProjectPublishingStatus:
       return setProjectPublishingStatus(state, action.payload)
 
@@ -130,6 +141,10 @@ const stateReducer = (state: AppState, action: StateAction) => {
       return updateDatasets(state, action.payload)
     case StateActions.CreateDataset:
       return createDataset(state, action.payload)
+    case StateActions.EditDataset:
+      return editDataset(state, action.payload)
+    case StateActions.DeleteDataset:
+      return deleteDataset(state, action.payload)
     case StateActions.SetDatasetReleaseStatus:
       return setDatasetReleaseStatus(state, action.payload)
 

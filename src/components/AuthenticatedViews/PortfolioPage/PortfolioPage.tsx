@@ -2,7 +2,9 @@ import React from 'react'
 
 import MintButton from 'components/ui/MintButton'
 import ProjectsTable from './ProjectsTable/ProjectsTable'
-import CreateProjectForm from './CreateProjectForm/CreateProjectForm'
+import CreateProjectForm, {
+  CreateProjectFormMode,
+} from './CreateProjectForm/CreateProjectForm'
 
 import TopBar, {
   Title,
@@ -14,6 +16,9 @@ import TopBar, {
 import useModal from 'hooks/useModal/useModal'
 import styled from 'styled-components'
 import wideMargins from 'components/layout/Margins'
+import DownloadTemplateButton from './DownloadTemplateButton'
+import DownloadDefinitionsButton from './DownloadDefinitionsButton'
+import NewProjectIcon from 'components/ui/icons/NewProjectIcon'
 
 const PortfolioPageLayout = styled.div`
   ${wideMargins}
@@ -36,10 +41,16 @@ const ProjectList = () => {
         <Title>My Projects</Title>
         <Controls>
           <MintButton
-            onClick={() => setModal(<CreateProjectForm />, { closeable: true })}
+            onClick={() =>
+              setModal(<CreateProjectForm mode={CreateProjectFormMode.New} />, {
+                closeable: true,
+              })
+            }
           >
-            + New Project
+            <NewProjectIcon /> New project
           </MintButton>
+          <DownloadTemplateButton />
+          <DownloadDefinitionsButton />
         </Controls>
       </TopBar>
       <ProjectsTable />

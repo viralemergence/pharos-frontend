@@ -1,7 +1,7 @@
+import defaultColumns from 'config/defaultColumns'
 import useDataset from 'hooks/dataset/useDataset'
 import { Datapoint, RecordWithID } from 'reducers/stateReducer/types'
 
-import defaultColumns from '../../../config/defaultColumns.json'
 import useRegister from './useRegister'
 
 // recursively traverse the linked list until the
@@ -23,7 +23,9 @@ const useVersionedRows = () => {
   const dataset = useDataset()
 
   // load colNames from config json
-  const colNames: { [key: string]: { type: string } } = defaultColumns.columns
+  const colNames: { [key: string]: { type: string } } = {
+    ...defaultColumns,
+  }
 
   // if the register is not available, return empty []
   if (!dataset || !register || Object.keys(register).length === 0)

@@ -67,6 +67,9 @@ export const PublicViewBreadcrumbLink = styled(GatsbyLink)<{
 
 export const Controls = styled.div`
   align-self: flex-end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 `
 
 export default TopBar

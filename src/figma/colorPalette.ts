@@ -7,6 +7,7 @@ export default {
   black80Transparent: `rgba(29,28,28,0.800)`,
   mint: `rgba(170,233,219,1)`,
   hoverMint: `rgba(206,242,234,1)`,
+  hoverMint2: `rgba(192,228,229,1)`,
   lightMint: `rgba(226,245,246,1)`,
   veryLightMint: `rgba(244,249,250,1)`,
   link: `rgba(88,183,177,1)`,
@@ -36,6 +37,8 @@ export default {
   mutedPurple4: `rgba(89,93,115,1)`,
   publicPagePurpleBackground: `rgba(15,19,41,1)`,
   orange: `rgba(207,109,13,1)`,
-  red: 'rgba(176,33,24,1)',
-  gridLines: 'rgba(216,218,220,0.300)',
+  red: `rgba(176,33,24,1)`,
+  darkPurpleBackground: `rgba(15,19,41,1)`,
+  gridLines: `rgba(216,218,220,0.300)`,
+  outline1: `rgba(255,255,255,0.102)`,
 }

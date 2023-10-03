@@ -1,5 +1,4 @@
 import React from 'react'
-import styled from 'styled-components'
 
 import DatasetGrid from './DatasetGrid/DatasetsGrid'
 import CSVUploader from './CSVParser/CSVUploader'
@@ -11,25 +10,34 @@ import TopBar, {
   BreadcrumbLink,
 } from 'components/layout/TopBar'
 
-import DownloadButton from './DownloadButton/DownloadButton'
-
-import useDataset from 'hooks/dataset/useDataset'
-
+import { DatasetTopSection } from 'components/DatasetPage/DatasetPageLayout'
 import DatasetStatusMessage from './DatasetStatusMessage/DatasetStatusMessage'
 import PreReleaseButton from './ReleaseButton/PreReleaseButton'
 
-import useProject from 'hooks/project/useProject'
-import { DatasetTopSection } from 'components/DatasetPage/DatasetPageLayout'
+import MintToolbar, {
+  MintToolbarButton,
+} from 'components/ui/MintToolbar/MintToolbar'
 
-const DatasetControls = styled(Controls)`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-`
+import EditIcon from 'components/ui/MintToolbar/MintToolbarIcons/EditIcon'
+import AddMoreIcon from 'components/ui/MintToolbar/MintToolbarIcons/AddMoreIcon'
+import ValidateIcon from 'components/ui/MintToolbar/MintToolbarIcons/ValidateIcon'
+import DownloadButton from './DownloadButton/DownloadButton'
+
+import useModal from 'hooks/useModal/useModal'
+import useProject from 'hooks/project/useProject'
+import useDataset from 'hooks/dataset/useDataset'
+
+import { DatasetReleaseStatus } from 'reducers/stateReducer/types'
+import DeleteDatasetModal from './DeleteDatasetModal/DeleteDatasetModal'
+import DeleteIcon from 'components/ui/MintToolbar/MintToolbarIcons/DeleteIcon'
+import CreateDatasetForm, {
+  CreateDatasetFormMode,
+} from '../ProjectPage/CreateDatasetForm/CreateDatasetForm'
 
 const DatasetEditor = () => {
   const dataset = useDataset()
   const project = useProject()
+  const setModal = useModal()
 
   return (
     <>
@@ -49,14 +57,49 @@ const DatasetEditor = () => {
             <DatasetStatusMessage />
           </Breadcrumbs>
           <Title>{dataset ? dataset.name : 'Loading dataset'}</Title>
-          <DatasetControls>
+          <Controls>
             <PreReleaseButton />
-            <DownloadButton />
-            <CSVUploader />
-          </DatasetControls>
+            <MintToolbar>
+              <MintToolbarButton tooltip="Validate" disabled>
+                <ValidateIcon />
+              </MintToolbarButton>
+              <MintToolbarButton
+                tooltip="Add rows from CSV"
+                onClick={() => setModal(<CSVUploader />, { closeable: true })}
+                disabled={
+                  dataset.releaseStatus === DatasetReleaseStatus.Published ||
+                  dataset.releaseStatus === DatasetReleaseStatus.Publishing
+                }
+              >
+                <AddMoreIcon />
+              </MintToolbarButton>
+              <DownloadButton />
+              <MintToolbarButton
+                tooltip="Edit dataset details"
+                onClick={() =>
+                  setModal(
+                    <CreateDatasetForm
+                      mode={CreateDatasetFormMode.Edit}
+                      dataset={dataset}
+                    />,
+                    { closeable: true }
+                  )
+                }
+              >
+                <EditIcon />
+              </MintToolbarButton>
+              <MintToolbarButton
+                tooltip="Delete dataset"
+                onClick={() =>
+                  setModal(<DeleteDatasetModal />, { closeable: true })
+                }
+              >
+                <DeleteIcon />
+              </MintToolbarButton>
+            </MintToolbar>
+          </Controls>
         </TopBar>
       </DatasetTopSection>
-
       <DatasetGrid />
     </>
   )
