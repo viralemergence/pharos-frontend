@@ -20,7 +20,7 @@ const useLoadUser = (dispatch: React.Dispatch<StateAction>) => {
         })
         dispatch({
           type: StateActions.SetUserStatus,
-          payload: UserStatus.loggedIn,
+          payload: UserStatus.LoggedIn,
         })
 
         // request updated user data
@@ -34,7 +34,7 @@ const useLoadUser = (dispatch: React.Dispatch<StateAction>) => {
           const remoteUser = (await response.json()) as User
           dispatch({
             type: StateActions.SetUserStatus,
-            payload: UserStatus.loggedIn,
+            payload: UserStatus.LoggedIn,
           })
           dispatch({
             type: StateActions.UpdateUser,
@@ -51,7 +51,7 @@ const useLoadUser = (dispatch: React.Dispatch<StateAction>) => {
       else
         dispatch({
           type: StateActions.SetUserStatus,
-          payload: UserStatus.loggedOut,
+          payload: UserStatus.LoggedOut,
         })
     }
 

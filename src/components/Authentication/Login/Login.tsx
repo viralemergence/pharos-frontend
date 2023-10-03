@@ -11,7 +11,7 @@ import MintButton from 'components/ui/MintButton'
 import Label from 'components/ui/InputLabel'
 import Input from 'components/ui/Input'
 import Main from 'components/layout/Main'
-import useAuthenticate from 'components/Login/useAuthenticate'
+import useAuthenticate from 'components/Authentication/Login/useAuthenticate'
 import useAppState from 'hooks/useAppState'
 
 const Container = styled(Main)`
@@ -43,7 +43,8 @@ const Login = () => {
   const authenticate = useAuthenticate()
   const data = useSignInPageData()
 
-  const [researcherID, setResearcherID] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
 
   const firstInputRef = useRef<HTMLInputElement>(null)
 
@@ -57,7 +58,7 @@ const Login = () => {
     e.preventDefault()
     setSubmitting(true)
 
-    const success = await authenticate(researcherID)
+    const success = await authenticate(email, password)
 
     setSubmitting(false)
 
@@ -69,31 +70,38 @@ const Login = () => {
 
   let statusMessage
   switch (user.status) {
-    case UserStatus.invalidUser:
+    case UserStatus.InvalidUser:
       statusMessage = 'User not found'
       break
-    case UserStatus.authError:
+    case UserStatus.AuthError:
       statusMessage = 'Error logging in, please check network connection.'
   }
 
   return (
     <Container>
-      <H1>
-        <CMS.Text name="H1" data={data} />
-      </H1>
+      <H1>Sign in</H1>
       <Form onSubmit={e => handleSubmit(e)}>
         <Label>
-          <CMS.Text data={data} name="Input placeholder" />
+          Email
           <Input
             type="text"
             spellCheck="false"
             ref={firstInputRef}
-            onChange={e => setResearcherID(e.target.value)}
-            value={researcherID}
-            style={{ textTransform: 'uppercase' }}
+            onChange={e => setEmail(e.target.value)}
+            value={email}
           />
         </Label>
-        {user.status !== UserStatus.loggedOut && <p>{statusMessage}</p>}
+        <Label>
+          Password
+          <Input
+            type="password"
+            spellCheck="false"
+            ref={firstInputRef}
+            onChange={e => setPassword(e.target.value)}
+            value={password}
+          />
+        </Label>
+        {user.status !== UserStatus.LoggedOut && <p>{statusMessage}</p>}
         <MintButton
           type="submit"
           style={{ marginTop: 40 }}

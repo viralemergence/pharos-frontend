@@ -4,7 +4,7 @@ import { HashRouter, Route, Routes, Navigate } from 'react-router-dom'
 import CMS from '@talus-analytics/library.airtable-cms'
 import Providers from 'components/layout/Providers'
 
-import Login from 'components/Login/Login'
+import Login from 'components/Authentication/Login/Login'
 import NavBar from 'components/layout/NavBar/NavBar'
 import RequireAuth from 'components/AuthenticatedViews/RequireAuth'
 
@@ -14,6 +14,7 @@ import ProjectPage from 'components/AuthenticatedViews/ProjectPage/ProjectPage'
 import ProjectList from 'components/AuthenticatedViews/PortfolioPage/PortfolioPage'
 import ModalMessageProvider from 'hooks/useModal/ModalMessageProvider'
 import DataLoader from 'components/AuthenticatedViews/DataLoader'
+import SignUp from 'components/Authentication/SignUp/SignUp'
 
 const App = (): JSX.Element => {
   // on the build server, don't try to render the app
@@ -26,6 +27,7 @@ const App = (): JSX.Element => {
         <HashRouter>
           <NavBar />
           <Routes>
+            <Route path={'/sign-up'} element={<SignUp />} />
             <Route path={'/login'} element={<Login />} />
             <Route
               path={'/projects/:projectID/:datasetID'}

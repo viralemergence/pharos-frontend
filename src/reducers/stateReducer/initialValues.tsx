@@ -28,7 +28,7 @@ const metadataObjInitialValue = {
 }
 
 export const stateInitialValue: AppState = {
-  user: { status: UserStatus.initial },
+  user: { status: UserStatus.Initial },
   projects: metadataObjInitialValue,
   datasets: metadataObjInitialValue,
   register: metadataObjInitialValue,
