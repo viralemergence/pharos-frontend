@@ -101,12 +101,18 @@ const NavBar = () => {
     })
   // if user is logged out, the last link should be a reach-router
   // link that points at the full pathname + hash of the login page
-  else
+  else {
     links.push({
-      to: '/app/#/login',
+      to: insideAppRouting ? '/login/' : '/app/#/login',
       children: 'Sign in',
-      reactRouterLink: false,
+      reactRouterLink: insideAppRouting,
     })
+    links.push({
+      to: insideAppRouting ? '/sign-up/' : '/app/#/sign-up',
+      children: 'Sign up',
+      reactRouterLink: insideAppRouting,
+    })
+  }
 
   return (
     <Nav>
