@@ -13,12 +13,13 @@ export enum NodeStatus {
 }
 
 export enum UserStatus {
-  'initial',
-  'loggedOut',
-  'loggedIn',
-  'sessionExpired',
-  'invalidUser',
-  'authError',
+  Initial = 'initial',
+  LoggedOut = 'loggedOut',
+  LoggedIn = 'loggedIn',
+  SessionExpired = 'sessionExpired',
+  InvalidUser = 'invalidUser',
+  AuthError = 'authError',
+  AwaitingConfirmation = 'awaitingConfirmation',
 }
 
 export interface AppState {
