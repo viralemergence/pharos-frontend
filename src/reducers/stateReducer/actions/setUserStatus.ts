@@ -1,17 +1,23 @@
 import { ActionFunction, StateActions } from '../stateReducer'
 import { UserStatus } from '../types'
 
-export interface SetUserStatusAction {
-  type: StateActions.SetUserStatus
-  payload: UserStatus
+interface UserStatusPayload {
+  status: UserStatus
+  statusMessage?: string
 }
 
-const setUserStatus: ActionFunction<UserStatus> = (state, payload) => {
+export interface SetUserStatusAction {
+  type: StateActions.SetUserStatus
+  payload: UserStatusPayload
+}
+
+const setUserStatus: ActionFunction<UserStatusPayload> = (state, payload) => {
   return {
     ...state,
     user: {
       ...state.user,
-      status: payload,
+      status: payload.status,
+      ...(payload.statusMessage && { statusMessage: payload.statusMessage }),
     },
   }
 }

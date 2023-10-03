@@ -13,6 +13,9 @@ import Input from 'components/ui/Input'
 import Main from 'components/layout/Main'
 import useAuthenticate from 'components/Authentication/Login/useAuthenticate'
 import useAppState from 'hooks/useAppState'
+import ColorMessage, {
+  ColorMessageStatus,
+} from 'components/ui/Modal/ColorMessage'
 
 const Container = styled(Main)`
   max-width: 505px;
@@ -23,16 +26,16 @@ const Container = styled(Main)`
 const H1 = styled.h1`
   ${({ theme }) => theme.h1}
 `
-const HelpText = styled(CMS.RichText)`
-  margin-top: 32px;
-  > p {
-    font-size: 18px;
-  }
+// const HelpText = styled(CMS.RichText)`
+//   margin-top: 32px;
+//   > p {
+//     font-size: 18px;
+//   }
 
-  a {
-    color: ${({ theme }) => theme.black};
-  }
-`
+//   a {
+//     color: ${({ theme }) => theme.black};
+//   }
+// `
 const Form = styled.form`
   margin-top: 40px;
 `
@@ -58,24 +61,25 @@ const Login = () => {
     e.preventDefault()
     setSubmitting(true)
 
-    const success = await authenticate(email, password)
+    const result = await authenticate(email, password)
+    console.log(result)
 
     setSubmitting(false)
 
     // if successful, navigate to 'next' from search params
-    if (success) {
+    if (result) {
       navigate(search.get('next') || '/')
     }
   }
 
-  let statusMessage
-  switch (user.status) {
-    case UserStatus.InvalidUser:
-      statusMessage = 'User not found'
-      break
-    case UserStatus.AuthError:
-      statusMessage = 'Error logging in, please check network connection.'
-  }
+  // let statusMessage
+  // switch (user.status) {
+  //   case UserStatus.InvalidUser:
+  //     statusMessage = 'User not found'
+  //     break
+  //   case UserStatus.AuthError:
+  //     statusMessage = 'Error logging in, please check network connection.'
+  // }
 
   return (
     <Container>
@@ -101,7 +105,12 @@ const Login = () => {
             value={password}
           />
         </Label>
-        {user.status !== UserStatus.LoggedOut && <p>{statusMessage}</p>}
+        {user.status !== UserStatus.LoggedOut && (
+          <ColorMessage status={ColorMessageStatus.Danger}>
+            {user.statusMessage}
+          </ColorMessage>
+        )}
+
         <MintButton
           type="submit"
           style={{ marginTop: 40 }}
@@ -109,7 +118,6 @@ const Login = () => {
         >
           {submitting ? 'loading...' : <CMS.Text name="CTA" data={data} />}
         </MintButton>
-        <HelpText name="Help text" data={data} />
       </Form>
     </Container>
   )

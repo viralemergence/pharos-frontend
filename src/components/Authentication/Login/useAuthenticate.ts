@@ -1,8 +1,45 @@
 import { AuthenticationDetails, CognitoUser } from 'amazon-cognito-identity-js'
 import useDispatch from 'hooks/useDispatch'
 import { StateActions } from 'reducers/stateReducer/stateReducer'
-import { User, UserStatus } from 'reducers/stateReducer/types'
+import { UserStatus } from 'reducers/stateReducer/types'
 import userpool from '../userpool'
+
+interface AuthenticationResult {
+  success: boolean
+  message: string
+  result: unknown
+}
+
+const cognitoAuthenticate = async (email: string, password: string) => {
+  const user = new CognitoUser({
+    Username: email,
+    Pool: userpool,
+  })
+
+  const authDetails = new AuthenticationDetails({
+    Username: email,
+    Password: password,
+  })
+
+  return new Promise((resolve, reject) =>
+    user.authenticateUser(authDetails, {
+      onSuccess: result => {
+        return resolve({
+          success: true,
+          message: 'Logged in',
+          result,
+        } as AuthenticationResult)
+      },
+      onFailure: error => {
+        return reject({
+          success: false,
+          message: error.message,
+          result: error,
+        } as AuthenticationResult)
+      },
+    })
+  )
+}
 
 const useAuthenticate = () => {
   const dispatch = useDispatch()
@@ -20,26 +57,68 @@ const useAuthenticate = () => {
     //   },
     // }
 
-    const user = new CognitoUser({
-      Username: email,
-      Pool: userpool,
-    })
+    try {
+      const cognitoUser = await cognitoAuthenticate(email, password)
 
-    const authDetails = new AuthenticationDetails({
-      Username: email,
-      Password: password,
-    })
+      console.log(cognitoUser)
 
-    user.authenticateUser(authDetails, {
-      onSuccess: result => {
-        console.log('onSuccess:', result)
-      },
-      onFailure: error => {
-        console.log('onFailure:', error)
-      },
-    })
+      // const response = await fetch(`${process.env.GATSBY_API_URL}/auth`, {
+      //   method: 'POST',
+      //   body: `{"researcherID":"${cognitoUser.UserSub}"}`,
+      // }).catch(error => console.log(error))
 
-    return
+      //     if (!response) {
+      //       dispatch({
+      //         type: StateActions.SetUserStatus,
+      //         payload: UserStatus.authError,
+      //       })
+      //       return false
+      //     }
+
+      //     if (response.status == 403) {
+      //       dispatch({
+      //         type: StateActions.SetUserStatus,
+      //         payload: UserStatus.invalidUser,
+      //       })
+      //       return false
+      //     }
+
+      //     if (!response.ok) {
+      //       dispatch({
+      //         type: StateActions.SetUserStatus,
+      //         payload: UserStatus.authError,
+      //       })
+      //       return false
+      //     }
+
+      //     const user = (await response.json()) as User
+
+      //     dispatch({
+      //       type: StateActions.SetUserStatus,
+      //       payload: UserStatus.loggedIn,
+      //     })
+
+      //     dispatch({
+      //       type: StateActions.UpdateUser,
+      //       payload: {
+      //         source: 'remote',
+      //         user,
+      //       },
+      //     })
+
+      // return true
+    } catch (error) {
+      console.log(error)
+      const statusMessage = (error as { message: string; __type: string })
+        .message
+
+      dispatch({
+        type: StateActions.SetUserStatus,
+        payload: { status: UserStatus.AuthError, statusMessage },
+      })
+
+      return false
+    }
 
     //     const response = await fetch(`${process.env.GATSBY_API_URL}/auth`, {
     //       method: 'POST',

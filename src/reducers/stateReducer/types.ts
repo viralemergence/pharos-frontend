@@ -40,6 +40,7 @@ export interface MetadataObj<T> {
 interface UserObj {
   status: UserStatus
   data?: User
+  statusMessage?: string
 }
 
 export interface User {
