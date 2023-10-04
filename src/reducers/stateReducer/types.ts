@@ -37,10 +37,11 @@ export interface MetadataObj<T> {
 
 // special case of MetadataObj
 // which allows for special user states
-interface UserObj {
+export interface UserObj {
   status: UserStatus
   data?: User
   statusMessage?: string
+  cognitoResponseType?: string
 }
 
 export interface User {

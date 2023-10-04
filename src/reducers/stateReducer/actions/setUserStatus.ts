@@ -1,23 +1,24 @@
 import { ActionFunction, StateActions } from '../stateReducer'
-import { UserStatus } from '../types'
-
-interface UserStatusPayload {
-  status: UserStatus
-  statusMessage?: string
-}
+import { UserObj } from '../types'
 
 export interface SetUserStatusAction {
   type: StateActions.SetUserStatus
-  payload: UserStatusPayload
+  payload: Exclude<UserObj, 'data'>
 }
 
-const setUserStatus: ActionFunction<UserStatusPayload> = (state, payload) => {
+const setUserStatus: ActionFunction<Exclude<UserObj, 'data'>> = (
+  state,
+  payload
+) => {
   return {
     ...state,
     user: {
       ...state.user,
       status: payload.status,
       ...(payload.statusMessage && { statusMessage: payload.statusMessage }),
+      ...(payload.cognitoResponseType && {
+        cognitoResponseType: payload.cognitoResponseType,
+      }),
     },
   }
 }
