@@ -8,7 +8,6 @@ import MintButton from 'components/ui/MintButton'
 
 import userpool from '../userpool'
 import { Link, useNavigate } from 'react-router-dom'
-import useUser from 'hooks/useUser'
 import useAppState from 'hooks/useAppState'
 import ColorMessage, {
   ColorMessageStatus,
