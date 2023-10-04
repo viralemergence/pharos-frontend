@@ -1,4 +1,8 @@
-import { AuthenticationDetails, CognitoUser } from 'amazon-cognito-identity-js'
+import {
+  AuthenticationDetails,
+  CognitoUser,
+  CognitoUserSession,
+} from 'amazon-cognito-identity-js'
 import useDispatch from 'hooks/useDispatch'
 import { useNavigate } from 'react-router-dom'
 import { StateActions } from 'reducers/stateReducer/stateReducer'
@@ -25,11 +29,7 @@ const cognitoAuthenticate = async (email: string, password: string) => {
   return new Promise((resolve, reject) =>
     user.authenticateUser(authDetails, {
       onSuccess: result => {
-        return resolve({
-          success: true,
-          message: 'Logged in',
-          result,
-        } as AuthenticationResult)
+        return resolve(result)
       },
       onFailure: error => {
         return reject({
@@ -60,13 +60,19 @@ const useAuthenticate = () => {
     // }
 
     try {
-      const cognitoUser = await cognitoAuthenticate(email, password)
+      const cognitoUser = (await cognitoAuthenticate(
+        email,
+        password
+      )) as CognitoUserSession
 
       console.log(cognitoUser)
 
+      const accessToken = cognitoUser.getAccessToken()
+      const cognitoUsername = accessToken.payload.username
+
       const response = await fetch(`${process.env.GATSBY_API_URL}/auth`, {
         method: 'POST',
-        body: `{"researcherID":"res${cognitoUser.result.idToken.payload.username}"}`,
+        body: `{"researcherID":"res${cognitoUsername}"}`,
       }).catch(error => console.log(error))
 
       if (!response) {

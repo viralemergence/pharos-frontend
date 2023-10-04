@@ -87,6 +87,7 @@ const SignUp = () => {
   const [password, setPassword] = useState('')
   const [confirmationCode, setConfirmationCode] = useState('')
   const [researcherID, setResearcherID] = useState('')
+  const [cognitoUser, setCognitoUser] = useState<CognitoUser>()
 
   const handleSubmitCreate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -107,6 +108,7 @@ const SignUp = () => {
       console.log(response)
 
       setResearcherID('res' + response.userSub)
+      setCognitoUser(response.user)
 
       dispatch({
         type: StateActions.SetUserStatus,
@@ -152,7 +154,7 @@ const SignUp = () => {
             name: `${firstName} ${lastName}`,
             organization,
           },
-          cognitoUser: response.user,
+          cognitoUser,
         },
       })
 
