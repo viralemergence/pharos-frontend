@@ -113,24 +113,14 @@ const SignUp = () => {
       setSubmitting(false)
     } catch (err) {
       const error = err as { message: string; __type: string }
-      if (error.__type === 'UserNotConfirmedException') {
-        dispatch({
-          type: StateActions.SetUserStatus,
-          payload: {
-            status: UserStatus.AwaitingConfirmation,
-            statusMessage: 'Please check your email for a confirmation code.',
-          },
-        })
-      } else
-        dispatch({
-          type: StateActions.SetUserStatus,
-          payload: {
-            status: UserStatus.InvalidUser,
-            statusMessage: (err as { message: string; __type: string }).message,
-            cognitoResponseType: (err as { message: string; __type: string })
-              .__type,
-          },
-        })
+      dispatch({
+        type: StateActions.SetUserStatus,
+        payload: {
+          status: UserStatus.InvalidUser,
+          statusMessage: error.message,
+          cognitoResponseType: error.__type,
+        },
+      })
       setSubmitting(false)
     }
   }
