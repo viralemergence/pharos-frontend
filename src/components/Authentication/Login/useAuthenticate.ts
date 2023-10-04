@@ -1,5 +1,6 @@
 import { AuthenticationDetails, CognitoUser } from 'amazon-cognito-identity-js'
 import useDispatch from 'hooks/useDispatch'
+import { useNavigate } from 'react-router-dom'
 import { StateActions } from 'reducers/stateReducer/stateReducer'
 import { UserStatus } from 'reducers/stateReducer/types'
 import userpool from '../userpool'
@@ -43,6 +44,7 @@ const cognitoAuthenticate = async (email: string, password: string) => {
 
 const useAuthenticate = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const authenticate = async (email: string, password: string) => {
     // offline debugging
@@ -109,13 +111,23 @@ const useAuthenticate = () => {
       // return true
     } catch (error) {
       console.log(error)
-      const statusMessage = (error as { message: string; __type: string })
-        .message
+      const { result } = error as { result: { message: string; name: string } }
+      const statusMessage = result.message
 
-      dispatch({
-        type: StateActions.SetUserStatus,
-        payload: { status: UserStatus.AuthError, statusMessage },
-      })
+      if (result.name === 'UserNotConfirmedException') {
+        dispatch({
+          type: StateActions.SetUserStatus,
+          payload: {
+            status: UserStatus.AwaitingConfirmation,
+            statusMessage: 'Please check your email for a confirmation code.',
+          },
+        })
+        navigate('/sign-up/')
+      } else
+        dispatch({
+          type: StateActions.SetUserStatus,
+          payload: { status: UserStatus.AuthError, statusMessage },
+        })
 
       return false
     }
