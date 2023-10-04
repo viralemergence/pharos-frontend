@@ -1,5 +1,6 @@
 import { StorageMessage } from 'storage/synchronizeMessageQueue'
 import units from 'config/units'
+import { CognitoUser } from 'amazon-cognito-identity-js'
 
 export type ProjectID = string
 export type RecordID = string
@@ -40,6 +41,7 @@ export interface MetadataObj<T> {
 export interface UserObj {
   status: UserStatus
   data?: User
+  cognitoUser?: CognitoUser
   statusMessage?: string
   cognitoResponseType?: string
 }

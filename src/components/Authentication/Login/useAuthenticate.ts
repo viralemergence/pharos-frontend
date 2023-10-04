@@ -2,7 +2,7 @@ import { AuthenticationDetails, CognitoUser } from 'amazon-cognito-identity-js'
 import useDispatch from 'hooks/useDispatch'
 import { useNavigate } from 'react-router-dom'
 import { StateActions } from 'reducers/stateReducer/stateReducer'
-import { UserStatus } from 'reducers/stateReducer/types'
+import { User, UserStatus } from 'reducers/stateReducer/types'
 import userpool from '../userpool'
 
 interface AuthenticationResult {
@@ -64,51 +64,59 @@ const useAuthenticate = () => {
 
       console.log(cognitoUser)
 
-      // const response = await fetch(`${process.env.GATSBY_API_URL}/auth`, {
-      //   method: 'POST',
-      //   body: `{"researcherID":"${cognitoUser.UserSub}"}`,
-      // }).catch(error => console.log(error))
+      const response = await fetch(`${process.env.GATSBY_API_URL}/auth`, {
+        method: 'POST',
+        body: `{"researcherID":"res${cognitoUser.result.idToken.payload.username}"}`,
+      }).catch(error => console.log(error))
 
-      //     if (!response) {
-      //       dispatch({
-      //         type: StateActions.SetUserStatus,
-      //         payload: UserStatus.authError,
-      //       })
-      //       return false
-      //     }
+      if (!response) {
+        dispatch({
+          type: StateActions.SetUserStatus,
+          payload: {
+            status: UserStatus.AuthError,
+          },
+        })
+        return false
+      }
 
-      //     if (response.status == 403) {
-      //       dispatch({
-      //         type: StateActions.SetUserStatus,
-      //         payload: UserStatus.invalidUser,
-      //       })
-      //       return false
-      //     }
+      if (response.status == 403) {
+        dispatch({
+          type: StateActions.SetUserStatus,
+          payload: {
+            status: UserStatus.InvalidUser,
+          },
+        })
+        return false
+      }
 
-      //     if (!response.ok) {
-      //       dispatch({
-      //         type: StateActions.SetUserStatus,
-      //         payload: UserStatus.authError,
-      //       })
-      //       return false
-      //     }
+      if (!response.ok) {
+        dispatch({
+          type: StateActions.SetUserStatus,
+          payload: {
+            status: UserStatus.AuthError,
+          },
+        })
+        return false
+      }
 
-      //     const user = (await response.json()) as User
+      const user = (await response.json()) as User
 
-      //     dispatch({
-      //       type: StateActions.SetUserStatus,
-      //       payload: UserStatus.loggedIn,
-      //     })
+      dispatch({
+        type: StateActions.SetUserStatus,
+        payload: {
+          status: UserStatus.LoggedIn,
+        },
+      })
 
-      //     dispatch({
-      //       type: StateActions.UpdateUser,
-      //       payload: {
-      //         source: 'remote',
-      //         user,
-      //       },
-      //     })
+      dispatch({
+        type: StateActions.UpdateUser,
+        payload: {
+          source: 'remote',
+          user,
+        },
+      })
 
-      // return true
+      return true
     } catch (error) {
       console.log(error)
       const { result } = error as { result: { message: string; name: string } }

@@ -152,6 +152,7 @@ const SignUp = () => {
             name: `${firstName} ${lastName}`,
             organization,
           },
+          cognitoUser: response.user,
         },
       })
 

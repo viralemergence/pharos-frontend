@@ -137,6 +137,7 @@ const NavBar = () => {
                 // of "log out" because it deletes all the local data
                 // without warning the user; this way we can use it
                 // as a "reset" button if a bug traps the user.
+                user?.cognitoUser?.signOut()
                 localforage.clear()
                 window.location.href = '/'
                 window.location.reload()

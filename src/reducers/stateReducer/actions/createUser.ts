@@ -4,9 +4,11 @@ import {
   APIRoutes,
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
+import { CognitoUser } from 'amazon-cognito-identity-js'
 
 interface CreateUserActionPayload {
   user: User
+  cognitoUser: CognitoUser
 }
 
 export interface CreateUserAction {
@@ -16,13 +18,14 @@ export interface CreateUserAction {
 
 const createUser: ActionFunction<CreateUserActionPayload> = (
   state,
-  { user }
+  { user, cognitoUser }
 ) => {
   const nextState = {
     ...state,
     user: {
       status: UserStatus.LoggedIn,
       data: user,
+      cognitoUser,
     },
   }
 
