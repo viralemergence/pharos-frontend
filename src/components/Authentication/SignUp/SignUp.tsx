@@ -7,7 +7,7 @@ import Label from 'components/ui/InputLabel'
 import MintButton from 'components/ui/MintButton'
 
 import userpool from '../userpool'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import useUser from 'hooks/useUser'
 import useAppState from 'hooks/useAppState'
 import ColorMessage, {
@@ -44,7 +44,7 @@ const registerUser = (email: string, password: string) => {
           reject(err)
           return
         }
-        resolve(result?.user)
+        resolve(result)
       }
     )
   })
@@ -72,6 +72,7 @@ const SignUp = () => {
 
   const { user } = useAppState()
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   useEffect(() => {
     firstInputRef.current?.focus()
@@ -79,6 +80,9 @@ const SignUp = () => {
 
   const [submitting, setSubmitting] = useState(false)
 
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [organization, setOrganization] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmationCode, setConfirmationCode] = useState('')
@@ -90,18 +94,19 @@ const SignUp = () => {
 
     try {
       const response = (await registerUser(email, password)) as {
-        UserSub: string
-        UserConfirmed: boolean
-        CodeDeliveryDetails: {
+        userSub: string
+        userConfirmed: boolean
+        codeDeliveryDetails: {
           Destination: string
           DeliveryMedium: string
           AttributeName: string
         }
+        user: CognitoUser
       }
 
       console.log(response)
 
-      setResearcherID(response.UserSub)
+      setResearcherID('res' + response.userSub)
 
       dispatch({
         type: StateActions.SetUserStatus,
@@ -131,21 +136,26 @@ const SignUp = () => {
     e.preventDefault()
     setSubmitting(true)
 
+    if (!researcherID || researcherID === '') alert('researcherID is blank')
+
     try {
       const response = await confirmUser(email, confirmationCode)
 
       console.log(response)
 
-      // dispatch({
-      //   type: StateActions.SetUserStatus,
-      //   payload: {
-      //     status: UserStatus.LoggedIn,
-      //     statusMessage: (response as { message: string; __type: string })
-      //       .message,
-      //     cognitoResponseType: (response as { message: string; __type: string })
-      //       .__type,
-      //   },
-      // })
+      dispatch({
+        type: StateActions.CreateUser,
+        payload: {
+          user: {
+            researcherID,
+            email,
+            name: `${firstName} ${lastName}`,
+            organization,
+          },
+        },
+      })
+
+      navigate('/projects/')
     } catch (err) {
       console.log(err)
       dispatch({
@@ -193,23 +203,50 @@ const SignUp = () => {
       ) : (
         <Form onSubmit={handleSubmitCreate}>
           <Label>
-            Email
+            First name*
             <Input
               type="text"
               spellCheck="false"
               ref={firstInputRef}
+              onChange={e => setFirstName(e.target.value)}
+              value={firstName}
+            />
+          </Label>
+          <Label>
+            Last name*
+            <Input
+              type="text"
+              spellCheck="false"
+              onChange={e => setLastName(e.target.value)}
+              value={lastName}
+            />
+          </Label>
+          <Label>
+            Email*
+            <Input
+              type="email"
+              spellCheck="false"
               onChange={e => setEmail(e.target.value)}
               value={email}
             />
           </Label>
           <Label>
-            Password
+            Password*
             <Input
               type="password"
               spellCheck="false"
-              ref={firstInputRef}
               onChange={e => setPassword(e.target.value)}
               value={password}
+            />
+          </Label>
+          <p>Password must be at least 8 characters long.</p>
+          <Label>
+            Affiliation
+            <Input
+              type="text"
+              spellCheck="false"
+              onChange={e => setOrganization(e.target.value)}
+              value={organization}
             />
           </Label>
           {user.statusMessage && (
