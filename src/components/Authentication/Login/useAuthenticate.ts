@@ -47,39 +47,45 @@ const useAuthenticate = () => {
   const navigate = useNavigate()
 
   const authenticate = async (email: string, password: string) => {
-    // offline debugging
-    // return {
-    //   status: UserStatus.loggedIn,
-    //   statusMessage: 'Logged in',
-    //   data: {
-    //     name: 'Ryan Zimmerman',
-    //     organization: 'Talus Analytics',
-    //     researcherID: 'eb0c3f170f9649ef9cc6bfe656c5aa15',
-    //     email: 'rzimmerman@talusanalytics.com',
-    //   },
-    // }
-
     try {
-      const cognitoUser = (await cognitoAuthenticate(
+      const cognitoUserSession = (await cognitoAuthenticate(
         email,
         password
       )) as CognitoUserSession
 
-      console.log(cognitoUser)
+      console.log(cognitoUserSession)
 
-      const accessToken = cognitoUser.getAccessToken()
+      const accessToken = cognitoUserSession.getAccessToken()
       const cognitoUsername = accessToken.payload.username
+
+      console.log(cognitoUserSession.isValid())
+
+      console.log(accessToken.getJwtToken())
 
       const response = await fetch(`${process.env.GATSBY_API_URL}/auth`, {
         method: 'POST',
+        headers: new Headers({
+          Authorization: cognitoUserSession.getIdToken().getJwtToken(),
+          'Content-Type': 'application/json',
+        }),
         body: `{"researcherID":"res${cognitoUsername}"}`,
-      }).catch(error => console.log(error))
+      }).catch(error => {
+        console.log({ error })
+        dispatch({
+          type: StateActions.SetUserStatus,
+          payload: {
+            status: UserStatus.AuthError,
+            statusMessage: 'Error loading user.',
+          },
+        })
+      })
 
       if (!response) {
         dispatch({
           type: StateActions.SetUserStatus,
           payload: {
             status: UserStatus.AuthError,
+            statusMessage: 'Error loading user.',
           },
         })
         return false
@@ -90,6 +96,7 @@ const useAuthenticate = () => {
           type: StateActions.SetUserStatus,
           payload: {
             status: UserStatus.InvalidUser,
+            statusMessage: 'Invalid user.',
           },
         })
         return false
@@ -100,6 +107,7 @@ const useAuthenticate = () => {
           type: StateActions.SetUserStatus,
           payload: {
             status: UserStatus.AuthError,
+            statusMessage: 'Error loading user.',
           },
         })
         return false
