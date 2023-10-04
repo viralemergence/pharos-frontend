@@ -8,7 +8,7 @@ import { CognitoUser } from 'amazon-cognito-identity-js'
 
 interface CreateUserActionPayload {
   user: User
-  cognitoUser: CognitoUser
+  cognitoUser?: CognitoUser
 }
 
 export interface CreateUserAction {
