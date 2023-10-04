@@ -53,14 +53,8 @@ const useAuthenticate = () => {
         password
       )) as CognitoUserSession
 
-      console.log(cognitoUserSession)
-
       const accessToken = cognitoUserSession.getAccessToken()
       const cognitoUsername = accessToken.payload.username
-
-      console.log(cognitoUserSession.isValid())
-
-      console.log(accessToken.getJwtToken())
 
       const response = await fetch(`${process.env.GATSBY_API_URL}/auth`, {
         method: 'POST',
@@ -132,7 +126,6 @@ const useAuthenticate = () => {
 
       return true
     } catch (error) {
-      console.log(error)
       const { result } = error as { result: { message: string; name: string } }
       const statusMessage = result.message
 
@@ -153,52 +146,6 @@ const useAuthenticate = () => {
 
       return false
     }
-
-    //     const response = await fetch(`${process.env.GATSBY_API_URL}/auth`, {
-    //       method: 'POST',
-    //       body: `{"researcherID":"${researcherID}"}`,
-    //     }).catch(error => console.log(error))
-
-    //     if (!response) {
-    //       dispatch({
-    //         type: StateActions.SetUserStatus,
-    //         payload: UserStatus.authError,
-    //       })
-    //       return false
-    //     }
-
-    //     if (response.status == 403) {
-    //       dispatch({
-    //         type: StateActions.SetUserStatus,
-    //         payload: UserStatus.invalidUser,
-    //       })
-    //       return false
-    //     }
-
-    //     if (!response.ok) {
-    //       dispatch({
-    //         type: StateActions.SetUserStatus,
-    //         payload: UserStatus.authError,
-    //       })
-    //       return false
-    //     }
-
-    //     const user = (await response.json()) as User
-
-    //     dispatch({
-    //       type: StateActions.SetUserStatus,
-    //       payload: UserStatus.loggedIn,
-    //     })
-
-    //     dispatch({
-    //       type: StateActions.UpdateUser,
-    //       payload: {
-    //         source: 'remote',
-    //         user,
-    //       },
-    //     })
-
-    // return true
   }
 
   return authenticate
