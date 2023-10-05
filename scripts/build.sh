@@ -3,7 +3,7 @@
 reset=0;
 clean=0;
 api='http://localhost:3000'
-profile='default'
+profile=''
 
 RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
@@ -32,7 +32,12 @@ while [[ "$#" > 0 ]];
 done
 
 echo ""
-echo "AWS Profile: ${YELLOW}${BRIGHT}$profile${NORMAL}"
+if [ "$profile" != "" ]; then
+  echo "AWS Profile: ${GREEN}${BRIGHT}$profile${NORMAL}"
+else
+  echo "${YELLOW}Not using AWS Profile${NORMAL}"
+  echo ""
+fi
 
 echo "API_URL: ${YELLOW}$api${NORMAL}"
 echo ""
@@ -57,26 +62,45 @@ fi
 
 # fetch environment variables from secrets manager
 
-airtable_key=$(
-  aws secretsmanager get-secret-value --secret-id airtable-api-key --region us-east-1 --profile $profile|\
-  jq  -r .SecretString | jq -r .AIRTABLE_API_KEY\
-)
+if [ "$profile" != "" ]; then
+  airtable_key=$(
+    aws secretsmanager get-secret-value --secret-id airtable-api-key --region us-east-1 --profile $profile|\
+    jq  -r .SecretString | jq -r .AIRTABLE_API_KEY\
+  )
+else
+  airtable_key=$(
+    aws secretsmanager get-secret-value --secret-id airtable-api-key --region us-east-1 |\
+    jq  -r .SecretString | jq -r .AIRTABLE_API_KEY\
+  )
+fi
+
 if [ "$airtable_key" == "" ]; then
   echo "${RED}${BRIGHT}Airtable API key not found in secrets manager.${NORMAL}"
   echo ""
   exit 1
 fi
+
 export AIRTABLE_API_KEY=$airtable_key
 
-mapbox_key=$(
-  aws secretsmanager get-secret-value --secret-id mapbox-api-key --region us-east-1 --profile $profile |\
-  jq  -r .SecretString | jq -r .MAPBOX_API_KEY\
-)
+
+if [ "$profile" != "" ]; then
+  mapbox_key=$(
+    aws secretsmanager get-secret-value --secret-id mapbox-api-key --region us-east-1 --profile $profile |\
+    jq  -r .SecretString | jq -r .MAPBOX_API_KEY\
+  )
+else
+  mapbox_key=$(
+    aws secretsmanager get-secret-value --secret-id mapbox-api-key --region us-east-1 |\
+    jq  -r .SecretString | jq -r .MAPBOX_API_KEY\
+  )
+fi
+
 if [ "$mapbox_key" == "" ]; then
   echo "${RED}${BRIGHT}Mapbox API key not found in secrets manager.${NORMAL}"
   echo ""
   exit 1
 fi
+
 export GATSBY_MAPBOX_API_KEY=$mapbox_key
 
 
