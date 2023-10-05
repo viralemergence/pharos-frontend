@@ -15,7 +15,7 @@ workflows:
           # distribution: 'E31RXXXXXXXXXX'
           bucket: 's3://dev-pharos-frontend-2'
           distribution: 'E29CT6PE5VEJB6'
-          api: https://htgbcrvr2c.execute-api.us-east-2.amazonaws.com/Prod
+          api: https://bo7j6jlxd4.execute-api.us-east-2.amazonaws.com/Prod
           context: *credentials
           filters:
             branches:
