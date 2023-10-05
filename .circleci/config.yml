@@ -116,7 +116,8 @@ jobs:
 
       - run:
           name: Gatsby build
-          command: yarn build \
+          command: |
+            yarn build \
             --api <<parameters.api>> \
             --user_pool_id <<parameters.user_pool_id>> \
             --client_id <<parameters.client_id>>
