@@ -69,14 +69,15 @@ const confirmUser = (email: string, confirmationCode: string) => {
 const SignUp = () => {
   const firstInputRef = useRef<HTMLInputElement>(null)
 
-  const { user } = useAppState()
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
-
   useEffect(() => {
     firstInputRef.current?.focus()
   }, [])
 
+  const { user } = useAppState()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  const [formMessage, setFormMessage] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
   const [firstName, setFirstName] = useState('')
@@ -91,6 +92,25 @@ const SignUp = () => {
   const handleSubmitCreate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setSubmitting(true)
+    setFormMessage('')
+
+    if (!firstName) {
+      setFormMessage('First name is required')
+      return
+    }
+
+    if (!lastName) {
+      setFormMessage('Last name is required')
+      return
+    }
+    if (!email) {
+      setFormMessage('Email is required')
+      return
+    }
+    if (!password) {
+      setFormMessage('Password is required')
+      return
+    }
 
     try {
       const response = (await registerUser(email, password)) as {
@@ -127,6 +147,7 @@ const SignUp = () => {
           cognitoResponseType: error.__type,
         },
       })
+      setFormMessage(error.message)
       setSubmitting(false)
     }
   }
@@ -135,6 +156,7 @@ const SignUp = () => {
     e: React.FormEvent<HTMLFormElement>
   ) => {
     e.preventDefault()
+    setFormMessage('')
     setSubmitting(true)
 
     if (!researcherID || researcherID === '') alert('researcherID is blank')
@@ -169,6 +191,7 @@ const SignUp = () => {
             .__type,
         },
       })
+      setFormMessage((err as { message: string; __type: string }).message)
       setSubmitting(false)
     }
   }
@@ -250,9 +273,9 @@ const SignUp = () => {
               value={organization}
             />
           </Label>
-          {user.statusMessage && (
+          {formMessage && (
             <ColorMessage status={ColorMessageStatus.Danger}>
-              {user.statusMessage}
+              {formMessage}
             </ColorMessage>
           )}
           <MintButton

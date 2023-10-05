@@ -10,6 +10,8 @@ const setUserStatus: ActionFunction<Exclude<UserObj, 'data'>> = (
   state,
   payload
 ) => {
+  console.log('SET USER STATUS ACTION')
+  console.log(payload)
   return {
     ...state,
     user: {

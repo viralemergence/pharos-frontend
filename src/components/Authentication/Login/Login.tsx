@@ -6,13 +6,11 @@ import CMS from '@talus-analytics/library.airtable-cms'
 
 import useSignInPageData from 'cmsHooks/useSignInPageData'
 
-import { UserStatus } from 'reducers/stateReducer/types'
 import MintButton from 'components/ui/MintButton'
 import Label from 'components/ui/InputLabel'
 import Input from 'components/ui/Input'
 import Main from 'components/layout/Main'
 import useAuthenticate from 'components/Authentication/Login/useAuthenticate'
-import useAppState from 'hooks/useAppState'
 import ColorMessage, {
   ColorMessageStatus,
 } from 'components/ui/Modal/ColorMessage'
@@ -42,12 +40,13 @@ const Form = styled.form`
 const Login = () => {
   const navigate = useNavigate()
   const [search] = useSearchParams()
-  const { user } = useAppState()
-  const authenticate = useAuthenticate()
   const data = useSignInPageData()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+
+  const [formMessage, setFormMessage] = useState('')
+  const authenticate = useAuthenticate(setFormMessage)
 
   const firstInputRef = useRef<HTMLInputElement>(null)
 
@@ -59,6 +58,7 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setFormMessage('')
     setSubmitting(true)
 
     const result = await authenticate(email, password)
@@ -103,9 +103,9 @@ const Login = () => {
             value={password}
           />
         </Label>
-        {user.status !== UserStatus.LoggedOut && (
+        {formMessage && (
           <ColorMessage status={ColorMessageStatus.Danger}>
-            {user.statusMessage}
+            {formMessage}
           </ColorMessage>
         )}
 

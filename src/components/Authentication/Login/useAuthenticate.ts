@@ -42,7 +42,9 @@ const cognitoAuthenticate = async (email: string, password: string) => {
   )
 }
 
-const useAuthenticate = () => {
+const useAuthenticate = (
+  setFormMessage: React.Dispatch<React.SetStateAction<string>>
+) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
@@ -65,6 +67,7 @@ const useAuthenticate = () => {
         body: `{"researcherID":"res${cognitoUsername}"}`,
       }).catch(error => {
         console.log({ error })
+        setFormMessage('Error loading user.')
         dispatch({
           type: StateActions.SetUserStatus,
           payload: {
@@ -75,6 +78,7 @@ const useAuthenticate = () => {
       })
 
       if (!response) {
+        setFormMessage('Error loading user.')
         dispatch({
           type: StateActions.SetUserStatus,
           payload: {
@@ -86,6 +90,7 @@ const useAuthenticate = () => {
       }
 
       if (response.status == 403) {
+        setFormMessage('Invalid user.')
         dispatch({
           type: StateActions.SetUserStatus,
           payload: {
@@ -97,6 +102,7 @@ const useAuthenticate = () => {
       }
 
       if (!response.ok) {
+        setFormMessage('Error loading user.')
         dispatch({
           type: StateActions.SetUserStatus,
           payload: {
@@ -130,6 +136,7 @@ const useAuthenticate = () => {
       const statusMessage = result.message
 
       if (result.name === 'UserNotConfirmedException') {
+        setFormMessage('Please check your email for a confirmation code.')
         dispatch({
           type: StateActions.SetUserStatus,
           payload: {
@@ -138,12 +145,13 @@ const useAuthenticate = () => {
           },
         })
         navigate('/sign-up/')
-      } else
+      } else {
+        setFormMessage(statusMessage)
         dispatch({
           type: StateActions.SetUserStatus,
           payload: { status: UserStatus.AuthError, statusMessage },
         })
-
+      }
       return false
     }
   }
