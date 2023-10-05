@@ -50,7 +50,7 @@ fi
 
 echo ""
 
-if [ "$client_id" == "" ] || ["$client_id" == ""]; then
+if [ "$client_id" == "" ] || [ "$user_pool_id" == "" ]; then
   exit 1
 fi
 
@@ -102,7 +102,7 @@ export GATSBY_USER_POOL_ID=$user_pool_id
 export GATSBY_CLIENT_ID=$client_id
 
 
-gatsby develop;
+gatsby build;
 
 
 

@@ -50,7 +50,7 @@ fi
 
 echo ""
 
-if [ "$client_id" == "" ] || ["$client_id" == ""]; then 
+if [ "$client_id" == "" ] || [ "$user_pool_id" == "" ]; then
   exit 1
 fi
 
@@ -79,7 +79,7 @@ fi
 export GATSBY_MAPBOX_API_KEY=$mapbox_key
 
 
-echo 'Pulling latest Pharos Documentation';
+echo 'Pull latest Pharos Documentation';
 cd src/pharos-documentation;
 # git checkout publish;
 git pull;
