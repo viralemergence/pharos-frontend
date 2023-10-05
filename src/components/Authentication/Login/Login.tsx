@@ -62,7 +62,6 @@ const Login = () => {
     setSubmitting(true)
 
     const result = await authenticate(email, password)
-    console.log(result)
 
     setSubmitting(false)
 
