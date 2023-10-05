@@ -16,6 +16,8 @@ workflows:
           bucket: 's3://dev-pharos-frontend-2'
           distribution: 'E29CT6PE5VEJB6'
           api: https://bo7j6jlxd4.execute-api.us-east-2.amazonaws.com/Prod
+          client_id: '44vulabntl1hdi45vtvq0c7iop'
+          user_pool_id: 'us-east-2_RR3m5a1fl'
           context: *credentials
           filters:
             branches:
@@ -104,7 +106,10 @@ jobs:
 
       - run:
           name: Gatsby build
-          command: yarn build --api <<parameters.api>>
+          command: yarn build \
+            --api <<parameters.api>> \
+            --user_pool_id <<parameters.user_pool_id>> \
+            --client_id <<parameters.client_id>>
 
       - run:
           name: AWS S3 Sync to <<parameters.bucket>>
