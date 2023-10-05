@@ -3,6 +3,7 @@
 reset=0;
 clean=0;
 api='http://localhost:3000'
+profile='default'
 
 RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
