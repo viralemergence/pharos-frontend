@@ -209,7 +209,6 @@ const SignUp = () => {
             <Input
               type="text"
               spellCheck="false"
-              ref={firstInputRef}
               onChange={e => setFirstName(e.target.value)}
               value={firstName}
             />
