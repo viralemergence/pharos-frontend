@@ -8,9 +8,11 @@ import { getCognitoSession } from 'components/Authentication/useUserSession'
 const useLoadUser = (dispatch: React.Dispatch<StateAction>) => {
   useEffect(() => {
     const loadUser = async () => {
-      const userSession = await getCognitoSession()
-      if (!userSession) {
-        console.error('No user session')
+      let userSession
+      try {
+        userSession = await getCognitoSession()
+      } catch (e) {
+        console.error(e)
         return
       }
 

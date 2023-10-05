@@ -63,9 +63,11 @@ const usePublishing = () => {
   }, [dispatch, publishStatus])
 
   const publish = async () => {
-    const userSession = await getCognitoSession()
-    if (!userSession) {
-      console.error('No user session')
+    let userSession
+    try {
+      userSession = await getCognitoSession()
+    } catch (e) {
+      console.error(e)
       return
     }
 
@@ -121,9 +123,11 @@ const usePublishing = () => {
   }
 
   const unpublish = async () => {
-    const userSession = await getCognitoSession()
-    if (!userSession) {
-      console.error('No user session')
+    let userSession
+    try {
+      userSession = await getCognitoSession()
+    } catch (e) {
+      console.error(e)
       return
     }
 

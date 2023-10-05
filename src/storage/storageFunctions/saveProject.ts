@@ -44,14 +44,6 @@ const saveProject: StorageFunction<SaveProject> = async (
       return
     }
 
-    if (!userSession) {
-      dispatch({
-        type: StateActions.SetStorageMessageStatus,
-        payload: { key, status: StorageMessageStatus.UserSessionError },
-      })
-      return
-    }
-
     const response = await fetch(
       `${process.env.GATSBY_API_URL}/${message.route}`,
       {
