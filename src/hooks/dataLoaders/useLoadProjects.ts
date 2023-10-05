@@ -8,11 +8,10 @@ import { NodeStatus, Project } from 'reducers/stateReducer/types'
 import useUser from 'hooks/useUser'
 import useDispatch from '../useDispatch'
 import useAppState from 'hooks/useAppState'
-import useUserSession from 'hooks/useUserSession'
+import { getCognitoSession } from 'components/Authentication/useUserSession'
 
 const useLoadProjects = () => {
   const dispatch = useDispatch()
-  const userSession = useUserSession()
   const user = useUser()
 
   const {
@@ -25,7 +24,6 @@ const useLoadProjects = () => {
       if (
         // if the user has no projects associated
         !user ||
-        !userSession ||
         !user.projectIDs ||
         user.projectIDs.length === 0 ||
         // if we're already already trying to load this
@@ -34,6 +32,12 @@ const useLoadProjects = () => {
         status === NodeStatus.Loaded
       )
         return
+
+      const userSession = await getCognitoSession()
+      if (!userSession) {
+        console.error('No user session')
+        return
+      }
 
       dispatch({
         type: StateActions.SetMetadataObjStatus,
@@ -126,7 +130,7 @@ const useLoadProjects = () => {
     }
 
     loadProjects()
-  }, [user, status, dispatch, userSession])
+  }, [user, status, dispatch])
 }
 
 export default useLoadProjects

@@ -9,6 +9,7 @@ import {
   StorageMessagePayload,
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
+import { getCognitoSession } from 'components/Authentication/useUserSession'
 
 export type SaveProject = StorageMessagePayload<APIRoutes.saveProject, Project>
 
@@ -32,10 +33,33 @@ const saveProject: StorageFunction<SaveProject> = async (
     )
     dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
   } else {
+    let userSession
+    try {
+      userSession = await getCognitoSession()
+    } catch (error) {
+      dispatch({
+        type: StateActions.SetStorageMessageStatus,
+        payload: { key, status: StorageMessageStatus.UserSessionError },
+      })
+      return
+    }
+
+    if (!userSession) {
+      dispatch({
+        type: StateActions.SetStorageMessageStatus,
+        payload: { key, status: StorageMessageStatus.UserSessionError },
+      })
+      return
+    }
+
     const response = await fetch(
       `${process.env.GATSBY_API_URL}/${message.route}`,
       {
         method: 'POST',
+        headers: new Headers({
+          Authorization: userSession.getIdToken().getJwtToken(),
+          'Content-Type': 'application/json',
+        }),
         body: JSON.stringify({ project: message.data, researcherID }),
       }
     ).catch(() =>

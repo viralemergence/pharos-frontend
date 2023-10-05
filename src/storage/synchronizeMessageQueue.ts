@@ -15,6 +15,7 @@ export enum StorageMessageStatus {
   // Error states; successful responses are
   // just removed from the queue so it doesn't
   // need to have a success status.
+  UserSessionError = 'UserSessionError',
   LocalStorageError = 'LocalStorageError',
   NetworkError = 'NetworkError',
   ServerError = 'ServerError',

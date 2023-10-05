@@ -7,6 +7,7 @@ import useDispatch from 'hooks/useDispatch'
 
 import { StateActions } from 'reducers/stateReducer/stateReducer'
 import { NodeStatus, ProjectPublishStatus } from 'reducers/stateReducer/types'
+import { getCognitoSession } from 'components/Authentication/useUserSession'
 
 const usePublishing = () => {
   const user = useUser()
@@ -62,6 +63,12 @@ const usePublishing = () => {
   }, [dispatch, publishStatus])
 
   const publish = async () => {
+    const userSession = await getCognitoSession()
+    if (!userSession) {
+      console.error('No user session')
+      return
+    }
+
     setRequestedPublishing(true)
 
     try {
@@ -69,6 +76,10 @@ const usePublishing = () => {
         `${process.env.GATSBY_API_URL}/publish-project`,
         {
           method: 'POST',
+          headers: new Headers({
+            Authorization: userSession.getIdToken().getJwtToken(),
+            'Content-Type': 'application/json',
+          }),
           body: JSON.stringify({
             projectID: project.projectID,
             researcherID: user.researcherID,
@@ -110,6 +121,12 @@ const usePublishing = () => {
   }
 
   const unpublish = async () => {
+    const userSession = await getCognitoSession()
+    if (!userSession) {
+      console.error('No user session')
+      return
+    }
+
     setUnPublishing(true)
 
     setModal(<pre style={{ margin: 40 }}>Unpublishing project...</pre>, {
@@ -120,6 +137,10 @@ const usePublishing = () => {
       `${process.env.GATSBY_API_URL}/unpublish-project`,
       {
         method: 'POST',
+        headers: new Headers({
+          Authorization: userSession.getIdToken().getJwtToken(),
+          'Content-Type': 'application/json',
+        }),
         body: JSON.stringify({
           projectID: project.projectID,
           researcherID: user.researcherID,

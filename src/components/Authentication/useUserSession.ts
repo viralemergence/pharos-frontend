@@ -1,7 +1,8 @@
 import { CognitoUserSession } from 'amazon-cognito-identity-js'
 import userpool from 'components/Authentication/userpool'
+// import { useEffect, useState } from 'react'
 
-const getCognitoSession: () => Promise<CognitoUserSession> = () => {
+export const getCognitoSession: () => Promise<CognitoUserSession> = () => {
   return new Promise((resolve, reject) => {
     const cognitoUser = userpool.getCurrentUser()
     if (!cognitoUser) {
@@ -17,8 +18,6 @@ const getCognitoSession: () => Promise<CognitoUserSession> = () => {
     }
   })
 }
-
-export default getCognitoSession
 
 // const useUserSession = () => {
 //   const [userSession, setUserSession] = useState<CognitoUserSession | null>()

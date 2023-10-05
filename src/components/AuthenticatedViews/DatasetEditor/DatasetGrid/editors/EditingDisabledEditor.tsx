@@ -57,7 +57,7 @@ const EditingDisabledEditor = ({
   const setModal = useModal()
   datapoint = datapoint as Datapoint
 
-  const backgroundColor = datapoint.report?.status
+  const backgroundColor = datapoint?.report?.status
     ? cellHighlightColors[datapoint.report.status]
     : 'white'
 

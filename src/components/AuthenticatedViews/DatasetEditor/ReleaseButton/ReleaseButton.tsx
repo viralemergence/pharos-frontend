@@ -13,6 +13,7 @@ import {
 } from 'reducers/stateReducer/types'
 import useReleaseButtonStatus from './useReleaseButtonStatus'
 import ReleaseReportModal from './ReleaseReportModal'
+import { getCognitoSession } from 'components/Authentication/useUserSession'
 
 const ReleaseButton = () => {
   const { researcherID } = useUser()
@@ -26,11 +27,20 @@ const ReleaseButton = () => {
 
   const onClickRelease = async (e: React.SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault()
+    const userSession = await getCognitoSession()
+    if (!userSession) {
+      console.error('No user session')
+      return
+    }
     setReleasing(true)
     const response = await fetch(
       `${process.env.GATSBY_API_URL}/release-dataset`,
       {
         method: 'POST',
+        headers: new Headers({
+          Authorization: userSession.getIdToken().getJwtToken(),
+          'Content-Type': 'application/json',
+        }),
         body: JSON.stringify({
           researcherID,
           projectID,

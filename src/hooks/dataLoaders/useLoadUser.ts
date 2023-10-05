@@ -3,14 +3,16 @@ import localforage from 'localforage'
 
 import { StateAction, StateActions } from 'reducers/stateReducer/stateReducer'
 import { User, UserStatus } from 'reducers/stateReducer/types'
-import useUserSession from 'hooks/useUserSession'
+import { getCognitoSession } from 'components/Authentication/useUserSession'
 
 const useLoadUser = (dispatch: React.Dispatch<StateAction>) => {
-  const userSession = useUserSession()
-
   useEffect(() => {
     const loadUser = async () => {
-      if (!userSession) return
+      const userSession = await getCognitoSession()
+      if (!userSession) {
+        console.error('No user session')
+        return
+      }
 
       const localUser = (await localforage.getItem('user')) as User | null
 
@@ -65,7 +67,7 @@ const useLoadUser = (dispatch: React.Dispatch<StateAction>) => {
     }
 
     loadUser()
-  }, [dispatch, userSession])
+  }, [dispatch])
 }
 
 export default useLoadUser

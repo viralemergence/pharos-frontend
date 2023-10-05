@@ -2,6 +2,7 @@ import useProject from 'hooks/project/useProject'
 import useAppState from 'hooks/useAppState'
 import useDispatch from 'hooks/useDispatch'
 import useUser from 'hooks/useUser'
+import { getCognitoSession } from 'components/Authentication/useUserSession'
 import localforage from 'localforage'
 import { useEffect } from 'react'
 import { StateActions } from 'reducers/stateReducer/stateReducer'
@@ -76,6 +77,12 @@ const useLoadDatasets = () => {
       )
         return
 
+      const userSession = await getCognitoSession()
+      if (!userSession) {
+        console.error('No user session')
+        return
+      }
+
       dispatch({
         type: StateActions.SetMetadataObjStatus,
         payload: {
@@ -89,6 +96,10 @@ const useLoadDatasets = () => {
         `${process.env.GATSBY_API_URL}/list-datasets`,
         {
           method: 'post',
+          headers: new Headers({
+            Authorization: userSession.getIdToken().getJwtToken(),
+            'Content-Type': 'application/json',
+          }),
           body: JSON.stringify({
             researcherID,
             projectID,
