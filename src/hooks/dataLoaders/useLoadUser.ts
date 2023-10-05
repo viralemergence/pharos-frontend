@@ -3,10 +3,15 @@ import localforage from 'localforage'
 
 import { StateAction, StateActions } from 'reducers/stateReducer/stateReducer'
 import { User, UserStatus } from 'reducers/stateReducer/types'
+import useUserSession from 'hooks/useUserSession'
 
 const useLoadUser = (dispatch: React.Dispatch<StateAction>) => {
+  const userSession = useUserSession()
+
   useEffect(() => {
     const loadUser = async () => {
+      if (!userSession) return
+
       const localUser = (await localforage.getItem('user')) as User | null
 
       if (localUser) {
@@ -26,6 +31,10 @@ const useLoadUser = (dispatch: React.Dispatch<StateAction>) => {
         // request updated user data
         const response = await fetch(`${process.env.GATSBY_API_URL}/auth`, {
           method: 'POST',
+          headers: new Headers({
+            Authorization: userSession.getIdToken().getJwtToken(),
+            'Content-Type': 'application/json',
+          }),
           body: `{"researcherID":"${localUser.researcherID}"}`,
         }).catch(error => console.log(error))
 
@@ -56,7 +65,7 @@ const useLoadUser = (dispatch: React.Dispatch<StateAction>) => {
     }
 
     loadUser()
-  }, [dispatch])
+  }, [dispatch, userSession])
 }
 
 export default useLoadUser

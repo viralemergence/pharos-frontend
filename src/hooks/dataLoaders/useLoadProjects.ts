@@ -8,10 +8,12 @@ import { NodeStatus, Project } from 'reducers/stateReducer/types'
 import useUser from 'hooks/useUser'
 import useDispatch from '../useDispatch'
 import useAppState from 'hooks/useAppState'
+import useUserSession from 'hooks/useUserSession'
 
 const useLoadProjects = () => {
-  const user = useUser()
   const dispatch = useDispatch()
+  const userSession = useUserSession()
+  const user = useUser()
 
   const {
     projects: { status },
@@ -22,6 +24,8 @@ const useLoadProjects = () => {
       // skip loading if
       if (
         // if the user has no projects associated
+        !user ||
+        !userSession ||
         !user.projectIDs ||
         user.projectIDs.length === 0 ||
         // if we're already already trying to load this
@@ -63,6 +67,10 @@ const useLoadProjects = () => {
         `${process.env.GATSBY_API_URL}/list-projects`,
         {
           method: 'post',
+          headers: new Headers({
+            Authorization: userSession.getIdToken().getJwtToken(),
+            'Content-Type': 'application/json',
+          }),
           body: JSON.stringify({ researcherID: user.researcherID }),
         }
       ).catch(() => {
@@ -118,7 +126,7 @@ const useLoadProjects = () => {
     }
 
     loadProjects()
-  }, [user, status, dispatch])
+  }, [user, status, dispatch, userSession])
 }
 
 export default useLoadProjects
