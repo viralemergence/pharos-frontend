@@ -99,7 +99,6 @@ const Login = () => {
           <Input
             type="password"
             spellCheck="false"
-            ref={firstInputRef}
             onChange={e => setPassword(e.target.value)}
             value={password}
           />
