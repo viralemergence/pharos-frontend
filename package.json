@@ -39,7 +39,7 @@
     "@testing-library/react": "^14.0.0",
     "@types/jest": "^29.5.2",
     "@types/react": "18",
-    "amazon-cognito-identity-js": "^6.3.6",
+    "aws-amplify": "^5.3.11",
     "babel-plugin-styled-components": "^2.0.7",
     "convert": "^4.13.2",
     "fuse.js": "^6.6.2",

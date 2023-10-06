@@ -1,12 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react'
 import styled from 'styled-components'
+import { Auth } from 'aws-amplify'
+// import { CognitoUser } from '@aws-amplify/auth'
+import { ISignUpResult } from 'amazon-cognito-identity-js'
 
 import Main from 'components/layout/Main'
 import Input from 'components/ui/Input'
 import Label from 'components/ui/InputLabel'
 import MintButton from 'components/ui/MintButton'
 
-import userpool from '../userpool'
 import { Link, useNavigate } from 'react-router-dom'
 import useAppState from 'hooks/useAppState'
 import ColorMessage, {
@@ -15,7 +17,6 @@ import ColorMessage, {
 import useDispatch from 'hooks/useDispatch'
 import { StateActions } from 'reducers/stateReducer/stateReducer'
 import { UserStatus } from 'reducers/stateReducer/types'
-import { CognitoUser } from 'amazon-cognito-identity-js'
 
 const Container = styled(Main)`
   max-width: 505px;
@@ -30,41 +31,41 @@ const Form = styled.form`
   margin-top: 40px;
 `
 
-const registerUser = (email: string, password: string) => {
-  return new Promise((resolve, reject) => {
-    userpool.signUp(
-      email,
-      password,
-      [],
-      // [new CognitoUserAttribute({ Name: "email", Value: email })],
-      [],
-      (err, result) => {
-        if (err) {
-          reject(err)
-          return
-        }
-        resolve(result)
-      }
-    )
-  })
-}
+// const registerUser = (email: string, password: string) => {
+//   return new Promise((resolve, reject) => {
+//     userpool.signUp(
+//       email,
+//       password,
+//       [],
+//       // [new CognitoUserAttribute({ Name: "email", Value: email })],
+//       [],
+//       (err, result) => {
+//         if (err) {
+//           reject(err)
+//           return
+//         }
+//         resolve(result)
+//       }
+//     )
+//   })
+// }
 
-const confirmUser = (email: string, confirmationCode: string) => {
-  return new Promise((resolve, reject) => {
-    const cognitoUser = new CognitoUser({
-      Username: email,
-      Pool: userpool,
-    })
+// const confirmUser = (email: string, confirmationCode: string) => {
+//   return new Promise((resolve, reject) => {
+//     const cognitoUser = new CognitoUser({
+//       Username: email,
+//       Pool: userpool,
+//     })
 
-    cognitoUser.confirmRegistration(confirmationCode, true, (err, result) => {
-      if (err) {
-        reject(err)
-        return
-      }
-      resolve(result)
-    })
-  })
-}
+// cognitoUser.confirmRegistration(confirmationCode, true, (err, result) => {
+//   if (err) {
+//     reject(err)
+//     return
+//   }
+//   resolve(result)
+// })
+// })
+// }
 
 const SignUp = () => {
   const firstInputRef = useRef<HTMLInputElement>(null)
@@ -73,12 +74,12 @@ const SignUp = () => {
     firstInputRef.current?.focus()
   }, [])
 
-  const { user } = useAppState()
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
   const [formMessage, setFormMessage] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [createUserResponse, setCreateUserResponse] = useState<ISignUpResult>()
 
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
@@ -86,8 +87,6 @@ const SignUp = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmationCode, setConfirmationCode] = useState('')
-  const [researcherID, setResearcherID] = useState('')
-  const [cognitoUser, setCognitoUser] = useState<CognitoUser>()
 
   const handleSubmitCreate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -113,41 +112,20 @@ const SignUp = () => {
     }
 
     try {
-      const response = (await registerUser(email, password)) as {
-        userSub: string
-        userConfirmed: boolean
-        codeDeliveryDetails: {
-          Destination: string
-          DeliveryMedium: string
-          AttributeName: string
-        }
-        user: CognitoUser
-      }
-
-      console.log(response)
-
-      setResearcherID('res' + response.userSub)
-      setCognitoUser(response.user)
-
-      dispatch({
-        type: StateActions.SetUserStatus,
-        payload: {
-          status: UserStatus.AwaitingConfirmation,
-          statusMessage: 'Please check your email for a confirmation code.',
+      const signUpResponse = await Auth.signUp({
+        username: email,
+        password,
+        autoSignIn: {
+          enabled: true,
         },
       })
+      setCreateUserResponse(signUpResponse)
+      setFormMessage(`Please check your email for a confirmation code.`)
       setSubmitting(false)
-    } catch (err) {
-      const error = err as { message: string; __type: string }
-      dispatch({
-        type: StateActions.SetUserStatus,
-        payload: {
-          status: UserStatus.InvalidUser,
-          statusMessage: error.message,
-          cognitoResponseType: error.__type,
-        },
-      })
-      setFormMessage(error.message)
+    } catch (error) {
+      console.error({ error })
+      const { message } = error as { code: string; message: string }
+      setFormMessage(message)
       setSubmitting(false)
     }
   }
@@ -159,12 +137,17 @@ const SignUp = () => {
     setFormMessage('')
     setSubmitting(true)
 
-    if (!researcherID || researcherID === '') alert('researcherID is blank')
+    if (!createUserResponse) {
+      setFormMessage('No user found to confirm.')
+      return
+    }
+
+    const username = createUserResponse.user.getUsername()
 
     try {
-      const response = await confirmUser(email, confirmationCode)
+      await Auth.confirmSignUp(username, confirmationCode)
 
-      console.log(response)
+      const researcherID = 'res' + createUserResponse.userSub
 
       dispatch({
         type: StateActions.CreateUser,
@@ -175,23 +158,15 @@ const SignUp = () => {
             name: `${firstName} ${lastName}`,
             organization,
           },
-          cognitoUser,
         },
       })
 
+      setSubmitting(false)
       navigate('/projects/')
-    } catch (err) {
-      console.log(err)
-      dispatch({
-        type: StateActions.SetUserStatus,
-        payload: {
-          status: UserStatus.AwaitingConfirmation,
-          statusMessage: (err as { message: string; __type: string }).message,
-          cognitoResponseType: (err as { message: string; __type: string })
-            .__type,
-        },
-      })
-      setFormMessage((err as { message: string; __type: string }).message)
+    } catch (error) {
+      console.error({ error })
+      const { message } = error as { code: string; message: string }
+      setFormMessage(message)
       setSubmitting(false)
     }
   }
@@ -202,7 +177,7 @@ const SignUp = () => {
       <p>
         Already have an account? <Link to={`/login/`}>sign in here.</Link>
       </p>
-      {user.status === UserStatus.AwaitingConfirmation ? (
+      {createUserResponse && createUserResponse.userConfirmed === false ? (
         <Form onSubmit={handleSubmitConfimation}>
           <Label>
             Confirmation Code
@@ -215,7 +190,7 @@ const SignUp = () => {
             />
           </Label>
           <ColorMessage status={ColorMessageStatus.Warning}>
-            {user.statusMessage}
+            {formMessage}
           </ColorMessage>
           <MintButton
             type="submit"

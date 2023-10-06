@@ -1,21 +1,22 @@
 import { CognitoUserSession } from 'amazon-cognito-identity-js'
-import userpool from 'components/Authentication/userpool'
+// import userpool from 'components/Authentication/userpool'
 
 const getCognitoSession: () => Promise<CognitoUserSession> = () => {
-  return new Promise((resolve, reject) => {
-    const cognitoUser = userpool.getCurrentUser()
-    if (!cognitoUser) {
-      return reject('No user')
-    } else {
-      cognitoUser.getSession((err: unknown, session: unknown) => {
-        if (err) {
-          return reject(err)
-        } else {
-          return resolve(session as CognitoUserSession)
-        }
-      })
-    }
-  })
+  return {}
+  // return new Promise((resolve, reject) => {
+  //   const cognitoUser = userpool.getCurrentUser()
+  //   if (!cognitoUser) {
+  //     return reject('No user')
+  //   } else {
+  //     cognitoUser.getSession((err: unknown, session: unknown) => {
+  //       if (err) {
+  //         return reject(err)
+  //       } else {
+  //         return resolve(session as CognitoUserSession)
+  //       }
+  //     })
+  //   }
+  // })
 }
 
 export default getCognitoSession

@@ -12,6 +12,7 @@ import { UserStatus } from 'reducers/stateReducer/types'
 import useIndexPageData from 'cmsHooks/useIndexPageData'
 import useAppState from 'hooks/useAppState'
 import localforage from 'localforage'
+import { Auth } from 'aws-amplify'
 
 const Nav = styled.nav`
   background-color: ${({ theme }) => theme.darkPurple};
@@ -137,7 +138,7 @@ const NavBar = () => {
                 // of "log out" because it deletes all the local data
                 // without warning the user; this way we can use it
                 // as a "reset" button if a bug traps the user.
-                user?.cognitoUser?.signOut()
+                Auth.signOut()
                 localforage.clear()
                 window.location.href = '/'
                 window.location.reload()
@@ -159,6 +160,7 @@ const NavBar = () => {
                   // of "log out" because it deletes all the local data
                   // without warning the user; this way we can use it
                   // as a "reset" button if a bug traps the user.
+                  Auth.signOut()
                   localforage.clear()
                   window.location.href = '/'
                   window.location.reload()
