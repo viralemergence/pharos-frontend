@@ -3,7 +3,7 @@ import localforage from 'localforage'
 
 import { StateAction, StateActions } from 'reducers/stateReducer/stateReducer'
 import { User, UserStatus } from 'reducers/stateReducer/types'
-// import { getCognitoSession } from 'components/Authentication/useUserSession'
+import { Auth } from 'aws-amplify'
 
 const useLoadUser = (dispatch: React.Dispatch<StateAction>) => {
   useEffect(() => {
@@ -24,21 +24,21 @@ const useLoadUser = (dispatch: React.Dispatch<StateAction>) => {
           payload: { status: UserStatus.LoggedIn },
         })
 
-        // let userSession
-        // try {
-        //   userSession = await getCognitoSession()
-        // } catch (e) {
-        //   console.error(e)
-        //   return
-        // }
+        let userSession
+        try {
+          userSession = await Auth.currentSession()
+        } catch (e) {
+          console.error(e)
+          return
+        }
 
         // request updated user data
         const response = await fetch(`${process.env.GATSBY_API_URL}/auth`, {
           method: 'POST',
-          // headers: new Headers({
-          //   Authorization: userSession.getIdToken().getJwtToken(),
-          //   'Content-Type': 'application/json',
-          // }),
+          headers: new Headers({
+            Authorization: userSession.getIdToken().getJwtToken(),
+            'Content-Type': 'application/json',
+          }),
           body: `{"researcherID":"${localUser.researcherID}"}`,
         }).catch(error => console.log(error))
 
