@@ -71,15 +71,6 @@ const Login = () => {
     }
   }
 
-  // let statusMessage
-  // switch (user.status) {
-  //   case UserStatus.InvalidUser:
-  //     statusMessage = 'User not found'
-  //     break
-  //   case UserStatus.AuthError:
-  //     statusMessage = 'Error logging in, please check network connection.'
-  // }
-
   return (
     <Container>
       <H1>Sign in</H1>
