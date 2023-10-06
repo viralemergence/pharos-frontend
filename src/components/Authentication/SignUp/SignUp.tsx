@@ -10,13 +10,11 @@ import Label from 'components/ui/InputLabel'
 import MintButton from 'components/ui/MintButton'
 
 import { Link, useNavigate } from 'react-router-dom'
-import useAppState from 'hooks/useAppState'
 import ColorMessage, {
   ColorMessageStatus,
 } from 'components/ui/Modal/ColorMessage'
 import useDispatch from 'hooks/useDispatch'
 import { StateActions } from 'reducers/stateReducer/stateReducer'
-import { UserStatus } from 'reducers/stateReducer/types'
 
 const Container = styled(Main)`
   max-width: 505px;
@@ -30,42 +28,6 @@ const H1 = styled.h1`
 const Form = styled.form`
   margin-top: 40px;
 `
-
-// const registerUser = (email: string, password: string) => {
-//   return new Promise((resolve, reject) => {
-//     userpool.signUp(
-//       email,
-//       password,
-//       [],
-//       // [new CognitoUserAttribute({ Name: "email", Value: email })],
-//       [],
-//       (err, result) => {
-//         if (err) {
-//           reject(err)
-//           return
-//         }
-//         resolve(result)
-//       }
-//     )
-//   })
-// }
-
-// const confirmUser = (email: string, confirmationCode: string) => {
-//   return new Promise((resolve, reject) => {
-//     const cognitoUser = new CognitoUser({
-//       Username: email,
-//       Pool: userpool,
-//     })
-
-// cognitoUser.confirmRegistration(confirmationCode, true, (err, result) => {
-//   if (err) {
-//     reject(err)
-//     return
-//   }
-//   resolve(result)
-// })
-// })
-// }
 
 const SignUp = () => {
   const firstInputRef = useRef<HTMLInputElement>(null)

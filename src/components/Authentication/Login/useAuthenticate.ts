@@ -47,8 +47,6 @@ const useAuthenticate = (
         return false
       }
 
-      console.log({ user })
-
       dispatch({
         type: StateActions.SetUserStatus,
         payload: {
