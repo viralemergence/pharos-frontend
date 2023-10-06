@@ -7,7 +7,6 @@ import useDispatch from 'hooks/useDispatch'
 
 import { StateActions } from 'reducers/stateReducer/stateReducer'
 import { NodeStatus, ProjectPublishStatus } from 'reducers/stateReducer/types'
-import { getCognitoSession } from 'components/Authentication/useUserSession'
 
 const usePublishing = () => {
   const user = useUser()
@@ -63,13 +62,13 @@ const usePublishing = () => {
   }, [dispatch, publishStatus])
 
   const publish = async () => {
-    let userSession
-    try {
-      userSession = await getCognitoSession()
-    } catch (e) {
-      console.error(e)
-      return
-    }
+    // let userSession
+    // try {
+    //   userSession = await getCognitoSession()
+    // } catch (e) {
+    //   console.error(e)
+    //   return
+    // }
 
     setRequestedPublishing(true)
 
@@ -78,10 +77,10 @@ const usePublishing = () => {
         `${process.env.GATSBY_API_URL}/publish-project`,
         {
           method: 'POST',
-          headers: new Headers({
-            Authorization: userSession.getIdToken().getJwtToken(),
-            'Content-Type': 'application/json',
-          }),
+          // headers: new Headers({
+          //   Authorization: userSession.getIdToken().getJwtToken(),
+          //   'Content-Type': 'application/json',
+          // }),
           body: JSON.stringify({
             projectID: project.projectID,
             researcherID: user.researcherID,
@@ -123,13 +122,13 @@ const usePublishing = () => {
   }
 
   const unpublish = async () => {
-    let userSession
-    try {
-      userSession = await getCognitoSession()
-    } catch (e) {
-      console.error(e)
-      return
-    }
+    // let userSession
+    // try {
+    //   userSession = await getCognitoSession()
+    // } catch (e) {
+    //   console.error(e)
+    //   return
+    // }
 
     setUnPublishing(true)
 
@@ -141,10 +140,10 @@ const usePublishing = () => {
       `${process.env.GATSBY_API_URL}/unpublish-project`,
       {
         method: 'POST',
-        headers: new Headers({
-          Authorization: userSession.getIdToken().getJwtToken(),
-          'Content-Type': 'application/json',
-        }),
+        // headers: new Headers({
+        //   Authorization: userSession.getIdToken().getJwtToken(),
+        //   'Content-Type': 'application/json',
+        // }),
         body: JSON.stringify({
           projectID: project.projectID,
           researcherID: user.researcherID,

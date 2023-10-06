@@ -10,7 +10,7 @@ import { StateActions } from 'reducers/stateReducer/stateReducer'
 import useAppState from 'hooks/useAppState'
 import useDatasetID from 'hooks/dataset/useDatasetID'
 import useProjectID from 'hooks/project/useProjectID'
-import { getCognitoSession } from 'components/Authentication/useUserSession'
+// import { getCognitoSession } from 'components/Authentication/useUserSession'
 
 const useLoadRegister = () => {
   const { researcherID } = useUser()
@@ -77,13 +77,13 @@ const useLoadRegister = () => {
       )
         return
 
-      let userSession
-      try {
-        userSession = await getCognitoSession()
-      } catch (e) {
-        console.error(e)
-        return
-      }
+      // let userSession
+      // try {
+      //   userSession = await getCognitoSession()
+      // } catch (e) {
+      //   console.error(e)
+      //   return
+      // }
 
       dispatch({
         type: StateActions.SetMetadataObjStatus,
@@ -98,10 +98,10 @@ const useLoadRegister = () => {
         `${process.env.GATSBY_API_URL}/load-register`,
         {
           method: 'POST',
-          headers: new Headers({
-            Authorization: userSession.getIdToken().getJwtToken(),
-            'Content-Type': 'application/json',
-          }),
+          // headers: new Headers({
+          //   Authorization: userSession.getIdToken().getJwtToken(),
+          //   'Content-Type': 'application/json',
+          // }),
           body: JSON.stringify({ researcherID, datasetID, projectID }),
         }
       ).catch(() =>

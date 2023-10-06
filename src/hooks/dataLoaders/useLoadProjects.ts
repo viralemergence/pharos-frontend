@@ -8,7 +8,7 @@ import { NodeStatus, Project } from 'reducers/stateReducer/types'
 import useUser from 'hooks/useUser'
 import useDispatch from '../useDispatch'
 import useAppState from 'hooks/useAppState'
-import { getCognitoSession } from 'components/Authentication/useUserSession'
+// import { getCognitoSession } from 'components/Authentication/useUserSession'
 
 const useLoadProjects = () => {
   const dispatch = useDispatch()
@@ -33,13 +33,13 @@ const useLoadProjects = () => {
       )
         return
 
-      let userSession
-      try {
-        userSession = await getCognitoSession()
-      } catch (e) {
-        console.error(e)
-        return
-      }
+      // let userSession
+      // try {
+      //   userSession = await getCognitoSession()
+      // } catch (e) {
+      //   console.error(e)
+      //   return
+      // }
 
       dispatch({
         type: StateActions.SetMetadataObjStatus,
@@ -73,10 +73,10 @@ const useLoadProjects = () => {
         `${process.env.GATSBY_API_URL}/list-projects`,
         {
           method: 'post',
-          headers: new Headers({
-            Authorization: userSession.getIdToken().getJwtToken(),
-            'Content-Type': 'application/json',
-          }),
+          // headers: new Headers({
+          //   Authorization: userSession.getIdToken().getJwtToken(),
+          //   'Content-Type': 'application/json',
+          // }),
           body: JSON.stringify({ researcherID: user.researcherID }),
         }
       ).catch(() => {
