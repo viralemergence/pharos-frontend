@@ -8,14 +8,6 @@ import { getCognitoSession } from 'components/Authentication/useUserSession'
 const useLoadUser = (dispatch: React.Dispatch<StateAction>) => {
   useEffect(() => {
     const loadUser = async () => {
-      let userSession
-      try {
-        userSession = await getCognitoSession()
-      } catch (e) {
-        console.error(e)
-        return
-      }
-
       const localUser = (await localforage.getItem('user')) as User | null
 
       if (localUser) {
@@ -31,6 +23,14 @@ const useLoadUser = (dispatch: React.Dispatch<StateAction>) => {
           type: StateActions.SetUserStatus,
           payload: { status: UserStatus.LoggedIn },
         })
+
+        let userSession
+        try {
+          userSession = await getCognitoSession()
+        } catch (e) {
+          console.error(e)
+          return
+        }
 
         // request updated user data
         const response = await fetch(`${process.env.GATSBY_API_URL}/auth`, {
