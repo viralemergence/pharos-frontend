@@ -5,6 +5,7 @@ import { NodeStatus } from 'reducers/stateReducer/types'
 import { useTheme } from 'styled-components'
 import useAppState from 'hooks/useAppState'
 import { StorageMessageStatus } from 'storage/synchronizeMessageQueue'
+import useModal from 'hooks/useModal/useModal'
 
 const Span = styled.span`
   ${({ theme }) => theme.extraSmallParagraph};
@@ -13,11 +14,16 @@ const Span = styled.span`
   padding-left: 0.75em;
   margin-left: 0.75em;
 `
+const SecretButton = styled.button`
+  background: none;
+  border: none;
+`
 
 const DatasetStatusMessage = (): JSX.Element => {
   const dataset = useDataset()
   const theme = useTheme()
   const appState = useAppState()
+  const setModal = useModal()
 
   if (!dataset) return <Span style={{ color: theme.red }}>No dataset</Span>
 
@@ -62,7 +68,22 @@ const DatasetStatusMessage = (): JSX.Element => {
       color = theme.orange
   }
 
-  return <Span style={{ color }}>{datasetStatusMessage}</Span>
+  return (
+    <SecretButton
+      onClick={() =>
+        setModal(
+          <pre style={{ padding: 15 }}>
+            {JSON.stringify(appState.messageStack, null, 2)}
+          </pre>,
+          {
+            closeable: true,
+          }
+        )
+      }
+    >
+      <Span style={{ color }}>{datasetStatusMessage}</Span>
+    </SecretButton>
+  )
 }
 
 export default DatasetStatusMessage
