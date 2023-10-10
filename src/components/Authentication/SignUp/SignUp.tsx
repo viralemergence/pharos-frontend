@@ -109,13 +109,10 @@ const SignUp = () => {
     try {
       await Auth.confirmSignUp(username, confirmationCode)
 
-      const researcherID = 'res' + createUserResponse.userSub
-
       dispatch({
         type: StateActions.CreateUser,
         payload: {
           user: {
-            researcherID,
             email,
             name: `${firstName} ${lastName}`,
             organization,

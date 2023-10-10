@@ -40,6 +40,8 @@ const saveUser: StorageFunction<SaveUser> = async (key, message, dispatch) => {
       return
     }
 
+    const { researcherID: _, ...saveUserData } = message.data
+
     const response = await fetch(
       `${process.env.GATSBY_API_URL}/${message.route}`,
       {
@@ -48,7 +50,7 @@ const saveUser: StorageFunction<SaveUser> = async (key, message, dispatch) => {
           Authorization: userSession.getIdToken().getJwtToken(),
           'Content-Type': 'application/json',
         }),
-        body: JSON.stringify(message.data),
+        body: JSON.stringify(saveUserData),
       }
     ).catch(() =>
       dispatch({
