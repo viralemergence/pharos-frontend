@@ -78,7 +78,7 @@ const SignUp = () => {
         username: email,
         password,
         autoSignIn: {
-          enabled: true,
+          enabled: false,
         },
       })
       setCreateUserResponse(signUpResponse)
@@ -108,9 +108,13 @@ const SignUp = () => {
 
     try {
       await Auth.confirmSignUp(username, confirmationCode)
+      await Auth.signIn(username, password)
 
       const userSession = await Auth.currentSession()
-      const researcherID = 'res' + createUserResponse.userSub
+
+      const idToken = userSession.getIdToken()
+
+      const researcherID = 'res' + idToken.payload.sub
 
       try {
         // wait here to make sure the user object is created successfully
@@ -119,7 +123,7 @@ const SignUp = () => {
           {
             method: 'POST',
             headers: new Headers({
-              Authorization: userSession.getIdToken().getJwtToken(),
+              Authorization: idToken.getJwtToken(),
               'Content-Type': 'application/json',
             }),
             body: JSON.stringify({
