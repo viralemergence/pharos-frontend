@@ -30,13 +30,13 @@ import setProjectPublishingStatus, {
 import editProject, { EditProjectAction } from './actions/editProject'
 import deleteDataset, { DeleteDatasetAction } from './actions/deleteDataset'
 import editDataset, { EditDatasetAction } from './actions/editDataset'
-import createUser, { CreateUserAction } from './actions/createUser'
+import createLocalUser, { CreateUserAction } from './actions/createUser'
 
 // reducer actions
 export enum StateActions {
   // user actions
   UpdateUser,
-  CreateUser,
+  CreateLocalUser,
   SetUserStatus,
 
   // general state
@@ -113,8 +113,8 @@ const stateReducer = (state: AppState, action: StateAction) => {
   switch (action.type) {
     case StateActions.UpdateUser:
       return updateUser(state, action.payload)
-    case StateActions.CreateUser:
-      return createUser(state, action.payload)
+    case StateActions.CreateLocalUser:
+      return createLocalUser(state, action.payload)
     case StateActions.SetUserStatus:
       return setUserStatus(state, action.payload)
 

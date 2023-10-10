@@ -109,17 +109,49 @@ const SignUp = () => {
     try {
       await Auth.confirmSignUp(username, confirmationCode)
 
-      dispatch({
-        type: StateActions.CreateUser,
-        payload: {
-          user: {
-            email,
-            name: `${firstName} ${lastName}`,
-            organization,
-          },
-        },
-      })
+      const userSession = await Auth.currentSession()
+      const researcherID = userSession.getIdToken().payload.sub
 
+      try {
+        // wait here to make sure the user object is created successfully
+        const response = await fetch(
+          `${process.env.GATSBY_API_URL}/${'create-user'}`,
+          {
+            method: 'POST',
+            headers: new Headers({
+              Authorization: userSession.getIdToken().getJwtToken(),
+              'Content-Type': 'application/json',
+            }),
+            body: JSON.stringify({
+              name: `${firstName} ${lastName}`,
+              email,
+              organization,
+            }),
+          }
+        )
+
+        if (response && response.ok) {
+          dispatch({
+            type: StateActions.CreateLocalUser,
+            payload: {
+              user: {
+                researcherID,
+                email,
+                name: `${firstName} ${lastName}`,
+                organization,
+              },
+            },
+          })
+        } else {
+          setFormMessage('Error creating user')
+        }
+
+        setSubmitting(false)
+      } catch (error) {
+        console.error({ error })
+        setSubmitting(false)
+        setFormMessage('Error creating user')
+      }
       setSubmitting(false)
       navigate('/projects/')
     } catch (error) {

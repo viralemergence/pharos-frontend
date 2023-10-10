@@ -10,11 +10,11 @@ interface CreateUserActionPayload {
 }
 
 export interface CreateUserAction {
-  type: StateActions.CreateUser
+  type: StateActions.CreateLocalUser
   payload: CreateUserActionPayload
 }
 
-const createUser: ActionFunction<CreateUserActionPayload> = (
+const createLocalUser: ActionFunction<CreateUserActionPayload> = (
   state,
   { user }
 ) => {
@@ -26,7 +26,6 @@ const createUser: ActionFunction<CreateUserActionPayload> = (
     },
   }
 
-  // if user data is from remote save to local
   nextState.messageStack = {
     ...state.messageStack,
     [`${APIRoutes.saveUser}_user_local`]: {
@@ -35,15 +34,9 @@ const createUser: ActionFunction<CreateUserActionPayload> = (
       status: StorageMessageStatus.Initial,
       data: user,
     },
-    [`${APIRoutes.saveUser}_user_remote`]: {
-      route: APIRoutes.saveUser,
-      target: 'remote',
-      status: StorageMessageStatus.Initial,
-      data: user,
-    },
   }
 
   return nextState
 }
 
-export default createUser
+export default createLocalUser
