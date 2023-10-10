@@ -22,8 +22,7 @@ export type SaveRegister = StorageMessagePayload<
 const saveRegister: StorageFunction<SaveRegister> = async (
   key,
   message,
-  dispatch,
-  researcherID
+  dispatch
 ) => {
   dispatch({
     type: StateActions.SetStorageMessageStatus,
@@ -60,7 +59,7 @@ const saveRegister: StorageFunction<SaveRegister> = async (
           Authorization: userSession.getIdToken().getJwtToken(),
           'Content-Type': 'application/json',
         }),
-        body: JSON.stringify({ ...message.data, researcherID }),
+        body: JSON.stringify({ ...message.data }),
       }
     ).catch(() =>
       dispatch({
@@ -90,6 +89,7 @@ const saveRegister: StorageFunction<SaveRegister> = async (
           payload: {
             source: 'remote',
             datasetID: message.data.datasetID,
+            projectID: message.data.datasetID,
             data: remoteRegister.register as Register,
           },
         })
