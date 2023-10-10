@@ -4,7 +4,6 @@ import MintButton from 'components/ui/MintButton'
 import useModal from 'hooks/useModal/useModal'
 import useDatasetID from 'hooks/dataset/useDatasetID'
 import useProjectID from 'hooks/project/useProjectID'
-import useUser from 'hooks/useUser'
 import useDispatch from 'hooks/useDispatch'
 import { StateActions } from 'reducers/stateReducer/stateReducer'
 import {
@@ -16,7 +15,6 @@ import ReleaseReportModal from './ReleaseReportModal'
 import { Auth } from 'aws-amplify'
 
 const ReleaseButton = () => {
-  const { researcherID } = useUser()
   const datasetID = useDatasetID()
   const projectID = useProjectID()
   const setModal = useModal()
@@ -46,7 +44,6 @@ const ReleaseButton = () => {
           'Content-Type': 'application/json',
         }),
         body: JSON.stringify({
-          researcherID,
           projectID,
           datasetID,
         }),

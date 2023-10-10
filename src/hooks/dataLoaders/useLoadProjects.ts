@@ -77,7 +77,6 @@ const useLoadProjects = () => {
             Authorization: userSession.getIdToken().getJwtToken(),
             'Content-Type': 'application/json',
           }),
-          body: JSON.stringify({ researcherID: user.researcherID }),
         }
       ).catch(() => {
         // catch network error and go into offline mode

@@ -39,7 +39,6 @@ const useLoadUser = (dispatch: React.Dispatch<StateAction>) => {
             Authorization: userSession.getIdToken().getJwtToken(),
             'Content-Type': 'application/json',
           }),
-          body: `{"researcherID":"${localUser.researcherID}"}`,
         }).catch(error => console.log(error))
 
         // if it's valid set the updated data in state

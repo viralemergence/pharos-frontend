@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-import useUser from 'hooks/useUser'
 import useModal from 'hooks/useModal/useModal'
 import useProject from 'hooks/project/useProject'
 import useDispatch from 'hooks/useDispatch'
@@ -10,7 +9,6 @@ import { NodeStatus, ProjectPublishStatus } from 'reducers/stateReducer/types'
 import { Auth } from 'aws-amplify'
 
 const usePublishing = () => {
-  const user = useUser()
   const project = useProject()
   const dispatch = useDispatch()
   const setModal = useModal()
@@ -84,7 +82,6 @@ const usePublishing = () => {
           }),
           body: JSON.stringify({
             projectID: project.projectID,
-            researcherID: user.researcherID,
           }),
         }
       )
@@ -147,7 +144,6 @@ const usePublishing = () => {
         }),
         body: JSON.stringify({
           projectID: project.projectID,
-          researcherID: user.researcherID,
         }),
       }
     ).catch(e => {

@@ -19,8 +19,7 @@ export type DeleteDataset = StorageMessagePayload<
 const deleteDataset: StorageFunction<DeleteDataset> = async (
   key,
   message,
-  dispatch,
-  researcherID
+  dispatch
 ) => {
   dispatch({
     type: StateActions.SetStorageMessageStatus,
@@ -63,7 +62,7 @@ const deleteDataset: StorageFunction<DeleteDataset> = async (
           Authorization: userSession.getIdToken().getJwtToken(),
           'Content-Type': 'application/json',
         }),
-        body: JSON.stringify({ dataset: message.data, researcherID }),
+        body: JSON.stringify({ dataset: message.data }),
       }
     ).catch(() =>
       dispatch({

@@ -16,8 +16,7 @@ export type SaveDataset = StorageMessagePayload<APIRoutes.saveDataset, Dataset>
 const saveDataset: StorageFunction<SaveDataset> = async (
   key,
   message,
-  dispatch,
-  researcherID
+  dispatch
 ) => {
   dispatch({
     type: StateActions.SetStorageMessageStatus,
@@ -52,7 +51,7 @@ const saveDataset: StorageFunction<SaveDataset> = async (
           Authorization: userSession.getIdToken().getJwtToken(),
           'Content-Type': 'application/json',
         }),
-        body: JSON.stringify({ dataset: message.data, researcherID }),
+        body: JSON.stringify({ dataset: message.data }),
       }
     ).catch(() =>
       dispatch({

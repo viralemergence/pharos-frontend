@@ -36,9 +36,7 @@ Amplify.configure({
 
 const StateContextProvider = ({ children }: StateContextProviderProps) => {
   const [state, dispatch] = useReducer(stateReducer, stateInitialValue)
-  const { messageStack, user } = state
-
-  const researcherID = user.data?.researcherID || ''
+  const { messageStack } = state
 
   useLoadUser(dispatch)
 
@@ -103,8 +101,8 @@ const StateContextProvider = ({ children }: StateContextProviderProps) => {
 
   useEffect(() => {
     localforage.setItem('messageStack', messageStack)
-    synchronizeMessageQueue(messageStack, dispatch, researcherID)
-  }, [messageStack, researcherID])
+    synchronizeMessageQueue(messageStack, dispatch)
+  }, [messageStack])
 
   return (
     <StateContext.Provider value={{ state, dispatch }}>
