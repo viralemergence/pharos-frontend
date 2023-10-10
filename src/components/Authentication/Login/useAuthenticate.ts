@@ -14,15 +14,12 @@ const useAuthenticate = (
 
   const authenticate = async (email: string, password: string) => {
     let Authorization: string
-    let userSub: string
 
     try {
       await Auth.signIn(email, password)
 
       const session = await Auth.currentSession()
       Authorization = session.getIdToken().getJwtToken()
-      const currentUser = await Auth.currentUserInfo()
-      userSub = currentUser.attributes.sub
     } catch (error) {
       console.error({ error })
       setFormMessage((error as { message: string }).message)
@@ -36,13 +33,12 @@ const useAuthenticate = (
           Authorization,
           'Content-Type': 'application/json',
         }),
-        body: `{"researcherID":"res${userSub}"}`,
       })
 
       const user = await response.json()
 
       if (!response.ok) {
-        setFormMessage('Eror loading user information')
+        setFormMessage('Error loading user information')
         Auth.signOut()
         return false
       }
