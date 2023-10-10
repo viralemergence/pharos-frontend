@@ -110,7 +110,7 @@ const SignUp = () => {
       await Auth.confirmSignUp(username, confirmationCode)
 
       const userSession = await Auth.currentSession()
-      const researcherID = userSession.getIdToken().payload.sub
+      const researcherID = 'res' + createUserResponse.userSub
 
       try {
         // wait here to make sure the user object is created successfully
