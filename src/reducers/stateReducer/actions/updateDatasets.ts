@@ -78,18 +78,21 @@ const updateDatasets: ActionFunction<UpdateDatasetsAction['payload']> = (
     // datasets coming from local are different than
     // what is in state already
     let replaceDatasets = false
-    for (const [key, dataset] of Object.entries(data)) {
-      const prev = state.datasets.data[key]
-      const next = dataset
-      if (!prev) {
-        replaceDatasets = true
-        break
+    if (Object.keys(state.datasets.data).length !== Object.keys(data).length)
+      replaceDatasets = true
+    else
+      for (const [key, dataset] of Object.entries(data)) {
+        const prev = state.datasets.data[key]
+        const next = dataset
+        if (!prev) {
+          replaceDatasets = true
+          break
+        }
+        if (prev.lastUpdated !== next.lastUpdated) {
+          replaceDatasets = true
+          break
+        }
       }
-      if (prev.lastUpdated !== next.lastUpdated) {
-        replaceDatasets = true
-        break
-      }
-    }
 
     if (replaceDatasets) {
       nextState = { ...state }
