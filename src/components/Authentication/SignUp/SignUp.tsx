@@ -111,10 +111,7 @@ const SignUp = () => {
       await Auth.signIn(username, password)
 
       const userSession = await Auth.currentSession()
-
       const idToken = userSession.getIdToken()
-
-      const researcherID = 'res' + idToken.payload.sub
 
       try {
         // wait here to make sure the user object is created successfully
@@ -133,6 +130,8 @@ const SignUp = () => {
             }),
           }
         )
+
+        const researcherID = 'res' + idToken.payload.sub
 
         if (response && response.ok) {
           dispatch({
