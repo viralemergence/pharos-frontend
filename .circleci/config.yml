@@ -52,9 +52,9 @@ workflows:
       - deploy:
           bucket: 's3://prod-pharos-frontend-2'
           distribution: 'E61Z0UI7AL8G1'
-          api: https://rt036ira4i.execute-api.us-west-1.amazonaws.com/Prod
-          client_id: ''
-          user_pool_id: ''
+          api: 'https://bzz55gu2jj.execute-api.us-east-2.amazonaws.com/Prod'
+          client_id: '2kf7i84imfo743pcv79kpn67qh'
+          user_pool_id: 'us-east-2_mwSBSPXdc'
           context: *credentials
           filters:
             branches:
