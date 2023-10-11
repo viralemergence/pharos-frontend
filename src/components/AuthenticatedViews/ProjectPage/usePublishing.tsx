@@ -1,15 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-import useUser from 'hooks/useUser'
 import useModal from 'hooks/useModal/useModal'
 import useProject from 'hooks/project/useProject'
 import useDispatch from 'hooks/useDispatch'
 
 import { StateActions } from 'reducers/stateReducer/stateReducer'
 import { NodeStatus, ProjectPublishStatus } from 'reducers/stateReducer/types'
+import { Auth } from 'aws-amplify'
 
 const usePublishing = () => {
-  const user = useUser()
   const project = useProject()
   const dispatch = useDispatch()
   const setModal = useModal()
@@ -62,6 +61,14 @@ const usePublishing = () => {
   }, [dispatch, publishStatus])
 
   const publish = async () => {
+    let userSession
+    try {
+      userSession = await Auth.currentSession()
+    } catch (e) {
+      console.error(e)
+      return
+    }
+
     setRequestedPublishing(true)
 
     try {
@@ -69,9 +76,12 @@ const usePublishing = () => {
         `${process.env.GATSBY_API_URL}/publish-project`,
         {
           method: 'POST',
+          headers: new Headers({
+            Authorization: userSession.getIdToken().getJwtToken(),
+            'Content-Type': 'application/json',
+          }),
           body: JSON.stringify({
             projectID: project.projectID,
-            researcherID: user.researcherID,
           }),
         }
       )
@@ -110,6 +120,14 @@ const usePublishing = () => {
   }
 
   const unpublish = async () => {
+    let userSession
+    try {
+      userSession = await Auth.currentSession()
+    } catch (e) {
+      console.error(e)
+      return
+    }
+
     setUnPublishing(true)
 
     setModal(<pre style={{ margin: 40 }}>Unpublishing project...</pre>, {
@@ -120,9 +138,12 @@ const usePublishing = () => {
       `${process.env.GATSBY_API_URL}/unpublish-project`,
       {
         method: 'POST',
+        headers: new Headers({
+          Authorization: userSession.getIdToken().getJwtToken(),
+          'Content-Type': 'application/json',
+        }),
         body: JSON.stringify({
           projectID: project.projectID,
-          researcherID: user.researcherID,
         }),
       }
     ).catch(e => {

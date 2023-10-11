@@ -6,13 +6,14 @@ import CMS from '@talus-analytics/library.airtable-cms'
 
 import useSignInPageData from 'cmsHooks/useSignInPageData'
 
-import { UserStatus } from 'reducers/stateReducer/types'
 import MintButton from 'components/ui/MintButton'
 import Label from 'components/ui/InputLabel'
 import Input from 'components/ui/Input'
 import Main from 'components/layout/Main'
-import useAuthenticate from 'components/Login/useAuthenticate'
-import useAppState from 'hooks/useAppState'
+import useAuthenticate from 'components/Authentication/Login/useAuthenticate'
+import ColorMessage, {
+  ColorMessageStatus,
+} from 'components/ui/Modal/ColorMessage'
 
 const Container = styled(Main)`
   max-width: 505px;
@@ -23,27 +24,29 @@ const Container = styled(Main)`
 const H1 = styled.h1`
   ${({ theme }) => theme.h1}
 `
-const HelpText = styled(CMS.RichText)`
-  margin-top: 32px;
-  > p {
-    font-size: 18px;
-  }
+// const HelpText = styled(CMS.RichText)`
+//   margin-top: 32px;
+//   > p {
+//     font-size: 18px;
+//   }
 
-  a {
-    color: ${({ theme }) => theme.black};
-  }
-`
+//   a {
+//     color: ${({ theme }) => theme.black};
+//   }
+// `
 const Form = styled.form`
   margin-top: 40px;
 `
 const Login = () => {
   const navigate = useNavigate()
   const [search] = useSearchParams()
-  const { user } = useAppState()
-  const authenticate = useAuthenticate()
   const data = useSignInPageData()
 
-  const [researcherID, setResearcherID] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+  const [formMessage, setFormMessage] = useState('')
+  const authenticate = useAuthenticate(setFormMessage)
 
   const firstInputRef = useRef<HTMLInputElement>(null)
 
@@ -55,45 +58,48 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setFormMessage('')
     setSubmitting(true)
 
-    const success = await authenticate(researcherID)
+    const result = await authenticate(email, password)
 
     setSubmitting(false)
 
     // if successful, navigate to 'next' from search params
-    if (success) {
+    if (result) {
       navigate(search.get('next') || '/')
     }
   }
 
-  let statusMessage
-  switch (user.status) {
-    case UserStatus.invalidUser:
-      statusMessage = 'User not found'
-      break
-    case UserStatus.authError:
-      statusMessage = 'Error logging in, please check network connection.'
-  }
-
   return (
     <Container>
-      <H1>
-        <CMS.Text name="H1" data={data} />
-      </H1>
+      <H1>Sign in</H1>
       <Form onSubmit={e => handleSubmit(e)}>
         <Label>
-          <CMS.Text data={data} name="Input placeholder" />
+          Email
           <Input
             type="text"
             spellCheck="false"
             ref={firstInputRef}
-            onChange={e => setResearcherID(e.target.value)}
-            value={researcherID}
-            style={{ textTransform: 'uppercase' }}
+            onChange={e => setEmail(e.target.value)}
+            value={email}
           />
         </Label>
-        {user.status !== UserStatus.loggedOut && <p>{statusMessage}</p>}
+        <Label>
+          Password
+          <Input
+            type="password"
+            spellCheck="false"
+            onChange={e => setPassword(e.target.value)}
+            value={password}
+          />
+        </Label>
+        {formMessage && (
+          <ColorMessage status={ColorMessageStatus.Danger}>
+            {formMessage}
+          </ColorMessage>
+        )}
+
         <MintButton
           type="submit"
           style={{ marginTop: 40 }}
@@ -101,7 +107,6 @@ const Login = () => {
         >
           {submitting ? 'loading...' : <CMS.Text name="CTA" data={data} />}
         </MintButton>
-        <HelpText name="Help text" data={data} />
       </Form>
     </Container>
   )

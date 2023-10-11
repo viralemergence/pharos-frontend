@@ -3,12 +3,13 @@ import {
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
 import { ActionFunction, StateActions } from '../stateReducer'
-import { Datapoint, DatasetID, NodeStatus, Register } from '../types'
+import { Datapoint, DatasetID, NodeStatus, ProjectID, Register } from '../types'
 
 interface UpdateRegisterActionPayload {
   source: 'local' | 'remote' | 'csv'
   data: Register
   datasetID: DatasetID
+  projectID: ProjectID
 }
 
 export interface UpdateRegisterAction {
@@ -54,7 +55,7 @@ const updateRegister: ActionFunction<UpdateRegisterActionPayload> = (
   state,
   payload
 ) => {
-  const { data: register, source, datasetID } = payload
+  const { data: register, source, datasetID, projectID } = payload
 
   // if we're loading from the indexedDB we can just set it directly
   if (source === 'local') {
@@ -87,7 +88,7 @@ const updateRegister: ActionFunction<UpdateRegisterActionPayload> = (
         [`${APIRoutes.saveRegister}_${datasetID}_remote`]: {
           route: APIRoutes.saveRegister,
           status: StorageMessageStatus.Initial,
-          data: { register, datasetID },
+          data: { register, datasetID, projectID },
           target: 'remote',
         },
       },

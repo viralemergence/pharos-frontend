@@ -10,9 +10,9 @@ function RequireAuth({ children }: { children: JSX.Element }) {
 
   // if the user status is unknown (local database isn't checked)
   // then just return a fragment
-  if (user.status === UserStatus.initial) return <></>
+  if (user.status === UserStatus.Initial) return <></>
 
-  if (user.status !== UserStatus.loggedIn) {
+  if (user.status !== UserStatus.LoggedIn) {
     return (
       <Navigate
         to={{ pathname: '/login', search: `?next=${location.pathname}` }}

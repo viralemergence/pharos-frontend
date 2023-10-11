@@ -1,7 +1,7 @@
 aws cloudformation update-stack \
-  --stack-name pharos-frontend \
+  --stack-name pharos-frontend-2 \
   --template-body file://build-stack.yaml \
   --capabilities CAPABILITY_NAMED_IAM \
-  --tags Key=Project,Value=Pharos \
-         Key=Project:Detail,Value=Pharos \
+  --region us-east-1 \
+  --profile verena-prod-developer # AWS profile name
 

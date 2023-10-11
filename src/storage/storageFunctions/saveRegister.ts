@@ -9,6 +9,7 @@ import {
   StorageMessagePayload,
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
+import { Auth } from 'aws-amplify'
 
 export type SaveRegister = StorageMessagePayload<
   APIRoutes.saveRegister,
@@ -21,8 +22,7 @@ export type SaveRegister = StorageMessagePayload<
 const saveRegister: StorageFunction<SaveRegister> = async (
   key,
   message,
-  dispatch,
-  researcherID
+  dispatch
 ) => {
   dispatch({
     type: StateActions.SetStorageMessageStatus,
@@ -40,11 +40,26 @@ const saveRegister: StorageFunction<SaveRegister> = async (
       )
     dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
   } else {
+    let userSession
+    try {
+      userSession = await Auth.currentSession()
+    } catch (error) {
+      dispatch({
+        type: StateActions.SetStorageMessageStatus,
+        payload: { key, status: StorageMessageStatus.UserSessionError },
+      })
+      return
+    }
+
     const response = await fetch(
       `${process.env.GATSBY_API_URL}/${message.route}`,
       {
         method: 'POST',
-        body: JSON.stringify({ ...message.data, researcherID }),
+        headers: new Headers({
+          Authorization: userSession.getIdToken().getJwtToken(),
+          'Content-Type': 'application/json',
+        }),
+        body: JSON.stringify({ ...message.data }),
       }
     ).catch(() =>
       dispatch({
@@ -74,6 +89,7 @@ const saveRegister: StorageFunction<SaveRegister> = async (
           payload: {
             source: 'remote',
             datasetID: message.data.datasetID,
+            projectID: message.data.datasetID,
             data: remoteRegister.register as Register,
           },
         })

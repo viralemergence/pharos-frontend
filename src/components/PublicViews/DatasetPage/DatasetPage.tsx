@@ -133,7 +133,7 @@ const DatasetPage = () => {
           </Breadcrumbs>
           <Title>{dataset ? dataset.name : 'Loading...'}</Title>
           <Controls>
-            {user.status === UserStatus.loggedIn &&
+            {user.status === UserStatus.LoggedIn &&
               user.data?.projectIDs?.includes(project.projectID) && (
                 <MintButtonLink
                   to={`/app/#/projects/${project.projectID}/${datasetID}`}
