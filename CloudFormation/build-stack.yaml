@@ -15,7 +15,7 @@ Parameters:
     Default: 'viralemergence.org'
   CertificateArn:
     Type: String
-    Default: 'arn:aws:acm:us-east-1:560812044035:certificate/12cc95e5-14f2-4608-88ab-15aabc514834'
+    Default: 'arn:aws:acm:us-east-1:294062812217:certificate/e2b8a4a2-50d7-4055-b405-391e55a83ae0'
 
 Resources:
   # Using lambda to generate random string to use in headers between CF and S3
@@ -82,6 +82,47 @@ Resources:
       Length: 16
       ServiceToken: !GetAtt RandomStringLambdaFunction.Arn
 
+  ## Generate passwords to restrict access on dev sites
+  ProdSitePassword:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: !Join ['-', [!Ref AWS::StackName, 'ProdSitePassword']]
+      GenerateSecretString:
+        SecretStringTemplate: '{"username": "prod"}'
+        GenerateStringKey: 'password'
+        PasswordLength: 16
+        ExcludeCharacters: '"@/\'
+
+  StagingSitePassword:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: !Join ['-', [!Ref AWS::StackName, 'StagingSitePassword']]
+      GenerateSecretString:
+        SecretStringTemplate: '{"username": "staging"}'
+        GenerateStringKey: 'password'
+        PasswordLength: 16
+        ExcludeCharacters: '"@/\'
+
+  ReviewSitePassword:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: !Join ['-', [!Ref AWS::StackName, 'ReviewSitePassword']]
+      GenerateSecretString:
+        SecretStringTemplate: '{"username": "review"}'
+        GenerateStringKey: 'password'
+        PasswordLength: 16
+        ExcludeCharacters: '"@/\'
+
+  DevSitePassword:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: !Join ['-', [!Ref AWS::StackName, 'DevSitePassword']]
+      GenerateSecretString:
+        SecretStringTemplate: '{"username": "dev"}'
+        GenerateStringKey: 'password'
+        PasswordLength: 16
+        ExcludeCharacters: '"@/\'
+
   # Execution role for the basic auth lambda
   AuthLambdaExecutionRole:
     Type: 'AWS::IAM::Role'
@@ -107,72 +148,129 @@ Resources:
                 Action:
                   - 'logs:*'
                 Resource: '*'
+        - PolicyName: allowSecretsManager
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - secretsmanager:GetSecretValue
+                  - secretsmanager:DescribeSecret
+                  - secretsmanager:ListSecretVersionIds
+                Resource:
+                  - !Ref ProdSitePassword
+                  - !Ref StagingSitePassword
+                  - !Ref ReviewSitePassword
+                  - !Ref DevSitePassword
 
   BasicAuthLambda:
     Type: 'AWS::Lambda::Function'
     Properties:
       FunctionName: !Join ['-', [!Ref AWS::StackName, 'basic-auth']]
       Role: !GetAtt AuthLambdaExecutionRole.Arn
-      Runtime: nodejs14.x
-      Handler: 'index.handler'
+      Runtime: python3.11
+      Handler: 'index.lambda_handler'
       MemorySize: 128
       Timeout: 5
       Code:
-        ZipFile: >
-          'use strict';
-          exports.handler = (event, context, callback) => {
+        ZipFile: |
+          import os
+          import json
+          import base64
+          from functools import cache
 
-            const request = event.Records[0].cf.request;
-            const headers = request.headers;
+          import boto3
+          from botocore.vendored import requests
+          from botocore.exceptions import ClientError
 
-            const host = headers.host[0].value;
-            const containsTerm = (term) => host.includes(term);
-            let subdomain;
-            if (host.includes('dev')) subdomain = 'dev';
-            if (host.includes('review')) subdomain = 'review';
-            if (host.includes('staging')) subdomain = 'staging';
-            if (host.startsWith('pharos')) subdomain = 'prod';
+          SESSION = boto3.session.Session()
+          STACK_NAME = os.environ['AWS_LAMBDA_FUNCTION_NAME'].split('.')[1].split('-basic-auth')[0]
 
-            const authObj = {
-              dev: ['dev', '**************'],
-              review: ['review', '*********************'],
-              staging: ['staging', '****************'],
-              prod: ['prod', '***********************'],
-            };
+          # lambda@edge must be deployed in us-east-1, so we can assume
+          # that the entire stack (including secrets) was deployed there
+          REGION = 'us-east-1'
 
-            const checkAuthorized = headers => {
-              if (typeof headers.authorization == 'undefined')
-                return false;
-              const authString = headers.authorization[0].value;
-              const user = authObj[subdomain];
-              const checkString = 'Basic ' +
-                Buffer.from(user[0] + ':' +
-                user[1]).toString('base64');
-              return authString === checkString;
-            };
+          UNAUTHORIZED_RESPONSE = {
+              'status': '401',
+              'statusDescription': 'Unauthorized',
+              'headers': {
+                  'www-authenticate': [
+                      {
+                          'key': 'WWW-Authenticate',
+                          'value': 'Basic'
+                      }
+                  ]
+              }
+          }
 
-            if (!checkAuthorized(headers)) {
-                const response = {
-                    status: '401',
-                    body: 'Unauthorized',
-                    statusDescription: 'Unauthorized',
-                    headers: {
-                      'www-authenticate': [{
-                        key: 'WWW-Authenticate',
-                        value:'Basic',
-                      }]
-                    },
-                };
-                callback(null, response);
-            };
 
-          callback(null, request);
-          };
+          @cache
+          def get_secret(secret_name: str, region_name: str):
+              client = SESSION.client(
+                  service_name='secretsmanager',
+                  region_name=region_name
+              )
 
-  BasicAuthLambdaVersion5:
+              try:
+                  get_secret_value_response = client.get_secret_value(
+                      SecretId=secret_name
+                  )
+
+                  if 'SecretString' in get_secret_value_response:
+                      secret = get_secret_value_response['SecretString']
+                      return json.loads(secret)
+
+              except ClientError as e:
+                      raise e
+
+
+          def lambda_handler(event, _):
+              request = event['Records'][0]['cf']['request']
+              headers = request['headers']
+              host = headers['host'][0]['value']
+
+              try:
+                  authorization_header = headers['authorization'][0]['value']
+
+                  if not authorization_header:
+                      return UNAUTHORIZED_RESPONSE
+
+
+                  match host:
+                      case 'pharos-2.viralemergence.org':
+                          secret = get_secret(STACK_NAME + '-ProdSitePassword', REGION)
+
+                      case 'staging-pharos-2.viralemergence.org':
+                          secret = get_secret(STACK_NAME + '-StagingSitePassword', REGION)
+
+                      case 'review-pharos-2.viralemergence.org':
+                          secret = get_secret(STACK_NAME + '-ReviewSitePassword', REGION)
+
+                      case 'dev-pharos-2.viralemergence.org':
+                          secret = get_secret(STACK_NAME + '-DevSitePassword', REGION)
+
+                      case _:
+                          secret = None
+
+                  if not secret:
+                      return UNAUTHORIZED_RESPONSE
+
+                  auth_string = 'Basic ' + base64.b64encode(
+                          (secret['username'] + ':' + secret['password']).encode()
+                      ).decode()
+
+                  if authorization_header == auth_string:
+                      return request
+                  else:
+                      return UNAUTHORIZED_RESPONSE
+
+              except KeyError:
+                  return UNAUTHORIZED_RESPONSE
+
+  BasicAuthLambdaVersion:
     Type: 'AWS::Lambda::Version'
     Properties:
-      Description: 'v4 with logs'
+      Description: ''
       FunctionName: !Ref BasicAuthLambda
 
   ############ Dev site setup ############
@@ -183,6 +281,11 @@ Resources:
       WebsiteConfiguration:
         ErrorDocument: index.html
         IndexDocument: index.html
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
 
   # the bucket hosts the website. This is
   # not the standard way to connect S3 to
@@ -220,7 +323,7 @@ Resources:
     Properties:
       DistributionConfig:
         Aliases:
-          - !Join ['', ['dev-pharos.', !Ref DomainName]]
+          - !Join ['', ['dev-pharos-2.', !Ref DomainName]]
         Origins:
           - DomainName:
               !Select [1, !Split ['//', !GetAtt S3DevBucket.WebsiteURL]]
@@ -249,7 +352,7 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
             - EventType: 'viewer-request'
-              LambdaFunctionARN: !Ref BasicAuthLambdaVersion5
+              LambdaFunctionARN: !Ref BasicAuthLambdaVersion
         PriceClass: PriceClass_100
         ViewerCertificate:
           AcmCertificateArn: !Ref CertificateArn
@@ -266,6 +369,11 @@ Resources:
       WebsiteConfiguration:
         ErrorDocument: index.html
         IndexDocument: index.html
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
 
   S3ReviewBucketPolicy:
     Type: AWS::S3::BucketPolicy
@@ -293,7 +401,7 @@ Resources:
     Properties:
       DistributionConfig:
         Aliases:
-          - !Join ['', ['review-pharos.', !Ref DomainName]]
+          - !Join ['', ['review-pharos-2.', !Ref DomainName]]
         Origins:
           - DomainName:
               !Select [1, !Split ['//', !GetAtt S3ReviewBucket.WebsiteURL]]
@@ -322,7 +430,7 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
             - EventType: 'viewer-request'
-              LambdaFunctionARN: !Ref BasicAuthLambdaVersion5
+              LambdaFunctionARN: !Ref BasicAuthLambdaVersion
         PriceClass: PriceClass_100
         ViewerCertificate:
           AcmCertificateArn: !Ref CertificateArn
@@ -337,6 +445,11 @@ Resources:
       WebsiteConfiguration:
         ErrorDocument: index.html
         IndexDocument: index.html
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
 
   S3StagingBucketPolicy:
     Type: AWS::S3::BucketPolicy
@@ -364,7 +477,7 @@ Resources:
     Properties:
       DistributionConfig:
         Aliases:
-          - !Join ['', ['staging-pharos.', !Ref DomainName]]
+          - !Join ['', ['staging-pharos-2.', !Ref DomainName]]
         Origins:
           - DomainName:
               !Select [1, !Split ['//', !GetAtt S3StagingBucket.WebsiteURL]]
@@ -393,7 +506,7 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
             - EventType: 'viewer-request'
-              LambdaFunctionARN: !Ref BasicAuthLambdaVersion5
+              LambdaFunctionARN: !Ref BasicAuthLambdaVersion
         PriceClass: PriceClass_100
         ViewerCertificate:
           AcmCertificateArn: !Ref CertificateArn
@@ -408,6 +521,11 @@ Resources:
       WebsiteConfiguration:
         ErrorDocument: index.html
         IndexDocument: index.html
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
 
   S3ProdBucketPolicy:
     Type: AWS::S3::BucketPolicy
@@ -432,7 +550,7 @@ Resources:
     Properties:
       DistributionConfig:
         Aliases:
-          - !Join ['', ['pharos.', !Ref DomainName]]
+          - !Join ['', ['pharos-2.', !Ref DomainName]]
         Origins:
           - DomainName:
               !Select [1, !Split ['//', !GetAtt S3ProdBucket.WebsiteURL]]
@@ -461,7 +579,7 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
             - EventType: 'viewer-request'
-              LambdaFunctionARN: !Ref BasicAuthLambdaVersion5
+              LambdaFunctionARN: !Ref BasicAuthLambdaVersion
         PriceClass: PriceClass_All
         ViewerCertificate:
           AcmCertificateArn: !Ref CertificateArn
@@ -469,27 +587,42 @@ Resources:
           SslSupportMethod: sni-only
 
 Outputs:
-  CloudFrontID:
+  DevCloudFrontID:
     Value: !Ref DevDistribution
     Description: Dev CloudFront ID
-  CloudFrontURL:
+  DevCloudFrontURL:
     Value: !GetAtt DevDistribution.DomainName
     Description: CloudFront URL for updating DNS record
-  CloudFrontID:
+  DevSitePassword:
+    Value: !Ref DevSitePassword
+    Description: Secret for dev site login
+
+  ReviewCloudFrontID:
     Value: !Ref ReviewDistribution
     Description: Review CloudFront ID
-  CloudFrontURL:
+  ReviewCloudFrontURL:
     Value: !GetAtt ReviewDistribution.DomainName
     Description: CloudFront URL for updating DNS record
-  CloudFrontID:
+  ReviewSitePassword:
+    Value: !Ref ReviewSitePassword
+    Description: Secret for review site login
+
+  StagingCloudFrontID:
     Value: !Ref StagingDistribution
     Description: Staging CloudFront ID
-  CloudFrontURL:
+  StagingCloudFrontURL:
     Value: !GetAtt StagingDistribution.DomainName
     Description: CloudFront URL for updating DNS record
-  CloudFrontID:
+  StagingSitePassword:
+    Value: !Ref StagingSitePassword
+    Description: Secret for staging site login
+
+  ProdCloudFrontID:
     Value: !Ref ProdDistribution
     Description: Prod CloudFront ID
-  CloudFrontURL:
+  ProdCloudFrontURL:
     Value: !GetAtt ProdDistribution.DomainName
     Description: CloudFront URL for updating DNS record
+  ProdSitePassword:
+    Value: !Ref ProdSitePassword
+    Description: Secret for Prod site login

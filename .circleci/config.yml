@@ -1,10 +1,8 @@
 version: 2.1
 
 credentials: &credentials
-  - AWS Credentials
-  - Airtable Credentials
+  - Verena AWS Credentials
   - Bit Credentials
-  - Mapbox Credentials
 
 workflows:
   version: 2
@@ -15,19 +13,24 @@ workflows:
           # Examples:
           # bucket: 's3://dev-projectname'
           # distribution: 'E31RXXXXXXXXXX'
-          bucket: 's3://dev-pharos-frontend'
-          distribution: 'EWN5TGLCXWM1V'
-          api: https://9itsn2ewjb.execute-api.us-west-1.amazonaws.com/Prod
+          bucket: 's3://dev-pharos-frontend-2'
+          distribution: 'E29CT6PE5VEJB6'
+          api: 'https://bo7j6jlxd4.execute-api.us-east-2.amazonaws.com/Prod'
+          client_id: '44vulabntl1hdi45vtvq0c7iop'
+          user_pool_id: 'us-east-2_RR3m5a1fl'
           context: *credentials
           filters:
             branches:
               only:
                 - dev
+                - feature/pharos-2-deployment
       # review site
       - deploy:
-          bucket: 's3://review-pharos-frontend'
-          distribution: 'E2TXCAC010VLUK'
-          api: https://wc85irdg5d.execute-api.us-west-1.amazonaws.com/Prod
+          bucket: 's3://review-pharos-frontend-2'
+          distribution: 'E3IAEIH8QM2RIN'
+          api: 'https://wkyz2co3z4.execute-api.us-east-2.amazonaws.com/Prod'
+          client_id: '3hcqevqa577mhqba9uhnphssct'
+          user_pool_id: 'us-east-2_4bCcuIfOQ'
           context: *credentials
           filters:
             branches:
@@ -35,9 +38,11 @@ workflows:
                 - review
       # staging site
       - deploy:
-          bucket: 's3://staging-pharos-frontend'
-          distribution: 'E1MZX90GFW3KQ6'
-          api: https://x77ethnbni.execute-api.us-west-1.amazonaws.com/Prod
+          bucket: 's3://staging-pharos-frontend-2'
+          distribution: 'E6PVRC1XI187A'
+          api: 'https://qc9dj5pbn7.execute-api.us-east-2.amazonaws.com/Prod'
+          client_id: 'o06ampns5let4mifsi2pn52el'
+          user_pool_id: 'us-east-2_h1Xj2r9BX'
           context: *credentials
           filters:
             branches:
@@ -45,9 +50,11 @@ workflows:
                 - staging
       # prod site
       - deploy:
-          bucket: 's3://prod-pharos-frontend'
-          distribution: 'EG631FGRI2307'
-          api: https://rt036ira4i.execute-api.us-west-1.amazonaws.com/Prod
+          bucket: 's3://prod-pharos-frontend-2'
+          distribution: 'E61Z0UI7AL8G1'
+          api: 'https://bzz55gu2jj.execute-api.us-east-2.amazonaws.com/Prod'
+          client_id: '2kf7i84imfo743pcv79kpn67qh'
+          user_pool_id: 'us-east-2_mwSBSPXdc'
           context: *credentials
           filters:
             branches:
@@ -72,6 +79,10 @@ jobs:
       distribution:
         type: string
       api:
+        type: string
+      client_id:
+        type: string
+      user_pool_id:
         type: string
 
     steps:
@@ -105,7 +116,11 @@ jobs:
 
       - run:
           name: Gatsby build
-          command: yarn build --api <<parameters.api>>
+          command: |
+            yarn build \
+            --api <<parameters.api>> \
+            --user_pool_id <<parameters.user_pool_id>> \
+            --client_id <<parameters.client_id>>
 
       - run:
           name: AWS S3 Sync to <<parameters.bucket>>

@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import localforage from 'localforage'
 
-import useUser from 'hooks/useUser'
 import useDispatch from 'hooks/useDispatch'
 
 import { NodeStatus, Register } from 'reducers/stateReducer/types'
@@ -10,9 +9,9 @@ import { StateActions } from 'reducers/stateReducer/stateReducer'
 import useAppState from 'hooks/useAppState'
 import useDatasetID from 'hooks/dataset/useDatasetID'
 import useProjectID from 'hooks/project/useProjectID'
+import { Auth } from 'aws-amplify'
 
 const useLoadRegister = () => {
-  const { researcherID } = useUser()
   const datasetID = useDatasetID()
   const projectID = useProjectID()
   const dispatch = useDispatch()
@@ -29,6 +28,7 @@ const useLoadRegister = () => {
       payload: {
         source: 'local',
         datasetID,
+        projectID,
         data: {},
       },
     })
@@ -39,7 +39,7 @@ const useLoadRegister = () => {
         status: NodeStatus.Initial,
       },
     })
-  }, [datasetID, dispatch])
+  }, [projectID, datasetID, dispatch])
 
   // load and process register from indexedDB
   useEffect(() => {
@@ -55,6 +55,7 @@ const useLoadRegister = () => {
         dispatch({
           type: StateActions.UpdateRegister,
           payload: {
+            projectID,
             datasetID,
             source: 'local',
             data: localRegister,
@@ -63,7 +64,7 @@ const useLoadRegister = () => {
     }
 
     loadLocalDatasets()
-  }, [datasetID, dispatch])
+  }, [projectID, datasetID, dispatch])
 
   useEffect(() => {
     if (!datasetID) return
@@ -75,6 +76,14 @@ const useLoadRegister = () => {
         status === NodeStatus.Offline
       )
         return
+
+      let userSession
+      try {
+        userSession = await Auth.currentSession()
+      } catch (e) {
+        console.error(e)
+        return
+      }
 
       dispatch({
         type: StateActions.SetMetadataObjStatus,
@@ -89,7 +98,11 @@ const useLoadRegister = () => {
         `${process.env.GATSBY_API_URL}/load-register`,
         {
           method: 'POST',
-          body: JSON.stringify({ researcherID, datasetID, projectID }),
+          headers: new Headers({
+            Authorization: userSession.getIdToken().getJwtToken(),
+            'Content-Type': 'application/json',
+          }),
+          body: JSON.stringify({ datasetID, projectID }),
         }
       ).catch(() =>
         dispatch({
@@ -126,6 +139,7 @@ const useLoadRegister = () => {
           dispatch({
             type: StateActions.UpdateRegister,
             payload: {
+              projectID,
               datasetID,
               source: 'remote',
               data: remoteRegister.register as Register,
@@ -136,6 +150,7 @@ const useLoadRegister = () => {
           dispatch({
             type: StateActions.UpdateRegister,
             payload: {
+              projectID,
               datasetID,
               source: 'remote',
               data: remoteRegister as Register,
@@ -153,7 +168,7 @@ const useLoadRegister = () => {
     }
 
     requestRegister()
-  }, [researcherID, datasetID, status, dispatch])
+  }, [projectID, datasetID, status, dispatch])
 }
 
 export default useLoadRegister

@@ -1,5 +1,6 @@
 import { StorageMessage } from 'storage/synchronizeMessageQueue'
 import units from 'config/units'
+import { CognitoUser } from 'amazon-cognito-identity-js'
 
 export type ProjectID = string
 export type RecordID = string
@@ -13,12 +14,13 @@ export enum NodeStatus {
 }
 
 export enum UserStatus {
-  'initial',
-  'loggedOut',
-  'loggedIn',
-  'sessionExpired',
-  'invalidUser',
-  'authError',
+  Initial = 'initial',
+  LoggedOut = 'loggedOut',
+  LoggedIn = 'loggedIn',
+  SessionExpired = 'sessionExpired',
+  InvalidUser = 'invalidUser',
+  AuthError = 'authError',
+  AwaitingConfirmation = 'awaitingConfirmation',
 }
 
 export interface AppState {
@@ -36,9 +38,12 @@ export interface MetadataObj<T> {
 
 // special case of MetadataObj
 // which allows for special user states
-interface UserObj {
+export interface UserObj {
   status: UserStatus
   data?: User
+  cognitoUser?: CognitoUser
+  statusMessage?: string
+  cognitoResponseType?: string
 }
 
 export interface User {

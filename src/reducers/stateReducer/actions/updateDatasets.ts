@@ -20,11 +20,12 @@ const updateDatasets: ActionFunction<UpdateDatasetsAction['payload']> = (
   payload
 ) => {
   const { data, source } = payload
-  console.log('updateDatasets ' + source)
 
-  const nextState = { ...state }
+  // by default don't create new state if nothing changed
+  let nextState = state
 
   if (source === 'remote') {
+    nextState = { ...state }
     for (const [key, nextData] of Object.entries(data)) {
       const prevData = state.datasets.data[nextData.datasetID]
 
@@ -73,7 +74,30 @@ const updateDatasets: ActionFunction<UpdateDatasetsAction['payload']> = (
       }
     }
   } else {
-    nextState.datasets.data = data
+    // only replace the datasets object in state if the
+    // datasets coming from local are different than
+    // what is in state already
+    let replaceDatasets = false
+    if (Object.keys(state.datasets.data).length !== Object.keys(data).length)
+      replaceDatasets = true
+    else
+      for (const [key, dataset] of Object.entries(data)) {
+        const prev = state.datasets.data[key]
+        const next = dataset
+        if (!prev) {
+          replaceDatasets = true
+          break
+        }
+        if (prev.lastUpdated !== next.lastUpdated) {
+          replaceDatasets = true
+          break
+        }
+      }
+
+    if (replaceDatasets) {
+      nextState = { ...state }
+      nextState.datasets.data = data
+    }
   }
 
   return nextState
