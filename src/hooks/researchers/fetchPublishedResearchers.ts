@@ -13,6 +13,8 @@ export interface PublishedResearchersData {
 export interface PublishedResearcher {
   researcherID: string
   name: string
+  firstName: string
+  lastName: string
   email: string
   organization: string
   projects: {

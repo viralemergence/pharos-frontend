@@ -127,6 +127,8 @@ const SignUp = () => {
               name: `${firstName} ${lastName}`,
               email,
               organization,
+              firstName,
+              lastName,
             }),
           }
         )
@@ -142,6 +144,8 @@ const SignUp = () => {
                 email,
                 name: `${firstName} ${lastName}`,
                 organization,
+                firstName,
+                lastName,
               },
             },
           })
