@@ -40,9 +40,9 @@ workflows:
       - deploy:
           bucket: 's3://staging-pharos-frontend-2'
           distribution: 'E6PVRC1XI187A'
-          api: https://x77ethnbni.execute-api.us-west-1.amazonaws.com/Prod
-          client_id: ''
-          user_pool_id: ''
+          api: 'https://qc9dj5pbn7.execute-api.us-east-2.amazonaws.com/Prod'
+          client_id: 'o06ampns5let4mifsi2pn52el'
+          user_pool_id: 'us-east-2_h1Xj2r9BX'
           context: *credentials
           filters:
             branches:
