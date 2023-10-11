@@ -51,6 +51,8 @@ export interface User {
   organization: string
   email: string
   name: string
+  firstName: string
+  lastName: string
   projectIDs?: string[]
 }
 
