@@ -12,6 +12,7 @@ import { UserStatus } from 'reducers/stateReducer/types'
 import useIndexPageData from 'cmsHooks/useIndexPageData'
 import useAppState from 'hooks/useAppState'
 import localforage from 'localforage'
+import { Auth } from 'aws-amplify'
 
 const Nav = styled.nav`
   background-color: ${({ theme }) => theme.darkPurple};
@@ -86,7 +87,7 @@ const NavBar = () => {
   ]
 
   // the last link in the navbar switches text, path, and component
-  if (user.status === UserStatus.loggedIn)
+  if (user.status === UserStatus.LoggedIn)
     // if the user is logged in, the last link will be their username
     // and clicking it should route to the projects page.
 
@@ -101,12 +102,18 @@ const NavBar = () => {
     })
   // if user is logged out, the last link should be a reach-router
   // link that points at the full pathname + hash of the login page
-  else
+  else {
     links.push({
-      to: '/app/#/login',
+      to: insideAppRouting ? '/login/' : '/app/#/login',
       children: 'Sign in',
-      reactRouterLink: false,
+      reactRouterLink: insideAppRouting,
     })
+    links.push({
+      to: insideAppRouting ? '/sign-up/' : '/app/#/sign-up',
+      children: 'Sign up',
+      reactRouterLink: insideAppRouting,
+    })
+  }
 
   return (
     <Nav>
@@ -124,13 +131,14 @@ const NavBar = () => {
           {links.map(link => (
             <NavLink key={link.to} {...link} />
           ))}
-          {user.status === UserStatus.loggedIn && (
+          {user.status === UserStatus.LoggedIn && (
             <LogoutButton
               onClick={() => {
                 // this is a very aggressive temporary implementation
                 // of "log out" because it deletes all the local data
                 // without warning the user; this way we can use it
                 // as a "reset" button if a bug traps the user.
+                Auth.signOut()
                 localforage.clear()
                 window.location.href = '/'
                 window.location.reload()
@@ -145,13 +153,14 @@ const NavBar = () => {
             {links.map(link => (
               <NavLink key={link.to} {...link} />
             ))}
-            {user.status === UserStatus.loggedIn && (
+            {user.status === UserStatus.LoggedIn && (
               <LogoutButton
                 onClick={() => {
                   // this is a very aggressive temporary implementation
                   // of "log out" because it deletes all the local data
                   // without warning the user; this way we can use it
                   // as a "reset" button if a bug traps the user.
+                  Auth.signOut()
                   localforage.clear()
                   window.location.href = '/'
                   window.location.reload()

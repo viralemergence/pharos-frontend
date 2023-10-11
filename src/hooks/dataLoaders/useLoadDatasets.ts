@@ -1,7 +1,7 @@
+import { Auth } from 'aws-amplify'
 import useProject from 'hooks/project/useProject'
 import useAppState from 'hooks/useAppState'
 import useDispatch from 'hooks/useDispatch'
-import useUser from 'hooks/useUser'
 import localforage from 'localforage'
 import { useEffect } from 'react'
 import { StateActions } from 'reducers/stateReducer/stateReducer'
@@ -10,7 +10,6 @@ import { Dataset, NodeStatus } from 'reducers/stateReducer/types'
 const useLoadDatasets = () => {
   const { projectID, datasetIDs } = useProject()
   const dispatch = useDispatch()
-  const { researcherID } = useUser()
 
   const {
     datasets: { status, data },
@@ -76,6 +75,14 @@ const useLoadDatasets = () => {
       )
         return
 
+      let userSession
+      try {
+        userSession = await Auth.currentSession()
+      } catch (e) {
+        console.error(e)
+        return
+      }
+
       dispatch({
         type: StateActions.SetMetadataObjStatus,
         payload: {
@@ -89,8 +96,11 @@ const useLoadDatasets = () => {
         `${process.env.GATSBY_API_URL}/list-datasets`,
         {
           method: 'post',
+          headers: new Headers({
+            Authorization: userSession.getIdToken().getJwtToken(),
+            'Content-Type': 'application/json',
+          }),
           body: JSON.stringify({
-            researcherID,
             projectID,
           }),
         }
@@ -142,7 +152,7 @@ const useLoadDatasets = () => {
     }
 
     loadDatasets()
-  }, [datasetIDs, projectID, researcherID, status, dispatch])
+  }, [datasetIDs, projectID, status, dispatch])
 }
 
 export default useLoadDatasets

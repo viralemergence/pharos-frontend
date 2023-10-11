@@ -110,8 +110,8 @@ const SimpleCellModal = ({
           <Header>{datapointID}</Header>
           <ValueContainer>{datapoint.dataValue}</ValueContainer>
           <SectionHeader>Validation Report</SectionHeader>
-          <ReportContainer score={datapoint.report?.status}>
-            <Report>{datapoint.report?.message}</Report>
+          <ReportContainer score={datapoint?.report?.status}>
+            <Report>{datapoint?.report?.message}</Report>
           </ReportContainer>
           <Instructions>
             <SectionHeader>Definition</SectionHeader>
