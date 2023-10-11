@@ -84,7 +84,7 @@ const extendRegister: ActionFunction<ExtendRegisterPayload> = (
         route: APIRoutes.saveRegister,
         target: 'remote',
         status: StorageMessageStatus.Initial,
-        data: { register: nextRegister, datasetID },
+        data: { register: nextRegister, datasetID, projectID },
       },
     },
   }

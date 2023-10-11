@@ -15,6 +15,7 @@ export enum StorageMessageStatus {
   // Error states; successful responses are
   // just removed from the queue so it doesn't
   // need to have a success status.
+  UserSessionError = 'UserSessionError',
   LocalStorageError = 'LocalStorageError',
   NetworkError = 'NetworkError',
   ServerError = 'ServerError',
@@ -46,14 +47,12 @@ export type StorageMessage =
 export type StorageFunction<T> = (
   key: string,
   data: T,
-  dispatch: React.Dispatch<StateAction>,
-  researcherID: string
+  dispatch: React.Dispatch<StateAction>
 ) => void
 
 const synchronizeMessageQueue = async (
   messageStack: { [key: string]: StorageMessage },
-  dispatch: React.Dispatch<StateAction>,
-  researcherID: string
+  dispatch: React.Dispatch<StateAction>
 ) => {
   for (const [key, message] of Object.entries(messageStack)) {
     // skip messages in these states:
@@ -72,23 +71,23 @@ const synchronizeMessageQueue = async (
 
       switch (message.route) {
         case APIRoutes.saveUser:
-          saveUser(key, message, dispatch, researcherID)
+          saveUser(key, message, dispatch)
           continue
 
         case APIRoutes.saveProject:
-          saveProject(key, message, dispatch, researcherID)
+          saveProject(key, message, dispatch)
           continue
 
         case APIRoutes.saveDataset:
-          saveDataset(key, message, dispatch, researcherID)
+          saveDataset(key, message, dispatch)
           continue
 
         case APIRoutes.deleteDataset:
-          deleteDataset(key, message, dispatch, researcherID)
+          deleteDataset(key, message, dispatch)
           continue
 
         case APIRoutes.saveRegister:
-          saveRegister(key, message, dispatch, researcherID)
+          saveRegister(key, message, dispatch)
           continue
       }
     }

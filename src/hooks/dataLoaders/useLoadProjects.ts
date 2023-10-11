@@ -8,10 +8,11 @@ import { NodeStatus, Project } from 'reducers/stateReducer/types'
 import useUser from 'hooks/useUser'
 import useDispatch from '../useDispatch'
 import useAppState from 'hooks/useAppState'
+import { Auth } from 'aws-amplify'
 
 const useLoadProjects = () => {
-  const user = useUser()
   const dispatch = useDispatch()
+  const user = useUser()
 
   const {
     projects: { status },
@@ -22,6 +23,7 @@ const useLoadProjects = () => {
       // skip loading if
       if (
         // if the user has no projects associated
+        !user ||
         !user.projectIDs ||
         user.projectIDs.length === 0 ||
         // if we're already already trying to load this
@@ -30,6 +32,14 @@ const useLoadProjects = () => {
         status === NodeStatus.Loaded
       )
         return
+
+      let userSession
+      try {
+        userSession = await Auth.currentSession()
+      } catch (e) {
+        console.error(e)
+        return
+      }
 
       dispatch({
         type: StateActions.SetMetadataObjStatus,
@@ -63,7 +73,10 @@ const useLoadProjects = () => {
         `${process.env.GATSBY_API_URL}/list-projects`,
         {
           method: 'post',
-          body: JSON.stringify({ researcherID: user.researcherID }),
+          headers: new Headers({
+            Authorization: userSession.getIdToken().getJwtToken(),
+            'Content-Type': 'application/json',
+          }),
         }
       ).catch(() => {
         // catch network error and go into offline mode

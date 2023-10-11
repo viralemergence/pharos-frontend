@@ -10,6 +10,8 @@ import {
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
 
+import { Auth } from 'aws-amplify'
+
 export type SaveUser = StorageMessagePayload<APIRoutes.saveUser, User>
 
 const saveUser: StorageFunction<SaveUser> = async (key, message, dispatch) => {
@@ -27,11 +29,28 @@ const saveUser: StorageFunction<SaveUser> = async (key, message, dispatch) => {
     )
     dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
   } else {
+    let userSession
+    try {
+      userSession = await Auth.currentSession()
+    } catch (error) {
+      dispatch({
+        type: StateActions.SetStorageMessageStatus,
+        payload: { key, status: StorageMessageStatus.UserSessionError },
+      })
+      return
+    }
+
+    const { researcherID: _, ...saveUserData } = message.data
+
     const response = await fetch(
       `${process.env.GATSBY_API_URL}/${message.route}`,
       {
         method: 'POST',
-        body: JSON.stringify(message.data),
+        headers: new Headers({
+          Authorization: userSession.getIdToken().getJwtToken(),
+          'Content-Type': 'application/json',
+        }),
+        body: JSON.stringify(saveUserData),
       }
     ).catch(() =>
       dispatch({

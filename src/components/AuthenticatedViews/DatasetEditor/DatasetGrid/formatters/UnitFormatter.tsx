@@ -34,8 +34,8 @@ const UnitFormatter = ({
 
   if (!datapoint || !datapoint.dataValue) return <span />
 
-  const backgroundColor = datapoint.report?.status
-    ? cellHighlightColors[datapoint.report.status]
+  const backgroundColor = datapoint?.report?.status
+    ? cellHighlightColors[datapoint.report?.status]
     : 'rgba(0,0,0,0)'
 
   const columnUnitType =

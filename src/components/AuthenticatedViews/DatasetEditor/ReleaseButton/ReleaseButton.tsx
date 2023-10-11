@@ -4,7 +4,6 @@ import MintButton from 'components/ui/MintButton'
 import useModal from 'hooks/useModal/useModal'
 import useDatasetID from 'hooks/dataset/useDatasetID'
 import useProjectID from 'hooks/project/useProjectID'
-import useUser from 'hooks/useUser'
 import useDispatch from 'hooks/useDispatch'
 import { StateActions } from 'reducers/stateReducer/stateReducer'
 import {
@@ -13,9 +12,9 @@ import {
 } from 'reducers/stateReducer/types'
 import useReleaseButtonStatus from './useReleaseButtonStatus'
 import ReleaseReportModal from './ReleaseReportModal'
+import { Auth } from 'aws-amplify'
 
 const ReleaseButton = () => {
-  const { researcherID } = useUser()
   const datasetID = useDatasetID()
   const projectID = useProjectID()
   const setModal = useModal()
@@ -26,13 +25,25 @@ const ReleaseButton = () => {
 
   const onClickRelease = async (e: React.SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault()
+
+    let userSession
+    try {
+      userSession = await Auth.currentSession()
+    } catch (e) {
+      console.error(e)
+      return
+    }
+
     setReleasing(true)
     const response = await fetch(
       `${process.env.GATSBY_API_URL}/release-dataset`,
       {
         method: 'POST',
+        headers: new Headers({
+          Authorization: userSession.getIdToken().getJwtToken(),
+          'Content-Type': 'application/json',
+        }),
         body: JSON.stringify({
-          researcherID,
           projectID,
           datasetID,
         }),
