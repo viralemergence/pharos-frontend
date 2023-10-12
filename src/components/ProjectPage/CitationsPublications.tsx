@@ -1,6 +1,6 @@
 import ClickToCopy from 'components/ui/ClickToCopy'
 import React from 'react'
-import styled from 'styled-components'
+// import styled from 'styled-components'
 import { commaSeparatedList } from 'utilities/grammar'
 
 interface CitationsPublicationsProps {
