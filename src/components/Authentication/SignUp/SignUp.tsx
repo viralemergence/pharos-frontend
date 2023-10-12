@@ -173,7 +173,7 @@ const SignUp = () => {
     <Container>
       <H1>Sign Up</H1>
       <p>
-        Already have an account? <Link to={`/login/`}>sign in here.</Link>
+        Already have an account? <Link to={`/login/`}>Sign in here.</Link>
       </p>
       {createUserResponse && createUserResponse.userConfirmed === false ? (
         <Form onSubmit={handleSubmitConfimation}>
