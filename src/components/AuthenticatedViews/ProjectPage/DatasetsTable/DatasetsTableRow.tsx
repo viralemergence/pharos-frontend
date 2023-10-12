@@ -54,10 +54,10 @@ export const DatasetsTableRow = ({
 
   let releaseMessage
   if (!publicView) {
-    releaseMessage =
-      dataset.releaseStatus === DatasetReleaseStatus.Published
-        ? 'Released'
-        : dataset.releaseStatus
+    releaseMessage = dataset.releaseStatus
+    // dataset.releaseStatus === DatasetReleaseStatus.Published
+    //   ? 'Released'
+    //   : dataset.releaseStatus
   }
 
   return (
