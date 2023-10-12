@@ -19,9 +19,9 @@ interface CitationsPublicationsProps {
   published?: boolean
 }
 
-const ProjectLink = styled.a`
-  color: ${({ theme }) => theme.white};
-`
+// const ProjectLink = styled.a`
+//   color: ${({ theme }) => theme.white};
+// `
 
 const CitationsPublications = ({
   project,
