@@ -68,21 +68,24 @@ const CitationsPublications = ({
       {published && (
         <>
           <h2>How to cite this project</h2>
-          <ClickToCopy copyContentString={citationToCopy}>
-            <p>
+          <p>
+            <ClickToCopy darkmode copyContentString={citationToCopy}>
               {commaSeparatedList(
                 project.authors?.map(author => author?.name ?? '') ?? []
               )}
-              . {project.name} ({yearPublished}).{' '}
-              <ProjectLink
-                href={`${window.location.origin}/projects/#/${project.projectID}`}
-              >
-                {window.location.hostname}/projects/#/{project.projectID}
-              </ProjectLink>
+              . {project.name} ({yearPublished}). {window.location.hostname}
+              /projects/#/{project.projectID}
+              {
+                // <ProjectLink
+                //   href={`${window.location.origin}/projects/#/${project.projectID}`}
+                // >
+                //   {window.location.hostname}/projects/#/{project.projectID}
+                // </ProjectLink>
+              }
               . Accessed on{' '}
               {new Date().toISOString().split('.')[0].split('T').join(' ')} UTC.
-            </p>
-          </ClickToCopy>
+            </ClickToCopy>
+          </p>
         </>
       )}
       {showProjectPublications && (
