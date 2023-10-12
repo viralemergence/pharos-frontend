@@ -171,7 +171,7 @@ const SignUp = () => {
 
   return (
     <Container>
-      <H1>Sign Up</H1>
+      <H1>Sign up</H1>
       <p>
         Already have an account? <Link to={`/login/`}>Sign in here.</Link>
       </p>
@@ -187,9 +187,11 @@ const SignUp = () => {
               value={confirmationCode}
             />
           </Label>
-          <ColorMessage status={ColorMessageStatus.Warning}>
-            {formMessage}
-          </ColorMessage>
+          {formMessage && (
+            <ColorMessage status={ColorMessageStatus.Warning}>
+              {formMessage}
+            </ColorMessage>
+          )}
           <MintButton
             type="submit"
             style={{ marginTop: 40 }}
