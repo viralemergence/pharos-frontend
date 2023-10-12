@@ -1,3 +1,4 @@
+import ClickToCopy from 'components/ui/ClickToCopy'
 import React from 'react'
 import styled from 'styled-components'
 import { commaSeparatedList } from 'utilities/grammar'
@@ -52,24 +53,36 @@ const CitationsPublications = ({
     yearPublished = new Date(project.datePublished).getFullYear().toString()
   }
 
+  const citationToCopy = `${commaSeparatedList(
+    project.authors?.map(author => author?.name ?? '') ?? []
+  )}. ${project.name} (${yearPublished}). ${
+    window.location.origin
+  }/projects/#/${project.projectID}. Accessed on ${new Date()
+    .toISOString()
+    .split('.')[0]
+    .split('T')
+    .join(' ')} UTC.`
+
   return (
     <>
       {published && (
         <>
           <h2>How to cite this project</h2>
-          <p>
-            {commaSeparatedList(
-              project.authors?.map(author => author?.name ?? '') ?? []
-            )}
-            . {project.name} ({yearPublished}).{' '}
-            <ProjectLink
-              href={`${window.location.origin}/projects/#/${project.projectID}`}
-            >
-              {window.location.hostname}/projects/#/{project.projectID}
-            </ProjectLink>
-            . Accessed on{' '}
-            {new Date().toISOString().split('.')[0].split('T').join(' ')} UTC.
-          </p>
+          <ClickToCopy copyContentString={citationToCopy}>
+            <p>
+              {commaSeparatedList(
+                project.authors?.map(author => author?.name ?? '') ?? []
+              )}
+              . {project.name} ({yearPublished}).{' '}
+              <ProjectLink
+                href={`${window.location.origin}/projects/#/${project.projectID}`}
+              >
+                {window.location.hostname}/projects/#/{project.projectID}
+              </ProjectLink>
+              . Accessed on{' '}
+              {new Date().toISOString().split('.')[0].split('T').join(' ')} UTC.
+            </p>
+          </ClickToCopy>
         </>
       )}
       {showProjectPublications && (
