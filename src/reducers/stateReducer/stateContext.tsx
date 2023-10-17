@@ -62,8 +62,7 @@ const StateContextProvider = ({ children }: StateContextProviderProps) => {
       // set the major version to the current version
       localStorage.setItem('pharosMajorVersion', '2')
       // reload the page
-      window.location.href = '/'
-      window.location.reload()
+      window.location.assign('/')
     }
 
     if (pharosMajorVersion === null) {
