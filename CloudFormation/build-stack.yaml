@@ -238,7 +238,7 @@ Resources:
 
 
                   match host:
-                      case 'pharos-2.viralemergence.org':
+                      case 'pharos.viralemergence.org':
                           secret = get_secret(STACK_NAME + '-ProdSitePassword', REGION)
 
                       case 'staging-pharos.viralemergence.org':
@@ -268,7 +268,7 @@ Resources:
               except KeyError:
                   return UNAUTHORIZED_RESPONSE
 
-  BasicAuthLambdaVersion4:
+  BasicAuthLambdaVersion5:
     Type: 'AWS::Lambda::Version'
     Properties:
       Description: ''
@@ -353,7 +353,7 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
             - EventType: 'viewer-request'
-              LambdaFunctionARN: !Ref BasicAuthLambdaVersion4
+              LambdaFunctionARN: !Ref BasicAuthLambdaVersion5
         PriceClass: PriceClass_100
         ViewerCertificate:
           AcmCertificateArn: !Ref CertificateArn
@@ -431,7 +431,7 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
             - EventType: 'viewer-request'
-              LambdaFunctionARN: !Ref BasicAuthLambdaVersion4
+              LambdaFunctionARN: !Ref BasicAuthLambdaVersion5
         PriceClass: PriceClass_100
         ViewerCertificate:
           AcmCertificateArn: !Ref CertificateArn
@@ -507,7 +507,7 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
             - EventType: 'viewer-request'
-              LambdaFunctionARN: !Ref BasicAuthLambdaVersion4
+              LambdaFunctionARN: !Ref BasicAuthLambdaVersion5
         PriceClass: PriceClass_100
         ViewerCertificate:
           AcmCertificateArn: !Ref CertificateArn
@@ -551,7 +551,7 @@ Resources:
     Properties:
       DistributionConfig:
         Aliases:
-          - !Join ['', ['pharos-2.', !Ref DomainName]]
+          - !Join ['', ['pharos.', !Ref DomainName]]
         Origins:
           - DomainName:
               !Select [1, !Split ['//', !GetAtt S3ProdBucket.WebsiteURL]]
@@ -580,7 +580,7 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
             - EventType: 'viewer-request'
-              LambdaFunctionARN: !Ref BasicAuthLambdaVersion4
+              LambdaFunctionARN: !Ref BasicAuthLambdaVersion5
         PriceClass: PriceClass_All
         ViewerCertificate:
           AcmCertificateArn: !Ref CertificateArn
