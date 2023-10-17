@@ -47,6 +47,14 @@ const StateContextProvider = ({ children }: StateContextProviderProps) => {
     // if there has never been a major version stored
     // this is the migration from no version to pharos-2
     const upgradeNullTo2 = async () => {
+      const messageStack = await localforage.getItem('messageStack')
+
+      if (!messageStack) {
+        // user has never connected to pharos, nothing to clean up
+        localStorage.setItem('pharosMajorVersion', '2')
+        return
+      }
+
       // clear all locally stored data
       await localforage.clear()
       // sign out of cognito (this should do nothing)
