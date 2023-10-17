@@ -61,8 +61,8 @@ const StateContextProvider = ({ children }: StateContextProviderProps) => {
       await Auth.signOut()
       // set the major version to the current version
       localStorage.setItem('pharosMajorVersion', '2')
-      // send them to the account creation page
-      window.location.assign('/app/#/sign-up')
+      // reload the page
+      window.location.assign('/')
     }
 
     if (pharosMajorVersion === null) {
