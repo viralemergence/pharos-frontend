@@ -230,8 +230,6 @@ Resources:
               host = headers['host'][0]['value']
 
 
-              print(host)
-
               try:
                   authorization_header = headers['authorization'][0]['value']
 
