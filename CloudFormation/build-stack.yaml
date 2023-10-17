@@ -220,7 +220,7 @@ Resources:
     Properties:
       DistributionConfig:
         Aliases:
-          - !Join ['', ['dev-pharos.', !Ref DomainName]]
+          - !Join ['', ['alpha-dev-pharos.', !Ref DomainName]]
         Origins:
           - DomainName:
               !Select [1, !Split ['//', !GetAtt S3DevBucket.WebsiteURL]]
@@ -293,7 +293,7 @@ Resources:
     Properties:
       DistributionConfig:
         Aliases:
-          - !Join ['', ['review-pharos.', !Ref DomainName]]
+          - !Join ['', ['alpha-review-pharos.', !Ref DomainName]]
         Origins:
           - DomainName:
               !Select [1, !Split ['//', !GetAtt S3ReviewBucket.WebsiteURL]]
@@ -364,7 +364,7 @@ Resources:
     Properties:
       DistributionConfig:
         Aliases:
-          - !Join ['', ['staging-pharos.', !Ref DomainName]]
+          - !Join ['', ['alpha-staging-pharos.', !Ref DomainName]]
         Origins:
           - DomainName:
               !Select [1, !Split ['//', !GetAtt S3StagingBucket.WebsiteURL]]
@@ -432,7 +432,7 @@ Resources:
     Properties:
       DistributionConfig:
         Aliases:
-          - !Join ['', ['pharos.', !Ref DomainName]]
+          - !Join ['', ['alpha-pharos.', !Ref DomainName]]
         Origins:
           - DomainName:
               !Select [1, !Split ['//', !GetAtt S3ProdBucket.WebsiteURL]]
