@@ -3,5 +3,5 @@ aws cloudformation update-stack \
   --template-body file://build-stack.yaml \
   --capabilities CAPABILITY_NAMED_IAM \
   --region us-east-1 \
-  --profile verena-prod-developer # AWS profile name
+  --profile verena-prod-dev # AWS profile name
 
