@@ -270,7 +270,7 @@ Resources:
               except KeyError:
                   return UNAUTHORIZED_RESPONSE
 
-  BasicAuthLambdaVersion2:
+  BasicAuthLambdaVersion3:
     Type: 'AWS::Lambda::Version'
     Properties:
       Description: ''
@@ -355,7 +355,7 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
             - EventType: 'viewer-request'
-              LambdaFunctionARN: !Ref BasicAuthLambdaVersion2
+              LambdaFunctionARN: !Ref BasicAuthLambdaVersion3
         PriceClass: PriceClass_100
         ViewerCertificate:
           AcmCertificateArn: !Ref CertificateArn
@@ -433,7 +433,7 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
             - EventType: 'viewer-request'
-              LambdaFunctionARN: !Ref BasicAuthLambdaVersion2
+              LambdaFunctionARN: !Ref BasicAuthLambdaVersion3
         PriceClass: PriceClass_100
         ViewerCertificate:
           AcmCertificateArn: !Ref CertificateArn
@@ -509,7 +509,7 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
             - EventType: 'viewer-request'
-              LambdaFunctionARN: !Ref BasicAuthLambdaVersion2
+              LambdaFunctionARN: !Ref BasicAuthLambdaVersion3
         PriceClass: PriceClass_100
         ViewerCertificate:
           AcmCertificateArn: !Ref CertificateArn
@@ -582,7 +582,7 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
             - EventType: 'viewer-request'
-              LambdaFunctionARN: !Ref BasicAuthLambdaVersion2
+              LambdaFunctionARN: !Ref BasicAuthLambdaVersion3
         PriceClass: PriceClass_All
         ViewerCertificate:
           AcmCertificateArn: !Ref CertificateArn
