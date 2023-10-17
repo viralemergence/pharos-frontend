@@ -293,7 +293,7 @@ Resources:
     Properties:
       DistributionConfig:
         Aliases:
-          - !Join ['', ['review-pharos.', !Ref DomainName]]
+          - !Join ['', ['alpha-review-pharos.', !Ref DomainName]]
         Origins:
           - DomainName:
               !Select [1, !Split ['//', !GetAtt S3ReviewBucket.WebsiteURL]]
