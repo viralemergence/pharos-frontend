@@ -95,7 +95,7 @@ const defaultColumns = {
   Pathogen: {
     type: 'string',
     definition:
-      'The pathogen detected by the test, if any, e.g. ‘SARS-CoV-2’. Pathogen may be different from detection target. If no pathogen is detected it should either be synonymous with detection target or omitted.',
+      "The pathogen detected by the test, if any, e.g. 'SARS-CoV-2'. Pathogen may be different from detection target. If no pathogen is detected it should either be synonymous with detection target or omitted.",
   },
   'Pathogen NCBI tax ID': {
     type: 'string',

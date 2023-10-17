@@ -2,7 +2,7 @@ import { TableCell } from 'components/ListTable/ListTable'
 import { PublishedDataset } from 'components/PublicViews/ProjectPage/usePublishedProject'
 import React from 'react'
 
-import { Dataset, DatasetReleaseStatus } from 'reducers/stateReducer/types'
+import { Dataset } from 'reducers/stateReducer/types'
 
 import formatDate from 'utilities/formatDate'
 import { DatasetReleaseStatusChip } from '../PublishingStatusChip'
@@ -54,10 +54,10 @@ export const DatasetsTableRow = ({
 
   let releaseMessage
   if (!publicView) {
-    releaseMessage =
-      dataset.releaseStatus === DatasetReleaseStatus.Published
-        ? 'Released'
-        : dataset.releaseStatus
+    releaseMessage = dataset.releaseStatus
+    // dataset.releaseStatus === DatasetReleaseStatus.Published
+    //   ? 'Released'
+    //   : dataset.releaseStatus
   }
 
   return (
