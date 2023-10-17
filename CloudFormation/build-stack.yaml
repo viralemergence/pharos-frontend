@@ -432,7 +432,7 @@ Resources:
     Properties:
       DistributionConfig:
         Aliases:
-          - !Join ['', ['pharos.', !Ref DomainName]]
+          - !Join ['', ['alpha-pharos.', !Ref DomainName]]
         Origins:
           - DomainName:
               !Select [1, !Split ['//', !GetAtt S3ProdBucket.WebsiteURL]]
