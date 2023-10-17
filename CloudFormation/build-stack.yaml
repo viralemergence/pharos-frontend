@@ -229,6 +229,7 @@ Resources:
               headers = request['headers']
               host = headers['host'][0]['value']
 
+
               try:
                   authorization_header = headers['authorization'][0]['value']
 
@@ -243,10 +244,10 @@ Resources:
                       case 'staging-pharos-2.viralemergence.org':
                           secret = get_secret(STACK_NAME + '-StagingSitePassword', REGION)
 
-                      case 'review-pharos-2.viralemergence.org':
+                      case 'review-pharos.viralemergence.org':
                           secret = get_secret(STACK_NAME + '-ReviewSitePassword', REGION)
 
-                      case 'dev-pharos-2.viralemergence.org':
+                      case 'dev-pharos.viralemergence.org':
                           secret = get_secret(STACK_NAME + '-DevSitePassword', REGION)
 
                       case _:
@@ -267,7 +268,7 @@ Resources:
               except KeyError:
                   return UNAUTHORIZED_RESPONSE
 
-  BasicAuthLambdaVersion:
+  BasicAuthLambdaVersion3:
     Type: 'AWS::Lambda::Version'
     Properties:
       Description: ''
@@ -323,7 +324,7 @@ Resources:
     Properties:
       DistributionConfig:
         Aliases:
-          - !Join ['', ['dev-pharos-2.', !Ref DomainName]]
+          - !Join ['', ['dev-pharos.', !Ref DomainName]]
         Origins:
           - DomainName:
               !Select [1, !Split ['//', !GetAtt S3DevBucket.WebsiteURL]]
@@ -352,7 +353,7 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
             - EventType: 'viewer-request'
-              LambdaFunctionARN: !Ref BasicAuthLambdaVersion
+              LambdaFunctionARN: !Ref BasicAuthLambdaVersion3
         PriceClass: PriceClass_100
         ViewerCertificate:
           AcmCertificateArn: !Ref CertificateArn
@@ -401,7 +402,7 @@ Resources:
     Properties:
       DistributionConfig:
         Aliases:
-          - !Join ['', ['review-pharos-2.', !Ref DomainName]]
+          - !Join ['', ['review-pharos.', !Ref DomainName]]
         Origins:
           - DomainName:
               !Select [1, !Split ['//', !GetAtt S3ReviewBucket.WebsiteURL]]
@@ -430,7 +431,7 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
             - EventType: 'viewer-request'
-              LambdaFunctionARN: !Ref BasicAuthLambdaVersion
+              LambdaFunctionARN: !Ref BasicAuthLambdaVersion3
         PriceClass: PriceClass_100
         ViewerCertificate:
           AcmCertificateArn: !Ref CertificateArn
@@ -506,7 +507,7 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
             - EventType: 'viewer-request'
-              LambdaFunctionARN: !Ref BasicAuthLambdaVersion
+              LambdaFunctionARN: !Ref BasicAuthLambdaVersion3
         PriceClass: PriceClass_100
         ViewerCertificate:
           AcmCertificateArn: !Ref CertificateArn
@@ -579,7 +580,7 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
             - EventType: 'viewer-request'
-              LambdaFunctionARN: !Ref BasicAuthLambdaVersion
+              LambdaFunctionARN: !Ref BasicAuthLambdaVersion3
         PriceClass: PriceClass_All
         ViewerCertificate:
           AcmCertificateArn: !Ref CertificateArn

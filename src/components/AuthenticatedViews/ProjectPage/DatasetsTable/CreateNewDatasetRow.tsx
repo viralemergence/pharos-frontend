@@ -18,11 +18,11 @@ const Text = styled.div`
 const ButtonRow = styled.button`
   background: none;
   border: none;
-  background-color: ${({ theme }) => theme.white};
+  background-color: ${({ theme }) => theme.hoverMint};
   transition: 200ms ease;
 
   &:hover {
-    background-color: ${({ theme }) => lighten(0.05, theme.hoverMint)};
+    background-color: ${({ theme }) => lighten(0.05, theme.mint)};
 
     > div {
       transition: 200ms ease;

@@ -177,6 +177,17 @@ const CreateDatasetForm = ({ mode, dataset }: CreateDatasetFormProps) => {
         onChange={e => updateFormData(e.target.value, 'name')}
       />
 
+      <p
+        style={{
+          marginTop: 30,
+          marginBottom: -15,
+          fontStyle: 'italic',
+        }}
+      >
+        Pharos currently accepts only SI units. The ability to enter datasets in
+        different units is coming soon.
+      </p>
+
       <Label htmlFor="Animal age units">Animal age units *</Label>
       <Typeahead
         disabled
