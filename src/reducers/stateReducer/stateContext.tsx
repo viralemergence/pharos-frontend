@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useReducer } from 'react'
-import { Amplify, Hub } from 'aws-amplify'
+import { Amplify, Auth, Hub } from 'aws-amplify'
 
 import { AppState, UserStatus } from './types'
 
@@ -40,6 +40,28 @@ const StateContextProvider = ({ children }: StateContextProviderProps) => {
 
   useLoadUser(dispatch)
 
+  // check pharos major version
+  useEffect(() => {
+    const pharosMajorVersion = localStorage.getItem('pharosMajorVersion')
+
+    // if there has never been a major version stored
+    // this is the migration from no version to pharos-2
+    const upgradeNullTo2 = async () => {
+      // clear all locally stored data
+      await localforage.clear()
+      // sign out of cognito (this should do nothing)
+      await Auth.signOut()
+      // set the major version to the current version
+      localStorage.setItem('pharosMajorVersion', '2')
+      // reload the page
+      window.location.reload()
+    }
+
+    if (pharosMajorVersion === null) {
+      upgradeNullTo2()
+    }
+  }, [])
+
   useEffect(() => {
     // set up and clean up hub listener for auth events
     const stopListening = Hub.listen('auth', ({ payload: { event, data } }) => {
@@ -53,7 +75,7 @@ const StateContextProvider = ({ children }: StateContextProviderProps) => {
         })
       } else if (event === 'autoSignIn_failure') {
         // redirect to sign in page
-        console.warn('[HUB]            autoSignIn failure')
+        console.warn(`${'[HUB]'.padEnd(15)} autoSignIn failure`)
         navigate('/app/#/login/')
       }
     })
