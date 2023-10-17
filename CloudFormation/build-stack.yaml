@@ -246,7 +246,7 @@ Resources:
                       case 'staging-pharos-2.viralemergence.org':
                           secret = get_secret(STACK_NAME + '-StagingSitePassword', REGION)
 
-                      case 'review-pharos-2.viralemergence.org':
+                      case 'review-pharos.viralemergence.org':
                           secret = get_secret(STACK_NAME + '-ReviewSitePassword', REGION)
 
                       case 'dev-pharos.viralemergence.org':
@@ -404,7 +404,7 @@ Resources:
     Properties:
       DistributionConfig:
         Aliases:
-          - !Join ['', ['review-pharos-2.', !Ref DomainName]]
+          - !Join ['', ['review-pharos.', !Ref DomainName]]
         Origins:
           - DomainName:
               !Select [1, !Split ['//', !GetAtt S3ReviewBucket.WebsiteURL]]
