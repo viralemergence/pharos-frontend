@@ -52,11 +52,11 @@ const DatasetGrid = () => {
       editor:
         dataset.releaseStatus === DatasetReleaseStatus.Published
           ? EditingDisabledEditor
-          : defaultColumns[name as keyof typeof defaultColumns].type === 'unit'
+          : defaultColumns[name as keyof typeof defaultColumns]?.type === 'unit'
           ? UnitEditor
           : TextEditor,
       formatter:
-        defaultColumns[name as keyof typeof defaultColumns].type === 'unit'
+        defaultColumns[name as keyof typeof defaultColumns]?.type === 'unit'
           ? UnitFormatter
           : SimpleFormatter,
       width: name.length * 10 + 15 + 'px',
