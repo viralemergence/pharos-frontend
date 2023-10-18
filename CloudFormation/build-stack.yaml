@@ -131,7 +131,7 @@ Resources:
             if (host.includes('dev')) subdomain = 'dev';
             if (host.includes('review')) subdomain = 'review';
             if (host.includes('staging')) subdomain = 'staging';
-            if (host.startsWith('pharos')) subdomain = 'prod';
+            if (host.startsWith('alpha-pharos')) subdomain = 'prod';
 
             const authObj = {
               dev: ['dev', '**************'],
@@ -169,7 +169,7 @@ Resources:
           callback(null, request);
           };
 
-  BasicAuthLambdaVersion5:
+  BasicAuthLambdaVersion6:
     Type: 'AWS::Lambda::Version'
     Properties:
       Description: 'v4 with logs'
@@ -249,7 +249,7 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
             - EventType: 'viewer-request'
-              LambdaFunctionARN: !Ref BasicAuthLambdaVersion5
+              LambdaFunctionARN: !Ref BasicAuthLambdaVersion6
         PriceClass: PriceClass_100
         ViewerCertificate:
           AcmCertificateArn: !Ref CertificateArn
@@ -322,7 +322,7 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
             - EventType: 'viewer-request'
-              LambdaFunctionARN: !Ref BasicAuthLambdaVersion5
+              LambdaFunctionARN: !Ref BasicAuthLambdaVersion6
         PriceClass: PriceClass_100
         ViewerCertificate:
           AcmCertificateArn: !Ref CertificateArn
@@ -393,7 +393,7 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
             - EventType: 'viewer-request'
-              LambdaFunctionARN: !Ref BasicAuthLambdaVersion5
+              LambdaFunctionARN: !Ref BasicAuthLambdaVersion6
         PriceClass: PriceClass_100
         ViewerCertificate:
           AcmCertificateArn: !Ref CertificateArn
@@ -461,7 +461,7 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           LambdaFunctionAssociations:
             - EventType: 'viewer-request'
-              LambdaFunctionARN: !Ref BasicAuthLambdaVersion5
+              LambdaFunctionARN: !Ref BasicAuthLambdaVersion6
         PriceClass: PriceClass_All
         ViewerCertificate:
           AcmCertificateArn: !Ref CertificateArn
