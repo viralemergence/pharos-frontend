@@ -115,7 +115,7 @@ const SimpleCellModal = ({
           </ReportContainer>
           <Instructions>
             <SectionHeader>Definition</SectionHeader>
-            <p>{defaultColumns[datapointID as ColumnKey].definition}</p>
+            <p>{defaultColumns[datapointID as ColumnKey]?.definition}</p>
           </Instructions>
         </Data>
         <History>
