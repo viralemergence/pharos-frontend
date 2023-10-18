@@ -113,10 +113,12 @@ const SimpleCellModal = ({
           <ReportContainer score={datapoint?.report?.status}>
             <Report>{datapoint?.report?.message}</Report>
           </ReportContainer>
-          <Instructions>
-            <SectionHeader>Definition</SectionHeader>
-            <p>{defaultColumns[datapointID as ColumnKey]?.definition}</p>
-          </Instructions>
+          {defaultColumns[datapointID as ColumnKey]?.definition && (
+            <Instructions>
+              <SectionHeader>Definition</SectionHeader>
+              <p>{defaultColumns[datapointID as ColumnKey]?.definition}</p>
+            </Instructions>
+          )}
         </Data>
         <History>
           <SectionHeader>History</SectionHeader>
