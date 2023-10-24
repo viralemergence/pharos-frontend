@@ -12,6 +12,7 @@ export interface PageInfo {
   id: string
   title: string
   path: string
+  order: string
 }
 
 export interface SiteMap {
