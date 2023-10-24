@@ -5,21 +5,30 @@ export const baseStyle = css`
   width: 100%;
   margin: auto;
   height: 100%;
+  padding: 15px;
 
   h1 {
     ${({ theme }) => theme.h1}
   }
 
   h2 {
-    ${({ theme }) => theme.h2}
-  }
-
-  h3 {
     ${({ theme }) => theme.h3}
   }
 
+  h3 {
+    ${({ theme }) => theme.bigParagraphSemibold};
+  }
+
+  h4 {
+    ${({ theme }) => theme.bigParagraph};
+  }
+
   p {
-    ${({ theme }) => theme.bigParagraph}
+    ${({ theme }) => theme.smallParagraph};
+
+    strong {
+      ${({ theme }) => theme.smallParagraphSemibold};
+    }
   }
 
   a {
