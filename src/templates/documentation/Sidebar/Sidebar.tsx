@@ -36,7 +36,14 @@ const SidebarSection = ({ siteMap }: { siteMap: SiteMap }) => {
 
   return (
     <li>
-      {current && <SiteMapLink to={current.path}>{current.title}</SiteMapLink>}
+      {current && (
+        <SiteMapLink
+          activeStyle={{ textDecoration: 'underline', fontWeight: 'bold' }}
+          to={current.path}
+        >
+          {current.title}
+        </SiteMapLink>
+      )}
       {children.length > 0 && (
         <SidebarChildren style={{ paddingLeft: 15 }}>
           {children
