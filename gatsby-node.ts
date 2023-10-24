@@ -10,9 +10,21 @@ interface DocsPathQuery {
       id: string
       frontmatter: {
         title: string
+        order: string
       }
     }[]
   }
+}
+
+export interface PageInfo {
+  id: string
+  title: string
+  path: string
+  order: string
+}
+
+export interface SiteMap {
+  [key: string]: Record<string, SiteMap> | PageInfo
 }
 
 export const createPages: GatsbyNode['createPages'] = async ({
@@ -31,15 +43,18 @@ export const createPages: GatsbyNode['createPages'] = async ({
           fileAbsolutePath
           frontmatter {
             title
+            order
           }
         }
       }
     }
   `)
 
+  if (!docsPathsQuery.data) throw new Error('No data readme pages')
+
   // construct sitemap of all the file paths
-  const siteMap = {}
-  const pages = []
+  const pages: { id: string; path: string; title: string; order: string }[] = []
+  const siteMap: SiteMap = {}
 
   for (const pathNode of docsPathsQuery.data.allMarkdownRemark.nodes) {
     // absolute path of the pharos-documentation repo
@@ -68,6 +83,7 @@ export const createPages: GatsbyNode['createPages'] = async ({
         id: pathNode.id,
         path: relativePath,
         title: pathNode.frontmatter.title,
+        order: pathNode.frontmatter.order,
       },
     })
 
@@ -75,6 +91,7 @@ export const createPages: GatsbyNode['createPages'] = async ({
       id: pathNode.id,
       path: relativePath,
       title: pathNode.frontmatter.title,
+      order: pathNode.frontmatter.order,
     })
   }
 
