@@ -4,6 +4,7 @@ export const baseStyle = css`
   max-width: 1000px;
   width: 100%;
   margin: auto;
+  height: 100%;
 
   h1 {
     ${({ theme }) => theme.h1}
@@ -21,9 +22,15 @@ export const baseStyle = css`
     ${({ theme }) => theme.bigParagraph}
   }
 
+  a {
+    color: ${({ theme }) => theme.link};
+  }
+
   table {
     width: 100%;
     border-collapse: collapse;
+    margin-top: 1em;
+    margin-bottom: 1em;
 
     th {
       text-align: left;
