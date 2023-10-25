@@ -54,6 +54,7 @@ export interface User {
   firstName: string
   lastName: string
   projectIDs?: string[]
+  downloadIDs?: string[]
 }
 
 // the overall Project object
