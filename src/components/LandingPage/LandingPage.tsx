@@ -81,7 +81,7 @@ const LandingTextForSmallViewports = styled.div`
   @media (max-height: ${heightBreakpointForLandingText}px) {
     display: flex;
   }
-  background: #0e0f1f; // The dark purple of the map
+  background: #0e0f1f;
   ${({ theme }) => theme.smallMarketing};
   color: ${({ theme }) => theme.white};
   padding: 30px 40px;
