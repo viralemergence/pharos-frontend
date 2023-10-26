@@ -29,7 +29,7 @@ const CitationsPublications = ({
 }: CitationsPublicationsProps) => {
   const showProjectPublications =
     !published ||
-    (project.projectPublications && project.projectPublications.length > 0)
+    (project.projectPublications && project.projectPublications[0])
 
   const projectPublications =
     !project.projectPublications || project.projectPublications[0] === '' ? (
@@ -39,7 +39,7 @@ const CitationsPublications = ({
     )
 
   const showOthersCiting =
-    !published || (project.othersCiting && project.othersCiting.length > 0)
+    !published || (project.othersCiting && project.othersCiting[0])
 
   const othersCiting =
     !project.othersCiting || project.othersCiting[0] === '' ? (
@@ -57,7 +57,7 @@ const CitationsPublications = ({
     project.authors?.map(author => author?.name ?? '') ?? []
   )}. ${project.name} (${yearPublished}). ${
     window.location.origin
-  }/projects/#/${project.projectID}. Accessed on ${new Date()
+  }/projects/?prj=${project.projectID}. Accessed on ${new Date()
     .toISOString()
     .split('.')[0]
     .split('T')
@@ -68,24 +68,18 @@ const CitationsPublications = ({
       {published && (
         <>
           <h2>How to cite this project</h2>
-          <p>
-            <ClickToCopy darkmode copyContentString={citationToCopy}>
-              {commaSeparatedList(
-                project.authors?.map(author => author?.name ?? '') ?? []
-              )}
-              . {project.name} ({yearPublished}). {window.location.hostname}
-              /projects/#/{project.projectID}
-              {
-                // <ProjectLink
-                //   href={`${window.location.origin}/projects/#/${project.projectID}`}
-                // >
-                //   {window.location.hostname}/projects/#/{project.projectID}
-                // </ProjectLink>
-              }
-              . Accessed on{' '}
-              {new Date().toISOString().split('.')[0].split('T').join(' ')} UTC.
-            </ClickToCopy>
-          </p>
+          <ClickToCopy
+            darkmode
+            copyContentString={citationToCopy}
+            style={{ marginTop: 10 }}
+          >
+            {commaSeparatedList(
+              project.authors?.map(author => author?.name ?? '') ?? []
+            )}
+            . {project.name} ({yearPublished}). {window.location.hostname}
+            /projects/?prj={project.projectID}. Accessed on{' '}
+            {new Date().toISOString().split('.')[0].split('T').join(' ')} UTC.
+          </ClickToCopy>
         </>
       )}
       {showProjectPublications && (

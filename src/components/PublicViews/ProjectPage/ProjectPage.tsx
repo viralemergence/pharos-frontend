@@ -126,7 +126,7 @@ const ProjectPage = () => {
             </PublicViewBreadcrumbLink>
             <PublicViewBreadcrumbLink
               $active
-              to={`/projects/#/${project.projectID}`}
+              to={`/projects/?prj=${project.projectID}`}
             >
               {status === ProjectDataStatus.Loaded
                 ? project.name
@@ -220,10 +220,10 @@ const ProjectPage = () => {
                 <h2>Permanent project link</h2>
                 <ClickToCopy
                   darkmode
-                  copyContentString={`${window.location.origin}/projects/#/${project.projectID}`}
+                  copyContentString={`${window.location.origin}/projects/?prj=${project.projectID}`}
                   style={{ marginTop: 10 }}
                 >
-                  {window.location.hostname}/projects/#/{project.projectID}
+                  {window.location.hostname}/projects/?prj={project.projectID}
                 </ClickToCopy>
                 <h2>Project published</h2>
                 <p>{formatDate(project.datePublished)}</p>

@@ -1,4 +1,3 @@
-import useProjectID from 'hooks/project/useProjectID'
 import { useEffect, useState } from 'react'
 
 export interface PublishedDataset {
@@ -151,7 +150,11 @@ const loadPublishedProject = async (
 }
 
 const usePublishedProject = () => {
-  const projectID = useProjectID()
+  const params = new URLSearchParams(window.location.search)
+
+  // I'm using the ! here because if this is undefined then
+  // we're just going to navigate away and unmount the parent
+  const projectID = params.get('prj')!
 
   const [projectData, setProjectData] = useState<ProjectData>({
     status: ProjectDataStatus.Loading,

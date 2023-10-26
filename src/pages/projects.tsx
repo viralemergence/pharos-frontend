@@ -1,8 +1,8 @@
 import React from 'react'
+import { navigate } from 'gatsby'
 
 import CMS from '@talus-analytics/library.airtable-cms'
 import Providers from 'components/layout/Providers'
-import { HashRouter, Route, Routes } from 'react-router-dom'
 import NavBar from 'components/layout/NavBar/NavBar'
 import DatasetPage from 'components/PublicViews/DatasetPage/DatasetPage'
 import ModalMessageProvider from 'hooks/useModal/ModalMessageProvider'
@@ -12,31 +12,22 @@ const Projects = () => {
   // on the build server, don't try to render client-side routes
   if (typeof window === 'undefined') return <></>
 
+  const params = new URLSearchParams(window.location.search)
+
+  const projectID = params.get('prj')
+
+  if (!projectID) navigate('/')
+
+  const datasetID = params.get('set')
+
   return (
     <Providers>
       <CMS.SEO />
       <React.StrictMode>
-        <HashRouter>
-          <NavBar />
-          <Routes>
-            <Route
-              path="/:projectID/:datasetID"
-              element={
-                <ModalMessageProvider>
-                  <DatasetPage />
-                </ModalMessageProvider>
-              }
-            />
-            <Route
-              path="/:projectID"
-              element={
-                <ModalMessageProvider>
-                  <ProjectPage />
-                </ModalMessageProvider>
-              }
-            />
-          </Routes>
-        </HashRouter>
+        <NavBar />
+        <ModalMessageProvider>
+          {datasetID ? <DatasetPage /> : <ProjectPage />}
+        </ModalMessageProvider>
       </React.StrictMode>
     </Providers>
   )

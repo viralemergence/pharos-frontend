@@ -7,7 +7,7 @@ const ProjectName = ({ row }: FormatterProps<Row>) => {
   const projectName = row['Project'] as string
   const pharosID = row.pharosID
   return (
-    <DataGridLink to={`/projects/#/${pharosID.toString().split('-')[0]}`}>
+    <DataGridLink to={`/projects/?prj=${pharosID.toString().split('-')[0]}`}>
       {projectName}
     </DataGridLink>
   )
