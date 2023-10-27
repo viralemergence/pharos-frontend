@@ -12,7 +12,7 @@ import {
   ContainerForRadioButtons,
   ContainerForFilterPanelLauncher,
   DataToolbarDiv,
-  SummaryOfRecordsStyled,
+  // SummaryOfRecordsStyled,
 } from '../DisplayComponents'
 import { SummaryOfRecords } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 import DataDownloadButton from './DataDownloadButton'
@@ -27,8 +27,8 @@ export const isView = (str: string): str is View => {
   return Object.values(View).includes(str)
 }
 
-/** For example, convert 1000000 to "1,000,000" */
-const addCommasToNumber = (num: number) => num.toLocaleString('en-US')
+// /** For example, convert 1000000 to "1,000,000" */
+// const addCommasToNumber = (num: number) => num.toLocaleString('en-US')
 
 const RadioButton = ({
   currentView,
