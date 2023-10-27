@@ -16,6 +16,7 @@ import {
 } from 'components/DataPage/DisplayComponents'
 import { SummaryOfRecords } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 import usePublishedRecordsMetadata from 'hooks/publishedRecords/usePublishedRecordsMetadata'
+import ModalMessageProvider from 'hooks/useModal/ModalMessageProvider'
 
 export type SimpleFilter = {
   id: string
@@ -121,47 +122,49 @@ const DataPage = ({
   return (
     <Providers>
       <CMS.SEO />
-      <PageContainer>
-        <NavBar />
-        <ViewContainer
-          shouldBlurMap={shouldBlurMap}
-          isFilterPanelOpen={isFilterPanelOpen}
-        >
-          <MapView projection={mapProjection} />
-          {shouldBlurMap && <MapOverlay />}
-          <DataToolbar
-            view={view}
-            changeView={changeView}
+      <ModalMessageProvider>
+        <PageContainer>
+          <NavBar />
+          <ViewContainer
+            shouldBlurMap={shouldBlurMap}
             isFilterPanelOpen={isFilterPanelOpen}
-            setIsFilterPanelOpen={setIsFilterPanelOpen}
-            filters={filters}
-            summaryOfRecords={summaryOfRecords}
-          />
-          <ViewMain isFilterPanelOpen={isFilterPanelOpen}>
-            {view === View.table && (
-              <FilterPanel
+          >
+            <MapView projection={mapProjection} />
+            {shouldBlurMap && <MapOverlay />}
+            <DataToolbar
+              view={view}
+              changeView={changeView}
+              isFilterPanelOpen={isFilterPanelOpen}
+              setIsFilterPanelOpen={setIsFilterPanelOpen}
+              filters={filters}
+              summaryOfRecords={summaryOfRecords}
+            />
+            <ViewMain isFilterPanelOpen={isFilterPanelOpen}>
+              {view === View.table && (
+                <FilterPanel
+                  filters={filters}
+                  setFilters={setFilters}
+                  isFilterPanelOpen={isFilterPanelOpen}
+                  setIsFilterPanelOpen={setIsFilterPanelOpen}
+                />
+              )}
+              <TableView
                 filters={filters}
                 setFilters={setFilters}
+                isOpen={view === View.table}
                 isFilterPanelOpen={isFilterPanelOpen}
-                setIsFilterPanelOpen={setIsFilterPanelOpen}
+                summaryOfRecords={summaryOfRecords}
+                setSummaryOfRecords={setSummaryOfRecords}
+                enableVirtualization={enableTableVirtualization}
+                sortableFields={sortableFields}
               />
-            )}
-            <TableView
-              filters={filters}
-              setFilters={setFilters}
-              isOpen={view === View.table}
-              isFilterPanelOpen={isFilterPanelOpen}
-              summaryOfRecords={summaryOfRecords}
-              setSummaryOfRecords={setSummaryOfRecords}
-              enableVirtualization={enableTableVirtualization}
-              sortableFields={sortableFields}
-            />
-          </ViewMain>
-        </ViewContainer>
-        <ScreenReaderOnly aria-live="assertive">
-          {screenReaderAnnouncement}
-        </ScreenReaderOnly>
-      </PageContainer>
+            </ViewMain>
+          </ViewContainer>
+          <ScreenReaderOnly aria-live="assertive">
+            {screenReaderAnnouncement}
+          </ScreenReaderOnly>
+        </PageContainer>
+      </ModalMessageProvider>
     </Providers>
   )
 }

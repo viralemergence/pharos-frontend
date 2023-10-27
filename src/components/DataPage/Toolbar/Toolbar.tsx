@@ -15,6 +15,7 @@ import {
   SummaryOfRecordsStyled,
 } from '../DisplayComponents'
 import { SummaryOfRecords } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
+import DataDownloadButton from './DataDownloadButton'
 
 export enum View {
   map = 'map',
@@ -124,16 +125,21 @@ const DataToolbar = ({
         </ContainerForFilterPanelLauncher>
       )}
       {view === View.table && recordCount !== undefined && (
-        <SummaryOfRecordsStyled
-          role="status"
-          aria-live="polite"
-          aria-atomic="true"
-        >
-          {matchingRecordCount !== undefined && appliedFiltersCount > 0 && (
-            <>{addCommasToNumber(matchingRecordCount)} of </>
-          )}
-          {addCommasToNumber(recordCount)} records
-        </SummaryOfRecordsStyled>
+        <>
+          <DataDownloadButton matchingRecordCount={matchingRecordCount} />
+          {
+            // <SummaryOfRecordsStyled
+            //   role="status"
+            //   aria-live="polite"
+            //   aria-atomic="true"
+            // >
+            //   {matchingRecordCount !== undefined && appliedFiltersCount > 0 && (
+            //     <>{addCommasToNumber(matchingRecordCount)} of </>
+            //   )}
+            //   {addCommasToNumber(recordCount)} records
+            // </SummaryOfRecordsStyled>
+          }
+        </>
       )}
     </DataToolbarDiv>
   )
