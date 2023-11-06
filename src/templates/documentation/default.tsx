@@ -12,6 +12,7 @@ export interface PageInfo {
   id: string
   title: string
   path: string
+  order: string
 }
 
 export interface SiteMap {
@@ -46,6 +47,7 @@ const Layout = styled.main`
   gap: 15px;
   padding: 15px;
   margin: auto;
+  margin-bottom: 6em;
 `
 const Content = styled.div`
   ${baseStyle}

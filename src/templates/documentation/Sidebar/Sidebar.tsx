@@ -36,15 +36,23 @@ const SidebarSection = ({ siteMap }: { siteMap: SiteMap }) => {
 
   return (
     <li>
-      {current && <SiteMapLink to={current.path}>{current.title}</SiteMapLink>}
+      {current && (
+        <SiteMapLink
+          activeStyle={{ textDecoration: 'underline', fontWeight: 'bold' }}
+          to={current.path}
+        >
+          {current.title}
+        </SiteMapLink>
+      )}
       {children.length > 0 && (
         <SidebarChildren style={{ paddingLeft: 15 }}>
           {children
-            .sort((a, b) =>
-              typeof a[1]?.['/']?.title === 'string' &&
-              typeof b[1]?.['/']?.title === 'string'
-                ? a[1]['/'].title.localeCompare(b[1]['/'].title)
-                : -1
+            .sort(
+              (a, b) => Number(a[1]?.['/']?.order) - Number(b[1]?.['/']?.order)
+              // typeof a[1]?.['/']?.title === 'string' &&
+              // typeof b[1]?.['/']?.title === 'string'
+              //   ? a[1]['/'].title.localeCompare(b[1]['/'].title)
+              //   : -1
             )
             .map(([key, child]) => (
               <SidebarSection key={key} siteMap={child} />

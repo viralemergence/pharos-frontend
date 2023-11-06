@@ -4,26 +4,42 @@ export const baseStyle = css`
   max-width: 1000px;
   width: 100%;
   margin: auto;
+  height: 100%;
+  padding: 15px;
 
   h1 {
     ${({ theme }) => theme.h1}
   }
 
   h2 {
-    ${({ theme }) => theme.h2}
-  }
-
-  h3 {
     ${({ theme }) => theme.h3}
   }
 
+  h3 {
+    ${({ theme }) => theme.bigParagraphSemibold};
+  }
+
+  h4 {
+    ${({ theme }) => theme.bigParagraph};
+  }
+
   p {
-    ${({ theme }) => theme.bigParagraph}
+    ${({ theme }) => theme.smallParagraph};
+
+    strong {
+      ${({ theme }) => theme.smallParagraphSemibold};
+    }
+  }
+
+  a {
+    color: ${({ theme }) => theme.link};
   }
 
   table {
     width: 100%;
     border-collapse: collapse;
+    margin-top: 1em;
+    margin-bottom: 1em;
 
     th {
       text-align: left;
