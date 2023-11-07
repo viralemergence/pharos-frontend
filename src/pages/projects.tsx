@@ -9,14 +9,17 @@ import ModalMessageProvider from 'hooks/useModal/ModalMessageProvider'
 import ProjectPage from 'components/PublicViews/ProjectPage/ProjectPage'
 
 const Projects = () => {
-  // on the build server, don't try to render client-side routes
-  if (typeof window === 'undefined') return <></>
+  // // on the build server, don't try to render client-side routes
+  // if (typeof window === 'undefined') return <></>
 
-  const params = new URLSearchParams(window.location.search)
+  const params =
+    typeof window !== 'undefined'
+      ? new URLSearchParams(window.location.search)
+      : new URLSearchParams('')
 
   const projectID = params.get('prj')
 
-  if (!projectID) navigate('/')
+  if (typeof window !== 'undefined' && !projectID) navigate('/')
 
   const datasetID = params.get('set')
 

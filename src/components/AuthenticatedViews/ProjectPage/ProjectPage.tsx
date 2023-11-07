@@ -91,6 +91,9 @@ const ProjectPage = () => {
   const { publish, unpublish, requestedPublishing, unPublishing } =
     usePublishing()
 
+  const location: typeof window.location | Record<string, undefined> =
+    typeof window !== 'undefined' ? window.location : {}
+
   return (
     <ProjectPageLayout>
       <TopBar>
@@ -183,10 +186,10 @@ const ProjectPage = () => {
         <LoggedInProjectPageContentBox>
           <h2>Permanent project link</h2>
           <ClickToCopy
-            copyContentString={`${window.location.origin}/projects/?prj=${project.projectID}`}
+            copyContentString={`${location.origin}/projects/?prj=${project.projectID}`}
             style={{ marginTop: 10 }}
           >
-            {window.location.hostname}/projects/?prj={project.projectID}
+            {location.hostname}/projects/?prj={project.projectID}
           </ClickToCopy>
           <h2>Project type</h2>
           <p>{project.projectType || '—'}</p>

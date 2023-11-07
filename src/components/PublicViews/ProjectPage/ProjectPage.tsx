@@ -84,6 +84,9 @@ const ProjectPage = () => {
   const { status, data: project } = usePublishedProject()
   const { user } = useAppState()
 
+  const location: typeof window.location | Record<string, undefined> =
+    typeof window !== 'undefined' ? window.location : {}
+
   if (status === ProjectDataStatus.Error) {
     console.log(project.error.message)
     return (
@@ -236,10 +239,10 @@ const ProjectPage = () => {
               <h2>Permanent project link</h2>
               <ClickToCopy
                 darkmode
-                copyContentString={`${window.location.origin}/projects/?prj=${project.projectID}`}
+                copyContentString={`${location.origin}/projects/?prj=${project.projectID}`}
                 style={{ marginTop: 10 }}
               >
-                {window.location.hostname}/projects/?prj={project.projectID}
+                {location.hostname}/projects/?prj={project.projectID}
               </ClickToCopy>
             </>
             {status === ProjectDataStatus.Loaded ? (

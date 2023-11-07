@@ -38,7 +38,11 @@ const PAGESIZE = 50
 const DatasetPage = () => {
   const theme = useTheme()
 
-  const params = new URLSearchParams(window.location.search)
+  const params =
+    typeof window !== 'undefined'
+      ? new URLSearchParams(window.location.search)
+      : new URLSearchParams('')
+
   const datasetID = params.get('set') ?? ''
 
   const { status, data: project } = usePublishedProject()

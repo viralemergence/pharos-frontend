@@ -53,11 +53,14 @@ const CitationsPublications = ({
     yearPublished = new Date(project.datePublished).getFullYear().toString()
   }
 
+  const location: typeof window.location | Record<string, undefined> =
+    typeof window !== 'undefined' ? window.location : {}
+
   const citationToCopy = `${commaSeparatedList(
     project.authors?.map(author => author?.name ?? '') ?? []
-  )}. ${project.name} (${yearPublished}). ${
-    window.location.origin
-  }/projects/?prj=${project.projectID}. Accessed on ${new Date()
+  )}. ${project.name} (${yearPublished}). ${location.origin}/projects/?prj=${
+    project.projectID
+  }. Accessed on ${new Date()
     .toISOString()
     .split('.')[0]
     .split('T')
@@ -76,7 +79,7 @@ const CitationsPublications = ({
             {commaSeparatedList(
               project.authors?.map(author => author?.name ?? '') ?? []
             )}
-            . {project.name} ({yearPublished}). {window.location.hostname}
+            . {project.name} ({yearPublished}). {location.hostname}
             /projects/?prj={project.projectID}. Accessed on{' '}
             {new Date().toISOString().split('.')[0].split('T').join(' ')} UTC.
           </ClickToCopy>

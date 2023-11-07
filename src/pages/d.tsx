@@ -23,10 +23,11 @@ const StyledLink = styled(Link)`
 `
 
 const Downloads = () => {
-  const params = new URLSearchParams(window.location.search)
-  const downloadID = params.get('dwn')
-
-  if (!downloadID) navigate('/')
+  if (typeof window !== 'undefined') {
+    const params = new URLSearchParams(window.location.search)
+    const downloadID = params.get('dwn')
+    if (!downloadID) navigate('/')
+  }
 
   const { status, data: downloadMetadata } = useDownloadMetadata()
 

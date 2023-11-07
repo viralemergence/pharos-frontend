@@ -125,7 +125,11 @@ const loadDownloadMetadata = async (
 }
 
 const useDownloadMetadata = () => {
-  const params = new URLSearchParams(window.location.search)
+  const params =
+    typeof window !== 'undefined'
+      ? new URLSearchParams(window.location.search)
+      : new URLSearchParams('')
+
   const downloadID = params.get('dwn')!
 
   const [downloadMetadata, setDownloadMetadata] =

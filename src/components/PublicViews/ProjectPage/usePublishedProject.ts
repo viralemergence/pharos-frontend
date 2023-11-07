@@ -150,11 +150,12 @@ const loadPublishedProject = async (
 }
 
 const usePublishedProject = () => {
-  const params = new URLSearchParams(window.location.search)
+  const params =
+    typeof window !== 'undefined'
+      ? new URLSearchParams(window.location.search)
+      : new URLSearchParams('')
 
-  // I'm using the ! here because if this is undefined then
-  // we're just going to navigate away and unmount the parent
-  const projectID = params.get('prj')!
+  const projectID = params.get('prj') ?? ''
 
   const [projectData, setProjectData] = useState<ProjectData>({
     status: ProjectDataStatus.Loading,
@@ -168,7 +169,7 @@ const usePublishedProject = () => {
       status: ProjectDataStatus.Loading,
       data: { projectID },
     })
-    loadPublishedProject(projectID, setProjectData)
+    if (projectID) loadPublishedProject(projectID, setProjectData)
   }, [projectID])
 
   return projectData
