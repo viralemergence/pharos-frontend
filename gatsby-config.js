@@ -101,6 +101,9 @@ module.exports = {
         display: `standalone`,
         icon: `icon.png`,
         crossOrigin: `use-credentials`,
+        icon_options: {
+          purpose: `any maskable`,
+        },
       },
     },
     {
