@@ -196,7 +196,11 @@ const ProjectPage = () => {
               {status === ProjectDataStatus.Loading && (
                 <>
                   <h2>How to cite this project</h2>
-                  <ClickToCopy darkmode copyContentString={''}>
+                  <ClickToCopy
+                    darkmode
+                    style={{ marginTop: 10 }}
+                    copyContentString={''}
+                  >
                     &nbsp;
                   </ClickToCopy>
                 </>
