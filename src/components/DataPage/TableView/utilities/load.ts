@@ -91,9 +91,9 @@ type GetQueryStringParametersProps = {
   pageSize?: number
   // Require either pageToLoad or records to be present
 } & (
-  | { pageToLoad: number; records?: never }
-  | { records: Row[]; pageToLoad?: never }
-)
+    | { pageToLoad: number; records?: never }
+    | { records: Row[]; pageToLoad?: never }
+  )
 
 export const getQueryStringParameters = ({
   filters = [],

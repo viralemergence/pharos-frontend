@@ -126,7 +126,10 @@ const DataToolbar = ({
       )}
       {view === View.table && recordCount !== undefined && (
         <>
-          <DataDownloadButton matchingRecordCount={matchingRecordCount} />
+          <DataDownloadButton
+            matchingRecordCount={matchingRecordCount}
+            filters={filters}
+          />
           {
             // <SummaryOfRecordsStyled
             //   role="status"

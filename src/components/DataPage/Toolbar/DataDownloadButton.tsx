@@ -1,13 +1,18 @@
 import { Auth } from 'aws-amplify'
 import MintButton from 'components/ui/MintButton'
 import useModal from 'hooks/useModal/useModal'
+import { Filter } from 'pages/data'
 import React from 'react'
 
 interface DataDownloadButtonProps {
   matchingRecordCount?: number
+  filters: Filter[]
 }
 
-const requestExport = async (setModal: ReturnType<typeof useModal>) => {
+const requestExport = async (
+  params: URLSearchParams,
+  setModal: ReturnType<typeof useModal>
+) => {
   let userSession
   try {
     userSession = await Auth.currentSession()
@@ -29,13 +34,16 @@ const requestExport = async (setModal: ReturnType<typeof useModal>) => {
     { closeable: true }
   )
 
-  const response = await fetch(`${process.env.GATSBY_API_URL}/download/`, {
-    method: 'GET',
-    headers: new Headers({
-      Authorization: userSession.getIdToken().getJwtToken(),
-      'Content-Type': 'application/json',
-    }),
-  }).catch(error => {
+  const response = await fetch(
+    `${process.env.GATSBY_API_URL}/download/?${params.toString()}`,
+    {
+      method: 'GET',
+      headers: new Headers({
+        Authorization: userSession.getIdToken().getJwtToken(),
+        'Content-Type': 'application/json',
+      }),
+    }
+  ).catch(error => {
     setModal(
       <div style={{ padding: 15 }}>
         <h1>There was an error requesting your export</h1>
@@ -66,11 +74,22 @@ const requestExport = async (setModal: ReturnType<typeof useModal>) => {
 
 const DataDownloadButton = ({
   matchingRecordCount,
+  filters,
 }: DataDownloadButtonProps) => {
   const setModal = useModal()
 
   const handleClick = () => {
-    requestExport(setModal)
+    const params = filters.reduce((params, filter) => {
+      filter.values.forEach(
+        // the 'Boolean(value)' here is to emulate the behavior in
+        // src/components/DataPage/TableView/utilities/load.ts
+        // but I don't see why filters.values would hold falsy values.
+        value => Boolean(value) && params.append(filter.id, value)
+      )
+      return params
+    }, new URLSearchParams())
+
+    requestExport(params, setModal)
   }
 
   return (
