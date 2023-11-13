@@ -50,6 +50,12 @@ module.exports = {
       },
     },
     {
+      resolve: `gatsby-plugin-plausible`,
+      options: {
+        domain: `pharos.viralemergence.org`,
+      },
+    },
+    {
       // filling in the gtag here
       // will set up both the gatsby
       // google analytics plugin and
