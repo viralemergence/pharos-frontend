@@ -196,7 +196,7 @@ const ProjectPage = () => {
           <h2>Surveillance status</h2>
           <p>{project.surveillanceStatus || '—'}</p>
           <h2>Related materials</h2>
-          <p>{relatedMaterials || '—'}</p>
+          <p style={{wordWrap: 'break-word'}}>{relatedMaterials || '—'}</p>
         </LoggedInProjectPageContentBox>
       </ProjectPageSidebar>
     </ProjectPageLayout>
