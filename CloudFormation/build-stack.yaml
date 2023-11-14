@@ -578,9 +578,9 @@ Resources:
           ForwardedValues:
             QueryString: 'true'
           ViewerProtocolPolicy: redirect-to-https
-          LambdaFunctionAssociations:
-            - EventType: 'viewer-request'
-              LambdaFunctionARN: !Ref BasicAuthLambdaVersion5
+          # LambdaFunctionAssociations:
+          #   - EventType: 'viewer-request'
+          #     LambdaFunctionARN: !Ref BasicAuthLambdaVersion4
         PriceClass: PriceClass_All
         ViewerCertificate:
           AcmCertificateArn: !Ref CertificateArn
