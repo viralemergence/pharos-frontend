@@ -50,13 +50,19 @@ module.exports = {
       },
     },
     {
+      resolve: `gatsby-plugin-plausible`,
+      options: {
+        domain: `pharos.viralemergence.org`,
+      },
+    },
+    {
       // filling in the gtag here
       // will set up both the gatsby
       // google analytics plugin and
       // the cookieconsent opt-in system.
       resolve: `gatsby-plugin-gtag`,
       options: {
-        trackingId: `G-XXXXXXXXXX`,
+        trackingId: `G-RZHBVVJL8K`,
         anonymize: true,
         head: false,
       },
@@ -101,6 +107,9 @@ module.exports = {
         display: `standalone`,
         icon: `icon.png`,
         crossOrigin: `use-credentials`,
+        icon_options: {
+          purpose: `any maskable`,
+        },
       },
     },
     {

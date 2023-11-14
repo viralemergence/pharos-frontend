@@ -5,13 +5,11 @@ import PublicViewBackground from '../PublicViewBackground'
 import { DatasetTopSection } from 'components/DatasetPage/DatasetPageLayout'
 import type { Sort } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 
-import useDatasetID from 'hooks/dataset/useDatasetID'
-
 import TopBar, {
   Title,
   Breadcrumbs,
   PublicViewBreadcrumbLink,
-  BreadcrumbLink,
+  // BreadcrumbLink,
   Controls,
 } from 'components/layout/TopBar'
 
@@ -39,7 +37,14 @@ const PAGESIZE = 50
 
 const DatasetPage = () => {
   const theme = useTheme()
-  const datasetID = useDatasetID()
+
+  const params =
+    typeof window !== 'undefined'
+      ? new URLSearchParams(window.location.search)
+      : new URLSearchParams('')
+
+  const datasetID = params.get('set') ?? ''
+
   const { status, data: project } = usePublishedProject()
   const { user } = useAppState()
 
@@ -77,15 +82,15 @@ const DatasetPage = () => {
                 Projects
               </PublicViewBreadcrumbLink>
               {status === ProjectDataStatus.Loaded && (
-                <BreadcrumbLink
+                <PublicViewBreadcrumbLink
                   style={{ color: theme.white }}
                   $active
-                  to={`/${project.projectID}`}
+                  to={`/projects/?prj=${project.projectID}`}
                 >
                   {status === ProjectDataStatus.Loaded
                     ? project.name
                     : 'Loading...'}
-                </BreadcrumbLink>
+                </PublicViewBreadcrumbLink>
               )}
             </Breadcrumbs>
             <Title>Dataset not found</Title>
@@ -118,18 +123,21 @@ const DatasetPage = () => {
             <PublicViewBreadcrumbLink to={`/data/`}>
               Projects
             </PublicViewBreadcrumbLink>
-            <BreadcrumbLink
+            <PublicViewBreadcrumbLink
               style={{ color: theme.white }}
               $active
-              to={`/${project.projectID}`}
+              to={`/projects/?prj=${project.projectID}`}
             >
               {status === ProjectDataStatus.Loaded
                 ? project.name
                 : 'Loading...'}
-            </BreadcrumbLink>
-            <BreadcrumbLink $active to={`/${project.projectID}/${datasetID}`}>
+            </PublicViewBreadcrumbLink>
+            <PublicViewBreadcrumbLink
+              $active
+              to={`/projects/?prj=${project.projectID}&set=${datasetID}`}
+            >
               {dataset ? dataset.name : 'Loading...'}
-            </BreadcrumbLink>
+            </PublicViewBreadcrumbLink>
           </Breadcrumbs>
           <Title>{dataset ? dataset.name : 'Loading...'}</Title>
           <Controls>

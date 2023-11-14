@@ -91,6 +91,9 @@ const ProjectPage = () => {
   const { publish, unpublish, requestedPublishing, unPublishing } =
     usePublishing()
 
+  const location: typeof window.location | Record<string, undefined> =
+    typeof window !== 'undefined' ? window.location : {}
+
   return (
     <ProjectPageLayout>
       <TopBar>
@@ -127,7 +130,7 @@ const ProjectPage = () => {
             </MintToolbarButton>
             {project.publishStatus === ProjectPublishStatus.Published && (
               <MintToolbarButtonLink
-                to={`/projects/#/${project.projectID}/`}
+                to={`/projects/?prj=${project.projectID}`}
                 tooltip="Switch to public page"
               >
                 <PreviewIcon />
@@ -183,17 +186,17 @@ const ProjectPage = () => {
         <LoggedInProjectPageContentBox>
           <h2>Permanent project link</h2>
           <ClickToCopy
-            copyContentString={`${window.location.origin}/#/projects/${project.projectID}`}
+            copyContentString={`${location.origin}/projects/?prj=${project.projectID}`}
             style={{ marginTop: 10 }}
           >
-            {window.location.hostname}/#/projects/{project.projectID}
+            {location.hostname}/projects/?prj={project.projectID}
           </ClickToCopy>
           <h2>Project type</h2>
           <p>{project.projectType || '—'}</p>
           <h2>Surveillance status</h2>
           <p>{project.surveillanceStatus || '—'}</p>
           <h2>Related materials</h2>
-          <p>{relatedMaterials || '—'}</p>
+          <p style={{wordWrap: 'break-word'}}>{relatedMaterials || '—'}</p>
         </LoggedInProjectPageContentBox>
       </ProjectPageSidebar>
     </ProjectPageLayout>

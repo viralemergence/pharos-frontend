@@ -84,6 +84,9 @@ const ProjectPage = () => {
   const { status, data: project } = usePublishedProject()
   const { user } = useAppState()
 
+  const location: typeof window.location | Record<string, undefined> =
+    typeof window !== 'undefined' ? window.location : {}
+
   if (status === ProjectDataStatus.Error) {
     console.log(project.error.message)
     return (
@@ -126,7 +129,7 @@ const ProjectPage = () => {
             </PublicViewBreadcrumbLink>
             <PublicViewBreadcrumbLink
               $active
-              to={`/projects/#/${project.projectID}`}
+              to={`/projects/?prj=${project.projectID}`}
             >
               {status === ProjectDataStatus.Loaded
                 ? project.name
@@ -146,14 +149,17 @@ const ProjectPage = () => {
           </Controls>
         </TopBar>
         <ProjectPageMain>
-          <PublicProjectPageContentBox>
-            <h2>Description</h2>
-            <p>
-              {status === ProjectDataStatus.Loaded
-                ? project.description
-                : '...'}
-            </p>
-          </PublicProjectPageContentBox>
+          {(status === ProjectDataStatus.Loading ||
+            (status === ProjectDataStatus.Loaded && project.description)) && (
+            <PublicProjectPageContentBox>
+              <h2>Description</h2>
+              <p>
+                {status === ProjectDataStatus.Loaded
+                  ? project.description
+                  : '...'}
+              </p>
+            </PublicProjectPageContentBox>
+          )}
           {
             // <PublicProjectPageContentBox interactive>
             // <div
@@ -177,18 +183,30 @@ const ProjectPage = () => {
               status === ProjectDataStatus.Loaded ? project.datasets : []
             }
           />
-          {status === ProjectDataStatus.Loading ||
+          {(status === ProjectDataStatus.Loading ||
             (status === ProjectDataStatus.Loaded &&
               (project.citation ||
                 (project.othersCiting && project.othersCiting.length > 0) ||
                 (project.projectPublications &&
-                  project.projectPublications.length > 0)) && (
-                <PublicProjectPageContentBox>
-                  {status === ProjectDataStatus.Loaded && (
-                    <CitationsPublications project={project} published />
-                  )}
-                </PublicProjectPageContentBox>
-              ))}
+                  project.projectPublications.length > 0)))) && (
+            <PublicProjectPageContentBox>
+              {status === ProjectDataStatus.Loaded && (
+                <CitationsPublications project={project} published />
+              )}
+              {status === ProjectDataStatus.Loading && (
+                <>
+                  <h2>How to cite this project</h2>
+                  <ClickToCopy
+                    darkmode
+                    style={{ marginTop: 10 }}
+                    copyContentString={''}
+                  >
+                    &nbsp;
+                  </ClickToCopy>
+                </>
+              )}
+            </PublicProjectPageContentBox>
+          )}
         </ProjectPageMain>
         <ProjectPageSidebar>
           <PublicProjectPageContentBox>
@@ -211,31 +229,38 @@ const ProjectPage = () => {
                 ))}
               </>
             ) : (
-              <h2>Researchers</h2>
+              <>
+                <h2>Researchers</h2>
+                <Author>
+                  <AuthorName to={`#`}>&nbsp;</AuthorName>
+                  <AuthorOrganization>&nbsp;</AuthorOrganization>
+                </Author>
+              </>
             )}
           </PublicProjectPageContentBox>
           <PublicProjectPageContentBox>
+            <>
+              <h2>Permanent project link</h2>
+              <ClickToCopy
+                darkmode
+                copyContentString={`${location.origin}/projects/?prj=${project.projectID}`}
+                style={{ marginTop: 10 }}
+              >
+                {location.hostname}/projects/?prj={project.projectID}
+              </ClickToCopy>
+            </>
             {status === ProjectDataStatus.Loaded ? (
               <>
-                <h2>Permanent project link</h2>
-                <ClickToCopy
-                  darkmode
-                  copyContentString={`${window.location.origin}/projects/#/${project.projectID}`}
-                  style={{ marginTop: 10 }}
-                >
-                  {window.location.hostname}/projects/#/{project.projectID}
-                </ClickToCopy>
                 <h2>Project published</h2>
                 <p>{formatDate(project.datePublished)}</p>
-                {project.relatedMaterials &&
-                  project.relatedMaterials.length > 0 && (
-                    <>
-                      <h2>Related materials</h2>
-                      {project.relatedMaterials.map(material => (
-                        <p key={material}>{material}</p>
-                      ))}
-                    </>
-                  )}
+                {project.relatedMaterials && project.relatedMaterials[0] && (
+                  <>
+                    <h2>Related materials</h2>
+                    {project.relatedMaterials.map(material => (
+                      <p style={{wordWrap: 'break-word'}} key={material}>{material}</p>
+                    ))}
+                  </>
+                )}
                 {project.projectType && (
                   <>
                     <h2>Project type</h2>
@@ -250,7 +275,10 @@ const ProjectPage = () => {
                 )}
               </>
             ) : (
-              <h2>Project published</h2>
+              <>
+                <h2>Project published</h2>
+                <p>&nbsp;</p>
+              </>
             )}
           </PublicProjectPageContentBox>
         </ProjectPageSidebar>

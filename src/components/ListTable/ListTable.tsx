@@ -1,8 +1,9 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { lighten } from 'polished'
 
 import { Link } from 'react-router-dom'
+import { Link as GatsbyLink } from 'gatsby'
 
 export const cardsBreakpoint = 650
 const mediumBreakpoint = 1000
@@ -29,7 +30,7 @@ const TableGrid = styled.div<{ $darkmode: boolean }>`
       `}
   }
 `
-export const RowLink = styled(Link)<{
+const RowLinkCSS = css<{
   $wideColumnTemplate?: string
   $mediumColumnTemplate?: string
   $darkmode?: boolean
@@ -76,6 +77,22 @@ export const RowLink = styled(Link)<{
     background-color: ${({ theme, $darkmode }) =>
       $darkmode ? theme.mutedPurple4 : lighten(0.05, theme.hoverMint)};
   }
+`
+
+export const RowLink = styled(Link)<{
+  $wideColumnTemplate?: string
+  $mediumColumnTemplate?: string
+  $darkmode?: boolean
+}>`
+  ${RowLinkCSS}
+`
+
+export const PublicRowLink = styled(GatsbyLink)<{
+  $wideColumnTemplate?: string
+  $mediumColumnTemplate?: string
+  $darkmode?: boolean
+}>`
+  ${RowLinkCSS}
 `
 
 export const HeaderRow = styled.div<{

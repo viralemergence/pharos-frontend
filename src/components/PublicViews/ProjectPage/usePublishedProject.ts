@@ -1,4 +1,3 @@
-import useProjectID from 'hooks/project/useProjectID'
 import { useEffect, useState } from 'react'
 
 export interface PublishedDataset {
@@ -151,7 +150,12 @@ const loadPublishedProject = async (
 }
 
 const usePublishedProject = () => {
-  const projectID = useProjectID()
+  const params =
+    typeof window !== 'undefined'
+      ? new URLSearchParams(window.location.search)
+      : new URLSearchParams('')
+
+  const projectID = params.get('prj') ?? ''
 
   const [projectData, setProjectData] = useState<ProjectData>({
     status: ProjectDataStatus.Loading,
@@ -165,7 +169,7 @@ const usePublishedProject = () => {
       status: ProjectDataStatus.Loading,
       data: { projectID },
     })
-    loadPublishedProject(projectID, setProjectData)
+    if (projectID) loadPublishedProject(projectID, setProjectData)
   }, [projectID])
 
   return projectData

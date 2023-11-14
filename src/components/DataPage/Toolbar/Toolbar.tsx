@@ -13,8 +13,10 @@ import {
   ContainerForFilterPanelLauncher,
   DataToolbarDiv,
   SummaryOfRecordsStyled,
+  // SummaryOfRecordsStyled,
 } from '../DisplayComponents'
 import { SummaryOfRecords } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
+// import DataDownloadButton from './DataDownloadButton'
 
 export enum View {
   map = 'map',
@@ -26,7 +28,7 @@ export const isView = (str: string): str is View => {
   return Object.values(View).includes(str)
 }
 
-/** For example, convert 1000000 to "1,000,000" */
+// /** For example, convert 1000000 to "1,000,000" */
 const addCommasToNumber = (num: number) => num.toLocaleString('en-US')
 
 const RadioButton = ({
@@ -124,16 +126,26 @@ const DataToolbar = ({
         </ContainerForFilterPanelLauncher>
       )}
       {view === View.table && recordCount !== undefined && (
-        <SummaryOfRecordsStyled
-          role="status"
-          aria-live="polite"
-          aria-atomic="true"
-        >
-          {matchingRecordCount !== undefined && appliedFiltersCount > 0 && (
-            <>{addCommasToNumber(matchingRecordCount)} of </>
-          )}
-          {addCommasToNumber(recordCount)} records
-        </SummaryOfRecordsStyled>
+        <>
+          {
+            // <DataDownloadButton
+            //   matchingRecordCount={matchingRecordCount}
+            //   filters={filters}
+            // />
+          }
+          {
+            <SummaryOfRecordsStyled
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              {matchingRecordCount !== undefined && appliedFiltersCount > 0 && (
+                <>{addCommasToNumber(matchingRecordCount)} of </>
+              )}
+              {addCommasToNumber(recordCount)} records
+            </SummaryOfRecordsStyled>
+          }
+        </>
       )}
     </DataToolbarDiv>
   )
