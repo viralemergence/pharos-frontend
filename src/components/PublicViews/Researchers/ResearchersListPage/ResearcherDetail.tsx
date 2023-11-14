@@ -79,7 +79,7 @@ const ResearcherDetail = ({ researcher }: ResearcherDetailProps) => {
           >
             <DatePublished>{formatDate(project.datePublished)}</DatePublished>
             <ProjectName>
-              <Link to={`/projects/#/${project.projectID}`}>
+              <Link to={`/projects/?prj=${project.projectID}`}>
                 {project.name}
               </Link>
             </ProjectName>

@@ -40,7 +40,13 @@ const HomeLink = styled(NavLink)`
   padding: 10px;
   display: flex;
   align-items: center;
-  margin-left: 20px;
+  // margin-left: 20px;
+  padding-left: 0px;
+
+  @media (max-width: 400px) {
+    margin-left: 0px;
+    padding-right: 0px;
+  }
 `
 const DesktopNav = styled(LinkList)`
   @media (max-width: 699px) {
@@ -56,7 +62,12 @@ const MobileLinkList = styled(LinkList)`
 const NavLogo = styled(CMS.Image)`
   height: 63px;
   margin-right: 30px;
-  margin-left: 12px;
+  margin-left: 27px;
+
+  @media (max-width: 769px) {
+    margin-left: 6px;
+  }
+
   @media (max-width: 400px) {
     margin-right: 0px;
   }
