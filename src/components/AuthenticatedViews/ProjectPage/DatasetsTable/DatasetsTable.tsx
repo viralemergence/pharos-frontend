@@ -3,6 +3,7 @@ import React from 'react'
 import ListTable, {
   CardHeaderRow,
   HeaderRow,
+  PublicRowLink,
   RowLink,
   TableCell,
 } from 'components/ListTable/ListTable'
@@ -96,18 +97,23 @@ const DatasetsTable = ({
           )}
           <TableCell>Last updated</TableCell>
         </HeaderRow>
-        {sorted.map(dataset => (
-          <RowLink
-            key={dataset.datasetID}
-            to={
-              publicView
-                ? `/${project.projectID}/${dataset.datasetID}`
-                : `/projects/${project.projectID}/${dataset.datasetID}`
-            }
-          >
-            <DatasetsTableRow dataset={dataset} publicView={publicView} />
-          </RowLink>
-        ))}
+        {sorted.map(dataset =>
+          publicView ? (
+            <PublicRowLink
+              key={dataset.datasetID}
+              to={`/projects/?prj=${project.projectID}&set=${dataset.datasetID}`}
+            >
+              <DatasetsTableRow dataset={dataset} publicView={publicView} />
+            </PublicRowLink>
+          ) : (
+            <RowLink
+              key={dataset.datasetID}
+              to={`/projects/${project.projectID}/${dataset.datasetID}`}
+            >
+              <DatasetsTableRow dataset={dataset} publicView={publicView} />
+            </RowLink>
+          )
+        )}
 
         {!publicView && <CreateNewDatasetRow />}
       </ListTable>

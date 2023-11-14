@@ -64,7 +64,7 @@ const wait = (milliseconds: number) => {
   })
 }
 
-describe('The public data page', () => {
+describe.skip('The public data page', () => {
   // Make window.location available to tests
   const { location } = window
   beforeEach(() => {

@@ -37,7 +37,7 @@ const LinkList = styled.ol`
   margin: 0;
 `
 const HomeLink = styled(NavLink)`
-  padding: 0;
+  padding: 10px;
   display: flex;
   align-items: center;
   margin-left: 20px;
@@ -54,7 +54,7 @@ const MobileLinkList = styled(LinkList)`
   border-bottom-right-radius: 5px;
 `
 const NavLogo = styled(CMS.Image)`
-  height: 70px;
+  height: 63px;
   margin-right: 30px;
   margin-left: 12px;
   @media (max-width: 400px) {
@@ -123,7 +123,7 @@ const NavBar = () => {
             <NavLogo
               name="Site logo"
               data={data}
-              style={{ height: 70, width: 200 }}
+              style={{ height: 57, width: 179 }}
             />
           </HomeLink>
         </LinkList>

@@ -5,6 +5,7 @@ import saveProject, { SaveProject } from 'storage/storageFunctions/saveProject'
 import saveDataset, { SaveDataset } from './storageFunctions/saveDataset'
 import saveRegister, { SaveRegister } from './storageFunctions/saveRegister'
 import deleteDataset, { DeleteDataset } from './storageFunctions/deleteDataset'
+import createProject, { CreateProject } from './storageFunctions/createProject'
 
 export enum StorageMessageStatus {
   // when the api message is created
@@ -24,6 +25,7 @@ export enum StorageMessageStatus {
 
 export enum APIRoutes {
   saveUser = 'create-user',
+  createProject = 'create-project',
   saveProject = 'save-project',
   saveDataset = 'save-dataset',
   deleteDataset = 'delete-dataset',
@@ -39,6 +41,7 @@ export interface StorageMessagePayload<Data, Route> {
 
 export type StorageMessage =
   | SaveProject
+  | CreateProject
   | SaveUser
   | SaveDataset
   | DeleteDataset
@@ -76,6 +79,10 @@ const synchronizeMessageQueue = async (
 
         case APIRoutes.saveProject:
           saveProject(key, message, dispatch)
+          continue
+
+        case APIRoutes.createProject:
+          createProject(key, message, dispatch)
           continue
 
         case APIRoutes.saveDataset:
