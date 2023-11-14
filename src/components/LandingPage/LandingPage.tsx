@@ -72,6 +72,18 @@ const LandingText = styled(CMS.RichText)`
   }
 `
 
+const MobileMapButtonLink = styled(MintButtonLink)`
+  @media (min-width: 400px) {
+    display: none;
+  }
+`
+
+const LaptopMapButtonLink = styled(MintButtonLink)`
+  @media (max-width: 399px) {
+    display: none;
+  }
+`
+
 /** Text that displays only when viewport is too small to display the white
  * text with the dark map behind it */
 const LandingTextForSmallViewports = styled.div`
@@ -125,7 +137,8 @@ const LoggedOutLanding = () => {
                 <CMS.Text name="CTA" data={cmsData} />
               )}
             </MintButtonLink>
-            <MintButtonLink to="/data#map">View map</MintButtonLink>
+            <MobileMapButtonLink to="/data#globe">View map</MobileMapButtonLink>
+            <LaptopMapButtonLink to="/data#map">View map</LaptopMapButtonLink>
           </ButtonBox>
         </Header>
         <Main style={{ margin: 0, padding: '0 40px' }}>
