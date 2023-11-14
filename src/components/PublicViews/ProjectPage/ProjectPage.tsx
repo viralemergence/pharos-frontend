@@ -257,7 +257,7 @@ const ProjectPage = () => {
                   <>
                     <h2>Related materials</h2>
                     {project.relatedMaterials.map(material => (
-                      <p key={material}>{material}</p>
+                      <p style={{wordWrap: 'break-word'}} key={material}>{material}</p>
                     ))}
                   </>
                 )}
