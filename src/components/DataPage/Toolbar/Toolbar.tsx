@@ -13,7 +13,6 @@ import {
   ContainerForFilterPanelLauncher,
   DataToolbarDiv,
   SummaryOfRecordsStyled,
-  // SummaryOfRecordsStyled,
 } from '../DisplayComponents'
 import { SummaryOfRecords } from 'components/PublicViews/PublishedRecordsDataGrid/PublishedRecordsDataGrid'
 // import DataDownloadButton from './DataDownloadButton'

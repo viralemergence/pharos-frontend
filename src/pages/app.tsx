@@ -15,6 +15,7 @@ import ProjectList from 'components/AuthenticatedViews/PortfolioPage/PortfolioPa
 import ModalMessageProvider from 'hooks/useModal/ModalMessageProvider'
 import DataLoader from 'components/AuthenticatedViews/DataLoader'
 import SignUp from 'components/Authentication/SignUp/SignUp'
+import ResetPassword from 'components/Authentication/ResetPassword/ResetPassword'
 
 const App = (): JSX.Element => {
   // on the build server, don't try to render the app
@@ -29,6 +30,7 @@ const App = (): JSX.Element => {
           <Routes>
             <Route path={'/sign-up'} element={<SignUp />} />
             <Route path={'/login'} element={<Login />} />
+            <Route path={'/reset-password'} element={<ResetPassword />} />
             <Route
               path={'/projects/:projectID/:datasetID'}
               element={
