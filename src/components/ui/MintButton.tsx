@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 import { Link } from 'gatsby'
 
-const buttonStyle = css<{
+export const buttonStyle = css<{
   secondary?: boolean
   warning?: boolean
   inProgress?: boolean

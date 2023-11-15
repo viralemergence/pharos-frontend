@@ -5,7 +5,8 @@ import { Auth } from 'aws-amplify'
 import Main from 'components/layout/Main'
 import Label from 'components/ui/InputLabel'
 import Input from 'components/ui/Input'
-import MintButton from 'components/ui/MintButton'
+import MintButton, { buttonStyle } from 'components/ui/MintButton'
+import { Link } from 'react-router-dom'
 
 const Container = styled(Main)`
   max-width: 505px;
@@ -19,15 +20,20 @@ const Form = styled.form`
 const H1 = styled.h1`
   ${({ theme }) => theme.h1}
 `
+const MintButtonReactRouterLink = styled(Link)`
+  ${buttonStyle}
+`
 
 const ResetPassword = () => {
   const [submitting, setSubmitting] = useState(false)
+  const [success, setSuccess] = useState(false)
   const [email, setEmail] = useState('')
   const [passwordResetCode, setPasswordResetCode] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [formMessage, setFormMessage] = useState('')
 
-  const handleSubmit = async (_: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
     setSubmitting(true)
     try {
       const data = await Auth.forgotPasswordSubmit(
@@ -37,7 +43,8 @@ const ResetPassword = () => {
       )
       console.log(data)
       setSubmitting(false)
-      setFormMessage('Password reset')
+      setSuccess(true)
+      setFormMessage('Password reset, please continue to sign in')
     } catch (err) {
       setSubmitting(false)
       console.log(err)
@@ -83,13 +90,20 @@ const ResetPassword = () => {
           />
         </Label>
         <p>{formMessage}</p>
-        <MintButton
-          type="submit"
-          style={{ marginTop: 40 }}
-          disabled={submitting}
-        >
-          {submitting ? 'Loading...' : 'Reset'}
-        </MintButton>
+        {!success && (
+          <MintButton
+            type="submit"
+            style={{ marginTop: 40 }}
+            disabled={submitting || success}
+          >
+            {submitting ? 'Loading...' : 'Reset'}
+          </MintButton>
+        )}
+        {success && (
+          <MintButtonReactRouterLink to="/login/">
+            Go to login
+          </MintButtonReactRouterLink>
+        )}
       </Form>
     </Container>
   )
