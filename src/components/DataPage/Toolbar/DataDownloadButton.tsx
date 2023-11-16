@@ -15,13 +15,17 @@ const ModalContainer = styled.div`
   width: 800px;
   max-width: 80vw;
   padding: 15px;
+  display: flex;
+  flex-direction: column;
 
   > h1 {
     ${({ theme }) => theme.h3};
+    margin-bottom: 0;
   }
 
   > p {
     ${({ theme }) => theme.smallParagraph};
+    margin: 30px 0;
   }
 `
 
