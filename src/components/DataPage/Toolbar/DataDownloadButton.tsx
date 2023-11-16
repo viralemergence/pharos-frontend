@@ -1,16 +1,19 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { ThemeType, useTheme } from 'styled-components'
 import { Auth } from 'aws-amplify'
 
-import MintButton from 'components/ui/MintButton'
+import MintButton, { MintButtonLink } from 'components/ui/MintButton'
 import { Filter } from 'pages/data'
 
 import useModal from 'hooks/useModal/useModal'
 import ColorMessage, {
   ColorMessageStatus,
 } from 'components/ui/Modal/ColorMessage'
+import LoadingSpinner from '../TableView/LoadingSpinner'
 
 const ModalContainer = styled.div`
+  width: 800px;
+  max-width: 80vw;
   padding: 15px;
 
   > h1 {
@@ -22,6 +25,25 @@ const ModalContainer = styled.div`
   }
 `
 
+const ModalButtonContainer = styled.div`
+  display: flex;
+  gap: 15px;
+`
+
+const LoadingContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 30px;
+
+  > h1 {
+    ${({ theme }) => theme.h3};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+`
+
 interface DataDownloadButtonProps {
   matchingRecordCount?: number
   filters: Filter[]
@@ -29,7 +51,8 @@ interface DataDownloadButtonProps {
 
 const requestExport = async (
   params: URLSearchParams,
-  setModal: ReturnType<typeof useModal>
+  setModal: ReturnType<typeof useModal>,
+  theme: ThemeType
 ) => {
   let userSession
   try {
@@ -37,7 +60,7 @@ const requestExport = async (
   } catch (error) {
     setModal(
       <ModalContainer>
-        <h1>You must be logged in to create an export</h1>
+        <h1>Download Data</h1>
         <ColorMessage status={ColorMessageStatus.Warning}>
           Make an account to download data
         </ColorMessage>
@@ -46,6 +69,12 @@ const requestExport = async (
           Downloads will be saved to your account so that you can access the
           download and the citation later.
         </p>
+        <ModalButtonContainer>
+          <MintButtonLink to="/app/#/login">Sign in</MintButtonLink>
+          <MintButtonLink secondary to="/app/#/sign-up">
+            Sign up
+          </MintButtonLink>
+        </ModalButtonContainer>
       </ModalContainer>,
       { closeable: true }
     )
@@ -53,45 +82,68 @@ const requestExport = async (
   }
 
   setModal(
-    <div style={{ padding: 15 }}>
-      <h1>Loading...</h1>
-    </div>,
+    <LoadingContainer>
+      <h1>
+        <LoadingSpinner color={theme.darkPurple} style={{ top: -3 }} />
+        &nbsp; Loading...
+      </h1>
+    </LoadingContainer>,
     { closeable: true }
   )
 
-  const response = await fetch(
-    `${process.env.GATSBY_API_URL}/download/?${params.toString()}`,
-    {
-      method: 'GET',
-      headers: new Headers({
-        Authorization: userSession.getIdToken().getJwtToken(),
-        'Content-Type': 'application/json',
-      }),
-    }
-  ).catch(error => {
-    setModal(
-      <div style={{ padding: 15 }}>
-        <h1>There was an error requesting your export</h1>
-        <p>{error.message}</p>
-      </div>,
-      { closeable: true }
+  try {
+    const response = await fetch(
+      `${process.env.GATSBY_API_URL}/download/?${params.toString()}`,
+      {
+        method: 'GET',
+        headers: new Headers({
+          Authorization: userSession.getIdToken().getJwtToken(),
+          'Content-Type': 'application/json',
+        }),
+      }
     )
-  })
 
-  if (response && response.ok) {
+    if (response && response.ok) {
+      setModal(
+        <ModalContainer>
+          <h1>Download Data</h1>
+          <ColorMessage status={ColorMessageStatus.Good}>
+            Download sent via email
+          </ColorMessage>
+          <p>
+            Your download and the corresponding citation are being emailed to
+            you. This may take a few minutes. Downloads will be saved to your
+            account so that you can access the download and the citation later.
+          </p>
+          <ModalButtonContainer>
+            <MintButton onClick={() => setModal(null)}>Close</MintButton>
+          </ModalButtonContainer>
+        </ModalContainer>,
+        { closeable: true }
+      )
+    } else {
+      setModal(
+        <ModalContainer>
+          <h1>Download data</h1>
+          <ColorMessage status={ColorMessageStatus.Danger}>
+            There was an error requesting your export
+          </ColorMessage>
+          <p>{response.statusText}</p>
+          <MintButton onClick={() => setModal(null)}>Close</MintButton>
+        </ModalContainer>,
+        { closeable: true }
+      )
+    }
+  } catch (error) {
     setModal(
-      <div style={{ padding: 15 }}>
-        <h1>Your export has been requested</h1>
-        <p>You will receive an email when your export is ready for download</p>
-      </div>,
-      { closeable: true }
-    )
-  } else {
-    setModal(
-      <div style={{ padding: 15 }}>
-        <h1>There was an error requesting your export</h1>
-        <p>{response?.statusText}</p>
-      </div>,
+      <ModalContainer>
+        <h1>Download data</h1>
+        <ColorMessage status={ColorMessageStatus.Danger}>
+          There was an error requesting your export
+        </ColorMessage>
+        <p>{(error as { message?: string })?.message}</p>
+        <MintButton onClick={() => setModal(null)}>Close</MintButton>
+      </ModalContainer>,
       { closeable: true }
     )
   }
@@ -102,6 +154,7 @@ const DataDownloadButton = ({
   filters,
 }: DataDownloadButtonProps) => {
   const setModal = useModal()
+  const theme = useTheme()
 
   const handleClick = () => {
     const params = filters.reduce((params, filter) => {
@@ -114,7 +167,7 @@ const DataDownloadButton = ({
       return params
     }, new URLSearchParams())
 
-    requestExport(params, setModal)
+    requestExport(params, setModal, theme)
   }
 
   return (
