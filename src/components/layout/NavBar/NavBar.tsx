@@ -144,13 +144,13 @@ const NavBar = () => {
           ))}
           {user.status === UserStatus.LoggedIn && (
             <LogoutButton
-              onClick={() => {
+              onClick={async () => {
                 // this is a very aggressive temporary implementation
                 // of "log out" because it deletes all the local data
                 // without warning the user; this way we can use it
                 // as a "reset" button if a bug traps the user.
-                Auth.signOut()
-                localforage.clear()
+                await Auth.signOut()
+                await localforage.clear()
                 window.location.href = '/'
                 window.location.reload()
               }}
