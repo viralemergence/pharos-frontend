@@ -1,8 +1,26 @@
-import { Auth } from 'aws-amplify'
-import MintButton from 'components/ui/MintButton'
-import useModal from 'hooks/useModal/useModal'
-import { Filter } from 'pages/data'
 import React from 'react'
+import styled from 'styled-components'
+import { Auth } from 'aws-amplify'
+
+import MintButton from 'components/ui/MintButton'
+import { Filter } from 'pages/data'
+
+import useModal from 'hooks/useModal/useModal'
+import ColorMessage, {
+  ColorMessageStatus,
+} from 'components/ui/Modal/ColorMessage'
+
+const ModalContainer = styled.div`
+  padding: 15px;
+
+  > h1 {
+    ${({ theme }) => theme.h3};
+  }
+
+  > p {
+    ${({ theme }) => theme.smallParagraph};
+  }
+`
 
 interface DataDownloadButtonProps {
   matchingRecordCount?: number
@@ -18,10 +36,17 @@ const requestExport = async (
     userSession = await Auth.currentSession()
   } catch (error) {
     setModal(
-      <div style={{ padding: 15 }}>
+      <ModalContainer>
         <h1>You must be logged in to create an export</h1>
-        <p>Log in or sign up to continue</p>
-      </div>,
+        <ColorMessage status={ColorMessageStatus.Warning}>
+          Make an account to download data
+        </ColorMessage>
+        <p>
+          You need to be signed in to your account to download data from PHAROS.
+          Downloads will be saved to your account so that you can access the
+          download and the citation later.
+        </p>
+      </ModalContainer>,
       { closeable: true }
     )
     return
