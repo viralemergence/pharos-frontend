@@ -3,7 +3,6 @@ import NavBar from 'components/layout/NavBar/NavBar'
 import Providers from 'components/layout/Providers'
 import TopBar, { Breadcrumbs, Controls, Title } from 'components/layout/TopBar'
 import {
-  ProjectPageContentBox,
   ProjectPageLayout,
   ProjectPageMain,
   ProjectPageSidebar,
@@ -19,7 +18,6 @@ import { Link, navigate } from 'gatsby'
 import ModalMessageProvider from 'hooks/useModal/ModalMessageProvider'
 import React from 'react'
 import styled from 'styled-components'
-import { visitIterationBody } from 'typescript/lib/tsserverlibrary'
 
 const StyledLink = styled(Link)`
   color: ${({ theme }) => theme.link};
@@ -105,7 +103,10 @@ const Downloads = () => {
                     >
                       {permanentPrettyLink}
                     </ClickToCopy>
-                    <h2>Researchers included in extract</h2>
+                    <h2>
+                      Researchers included in extract (
+                      {downloadMetadata.researchers.length})
+                    </h2>
                     <ul>
                       {downloadMetadata.researchers.map(researcher => (
                         <li key={researcher.researcherID}>
@@ -115,7 +116,10 @@ const Downloads = () => {
                         </li>
                       ))}
                     </ul>
-                    <h2>Projects included in extract</h2>
+                    <h2>
+                      Projects included in extract (
+                      {downloadMetadata.projects.length})
+                    </h2>
                     <ul>
                       {downloadMetadata.projects.map(project => (
                         <li key={project.projectID}>
