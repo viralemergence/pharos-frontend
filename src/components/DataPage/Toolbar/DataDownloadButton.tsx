@@ -64,14 +64,14 @@ const requestExport = async (
   } catch (error) {
     setModal(
       <ModalContainer>
-        <h1>Download Data</h1>
+        <h1>Download data</h1>
         <ColorMessage status={ColorMessageStatus.Warning}>
           Make an account to download data
         </ColorMessage>
         <p>
           You need to be signed in to your account to download data from PHAROS.
-          Downloads will be saved to your account so that you can access the
-          download and the citation later.
+          Downloading data will create a citable data extract page. Eventually
+          you will be able to access your download history from your account.
         </p>
         <ModalButtonContainer>
           <MintButtonLink to="/app/#/login">Sign in</MintButtonLink>
@@ -110,15 +110,15 @@ const requestExport = async (
     if (response && response.ok) {
       setModal(
         <ModalContainer>
-          <h1>Download Data</h1>
+          <h1>Download data</h1>
           <ColorMessage status={ColorMessageStatus.Good}>
-            Download link will be sent via email
+            Data extract link will be sent via email
           </ColorMessage>
           <p>
-            Your download and the corresponding citation are being created and
-            emailed to you. This may take a few minutes. Downloads will be saved
-            to your account so that you can access the download and the citation
-            later.
+            Downloading data creates a citable data extract page which is being
+            emailed to you. This may take a few minutes. Eventually you will be
+            able to access your download history from your account. In every
+            data extract, all units are SI units.
           </p>
           <ModalButtonContainer>
             <MintButton onClick={() => setModal(null)}>Close</MintButton>
@@ -185,7 +185,7 @@ const DataDownloadButton = ({
         style={{ marginLeft: 'auto', position: 'relative' }}
         onClick={handleClick}
       >
-        Download Data ({(matchingRecordCount ?? 0).toLocaleString()} rows)
+        Download data ({(matchingRecordCount ?? 0).toLocaleString()} rows)
       </MintButton>
     </>
   )
