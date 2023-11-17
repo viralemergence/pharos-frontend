@@ -12,6 +12,9 @@ export interface DataDownloadMetadata {
     name: string
   }[]
   accessLink: string
+  queryStringParameters: {
+    [key: string]: string[] | null
+  }
 }
 
 export enum DataDownloadMetadataStatus {

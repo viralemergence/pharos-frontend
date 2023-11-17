@@ -112,12 +112,13 @@ const requestExport = async (
         <ModalContainer>
           <h1>Download Data</h1>
           <ColorMessage status={ColorMessageStatus.Good}>
-            Download sent via email
+            Download link will be sent via email
           </ColorMessage>
           <p>
-            Your download and the corresponding citation are being emailed to
-            you. This may take a few minutes. Downloads will be saved to your
-            account so that you can access the download and the citation later.
+            Your download and the corresponding citation are being created and
+            emailed to you. This may take a few minutes. Downloads will be saved
+            to your account so that you can access the download and the citation
+            later.
           </p>
           <ModalButtonContainer>
             <MintButton onClick={() => setModal(null)}>Close</MintButton>
