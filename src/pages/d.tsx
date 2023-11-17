@@ -19,6 +19,7 @@ import { Link, navigate } from 'gatsby'
 import ModalMessageProvider from 'hooks/useModal/ModalMessageProvider'
 import React from 'react'
 import styled from 'styled-components'
+import { visitIterationBody } from 'typescript/lib/tsserverlibrary'
 
 const StyledLink = styled(Link)`
   color: ${({ theme }) => theme.link};
@@ -40,6 +41,21 @@ const Downloads = () => {
     )) {
       if (selected !== null) appliedFilters[filter] = selected
     }
+
+  const location: typeof window.location | Record<string, undefined> =
+    typeof window !== 'undefined' ? window.location : {}
+
+  const permanentPrettyLink = `${location.host}${location.pathname}${location.search}`
+
+  const yearDownloaded =
+    status === DataDownloadMetadataStatus.Loaded &&
+    new Date(downloadMetadata.downloadDate).getFullYear().toString()
+
+  const citationToCopy = `PHAROS (${yearDownloaded}). ${permanentPrettyLink}. Accessed on ${new Date()
+    .toISOString()
+    .split('.')[0]
+    .split('T')
+    .join(' ')} UTC.`
 
   return (
     <Providers>
@@ -77,9 +93,17 @@ const Downloads = () => {
                     <ClickToCopy
                       darkmode
                       style={{ marginTop: 10 }}
-                      copyContentString={`PHAROS data extract citation for ${downloadMetadata.downloadID}`}
+                      copyContentString={citationToCopy}
                     >
-                      {`PHAROS data extract citation for ${downloadMetadata.downloadID}`}
+                      {citationToCopy}
+                    </ClickToCopy>
+                    <h2>Permanent data extract link</h2>
+                    <ClickToCopy
+                      darkmode
+                      copyContentString={location.href ?? ''}
+                      style={{ marginTop: 10 }}
+                    >
+                      {permanentPrettyLink}
                     </ClickToCopy>
                     <h2>Researchers included in extract</h2>
                     <ul>
