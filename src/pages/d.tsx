@@ -110,7 +110,9 @@ const Downloads = () => {
                     <ul>
                       {downloadMetadata.researchers.map(researcher => (
                         <li key={researcher.researcherID}>
-                          <StyledLink to={`researchers/`}>
+                          <StyledLink
+                            to={`/researchers/?researcherID=${researcher.researcherID}`}
+                          >
                             {researcher.name}
                           </StyledLink>
                         </li>
@@ -123,7 +125,9 @@ const Downloads = () => {
                     <ul>
                       {downloadMetadata.projects.map(project => (
                         <li key={project.projectID}>
-                          <StyledLink to={`researchers/`}>
+                          <StyledLink
+                            to={`/projects/?prj=${project.projectID}`}
+                          >
                             {project.name}
                           </StyledLink>
                         </li>
