@@ -23,6 +23,30 @@ const StyledLink = styled(Link)`
   color: ${({ theme }) => theme.link};
 `
 
+const DownloadPageLayout = styled(ProjectPageLayout)`
+  gap: 60px;
+  h1 {
+    color: ${({ theme }) => theme.white};
+  }
+  h2 {
+    color: ${({ theme }) => theme.white};
+  }
+`
+
+const DownloadPageContentBox = styled(PublicProjectPageContentBox)`
+  background: none;
+  border: none;
+  padding: 0px;
+
+  &:before {
+    content: unset;
+  }
+
+  a {
+    color: ${({ theme }) => theme.mint};
+  }
+`
+
 const Downloads = () => {
   if (typeof window !== 'undefined') {
     const params = new URLSearchParams(window.location.search)
@@ -62,7 +86,7 @@ const Downloads = () => {
         <NavBar />
         <ModalMessageProvider>
           <PublicViewBackground />
-          <ProjectPageLayout>
+          <DownloadPageLayout>
             <TopBar darkmode>
               <Breadcrumbs />
               <Title>
@@ -85,12 +109,12 @@ const Downloads = () => {
             {status === DataDownloadMetadataStatus.Loaded && (
               <>
                 <ProjectPageMain>
-                  <PublicProjectPageContentBox>
+                  <DownloadPageContentBox>
                     <h2>Downloaded on: {downloadMetadata.downloadDate}</h2>
                     <h2>Cite data extract</h2>
                     <ClickToCopy
                       darkmode
-                      style={{ marginTop: 10 }}
+                      style={{ marginTop: 10, width: 'fit-content' }}
                       copyContentString={citationToCopy}
                     >
                       {citationToCopy}
@@ -99,7 +123,7 @@ const Downloads = () => {
                     <ClickToCopy
                       darkmode
                       copyContentString={location.href ?? ''}
-                      style={{ marginTop: 10 }}
+                      style={{ marginTop: 10, width: 'fit-content' }}
                     >
                       {permanentPrettyLink}
                     </ClickToCopy>
@@ -133,17 +157,17 @@ const Downloads = () => {
                         </li>
                       ))}
                     </ul>
-                  </PublicProjectPageContentBox>
+                  </DownloadPageContentBox>
                 </ProjectPageMain>
                 <ProjectPageSidebar>
-                  <PublicProjectPageContentBox>
+                  <DownloadPageContentBox>
                     <h2>Applied Filters</h2>
                     <pre>{JSON.stringify(appliedFilters, null, 2)}</pre>
-                  </PublicProjectPageContentBox>
+                  </DownloadPageContentBox>
                 </ProjectPageSidebar>
               </>
             )}
-          </ProjectPageLayout>
+          </DownloadPageLayout>
         </ModalMessageProvider>
       </React.StrictMode>
     </Providers>
