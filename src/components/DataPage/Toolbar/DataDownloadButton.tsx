@@ -133,7 +133,9 @@ const requestExport = async (
             There was an error requesting your export
           </ColorMessage>
           <p>{response.statusText}</p>
-          <MintButton onClick={() => setModal(null)}>Close</MintButton>
+          <ModalButtonContainer>
+            <MintButton onClick={() => setModal(null)}>Close</MintButton>
+          </ModalButtonContainer>
         </ModalContainer>,
         { closeable: true }
       )
@@ -146,7 +148,9 @@ const requestExport = async (
           There was an error requesting your export
         </ColorMessage>
         <p>{(error as { message?: string })?.message}</p>
-        <MintButton onClick={() => setModal(null)}>Close</MintButton>
+        <ModalButtonContainer>
+          <MintButton onClick={() => setModal(null)}>Close</MintButton>
+        </ModalButtonContainer>
       </ModalContainer>,
       { closeable: true }
     )
