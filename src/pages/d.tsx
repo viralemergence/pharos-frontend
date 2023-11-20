@@ -49,23 +49,23 @@ const DownloadPageContentBox = styled(PublicProjectPageContentBox)`
 `
 
 const AppliedFilters = styled.div`
-  margin-top: 10px;
+  margin-top: 15px;
   color: ${({ theme }) => theme.white};
   display: flex;
   flex-direction: column;
   gap: 10px;
-  background: ${({ theme }) => theme.mutedPurple1};
-  border: 1px solid
-    ${({ theme }) => saturate(0.1, lighten(-0.08, theme.mutedPurple1))};
-  padding: 10px;
+  // background: ${({ theme }) => theme.mutedPurple1};
+  // border: 1px solid
+  //   ${({ theme }) => saturate(0.1, lighten(-0.08, theme.mutedPurple1))};
+  // padding: 10px;
   border-radius: 10px;
 `
 
 const Filter = styled.div`
-  background: ${({ theme }) => lighten(-0.02, theme.mutedPurple2)};
+  background: ${({ theme }) => lighten(-0.02, theme.mutedPurple1)};
   border: 1px solid
-    ${({ theme }) => saturate(0.1, lighten(-0.11, theme.mutedPurple2))};
-  ${({ theme }) => theme.smallParagraphSemibold};
+    ${({ theme }) => saturate(0.1, lighten(-0.11, theme.mutedPurple1))};
+  ${({ theme }) => theme.smallParagraph};
   display: flex;
   flex-direction: column;
   padding: 5px 13px 10px 13px;
@@ -86,7 +86,7 @@ const Filter = styled.div`
 `
 
 const Label = styled.span`
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 `
 
 const Value = styled.div`
@@ -305,9 +305,6 @@ const Downloads = () => {
                           </Filter>
                         ))}
                     </AppliedFilters>
-                    {
-                      // <pre>{JSON.stringify(appliedFilters, null, 2)}</pre>
-                    }
                   </DownloadPageContentBox>
                 </ProjectPageSidebar>
               </>
