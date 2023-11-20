@@ -73,11 +73,13 @@ const Downloads = () => {
     status === DataDownloadMetadataStatus.Loaded &&
     new Date(downloadMetadata.downloadDate).getFullYear().toString()
 
-  const citationToCopy = `PHAROS (${yearDownloaded}). ${permanentPrettyLink}. Accessed on ${new Date()
+  const formattedDate = new Date()
     .toISOString()
     .split('.')[0]
     .split('T')
-    .join(' ')} UTC.`
+    .join(' ')
+
+  const citationToCopy = `PHAROS (${yearDownloaded}). ${permanentPrettyLink}. Accessed on ${formattedDate} UTC.`
 
   return (
     <Providers>
@@ -100,7 +102,11 @@ const Downloads = () => {
               </Title>
               <Controls>
                 {status === DataDownloadMetadataStatus.Loaded && (
-                  <MintButtonLink to={downloadMetadata.accessLink}>
+                  <MintButtonLink
+                    to={downloadMetadata.accessLink}
+                    download={`Pharos data extract ${formattedDate}`}
+                    target="_blank"
+                  >
                     Download data extract
                   </MintButtonLink>
                 )}
