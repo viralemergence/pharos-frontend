@@ -184,6 +184,7 @@ const DataDownloadButton = ({
       <MintButton
         style={{ marginLeft: 'auto', position: 'relative' }}
         onClick={handleClick}
+        disabled={matchingRecordCount === 0}
       >
         Download data ({(matchingRecordCount ?? 0).toLocaleString()} rows)
       </MintButton>
