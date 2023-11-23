@@ -126,7 +126,7 @@ if [ "$clean" == "1" ]; then
 fi
 
 export GATSBY_API_URL=$api
-export GATSBY_MAPPING_API_URL=$api
+export GATSBY_MAPPING_API_URL=$mapping_api
 export GATSBY_USER_POOL_ID=$user_pool_id
 export GATSBY_CLIENT_ID=$client_id
 
