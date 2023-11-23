@@ -15,7 +15,8 @@ workflows:
           # distribution: 'E31RXXXXXXXXXX'
           bucket: 's3://dev-pharos-frontend-2'
           distribution: 'E29CT6PE5VEJB6'
-          api: 'https://bo7j6jlxd4.execute-api.us-east-2.amazonaws.com/Prod'
+          api: 'https://7qr5h405o5.execute-api.us-east-2.amazonaws.com/Prod/'
+          mapping_api: 'https://2lqx57ebyj.execute-api.us-east-2.amazonaws.com/Prod/'
           client_id: '44vulabntl1hdi45vtvq0c7iop'
           user_pool_id: 'us-east-2_RR3m5a1fl'
           context: *credentials
@@ -119,6 +120,7 @@ jobs:
           command: |
             yarn build \
             --api <<parameters.api>> \
+            --mapping_api <<parameters.mapping_api>> \
             --user_pool_id <<parameters.user_pool_id>> \
             --client_id <<parameters.client_id>>
 
