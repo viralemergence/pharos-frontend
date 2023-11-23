@@ -81,6 +81,8 @@ jobs:
         type: string
       api:
         type: string
+      mapping_api:
+        type: string
       client_id:
         type: string
       user_pool_id:
