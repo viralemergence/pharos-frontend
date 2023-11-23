@@ -3,6 +3,7 @@
 reset=0;
 clean=0;
 api='http://localhost:3000'
+mapping_api='http://localhost:5000'
 profile=''
 
 RED=$(tput setaf 1)
@@ -23,6 +24,7 @@ while [[ "$#" > 0 ]];
     -r|--reset) reset=1; shift;;
     -c|--clean) clean=1; shift;;
     -a|--api) api=$2; shift;;
+    -a|--mapping_api) mapping_api=$2; shift;;
     -u|--user_pool_id) user_pool_id=$2; shift;;
     -c|--client_id) client_id=$2; shift;;
     -p|--profile) profile=$2; shift;;
@@ -40,6 +42,7 @@ else
 fi
 
 echo "API_URL: ${YELLOW}$api${NORMAL}"
+echo "MAPPING_API_URL: ${YELLOW}$mapping_api${NORMAL}"
 echo ""
 
 if [ "$user_pool_id" == "" ]; then
@@ -123,6 +126,7 @@ if [ "$clean" == "1" ]; then
 fi
 
 export GATSBY_API_URL=$api
+export GATSBY_MAPPING_API_URL=$api
 export GATSBY_USER_POOL_ID=$user_pool_id
 export GATSBY_CLIENT_ID=$client_id
 
