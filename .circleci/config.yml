@@ -30,7 +30,7 @@ workflows:
           bucket: 's3://review-pharos-frontend-2'
           distribution: 'E3IAEIH8QM2RIN'
           api: 'https://wkyz2co3z4.execute-api.us-east-2.amazonaws.com/Prod'
-          mapping_api: 'https://2lqx57ebyj.execute-api.us-east-2.amazonaws.com/Prod/'
+          mapping_api: 'https://XXXXXXXXXXXXXXXXXXX.execute-api.us-east-2.amazonaws.com/Prod/'
           client_id: '3hcqevqa577mhqba9uhnphssct'
           user_pool_id: 'us-east-2_4bCcuIfOQ'
           context: *credentials
@@ -43,7 +43,7 @@ workflows:
           bucket: 's3://staging-pharos-frontend-2'
           distribution: 'E6PVRC1XI187A'
           api: 'https://qc9dj5pbn7.execute-api.us-east-2.amazonaws.com/Prod'
-          mapping_api: 'https://2lqx57ebyj.execute-api.us-east-2.amazonaws.com/Prod/'
+          mapping_api: 'https://XXXXXXXXXXXXXXXXXXX.execute-api.us-east-2.amazonaws.com/Prod/'
           client_id: 'o06ampns5let4mifsi2pn52el'
           user_pool_id: 'us-east-2_h1Xj2r9BX'
           context: *credentials
@@ -56,7 +56,7 @@ workflows:
           bucket: 's3://prod-pharos-frontend-2'
           distribution: 'E61Z0UI7AL8G1'
           api: 'https://bzz55gu2jj.execute-api.us-east-2.amazonaws.com/Prod'
-          mapping_api: 'https://2lqx57ebyj.execute-api.us-east-2.amazonaws.com/Prod/'
+          mapping_api: 'https://XXXXXXXXXXXXXXXXXXX.execute-api.us-east-2.amazonaws.com/Prod/'
           client_id: '2kf7i84imfo743pcv79kpn67qh'
           user_pool_id: 'us-east-2_mwSBSPXdc'
           context: *credentials
