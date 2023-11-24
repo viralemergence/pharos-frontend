@@ -13,7 +13,10 @@ import useDownloadMetadata, {
 import { PublicProjectPageContentBox } from 'components/PublicViews/ProjectPage/ProjectPage'
 import PublicViewBackground from 'components/PublicViews/PublicViewBackground'
 import ClickToCopy from 'components/ui/ClickToCopy'
-import { MintButtonLink } from 'components/ui/MintButton'
+import {
+  MintButtonExternalLink,
+  MintButtonLink,
+} from 'components/ui/MintButton'
 import { Link, navigate } from 'gatsby'
 import ModalMessageProvider from 'hooks/useModal/ModalMessageProvider'
 import { lighten, saturate } from 'polished'
@@ -206,13 +209,13 @@ const Downloads = () => {
               </Title>
               <Controls>
                 {status === DataDownloadMetadataStatus.Loaded && (
-                  <MintButtonLink
-                    to={downloadMetadata.accessLink}
+                  <MintButtonExternalLink
+                    href={downloadMetadata.accessLink}
                     download={`Pharos data extract ${formattedDate}`}
                     target="_blank"
                   >
                     Download data extract
-                  </MintButtonLink>
+                  </MintButtonExternalLink>
                 )}
               </Controls>
             </TopBar>
@@ -271,40 +274,46 @@ const Downloads = () => {
                 </ProjectPageMain>
                 <ProjectPageSidebar>
                   <DownloadPageContentBox>
-                    <h2>Applied Filters</h2>
-                    <AppliedFilters>
-                      {(appliedFilters.collection_start_date ||
-                        appliedFilters.collection_end_date) && (
-                        <DateFilter>
-                          <Label>Collection date</Label>
-                          <DateRow>
-                            <DateValue>
-                              {appliedFilters.collection_start_date || 'Any'}
-                            </DateValue>
-                            <DateValue>
-                              {appliedFilters.collection_end_date || 'Any'}
-                            </DateValue>
-                          </DateRow>
-                        </DateFilter>
-                      )}
-                      {Object.entries(appliedFilters)
-                        .filter(
-                          ([key, _]) =>
-                            ![
-                              'collection_start_date',
-                              'collection_end_date',
-                            ].includes(key)
-                        )
-                        .map(([filter, values]) => (
-                          <Filter>
-                            <Label>{filter}</Label>
-                            {values.map(value => (
-                              <Value>{value}</Value>
+                    {Object.keys(appliedFilters).length > 0 && (
+                      <>
+                        {console.log(appliedFilters)}
+                        <h2>Applied Filters</h2>
+                        <AppliedFilters>
+                          {(appliedFilters.collection_start_date ||
+                            appliedFilters.collection_end_date) && (
+                            <DateFilter>
+                              <Label>Collection date</Label>
+                              <DateRow>
+                                <DateValue>
+                                  {appliedFilters.collection_start_date ||
+                                    'Any'}
+                                </DateValue>
+                                <DateValue>
+                                  {appliedFilters.collection_end_date || 'Any'}
+                                </DateValue>
+                              </DateRow>
+                            </DateFilter>
+                          )}
+                          {Object.entries(appliedFilters)
+                            .filter(
+                              ([key, _]) =>
+                                ![
+                                  'collection_start_date',
+                                  'collection_end_date',
+                                ].includes(key)
+                            )
+                            .map(([filter, values]) => (
+                              <Filter>
+                                <Label>{filter}</Label>
+                                {values.map(value => (
+                                  <Value>{value}</Value>
+                                ))}
+                                <Value>{'Other value'}</Value>
+                              </Filter>
                             ))}
-                            <Value>{'Other value'}</Value>
-                          </Filter>
-                        ))}
-                    </AppliedFilters>
+                        </AppliedFilters>
+                      </>
+                    )}
                   </DownloadPageContentBox>
                 </ProjectPageSidebar>
               </>
