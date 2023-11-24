@@ -13,10 +13,7 @@ import useDownloadMetadata, {
 import { PublicProjectPageContentBox } from 'components/PublicViews/ProjectPage/ProjectPage'
 import PublicViewBackground from 'components/PublicViews/PublicViewBackground'
 import ClickToCopy from 'components/ui/ClickToCopy'
-import {
-  MintButtonExternalLink,
-  MintButtonLink,
-} from 'components/ui/MintButton'
+import { MintButtonExternalLink } from 'components/ui/MintButton'
 import { Link, navigate } from 'gatsby'
 import ModalMessageProvider from 'hooks/useModal/ModalMessageProvider'
 import { lighten, saturate } from 'polished'
