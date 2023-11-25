@@ -66,7 +66,18 @@ const PublicProjectPageMap = ({
         bottom.split(' ').map(s => Number(s)),
       ] as [[number, number], [number, number]]
 
-      mapRef.current.fitBounds(bbox, { padding: 30 })
+      // single-point projects return a bounding box with
+      // matching corners, which seems to break mapbox.
+      if (bbox[0][0] === bbox[1][0]) {
+        bbox[0][0] = bbox[0][0] * 0.999
+        bbox[1][0] = bbox[1][0] * 1.001
+      }
+      if (bbox[0][1] === bbox[1][1]) {
+        bbox[0][1] = bbox[0][1] * 0.999
+        bbox[1][1] = bbox[1][1] * 1.001
+      }
+
+      mapRef.current.fitBounds(bbox, { padding: 100 })
     }
   }, [boundingBox, mapRef])
 
