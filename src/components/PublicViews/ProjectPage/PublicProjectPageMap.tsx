@@ -77,7 +77,7 @@ const PublicProjectPageMap = ({
         bbox[1][1] = bbox[1][1] * 1.001
       }
 
-      mapRef.current.fitBounds(bbox, { padding: 150 })
+      mapRef.current.fitBounds(bbox, { padding: 50 })
     }
   }, [boundingBox, mapRef])
 
