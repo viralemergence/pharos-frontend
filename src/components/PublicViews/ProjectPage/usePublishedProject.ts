@@ -24,6 +24,7 @@ export interface PublishedProject {
     name: string
     organization: string
   }[]
+  boundingBox: string
 }
 
 export interface PublishedProjectData {
