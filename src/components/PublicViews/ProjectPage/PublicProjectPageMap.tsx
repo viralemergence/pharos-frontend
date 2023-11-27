@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { Map as ReactMap, Layer, Source, MapRef } from 'react-map-gl'
 
@@ -55,10 +55,11 @@ const PublicProjectPageMap = ({
   projectID,
   boundingBox,
 }: PublicProjectPageMapProps) => {
+  const [mapLoaded, setMapLoaded] = useState(false)
   const mapRef = useRef<MapRef | null>()
 
   useEffect(() => {
-    if (boundingBox && mapRef.current) {
+    if (boundingBox && mapRef.current && mapLoaded) {
       const coords = boundingBox.replace(/[BOX\(\)]/g, '')
       const [top, bottom] = coords.split(',')
       const bbox = [
@@ -81,7 +82,7 @@ const PublicProjectPageMap = ({
         padding: { top: 100, right: 50, bottom: 100, left: 50 },
       })
     }
-  }, [boundingBox, mapRef])
+  }, [boundingBox, mapRef.current, mapLoaded])
 
   return (
     <MapContainer>
@@ -92,6 +93,9 @@ const PublicProjectPageMap = ({
         mapStyle="mapbox://styles/ryan-talus/clgzr609k00c901qr07gy1303/draft"
         mapboxAccessToken={mapboxAccessToken}
         projection={{ name: 'globe' }}
+        onLoad={() => {
+          setMapLoaded(true)
+        }}
       >
         <Source
           id="pharos-points"
