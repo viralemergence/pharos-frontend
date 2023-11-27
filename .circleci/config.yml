@@ -15,8 +15,8 @@ workflows:
           # distribution: 'E31RXXXXXXXXXX'
           bucket: 's3://dev-pharos-frontend-2'
           distribution: 'E29CT6PE5VEJB6'
-          api: 'd39bgqa0hu0mjm.cloudfront.net/prod'
-          mapping_api: 'd39bgqa0hu0mjm.cloudfront.net/prod'
+          api: 'https://d39bgqa0hu0mjm.cloudfront.net/prod'
+          mapping_api: 'https://d39bgqa0hu0mjm.cloudfront.net/prod'
           client_id: '44vulabntl1hdi45vtvq0c7iop'
           user_pool_id: 'us-east-2_RR3m5a1fl'
           context: *credentials
