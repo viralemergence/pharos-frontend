@@ -99,7 +99,7 @@ const requestExport = async (
     const response = await fetch(
       `${process.env.GATSBY_API_URL}/download/?${params.toString()}`,
       {
-        method: 'GET',
+        method: 'POST',
         headers: new Headers({
           Authorization: userSession.getIdToken().getJwtToken(),
           'Content-Type': 'application/json',
