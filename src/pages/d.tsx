@@ -305,7 +305,6 @@ const Downloads = () => {
                                 {values.map(value => (
                                   <Value>{value}</Value>
                                 ))}
-                                <Value>{'Other value'}</Value>
                               </Filter>
                             ))}
                         </AppliedFilters>
