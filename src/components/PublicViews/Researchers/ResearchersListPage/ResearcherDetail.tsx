@@ -20,11 +20,12 @@ const Name = styled.h2`
 `
 const Organization = styled.h3`
   ${({ theme }) => theme.smallParagraph};
-  margin: 25px 0 0 0;
+  margin: 10px 0 0 0;
+  color: ${({ theme }) => theme.medGray};
 `
 const ProjectsHeader = styled.h3`
   ${({ theme }) => theme.bigParagraph};
-  margin: 40px 0 0 0;
+  margin: 45px 0 0 0;
 `
 const ProjectSection = styled.div`
   display: flex;
