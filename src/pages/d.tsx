@@ -45,6 +45,11 @@ const DownloadPageContentBox = styled(PublicProjectPageContentBox)`
 
   a {
     color: ${({ theme }) => theme.mint};
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 `
 
