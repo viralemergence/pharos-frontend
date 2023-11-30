@@ -191,10 +191,10 @@ const MapView = ({ style, projection = 'mercator' }: MapPageProps) => {
     })
   })
 
-  // useEffect(() => {
-  //   if (!map.current) return
-  //   map.current.setProjection({ name: projection })
-  // }, [projection])
+  useEffect(() => {
+    if (!map.current) return
+    map.current.setProjection({ name: projection })
+  }, [projection])
 
   return (
     <MapViewDiv style={style}>
