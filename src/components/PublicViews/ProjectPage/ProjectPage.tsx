@@ -150,6 +150,14 @@ const ProjectPage = () => {
           </Controls>
         </TopBar>
         <ProjectPageMain>
+          <PublicProjectPageMap
+            projectID={project.projectID}
+            boundingBox={
+              status === ProjectDataStatus.Loaded
+                ? project.boundingBox
+                : undefined
+            }
+          />
           {(status === ProjectDataStatus.Loading ||
             (status === ProjectDataStatus.Loaded && project.description)) && (
             <PublicProjectPageContentBox>
@@ -161,14 +169,6 @@ const ProjectPage = () => {
               </p>
             </PublicProjectPageContentBox>
           )}
-          <PublicProjectPageMap
-            projectID={project.projectID}
-            boundingBox={
-              status === ProjectDataStatus.Loaded
-                ? project.boundingBox
-                : undefined
-            }
-          />
           <DatasetsTable
             publicView={true}
             project={project}
@@ -245,6 +245,7 @@ const ProjectPage = () => {
             {status === ProjectDataStatus.Loaded ? (
               <>
                 <h2>Project published</h2>
+                {console.log(project.datePublished)}
                 <p>{formatDate(project.datePublished)}</p>
                 {project.relatedMaterials && project.relatedMaterials[0] && (
                   <>
