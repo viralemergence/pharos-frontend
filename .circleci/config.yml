@@ -24,7 +24,6 @@ workflows:
             branches:
               only:
                 - dev
-                - feature/pharos-2-deployment
       # review site
       - deploy:
           bucket: 's3://review-pharos-frontend-2'
