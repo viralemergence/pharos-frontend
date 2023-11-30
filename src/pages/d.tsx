@@ -24,6 +24,11 @@ const StyledLink = styled(Link)`
   color: ${({ theme }) => theme.link};
 `
 
+const Container = styled.div`
+  background-color: ${({ theme }) => theme.publicPagePurpleBackground};
+  display: flow-root;
+`
+
 const DownloadPageLayout = styled(ProjectPageLayout)`
   gap: 60px;
   h1 {
@@ -197,129 +202,132 @@ const Downloads = () => {
         <NavBar />
         <ModalMessageProvider>
           <PublicViewBackground />
-          <DownloadPageLayout>
-            <TopBar darkmode>
-              <Breadcrumbs />
-              <Title>
-                {status === DataDownloadMetadataStatus.Loaded
-                  ? `PHAROS data extract ${
-                      new Date(downloadMetadata.downloadDate)
-                        .toISOString()
-                        .split('T')[0]
-                    }`
-                  : 'Loading...'}{' '}
-              </Title>
-              <Controls>
-                {status === DataDownloadMetadataStatus.Loaded && (
-                  <MintButtonExternalLink
-                    href={downloadMetadata.accessLink}
-                    download={`Pharos data extract ${formattedDate}`}
-                    target="_blank"
-                  >
-                    Download data extract
-                  </MintButtonExternalLink>
-                )}
-              </Controls>
-            </TopBar>
-            {status === DataDownloadMetadataStatus.Loaded && (
-              <>
-                <ProjectPageMain>
-                  <DownloadPageContentBox>
-                    <h2>Downloaded on: {downloadMetadata.downloadDate}</h2>
-                    <h2>Cite data extract</h2>
-                    <ClickToCopy
-                      darkmode
-                      style={{ marginTop: 10, width: 'fit-content' }}
-                      copyContentString={citationToCopy}
+          <Container>
+            <DownloadPageLayout>
+              <TopBar darkmode>
+                <Breadcrumbs />
+                <Title>
+                  {status === DataDownloadMetadataStatus.Loaded
+                    ? `PHAROS data extract ${
+                        new Date(downloadMetadata.downloadDate)
+                          .toISOString()
+                          .split('T')[0]
+                      }`
+                    : 'Loading...'}{' '}
+                </Title>
+                <Controls>
+                  {status === DataDownloadMetadataStatus.Loaded && (
+                    <MintButtonExternalLink
+                      href={downloadMetadata.accessLink}
+                      download={`Pharos data extract ${formattedDate}`}
+                      target="_blank"
                     >
-                      {citationToCopy}
-                    </ClickToCopy>
-                    <h2>Permanent data extract link</h2>
-                    <ClickToCopy
-                      darkmode
-                      copyContentString={location.href ?? ''}
-                      style={{ marginTop: 10, width: 'fit-content' }}
-                    >
-                      {permanentPrettyLink}
-                    </ClickToCopy>
-                    <h2>
-                      Researchers included in extract (
-                      {downloadMetadata.researchers.length})
-                    </h2>
-                    <ul>
-                      {downloadMetadata.researchers.map(researcher => (
-                        <li key={researcher.researcherID}>
-                          <StyledLink
-                            to={`/researchers/?researcherID=${researcher.researcherID}`}
-                          >
-                            {researcher.name}
-                          </StyledLink>
-                        </li>
-                      ))}
-                    </ul>
-                    <h2>
-                      Projects included in extract (
-                      {downloadMetadata.projects.length})
-                    </h2>
-                    <ul>
-                      {downloadMetadata.projects.map(project => (
-                        <li key={project.projectID}>
-                          <StyledLink
-                            to={`/projects/?prj=${project.projectID}`}
-                          >
-                            {project.name}
-                          </StyledLink>
-                        </li>
-                      ))}
-                    </ul>
-                  </DownloadPageContentBox>
-                </ProjectPageMain>
-                <ProjectPageSidebar>
-                  <DownloadPageContentBox>
-                    {Object.keys(appliedFilters).length > 0 && (
-                      <>
-                        {console.log(appliedFilters)}
-                        <h2>Applied Filters</h2>
-                        <AppliedFilters>
-                          {(appliedFilters.collection_start_date ||
-                            appliedFilters.collection_end_date) && (
-                            <DateFilter>
-                              <Label>Collection date</Label>
-                              <DateRow>
-                                <DateValue>
-                                  {appliedFilters.collection_start_date ||
-                                    'Any'}
-                                </DateValue>
-                                <DateValue>
-                                  {appliedFilters.collection_end_date || 'Any'}
-                                </DateValue>
-                              </DateRow>
-                            </DateFilter>
-                          )}
-                          {Object.entries(appliedFilters)
-                            .filter(
-                              ([key, _]) =>
-                                ![
-                                  'collection_start_date',
-                                  'collection_end_date',
-                                ].includes(key)
-                            )
-                            .map(([filter, values]) => (
-                              <Filter>
-                                <Label>{filter}</Label>
-                                {values.map(value => (
-                                  <Value>{value}</Value>
-                                ))}
-                              </Filter>
-                            ))}
-                        </AppliedFilters>
-                      </>
-                    )}
-                  </DownloadPageContentBox>
-                </ProjectPageSidebar>
-              </>
-            )}
-          </DownloadPageLayout>
+                      Download data extract
+                    </MintButtonExternalLink>
+                  )}
+                </Controls>
+              </TopBar>
+              {status === DataDownloadMetadataStatus.Loaded && (
+                <>
+                  <ProjectPageMain>
+                    <DownloadPageContentBox>
+                      <h2>Downloaded on: {downloadMetadata.downloadDate}</h2>
+                      <h2>Cite data extract</h2>
+                      <ClickToCopy
+                        darkmode
+                        style={{ marginTop: 10, width: 'fit-content' }}
+                        copyContentString={citationToCopy}
+                      >
+                        {citationToCopy}
+                      </ClickToCopy>
+                      <h2>Permanent data extract link</h2>
+                      <ClickToCopy
+                        darkmode
+                        copyContentString={location.href ?? ''}
+                        style={{ marginTop: 10, width: 'fit-content' }}
+                      >
+                        {permanentPrettyLink}
+                      </ClickToCopy>
+                      <h2>
+                        Researchers included in extract (
+                        {downloadMetadata.researchers.length})
+                      </h2>
+                      <ul>
+                        {downloadMetadata.researchers.map(researcher => (
+                          <li key={researcher.researcherID}>
+                            <StyledLink
+                              to={`/researchers/?researcherID=${researcher.researcherID}`}
+                            >
+                              {researcher.name}
+                            </StyledLink>
+                          </li>
+                        ))}
+                      </ul>
+                      <h2>
+                        Projects included in extract (
+                        {downloadMetadata.projects.length})
+                      </h2>
+                      <ul>
+                        {downloadMetadata.projects.map(project => (
+                          <li key={project.projectID}>
+                            <StyledLink
+                              to={`/projects/?prj=${project.projectID}`}
+                            >
+                              {project.name}
+                            </StyledLink>
+                          </li>
+                        ))}
+                      </ul>
+                    </DownloadPageContentBox>
+                  </ProjectPageMain>
+                  <ProjectPageSidebar>
+                    <DownloadPageContentBox>
+                      {Object.keys(appliedFilters).length > 0 && (
+                        <>
+                          {console.log(appliedFilters)}
+                          <h2>Applied Filters</h2>
+                          <AppliedFilters>
+                            {(appliedFilters.collection_start_date ||
+                              appliedFilters.collection_end_date) && (
+                              <DateFilter>
+                                <Label>Collection date</Label>
+                                <DateRow>
+                                  <DateValue>
+                                    {appliedFilters.collection_start_date ||
+                                      'Any'}
+                                  </DateValue>
+                                  <DateValue>
+                                    {appliedFilters.collection_end_date ||
+                                      'Any'}
+                                  </DateValue>
+                                </DateRow>
+                              </DateFilter>
+                            )}
+                            {Object.entries(appliedFilters)
+                              .filter(
+                                ([key, _]) =>
+                                  ![
+                                    'collection_start_date',
+                                    'collection_end_date',
+                                  ].includes(key)
+                              )
+                              .map(([filter, values]) => (
+                                <Filter>
+                                  <Label>{filter}</Label>
+                                  {values.map(value => (
+                                    <Value>{value}</Value>
+                                  ))}
+                                </Filter>
+                              ))}
+                          </AppliedFilters>
+                        </>
+                      )}
+                    </DownloadPageContentBox>
+                  </ProjectPageSidebar>
+                </>
+              )}
+            </DownloadPageLayout>
+          </Container>
         </ModalMessageProvider>
       </React.StrictMode>
     </Providers>
