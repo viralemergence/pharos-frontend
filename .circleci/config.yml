@@ -29,8 +29,8 @@ workflows:
       - deploy:
           bucket: 's3://review-pharos-frontend-2'
           distribution: 'E3IAEIH8QM2RIN'
-          api: 'https://wkyz2co3z4.execute-api.us-east-2.amazonaws.com/Prod'
-          mapping_api: 'https://XXXXXXXXXXXXXXXXXXX.execute-api.us-east-2.amazonaws.com/Prod/'
+          api: 'd74znvbck5xnf.cloudfront.net'
+          mapping_api: 'd74znvbck5xnf.cloudfront.net'
           client_id: '3hcqevqa577mhqba9uhnphssct'
           user_pool_id: 'us-east-2_4bCcuIfOQ'
           context: *credentials
