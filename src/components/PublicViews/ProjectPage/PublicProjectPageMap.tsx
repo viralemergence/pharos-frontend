@@ -12,6 +12,7 @@ const MapContainer = styled.div`
   color: ${({ theme }) => theme.white};
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
+  width: 100%;
 
   > h2 {
     color: ${({ theme }) => theme.medDarkGray};
