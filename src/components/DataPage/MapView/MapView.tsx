@@ -99,7 +99,7 @@ const MapView = ({ style, projection = 'mercator' }: MapPageProps) => {
         // Use a URL for the value for the `data` property.
         tiles: [`${process.env.GATSBY_MAPPING_API_URL}/map/{z}/{x}/{y}.pbf`],
         // tiles: [`http://127.0.0.1:5000/{z}/{x}/{y}.pbf`],
-        maxzoom: 1,
+        maxzoom: 14,
       })
 
       map.current.addLayer({
