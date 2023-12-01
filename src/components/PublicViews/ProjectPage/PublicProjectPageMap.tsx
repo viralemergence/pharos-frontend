@@ -104,7 +104,7 @@ const PublicProjectPageMap = ({
           tiles={[
             `${process.env.GATSBY_MAPPING_API_URL}/map/{z}/{x}/{y}.pbf/?project_id=${projectID}`,
           ]}
-          maxzoom={1}
+          maxzoom={14}
         >
           <Layer {...pharosPointsLayerStyle} />
         </Source>
