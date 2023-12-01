@@ -139,13 +139,13 @@ describe.skip('The public data page', () => {
     const projections = getAssignedMapProjections()
 
     // The map should initially use the naturalEarth (in other words, flat) projection
-    expect(projections[0]).toBe('naturalEarth')
+    expect(projections[0]).toBe('mercator')
 
     // Clicking the Globe button should set the projection to 'globe'
     expect(projections[1]).toBe('globe')
 
     // Clicking the Map button should set the projection to 'naturalEarth'
-    expect(projections[2]).toBe('naturalEarth')
+    expect(projections[2]).toBe('mercator')
 
     expect(projections.length).toBe(3)
   })

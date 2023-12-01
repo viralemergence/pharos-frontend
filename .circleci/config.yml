@@ -15,7 +15,8 @@ workflows:
           # distribution: 'E31RXXXXXXXXXX'
           bucket: 's3://dev-pharos-frontend-2'
           distribution: 'E29CT6PE5VEJB6'
-          api: 'https://bo7j6jlxd4.execute-api.us-east-2.amazonaws.com/Prod'
+          api: 'https://d39bgqa0hu0mjm.cloudfront.net/prod'
+          mapping_api: 'https://d39bgqa0hu0mjm.cloudfront.net/prod'
           client_id: '44vulabntl1hdi45vtvq0c7iop'
           user_pool_id: 'us-east-2_RR3m5a1fl'
           context: *credentials
@@ -23,12 +24,12 @@ workflows:
             branches:
               only:
                 - dev
-                - feature/pharos-2-deployment
       # review site
       - deploy:
           bucket: 's3://review-pharos-frontend-2'
           distribution: 'E3IAEIH8QM2RIN'
-          api: 'https://wkyz2co3z4.execute-api.us-east-2.amazonaws.com/Prod'
+          api: 'https://d74znvbck5xnf.cloudfront.net/prod'
+          mapping_api: 'https://d74znvbck5xnf.cloudfront.net/prod'
           client_id: '3hcqevqa577mhqba9uhnphssct'
           user_pool_id: 'us-east-2_4bCcuIfOQ'
           context: *credentials
@@ -40,7 +41,8 @@ workflows:
       - deploy:
           bucket: 's3://staging-pharos-frontend-2'
           distribution: 'E6PVRC1XI187A'
-          api: 'https://qc9dj5pbn7.execute-api.us-east-2.amazonaws.com/Prod'
+          api: 'https://d3je8e8pedawce.cloudfront.net/prod'
+          mapping_api: 'https://d3je8e8pedawce.cloudfront.net/prod'
           client_id: 'o06ampns5let4mifsi2pn52el'
           user_pool_id: 'us-east-2_h1Xj2r9BX'
           context: *credentials
@@ -52,7 +54,8 @@ workflows:
       - deploy:
           bucket: 's3://prod-pharos-frontend-2'
           distribution: 'E61Z0UI7AL8G1'
-          api: 'https://bzz55gu2jj.execute-api.us-east-2.amazonaws.com/Prod'
+          api: 'https://d98u7zobstgff.cloudfront.net/prod'
+          mapping_api: 'https://d98u7zobstgff.cloudfront.net/prod'
           client_id: '2kf7i84imfo743pcv79kpn67qh'
           user_pool_id: 'us-east-2_mwSBSPXdc'
           context: *credentials
@@ -79,6 +82,8 @@ jobs:
       distribution:
         type: string
       api:
+        type: string
+      mapping_api:
         type: string
       client_id:
         type: string
@@ -119,6 +124,7 @@ jobs:
           command: |
             yarn build \
             --api <<parameters.api>> \
+            --mapping_api <<parameters.mapping_api>> \
             --user_pool_id <<parameters.user_pool_id>> \
             --client_id <<parameters.client_id>>
 

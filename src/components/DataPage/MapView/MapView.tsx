@@ -5,7 +5,7 @@ import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import MapTableDrawer from './MapTableDrawer'
 
-export type MapProjection = 'globe' | 'naturalEarth'
+export type MapProjection = 'globe' | 'mercator'
 
 const MapContainer = styled.div<{ drawerOpen: boolean }>`
   width: 100vw;
@@ -29,7 +29,7 @@ mapboxgl.accessToken = process.env.GATSBY_MAPBOX_API_KEY!
 
 interface MapPageProps {
   style?: React.CSSProperties
-  projection?: 'naturalEarth' | 'globe'
+  projection?: 'mercator' | 'globe'
 }
 
 const MapViewDiv = styled.div`
@@ -42,7 +42,7 @@ const MapViewDiv = styled.div`
   height: 100%;
 `
 
-const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
+const MapView = ({ style, projection = 'mercator' }: MapPageProps) => {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<null | mapboxgl.Map>(null)
 
@@ -66,7 +66,7 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
       container: mapContainer.current,
       // style: 'mapbox://styles/ryan-talus/cl7uqzqjh002215oxyz136ijf/draft',
       style: 'mapbox://styles/ryan-talus/clgzr609k00c901qr07gy1303/draft',
-      // projection: { name: 'naturalEarth' },
+      // projection: { name: 'mercator' },
       projection: { name: projection },
       // maxZoom: 12,
       maxZoom: 15,
@@ -74,21 +74,39 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
       // bounds,
       center: [0, 0],
       zoom: 1.7,
+      // transformRequest: (url, resourceType) => {
+      //   if (resourceType === 'Source' && url.includes('/Prod/map/')) {
+      //     return {
+      //       url: url,
+      //       headers: { 'Content-type': 'application/octet-stream' },
+      //     }
+      //   }
+      //   return { url }
+      // },
     })
 
     map.current.on('load', () => {
       if (!map.current) return
 
+      // map.current.addSource('pharos-points', {
+      //   type: 'geojson',
+      //   // Use a URL for the value for the `data` property.
+      //   data: `${process.env.GATSBY_API_URL}/map/0/0/0.pbf`,
+      // })
+
       map.current.addSource('pharos-points', {
-        type: 'geojson',
+        type: 'vector',
         // Use a URL for the value for the `data` property.
-        data: `${process.env.GATSBY_API_URL}/map/0/0/0.pbf`,
+        tiles: [`${process.env.GATSBY_MAPPING_API_URL}/map/{z}/{x}/{y}.pbf`],
+        // tiles: [`http://127.0.0.1:5000/{z}/{x}/{y}.pbf`],
+        maxzoom: 1,
       })
 
       map.current.addLayer({
         id: 'pharos-points-layer',
         type: 'circle',
         source: 'pharos-points',
+        'source-layer': 'pharos-points',
         paint: {
           'circle-radius': 5,
           'circle-stroke-width': 1,
@@ -116,6 +134,8 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
         layers: ['pharos-points-layer'],
       })
 
+      // console.log(features)
+
       if (!features.length) {
         setDrawerOpen(false)
         return
@@ -133,10 +153,15 @@ const MapView = ({ style, projection = 'naturalEarth' }: MapPageProps) => {
         }
       }
 
+      console.log(feature)
+
       setDrawerOpen(true)
 
       setClickedPharosIDs(pharosIDs)
       setClickLngLat(feature.geometry.coordinates)
+      console.log(feature.geometry.coordinates)
+
+      console.log(pharosIDs)
 
       // This is not an acceptable way to make a popup,
       // I'm just fixing the problem with minimal changes

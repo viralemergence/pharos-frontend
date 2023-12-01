@@ -1,8 +1,52 @@
-import { Auth } from 'aws-amplify'
-import MintButton from 'components/ui/MintButton'
-import useModal from 'hooks/useModal/useModal'
-import { Filter } from 'pages/data'
 import React from 'react'
+import styled, { ThemeType, useTheme } from 'styled-components'
+import { Auth } from 'aws-amplify'
+
+import MintButton, { MintButtonLink } from 'components/ui/MintButton'
+import { Filter } from 'pages/data'
+
+import useModal from 'hooks/useModal/useModal'
+import ColorMessage, {
+  ColorMessageStatus,
+} from 'components/ui/Modal/ColorMessage'
+import LoadingSpinner from '../TableView/LoadingSpinner'
+
+const ModalContainer = styled.div`
+  width: 800px;
+  max-width: 80vw;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+
+  > h1 {
+    ${({ theme }) => theme.h3};
+    margin-bottom: 0;
+  }
+
+  > p {
+    ${({ theme }) => theme.smallParagraph};
+    margin: 30px 0;
+  }
+`
+
+const ModalButtonContainer = styled.div`
+  display: flex;
+  gap: 15px;
+`
+
+const LoadingContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 30px;
+
+  > h1 {
+    ${({ theme }) => theme.h3};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+`
 
 interface DataDownloadButtonProps {
   matchingRecordCount?: number
@@ -11,62 +55,104 @@ interface DataDownloadButtonProps {
 
 const requestExport = async (
   params: URLSearchParams,
-  setModal: ReturnType<typeof useModal>
+  setModal: ReturnType<typeof useModal>,
+  theme: ThemeType
 ) => {
   let userSession
   try {
     userSession = await Auth.currentSession()
   } catch (error) {
     setModal(
-      <div style={{ padding: 15 }}>
-        <h1>You must be logged in to create an export</h1>
-        <p>Log in or sign up to continue</p>
-      </div>,
+      <ModalContainer>
+        <h1>Download data</h1>
+        <ColorMessage status={ColorMessageStatus.Warning}>
+          Make an account to download data
+        </ColorMessage>
+        <p>
+          You need to be signed in to your account to download data from PHAROS.
+          Downloading data will create a citable data extract page. Eventually
+          you will be able to access your download history from your account.
+        </p>
+        <ModalButtonContainer>
+          <MintButtonLink to="/app/#/login">Sign in</MintButtonLink>
+          <MintButtonLink secondary to="/app/#/sign-up">
+            Sign up
+          </MintButtonLink>
+        </ModalButtonContainer>
+      </ModalContainer>,
       { closeable: true }
     )
     return
   }
 
   setModal(
-    <div style={{ padding: 15 }}>
-      <h1>Loading...</h1>
-    </div>,
+    <LoadingContainer>
+      <h1>
+        <LoadingSpinner color={theme.darkPurple} style={{ top: -3 }} />
+        &nbsp; Loading...
+      </h1>
+    </LoadingContainer>,
     { closeable: true }
   )
 
-  const response = await fetch(
-    `${process.env.GATSBY_API_URL}/download/?${params.toString()}`,
-    {
-      method: 'GET',
-      headers: new Headers({
-        Authorization: userSession.getIdToken().getJwtToken(),
-        'Content-Type': 'application/json',
-      }),
-    }
-  ).catch(error => {
-    setModal(
-      <div style={{ padding: 15 }}>
-        <h1>There was an error requesting your export</h1>
-        <p>{error.message}</p>
-      </div>,
-      { closeable: true }
+  try {
+    const response = await fetch(
+      `${process.env.GATSBY_API_URL}/download/?${params.toString()}`,
+      {
+        method: 'POST',
+        headers: new Headers({
+          Authorization: userSession.getIdToken().getJwtToken(),
+          'Content-Type': 'application/json',
+        }),
+      }
     )
-  })
 
-  if (response && response.ok) {
+    if (response && response.ok) {
+      setModal(
+        <ModalContainer>
+          <h1>Download data</h1>
+          <ColorMessage status={ColorMessageStatus.Good}>
+            Data extract link will be sent via email
+          </ColorMessage>
+          <p>
+            Downloading data creates a citable data extract page which is being
+            emailed to you. This may take a few minutes. Eventually you will be
+            able to access your download history from your account. In every
+            data extract, all units are SI units.
+          </p>
+          <ModalButtonContainer>
+            <MintButton onClick={() => setModal(null)}>Close</MintButton>
+          </ModalButtonContainer>
+        </ModalContainer>,
+        { closeable: true }
+      )
+    } else {
+      setModal(
+        <ModalContainer>
+          <h1>Download data</h1>
+          <ColorMessage status={ColorMessageStatus.Danger}>
+            There was an error requesting your export
+          </ColorMessage>
+          <p>{response.statusText}</p>
+          <ModalButtonContainer>
+            <MintButton onClick={() => setModal(null)}>Close</MintButton>
+          </ModalButtonContainer>
+        </ModalContainer>,
+        { closeable: true }
+      )
+    }
+  } catch (error) {
     setModal(
-      <div style={{ padding: 15 }}>
-        <h1>Your export has been requested</h1>
-        <p>You will receive an email when your export is ready for download</p>
-      </div>,
-      { closeable: true }
-    )
-  } else {
-    setModal(
-      <div style={{ padding: 15 }}>
-        <h1>There was an error requesting your export</h1>
-        <p>{response?.statusText}</p>
-      </div>,
+      <ModalContainer>
+        <h1>Download data</h1>
+        <ColorMessage status={ColorMessageStatus.Danger}>
+          There was an error requesting your export
+        </ColorMessage>
+        <p>{(error as { message?: string })?.message}</p>
+        <ModalButtonContainer>
+          <MintButton onClick={() => setModal(null)}>Close</MintButton>
+        </ModalButtonContainer>
+      </ModalContainer>,
       { closeable: true }
     )
   }
@@ -77,6 +163,7 @@ const DataDownloadButton = ({
   filters,
 }: DataDownloadButtonProps) => {
   const setModal = useModal()
+  const theme = useTheme()
 
   const handleClick = () => {
     const params = filters.reduce((params, filter) => {
@@ -89,7 +176,7 @@ const DataDownloadButton = ({
       return params
     }, new URLSearchParams())
 
-    requestExport(params, setModal)
+    requestExport(params, setModal, theme)
   }
 
   return (
@@ -97,8 +184,9 @@ const DataDownloadButton = ({
       <MintButton
         style={{ marginLeft: 'auto', position: 'relative' }}
         onClick={handleClick}
+        disabled={matchingRecordCount === 0}
       >
-        Download Data ({(matchingRecordCount ?? 0).toLocaleString()} rows)
+        Download data ({(matchingRecordCount ?? 0).toLocaleString()} rows)
       </MintButton>
     </>
   )

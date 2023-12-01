@@ -68,8 +68,7 @@ const DataPage = ({
   /* This variable controls the state of the map. If the user clicks the
    * 'Globe' radio button, then the 'Table' radio button, the view will be
    * 'table' and the map projection will be 'globe' */
-  const [mapProjection, setMapProjection] =
-    useState<MapProjection>('naturalEarth')
+  const [mapProjection, setMapProjection] = useState<MapProjection>('mercator')
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false)
   const [filters, setFilters] = useState<Filter[]>([])
   const [summaryOfRecords, setSummaryOfRecords] = useState<SummaryOfRecords>({
@@ -86,8 +85,8 @@ const DataPage = ({
       if (newView === View.globe && mapProjection !== 'globe') {
         setMapProjection('globe')
       }
-      if (newView === View.map && mapProjection !== 'naturalEarth') {
-        setMapProjection('naturalEarth')
+      if (newView === View.map && mapProjection !== 'mercator') {
+        setMapProjection('mercator')
       }
     },
     [mapProjection]

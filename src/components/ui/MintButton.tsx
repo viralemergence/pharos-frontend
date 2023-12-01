@@ -93,5 +93,12 @@ export const MintButtonLink = styled(Link)<{
 }>`
   ${buttonStyle};
 `
+export const MintButtonExternalLink = styled.a<{
+  secondary?: boolean
+  warning?: boolean
+  inProgress?: boolean
+}>`
+  ${buttonStyle};
+`
 
 export default MintButton

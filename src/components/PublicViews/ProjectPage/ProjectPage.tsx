@@ -27,6 +27,7 @@ import { UserStatus } from 'reducers/stateReducer/types'
 import DatasetsTable from 'components/AuthenticatedViews/ProjectPage/DatasetsTable/DatasetsTable'
 import ClickToCopy from 'components/ui/ClickToCopy'
 import { Link } from 'gatsby-link'
+import PublicProjectPageMap from './PublicProjectPageMap'
 
 const Container = styled.div`
   background-color: ${({ theme }) => theme.publicPagePurpleBackground};
@@ -149,6 +150,14 @@ const ProjectPage = () => {
           </Controls>
         </TopBar>
         <ProjectPageMain>
+          <PublicProjectPageMap
+            projectID={project.projectID}
+            boundingBox={
+              status === ProjectDataStatus.Loaded
+                ? project.boundingBox
+                : undefined
+            }
+          />
           {(status === ProjectDataStatus.Loading ||
             (status === ProjectDataStatus.Loaded && project.description)) && (
             <PublicProjectPageContentBox>
@@ -160,22 +169,6 @@ const ProjectPage = () => {
               </p>
             </PublicProjectPageContentBox>
           )}
-          {
-            // <PublicProjectPageContentBox interactive>
-            // <div
-            //   style={{
-            //     height: 400,
-            //     display: 'flex',
-            //     alignItems: 'center',
-            //     justifyContent: 'center',
-            //     color: 'darkgray',
-            //     fontStyle: 'italic',
-            //   }}
-            // >
-            //   Map placeholder
-            // </div>
-            // </PublicProjectPageContentBox>
-          }
           <DatasetsTable
             publicView={true}
             project={project}
@@ -252,12 +245,15 @@ const ProjectPage = () => {
             {status === ProjectDataStatus.Loaded ? (
               <>
                 <h2>Project published</h2>
+                {console.log(project.datePublished)}
                 <p>{formatDate(project.datePublished)}</p>
                 {project.relatedMaterials && project.relatedMaterials[0] && (
                   <>
                     <h2>Related materials</h2>
                     {project.relatedMaterials.map(material => (
-                      <p style={{wordWrap: 'break-word'}} key={material}>{material}</p>
+                      <p style={{ wordWrap: 'break-word' }} key={material}>
+                        {material}
+                      </p>
                     ))}
                   </>
                 )}

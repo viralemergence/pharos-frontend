@@ -80,10 +80,8 @@ const DatasetsTable = ({
     <>
       <CardHeaderRow $darkmode={publicView}>Datasets</CardHeaderRow>
       <ListTable
-        wideColumnTemplate={
-          publicView ? '1.5fr 220px' : '1.5fr 1fr 150px 220px'
-        }
-        mediumColumnTemplate={publicView ? '1fr 220px' : '1fr 150px 220px'}
+        wideColumnTemplate={publicView ? '1fr' : '1.5fr 1fr 150px 220px'}
+        mediumColumnTemplate={publicView ? '1fr' : '1fr 150px 220px'}
         darkmode={publicView}
         style={style}
       >
@@ -93,9 +91,9 @@ const DatasetsTable = ({
             <>
               <TableCell hideMedium>Collection dates</TableCell>
               <TableCell>Status</TableCell>
+              <TableCell>Last updated</TableCell>
             </>
           )}
-          <TableCell>Last updated</TableCell>
         </HeaderRow>
         {sorted.map(dataset =>
           publicView ? (

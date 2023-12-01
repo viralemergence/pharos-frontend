@@ -71,9 +71,9 @@ export const DatasetsTableRow = ({
               {releaseMessage || '—'}
             </DatasetReleaseStatusChip>
           </TableCell>
+          <TableCell cardOrder={1}>{lastUpdated}</TableCell>
         </>
       )}
-      <TableCell cardOrder={1}>{lastUpdated}</TableCell>
     </>
   )
 }
