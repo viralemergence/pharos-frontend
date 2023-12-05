@@ -9,6 +9,7 @@ import {
   DatasetReleaseStatus,
   ProjectID,
   RecordID,
+  Register,
 } from '../types'
 
 export interface SetDatapointPayload {
@@ -66,15 +67,22 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
 
   if (nextDatapoint.report) delete nextDatapoint.report
 
-  const nextRegister = {
-    ...state.register.data,
-    [recordID]: {
-      ...prevRecord,
-      [datapointID]: {
-        ...nextDatapoint,
-      },
+  const nextRecord = {
+    ...prevRecord,
+    [datapointID]: {
+      ...nextDatapoint,
     },
   }
+
+  const nextRegister = {
+    ...state.register.data,
+    [recordID]: nextRecord,
+  }
+
+  const prevStorageMessageRegister = (
+    state.messageStack[`${APIRoutes.saveRecords}_${datasetID}_remote`]?.data as
+    { records: Register, datasetID: string }
+  )?.records
 
   return {
     ...state,
@@ -128,11 +136,16 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
         status: StorageMessageStatus.Initial,
         data: { register: nextRegister, datasetID },
       },
-      [`${APIRoutes.saveRegister}_${datasetID}_remote`]: {
-        route: APIRoutes.saveRegister,
+      [`${APIRoutes.saveRecords}_${datasetID}_remote`]: {
+        route: APIRoutes.saveRecords,
         target: 'remote',
         status: StorageMessageStatus.Initial,
-        data: { register: nextRegister, datasetID, projectID },
+        data: {
+          records: {
+            ...(prevStorageMessageRegister ?? {}),
+            [recordID]: nextRecord,
+          }, datasetID, projectID
+        },
       },
     },
   }

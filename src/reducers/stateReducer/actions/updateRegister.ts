@@ -118,22 +118,32 @@ const updateRegister: ActionFunction<UpdateRegisterActionPayload> = (
   // if source is remote and we have a register already loaded we need to merge them
   console.time(`${'[MERGE]'.padEnd(15)} Merge Register`)
   const nextRegister: Register = {}
+  // take the union of unique keys in the local and remote registers
+  // console.log(Object.keys(state.register.data))
+  const keys = new Set([...Object.keys(register), ...Object.keys(state.register.data)])
   // iterate over the records in the register
-  for (const [recordID, remoteRecord] of Object.entries(register)) {
+  // console.log(keys)
+  for (const recordID of keys) {
+    // console.log(recordID)
+    // console.log(register)
+    const remoteRecord = register[recordID]
+    // console.log(remoteRecord)
     // copy local record into next register
     nextRegister[recordID] = { ...state.register.data[recordID] }
     // iterate over the datapoints in the record
-    for (const [datapointID, remoteDatapoint] of Object.entries(remoteRecord)) {
-      // merge the two datapoints;
-      // The result of the merge is coerced to Datapoint because we can't
-      // reach this point if both local and remote datapoints are undefined
-      // and the merge of at least one defined datapoint always returns Datapoint
-      nextRegister[recordID][datapointID] = mergeDatapoint(
-        // local record is the one we just copied into the nextRegister
-        nextRegister[recordID][datapointID],
-        remoteDatapoint
-      )!
-    }
+    // console.log(nextRegister[recordID])
+    if (remoteRecord)
+      for (const [datapointID, remoteDatapoint] of Object.entries(remoteRecord)) {
+        // merge the two datapoints;
+        // The result of the merge is coerced to Datapoint because we can't
+        // reach this point if both local and remote datapoints are undefined
+        // and the merge of at least one defined datapoint always returns Datapoint
+        nextRegister[recordID][datapointID] = mergeDatapoint(
+          // local record is the one we just copied into the nextRegister
+          nextRegister[recordID][datapointID],
+          remoteDatapoint
+        )!
+      }
   }
   console.timeEnd(`${'[MERGE]'.padEnd(15)} Merge Register`)
 
