@@ -41,7 +41,6 @@ const ResetPassword = () => {
         passwordResetCode,
         newPassword
       )
-      console.log(data)
       setSubmitting(false)
       setSuccess(true)
       setFormMessage('Password reset, please continue to sign in')
