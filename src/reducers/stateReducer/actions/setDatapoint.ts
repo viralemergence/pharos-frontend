@@ -79,6 +79,16 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
     [recordID]: nextRecord,
   }
 
+  // in case there is a prior storage message for the same dataset
+  // merge the messages together. When offline, this builds up one
+  // single message so that all changes are sent to the server in
+  // a single rquest. The server will handle deduplication so it
+  // is better for the same datapoint to be sent multiple times
+  // (like when the prior message is in progress when it is read
+  // here) than it is for an update to be lost, like if the message
+  // is pending when a new datapoint is set and then the message
+  // later fails. This way, that second message will replace the
+  // pending message with a new initial message which sends both.
   const prevStorageMessageRegister = (
     state.messageStack[`${APIRoutes.saveRecords}_${datasetID}_remote`]?.data as
     { records: Register, datasetID: string }
