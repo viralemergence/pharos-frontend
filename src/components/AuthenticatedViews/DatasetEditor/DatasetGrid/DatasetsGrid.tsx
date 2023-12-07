@@ -2,7 +2,10 @@ import React from 'react'
 import styled from 'styled-components'
 import DataGrid, { Column } from 'react-data-grid'
 
-import { DatasetReleaseStatus, RecordWithID } from 'reducers/stateReducer/types'
+import {
+  DatasetReleaseStatus,
+  RecordWithMeta,
+} from 'reducers/stateReducer/types'
 
 import TextEditor from './editors/TextEditor/TextEditor'
 
@@ -44,7 +47,7 @@ const DatasetGrid = () => {
     width: 35,
   }
 
-  const columns: readonly Column<RecordWithID>[] = [
+  const columns: readonly Column<RecordWithMeta>[] = [
     rowNumberColumn,
     ...colNames.map(name => ({
       key: name,
@@ -83,7 +86,7 @@ const DatasetGrid = () => {
       columns={columns as Column<unknown>[]}
       rows={versionedRows}
       rowKeyGetter={row => {
-        const record = row as unknown as RecordWithID
+        const record = row as unknown as RecordWithMeta
         return record._meta.recordID
       }}
     />

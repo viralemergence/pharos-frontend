@@ -5,7 +5,7 @@ import { EditorProps } from 'react-data-grid'
 import {
   Datapoint,
   RecordMeta,
-  RecordWithID,
+  RecordWithMeta,
 } from 'reducers/stateReducer/types'
 
 import useDataset from 'hooks/dataset/useDataset'
@@ -75,7 +75,7 @@ const valueToSIUnits = (
   return converted
 }
 
-const UnitEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
+const UnitEditor = ({ column, onClose, row }: EditorProps<RecordWithMeta>) => {
   const dataset = useDataset()
   const projectID = useProjectID()
   const { researcherID: modifiedBy } = useUser()

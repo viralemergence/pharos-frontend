@@ -1,6 +1,6 @@
 import defaultColumns from 'config/defaultColumns'
 import useDataset from 'hooks/dataset/useDataset'
-import { Datapoint, RecordWithID } from 'reducers/stateReducer/types'
+import { Datapoint, RecordWithMeta } from 'reducers/stateReducer/types'
 
 import useRegister from './useRegister'
 
@@ -31,14 +31,14 @@ const useVersionedRows = () => {
   if (!dataset || !register || Object.keys(register).length === 0)
     return { rows: [], colNames: [...Object.keys(colNames)] }
 
-  const rows: RecordWithID[] = []
+  const rows: RecordWithMeta[] = []
 
   // add column names for non-default columns
   Object.entries(register).forEach(([recordID, record], index) => {
     for (const key of Object.keys(record))
       if (!colNames[key]) colNames[key] = { type: 'string' }
 
-    rows.push({ ...record, _meta: { recordID, rowNumber: index } })
+    rows.push({ ...record, _meta: { recordID, rowNumber: index, order: record._meta.order ?? index } })
   })
 
   return { rows: [...rows], colNames: [...Object.keys(colNames)] }

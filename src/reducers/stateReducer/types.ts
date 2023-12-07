@@ -158,6 +158,7 @@ export interface Record {
 export interface RecordMeta {
   recordID: string
   rowNumber: number
+  order?: number
 
   // report?: {
   //   pass: ReportScore
@@ -168,7 +169,7 @@ export interface RecordMeta {
   // ingested: boolean
 }
 
-export interface RecordWithID {
+export interface RecordWithMeta {
   _meta: RecordMeta
   [key: string]: Datapoint | RecordMeta
 }
