@@ -36,8 +36,16 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
   // get the previous record, if it's undefined make a new record
   const prevRecord = state.register.data[recordID] ?? {}
 
-  // get previous datapoint
-  const previous = prevRecord[datapointID]
+  console.log('prevRecord inside setDatapoint')
+  console.log(prevRecord)
+
+  // type guard-ish check for _meta object
+  if (datapointID === "_meta")
+    throw new Error("Cannot call setDatapoint on _meta object")
+
+  // get previous datapoint, coerce type to Datapoint because
+  // we now know it's not the _meta object
+  const previous = prevRecord[datapointID] as Datapoint
 
   // short circuit if the data value is unchanged
   if (previous?.dataValue === next.dataValue) return state

@@ -3,7 +3,7 @@ import {
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
 import { ActionFunction, StateActions } from '../stateReducer'
-import { Datapoint, DatasetID, NodeStatus, ProjectID, Register } from '../types'
+import { Datapoint, DatasetID, NodeStatus, ProjectID, Register, ServerRecordMeta } from '../types'
 
 interface UpdateRegisterActionPayload {
   source: 'local' | 'remote' | 'csv'
@@ -134,14 +134,17 @@ const updateRegister: ActionFunction<UpdateRegisterActionPayload> = (
     // console.log(nextRegister[recordID])
     if (remoteRecord)
       for (const [datapointID, remoteDatapoint] of Object.entries(remoteRecord)) {
+        if (datapointID === "_meta") {
+          nextRegister[recordID][datapointID] = nextRegister[recordID][datapointID] ?? remoteDatapoint as ServerRecordMeta
+        }
         // merge the two datapoints;
         // The result of the merge is coerced to Datapoint because we can't
         // reach this point if both local and remote datapoints are undefined
         // and the merge of at least one defined datapoint always returns Datapoint
         nextRegister[recordID][datapointID] = mergeDatapoint(
           // local record is the one we just copied into the nextRegister
-          nextRegister[recordID][datapointID],
-          remoteDatapoint
+          nextRegister[recordID][datapointID] as Datapoint,
+          remoteDatapoint as Datapoint
         )!
       }
   }

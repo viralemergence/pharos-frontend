@@ -38,10 +38,23 @@ const useVersionedRows = () => {
     for (const key of Object.keys(record))
       if (!colNames[key]) colNames[key] = { type: 'string' }
 
-    rows.push({ ...record, _meta: { recordID, rowNumber: index, order: record._meta.order ?? index } })
+    // console.log('before modifying meta')
+    // console.log(record)
+
+    // mutate original record to add _meta order if it doesn't have it
+    // This probably needs to find a better home somewhere else...
+    record._meta = { ...record._meta, order: record._meta?.order ?? index }
+
+    rows.push({ ...record, _meta: { recordID, rowNumber: index, order: (record as RecordWithMeta)._meta?.order } })
+    // console.log('after modifying meta')
+    // console.log(rows[index])
   })
 
-  return { rows: [...rows], colNames: [...Object.keys(colNames)] }
+  const sorted = rows.sort((a, b) => (a._meta.order ?? 0) - (b._meta.order ?? 0))
+
+  console.log(sorted.map(r => `${r._meta.order}, ${(r["Animal ID"] as Datapoint).dataValue}`))
+
+  return { rows: sorted, colNames: [...Object.keys(colNames)] }
 
   // // else return datapoints that are valid for the target version
   // return {

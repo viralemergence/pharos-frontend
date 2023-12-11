@@ -147,12 +147,16 @@ export interface Register {
   [key: RecordID]: Record
 }
 
+export interface ServerRecordMeta {
+  order?: number
+}
+
 // a single record of data, a collection
 // of datapoints which the user sees
 // as a row in a table
-
 export interface Record {
-  [key: string]: Datapoint
+  _meta?: ServerRecordMeta
+  [key: string]: Datapoint | ServerRecordMeta | undefined
 }
 
 export interface RecordMeta {
