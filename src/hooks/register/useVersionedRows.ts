@@ -52,8 +52,6 @@ const useVersionedRows = () => {
 
   const sorted = rows.sort((a, b) => (a._meta.order ?? 0) - (b._meta.order ?? 0))
 
-  console.log(sorted.map(r => `${r._meta.order}, ${(r["Animal ID"] as Datapoint).dataValue}`))
-
   return { rows: sorted, colNames: [...Object.keys(colNames)] }
 
   // // else return datapoints that are valid for the target version

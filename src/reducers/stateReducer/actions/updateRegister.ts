@@ -134,18 +134,18 @@ const updateRegister: ActionFunction<UpdateRegisterActionPayload> = (
     // console.log(nextRegister[recordID])
     if (remoteRecord)
       for (const [datapointID, remoteDatapoint] of Object.entries(remoteRecord)) {
-        if (datapointID === "_meta") {
+        if (datapointID === "_meta")
           nextRegister[recordID][datapointID] = nextRegister[recordID][datapointID] ?? remoteDatapoint as ServerRecordMeta
-        }
-        // merge the two datapoints;
-        // The result of the merge is coerced to Datapoint because we can't
-        // reach this point if both local and remote datapoints are undefined
-        // and the merge of at least one defined datapoint always returns Datapoint
-        nextRegister[recordID][datapointID] = mergeDatapoint(
-          // local record is the one we just copied into the nextRegister
-          nextRegister[recordID][datapointID] as Datapoint,
-          remoteDatapoint as Datapoint
-        )!
+        else
+          // merge the two datapoints;
+          // The result of the merge is coerced to Datapoint because we can't
+          // reach this point if both local and remote datapoints are undefined
+          // and the merge of at least one defined datapoint always returns Datapoint
+          nextRegister[recordID][datapointID] = mergeDatapoint(
+            // local record is the one we just copied into the nextRegister
+            nextRegister[recordID][datapointID] as Datapoint,
+            remoteDatapoint as Datapoint
+          )!
       }
   }
   console.timeEnd(`${'[MERGE]'.padEnd(15)} Merge Register`)
