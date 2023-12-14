@@ -161,7 +161,7 @@ export interface Record {
 
 export interface RecordMeta {
   recordID: string
-  rowNumber: number
+  rowNumber?: number
   order?: number
 
   // report?: {

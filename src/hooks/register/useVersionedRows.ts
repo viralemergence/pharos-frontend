@@ -45,12 +45,17 @@ const useVersionedRows = () => {
     // This probably needs to find a better home somewhere else...
     record._meta = { ...record._meta, order: record._meta?.order ?? index }
 
-    rows.push({ ...record, _meta: { recordID, rowNumber: index, order: (record as RecordWithMeta)._meta?.order } })
+    rows.push({ ...record, _meta: { recordID, order: (record as RecordWithMeta)._meta?.order } })
     // console.log('after modifying meta')
     // console.log(rows[index])
   })
 
   const sorted = rows.sort((a, b) => (a._meta.order ?? 0) - (b._meta.order ?? 0))
+
+  // add correct row numbers
+  for (const [index, row] of sorted.entries()) {
+    row._meta.rowNumber = index
+  }
 
   return { rows: sorted, colNames: [...Object.keys(colNames)] }
 
