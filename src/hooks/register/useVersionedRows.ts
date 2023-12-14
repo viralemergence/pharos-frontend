@@ -54,7 +54,7 @@ const useVersionedRows = () => {
 
   // add correct row numbers
   for (const [index, row] of sorted.entries()) {
-    row._meta.rowNumber = index
+    row._meta.rowNumber = index + 1
   }
 
   return { rows: sorted, colNames: [...Object.keys(colNames)] }

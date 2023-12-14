@@ -21,7 +21,7 @@ const RowNumber = ({
   },
 }: FormatterProps<RecordWithMeta>) => (
   <CellContainer>
-    <span>{rowNumber + 1}</span>
+    <span>{rowNumber ?? ''}</span>
   </CellContainer>
 )
 
