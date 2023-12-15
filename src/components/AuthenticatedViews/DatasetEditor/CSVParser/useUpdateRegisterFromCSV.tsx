@@ -68,7 +68,7 @@ const useUpdateRegisterFromCSV = () => {
           // if (!recordID || recordID.trim().length === 0)
 
           const recordID = generateID.recordID(
-            Math.ceil(index + 1 / DATASET_PAGINATION_SIZE)
+            Math.ceil((index + 1) / DATASET_PAGINATION_SIZE)
           )
 
           for (const columnName of columns) {

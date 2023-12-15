@@ -77,7 +77,7 @@ const DatasetGrid = () => {
   versionedRows.push({
     _meta: {
       recordID: generateID.recordID(
-        Math.ceil(versionedRows.length + 1 / DATASET_PAGINATION_SIZE)
+        Math.ceil((versionedRows.length + 1) / DATASET_PAGINATION_SIZE)
       ),
     },
   })
