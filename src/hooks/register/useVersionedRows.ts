@@ -36,7 +36,7 @@ const useVersionedRows = () => {
   // add column names for non-default columns
   Object.entries(register).forEach(([recordID, record], index) => {
     for (const key of Object.keys(record))
-      if (!colNames[key]) colNames[key] = { type: 'string' }
+      if (!colNames[key] && key !== '_meta') colNames[key] = { type: 'string' }
 
     // mutate original record to add _meta order if it doesn't have it
     // This probably needs to find a better home somewhere else...
