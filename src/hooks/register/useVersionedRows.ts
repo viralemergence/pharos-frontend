@@ -1,6 +1,6 @@
 import defaultColumns from 'config/defaultColumns'
 import useDataset from 'hooks/dataset/useDataset'
-import { Datapoint, RecordWithMeta } from 'reducers/stateReducer/types'
+import { RecordWithMeta } from 'reducers/stateReducer/types'
 
 import useRegister from './useRegister'
 
