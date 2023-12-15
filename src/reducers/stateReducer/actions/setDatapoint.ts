@@ -36,9 +36,6 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
   // get the previous record, if it's undefined make a new record
   const prevRecord = state.register.data[recordID] ?? {}
 
-  console.log('prevRecord inside setDatapoint')
-  console.log(prevRecord)
-
   // type guard-ish check for _meta object
   if (datapointID === "_meta")
     throw new Error("Cannot call setDatapoint on _meta object")
@@ -46,6 +43,12 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
   // get previous datapoint, coerce type to Datapoint because
   // we now know it's not the _meta object
   const previous = prevRecord[datapointID] as Datapoint
+
+  const idParts = recordID.split('|')
+  let page: number | null = null
+  if (idParts.length === 2) {
+    page = Number(idParts[0].replace('rec', ''))
+  }
 
   // short circuit if the data value is unchanged
   if (previous?.dataValue === next.dataValue) return state
@@ -98,7 +101,7 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
   // later fails. This way, that second message will replace the
   // pending message with a new initial message which sends both.
   const prevStorageMessageRegister = (
-    state.messageStack[`${APIRoutes.saveRecords}_${datasetID}_remote`]?.data as
+    state.messageStack[`${APIRoutes.saveRecords}_${datasetID}_${page}_remote`]?.data as
     { records: Register, datasetID: string }
   )?.records
 
@@ -154,7 +157,7 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
         status: StorageMessageStatus.Initial,
         data: { register: nextRegister, datasetID },
       },
-      [`${APIRoutes.saveRecords}_${datasetID}_remote`]: {
+      [`${APIRoutes.saveRecords}_${datasetID}_${page}_remote`]: {
         route: APIRoutes.saveRecords,
         target: 'remote',
         status: StorageMessageStatus.Initial,

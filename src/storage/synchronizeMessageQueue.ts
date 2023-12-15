@@ -65,7 +65,7 @@ const synchronizeMessageQueue = async (
     if (
       message.status !== StorageMessageStatus.LocalStorageError &&
       message.status !== StorageMessageStatus.UnknownError &&
-      message.status !== StorageMessageStatus.NetworkError &&
+      // message.status !== StorageMessageStatus.NetworkError &&
       message.status !== StorageMessageStatus.ServerError &&
       message.status !== StorageMessageStatus.Pending
     ) {
