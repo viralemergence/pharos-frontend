@@ -119,19 +119,13 @@ const updateRegister: ActionFunction<UpdateRegisterActionPayload> = (
   console.time(`${'[MERGE]'.padEnd(15)} Merge Register`)
   const nextRegister: Register = {}
   // take the union of unique keys in the local and remote registers
-  // console.log(Object.keys(state.register.data))
   const keys = new Set([...Object.keys(register), ...Object.keys(state.register.data)])
   // iterate over the records in the register
-  // console.log(keys)
   for (const recordID of keys) {
-    // console.log(recordID)
-    // console.log(register)
     const remoteRecord = register[recordID]
-    // console.log(remoteRecord)
     // copy local record into next register
     nextRegister[recordID] = { ...state.register.data[recordID] }
     // iterate over the datapoints in the record
-    // console.log(nextRegister[recordID])
     if (remoteRecord)
       for (const [datapointID, remoteDatapoint] of Object.entries(remoteRecord)) {
         if (datapointID === "_meta")
