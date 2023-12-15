@@ -20,9 +20,15 @@ import 'react-data-grid/lib/styles.css'
 import RowNumber from './formatters/RowNumber'
 import useDataset from 'hooks/dataset/useDataset'
 import EditingDisabledEditor from './editors/EditingDisabledEditor'
-import { DATASET_LENGTH_LIMIT } from '../DatasetLengthExceededModal/DatasetLengthExceededModal'
 import UnitFormatter from './formatters/UnitFormatter'
 import UnitEditor from './editors/UnitEditor'
+
+// Intended size:
+// export const DATASET_PAGINATION_SIZE = 800
+
+// Setting size super small to force
+// lots of pagination for testing
+export const DATASET_PAGINATION_SIZE = 5
 
 const FillDatasetGrid = styled(DataGrid)`
   block-size: 100%;
@@ -68,15 +74,14 @@ const DatasetGrid = () => {
     })),
   ]
 
-  // only add new row for editing if
-  // the dataset is under the limit
-  if (versionedRows.length < DATASET_LENGTH_LIMIT) {
-    versionedRows.push({
-      _meta: {
-        recordID: generateID.recordID(),
-      },
-    })
-  }
+  versionedRows.push({
+    _meta: {
+      recordID: generateID.recordID(
+        Math.ceil(versionedRows.length + 1 / DATASET_PAGINATION_SIZE)
+      ),
+    },
+  })
+
   return (
     <FillDatasetGrid
       className={'rdg-light'}

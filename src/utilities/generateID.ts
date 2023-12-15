@@ -9,7 +9,7 @@ const projectID = () => 'prj' + nanoid()
 
 const datasetID = () => 'set' + nanoid()
 
-const recordID = () => 'rec' + nanoid()
+const recordID = (page: number) => `rec${page}|${nanoid()}`
 
 // DatapointID is not used (column name is used)
 // const datapointID = () => 'dat' + nanoid()

@@ -16,6 +16,7 @@ import useVersionedRows from 'hooks/register/useVersionedRows'
 import DatasetLengthExceededModal, {
   DATASET_LENGTH_LIMIT,
 } from '../DatasetLengthExceededModal/DatasetLengthExceededModal'
+import { DATASET_PAGINATION_SIZE } from '../DatasetGrid/DatasetsGrid'
 
 type Rows = { [key: string]: string }[]
 
@@ -60,13 +61,15 @@ const useUpdateRegisterFromCSV = () => {
         //   {}
         // )
 
-        rows.forEach(row => {
+        rows.forEach((row, index) => {
           // merge code --- deprecated
           // pull ID from map, if it doesn't exist generate a new one
           // let recordID = idMap[row[mergeColumn]]
           // if (!recordID || recordID.trim().length === 0)
 
-          const recordID = generateID.recordID()
+          const recordID = generateID.recordID(
+            Math.ceil(index + 1 / DATASET_PAGINATION_SIZE)
+          )
 
           for (const columnName of columns) {
             if (!row[columnName]) continue
