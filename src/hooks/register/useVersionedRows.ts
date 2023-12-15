@@ -38,21 +38,18 @@ const useVersionedRows = () => {
     for (const key of Object.keys(record))
       if (!colNames[key]) colNames[key] = { type: 'string' }
 
-    // console.log('before modifying meta')
-    // console.log(record)
-
     // mutate original record to add _meta order if it doesn't have it
     // This probably needs to find a better home somewhere else...
     record._meta = { ...record._meta, order: record._meta?.order ?? index }
 
     rows.push({ ...record, _meta: { recordID, order: (record as RecordWithMeta)._meta?.order } })
-    // console.log('after modifying meta')
-    // console.log(rows[index])
   })
 
   const sorted = rows.sort((a, b) => (a._meta.order ?? 0) - (b._meta.order ?? 0))
 
-  // add correct row numbers
+  // add correct row numbers after the sort has been applied
+  // There's got to be a better way to do this, the grid library
+  // should expose it's rowIdx variable...
   for (const [index, row] of sorted.entries()) {
     row._meta.rowNumber = index + 1
   }
