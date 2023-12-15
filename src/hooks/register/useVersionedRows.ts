@@ -4,17 +4,17 @@ import { Datapoint, RecordWithMeta } from 'reducers/stateReducer/types'
 
 import useRegister from './useRegister'
 
-// recursively traverse the linked list until the
-// version number is satisfied for a given datapoint
-const getDatapointAtVersion = (
-  datapoint: Datapoint | undefined,
-  version: number
-): Datapoint | undefined => {
-  if (!datapoint) return undefined
-  if (Number(datapoint.version) > version)
-    return getDatapointAtVersion(datapoint.previous, version)
-  return datapoint
-}
+// // recursively traverse the linked list until the
+// // version number is satisfied for a given datapoint
+// const getDatapointAtVersion = (
+//   datapoint: Datapoint | undefined,
+//   version: number
+// ): Datapoint | undefined => {
+//   if (!datapoint) return undefined
+//   if (Number(datapoint.version) > version)
+//     return getDatapointAtVersion(datapoint.previous, version)
+//   return datapoint
+// }
 
 // hook to provide access to the rows of an arbitrary
 // version of a register for displaying in the table
