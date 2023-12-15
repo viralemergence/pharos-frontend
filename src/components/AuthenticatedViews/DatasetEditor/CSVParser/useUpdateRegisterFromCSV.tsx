@@ -13,9 +13,6 @@ import getTimestamp from 'utilities/getTimestamp'
 import useModal from 'hooks/useModal/useModal'
 import useVersionedRows from 'hooks/register/useVersionedRows'
 
-import DatasetLengthExceededModal, {
-  DATASET_LENGTH_LIMIT,
-} from '../DatasetLengthExceededModal/DatasetLengthExceededModal'
 import { DATASET_PAGINATION_SIZE } from '../DatasetGrid/DatasetsGrid'
 
 type Rows = { [key: string]: string }[]
@@ -37,10 +34,10 @@ const useUpdateRegisterFromCSV = () => {
         const rows = results.data as Rows
         const columns = Object.keys(rows[0]).map(column => column.trim())
 
-        if (rows.length + currentRows.rows.length > DATASET_LENGTH_LIMIT) {
-          setModal(<DatasetLengthExceededModal />, { closeable: true })
-          return
-        }
+        // if (rows.length + currentRows.rows.length > DATASET_LENGTH_LIMIT) {
+        //   setModal(<DatasetLengthExceededModal />, { closeable: true })
+        //   return
+        // }
 
         // const registerCopy = { ...register }
         const newRecords: Register = {}
