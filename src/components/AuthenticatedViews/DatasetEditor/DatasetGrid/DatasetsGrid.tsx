@@ -24,11 +24,7 @@ import UnitFormatter from './formatters/UnitFormatter'
 import UnitEditor from './editors/UnitEditor'
 
 // Intended size:
-// export const DATASET_PAGINATION_SIZE = 800
-
-// Setting size super small to force
-// lots of pagination for testing
-export const DATASET_PAGINATION_SIZE = 5
+export const DATASET_PAGINATION_SIZE = 500
 
 const FillDatasetGrid = styled(DataGrid)`
   block-size: 100%;
