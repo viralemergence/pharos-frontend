@@ -1,4 +1,4 @@
-import { DatasetID, Register } from 'reducers/stateReducer/types'
+import { DatasetID, ProjectID, Register } from 'reducers/stateReducer/types'
 import { StateActions } from 'reducers/stateReducer/stateReducer'
 
 import {
@@ -14,6 +14,7 @@ export type SaveRecords = StorageMessagePayload<
   {
     records: Register
     datasetID: DatasetID
+    projectID: ProjectID
   }
 >
 
@@ -92,7 +93,7 @@ const saveRecords: StorageFunction<SaveRecords> = async (
         payload: {
           source: 'remote',
           datasetID: message.data.datasetID,
-          projectID: message.data.datasetID,
+          projectID: message.data.projectID,
           data: remoteRegister.register as Register,
         },
       })
