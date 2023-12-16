@@ -1,9 +1,11 @@
 import {
   APIRoutes,
-  StorageMessageStatus,
+  StorageMessage,
+  StorageMessageStatus
 } from 'storage/synchronizeMessageQueue'
 import { ActionFunction, StateActions } from '../stateReducer'
 import { DatasetID, ProjectID, Register } from '../types'
+import { SaveRecords } from 'storage/storageFunctions/saveRecords'
 
 export interface ExtendRegisterPayload {
   projectID: ProjectID
@@ -34,6 +36,35 @@ const extendRegister: ActionFunction<ExtendRegisterPayload> = (
   }
 
   const nextRegister = { ...state.register.data, ...newRecords }
+
+  const nextSaveRecordsStorageMessages: { [key: string]: StorageMessage } = {}
+
+  for (const [recordID, record] of Object.entries(newRecords)) {
+    const idParts = recordID.split('|')
+    let page: number | null = null
+    if (idParts.length === 2) {
+      page = Number(idParts[0].replace('rec', ''))
+    }
+
+    const messageKey = `${APIRoutes.saveRecords}_${datasetID}_${page}_remote`
+
+    if (!nextSaveRecordsStorageMessages[messageKey]) {
+      nextSaveRecordsStorageMessages[messageKey] = {
+        route: APIRoutes.saveRecords,
+        target: 'remote',
+        status: StorageMessageStatus.Initial,
+        data: {
+          records: {
+            [recordID]: record,
+          }, datasetID, projectID
+        },
+      }
+    } else {
+      (nextSaveRecordsStorageMessages[messageKey] as SaveRecords).data.records[recordID] = record
+    }
+  }
+
+  console.log({ nextSaveRecordsStorageMessages })
 
   return {
     ...state,
@@ -80,12 +111,7 @@ const extendRegister: ActionFunction<ExtendRegisterPayload> = (
         status: StorageMessageStatus.Initial,
         data: { register: nextRegister, datasetID },
       },
-      [`${APIRoutes.saveRegister}_${datasetID}_remote`]: {
-        route: APIRoutes.saveRegister,
-        target: 'remote',
-        status: StorageMessageStatus.Initial,
-        data: { register: nextRegister, datasetID, projectID },
-      },
+      ...nextSaveRecordsStorageMessages,
     },
   }
 }
