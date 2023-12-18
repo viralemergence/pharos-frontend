@@ -64,6 +64,11 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
     ...state.datasets.data[datasetID],
     lastUpdated,
     releaseStatus: DatasetReleaseStatus.Unreleased,
+    // mark which page of the register is being updated
+    registerPages: {
+      ...(state.datasets.data[datasetID].registerPages ?? {}),
+      ...(page !== null && { [page]: { lastUpdated } })
+    }
   }
 
   // next datapoint is all the previous data, overwritten with

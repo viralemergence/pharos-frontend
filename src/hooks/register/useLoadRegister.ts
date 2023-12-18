@@ -10,11 +10,13 @@ import useAppState from 'hooks/useAppState'
 import useDatasetID from 'hooks/dataset/useDatasetID'
 import useProjectID from 'hooks/project/useProjectID'
 import { Auth } from 'aws-amplify'
+import useDataset from 'hooks/dataset/useDataset'
 
 const useLoadRegister = () => {
   const datasetID = useDatasetID()
   const projectID = useProjectID()
   const dispatch = useDispatch()
+  const dataset = useDataset()
 
   const {
     register: { status },
@@ -66,8 +68,11 @@ const useLoadRegister = () => {
     loadLocalDatasets()
   }, [projectID, datasetID, dispatch])
 
+  const registerPages = dataset.registerPages
+
   useEffect(() => {
     if (!datasetID) return
+    if (!dataset) return
     const requestRegister = async () => {
       // skip loading if:
       if (
@@ -85,6 +90,8 @@ const useLoadRegister = () => {
         return
       }
 
+      if (!dataset.datasetID) return
+
       dispatch({
         type: StateActions.SetMetadataObjStatus,
         payload: {
@@ -93,82 +100,177 @@ const useLoadRegister = () => {
         },
       })
 
-      console.log(`${'[API]'.padEnd(15)} Request:  /load-register`)
-      const response = await fetch(
-        `${process.env.GATSBY_API_URL}/load-register`,
-        {
-          method: 'POST',
-          headers: new Headers({
-            Authorization: userSession.getIdToken().getJwtToken(),
-            'Content-Type': 'application/json',
-          }),
-          body: JSON.stringify({ datasetID, projectID }),
+      // if this dataset has a paginated register,
+      // load new records from the /load-records route.
+      console.log({ dataset })
+      console.log({ registerPages })
+      if (registerPages) {
+
+        // check if local register exists
+        const localRegister = (await localforage.getItem(
+          `${datasetID}-register`
+        )) as Register | null
+
+        for (const [registerPage, { lastUpdated }] of Object.entries(registerPages)) {
+          console.log(`${'[API]'.padEnd(15)} Request:  /load-records`)
+
+          console.log(localRegister)
+
+          const requestBody = {
+            datasetID, projectID, registerPage
+          }
+
+          console.log({ localRegister })
+
+          if (localRegister !== null) {
+            requestBody.lastUpdated = lastUpdated
+          }
+
+          const response = await fetch(
+            `${process.env.GATSBY_API_URL}/load-records`,
+            {
+              method: 'POST',
+              headers: new Headers({
+                Authorization: userSession.getIdToken().getJwtToken(),
+                'Content-Type': 'application/json',
+              }),
+              body: JSON.stringify(requestBody),
+              // {
+              // datasetID, projectID, registerPage,
+              // ...(localRegister ? {} : { lastUpdated })
+              // }),
+            }
+          ).catch(() =>
+            dispatch({
+              type: StateActions.SetMetadataObjStatus,
+              payload: {
+                key: 'register',
+                status: NodeStatus.Offline,
+              },
+            })
+          )
+
+          console.log(
+            `${'[API]'.padEnd(15)} Response: /load-records page ${registerPage}: ${response?.status}`
+          )
+          if (!response || !response.ok) {
+            dispatch({
+              type: StateActions.SetMetadataObjStatus,
+              payload: {
+                key: 'register',
+                status: NodeStatus.Offline,
+              },
+            })
+            return
+          }
+
+          const remoteRegister = await response.json()
+
+          if (remoteRegister && typeof remoteRegister === 'object' &&
+            'register' in remoteRegister &&
+            typeof remoteRegister?.register === 'object'
+          ) {
+            dispatch({
+              type: StateActions.UpdateRegister,
+              payload: {
+                projectID,
+                datasetID,
+                source: 'remote',
+                data: remoteRegister.register as Register,
+              },
+            })
+
+            dispatch({
+              type: StateActions.SetMetadataObjStatus,
+              payload: {
+                key: 'register',
+                status: NodeStatus.Loaded,
+              },
+            })
+          }
         }
-      ).catch(() =>
-        dispatch({
-          type: StateActions.SetMetadataObjStatus,
-          payload: {
-            key: 'register',
-            status: NodeStatus.Offline,
-          },
-        })
-      )
+      } else {
 
-      console.log(
-        `${'[API]'.padEnd(15)} Response: /load-register: ${response?.status}`
-      )
-      if (!response || !response.ok) {
-        dispatch({
-          type: StateActions.SetMetadataObjStatus,
-          payload: {
-            key: 'register',
-            status: NodeStatus.Offline,
-          },
-        })
-        return
-      }
 
-      const remoteRegister = await response.json()
-
-      if (remoteRegister && typeof remoteRegister === 'object') {
-        // current regster format has {register: Register} as the top level object
-        if (
-          'register' in remoteRegister &&
-          typeof remoteRegister?.register === 'object'
-        ) {
+        // if the dataset does not have a paginated register,
+        // load the register using the legacy /load-register route
+        console.log(`${'[API]'.padEnd(15)} Request:  /load-register`)
+        const response = await fetch(
+          `${process.env.GATSBY_API_URL}/load-register`,
+          {
+            method: 'POST',
+            headers: new Headers({
+              Authorization: userSession.getIdToken().getJwtToken(),
+              'Content-Type': 'application/json',
+            }),
+            body: JSON.stringify({ datasetID, projectID }),
+          }
+        ).catch(() =>
           dispatch({
-            type: StateActions.UpdateRegister,
+            type: StateActions.SetMetadataObjStatus,
             payload: {
-              projectID,
-              datasetID,
-              source: 'remote',
-              data: remoteRegister.register as Register,
+              key: 'register',
+              status: NodeStatus.Offline,
             },
           })
-        } else {
-          // fallback for old format; top level object keys are records
+        )
+
+        console.log(
+          `${'[API]'.padEnd(15)} Response: /load-register: ${response?.status}`
+        )
+        if (!response || !response.ok) {
           dispatch({
-            type: StateActions.UpdateRegister,
+            type: StateActions.SetMetadataObjStatus,
             payload: {
-              projectID,
-              datasetID,
-              source: 'remote',
-              data: remoteRegister as Register,
+              key: 'register',
+              status: NodeStatus.Offline,
+            },
+          })
+          return
+        }
+
+        const remoteRegister = await response.json()
+
+        if (remoteRegister && typeof remoteRegister === 'object') {
+          // current regster format has {register: Register} as the top level object
+          if (
+            'register' in remoteRegister &&
+            typeof remoteRegister?.register === 'object'
+          ) {
+            dispatch({
+              type: StateActions.UpdateRegister,
+              payload: {
+                projectID,
+                datasetID,
+                source: 'remote',
+                data: remoteRegister.register as Register,
+              },
+            })
+          } else {
+            // fallback for old format; top level object keys are records
+            dispatch({
+              type: StateActions.UpdateRegister,
+              payload: {
+                projectID,
+                datasetID,
+                source: 'remote',
+                data: remoteRegister as Register,
+              },
+            })
+          }
+          dispatch({
+            type: StateActions.SetMetadataObjStatus,
+            payload: {
+              key: 'register',
+              status: NodeStatus.Loaded,
             },
           })
         }
-        dispatch({
-          type: StateActions.SetMetadataObjStatus,
-          payload: {
-            key: 'register',
-            status: NodeStatus.Loaded,
-          },
-        })
       }
     }
 
     requestRegister()
-  }, [projectID, datasetID, status, dispatch])
+  }, [projectID, datasetID, status, dispatch, registerPages])
 }
 
 export default useLoadRegister

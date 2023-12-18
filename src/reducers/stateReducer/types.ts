@@ -88,6 +88,13 @@ export interface Project {
   // }
 }
 
+// a 'page' of a register
+// which corresponds to a 
+// chunk of records
+export interface RegisterPage {
+  lastUpdated: string
+}
+
 // a single dataset
 /** The Dataset object contains all
  * the metadata about the dataset. */
@@ -107,6 +114,9 @@ export interface Dataset {
   // earliest and latest date in the dataset
   earliestDate?: string
   latestDate?: string
+  registerPages?: {
+    [key: string]: RegisterPage
+  }
 
   // optional user-specified display units
   age?: keyof typeof units.age
