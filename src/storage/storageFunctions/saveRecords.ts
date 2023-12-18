@@ -55,24 +55,35 @@ const saveRecords: StorageFunction<SaveRecords> = async (
     return
   }
 
-  const response = await fetch(
-    `${process.env.GATSBY_API_URL}/${message.route}`,
-    {
-      method: 'POST',
-      headers: new Headers({
-        Authorization: userSession.getIdToken().getJwtToken(),
-        'Content-Type': 'application/json',
-      }),
-      body: JSON.stringify({ ...message.data }),
-    }
-  ).catch(() =>
-    dispatch({
-      type: StateActions.SetStorageMessageStatus,
-      payload: { key, status: StorageMessageStatus.NetworkError },
-    })
-  )
+  let response
+  try {
+    response = await fetch(
+      `${process.env.GATSBY_API_URL}/${message.route}`,
+      {
+        method: 'POST',
+        headers: new Headers({
+          Authorization: userSession.getIdToken().getJwtToken(),
+          'Content-Type': 'application/json',
+        }),
+        body: JSON.stringify({ ...message.data }),
+      }
+    )
+  } catch (e) {
+    if (!navigator.onLine)
+      dispatch({
+        type: StateActions.SetStorageMessageStatus,
+        payload: { key, status: StorageMessageStatus.NetworkError },
+      })
+    else
+      dispatch({
+        type: StateActions.SetStorageMessageStatus,
+        payload: { key, status: StorageMessageStatus.UnknownError },
+      })
+    return
+  }
 
-  if (!response || !response.ok)
+
+  if (!response.ok)
     dispatch({
       type: StateActions.SetStorageMessageStatus,
       payload: { key, status: StorageMessageStatus.NetworkError },

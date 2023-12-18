@@ -9,7 +9,6 @@ import {
   StorageMessagePayload,
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
-import { Auth } from 'aws-amplify'
 
 export type SaveRegister = StorageMessagePayload<
   APIRoutes.saveRegister,
@@ -40,61 +39,7 @@ const saveRegister: StorageFunction<SaveRegister> = async (
       )
     dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
   } else {
-    let userSession
-    try {
-      userSession = await Auth.currentSession()
-    } catch (error) {
-      dispatch({
-        type: StateActions.SetStorageMessageStatus,
-        payload: { key, status: StorageMessageStatus.UserSessionError },
-      })
-      return
-    }
-
-    const response = await fetch(
-      `${process.env.GATSBY_API_URL}/${message.route}`,
-      {
-        method: 'POST',
-        headers: new Headers({
-          Authorization: userSession.getIdToken().getJwtToken(),
-          'Content-Type': 'application/json',
-        }),
-        body: JSON.stringify({ ...message.data }),
-      }
-    ).catch(() =>
-      dispatch({
-        type: StateActions.SetStorageMessageStatus,
-        payload: { key, status: StorageMessageStatus.NetworkError },
-      })
-    )
-
-    if (!response || !response.ok)
-      dispatch({
-        type: StateActions.SetStorageMessageStatus,
-        payload: { key, status: StorageMessageStatus.NetworkError },
-      })
-    else {
-      dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
-
-      const remoteRegister = await response.json()
-
-      if (
-        remoteRegister &&
-        typeof remoteRegister === 'object' &&
-        'register' in remoteRegister &&
-        typeof remoteRegister?.register === 'object'
-      ) {
-        dispatch({
-          type: StateActions.UpdateRegister,
-          payload: {
-            source: 'remote',
-            datasetID: message.data.datasetID,
-            projectID: message.data.datasetID,
-            data: remoteRegister.register as Register,
-          },
-        })
-      }
-    }
+    throw new Error("Save Register with target === 'remote' is deprecated")
   }
 }
 
