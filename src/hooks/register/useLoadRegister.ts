@@ -136,10 +136,6 @@ const useLoadRegister = () => {
                 'Content-Type': 'application/json',
               }),
               body: JSON.stringify(requestBody),
-              // {
-              // datasetID, projectID, registerPage,
-              // ...(localRegister ? {} : { lastUpdated })
-              // }),
             }
           ).catch(() =>
             dispatch({
