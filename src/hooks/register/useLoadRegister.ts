@@ -3,7 +3,7 @@ import localforage from 'localforage'
 
 import useDispatch from 'hooks/useDispatch'
 
-import { NodeStatus, Register } from 'reducers/stateReducer/types'
+import { DatasetID, NodeStatus, ProjectID, Register } from 'reducers/stateReducer/types'
 import { StateActions } from 'reducers/stateReducer/stateReducer'
 
 import useAppState from 'hooks/useAppState'
@@ -11,6 +11,13 @@ import useDatasetID from 'hooks/dataset/useDatasetID'
 import useProjectID from 'hooks/project/useProjectID'
 import { Auth } from 'aws-amplify'
 import useDataset from 'hooks/dataset/useDataset'
+
+interface LoadRecordsBody {
+  datasetID: DatasetID
+  projectID: ProjectID
+  registerPage: string
+  lastUpdated?: string
+}
 
 const useLoadRegister = () => {
   const datasetID = useDatasetID()
@@ -102,10 +109,7 @@ const useLoadRegister = () => {
 
       // if this dataset has a paginated register,
       // load new records from the /load-records route.
-      console.log({ dataset })
-      console.log({ registerPages })
       if (registerPages) {
-
         // check if local register exists
         const localRegister = (await localforage.getItem(
           `${datasetID}-register`
@@ -114,13 +118,10 @@ const useLoadRegister = () => {
         for (const [registerPage, { lastUpdated }] of Object.entries(registerPages)) {
           console.log(`${'[API]'.padEnd(15)} Request:  /load-records`)
 
-          console.log(localRegister)
 
-          const requestBody = {
+          const requestBody: LoadRecordsBody = {
             datasetID, projectID, registerPage
           }
-
-          console.log({ localRegister })
 
           if (localRegister !== null) {
             requestBody.lastUpdated = lastUpdated
