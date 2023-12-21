@@ -248,6 +248,7 @@ export enum DatasetStatus {
 
 export enum DatasetReleaseStatus {
   Unreleased = 'Unreleased',
+  Releasing = 'Releasing',
   Released = 'Released',
   Published = 'Published',
   Publishing = 'Publishing',

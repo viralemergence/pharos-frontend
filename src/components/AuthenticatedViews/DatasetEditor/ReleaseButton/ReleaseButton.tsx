@@ -8,11 +8,29 @@ import useDispatch from 'hooks/useDispatch'
 import { StateActions } from 'reducers/stateReducer/stateReducer'
 import {
   DatasetReleaseStatus,
-  ReleaseReport,
+  // ReleaseReport,
 } from 'reducers/stateReducer/types'
 import useReleaseButtonStatus from './useReleaseButtonStatus'
 import ReleaseReportModal from './ReleaseReportModal'
 import { Auth } from 'aws-amplify'
+import ReleaseResponseModal from './ReleaseResponseModal'
+
+export interface ReleaseResponse {
+  message: string
+  error?: string
+}
+
+function responseIsReleaseResponse(
+  releaseResponse: unknown
+): releaseResponse is ReleaseResponse {
+  if (typeof releaseResponse !== 'object') return false
+  if (!releaseResponse) return false
+  if (!('message' in releaseResponse)) return false
+  if (typeof releaseResponse.message !== 'string') return false
+  if ('error' in releaseResponse && typeof releaseResponse.error !== 'string')
+    return false
+  return true
+}
 
 const ReleaseButton = () => {
   const datasetID = useDatasetID()
@@ -51,30 +69,44 @@ const ReleaseButton = () => {
     ).catch(error => console.log(error))
 
     if (!response) return
-    const report = await response.json()
+    const releaseResponse = await response.json()
 
-    function reportIsReport(report: unknown): report is ReleaseReport {
-      if (typeof report !== 'object') return false
-      if (!report) return false
-      if (!('releaseStatus' in report)) return false
-      if (typeof report.releaseStatus !== 'string') return false
-      if (!(report.releaseStatus in DatasetReleaseStatus)) return false
-      return true
-    }
+    // function reportIsReport(report: unknown): report is ReleaseReport {
+    //   if (typeof report !== 'object') return false
+    //   if (!report) return false
+    //   if (!('releaseStatus' in report)) return false
+    //   if (typeof report.releaseStatus !== 'string') return false
+    //   if (!(report.releaseStatus in DatasetReleaseStatus)) return false
+    //   return true
+    // }
 
-    if (reportIsReport(report) && report.releaseStatus) {
-      projectDispatch({
-        type: StateActions.SetDatasetReleaseStatus,
-        payload: {
-          datasetID,
-          releaseStatus: report.releaseStatus,
-        },
-      })
+    // if (reportIsReport(report) && report.releaseStatus) {
+    //   projectDispatch({
+    //     type: StateActions.SetDatasetReleaseStatus,
+    //     payload: {
+    //       datasetID,
+    //       releaseStatus: report.releaseStatus,
+    //     },
+    //   })
 
-      setModal(<ReleaseReportModal report={report} />, { closeable: true })
+    if (responseIsReleaseResponse(releaseResponse)) {
+      if (!response.ok)
+        setModal(<ReleaseResponseModal releaseResponse={releaseResponse} />, {
+          closeable: true,
+        })
+      else {
+        setModal(null)
+        projectDispatch({
+          type: StateActions.SetDatasetReleaseStatus,
+          payload: {
+            datasetID,
+            releaseStatus: DatasetReleaseStatus.Releasing,
+          },
+        })
+      }
     } else
       setModal(
-        <pre style={{ margin: '20px' }}>Error parsing release report</pre>,
+        <pre style={{ margin: '20px' }}>Error requesting dataset release</pre>,
         { closeable: true }
       )
 

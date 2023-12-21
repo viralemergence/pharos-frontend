@@ -41,6 +41,10 @@ const useReleaseButtonStatus = () => {
       buttonDisabled = true
       buttonInProgress = true
       break
+    case dataset.releaseStatus === DatasetReleaseStatus.Releasing:
+      buttonMessage = 'Releasing...'
+      buttonDisabled = true
+      break
     case dataset.releaseStatus === DatasetReleaseStatus.Unreleased:
       buttonMessage = 'Release dataset'
       buttonDisabled = false
