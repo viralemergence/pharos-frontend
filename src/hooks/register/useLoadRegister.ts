@@ -147,6 +147,11 @@ const useLoadRegister = () => {
             })
           )
 
+          // safety guard to cancel synchronizing if the user navigates
+          // to a different dataset before the request completes
+          const currentDatasetID = window.location.hash.split('/').slice(-1)[0]
+          if (currentDatasetID !== requestBody.datasetID) return
+
           console.log(
             `${'[API]'.padEnd(15)} Response: /load-records page ${registerPage}: ${response?.status}`
           )
