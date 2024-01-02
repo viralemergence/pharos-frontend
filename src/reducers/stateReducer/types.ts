@@ -109,6 +109,7 @@ export interface Dataset {
   // dataset which reflects released
   // and published status
   releaseStatus?: DatasetReleaseStatus
+  releaseReport?: ReleaseReport
   // lastUpdated timestamp
   lastUpdated: string
   // earliest and latest date in the dataset
