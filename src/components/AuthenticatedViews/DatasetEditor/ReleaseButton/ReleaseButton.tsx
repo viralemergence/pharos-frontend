@@ -11,7 +11,7 @@ import {
   // ReleaseReport,
 } from 'reducers/stateReducer/types'
 import useReleaseButtonStatus from './useReleaseButtonStatus'
-import ReleaseReportModal from './ReleaseReportModal'
+// import ReleaseReportModal from './ReleaseReportModal'
 import { Auth } from 'aws-amplify'
 import ReleaseResponseModal from './ReleaseResponseModal'
 

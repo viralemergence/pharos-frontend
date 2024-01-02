@@ -24,10 +24,12 @@ const Container = styled.div`
 const Paragraph = styled.p`
   ${({ theme }) => theme.smallParagraph};
   color: ${({ theme }) => theme.black};
+  margin: 0;
 `
 
 const MinWidthMintButton = styled(MintButton)`
   min-width: 10em;
+  margin-top: 30px;
 `
 const ReleaseResponseModal = ({
   releaseResponse,
