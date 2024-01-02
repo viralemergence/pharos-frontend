@@ -68,7 +68,20 @@ const ReleaseButton = () => {
       }
     ).catch(error => console.log(error))
 
-    if (!response) return
+    if (!response) {
+      setModal(
+        <ReleaseResponseModal
+          releaseResponse={{
+            message: 'Error requesting dataset release',
+            error: 'No response from server',
+          }}
+        />,
+        {
+          closeable: true,
+        }
+      )
+      return
+    }
     const releaseResponse = await response.json()
 
     // function reportIsReport(report: unknown): report is ReleaseReport {
