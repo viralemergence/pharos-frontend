@@ -45,7 +45,7 @@ const useReleaseButtonStatus = () => {
       buttonDisabled = true
       break
     case dataset.releaseStatus === DatasetReleaseStatus.Unreleased && Boolean(dataset.releaseReport):
-      buttonMessage = 'View release report'
+      buttonMessage = `${dataset.releaseReport?.failCount} errors`
       buttonDisabled = false
       break
     case dataset.releaseStatus === DatasetReleaseStatus.Unreleased:
