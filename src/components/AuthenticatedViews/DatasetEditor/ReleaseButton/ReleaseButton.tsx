@@ -38,7 +38,7 @@ const ReleaseButton = () => {
   const setModal = useModal()
   const projectDispatch = useDispatch()
 
-  const { buttonDisabled, buttonInProgress, buttonMessage, setReleasing } =
+  const { buttonDisabled, buttonInProgress, buttonMessage } =
     useReleaseButtonStatus()
 
   const onClickRelease = async (e: React.SyntheticEvent<HTMLButtonElement>) => {
@@ -52,7 +52,6 @@ const ReleaseButton = () => {
       return
     }
 
-    setReleasing(true)
     const response = await fetch(
       `${process.env.GATSBY_API_URL}/release-dataset`,
       {
@@ -122,8 +121,6 @@ const ReleaseButton = () => {
         <pre style={{ margin: '20px' }}>Error requesting dataset release</pre>,
         { closeable: true }
       )
-
-    setReleasing(false)
   }
 
   return (
