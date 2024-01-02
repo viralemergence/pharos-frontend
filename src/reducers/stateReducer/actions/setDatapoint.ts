@@ -64,7 +64,7 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
     ...state.datasets.data[datasetID],
     lastUpdated,
     releaseStatus: DatasetReleaseStatus.Unreleased,
-    releaseReport: null,
+    releaseReport: undefined,
     // mark which page of the register is being updated
     registerPages: {
       ...(state.datasets.data[datasetID].registerPages ?? {}),
