@@ -30,7 +30,13 @@ const MapContainer = styled.div`
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
   }
+
   aspect-ratio: 6/2.5;
+
+  @media (max-width: 700px) {
+    aspect-ratio: 6/4;
+  }
+
   padding: 0;
 `
 
