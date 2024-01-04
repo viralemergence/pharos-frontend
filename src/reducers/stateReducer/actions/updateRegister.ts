@@ -57,6 +57,9 @@ const updateRegister: ActionFunction<UpdateRegisterActionPayload> = (
 ) => {
   const { data: register, source, datasetID, projectID } = payload
 
+  // if the register is empty, short-circuit merging
+  if (Object.entries(register).length === 0) return state
+
   // if we're loading from the indexedDB we can just set it directly
   if (source === 'local') {
     return {
