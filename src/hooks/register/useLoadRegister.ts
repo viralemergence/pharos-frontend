@@ -170,7 +170,9 @@ const useLoadRegister = () => {
 
           if (remoteRegister && typeof remoteRegister === 'object' &&
             'register' in remoteRegister &&
-            typeof remoteRegister?.register === 'object'
+            typeof remoteRegister?.register === 'object' &&
+            remoteRegister.register !== null &&
+            Object.entries(remoteRegister.register).length > 0
           ) {
             dispatch({
               type: StateActions.UpdateRegister,
