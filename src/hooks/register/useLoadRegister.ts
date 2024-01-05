@@ -170,19 +170,22 @@ const useLoadRegister = () => {
 
           if (remoteRegister && typeof remoteRegister === 'object' &&
             'register' in remoteRegister &&
-            typeof remoteRegister?.register === 'object' &&
-            remoteRegister.register !== null &&
-            Object.entries(remoteRegister.register).length > 0
+            typeof remoteRegister?.register === 'object'
+
           ) {
-            dispatch({
-              type: StateActions.UpdateRegister,
-              payload: {
-                projectID,
-                datasetID,
-                source: 'remote',
-                data: remoteRegister.register as Register,
-              },
-            })
+            if (
+              remoteRegister.register !== null &&
+              Object.entries(remoteRegister.register).length > 0
+            )
+              dispatch({
+                type: StateActions.UpdateRegister,
+                payload: {
+                  projectID,
+                  datasetID,
+                  source: 'remote',
+                  data: remoteRegister.register as Register,
+                },
+              })
 
             dispatch({
               type: StateActions.SetMetadataObjStatus,
