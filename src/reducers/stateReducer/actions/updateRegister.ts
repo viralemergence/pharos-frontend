@@ -6,7 +6,7 @@ import { ActionFunction, StateActions } from '../stateReducer'
 import { Datapoint, DatasetID, NodeStatus, ProjectID, Register, ServerRecordMeta } from '../types'
 
 interface UpdateRegisterActionPayload {
-  source: 'local' | 'remote' | 'csv'
+  source: 'local' | 'remote'
   data: Register
   datasetID: DatasetID
   projectID: ProjectID
@@ -55,10 +55,8 @@ const updateRegister: ActionFunction<UpdateRegisterActionPayload> = (
   state,
   payload
 ) => {
-  const { data: register, source, datasetID, projectID } = payload
+  const { data: register, source, datasetID } = payload
 
-  // if the register is empty, short-circuit merging
-  if (Object.entries(register).length === 0) return state
 
   // if we're loading from the indexedDB we can just set it directly
   if (source === 'local') {
@@ -67,33 +65,6 @@ const updateRegister: ActionFunction<UpdateRegisterActionPayload> = (
       register: {
         ...state.register,
         data: register,
-      },
-    }
-  }
-
-  // if source is CSV, it's already been merged so we can
-  // set it directly and then save to both local and remote
-  if (source === 'csv') {
-    return {
-      ...state,
-      register: {
-        ...state.register,
-        data: register,
-      },
-      messageStack: {
-        ...state.messageStack,
-        [`${APIRoutes.saveRegister}_${datasetID}_local`]: {
-          route: APIRoutes.saveRegister,
-          status: StorageMessageStatus.Initial,
-          data: { register, datasetID },
-          target: 'local',
-        },
-        [`${APIRoutes.saveRegister}_${datasetID}_remote`]: {
-          route: APIRoutes.saveRegister,
-          status: StorageMessageStatus.Initial,
-          data: { register, datasetID, projectID },
-          target: 'remote',
-        },
       },
     }
   }
