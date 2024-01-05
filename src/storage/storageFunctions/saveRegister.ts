@@ -9,6 +9,7 @@ import {
   StorageMessagePayload,
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
+import dispatchRemoveStorageMessage from 'storage/dispatchRemoveStorageMessage'
 
 export type SaveRegister = StorageMessagePayload<
   APIRoutes.saveRegister,
@@ -37,7 +38,8 @@ const saveRegister: StorageFunction<SaveRegister> = async (
           payload: { key, status: StorageMessageStatus.LocalStorageError },
         })
       )
-    dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
+    dispatchRemoveStorageMessage({ key, dispatch })
+    // dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
   } else {
     throw new Error("Save Register with target === 'remote' is deprecated")
   }

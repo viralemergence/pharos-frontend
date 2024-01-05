@@ -10,6 +10,7 @@ import {
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
 import { Auth } from 'aws-amplify'
+import dispatchRemoveStorageMessage from 'storage/dispatchRemoveStorageMessage'
 
 export type DeleteDataset = StorageMessagePayload<
   APIRoutes.deleteDataset,
@@ -41,7 +42,8 @@ const deleteDataset: StorageFunction<DeleteDataset> = async (
           payload: { key, status: StorageMessageStatus.LocalStorageError },
         })
       )
-    dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
+    dispatchRemoveStorageMessage({ key, dispatch })
+    // dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
   } else {
     let userSession
     try {
@@ -86,7 +88,8 @@ const deleteDataset: StorageFunction<DeleteDataset> = async (
         type: StateActions.SetStorageMessageStatus,
         payload: { key, status: StorageMessageStatus.NetworkError },
       })
-    else dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
+    else dispatchRemoveStorageMessage({ key, dispatch })
+    // dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
   }
 }
 

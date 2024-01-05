@@ -11,6 +11,7 @@ import {
 } from 'storage/synchronizeMessageQueue'
 
 import { Auth } from 'aws-amplify'
+import dispatchRemoveStorageMessage from 'storage/dispatchRemoveStorageMessage'
 
 export type SaveUser = StorageMessagePayload<APIRoutes.saveUser, User>
 
@@ -27,7 +28,8 @@ const saveUser: StorageFunction<SaveUser> = async (key, message, dispatch) => {
         payload: { key, status: StorageMessageStatus.LocalStorageError },
       })
     )
-    dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
+    dispatchRemoveStorageMessage({ key, dispatch })
+    // dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
   } else {
     let userSession
     try {
@@ -75,7 +77,8 @@ const saveUser: StorageFunction<SaveUser> = async (key, message, dispatch) => {
         type: StateActions.SetStorageMessageStatus,
         payload: { key, status: StorageMessageStatus.NetworkError },
       })
-    else dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
+    else dispatchRemoveStorageMessage({ key, dispatch })
+    // dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
   }
 }
 

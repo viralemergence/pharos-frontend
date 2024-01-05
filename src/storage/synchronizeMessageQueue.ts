@@ -60,8 +60,11 @@ const synchronizeMessageQueue = async (
   messageStack: { [key: string]: StorageMessage },
   dispatch: React.Dispatch<StateAction>
 ) => {
+  let pendingCount = 0
   for (const [key, message] of Object.entries(messageStack)) {
     // skip messages in these states:
+    if (message.status === StorageMessageStatus.Pending) pendingCount++
+
     if (
       message.status === StorageMessageStatus.LocalStorageError ||
       message.status === StorageMessageStatus.UnknownError ||
@@ -106,6 +109,7 @@ const synchronizeMessageQueue = async (
         continue
     }
   }
+  console.log(`[MESSAGES] Pending messages: ${pendingCount}`)
 }
 
 export default synchronizeMessageQueue

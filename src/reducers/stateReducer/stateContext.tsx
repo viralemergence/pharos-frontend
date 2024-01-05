@@ -34,6 +34,10 @@ Amplify.configure({
   },
 })
 
+export const localForageMessageStack = localforage.createInstance({
+  name: 'messageStack',
+})
+
 const StateContextProvider = ({ children }: StateContextProviderProps) => {
   const [state, dispatch] = useReducer(stateReducer, stateInitialValue)
   const { messageStack } = state
@@ -57,6 +61,7 @@ const StateContextProvider = ({ children }: StateContextProviderProps) => {
 
       // clear all locally stored data
       await localforage.clear()
+      await localForageMessageStack.clear()
       // sign out of cognito (this should do nothing)
       await Auth.signOut()
       // set the major version to the current version
@@ -95,11 +100,17 @@ const StateContextProvider = ({ children }: StateContextProviderProps) => {
 
   useEffect(() => {
     const getLocalMessageStack = async () => {
-      const stack = (await localforage.getItem('messageStack')) as
-        | {
-            [key: string]: StorageMessage
-          }
-        | undefined
+      // const stack = (await localforage.getItem('messageStack')) as
+      const stack = {} as {
+        [key: string]: StorageMessage
+      }
+
+      await localForageMessageStack.iterate((value, key) => {
+        stack[key] = value as StorageMessage
+      })
+
+      console.log('NEW MESSAGE STACK')
+      console.log(stack)
 
       if (stack) {
         console.log(
@@ -130,7 +141,10 @@ const StateContextProvider = ({ children }: StateContextProviderProps) => {
   }, [])
 
   useEffect(() => {
-    localforage.setItem('messageStack', messageStack)
+    for (const [key, message] of Object.entries(messageStack)) {
+      localForageMessageStack.setItem(key, message)
+    }
+    // localforage.setItem('messageStack', messageStack)
     synchronizeMessageQueue(messageStack, dispatch)
   }, [messageStack])
 

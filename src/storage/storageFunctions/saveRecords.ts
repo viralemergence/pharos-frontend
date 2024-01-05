@@ -8,6 +8,7 @@ import {
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
 import { Auth } from 'aws-amplify'
+import dispatchRemoveStorageMessage from 'storage/dispatchRemoveStorageMessage'
 // import localforage from 'localforage'
 
 export type SaveRecords = StorageMessagePayload<
@@ -63,7 +64,7 @@ const requestSaveRecords = async (userSession: Awaited<ReturnType<typeof Auth.cu
 }
 
 // @ts-expect-error
-const throttledRequestSaveRecords = throttleAsync(requestSaveRecords, 500, 5)
+const throttledRequestSaveRecords = throttleAsync(requestSaveRecords, 250, 5)
 
 const saveRecords: StorageFunction<SaveRecords> = async (
   key,
@@ -135,7 +136,6 @@ const saveRecords: StorageFunction<SaveRecords> = async (
       payload: { key, status: StorageMessageStatus.NetworkError },
     })
   else {
-    dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
 
     const remoteRegister = await response.json()
 
@@ -145,15 +145,20 @@ const saveRecords: StorageFunction<SaveRecords> = async (
       'register' in remoteRegister &&
       typeof remoteRegister?.register === 'object'
     ) {
-      dispatch({
-        type: StateActions.UpdateRegister,
-        payload: {
-          source: 'remote',
-          datasetID: message.data.datasetID,
-          projectID: message.data.projectID,
-          data: remoteRegister.register as Register,
-        },
-      })
+
+      if (remoteRegister.register && Object.keys(remoteRegister.register).length > 0)
+        dispatch({
+          type: StateActions.UpdateRegister,
+          payload: {
+            source: 'remote',
+            datasetID: message.data.datasetID,
+            projectID: message.data.projectID,
+            data: remoteRegister.register as Register,
+          },
+        })
+
+      dispatchRemoveStorageMessage({ key, dispatch })
+      // dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
     }
   }
 }
