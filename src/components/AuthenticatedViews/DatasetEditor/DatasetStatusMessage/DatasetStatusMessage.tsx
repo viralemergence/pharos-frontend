@@ -61,7 +61,7 @@ const DatasetStatusMessage = (): JSX.Element => {
     case Object.values(messageStack).filter(
       message => message.target === 'remote'
     ).length > 0:
-      datasetStatusMessage = 'Syncing...'
+      datasetStatusMessage = `Syncing (${Object.keys(messageStack).length})`
       color = theme.orange
       break
     default:
