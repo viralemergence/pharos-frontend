@@ -74,12 +74,17 @@ const StateContextProvider = ({ children }: StateContextProviderProps) => {
       const stack = (await localforage.getItem('messageStack')) as {
         [key: string]: StorageMessage
       }
-      if (!stack || Object.keys(stack).length === 0) return
+
+      if (!stack || Object.keys(stack).length === 0) {
+        await localforage.removeItem('messageStack')
+        return
+      }
+
       for (const [key, message] of Object.entries(stack)) {
         localForageMessageStack.setItem(key, message)
       }
       // remove old message stack
-      localforage.removeItem('messageStack')
+      await localforage.removeItem('messageStack')
     }
 
     if (pharosMajorVersion === null) {
