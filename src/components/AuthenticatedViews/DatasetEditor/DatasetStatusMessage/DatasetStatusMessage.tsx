@@ -4,7 +4,6 @@ import useDataset from 'hooks/dataset/useDataset'
 import { NodeStatus } from 'reducers/stateReducer/types'
 import { useTheme } from 'styled-components'
 import useAppState from 'hooks/useAppState'
-import { StorageMessageStatus } from 'storage/synchronizeMessageQueue'
 import useModal from 'hooks/useModal/useModal'
 
 const Span = styled.span`
