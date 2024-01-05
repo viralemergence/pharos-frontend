@@ -61,7 +61,6 @@ const StateContextProvider = ({ children }: StateContextProviderProps) => {
 
       // clear all locally stored data
       await localforage.clear()
-      await localForageMessageStack.clear()
       // sign out of cognito (this should do nothing)
       await Auth.signOut()
       // set the major version to the current version
@@ -70,8 +69,25 @@ const StateContextProvider = ({ children }: StateContextProviderProps) => {
       window.location.assign('/')
     }
 
+    const upgrade2to3 = async () => {
+      // copy anything from old message stack to new message stack
+      const stack = (await localforage.getItem('messageStack')) as {
+        [key: string]: StorageMessage
+      }
+      if (!stack || Object.keys(stack).length === 0) return
+      for (const [key, message] of Object.entries(stack)) {
+        localForageMessageStack.setItem(key, message)
+      }
+      // remove old message stack
+      localforage.removeItem('messageStack')
+    }
+
     if (pharosMajorVersion === null) {
       upgradeNullTo2()
+    }
+
+    if (pharosMajorVersion === '2') {
+      upgrade2to3()
     }
   }, [])
 

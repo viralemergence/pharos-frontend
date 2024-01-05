@@ -1,18 +1,20 @@
 import useDataset from 'hooks/dataset/useDataset'
 import useAppState from 'hooks/useAppState'
 import { DatasetReleaseStatus, NodeStatus } from 'reducers/stateReducer/types'
-import { StorageMessageStatus } from 'storage/synchronizeMessageQueue'
+// import { StorageMessageStatus } from 'storage/synchronizeMessageQueue'
 
 const useReleaseButtonStatus = () => {
   const dataset = useDataset()
   const { datasets, register, messageStack } = useAppState()
 
   // show offline status if any message in the stack has a NetworkError status
-  const offline = Object.values(messageStack).reduce(
-    (offline, message) =>
-      offline || message.status === StorageMessageStatus.NetworkError,
-    false
-  )
+  const offline = typeof window !== 'undefined' && navigator.onLine === false
+
+  // Object.values(messageStack).reduce(
+  //   (offline, message) =>
+  //     offline || message.status === StorageMessageStatus.NetworkError,
+  //   false
+  // )
 
   let buttonDisabled
   let buttonMessage
@@ -28,17 +30,15 @@ const useReleaseButtonStatus = () => {
       buttonMessage = 'Offline'
       buttonDisabled = true
       break
+    case Object.values(messageStack).length > 0:
+      buttonMessage = 'Syncing...'
+      buttonDisabled = true
+      buttonInProgress = true
+      break
     case datasets.status === NodeStatus.Loading ||
       register.status === NodeStatus.Loading:
       buttonMessage = 'Loading...'
       buttonDisabled = true
-      break
-    case Object.values(messageStack).filter(
-      message => message.target === 'remote'
-    ).length > 0:
-      buttonMessage = 'Syncing...'
-      buttonDisabled = true
-      buttonInProgress = true
       break
     case dataset.releaseStatus === DatasetReleaseStatus.Releasing:
       buttonMessage = 'Releasing...'

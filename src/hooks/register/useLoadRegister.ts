@@ -187,15 +187,15 @@ const useLoadRegister = () => {
                 },
               })
 
-            dispatch({
-              type: StateActions.SetMetadataObjStatus,
-              payload: {
-                key: 'register',
-                status: NodeStatus.Loaded,
-              },
-            })
           }
         }
+        dispatch({
+          type: StateActions.SetMetadataObjStatus,
+          payload: {
+            key: 'register',
+            status: NodeStatus.Loaded,
+          },
+        })
       } else {
 
 

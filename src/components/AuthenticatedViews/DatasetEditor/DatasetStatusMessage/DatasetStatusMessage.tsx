@@ -33,12 +33,14 @@ const DatasetStatusMessage = (): JSX.Element => {
     register: { status: registerStatus },
   } = appState
 
-  // show offline status if any message in the stack has a NetworkError status
-  const offline = Object.values(messageStack).reduce(
-    (offline, message) =>
-      offline || message.status === StorageMessageStatus.NetworkError,
-    false
-  )
+  const offline = typeof window !== 'undefined' && navigator.onLine === false
+
+  // // show offline status if any message in the stack has a NetworkError status
+  // const offline = Object.values(messageStack).reduce(
+  //   (offline, message) =>
+  //     offline || message.status === StorageMessageStatus.NetworkError,
+  //   false
+  // )
 
   let datasetStatusMessage
   let color
