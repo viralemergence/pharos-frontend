@@ -71,11 +71,33 @@ const updateRegister: ActionFunction<UpdateRegisterActionPayload> = (
 
   // if source is remote and current state is empty, just set it and save to local
   if (source === 'remote' && Object.entries(state.register.data).length === 0) {
+
+    const page = Object.keys(register)[0].split('|')[0].replace('rec', '')
+    const registerPage = state.datasets.data[datasetID].registerPages?.[page]
+    if (!registerPage) throw new Error(`Missing dataset page metadata`)
+    const nextDataset = {
+      ...state.datasets.data[datasetID],
+      registerPages: {
+        ...(state.datasets.data[datasetID].registerPages ?? {}),
+        [page]: {
+          ...registerPage,
+          merged: true,
+        }
+      }
+    }
+
     return {
       ...state,
       register: {
         ...state.register,
         data: register,
+      },
+      datasets: {
+        ...state.datasets,
+        data: {
+          ...state.datasets.data,
+          [datasetID]: nextDataset,
+        },
       },
       messageStack: {
         ...state.messageStack,
@@ -85,6 +107,12 @@ const updateRegister: ActionFunction<UpdateRegisterActionPayload> = (
           data: { register, datasetID },
           target: 'local',
         },
+      },
+      [`${APIRoutes.saveDataset}_${datasetID}_local`]: {
+        route: APIRoutes.saveDataset,
+        status: StorageMessageStatus.Initial,
+        data: nextDataset,
+        target: 'local',
       },
     }
   }
@@ -118,11 +146,32 @@ const updateRegister: ActionFunction<UpdateRegisterActionPayload> = (
   }
   console.timeEnd(`${'[MERGE]'.padEnd(15)} Merge Register`)
 
+  const page = Object.keys(nextRegister)[0].split('|')[0].replace('rec', '')
+  const registerPage = state.datasets.data[datasetID].registerPages?.[page]
+  if (!registerPage) throw new Error(`Missing dataset page metadata`)
+  const nextDataset = {
+    ...state.datasets.data[datasetID],
+    registerPages: {
+      ...(state.datasets.data[datasetID].registerPages ?? {}),
+      [page]: {
+        ...registerPage,
+        merged: true,
+      }
+    }
+  }
+
   return {
     ...state,
     register: {
       status: NodeStatus.Loaded,
       data: nextRegister,
+    },
+    datasets: {
+      ...state.datasets,
+      data: {
+        ...state.datasets.data,
+        [datasetID]: nextDataset,
+      },
     },
     messageStack: {
       ...state.messageStack,
@@ -130,6 +179,12 @@ const updateRegister: ActionFunction<UpdateRegisterActionPayload> = (
         route: APIRoutes.saveRegister,
         status: StorageMessageStatus.Initial,
         data: { register: nextRegister, datasetID },
+        target: 'local',
+      },
+      [`${APIRoutes.saveDataset}_${datasetID}_local`]: {
+        route: APIRoutes.saveDataset,
+        status: StorageMessageStatus.Initial,
+        data: nextDataset,
         target: 'local',
       },
     },

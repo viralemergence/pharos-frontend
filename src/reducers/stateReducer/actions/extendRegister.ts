@@ -40,7 +40,7 @@ const extendRegister: ActionFunction<ExtendRegisterPayload> = (
     let page: number | null = null
     if (idParts.length === 2) {
       page = Number(idParts[0].replace('rec', ''))
-      registerPages[page] = { lastUpdated }
+      registerPages[page] = { lastUpdated, merged: false }
     }
 
     const remoteMessageKey = `${APIRoutes.saveRecords}_${datasetID}_${page}_remote`

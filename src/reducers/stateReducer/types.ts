@@ -93,6 +93,7 @@ export interface Project {
 // chunk of records
 export interface RegisterPage {
   lastUpdated: string
+  merged?: boolean
 }
 
 // a single dataset

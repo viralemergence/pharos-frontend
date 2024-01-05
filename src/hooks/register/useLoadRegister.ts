@@ -115,7 +115,7 @@ const useLoadRegister = () => {
           `${datasetID}-register`
         )) as Register | null
 
-        for (const [registerPage, { lastUpdated }] of Object.entries(registerPages)) {
+        for (const [registerPage, { lastUpdated, merged }] of Object.entries(registerPages)) {
           console.log(`${'[API]'.padEnd(15)} Request:  /load-records`)
 
 
@@ -123,7 +123,7 @@ const useLoadRegister = () => {
             datasetID, projectID, registerPage
           }
 
-          if (localRegister !== null) {
+          if (localRegister !== null && merged) {
             requestBody.lastUpdated = lastUpdated
           }
 

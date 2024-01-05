@@ -47,6 +47,13 @@ const saveDataset: StorageFunction<SaveDataset> = async (
 
     let response
     try {
+      const serverDataset = message.data
+      if (serverDataset.registerPages) {
+        for (const page of Object.values(serverDataset.registerPages)) {
+          delete page.merged
+        }
+      }
+
       response = await fetch(
         `${process.env.GATSBY_API_URL}/${message.route}`,
         {
@@ -55,7 +62,7 @@ const saveDataset: StorageFunction<SaveDataset> = async (
             Authorization: userSession.getIdToken().getJwtToken(),
             'Content-Type': 'application/json',
           }),
-          body: JSON.stringify({ dataset: message.data }),
+          body: JSON.stringify({ dataset: serverDataset }),
         })
     } catch (e) {
       if (!navigator.onLine)

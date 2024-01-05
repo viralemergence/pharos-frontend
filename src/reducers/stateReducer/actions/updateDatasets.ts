@@ -1,5 +1,5 @@
 import { ActionFunction, StateActions } from '../stateReducer'
-import { Dataset } from '../types'
+import { Dataset, RegisterPage } from '../types'
 import {
   APIRoutes,
   StorageMessageStatus,
@@ -39,6 +39,21 @@ const updateDatasets: ActionFunction<UpdateDatasetsAction['payload']> = (
 
         // if the incoming dataset is newer than the one in state
         if (prevDate.getTime() < nextDate.getTime()) {
+          const nextPages: { [key: string]: RegisterPage } = {}
+
+          // keep local pages lastUpdated and merged status
+          if (prevData.registerPages)
+            for (const [pageKey, page] of Object.entries(prevData.registerPages)) {
+              nextPages[pageKey] = page
+            }
+
+          // extend with remote pages but override merged to false
+          if (nextData.registerPages)
+            for (const [pageKey, page] of Object.entries(nextData.registerPages)) {
+              if (!nextPages[pageKey])
+                nextPages[pageKey] = { lastUpdated: page.lastUpdated, merged: false }
+            }
+
           nextState.datasets.data = {
             ...nextState.datasets.data,
             [key]: nextData,

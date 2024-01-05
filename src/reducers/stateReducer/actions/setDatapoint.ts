@@ -68,7 +68,7 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
     // mark which page of the register is being updated
     registerPages: {
       ...(state.datasets.data[datasetID].registerPages ?? {}),
-      ...(page !== null && { [page]: { lastUpdated } })
+      ...(page !== null && { [page]: { lastUpdated, merged: false } })
     }
   }
 
