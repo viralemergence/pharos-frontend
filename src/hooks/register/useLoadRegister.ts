@@ -109,7 +109,7 @@ const useLoadRegister = () => {
 
       // if this dataset has a paginated register,
       // load new records from the /load-records route.
-      if (registerPages) {
+      if (registerPages && Object.keys(registerPages).length > 0) {
         // check if local register exists
         const localRegister = (await localforage.getItem(
           `${datasetID}-register`
@@ -189,13 +189,6 @@ const useLoadRegister = () => {
 
           }
         }
-        dispatch({
-          type: StateActions.SetMetadataObjStatus,
-          payload: {
-            key: 'register',
-            status: NodeStatus.Loaded,
-          },
-        })
       } else {
 
 
@@ -265,15 +258,15 @@ const useLoadRegister = () => {
               },
             })
           }
-          dispatch({
-            type: StateActions.SetMetadataObjStatus,
-            payload: {
-              key: 'register',
-              status: NodeStatus.Loaded,
-            },
-          })
         }
       }
+      dispatch({
+        type: StateActions.SetMetadataObjStatus,
+        payload: {
+          key: 'register',
+          status: NodeStatus.Loaded,
+        },
+      })
     }
 
     requestRegister()
