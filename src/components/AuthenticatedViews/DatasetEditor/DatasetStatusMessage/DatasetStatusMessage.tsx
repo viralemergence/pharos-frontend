@@ -45,6 +45,12 @@ const DatasetStatusMessage = (): JSX.Element => {
   let color
 
   switch (true) {
+    case Object.values(messageStack).filter(
+      message => message.target === 'remote'
+    ).length > 0:
+      datasetStatusMessage = `Syncing (${Object.keys(messageStack).length})`
+      color = theme.orange
+      break
     case datasetStatus === NodeStatus.Loading ||
       registerStatus === NodeStatus.Loading:
       datasetStatusMessage = 'Loading...'
@@ -57,12 +63,6 @@ const DatasetStatusMessage = (): JSX.Element => {
     case Object.keys(messageStack).length === 0:
       datasetStatusMessage = 'Saved'
       color = theme.medDarkGray
-      break
-    case Object.values(messageStack).filter(
-      message => message.target === 'remote'
-    ).length > 0:
-      datasetStatusMessage = `Syncing (${Object.keys(messageStack).length})`
-      color = theme.orange
       break
     default:
       datasetStatusMessage = 'Loading...'
