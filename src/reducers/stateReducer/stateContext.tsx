@@ -133,9 +133,6 @@ const StateContextProvider = ({ children }: StateContextProviderProps) => {
         stack[key] = value as StorageMessage
       })
 
-      console.log('NEW MESSAGE STACK')
-      console.log(stack)
-
       if (stack) {
         console.log(
           `${'[MESSAGES]'.padEnd(15)} Load ${
@@ -166,7 +163,8 @@ const StateContextProvider = ({ children }: StateContextProviderProps) => {
 
   useEffect(() => {
     for (const [key, message] of Object.entries(messageStack)) {
-      localForageMessageStack.setItem(key, message)
+      if (message.target === 'remote')
+        localForageMessageStack.setItem(key, message)
     }
     // localforage.setItem('messageStack', messageStack)
     synchronizeMessageQueue(messageStack, dispatch)
