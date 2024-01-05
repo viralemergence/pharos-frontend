@@ -73,16 +73,17 @@ const updateRegister: ActionFunction<UpdateRegisterActionPayload> = (
   if (source === 'remote' && Object.entries(state.register.data).length === 0) {
 
     const page = Object.keys(register)[0].split('|')[0].replace('rec', '')
-    const registerPage = state.datasets.data[datasetID].registerPages?.[page]
-    if (!registerPage) throw new Error(`Missing dataset page metadata`)
+    const registerPage = state.datasets.data[datasetID]?.registerPages?.[page]
     const nextDataset = {
       ...state.datasets.data[datasetID],
       registerPages: {
         ...(state.datasets.data[datasetID].registerPages ?? {}),
-        [page]: {
-          ...registerPage,
-          merged: true,
-        }
+        ...(registerPage && {
+          [page]: {
+            ...registerPage,
+            merged: true,
+          }
+        })
       }
     }
 
@@ -147,16 +148,17 @@ const updateRegister: ActionFunction<UpdateRegisterActionPayload> = (
   console.timeEnd(`${'[MERGE]'.padEnd(15)} Merge Register`)
 
   const page = Object.keys(nextRegister)[0].split('|')[0].replace('rec', '')
-  const registerPage = state.datasets.data[datasetID].registerPages?.[page]
-  if (!registerPage) throw new Error(`Missing dataset page metadata`)
+  const registerPage = state.datasets.data[datasetID]?.registerPages?.[page]
   const nextDataset = {
     ...state.datasets.data[datasetID],
     registerPages: {
       ...(state.datasets.data[datasetID].registerPages ?? {}),
-      [page]: {
-        ...registerPage,
-        merged: true,
-      }
+      ...(registerPage && {
+        [page]: {
+          ...registerPage,
+          merged: true,
+        }
+      })
     }
   }
 
