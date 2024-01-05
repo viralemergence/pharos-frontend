@@ -7,9 +7,9 @@ const useReleaseButtonStatus = () => {
   const dataset = useDataset()
   const { datasets, register, messageStack } = useAppState()
 
-  // show offline status if any message in the stack has a NetworkError status
   const offline = typeof window !== 'undefined' && navigator.onLine === false
 
+  // show offline status if any message in the stack has a NetworkError status
   // Object.values(messageStack).reduce(
   //   (offline, message) =>
   //     offline || message.status === StorageMessageStatus.NetworkError,
@@ -45,7 +45,7 @@ const useReleaseButtonStatus = () => {
       buttonDisabled = true
       break
     case dataset.releaseStatus === DatasetReleaseStatus.Unreleased && Boolean(dataset.releaseReport):
-      buttonMessage = `${dataset.releaseReport?.failCount} errors`
+      buttonMessage = `${dataset.releaseReport?.failCount} errors, ${dataset.releaseReport?.warningCount} warnings`
       buttonDisabled = false
       break
     case dataset.releaseStatus === DatasetReleaseStatus.Unreleased:
