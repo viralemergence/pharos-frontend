@@ -43,10 +43,11 @@ const extendRegister: ActionFunction<ExtendRegisterPayload> = (
       registerPages[page] = { lastUpdated }
     }
 
-    const messageKey = `${APIRoutes.saveRecords}_${datasetID}_${page}_remote`
+    const remoteMessageKey = `${APIRoutes.saveRecords}_${datasetID}_${page}_remote`
+    // const localMessageKey = `${APIRoutes.saveRecords}_${datasetID}_${page}_local`
 
-    if (!nextSaveRecordsStorageMessages[messageKey]) {
-      nextSaveRecordsStorageMessages[messageKey] = {
+    if (!nextSaveRecordsStorageMessages[remoteMessageKey]) {
+      nextSaveRecordsStorageMessages[remoteMessageKey] = {
         route: APIRoutes.saveRecords,
         target: 'remote',
         status: StorageMessageStatus.Initial,
@@ -56,8 +57,19 @@ const extendRegister: ActionFunction<ExtendRegisterPayload> = (
           }, datasetID, projectID
         },
       }
+      // nextSaveRecordsStorageMessages[localMessageKey] = {
+      //   route: APIRoutes.saveRecords,
+      //   target: 'local',
+      //   status: StorageMessageStatus.Initial,
+      //   data: {
+      //     records: {
+      //       [recordID]: record,
+      //     }, datasetID, projectID
+      //   },
+      // }
     } else {
-      (nextSaveRecordsStorageMessages[messageKey] as SaveRecords).data.records[recordID] = record
+      (nextSaveRecordsStorageMessages[remoteMessageKey] as SaveRecords).data.records[recordID] = record;
+      // (nextSaveRecordsStorageMessages[localMessageKey] as SaveRecords).data.records[recordID] = record
     }
   }
 
