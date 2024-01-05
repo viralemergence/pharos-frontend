@@ -8,6 +8,7 @@ import {
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
 import { Auth } from 'aws-amplify'
+// import localforage from 'localforage'
 
 export type SaveRecords = StorageMessagePayload<
   APIRoutes.saveRecords,
@@ -18,17 +19,20 @@ export type SaveRecords = StorageMessagePayload<
   }
 >
 
-const throttleAsync = (fn: (...args: unknown[]) => Promise<Response>, wait: number) => {
+const throttleAsync = (fn: (...args: unknown[]) => Promise<Response>, wait: number, concurrency: number) => {
   let lastRun = 0;
+  let active = 0;
 
   const throttled = async (...args: unknown[]): Promise<Response> => {
     const currentWait = lastRun + wait - Date.now();
-    const shouldRun = currentWait <= 0;
+    const shouldRun = currentWait <= 0 && active < concurrency;
 
     if (shouldRun) {
       lastRun = Date.now();
-
-      return await fn(...args);
+      active++
+      const result = await fn(...args);
+      active--
+      return result
     } else {
       return await new Promise(function(resolve) {
         setTimeout(function() {
@@ -58,7 +62,8 @@ const requestSaveRecords = async (userSession: Awaited<ReturnType<typeof Auth.cu
   return response
 }
 
-const throttledRequestSaveRecords = throttleAsync(requestSaveRecords, 500)
+// @ts-expect-error
+const throttledRequestSaveRecords = throttleAsync(requestSaveRecords, 500, 5)
 
 const saveRecords: StorageFunction<SaveRecords> = async (
   key,
@@ -70,17 +75,26 @@ const saveRecords: StorageFunction<SaveRecords> = async (
     payload: { key, status: StorageMessageStatus.Pending },
   })
 
-  // if (message.target === 'local') {
-  //   await localforage
-  //     .setItem(`${message.data.datasetID}-records`, message.data.register)
-  //     .catch(() =>
-  //       dispatch({
-  //         type: StateActions.SetStorageMessageStatus,
-  //         payload: { key, status: StorageMessageStatus.LocalStorageError },
-  //       })
-  //     )
-  //   dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
-  // } else {
+  //   if (message.target === 'local') {
+  //     const firstRecordID = Object.keys(message.data.records)[0]
+  //     const idParts = firstRecordID.split('|')
+  //     let page: number | null = null
+  //     if (idParts.length === 2) {
+  //       page = Number(idParts[0].replace('rec', ''))
+  //     }
+
+  //     await localforage
+  //       .setItem(`${message.data.datasetID}-${page}-records`, message.data)
+  //       .catch(() =>
+  //         dispatch({
+  //           type: StateActions.SetStorageMessageStatus,
+  //           payload: { key, status: StorageMessageStatus.LocalStorageError },
+  //         })
+  //       )
+  //     dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
+  //     return
+  //   }
+  // else {
   if (message.target === 'local') {
     throw new Error("saveRecords storageFunction cannot be used locally")
   }
