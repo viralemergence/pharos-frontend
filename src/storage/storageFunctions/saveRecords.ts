@@ -146,7 +146,11 @@ const saveRecords: StorageFunction<SaveRecords> = async (
       typeof remoteRegister?.register === 'object'
     ) {
 
-      if (remoteRegister.register && Object.keys(remoteRegister.register).length > 0)
+      const windowDatasetID = window.location.hash.split('/').slice(-1)[0]
+
+      if (remoteRegister.register && Object.keys(remoteRegister.register).length > 0
+        && windowDatasetID === message.data.datasetID
+      )
         dispatch({
           type: StateActions.UpdateRegister,
           payload: {
