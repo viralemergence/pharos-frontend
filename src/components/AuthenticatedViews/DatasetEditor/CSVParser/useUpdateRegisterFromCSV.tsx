@@ -11,6 +11,7 @@ import useProjectID from 'hooks/project/useProjectID'
 import getTimestamp from 'utilities/getTimestamp'
 
 import { DATASET_PAGINATION_SIZE } from '../DatasetGrid/DatasetsGrid'
+import useRegister from 'hooks/register/useRegister'
 
 type Rows = { [key: string]: string }[]
 
@@ -19,6 +20,7 @@ const useUpdateRegisterFromCSV = () => {
   const datasetID = useDatasetID()
   const projectID = useProjectID()
   const dispatch = useDispatch()
+  const register = useRegister()
 
   const updateRegisterFromCSV = (file: File) =>
     Papa.parse(file, {
@@ -46,6 +48,8 @@ const useUpdateRegisterFromCSV = () => {
         //   }),
         //   {}
         // )
+        //
+        const currentRowCount = Object.keys(register).length
 
         rows.forEach((row, index) => {
           // merge code --- deprecated
@@ -60,7 +64,9 @@ const useUpdateRegisterFromCSV = () => {
           for (const columnName of columns) {
             if (!row[columnName]) continue
 
-            const record = newRecords[recordID] ?? {}
+            const record = newRecords[recordID] ?? {
+              _meta: { order: index + currentRowCount },
+            }
             // const previous = record[columnName]
 
             // if (previous?.dataValue !== row[columnName]) {
