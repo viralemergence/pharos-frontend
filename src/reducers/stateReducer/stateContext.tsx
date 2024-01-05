@@ -77,6 +77,7 @@ const StateContextProvider = ({ children }: StateContextProviderProps) => {
 
       if (!stack || Object.keys(stack).length === 0) {
         await localforage.removeItem('messageStack')
+        localStorage.setItem('pharosMajorVersion', '3')
         return
       }
 
@@ -85,6 +86,8 @@ const StateContextProvider = ({ children }: StateContextProviderProps) => {
       }
       // remove old message stack
       await localforage.removeItem('messageStack')
+
+      localStorage.setItem('pharosMajorVersion', '3')
     }
 
     if (pharosMajorVersion === null) {
