@@ -20,6 +20,16 @@ const useReleaseButtonStatus = () => {
   let buttonMessage
   let buttonInProgress
 
+  let datasetTotallyMerged = false
+  if (dataset.registerPages && Object.values(dataset.registerPages).length > 0) {
+    datasetTotallyMerged = true
+    for (const page of Object.values(dataset.registerPages)) {
+      if (!page.merged) {
+        datasetTotallyMerged = false
+      }
+    }
+  }
+
   switch (true) {
     case dataset.releaseStatus === DatasetReleaseStatus.Releasing:
       buttonMessage = 'Validating...'
@@ -34,6 +44,10 @@ const useReleaseButtonStatus = () => {
       buttonMessage = 'Syncing...'
       buttonDisabled = true
       buttonInProgress = true
+      break
+    case datasetTotallyMerged:
+      buttonMessage = 'Release dataset'
+      buttonDisabled = false
       break
     case datasets.status === NodeStatus.Loading ||
       register.status === NodeStatus.Loading:
