@@ -22,6 +22,7 @@ import useDataset from 'hooks/dataset/useDataset'
 import EditingDisabledEditor from './editors/EditingDisabledEditor'
 import UnitFormatter from './formatters/UnitFormatter'
 import UnitEditor from './editors/UnitEditor'
+import { DATASET_LENGTH_LIMIT } from '../DatasetLengthExceededModal/DatasetLengthExceededModal'
 
 // Intended size:
 export const DATASET_PAGINATION_SIZE = 500
@@ -70,13 +71,17 @@ const DatasetGrid = () => {
     })),
   ]
 
-  versionedRows.push({
-    _meta: {
-      recordID: generateID.recordID(
-        Math.ceil((versionedRows.length + 1) / DATASET_PAGINATION_SIZE)
-      ),
-    },
-  })
+  // only add rows for editing if
+  // the dataset is under the length limit
+  if (versionedRows.length < DATASET_LENGTH_LIMIT) {
+    versionedRows.push({
+      _meta: {
+        recordID: generateID.recordID(
+          Math.ceil((versionedRows.length + 1) / DATASET_PAGINATION_SIZE)
+        ),
+      },
+    })
+  }
 
   return (
     <FillDatasetGrid
