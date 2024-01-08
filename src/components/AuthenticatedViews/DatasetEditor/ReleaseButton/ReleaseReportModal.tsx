@@ -96,7 +96,7 @@ const ReleaseReportModal = ({ report }: { report: ReleaseReport }) => {
           <Paragraph>The following columns contain errors:</Paragraph>
           <Ul>
             {errorColumns.map(col => (
-              <li>{col}</li>
+              <li key={col}>{col}</li>
             ))}
           </Ul>
         </>
@@ -106,7 +106,7 @@ const ReleaseReportModal = ({ report }: { report: ReleaseReport }) => {
           <Paragraph>The following columns are missing values:</Paragraph>
           <Ul>
             {missingColumns.map(col => (
-              <li>{col}</li>
+              <li key={col}>{col}</li>
             ))}
           </Ul>
         </>
@@ -116,7 +116,7 @@ const ReleaseReportModal = ({ report }: { report: ReleaseReport }) => {
           <Paragraph>The following columns are warning values:</Paragraph>
           <Ul>
             {warningColumns.map(col => (
-              <li>{col}</li>
+              <li key={col}>{col}</li>
             ))}
           </Ul>
         </>

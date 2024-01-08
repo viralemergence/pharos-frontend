@@ -10,6 +10,7 @@ import {
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
 import { Auth } from 'aws-amplify'
+import dispatchRemoveStorageMessage from 'storage/dispatchRemoveStorageMessage'
 
 export type SaveDataset = StorageMessagePayload<APIRoutes.saveDataset, Dataset>
 
@@ -30,7 +31,8 @@ const saveDataset: StorageFunction<SaveDataset> = async (
         payload: { key, status: StorageMessageStatus.LocalStorageError },
       })
     )
-    dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
+    dispatchRemoveStorageMessage({ key, dispatch })
+    // dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
   } else {
     let userSession
     try {
@@ -43,29 +45,47 @@ const saveDataset: StorageFunction<SaveDataset> = async (
       return
     }
 
-    const response = await fetch(
-      `${process.env.GATSBY_API_URL}/${message.route}`,
-      {
-        method: 'POST',
-        headers: new Headers({
-          Authorization: userSession.getIdToken().getJwtToken(),
-          'Content-Type': 'application/json',
-        }),
-        body: JSON.stringify({ dataset: message.data }),
+    let response
+    try {
+      const serverDataset = message.data
+      if (serverDataset.registerPages) {
+        for (const page of Object.values(serverDataset.registerPages)) {
+          delete page.merged
+        }
       }
-    ).catch(() =>
-      dispatch({
-        type: StateActions.SetStorageMessageStatus,
-        payload: { key, status: StorageMessageStatus.NetworkError },
-      })
-    )
 
-    if (!response || !response.ok)
+      response = await fetch(
+        `${process.env.GATSBY_API_URL}/${message.route}`,
+        {
+          method: 'POST',
+          headers: new Headers({
+            Authorization: userSession.getIdToken().getJwtToken(),
+            'Content-Type': 'application/json',
+          }),
+          body: JSON.stringify({ dataset: serverDataset }),
+        })
+    } catch (e) {
+      if (!navigator.onLine)
+        dispatch({
+          type: StateActions.SetStorageMessageStatus,
+          payload: { key, status: StorageMessageStatus.NetworkError },
+        })
+      else
+        dispatch({
+          type: StateActions.SetStorageMessageStatus,
+          payload: { key, status: StorageMessageStatus.UnknownError },
+        })
+      return
+    }
+
+
+    if (!response.ok)
       dispatch({
         type: StateActions.SetStorageMessageStatus,
-        payload: { key, status: StorageMessageStatus.NetworkError },
+        payload: { key, status: StorageMessageStatus.UnknownError },
       })
-    else dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
+    else dispatchRemoveStorageMessage({ key, dispatch })
+    // dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
   }
 }
 

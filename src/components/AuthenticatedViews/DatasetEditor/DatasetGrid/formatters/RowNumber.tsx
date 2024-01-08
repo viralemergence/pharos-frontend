@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { FormatterProps } from 'react-data-grid'
-import { RecordWithID } from 'reducers/stateReducer/types'
+import { RecordWithMeta } from 'reducers/stateReducer/types'
 
 const CellContainer = styled.div`
   margin-left: -8px;
@@ -19,9 +19,9 @@ const RowNumber = ({
   row: {
     _meta: { rowNumber },
   },
-}: FormatterProps<RecordWithID>) => (
+}: FormatterProps<RecordWithMeta>) => (
   <CellContainer>
-    <span>{rowNumber + 1}</span>
+    <span>{rowNumber ?? ''}</span>
   </CellContainer>
 )
 

@@ -34,6 +34,10 @@ Amplify.configure({
   },
 })
 
+export const localForageMessageStack = localforage.createInstance({
+  name: 'messageStack',
+})
+
 const StateContextProvider = ({ children }: StateContextProviderProps) => {
   const [state, dispatch] = useReducer(stateReducer, stateInitialValue)
   const { messageStack } = state
@@ -65,8 +69,33 @@ const StateContextProvider = ({ children }: StateContextProviderProps) => {
       window.location.assign('/')
     }
 
+    const upgrade2to3 = async () => {
+      // copy anything from old message stack to new message stack
+      const stack = (await localforage.getItem('messageStack')) as {
+        [key: string]: StorageMessage
+      }
+
+      if (!stack || Object.keys(stack).length === 0) {
+        await localforage.removeItem('messageStack')
+        localStorage.setItem('pharosMajorVersion', '3')
+        return
+      }
+
+      for (const [key, message] of Object.entries(stack)) {
+        localForageMessageStack.setItem(key, message)
+      }
+      // remove old message stack
+      await localforage.removeItem('messageStack')
+
+      localStorage.setItem('pharosMajorVersion', '3')
+    }
+
     if (pharosMajorVersion === null) {
       upgradeNullTo2()
+    }
+
+    if (pharosMajorVersion === '2') {
+      upgrade2to3()
     }
   }, [])
 
@@ -95,11 +124,14 @@ const StateContextProvider = ({ children }: StateContextProviderProps) => {
 
   useEffect(() => {
     const getLocalMessageStack = async () => {
-      const stack = (await localforage.getItem('messageStack')) as
-        | {
-            [key: string]: StorageMessage
-          }
-        | undefined
+      // const stack = (await localforage.getItem('messageStack')) as
+      const stack = {} as {
+        [key: string]: StorageMessage
+      }
+
+      await localForageMessageStack.iterate((value, key) => {
+        stack[key] = value as StorageMessage
+      })
 
       if (stack) {
         console.log(
@@ -130,7 +162,11 @@ const StateContextProvider = ({ children }: StateContextProviderProps) => {
   }, [])
 
   useEffect(() => {
-    localforage.setItem('messageStack', messageStack)
+    for (const [key, message] of Object.entries(messageStack)) {
+      if (message.target === 'remote')
+        localForageMessageStack.setItem(key, message)
+    }
+    // localforage.setItem('messageStack', messageStack)
     synchronizeMessageQueue(messageStack, dispatch)
   }, [messageStack])
 

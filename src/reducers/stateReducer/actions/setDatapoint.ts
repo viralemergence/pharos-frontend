@@ -9,6 +9,7 @@ import {
   DatasetReleaseStatus,
   ProjectID,
   RecordID,
+  Register,
 } from '../types'
 
 export interface SetDatapointPayload {
@@ -35,8 +36,19 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
   // get the previous record, if it's undefined make a new record
   const prevRecord = state.register.data[recordID] ?? {}
 
-  // get previous datapoint
-  const previous = prevRecord[datapointID]
+  // type guard-ish check for _meta object
+  if (datapointID === "_meta")
+    throw new Error("Cannot call setDatapoint on _meta object")
+
+  // get previous datapoint, coerce type to Datapoint because
+  // we now know it's not the _meta object
+  const previous = prevRecord[datapointID] as Datapoint
+
+  const idParts = recordID.split('|')
+  let page: number | null = null
+  if (idParts.length === 2) {
+    page = Number(idParts[0].replace('rec', ''))
+  }
 
   // short circuit if the data value is unchanged
   if (previous?.dataValue === next.dataValue) return state
@@ -52,6 +64,12 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
     ...state.datasets.data[datasetID],
     lastUpdated,
     releaseStatus: DatasetReleaseStatus.Unreleased,
+    releaseReport: undefined,
+    // mark which page of the register is being updated
+    registerPages: {
+      ...(state.datasets.data[datasetID].registerPages ?? {}),
+      ...(page !== null && { [page]: { lastUpdated, merged: false } })
+    }
   }
 
   // next datapoint is all the previous data, overwritten with
@@ -66,15 +84,32 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
 
   if (nextDatapoint.report) delete nextDatapoint.report
 
-  const nextRegister = {
-    ...state.register.data,
-    [recordID]: {
-      ...prevRecord,
-      [datapointID]: {
-        ...nextDatapoint,
-      },
+  const nextRecord = {
+    ...prevRecord,
+    [datapointID]: {
+      ...nextDatapoint,
     },
   }
+
+  const nextRegister = {
+    ...state.register.data,
+    [recordID]: nextRecord,
+  }
+
+  // in case there is a prior storage message for the same dataset
+  // merge the messages together. When offline, this builds up one
+  // single message so that all changes are sent to the server in
+  // a single rquest. The server will handle deduplication so it
+  // is better for the same datapoint to be sent multiple times
+  // (like when the prior message is in progress when it is read
+  // here) than it is for an update to be lost, like if the message
+  // is pending when a new datapoint is set and then the message
+  // later fails. This way, that second message will replace the
+  // pending message with a new initial message which sends both.
+  const prevStorageMessageRegister = (
+    state.messageStack[`${APIRoutes.saveRecords}_${datasetID}_${page}_remote`]?.data as
+    { records: Register, datasetID: string }
+  )?.records
 
   return {
     ...state,
@@ -128,11 +163,16 @@ const setDatapoint: ActionFunction<SetDatapointPayload> = (
         status: StorageMessageStatus.Initial,
         data: { register: nextRegister, datasetID },
       },
-      [`${APIRoutes.saveRegister}_${datasetID}_remote`]: {
-        route: APIRoutes.saveRegister,
+      [`${APIRoutes.saveRecords}_${datasetID}_${page}_remote`]: {
+        route: APIRoutes.saveRecords,
         target: 'remote',
         status: StorageMessageStatus.Initial,
-        data: { register: nextRegister, datasetID, projectID },
+        data: {
+          records: {
+            ...(prevStorageMessageRegister ?? {}),
+            [recordID]: nextRecord,
+          }, datasetID, projectID
+        },
       },
     },
   }

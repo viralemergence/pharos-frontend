@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { FormatterProps } from 'react-data-grid'
-import { Datapoint, RecordWithID } from 'reducers/stateReducer/types'
+import { Datapoint, RecordWithMeta } from 'reducers/stateReducer/types'
 
 import cellHighlightColors from '../../../../../../config/cellHighlightColors'
 
@@ -10,7 +10,7 @@ import { CellContainer, ExpandButton } from '../DisplayComponents'
 const SimpleFormatter = ({
   column,
   row: { [column.key]: datapoint },
-}: FormatterProps<RecordWithID>) => {
+}: FormatterProps<RecordWithMeta>) => {
   const [open, setOpen] = useState(false)
 
   datapoint = datapoint as Datapoint

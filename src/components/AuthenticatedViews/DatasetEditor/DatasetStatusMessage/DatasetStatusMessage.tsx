@@ -4,7 +4,6 @@ import useDataset from 'hooks/dataset/useDataset'
 import { NodeStatus } from 'reducers/stateReducer/types'
 import { useTheme } from 'styled-components'
 import useAppState from 'hooks/useAppState'
-import { StorageMessageStatus } from 'storage/synchronizeMessageQueue'
 import useModal from 'hooks/useModal/useModal'
 
 const Span = styled.span`
@@ -33,17 +32,25 @@ const DatasetStatusMessage = (): JSX.Element => {
     register: { status: registerStatus },
   } = appState
 
-  // show offline status if any message in the stack has a NetworkError status
-  const offline = Object.values(messageStack).reduce(
-    (offline, message) =>
-      offline || message.status === StorageMessageStatus.NetworkError,
-    false
-  )
+  const offline = typeof window !== 'undefined' && navigator.onLine === false
+
+  // // show offline status if any message in the stack has a NetworkError status
+  // const offline = Object.values(messageStack).reduce(
+  //   (offline, message) =>
+  //     offline || message.status === StorageMessageStatus.NetworkError,
+  //   false
+  // )
 
   let datasetStatusMessage
   let color
 
   switch (true) {
+    case Object.values(messageStack).filter(
+      message => message.target === 'remote'
+    ).length > 0:
+      datasetStatusMessage = `Syncing (${Object.keys(messageStack).length})`
+      color = theme.orange
+      break
     case datasetStatus === NodeStatus.Loading ||
       registerStatus === NodeStatus.Loading:
       datasetStatusMessage = 'Loading...'
@@ -56,12 +63,6 @@ const DatasetStatusMessage = (): JSX.Element => {
     case Object.keys(messageStack).length === 0:
       datasetStatusMessage = 'Saved'
       color = theme.medDarkGray
-      break
-    case Object.values(messageStack).filter(
-      message => message.target === 'remote'
-    ).length > 0:
-      datasetStatusMessage = 'Syncing...'
-      color = theme.orange
       break
     default:
       datasetStatusMessage = 'Loading...'
