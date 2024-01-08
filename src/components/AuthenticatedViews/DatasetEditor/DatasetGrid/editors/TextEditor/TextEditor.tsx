@@ -5,7 +5,7 @@ import { EditorProps } from 'react-data-grid'
 import {
   Datapoint,
   RecordMeta,
-  RecordWithID,
+  RecordWithMeta,
 } from 'reducers/stateReducer/types'
 
 import useDataset from 'hooks/dataset/useDataset'
@@ -43,7 +43,7 @@ const autoFocusAndSelect = (input: HTMLInputElement | null) => {
   input?.select()
 }
 
-const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithID>) => {
+const TextEditor = ({ column, onClose, row }: EditorProps<RecordWithMeta>) => {
   const dataset = useDataset()
   const projectID = useProjectID()
   const { researcherID: modifiedBy } = useUser()

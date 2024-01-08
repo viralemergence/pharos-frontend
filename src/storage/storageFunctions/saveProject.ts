@@ -10,6 +10,7 @@ import {
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
 import { Auth } from 'aws-amplify'
+import dispatchRemoveStorageMessage from 'storage/dispatchRemoveStorageMessage'
 
 export type SaveProject = StorageMessagePayload<APIRoutes.saveProject, Project>
 
@@ -30,7 +31,8 @@ const saveProject: StorageFunction<SaveProject> = async (
         payload: { key, status: StorageMessageStatus.LocalStorageError },
       })
     )
-    dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
+    dispatchRemoveStorageMessage({ key, dispatch })
+    // dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
   } else {
     let userSession
     try {
@@ -43,29 +45,40 @@ const saveProject: StorageFunction<SaveProject> = async (
       return
     }
 
-    const response = await fetch(
-      `${process.env.GATSBY_API_URL}/${message.route}`,
-      {
-        method: 'POST',
-        headers: new Headers({
-          Authorization: userSession.getIdToken().getJwtToken(),
-          'Content-Type': 'application/json',
-        }),
-        body: JSON.stringify({ project: message.data }),
-      }
-    ).catch(() =>
-      dispatch({
-        type: StateActions.SetStorageMessageStatus,
-        payload: { key, status: StorageMessageStatus.NetworkError },
-      })
-    )
+    let response
+    try {
+      response = await fetch(
+        `${process.env.GATSBY_API_URL}/${message.route}`,
+        {
+          method: 'POST',
+          headers: new Headers({
+            Authorization: userSession.getIdToken().getJwtToken(),
+            'Content-Type': 'application/json',
+          }),
+          body: JSON.stringify({ project: message.data }),
+        }
+      )
+    } catch (e) {
+      if (!navigator.onLine)
+        dispatch({
+          type: StateActions.SetStorageMessageStatus,
+          payload: { key, status: StorageMessageStatus.NetworkError },
+        })
+      else
+        dispatch({
+          type: StateActions.SetStorageMessageStatus,
+          payload: { key, status: StorageMessageStatus.UnknownError },
+        })
+      return
+    }
 
-    if (!response || !response.ok)
+    if (!response.ok)
       dispatch({
         type: StateActions.SetStorageMessageStatus,
-        payload: { key, status: StorageMessageStatus.NetworkError },
+        payload: { key, status: StorageMessageStatus.UnknownError },
       })
-    else dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
+    else dispatchRemoveStorageMessage({ key, dispatch })
+    // dispatch({ type: StateActions.RemoveStorageMessage, payload: key })
   }
 }
 

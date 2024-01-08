@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { EditorProps } from 'react-data-grid'
 
-import { Datapoint, RecordWithID } from 'reducers/stateReducer/types'
+import { Datapoint, RecordWithMeta } from 'reducers/stateReducer/types'
 import { CellContainer } from '../DisplayComponents'
 import MintButton from 'components/ui/MintButton'
 
@@ -53,7 +53,7 @@ export const CantEditPublished = () => {
 const EditingDisabledEditor = ({
   column,
   row: { [column.key]: datapoint },
-}: EditorProps<RecordWithID>) => {
+}: EditorProps<RecordWithMeta>) => {
   const setModal = useModal()
   datapoint = datapoint as Datapoint
 

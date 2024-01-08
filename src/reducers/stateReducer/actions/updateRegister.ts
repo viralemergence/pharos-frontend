@@ -3,10 +3,10 @@ import {
   StorageMessageStatus,
 } from 'storage/synchronizeMessageQueue'
 import { ActionFunction, StateActions } from '../stateReducer'
-import { Datapoint, DatasetID, NodeStatus, ProjectID, Register } from '../types'
+import { Datapoint, DatasetID, NodeStatus, ProjectID, Register, ServerRecordMeta } from '../types'
 
 interface UpdateRegisterActionPayload {
-  source: 'local' | 'remote' | 'csv'
+  source: 'local' | 'remote'
   data: Register
   datasetID: DatasetID
   projectID: ProjectID
@@ -55,7 +55,8 @@ const updateRegister: ActionFunction<UpdateRegisterActionPayload> = (
   state,
   payload
 ) => {
-  const { data: register, source, datasetID, projectID } = payload
+  const { data: register, source, datasetID } = payload
+
 
   // if we're loading from the indexedDB we can just set it directly
   if (source === 'local') {
@@ -68,40 +69,36 @@ const updateRegister: ActionFunction<UpdateRegisterActionPayload> = (
     }
   }
 
-  // if source is CSV, it's already been merged so we can
-  // set it directly and then save to both local and remote
-  if (source === 'csv') {
-    return {
-      ...state,
-      register: {
-        ...state.register,
-        data: register,
-      },
-      messageStack: {
-        ...state.messageStack,
-        [`${APIRoutes.saveRegister}_${datasetID}_local`]: {
-          route: APIRoutes.saveRegister,
-          status: StorageMessageStatus.Initial,
-          data: { register, datasetID },
-          target: 'local',
-        },
-        [`${APIRoutes.saveRegister}_${datasetID}_remote`]: {
-          route: APIRoutes.saveRegister,
-          status: StorageMessageStatus.Initial,
-          data: { register, datasetID, projectID },
-          target: 'remote',
-        },
-      },
-    }
-  }
-
   // if source is remote and current state is empty, just set it and save to local
   if (source === 'remote' && Object.entries(state.register.data).length === 0) {
+
+    const page = Object.keys(register)[0].split('|')[0].replace('rec', '')
+    const registerPage = state.datasets.data[datasetID]?.registerPages?.[page]
+    const nextDataset = {
+      ...state.datasets.data[datasetID],
+      registerPages: {
+        ...(state.datasets.data[datasetID].registerPages ?? {}),
+        ...(registerPage && {
+          [page]: {
+            ...registerPage,
+            merged: true,
+          }
+        })
+      }
+    }
+
     return {
       ...state,
       register: {
         ...state.register,
         data: register,
+      },
+      datasets: {
+        ...state.datasets,
+        data: {
+          ...state.datasets.data,
+          [datasetID]: nextDataset,
+        },
       },
       messageStack: {
         ...state.messageStack,
@@ -111,6 +108,12 @@ const updateRegister: ActionFunction<UpdateRegisterActionPayload> = (
           data: { register, datasetID },
           target: 'local',
         },
+      },
+      [`${APIRoutes.saveDataset}_${datasetID}_local`]: {
+        route: APIRoutes.saveDataset,
+        status: StorageMessageStatus.Initial,
+        data: nextDataset,
+        target: 'local',
       },
     }
   }
@@ -118,24 +121,46 @@ const updateRegister: ActionFunction<UpdateRegisterActionPayload> = (
   // if source is remote and we have a register already loaded we need to merge them
   console.time(`${'[MERGE]'.padEnd(15)} Merge Register`)
   const nextRegister: Register = {}
+  // take the union of unique keys in the local and remote registers
+  const keys = new Set([...Object.keys(register), ...Object.keys(state.register.data)])
   // iterate over the records in the register
-  for (const [recordID, remoteRecord] of Object.entries(register)) {
+  for (const recordID of keys) {
+    const remoteRecord = register[recordID]
     // copy local record into next register
     nextRegister[recordID] = { ...state.register.data[recordID] }
     // iterate over the datapoints in the record
-    for (const [datapointID, remoteDatapoint] of Object.entries(remoteRecord)) {
-      // merge the two datapoints;
-      // The result of the merge is coerced to Datapoint because we can't
-      // reach this point if both local and remote datapoints are undefined
-      // and the merge of at least one defined datapoint always returns Datapoint
-      nextRegister[recordID][datapointID] = mergeDatapoint(
-        // local record is the one we just copied into the nextRegister
-        nextRegister[recordID][datapointID],
-        remoteDatapoint
-      )!
-    }
+    if (remoteRecord)
+      for (const [datapointID, remoteDatapoint] of Object.entries(remoteRecord)) {
+        if (datapointID === "_meta")
+          nextRegister[recordID][datapointID] = nextRegister[recordID][datapointID] ?? remoteDatapoint as ServerRecordMeta
+        else
+          // merge the two datapoints;
+          // The result of the merge is coerced to Datapoint because we can't
+          // reach this point if both local and remote datapoints are undefined
+          // and the merge of at least one defined datapoint always returns Datapoint
+          nextRegister[recordID][datapointID] = mergeDatapoint(
+            // local record is the one we just copied into the nextRegister
+            nextRegister[recordID][datapointID] as Datapoint,
+            remoteDatapoint as Datapoint
+          )!
+      }
   }
   console.timeEnd(`${'[MERGE]'.padEnd(15)} Merge Register`)
+
+  const page = Object.keys(nextRegister)[0].split('|')[0].replace('rec', '')
+  const registerPage = state.datasets.data[datasetID]?.registerPages?.[page]
+  const nextDataset = {
+    ...state.datasets.data[datasetID],
+    registerPages: {
+      ...(state.datasets.data[datasetID].registerPages ?? {}),
+      ...(registerPage && {
+        [page]: {
+          ...registerPage,
+          merged: true,
+        }
+      })
+    }
+  }
 
   return {
     ...state,
@@ -143,12 +168,25 @@ const updateRegister: ActionFunction<UpdateRegisterActionPayload> = (
       status: NodeStatus.Loaded,
       data: nextRegister,
     },
+    datasets: {
+      ...state.datasets,
+      data: {
+        ...state.datasets.data,
+        [datasetID]: nextDataset,
+      },
+    },
     messageStack: {
       ...state.messageStack,
       [`${APIRoutes.saveRegister}_${datasetID}_local`]: {
         route: APIRoutes.saveRegister,
         status: StorageMessageStatus.Initial,
         data: { register: nextRegister, datasetID },
+        target: 'local',
+      },
+      [`${APIRoutes.saveDataset}_${datasetID}_local`]: {
+        route: APIRoutes.saveDataset,
+        status: StorageMessageStatus.Initial,
+        data: nextDataset,
         target: 'local',
       },
     },

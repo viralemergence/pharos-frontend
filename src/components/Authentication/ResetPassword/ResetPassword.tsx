@@ -36,12 +36,7 @@ const ResetPassword = () => {
     e.preventDefault()
     setSubmitting(true)
     try {
-      const data = await Auth.forgotPasswordSubmit(
-        email,
-        passwordResetCode,
-        newPassword
-      )
-      console.log(data)
+      await Auth.forgotPasswordSubmit(email, passwordResetCode, newPassword)
       setSubmitting(false)
       setSuccess(true)
       setFormMessage('Password reset, please continue to sign in')

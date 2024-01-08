@@ -6,6 +6,7 @@ import saveDataset, { SaveDataset } from './storageFunctions/saveDataset'
 import saveRegister, { SaveRegister } from './storageFunctions/saveRegister'
 import deleteDataset, { DeleteDataset } from './storageFunctions/deleteDataset'
 import createProject, { CreateProject } from './storageFunctions/createProject'
+import saveRecords, { SaveRecords } from './storageFunctions/saveRecords'
 
 export enum StorageMessageStatus {
   // when the api message is created
@@ -30,6 +31,7 @@ export enum APIRoutes {
   saveDataset = 'save-dataset',
   deleteDataset = 'delete-dataset',
   saveRegister = 'save-register',
+  saveRecords = 'save-records',
 }
 
 export interface StorageMessagePayload<Data, Route> {
@@ -46,6 +48,7 @@ export type StorageMessage =
   | SaveDataset
   | DeleteDataset
   | SaveRegister
+  | SaveRecords
 
 export type StorageFunction<T> = (
   key: string,
@@ -57,48 +60,56 @@ const synchronizeMessageQueue = async (
   messageStack: { [key: string]: StorageMessage },
   dispatch: React.Dispatch<StateAction>
 ) => {
+  let pendingCount = 0
   for (const [key, message] of Object.entries(messageStack)) {
     // skip messages in these states:
+    if (message.status === StorageMessageStatus.Pending) pendingCount++
+
     if (
-      message.status !== StorageMessageStatus.LocalStorageError &&
-      message.status !== StorageMessageStatus.UnknownError &&
-      message.status !== StorageMessageStatus.NetworkError &&
-      message.status !== StorageMessageStatus.ServerError &&
-      message.status !== StorageMessageStatus.Pending
-    ) {
-      console.log(
-        `${'[MESSAGES]'.padEnd(15)} Synchronize ${message.route} to ${
-          message.target
-        }`
-      )
+      message.status === StorageMessageStatus.LocalStorageError ||
+      message.status === StorageMessageStatus.UnknownError ||
+      message.status === StorageMessageStatus.ServerError ||
+      message.status === StorageMessageStatus.Pending ||
+      // skip NetworkError messages if we're offline
+      (message.status === StorageMessageStatus.NetworkError && !navigator.onLine)
+    ) return
 
-      switch (message.route) {
-        case APIRoutes.saveUser:
-          saveUser(key, message, dispatch)
-          continue
+    console.log(
+      `${'[MESSAGES]'.padEnd(15)} Synchronize ${message.route} to ${message.target
+      }`
+    )
 
-        case APIRoutes.saveProject:
-          saveProject(key, message, dispatch)
-          continue
+    switch (message.route) {
+      case APIRoutes.saveUser:
+        saveUser(key, message, dispatch)
+        continue
 
-        case APIRoutes.createProject:
-          createProject(key, message, dispatch)
-          continue
+      case APIRoutes.saveProject:
+        saveProject(key, message, dispatch)
+        continue
 
-        case APIRoutes.saveDataset:
-          saveDataset(key, message, dispatch)
-          continue
+      case APIRoutes.createProject:
+        createProject(key, message, dispatch)
+        continue
 
-        case APIRoutes.deleteDataset:
-          deleteDataset(key, message, dispatch)
-          continue
+      case APIRoutes.saveDataset:
+        saveDataset(key, message, dispatch)
+        continue
 
-        case APIRoutes.saveRegister:
-          saveRegister(key, message, dispatch)
-          continue
-      }
+      case APIRoutes.deleteDataset:
+        deleteDataset(key, message, dispatch)
+        continue
+
+      case APIRoutes.saveRegister:
+        saveRegister(key, message, dispatch)
+        continue
+
+      case APIRoutes.saveRecords:
+        saveRecords(key, message, dispatch)
+        continue
     }
   }
+  console.log(`[MESSAGES] Pending messages: ${pendingCount}`)
 }
 
 export default synchronizeMessageQueue

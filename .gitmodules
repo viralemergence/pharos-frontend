@@ -1,3 +1,4 @@
 [submodule "src/pharos-documentation"]
 	path = src/pharos-documentation
 	url = git@github.com:viralemergence/pharos-documentation.git
+	update = merge

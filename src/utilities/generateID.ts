@@ -9,8 +9,9 @@ const projectID = () => 'prj' + nanoid()
 
 const datasetID = () => 'set' + nanoid()
 
-const recordID = () => 'rec' + nanoid()
+const recordID = (page: number) => `rec${page}|${nanoid()}`
 
-const datapointID = () => 'dat' + nanoid()
+// DatapointID is not used (column name is used)
+// const datapointID = () => 'dat' + nanoid()
 
-export default { projectID, datasetID, recordID, datapointID }
+export default { projectID, datasetID, recordID }

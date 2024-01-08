@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { FormatterProps } from 'react-data-grid'
-import { Datapoint, RecordWithID } from 'reducers/stateReducer/types'
+import { Datapoint, RecordWithMeta } from 'reducers/stateReducer/types'
 
 import cellHighlightColors from '../../../../../../config/cellHighlightColors'
 
@@ -26,7 +26,7 @@ const Label = styled.span`
 const UnitFormatter = ({
   column,
   row: { [column.key]: datapoint },
-}: FormatterProps<RecordWithID>) => {
+}: FormatterProps<RecordWithMeta>) => {
   const dataset = useDataset()
   const [open, setOpen] = useState(false)
 

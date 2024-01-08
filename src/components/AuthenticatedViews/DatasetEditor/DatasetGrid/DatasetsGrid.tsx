@@ -2,7 +2,10 @@ import React from 'react'
 import styled from 'styled-components'
 import DataGrid, { Column } from 'react-data-grid'
 
-import { DatasetReleaseStatus, RecordWithID } from 'reducers/stateReducer/types'
+import {
+  DatasetReleaseStatus,
+  RecordWithMeta,
+} from 'reducers/stateReducer/types'
 
 import TextEditor from './editors/TextEditor/TextEditor'
 
@@ -17,9 +20,12 @@ import 'react-data-grid/lib/styles.css'
 import RowNumber from './formatters/RowNumber'
 import useDataset from 'hooks/dataset/useDataset'
 import EditingDisabledEditor from './editors/EditingDisabledEditor'
-import { DATASET_LENGTH_LIMIT } from '../DatasetLengthExceededModal/DatasetLengthExceededModal'
 import UnitFormatter from './formatters/UnitFormatter'
 import UnitEditor from './editors/UnitEditor'
+import { DATASET_LENGTH_LIMIT } from '../DatasetLengthExceededModal/DatasetLengthExceededModal'
+
+// Intended size:
+export const DATASET_PAGINATION_SIZE = 500
 
 const FillDatasetGrid = styled(DataGrid)`
   block-size: 100%;
@@ -44,7 +50,7 @@ const DatasetGrid = () => {
     width: 35,
   }
 
-  const columns: readonly Column<RecordWithID>[] = [
+  const columns: readonly Column<RecordWithMeta>[] = [
     rowNumberColumn,
     ...colNames.map(name => ({
       key: name,
@@ -65,16 +71,18 @@ const DatasetGrid = () => {
     })),
   ]
 
-  // only add new row for editing if
-  // the dataset is under the limit
+  // only add rows for editing if
+  // the dataset is under the length limit
   if (versionedRows.length < DATASET_LENGTH_LIMIT) {
     versionedRows.push({
       _meta: {
-        recordID: generateID.recordID(),
-        rowNumber: versionedRows.length,
+        recordID: generateID.recordID(
+          Math.ceil((versionedRows.length + 1) / DATASET_PAGINATION_SIZE)
+        ),
       },
     })
   }
+
   return (
     <FillDatasetGrid
       className={'rdg-light'}
@@ -83,7 +91,7 @@ const DatasetGrid = () => {
       columns={columns as Column<unknown>[]}
       rows={versionedRows}
       rowKeyGetter={row => {
-        const record = row as unknown as RecordWithID
+        const record = row as unknown as RecordWithMeta
         return record._meta.recordID
       }}
     />

@@ -13,6 +13,7 @@ import useIndexPageData from 'cmsHooks/useIndexPageData'
 import useAppState from 'hooks/useAppState'
 import localforage from 'localforage'
 import { Auth } from 'aws-amplify'
+import { localForageMessageStack } from 'reducers/stateReducer/stateContext'
 
 const Nav = styled.nav`
   background-color: ${({ theme }) => theme.darkPurple};
@@ -151,6 +152,7 @@ const NavBar = () => {
                 // as a "reset" button if a bug traps the user.
                 await Auth.signOut()
                 await localforage.clear()
+                await localForageMessageStack.clear()
                 window.location.href = '/'
                 window.location.reload()
               }}

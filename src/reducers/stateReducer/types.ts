@@ -88,6 +88,14 @@ export interface Project {
   // }
 }
 
+// a 'page' of a register
+// which corresponds to a 
+// chunk of records
+export interface RegisterPage {
+  lastUpdated: string
+  merged?: boolean
+}
+
 // a single dataset
 /** The Dataset object contains all
  * the metadata about the dataset. */
@@ -102,11 +110,15 @@ export interface Dataset {
   // dataset which reflects released
   // and published status
   releaseStatus?: DatasetReleaseStatus
+  releaseReport?: ReleaseReport
   // lastUpdated timestamp
   lastUpdated: string
   // earliest and latest date in the dataset
   earliestDate?: string
   latestDate?: string
+  registerPages?: {
+    [key: string]: RegisterPage
+  }
 
   // optional user-specified display units
   age?: keyof typeof units.age
@@ -147,17 +159,22 @@ export interface Register {
   [key: RecordID]: Record
 }
 
+export interface ServerRecordMeta {
+  order?: number
+}
+
 // a single record of data, a collection
 // of datapoints which the user sees
 // as a row in a table
-
 export interface Record {
-  [key: string]: Datapoint
+  _meta?: ServerRecordMeta
+  [key: string]: Datapoint | ServerRecordMeta | undefined
 }
 
 export interface RecordMeta {
   recordID: string
-  rowNumber: number
+  rowNumber?: number
+  order?: number
 
   // report?: {
   //   pass: ReportScore
@@ -168,7 +185,7 @@ export interface RecordMeta {
   // ingested: boolean
 }
 
-export interface RecordWithID {
+export interface RecordWithMeta {
   _meta: RecordMeta
   [key: string]: Datapoint | RecordMeta
 }
@@ -233,6 +250,7 @@ export enum DatasetStatus {
 
 export enum DatasetReleaseStatus {
   Unreleased = 'Unreleased',
+  Releasing = 'Releasing',
   Released = 'Released',
   Published = 'Published',
   Publishing = 'Publishing',

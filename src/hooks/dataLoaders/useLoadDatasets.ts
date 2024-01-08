@@ -3,9 +3,9 @@ import useProject from 'hooks/project/useProject'
 import useAppState from 'hooks/useAppState'
 import useDispatch from 'hooks/useDispatch'
 import localforage from 'localforage'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { StateActions } from 'reducers/stateReducer/stateReducer'
-import { Dataset, NodeStatus } from 'reducers/stateReducer/types'
+import { Dataset, DatasetReleaseStatus, NodeStatus } from 'reducers/stateReducer/types'
 
 const useLoadDatasets = () => {
   const { projectID, datasetIDs } = useProject()
@@ -14,6 +14,46 @@ const useLoadDatasets = () => {
   const {
     datasets: { status, data },
   } = useAppState()
+
+  const datasetsPoller = useRef<NodeJS.Timeout | null>()
+
+  const releasingDatasets = Object.values(data).some(
+    dataset => dataset.releaseStatus === DatasetReleaseStatus.Releasing
+  )
+
+  useEffect(() => {
+    const invalidateDatasets = () => {
+      dispatch({
+        type: StateActions.SetMetadataObjStatus,
+        payload: {
+          key: 'datasets',
+          status: NodeStatus.Initial,
+        }
+      })
+
+      if (releasingDatasets) {
+        datasetsPoller.current = setTimeout(() => {
+          invalidateDatasets()
+        }, 1000)
+      }
+    }
+
+
+    if (!datasetsPoller.current && releasingDatasets) {
+      datasetsPoller.current = setTimeout(() => {
+        invalidateDatasets()
+      }, 1000)
+    }
+
+    return () => {
+      if (datasetsPoller.current) {
+        clearTimeout(datasetsPoller.current)
+        datasetsPoller.current = null
+      }
+    }
+
+  }, [releasingDatasets, dispatch])
+
 
   useEffect(() => {
     // just to be safe, set the datasets object
