@@ -110,7 +110,7 @@ export GATSBY_MAPBOX_API_KEY=$mapbox_key
 echo 'Pull latest Pharos Documentation';
 cd src/pharos-documentation;
 # git checkout publish;
-git pull;
+git pull origin/publish;
 cd ../../;
 
 
