@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 import useIndexPageData from 'cmsHooks/useIndexPageData'
-import CMS from '@talus-analytics/library.airtable-cms'
+import CMS from 'components/library/airtable-cms'
 
 const Container = styled.footer`
   display: flex;

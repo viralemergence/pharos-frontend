@@ -1,4 +1,4 @@
-import CMS from '@talus-analytics/library.airtable-cms'
+import CMS from 'components/library/airtable-cms'
 import NavBar from 'components/layout/NavBar/NavBar'
 import Providers from 'components/layout/Providers'
 import TopBar, { Breadcrumbs, Controls, Title } from 'components/layout/TopBar'

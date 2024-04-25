@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import CMS from '@talus-analytics/library.airtable-cms'
+import CMS from 'components/library/airtable-cms'
 
 import useSignInPageData from 'cmsHooks/useSignInPageData'
 

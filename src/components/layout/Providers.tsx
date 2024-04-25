@@ -2,7 +2,7 @@ import React from 'react'
 
 import styled, { createGlobalStyle, ThemeProvider } from 'styled-components'
 
-import CMS from '@talus-analytics/library.airtable-cms'
+import CMS from 'components/library/airtable-cms'
 
 import useSiteMetadataQuery from 'cmsHooks/useSiteMetadataQuery'
 import useIconsQuery from 'cmsHooks/useIconsQuery'
