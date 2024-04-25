@@ -98,7 +98,9 @@ jobs:
 
       - run:
           name: Add github.com to known hosts
-          command: ssh-keyscan github.com >> ~/.ssh/known_hosts
+          command: |
+            touch >> ~/.ssh/known_hosts
+            ssh-keyscan github.com >> ~/.ssh/known_hosts
 
       - run:
           name: Yarn Install
