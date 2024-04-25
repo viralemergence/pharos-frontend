@@ -1,7 +1,7 @@
 version: 2.1
 
 credentials: &credentials
-  - Verena AWS Credentials
+  - AWS Credentials
 
 workflows:
   version: 2
