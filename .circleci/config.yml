@@ -97,6 +97,10 @@ jobs:
             - yarn-deps-
 
       - run:
+          name: Add github.com to known hosts
+          command: ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+      - run:
           name: Yarn Install
           command: yarn install --non-interactive
 
