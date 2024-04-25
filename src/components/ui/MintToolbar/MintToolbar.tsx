@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'gatsby'
 import styled, { css } from 'styled-components'
 
-import Dropdown from '@talus-analytics/library.ui.dropdown'
+import Dropdown from 'components/library/ui/dropdown'
 import ThreeDotsIcon from './MintToolbarIcons/ThreeDotsIcon'
 
 const MintToolbar = styled.div`
