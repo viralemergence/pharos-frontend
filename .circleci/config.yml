@@ -98,7 +98,7 @@ jobs:
 
       - run:
           name: Yarn Install
-          command: yarn install
+          command: yarn install --non-interactive
 
       - run:
           name: Typescript Checks
