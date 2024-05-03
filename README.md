@@ -1,4 +1,4 @@
-[![Pharos](https://github.com/viralemergence/pharos-database/blob/prod/diagrams/pharos-banner.png)](https://pharos.viralemergence.org/)
+[![Pharos](https://github.com/viralemergence/pharos-frontend/blob/prod/diagrams/pharos-banner.png)](https://pharos.viralemergence.org/)
 
 This repository is part of the [Pharos project](https://pharos.viralemergence.org/)
 which is split into four repositories:
@@ -30,21 +30,6 @@ Automated deployment schedule: Airtable data is ingested, "About" content is ing
 
 ## 👩‍💻 Local Development Quick start
 
-This project requires you to have bit set up on your computer (one-time setup, works across projects):
-
-1. [Make a bit.cloud account](https://bit.cloud/signup)
-
-2. [Install Bit using these instructions](https://bit.dev/docs/getting-started/installing-bit/installing-bit)
-
-3. Run `bit login` in your terminal
-
-4. Make sure you have permissions as a developer on `@talus-analytics/@library` (ask Ryan)
-
-5. Configure repository by running:
-
-```
-  npm config set '@talus-analytics:registry' https://node.bit.cloud
-```
 
 1. Install packages:
 
@@ -52,22 +37,41 @@ This project requires you to have bit set up on your computer (one-time setup, w
 yarn
 ```
 
-2. Start dev server:
+2. Start dev server, passing arguments for the resources you want to connect to:
+
+| Argument | Description                       | Source |
+|----------|-----------------------------------|--------|
+| `--api`  | Cloudfront distribution url for the main API | "Outputs" section of cloudformation stack |
+| `--mapping_api`  | Cloudfront distribution url for the mapping API | "Outputs" section of cloudformation stack |
+| `--client_id`  | AWS Cognito client ID | "Outputs" section of cloudformation stack |
+| `--user_pool_id`  | AWS Cognito user pool ID | "Outputs" section of cloudformation stack |
+| `--profile`  | AWS SSO Profile with developer-level credentials for Pharos Prod AWS | Configure AWS SSO using the [Pharos AWS Access Portal](https://viralemergence.awsapps.com/start/) |
+
+
+Example `yarn start` command:
 
 ```
-yarn start
+yarn start \
+  --api [CF Distribution URL] \
+  --mapping_api [CF Distribution URL] \
+  --profile [AWS SSO Profile] \
+  --client_id [AWS Cognito Client ID] \
+  --user_pool_id [AWS Cognito User Pool ID]
 ```
 
-By default, the app will try to connect to the api at `http://localhost:3000`.
-
-However, you should pass the API URL output from the `sam sync` command for your
-development stack.
 
 ```
-yarn start --api https://[api url from cloudformation]
+yarn start \
+  --api https://XXXXXXXXXXXXXX.cloudfront.net/prod \
+  --mapping_api https://XXXXXXXXXXXXXX.cloudfront.net/prod \
+  --profile verena-prod-dev \
+  --client_id XXXXXXXXXXXXXXXXXXXXXXXXXX \
+  --user_pool_id us-east-2_XXXXXXXXX
 ```
 
-## 🖥 Deployment Infrastructure
+
+
+## 🖥 Deployment Infrastructuree
 
 All PHAROS frontend Infrastructure is managed using the CloudFormation template within
 the `/CloudFormation/` directory. All changes to hosting, domain names, alternate domain
