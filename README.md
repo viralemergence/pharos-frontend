@@ -1,7 +1,7 @@
 [![Pharos](https://github.com/viralemergence/pharos-database/blob/prod/diagrams/pharos-banner.png)](https://pharos.viralemergence.org/)
 
 This repository is part of the [Pharos project](https://pharos.viralemergence.org/)
-which is split into three repositories:
+which is split into four repositories:
 
 | Repository                                                                       | Purpose                                               |
 | ---------------------------------------------------------------------------------| ------------------------------------------------------|
