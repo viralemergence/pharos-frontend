@@ -47,13 +47,13 @@ yarn
 <!-- | `--user_pool_id` | AWS Cognito user pool ID                                             | "Outputs" section of cloudformation stack                                                         | -->
 <!-- | `--profile`      | AWS SSO Profile with developer-level credentials for Pharos Prod AWS | Configure AWS SSO using the [Pharos AWS Access Portal](https://viralemergence.awsapps.com/start/) | -->
 
-| Argument         | Source                                                                                                                                     |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `--api`          | "Api" in outputs of cloudformation stack                                                                                                   |
-| `--client_id`    | "ClientId" in outputs of cloudformation stack                                                                                              |
-| `--user_pool_id` | "UserPoolId" in outputs of cloudformation stack                                                                                            |
-| `--mapping_api`  | Optional, only for troubleshooting. Defaults to match --api.                                                                               |
-| `--profile`      | Optional, if `[default]` profile is set. Configure AWS SSO using the [Pharos AWS Access Portal](https://viralemergence.awsapps.com/start/) |
+| Argument         | Source                                                                                                                                           |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `--api`          | "Api" in outputs of cloudformation stack                                                                                                         |
+| `--client_id`    | "ClientId" in outputs of cloudformation stack                                                                                                    |
+| `--user_pool_id` | "UserPoolId" in outputs of cloudformation stack                                                                                                  |
+| `--mapping_api`  | Optional, only for troubleshooting. Defaults to match --api.                                                                                     |
+| `--profile`      | Optional, if `[default]` profile is set. </br> Configure AWS SSO using the [Pharos AWS Access Portal](https://viralemergence.awsapps.com/start/) |
 
 Example `yarn start` command:
 
