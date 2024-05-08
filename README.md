@@ -26,7 +26,9 @@ which is split into four repositories:
 | Review  | [![CircleCI](https://dl.circleci.com/status-badge/img/circleci/39PL8myokkHY7obZPJeFEC/VSEyuiVS42F6DmyCLZcbdW/tree/review.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/circleci/39PL8myokkHY7obZPJeFEC/VSEyuiVS42F6DmyCLZcbdW/tree/review)   | [dev-pharos.viralemergence.org/](https://review-pharos.viralemergence.org/)      |
 | Dev     | [![CircleCI](https://dl.circleci.com/status-badge/img/circleci/39PL8myokkHY7obZPJeFEC/VSEyuiVS42F6DmyCLZcbdW/tree/dev.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/circleci/39PL8myokkHY7obZPJeFEC/VSEyuiVS42F6DmyCLZcbdW/tree/dev)         | [dev-pharos.viralemergence.org/](https://dev-pharos.viralemergence.org/)         |
 
-Automated deployment schedule: Airtable data is ingested, "About" content is ingested, and full site is built weekly on `Staging` site.
+Automated deployment schedule: Airtable data is ingested, "About" content is ingested from
+[`pharos-documentation`](https://github.com/viralemergence/pharos-documentation), and full
+site is built weekly on `Staging` site.
 
 </br>
 
