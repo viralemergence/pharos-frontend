@@ -30,14 +30,17 @@ Automated deployment schedule: Airtable data is ingested, "About" content is ing
 
 ## 👩‍💻 Local Development Quick start
 
-1. First, create an API development stack using the instructions in the [`pharos-api`](https://github.com/viralemergence/pharos-api) repository.
-1. Install packages:
+### 1. Create API Stack: [`pharos-api`](https://github.com/viralemergence/pharos-api).
+
+### 2. Install packages:
 
 ```
 yarn
 ```
 
-1. Start dev server, passing arguments for the resources you want to connect to:
+### 3. Start dev server:
+
+Run `yarn start`, passing arguments to connect the dev server to your dev API stack:
 
 <!-- | Argument         | Description                                                          | Source                                                                                            | -->
 <!-- | ---------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | -->
