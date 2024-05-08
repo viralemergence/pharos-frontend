@@ -28,7 +28,7 @@ which is split into four repositories:
 
 Automated deployment schedule: Airtable data is ingested, "About" content is ingested, and full site is built weekly on `Staging` site.
 
-## 👩‍💻 Local Development Quick start
+## 👩‍💻 Development Quick start
 
 ### 1. Create API Stack: [`pharos-api`](https://github.com/viralemergence/pharos-api).
 
