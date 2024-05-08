@@ -1,0 +1,114 @@
+---
+displayName: Dropdown
+description: Animation and accessibility component for expanding dropdowns on click or hover
+labels: ['animation', 'typescript', 'ui']
+---
+
+import Dropdown from './'
+import DropdownButton, { DropdownCaret } from './bitDemo/DropdownButton'
+
+# Component for creating accessible click or hover triggered dropdowns
+
+This component handles accessibilty and interaction concerns for dropdowns which might hold additional menu items (like in a nav bar), additional information, interactive elements, or other content.
+
+By default the dropdown opens on click, but if the `hover` prop is set, the component will open on hover and ignore mouse click events. The dropdown will always close on a click outside the dropdown, or if the user clicks outside the browser window.
+
+## Accessibility
+
+This component is keyboard focusable, and does not expand on focus regardless of whether `hover` is set, so that a keyboard user can navigate through a list of dropdowns without expanding every one and focusing each interactive child element. When the dropdown button is "clicked" by a non-mouse device (whether or not `hover` is set for mouse users) the dropdown will expand and keyboard focus will travel inside the dropdown. After the user tabs out of the last focusable child, focus will move to the next control in the page order and the dropdown will collapse.
+
+The dropdown button has "aria-haspopup" and "aria-expanded" attributes and sets them based on the open / closed state of the dropdown.
+
+> _Note:_ An error will be thrown if the renderButton prop renders an element other than a button, to enforce accessibility best practices.
+
+## Effects
+
+The component can take two function props, `onClose` and `onOpen`, which can be used to fire effects when the dropdown opens and closes.
+
+# Demo
+
+The dropdown takes a render prop `renderButton` which needs a component to render; a common pattern will be to use a few styled components, but any react component will work as long as the outermost element is a button.
+
+The `open` and `animDuration` props are provided to make it easy to synchronize animations with the internal state of the dropdown; open state should not be managed outside the component as well—If complex management of open state is needed, then [the expander component](https://bit.dev/talus-analytics/library/ui/expander) is likely the better solution, though accessibility will need to be considered.
+
+Then that button component can be used in the the dropdown. This is how open / closed caret graphics, color changes, and other animations in the button should be added because those attributes are project-specific.
+
+## Dropdown opens on mouse click
+
+```js live
+// prettier-ignore
+() => (
+  <div style={{ width: 400, height: 200 }}>
+    <Dropdown
+      renderButton={(open, animDuration) => (
+        <DropdownButton {...{open, animDuration}}>
+          Click me <DropdownCaret {...{open, animDuration}}/>
+        </DropdownButton>
+      )}
+      onOpen={() => console.log('open!')}
+      onClose={() => console.log('close!')}
+    >
+      <ul>
+        <li>Things that might appear in a dropdown</li>
+        <li>Lists</li>
+        <li>Download links</li>
+        <li>Navigation links</li>
+        <li>Other stuff</li>
+      </ul>
+    </Dropdown>
+  </div>
+)
+```
+
+## Dropdown opens on hover
+
+```js live
+// prettier-ignore
+() => (
+  <div style={{ width: 400, height: 200 }}>
+    <Dropdown 
+      hover 
+      renderButton={(open, animDuration) => (
+        <DropdownButton {...{open, animDuration}}>
+          Hover me <DropdownCaret {...{open, animDuration}}/>
+        </DropdownButton>
+      )}>
+      <ul>
+        <li>Things that might appear in a dropdown</li>
+        <li>Lists</li>
+        <li>Download links</li>
+        <li>Navigation links</li>
+        <li>Other stuff</li>
+      </ul>
+    </Dropdown>
+  </div>
+)
+```
+
+The styled components used for the demo above:
+
+```js
+const DropdownButton = styled.button<{ open: boolean; animDuration: number }>`
+  background-color: ${({ open }) => (open ? '#647687' : '#7d91a3')};
+  transition: ${({ animDuration }) => animDuration + 'ms ease'};
+  border-top-right-radius: 3px;
+  border-top-left-radius: 3px;
+  align-items: center;
+  padding: 10px 15px;
+  display: flex;
+  border: none;
+  color: white;
+`
+
+const DropdownCaret = styled.div<{ open: boolean; animDuration: number }>`
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='6' viewBox='0 0 12 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0L6 6L12 0H0Z' fill='%233A3A3C'/%3E%3C/svg%3E%0A");
+  transform: ${({ open }) => (open ? `scaleY(-1)` : `scaleY(1)`)};
+  transition: ${({ animDuration }) => animDuration + 'ms ease'};
+  background-position: 100% 50%;
+  background-repeat: no-repeat;
+  background-size: contain;
+  margin-left: 15px;
+  height: 10px;
+  width: 15px;
+`
+```

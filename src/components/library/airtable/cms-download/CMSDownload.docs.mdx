@@ -1,0 +1,91 @@
+---
+displayName: Airtable CMS Download
+description: Component for finding text blocks in AirtableCMSData
+labels: ['airtable', 'typescript', 'ui']
+---
+
+This component and helper function makes it easy to create analytics-tracked download links to content from Airtable.
+
+Clicks to download the files from these links are tracked as events using `gatsby-plugin-gtag` so they can be viewed in the dashboard and in reports for users who have accepted cookies.
+
+# Usage
+
+This component requires an Airtable table which conforms to the `AirtableCMSData` content table format, configured with `Name`, `Text`, and `Download` columns, and a CMS query in a custom hook which should look something like this (at a minimum—content queries may also include images).
+
+### Example usage
+
+By default, link text is pulled from airtable:
+
+```js
+const SimpleUsage = () => {
+  // cms data should come from custom hooks
+  const cmsData = useCMSData()
+
+  // the link text will be pulled from the "Text" column in Airtable
+  return <CMS.Download name={'Download name'} data={cmsData} />
+}
+```
+
+React children, if present, override Airtable Text:
+
+```js
+
+const OverrideUsage = () => {
+  const cmsData = useCMSData()
+
+  return (
+    <CMS.Download name={'Download name'} data={cmsData}>
+      Children, if present, override the airtable "Text" column
+    <CMS.Download>
+  )
+}
+```
+
+### Example CMS query hook
+
+This custom hook should go in the cms query hooks directory:
+
+```js
+const useCMSData = () => {
+  const { cmsData }: { cmsData: AirtableCMSData } = useStaticQuery(graphql`
+    query cmsDataQuery {
+      cmsData: allAirtable(filter: { table: { eq: "homePage" } }) {
+        nodes {
+          data {
+            Name
+            Text
+            Download {
+              localFiles {
+                name
+                prettySize
+                publicURL
+              }
+            }
+          }
+        }
+      }
+    }
+  }`)
+
+  return cmsData
+}
+```
+
+# Exported utilities
+
+```js
+function getCMSDownloadInfo( data: AirtableCMSData, name: string, noEmitError?: false): string
+function getCMSDownloadInfo( data: AirtableCMSData, name: string, noEmitError: true): string | undefined
+function getCMSDownloadInfo( data: AirtableCMSData, name: string, noEmitError: boolean): string | undefined
+```
+
+This helper function takes the name and `AirtableCMSData` object and returns the download info in the following format:
+
+```js
+DownloadInfo {
+  text: string | undefined
+  fileName: string
+  prettySize: string
+  publicURL: string
+}
+```

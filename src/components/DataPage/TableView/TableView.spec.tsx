@@ -1,4 +1,4 @@
-jest.mock('@talus-analytics/library.airtable-cms', () => {
+jest.mock('components/library/airtable-cms', () => {
   const mockedComponent = jest.fn(({ children }) => children)
 
   return {

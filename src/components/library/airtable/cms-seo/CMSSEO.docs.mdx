@@ -1,0 +1,259 @@
+---
+displayName: Airtable CMS SEO
+description: Component for managing SEO and Google Analytics cookie consent, with content sourced from Airtable
+labels: ['airtable', 'typescript', 'seo']
+---
+
+# Setup
+
+## Site metadata table
+
+This component requires an airtable named `Site metadata`, configured with three columns: `Name`, `Text`, and `Image`.
+
+The `Site metadata` table contains all of the default SEO attributes for your site. At a minimum, you must have rows with the following (exact) names:
+
+| `Name`                          | Example                                                             | Notes                                                                                                                                                                                                                                                    |
+| ------------------------------- | ------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Default title                   | Ad Lib                                                              | Default title of your site, to be used when this component doesn't receive a `title` prop.                                                                                                                                                               |
+| Title template                  | %s — Ad lib                                                         | `%s` in this template will be replaced by a `title` prop if one is provided, eg. `<SEO title={'Some title'} />` would render a page title of `Some title — Ad lib`; otherwise, this template will be ignored and `Default title` will apply to the page. |
+| Default description             | Bring your life to work with Ad Lib                                 |                                                                                                                                                                                                                                                          |
+| Site URL                        | https://adlib.talusanalytics.com                                    | Note: no trailing slash on the end!                                                                                                                                                                                                                      |
+| Cookie consent message          | Ad Lib uses cookies to ensure you get the best experience possible. | Not used by this component, but required for a `talus-gatsby-starter` site.                                                                                                                                                                              |
+| Cookie consent button color     | rgb(15, 35, 75)                                                     | Not used by this component, but required for a `talus-gatsby-starter` site. Any string that represents a color in CSS (hex, rgb, rgba, etc.) is valid.                                                                                                   |
+| Cookie consent background color | #edf2f2                                                             | Not used by this component, but required for a `talus-gatsby-starter` site. Any string that represents a color in CSS (hex, rgb, rgba, etc.) is valid.                                                                                                   |
+| Favicon                         | {image file}                                                        | Not used by this component, but required for a `talus-gatsby-starter` site. The image file itself belongs in the `Image` column.                                                                                                                         |
+
+Optionally, this table can also include rows with the following names:
+
+| `Name`           | Example         | Notes                                                                                                                                    |
+| ---------------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Default image    | {image file}    | The image file itself belongs in the `Image` column. This file will be used in social sharing cards and the `<meta name="image" />` tag. |
+| Twitter username | @talusanalytics | Used in the `<meta name="twitter:creator" />` tag.                                                                                       |
+
+## Plugin configuration
+
+### Site metadata table config
+
+The `gatsby-source-airtable` plugin must be configured with the `Site metadata` table:
+
+```js
+// gatsby-config.js
+module.exports = {
+  plugins: [
+    {
+      resolve: `gatsby-source-airtable`,
+      options: {
+        tables: [
+          {
+            baseId: `appXXXXXXXXXXXXXX`,
+            tableName: `Site metadata`,
+            mapping: { Image: `fileNode` },
+            tableView: `CMS view`,
+          },
+        ],
+      },
+    },
+  ],
+}
+```
+
+### Google Analytics tag config
+
+Additionally, in order to inject a cookie consent popup and allow Google Analytics,
+the gatsby-plugin-gtag plugin should be configured like so, replacing `G-XXXXXXXXXX'
+with your actual Google Analytics tracking ID.
+
+```js
+// gatsby-config.js
+module.exports = {
+  plugins: [
+    {
+      // filling in the gtag here
+      // will set up both the gatsby
+      // google analytics plugin and
+      // the cookieconsent opt-in system.
+      resolve: `gatsby-plugin-gtag`,
+      options: {
+        trackingId: `G-XXXXXXXXXX`,
+        anonymize: true,
+        head: false,
+      },
+    },
+  ],
+}
+```
+
+## SiteMetadata context provider
+
+In order for the `<SEO />` component to obtain the data it needs, it must have a
+parent component with the `<SiteMetadataProvider />` included.
+
+This context provider also injects a Cookie Consent popup into the site, pulling
+the popup text, button color, and background color from the `Site metadata`
+airtable. A `trackingId` prop must be passed to the context provider (as seen below)
+in order for this behavior to work properly.
+
+For `talus-gatsby-starter`, sites come out-of-the-box with this behavior,
+so long as all your pages are wrapped in the `<Providers />` component, which
+looks something like this under the hood:
+
+```js
+import React from 'react'
+
+import { SiteMetadataProvider } from '../../airtable-cms/cms-seo/'
+import FigmaProvider from '../../figma/FigmaProvider'
+import useSiteMetadata from '../../hooks/useSiteMetadata'
+import getTrackingId from '../../utilities/trackingId'
+
+interface ProvidersProps {
+  children: JSX.Element | JSX.Element[];
+}
+const Providers = ({ children }: ProvidersProps): JSX.Element => {
+  // get SEO data
+  const seoData = useSiteMetadata()
+  // get GA tracking ID
+  const trackingId = getTrackingId()
+
+  return (
+    <SiteMetadataProvider data={seoData} trackingId={trackingId}>
+      <FigmaProvider>{children}</FigmaProvider>
+    </SiteMetadataProvider>
+  )
+}
+
+export default Providers
+```
+
+The `getTrackingId()` function above should source your Google Analytics
+tracking ID from gatsby-config, or return `undefined` if your GA plugin has
+not yet been configured, like so (this comes out-of-the-box in
+`talus-gatsby-starter`):
+
+```js
+import { plugins } from '../../gatsby-config'
+
+type GtagPlugin =
+  | {
+      resolve: string
+      options: {
+        trackingId: string
+      }
+    }
+  | undefined
+
+const getTrackingId = () => {
+  // find plugin config for GA
+  const gaPluginConfig = plugins.find(
+    (p: any) => typeof p !== 'string' && p.resolve === `gatsby-plugin-gtag`
+  ) as GtagPlugin
+  const trackingId = gaPluginConfig?.options.trackingId
+
+  // if GA not yet configured, return undefined
+  if (trackingId === 'G-XXXXXXXXXX') return undefined
+  return trackingId
+}
+
+export default getTrackingId
+```
+
+# Example usage
+
+To set up SEO for your site, each page should include an `<SEO />` component.
+
+In this example, `Index page` will use the default page title, description, and image (if provided), because no other props have been provided to the component.
+
+```js
+const IndexPage = (): JSX.Element => {
+  return (
+    <Providers>
+      <SEO />
+      <Nav />
+      <Main>
+        <ContentAndStuff />
+      </Main>
+      <Footer />
+    </Providers>
+  )
+}
+```
+
+If you'd like to give pages custom titles, descriptions, or images,
+
+In this example, `Contact page` will use a page title, description, and image from the Contact-page-content Airtable (which `useContactPageData` accesses).
+
+Since a `title` prop was provided, the SEO component's title template will kick in and render a custom title for the page (interpolating the provided `title` into the template).
+
+```js
+const ContactPage = (): JSX.Element => {
+  const data = useContactPageData()
+  return (
+    <Providers>
+      <SEO
+        title={getCMSText(data, 'Page title')}
+        description={getCMSText(data, 'Page description')}
+        imageUrl={getCMSImage(data, 'SEO image').url}
+      />
+      <Nav />
+      <Main>
+        <Contact />
+      </Main>
+      <Footer />
+    </Providers>
+  )
+}
+```
+
+# Exported utilities and hooks
+
+## SEOProps
+
+An interface describing the props that `<SEO />` will accept.
+
+```js
+export interface SEOProps {
+  title?: string
+  description?: string
+  imageUrl?: string
+  article?: boolean
+  noEmitError?: boolean
+}
+```
+
+## SiteMetadataProvider
+
+SiteMetadataProvider can be used to provide data from the `SiteMetadataTable` to
+this component, or other places on the site where it might be useful (this
+behavior comes pre-configured in `talus-gatsby-starter` — see above section on
+`SiteMetadata context provider` for details).
+
+```js
+// context provider props
+interface SiteMetadataProviderProps {
+  children: JSX.Element | JSX.Element[]
+  data: AirtableCMSData
+}
+
+// context provider
+const SiteMetadataProvider = ({
+  children,
+  data,
+}: SiteMetadataProviderProps) => {
+  return (
+    <SiteMetadataContext.Provider value={data}>
+      {children}
+    </SiteMetadataContext.Provider>
+  )
+}
+
+export default SiteMetadataProvider
+```
+
+## SiteMetadataContext
+
+For components that need to consume the data from `SiteMetadataProvider`, the
+`SiteMetadataContext` object is exported to be used in a `useContext` hook.
+
+```js
+// example
+const data = useContext(SiteMetadataContext)
+```

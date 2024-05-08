@@ -1,0 +1,75 @@
+---
+displayName: Expander
+description: Animation component for expanding sections and dropdowns
+labels: ['animation', 'typescript', 'ui']
+---
+
+import Expander from './'
+
+# Component for smoothly hiding / showing content
+
+Takes an "open" boolean prop, and smoothly animates its height to hide / show its children. Height while open—after animation—is set to 'auto' to make this compatible with flexible layouts and nesting—child components can change height at any time without this componenet breaking. It also allows children to overflow this container while open, but not while animating or while closed.
+
+## Default open / closed state
+
+Setting `open={true}` on component mount will skip the animation to make state restoration on navigation or other interaction patterns immediate and smooth.
+
+## Accessibility and performance
+
+This component does not render children while closed, so that it can handle thousands of potential children (as on covid-amp). This also means it is 508 compliant, because children will not be visible to a screen reader or to keyboard navigation while the expander is closed. This means there is no need to handle the "hidden" state through conditionals or `aria` attributes.
+
+# Demo
+
+## Inside content (elements will reflow)
+
+```js live
+// prettier-ignore
+() => {
+  const [open, setOpen] = React.useState(true)
+  return (
+    <div style={{ width: 500, height: 300 }}>
+      <button onClick={() => setOpen(prev => !prev)}>
+        {open ? 'Hide content' : 'Show content'}
+      </button>
+      <Expander open={open}>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+        occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+        mollit anim id est laborum.
+      </Expander>
+      <p>Other content</p>
+    </div>
+  )
+}
+```
+
+## Floating (expand on top of content)
+
+```js live
+// prettier-ignore
+() => {
+  const [open, setOpen] = React.useState(true)
+  return (
+    <div style={{ width: 500, height: 300 }}>
+      <button onClick={() => setOpen(prev => !prev)}>
+        {open ? 'Hide content' : 'Show content'}
+      </button>
+      <Expander floating open={open} style={{maxWidth: 500}}>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+        occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+        mollit anim id est laborum.
+      </Expander>
+      <p>Other content</p>
+    </div>
+  )
+}
+```
+
+container background color, border radius, z-index conflicts, box-shadow, and other style issues can be resolved using the `style` prop which is pased to the animation container and overrides all default styling.

@@ -1,0 +1,522 @@
+---
+displayName: Airtable CMS
+description: Airtable-based content management system for Talus sites
+labels: ['airtable', 'typescript', 'ui']
+---
+
+Content management system for bringing content from [airtable content tables](https://bit.dev/talus-analytics/library/airtable/cms-types) into Gatsby sites through the Gatsby data structure and easily accessing it.
+
+#### [Airtable content table format documentation can be found here](https://bit.dev/talus-analytics/library/airtable/cms-types)
+
+# Package structure and exports
+
+Import convention:
+
+```js
+import CMS from '@talus-analytics/library.airtable-cms'
+```
+
+**Note:** All components, functions, and hooks in the CMS package can optionally accept a boolean `noEmitError` prop or argument which will suppress errors for that call. The react components will silently return a fragment when errors are suppressed, and the functions / hooks will silently return undefined. If `noEmitError` is `false` or omitted, the functions can be expected to return a non-nullish value.
+
+## AirtableCMSData React Components
+
+### `<CMS.Text />`
+
+```js
+<CMS.Text name="Content name" data={cmsData} />
+```
+
+CMS.Text gives easy access to a small block of text from an AirtableCMSData object.
+
+[Airtable CMS Text documentation](https://bit.dev/talus-analytics/library/airtable/cms-text)
+
+### `<CMS.RichText />`
+
+```js
+<CMS.RichText name="Content name" data={cmsData} />
+```
+
+CMS.RichText gives easy access to a block of markdown from an AirtableCMSData object, and renders a `<div/>` containing the content parsed to HTML.
+
+[Airtable CMS Rich Text documentation](https://bit.dev/talus-analytics/library/airtable/cms-rich-text)
+
+### `<CMS.Image />`
+
+```js
+<CMS.Image name="Content name" data={cmsData} />
+```
+
+CMS.Image gives easy access to a small block of text from an AirtableCMSData object. Image sizing and formatting happens in the query.
+
+[Airtable CMS Image documentation](https://bit.dev/talus-analytics/library/airtable/cms-image)
+
+### `<CMS.Icon />`
+
+```js
+<CMS.Icon name="Icon name" color="orange" hoverColor="red" />
+```
+
+CMS.Icon pulls icons from the table specified in `gatsby-config.js` directly (it does not need a `data` object or query) and colors them based on the passed colors. It also supports changing the color on hover.
+
+[Airtable CMS Icon documentation and additional methods](https://bit.dev/talus-analytics/library/airtable/cms-icon)
+
+### `<CMS.PlotIcon />`
+
+```js
+<svg>
+  <CMS.PlotIcon name="Icon name" color="orange" hoverColor="red" />
+</svg>
+```
+
+A special-case CMS icon component specifically for use in SVG plots.
+
+[Airtable CMS Plot Icon documentation](https://bit.dev/talus-analytics/library/airtable/cms-plot-icon)
+
+### `<CMS.Download />`
+
+```js
+<CMS.Download name="Download name" data={cmsData} />
+
+<CMS.Download name="Download name" data={cmsData}>
+  Optional React elements to override airtable "Text" field
+<CMS.Download>
+```
+
+CMS.Download creates a Google-analytics tracked download link (using `gatsby-plugin-gtag`) for a file specified in Airtable.
+
+If `<CMS.Download/>` has no children, the text from the airtable "Text" field will be the content of the anchor tag, otherwise the children will override Airtable.
+
+[Airtable CMS Download documentation](https://bit.dev/talus-analytics/library/airtable/cms-download)
+
+## Other React Components
+
+### `<CMS.RenderRichText />`
+
+```js
+<CMS.RenderRichText markdown={'# string of airtable rich text'} />
+```
+
+This component renders a block of rich text content from a string returned by an airtable query, in situations where the query does not follow the `AirtableCMSData` format. This is primarily useful in Explore and Detail pages.
+
+[Airtable CMS Rich Text documentation](https://bit.dev/talus-analytics/library/airtable/cms-rich-text)
+
+### `<CMS.IconProvider />`
+
+```js
+const Layout = ({ children }: { children: React.ReactNode }) => {
+  const icons = useCMSIconsQuery()
+  return <CMS.IconProvider data={icons}>{children}</CMS.IconProvider>
+}
+```
+
+Icons provider takes the result from the `useCMSIconsQuery()` hook and makes the raw icons from airtable available to all CMS icon functionality; this should go in a layout component at the top level of the component tree.
+
+### `<CMS.SEO />`
+
+```js
+<CMS.SEO
+  title={getCMSText(data, 'Page title')}
+  description={getCMSText(data, 'Page description')}
+  imageUrl={getCMSImage(data, 'SEO image').url}
+/>
+```
+
+An SEO component that will inject `<title>` and `<meta>` tags for things like page
+titles, descriptions, social sharing images, etc.
+
+[Airtable CMS SEO documentation](https://bit.dev/talus-analytics/library/airtable/cms-seo)
+
+### `<CMS.SiteMetadataProvider />`
+
+```js
+const Providers = ({ children }: { children: React.ReactNode }) => {
+  // get site metadata
+  const siteMetadata = useSiteMetadata()
+  // get GA tracking ID
+  const trackingId = getTrackingId()
+
+  return (
+    <CMS.SiteMetadataProvider data={siteMetadata} trackingId={trackingId}>
+      {children}
+    </CMS.SiteMetadataProvider>
+  )
+}
+```
+
+Site metadata provider takes the result from the `useSiteMetadata()` hook content from `Site metadata` airtable available to all pages (to be accessed by the `<SEO />` component). This should go in a layout or "providers" component at the top level of the component tree.
+
+This provider also injects a cookie consent popup for enabling Google Analytics,
+provided your Google Analytics tracking ID is configured properly in `gatsby-config.js`.
+See [full details for GA configuration here](https://bit.dev/talus-analytics/library/airtable/cms-seo).
+
+## Functions
+
+These functions are useful when you need to access content from the CMS, but want to do something with it before displaying it in a page. This could be anything from changing capitalization rules in some text, to pulling a model parameter out of airtable.
+
+### `CMS.getText()`
+
+```js
+CMS.getText(data, 'Content name')
+```
+
+Returns a string of the requested text
+
+[Airtable CMS Text documentation](https://bit.dev/talus-analytics/library/airtable/cms-text)
+
+### `CMS.getImage()`
+
+```js
+CMS.getImage(data, 'Content name')
+```
+
+Returns an object: `{sources: IGatsbyImageData, alt: string, url: string}`
+
+[Airtable CMS Image documentation](https://bit.dev/talus-analytics/library/airtable/cms-image)
+
+### `CMS.getDownloadInfo()`
+
+```js
+CMS.getDownloadInfo(data, 'Content name')
+```
+
+Returns an object: `{ text: string | undefined, fileName: string, prettySize: string, publicURL: string }`
+
+[Airtable CMS Image documentation](https://bit.dev/talus-analytics/library/airtable/cms-image)
+
+### `CMS.parseRichText()`
+
+```js
+CMS.parseRichText('# string of airtable rich text')
+```
+
+Returns a string HTML parsed from airtable-sourced markdown from a rich text column.
+
+[Airtable CMS Rich Text documentation](https://bit.dev/talus-analytics/library/airtable/cms-rich-text)
+
+## Hooks
+
+**Note:** Hooks are special functions which must follow [the rules of hooks.](https://reactjs.org/docs/hooks-rules.html)
+
+### `CMS.useIcon()`
+
+```js
+CMS.useIcon('Icon name', 'color')
+```
+
+Returns an object: `{svg: string, text: string}` where "text" is the alt-text which should be included for accessibility.
+
+[Airtable CMS Icon documentation and additional methods](https://bit.dev/talus-analytics/library/airtable/cms-icon)
+
+#
+
+# Required Airtable Tables
+
+**Note:** All airtables used for CMS should have a CMS view created; sorting and filtering in that view will apply to the site.
+
+## Content tables
+
+Content tables drive home pages, about pages, methods pages, and add general content for the Explore page. Most projects will have more than one content table, as makes sense for the scale and scope of the site.
+
+### Content airtable column names and types
+
+| Name             | Text      | Image\*    | Download\* |
+| ---------------- | --------- | ---------- | ---------- |
+| Single line text | Long text | Attachment | Attachment |
+
+Columns marked with an `*` are optional, and may not be present in all tables conforming to the `AirtableCMSData` format.
+
+An example content table [can be found here.](https://airtable.com/apptYPkeoCz0lSn19/tblJV3LL08O5wNAHP/viwUDYcSVj43EAaqp?blocks=hide)
+
+### Content table gatsby configuration
+
+Rich text formatting may be used with the `<CMS.RichText />` component.
+
+> gatsby-config.js
+>
+> ```js
+> plugins: [
+>  // ... other plugins
+>  options: {
+>    //... other options
+>    tables: [
+>      // ... other tables
+>        {
+>          baseId: `appmXXXXXXXXXXXXX`,
+>          tableName: `Landing Page`,
+>          tableView: `CMS`,
+>          // Mapping should be omitted for Image, Download, and SVG
+>          // for tables where those columns are unused
+>          mapping: { Image: `fileNode`, Download: `fileNode`, SVG: `fileNode` },
+>        },
+>    ]
+>  },
+> ]
+> ```
+
+## Icons
+
+### Icons airtable column names and types
+
+| Name             | Text      | SVG        |
+| ---------------- | --------- | ---------- |
+| Single line text | Long text | Attachment |
+
+An example Icons table [can be found here.](https://airtable.com/apptYPkeoCz0lSn19/tbl2p36QA5cLgabEx/viwu7DNPFMQDQOKtS?blocks=hide)
+
+### Icons gatsby configuration
+
+> gatsby-config.js
+>
+> ```js
+> plugins: [
+>  // ... other plugins
+>  options: {
+>    //... other options
+>    tables: [
+>      // ... other tables
+>      {
+>        baseId: `appmXXXXXXXXXXXXX`,
+>        tableName: `Icons`,
+>        tableView: `CMS`,
+>        mapping: { SVG: `fileNode` },
+>      },
+>    ]
+>  },
+> ]
+> ```
+
+## SEO
+
+### SEO airtable column names and types
+
+| Name             | Text      | Image      |
+| ---------------- | --------- | ---------- |
+| Single line text | Long text | Attachment |
+
+An example SEO "Site metadata" table [can be found here.](https://airtable.com/apptYPkeoCz0lSn19/tblUsbDYPB6cfdvJu/viwOmspPfVIJoqiXX?blocks=hide)
+
+### SEO gatsby configuration
+
+> gatsby-config.js
+>
+> ```js
+> plugins: [
+>  // ... other plugins
+>  options: {
+>    //... other options
+>    tables: [
+>      // ... other tables
+>      {
+>        baseId: `appmXXXXXXXXXXXXX`,
+>        tableName: `Site metadata`,
+>        mapping: { Image: `fileNode` },
+>        tableView: `CMS`,
+>      },
+>    ]
+>  },
+> ]
+> ```
+
+# Content queries
+
+For content tables, queries will need to be added using hooks which live in the `src/cmsHooks/` directory. These hooks return the `data` object which should be passed to content components such as `<CMS.Text/>` and `<CMS.Image/>`. This pattern with Name, Text, and Image is a standardized pattern for content airtables and content components, but can also be used as a good example and jumping off point for creating queries for Explore pages.
+
+> src/cmsHooks/useLandingPageData.ts
+>
+> ```ts
+> import { AirtableCMSData } from '@talus-analytics/library.airtable-cms'
+>
+> // This uses the custom hook React pattern: https://reactjs.org/docs/hooks-custom.html
+> const useLandingPageData = () => {
+>   const { landingPageData }: { landingPageData: AirtableCMSData } =
+>     useStaticQuery(graphql`
+>       query landingQuery {
+>         landingPageData: allAirtable(
+>           filter: { table: { eq: "Landing page" } }
+>         ) {
+>           nodes {
+>             data {
+>               Name # Name is required
+>               Text # Text is required (often used for accessibility)
+>               # omit Image section if table has no images
+>               Image {
+>                 localFiles {
+>                   childImageSharp {
+>                     gatsbyImageData(height: 200, placeholder: BLURRED)
+>                   }
+>                 }
+>               }
+>               # omit download section if table has no downloads
+>               Download {
+>                 localFiles {
+>                   name
+>                   prettySize
+>                   publicURL
+>                 }
+>               }
+>             }
+>           }
+>         }
+>       }
+>     `)
+>
+>   return landingPageData
+> }
+>
+> export default useLandingPageData
+> ```
+
+## Icons query
+
+The icons component requires a context provider to access the result from the `useCMSIconsQuery()` hook. This hook should live in the `src/cmsHooks/` directory.
+
+> src/cmsHooks/useIconsQuery.ts
+>
+> ```ts
+> import { useStaticQuery, graphql } from 'gatsby'
+> import { IconsQueryDataType } from '@talus-analytics/library.>airtable-cms'
+>
+> const useIconsQuery = () => {
+>   const iconsQuery = useStaticQuery<IconsQueryDataType>(graphql`
+>     query iconsQuery {
+>       iconsQuery: allAirtable(filter: { table: { eq: "Icons" } }) {
+>         nodes {
+>           data {
+>             Name
+>             Text
+>             SVG {
+>               localFiles {
+>                 childSvg {
+>                   svgString
+>                 }
+>               }
+>             }
+>           }
+>         }
+>       }
+>     }
+>   `)
+>
+>   return iconsQuery
+> }
+>
+> export default useCMSIconsQuery
+> ```
+
+The result from this query must be passed to the `<CMS.IconProvider />` context provider in the Layout component:
+
+```js
+const Layout = ({ children }: { children: React.ReactNode }) => {
+  const icons = useCMSIconsQuery()
+  return <CMSIconProvider data={icons}>{children}</CMSIconProvider>
+}
+```
+
+## Site metadata query
+
+The SEO component requires a context provider to access the result from the `useSiteMetadata()` hook. This hook should live in the `src/cmsHooks/` directory.
+
+> src/cmsHooks/useSiteMetadataQuery.ts
+>
+> ```ts
+> import { useStaticQuery, graphql } from 'gatsby'
+> import { AirtableCMSData } from '@talus-analytics/library.airtable-cms'
+>
+> const useSiteMetadataQuery = () => {
+>   const { siteMetadata }: { siteMetadata: AirtableCMSData } =
+>     useStaticQuery(graphql`
+>       query siteMetadataQuery {
+>         siteMetadata: allAirtable(
+>           filter: { table: { eq: "Site metadata" } }
+>         ) {
+>           nodes {
+>             data {
+>               Name
+>               Text
+>               Image {
+>                 localFiles {
+>                   childImageSharp {
+>                     gatsbyImageData(height: 500, placeholder: BLURRED)
+>                   }
+>                 }
+>               }
+>             }
+>           }
+>         }
+>       }
+>     `)
+>
+>   return siteMetadata
+> }
+>
+> export default useSiteMetadataQuery
+> ```
+
+The result from this query must be passed to the `<CMS.SiteMetadataProvider />` context provider in the Providers component:
+
+```js
+const Providers = ({ children }: { children: React.ReactNode }) => {
+  const siteMetadata = useSiteMetadata()
+  return (
+    <CMS.SiteMetadataProvider data={siteMetadata}>
+      {children}
+    </CMS.SiteMetadataProvider>
+  )
+}
+```
+
+# Airtable-CMS full example
+
+> pages/example.tsx
+>
+> ```ts
+> import React from 'react'
+> import styled, { useTheme } from 'styled-components'
+>
+> // import general-purpose CMS library
+> import CMS from '@talus-analytics/library.airtable-cms'
+>
+> // these imports should go in <Providers/> component
+> import useIconsQuery from '../cmsHooks/useIconsQuery'
+> import useSiteMetadataQuery from '../cmsHooks/useSiteMetadataQuery'
+>
+> // import the page data query hook for this page
+> import useLandingPageData from '../cmsHooks/useLandingPageData'
+>
+> // display components should use styled-components
+> const Section = styled.section`
+>   display: flex;
+>   flex-direction: column;
+> `
+>
+> const LandingPage = () => {
+>   // icons and metadata hook should
+>   // go in the Provider component
+>   const icons = useCMSIconsQuery()
+>   const siteMetadata = useSiteMetadataQuery()
+>
+>   // colors should pull from styled theme
+>   const theme: any = useTheme()
+>
+>   // cms data for this page should come from hook
+>   const landingPageData = useLandingPageData()
+>
+>   return (
+>     // IconProvider and SiteMetadataProvider should go in a
+>     // site-wide "providers" component
+>     <CMS.IconProvider data={icons}>
+>       <CMS.SiteMetadataProvider data={siteMetadata}>
+>         <CMS.SEO title={CMS.getText(data, 'Page title')} />
+>         <Section>
+>           <CMS.Image name="First image" data={landingPageData} />
+>           <CMS.Text name="Main paragraph" data={landingPageData} />
+>           <CMS.Download name="Methods document" data={landingPageData} />
+>           <CMS.Icon name="Warning icon" color={theme.exampleColor} />
+>         </Section>
+>       </CMS.SiteMetadataProvider>
+>     </CMS.IconProvider>
+>   )
+> }
+>
+> export default LandingPage
+> ```

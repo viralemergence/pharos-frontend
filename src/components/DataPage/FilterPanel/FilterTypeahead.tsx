@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction } from 'react'
 import styled from 'styled-components'
 import Typeahead, {
   Item as TypeaheadItem,
-} from '../../../../library/ui/typeahead/Typeahead'
+} from 'components/library/ui/typeahead'
 import FilterDarkTypeaheadResult from './FilterDarkTypeaheadResult'
 import { XIcon, FieldName } from './DisplayComponents'
 import { Filter } from 'pages/data'

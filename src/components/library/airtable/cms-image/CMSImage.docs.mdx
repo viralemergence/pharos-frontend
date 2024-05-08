@@ -1,0 +1,72 @@
+---
+displayName: Airtable CMS Image
+description: Component for displaying Gatsby Images from AirtableCMSData
+labels: ['airtable', 'typescript', 'ui']
+---
+
+This component finds the specified image in `AirtableCMSData` and displays it using `<GatsbyImage/>` to provide high performance in all browsers and fallback images for slow connections.
+
+**NOTE:** the size of the image, as output by the processing pipeline, is set in the graphql query, not the AirtableCMSImage component, because image processing is done at built time in the server. Image quality and placeholder format must be handled in the query, and then display sizing can be done in CSS, though the match should be as close as possible.
+
+All props supported by [gatsby-plugin-image](https://github.com/gatsbyjs/gatsby/tree/master/packages/gatsby-plugin-image#using-the-gatsby-image-components) are supported.
+
+# Example usage
+
+```js
+const SomeComponent = () => {
+  // cms data should come from custom hook
+  const cmsData = useCMSData()
+
+  return <CMSImage name={'Header image'} data={cmsData} />
+}
+```
+
+# Setup
+
+This component requires an Airtable table configured with `Name`, `Text`, and `Image` columns, and a CMS query in a custom hook which should look something like this.
+
+### Example CMS query hook
+
+This custom hook should go in the cms query hooks directory:
+
+```js
+const useCMSData = () => {
+  const { cmsData }: { cmsData: AirtableCMSData } = useStaticQuery(graphql`
+    query cmsDataQuery {
+      cmsData: allAirtable(filter: { table: { eq: "homePage" } }) {
+        nodes {
+          data {
+            Name
+            Text
+            Image {
+              localFiles {
+                childImageSharp {
+                  gatsbyImageData(height: 200, placeholder: BLURRED)
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }`)
+
+  return cmsData
+}
+```
+
+# Exported utilities
+
+```js
+interface CMSImage {
+  sources: IGatsbyImageData
+  alt: string
+  url: string | undefined
+}
+
+function getCMSImage( data: AirtableCMSData, name: string, noEmitError?: false): CMSImage
+function getCMSImage( data: AirtableCMSData, name: string, noEmitError: true): CMSImage | undefined
+function getCMSImage( data: AirtableCMSData, name: string, noEmitError: boolean): CMSImage | undefined
+```
+
+This helper function takes the name and `AirtableCMSData` object and returns the request `IgatsbyImageData` object, the alt text, and the `url` for the fallback image for use cases where a single static URL is needed.
