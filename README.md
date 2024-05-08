@@ -10,23 +10,25 @@ which is split into four repositories:
 | [`pharos-database`](https://github.com/viralemergence/pharos-database)           | SQL database and deployment infrastructure         |
 | [`pharos-documentation`](https://github.com/viralemergence/pharos-documentation) | Markdown files used to generate about pages        |
 
-<br>
-<br>
-<br>
+</br>
+</br>
+</br>
 <h1 align="center">
   Pharos Frontend
 </h1>
 
 ## 🚀 Deployment Status
 
-| Branch  | CI/CD Status                                                                                                                                                                                                                                                                       | Url                                                                                                |
-| ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| Prod    | [![CircleCI](https://dl.circleci.com/status-badge/img/gh/talus-analytics-bus/pharos-frontend/tree/prod.svg?style=svg&circle-token=3adbf3c5aa0bc15ad4f90f724a9c4b7b52bbb6b7)](https://dl.circleci.com/status-badge/redirect/gh/talus-analytics-bus/pharos-frontend/tree/prod)       | [prod-pharos-frontend.talusanalytics.com/](https://prod-pharos-frontend.talusanalytics.com/)       |
-| Staging | [![CircleCI](https://dl.circleci.com/status-badge/img/gh/talus-analytics-bus/pharos-frontend/tree/staging.svg?style=svg&circle-token=3adbf3c5aa0bc15ad4f90f724a9c4b7b52bbb6b7)](https://dl.circleci.com/status-badge/redirect/gh/talus-analytics-bus/pharos-frontend/tree/staging) | [staging-pharos-frontend.talusanalytics.com/](https://staging-pharos-frontend.talusanalytics.com/) |
-| Review  | [![CircleCI](https://dl.circleci.com/status-badge/img/gh/talus-analytics-bus/pharos-frontend/tree/review.svg?style=svg&circle-token=3adbf3c5aa0bc15ad4f90f724a9c4b7b52bbb6b7)](https://dl.circleci.com/status-badge/redirect/gh/talus-analytics-bus/pharos-frontend/tree/review)   | [review-pharos-frontend.talusanalytics.com/](https://review-pharos-frontend.talusanalytics.com/)   |
-| Dev     | [![CircleCI](https://dl.circleci.com/status-badge/img/gh/talus-analytics-bus/pharos-frontend/tree/dev.svg?style=svg&circle-token=3adbf3c5aa0bc15ad4f90f724a9c4b7b52bbb6b7)](https://dl.circleci.com/status-badge/redirect/gh/talus-analytics-bus/pharos-frontend/tree/dev)         | [dev-pharos-frontend.talusanalytics.com/](https://dev-pharos-frontend.talusanalytics.com/)         |
+| Branch  | CI/CD Status                                                                                                                                                                                                                                                 | Url                                                                              |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| Prod    | [![CircleCI](https://dl.circleci.com/status-badge/img/circleci/39PL8myokkHY7obZPJeFEC/VSEyuiVS42F6DmyCLZcbdW/tree/prod.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/circleci/39PL8myokkHY7obZPJeFEC/VSEyuiVS42F6DmyCLZcbdW/tree/prod)       | [pharos.viralemergence.org/](https://pharos.viralemergence.org/)                 |
+| Staging | [![CircleCI](https://dl.circleci.com/status-badge/img/circleci/39PL8myokkHY7obZPJeFEC/VSEyuiVS42F6DmyCLZcbdW/tree/staging.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/circleci/39PL8myokkHY7obZPJeFEC/VSEyuiVS42F6DmyCLZcbdW/tree/staging) | [staging-pharos.viralemergence.org/](https://staging-pharos.viralemergence.org/) |
+| Review  | [![CircleCI](https://dl.circleci.com/status-badge/img/circleci/39PL8myokkHY7obZPJeFEC/VSEyuiVS42F6DmyCLZcbdW/tree/review.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/circleci/39PL8myokkHY7obZPJeFEC/VSEyuiVS42F6DmyCLZcbdW/tree/review)   | [dev-pharos.viralemergence.org/](https://review-pharos.viralemergence.org/)      |
+| Dev     | [![CircleCI](https://dl.circleci.com/status-badge/img/circleci/39PL8myokkHY7obZPJeFEC/VSEyuiVS42F6DmyCLZcbdW/tree/dev.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/circleci/39PL8myokkHY7obZPJeFEC/VSEyuiVS42F6DmyCLZcbdW/tree/dev)         | [dev-pharos.viralemergence.org/](https://dev-pharos.viralemergence.org/)         |
 
 Automated deployment schedule: Airtable data is ingested, "About" content is ingested, and full site is built weekly on `Staging` site.
+
+</br>
 
 ## 👩‍💻 Development Quick start
 
@@ -42,14 +44,6 @@ yarn
 
 Run `yarn start`, passing arguments to connect the dev server to your dev API stack:
 
-<!-- | Argument         | Description                                                          | Source                                                                                            | -->
-<!-- | ---------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | -->
-<!-- | `--api`          | Cloudfront distribution url for the main API                         | "Outputs" section of cloudformation stack                                                         | -->
-<!-- | `--mapping_api`  | Cloudfront distribution url for the mapping API                      | "Outputs" section of cloudformation stack                                                         | -->
-<!-- | `--client_id`    | AWS Cognito client ID                                                | "Outputs" section of cloudformation stack                                                         | -->
-<!-- | `--user_pool_id` | AWS Cognito user pool ID                                             | "Outputs" section of cloudformation stack                                                         | -->
-<!-- | `--profile`      | AWS SSO Profile with developer-level credentials for Pharos Prod AWS | Configure AWS SSO using the [Pharos AWS Access Portal](https://viralemergence.awsapps.com/start/) | -->
-
 | Argument         | Source                                                                                                                                           |
 | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `--api`          | "Api" in outputs of cloudformation stack                                                                                                         |
@@ -60,14 +54,6 @@ Run `yarn start`, passing arguments to connect the dev server to your dev API st
 
 Example `yarn start` command:
 
-<!-- ``` -->
-<!-- yarn start \ -->
-<!--   --api [CF Distribution URL] \ -->
-<!--   --profile [AWS SSO Profile] \ -->
-<!--   --client_id [AWS Cognito Client ID] \ -->
-<!--   --user_pool_id [AWS Cognito User Pool ID] -->
-<!-- ``` -->
-
 ```
 yarn start \
   --api https://XXXXXXXXXXXXXX.cloudfront.net/prod \
@@ -75,12 +61,23 @@ yarn start \
   --user_pool_id us-east-2_XXXXXXXXX
 ```
 
-## 🖥 Deployment Infrastructuree
+</br>
 
-All PHAROS frontend Infrastructure is managed using the CloudFormation template within
+## 🏙️ Deployment Infrastructure
+
+All `pharos-frontend` Infrastructure is managed using the CloudFormation template within
 the `/CloudFormation/` directory. All changes to hosting, domain names, alternate domain
-names, and access control must be made in the template and deployed using the update command.
+names, and access control must be made in the template and deployed using the update command
+which can be found in the same directory. The template deploys all resources for all sites
+(`dev`, `review`, `staging`, and `prod`), the template does not need to be deployed four times.
 
 Infrastructure updates must be made with care as they can cause site downtime.
 
 Remember to update site passwords before running deployment command.
+
+### Simplified Infrastructure Diagram
+
+This diagram is significantly simplified due to the diagram not supporting all CloudFormation
+features used in the template.
+
+![Overview diagram](https://github.com/viralemergence/pharos-frontend/blob/prod/diagram/pharos-database-highlevel.png)
