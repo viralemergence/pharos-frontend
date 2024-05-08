@@ -1,5 +1,5 @@
 import { useStaticQuery, graphql } from 'gatsby'
-import { AirtableCMSData } from '@talus-analytics/library.airtable-cms'
+import { AirtableCMSData } from 'components/library/airtable-cms'
 
 // This queries the Site metadata table in airtable,
 // and is consumed by the CMS.SiteMetadataProvider component

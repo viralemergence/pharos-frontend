@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { useLocation as useReachLocation } from '@reach/router'
 
-import CMS from '@talus-analytics/library.airtable-cms'
+import CMS from 'components/library/airtable-cms'
 
 import NavLink, { LogoutButton } from './NavLink'
 import MobileMenu from './MobileMenu/MobileMenu'

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
-import Expander, { ExpanderProps } from '@talus-analytics/library.ui.expander'
+import Expander, { ExpanderProps } from 'components/library/ui/expander'
 
 const InteractionTarget = styled.div`
   // start a new block context to capture margins

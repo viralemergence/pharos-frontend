@@ -1,0 +1,55 @@
+---
+displayName: Airtable CMS Text
+description: Component for finding text blocks in AirtableCMSData
+labels: ['airtable', 'typescript', 'ui']
+---
+
+This component and helper function makes it easy to retrieve text content from airtable content queries.
+
+# Usage
+
+```js
+const SomeComponent = () => {
+  // cms data should come from custom hooks
+  const cmsData = useCMSData()
+
+  return <CMSText name={'Button Text'} data={cmsData} />
+}
+```
+
+# Setup
+
+This component requires an Airtable table configured with `Name` and `Text` columns, and a CMS query in a custom hook which should look something like this (at a minimum—content queries may also include images).
+
+### Example CMS query hook
+
+This custom hook should go in the cms query hooks directory:
+
+```js
+const useCMSData = () => {
+  const { cmsData }: { cmsData: AirtableCMSData } = useStaticQuery(graphql`
+    query cmsDataQuery {
+      cmsData: allAirtable(filter: { table: { eq: "homePage" } }) {
+        nodes {
+          data {
+            Name
+            Text
+          }
+        }
+      }
+    }
+  }`)
+
+  return cmsData
+}
+```
+
+# Exported utility
+
+```js
+function getCMSText( data: AirtableCMSData, name: string, noEmitError?: false): string
+function getCMSText( data: AirtableCMSData, name: string, noEmitError: true): string | undefined
+function getCMSText( data: AirtableCMSData, name: string, noEmitError: boolean): string | undefined
+```
+
+This helper function takes the name and `AirtableCMSData` object and returns the requested text as a string.

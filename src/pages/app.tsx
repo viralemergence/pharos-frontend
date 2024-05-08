@@ -1,7 +1,7 @@
 import React from 'react'
 import { HashRouter, Route, Routes, Navigate } from 'react-router-dom'
 
-import CMS from '@talus-analytics/library.airtable-cms'
+import CMS from 'components/library/airtable-cms'
 import Providers from 'components/layout/Providers'
 
 import Login from 'components/Authentication/Login/Login'

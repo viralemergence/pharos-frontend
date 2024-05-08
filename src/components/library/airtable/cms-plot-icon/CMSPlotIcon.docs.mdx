@@ -1,0 +1,28 @@
+---
+displayName: Airtable CMS Plot Icon
+description: Component for adding Airtable icons to SVG plots
+labels: ['airtable', 'typescript', 'ui']
+---
+
+Component for adding CMS Icons from Airtable into SVG plots for labeling and interactions. Icons are rendered into an SVG Foreign Object for inheritance and styling modularity, and all Foreign Object props are valid props for `<CMSPlotIcon/>`.
+
+# Usage
+
+```js
+const Plot = () => (
+  <svg viewBox={`0 0 500 350`}>
+    <CMSPlotIcon
+      name="Icon name"
+      color="skyblue"
+      x={100}
+      y={100}
+      width={50}
+      height={50}
+    />
+  </svg>
+)
+```
+
+# Setup
+
+This component requires the same setup as [the CMSIcon package](https://bit.dev/talus-analytics/library/airtable/cms-icon) and inherits all of its props—please refer to [that page for setup information.](https://bit.dev/talus-analytics/library/airtable/cms-icon)
