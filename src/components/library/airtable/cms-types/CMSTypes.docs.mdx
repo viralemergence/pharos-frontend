@@ -1,0 +1,123 @@
+---
+displayName: Airtable CMS Types
+description: Type declarations for Airtable CMS Components
+labels: ['airtable', 'typescript', 'types']
+---
+
+# Type definition for Airtable Content Tables
+
+Airtable content tables const of two required columns, Name and Text, and several optional columns depending on the type of content being tracked. The name is the string which connects the content from Airtable to the source code, and may be used directly, or as a reference elsewhere (might be the same as an option inside a multiselect in a data table, for example), or may contain patterns useful for development such as explicit ordering when necessary.
+
+Changing an existing value in the `Name` column may break site builds, and changing an existing `Name` should be considered a development task.
+
+## Content Table Column Names and Types
+
+|                   | Name             | Text      | Image\*    | Download\* | SVG\*      |
+| ----------------- | ---------------- | --------- | ---------- | ---------- | ---------- |
+| **Column type**   | Single line text | Long text | Attachment | Attachment | Attachment |
+| **Optional type** |                  | Rich Text |            |            |            |
+
+Columns marked with an `*` are optional, and may not be present in all tables conforming to the `AirtableCMSData` format.
+
+### Column Descriptions
+
+#### Name
+
+This is the string, unique within the table, which identifies each piece of content, and is used in development to refer to that content.
+
+#### Text
+
+This is either plain text or rich text, and is used in development either directly as text for text content, or as accessibility text for other content types. It will be used as alt-text for images, and as default link text for downloadable content.
+
+#### Image (optional)
+
+This column contains images which will be passed into the image processing pipeline to be prepared for web distribution. Graphql queries against this column specify processing details such as image size and placeholder format.
+
+#### Download (optional)
+
+This column contains files which are intended to be downloaded by the end user. Files in thie column will be moved to static hash URLs in the S3 bucket, so they are safe for cached deployment and consuption.
+
+#### SVG (optional)
+
+This column is only used in the Icons table, and is only used to hold SVG files. Multiple icons tables per project would be easy to add but not yet supported. These files are downloaded from airtable and read in to the SVG icons processing pipeline, and made available in a page-wide context for all pages of the project for easy access and optimizing network transfer.
+
+## Predefined Content Table Patterns
+
+AirtableCMS components may use some or all of the columns defined in the `AirtableCMSData` format, and some AirtableCMS components may depend on tables with specific names and queries. These tables still conform to the `AirtableCMSData` format, they're just more prescribed and reused across projects.
+
+Documentation for tables with specific `Names` and `tableNames`:
+
+- [CMS Icons](https://bit.dev/talus-analytics/airtable/cms-icon)
+- [CMS SEO](https://bit.dev/talus-analytics/airtable/cms-seo)
+
+# Typescript Type definiton
+
+```js
+interface AirtableCMSData {
+  nodes: {
+    data: {
+      Name: string // name is used as the identifier
+      Text: string // text is required for accessibility
+      Image?: {
+        localFiles: FileNode[] &
+          { childImageSharp: IGatsbyImageDataParent<IGatsbyImageData> }[]
+      }
+      Download?: {
+        localFiles: {
+          name: string
+          prettySize: string
+          publicURL: string
+        }[]
+      }
+      SVG?: {
+        localFiles: {
+          childSvg: {
+            svgString: string
+          }
+        }[]
+      }
+    }
+  }[]
+}
+```
+
+## Example CMS Content Graphql Query
+
+```graphql
+query contentQuery {
+  contentData: allAirtable(filter: { table: { eq: "Tab name" } }) {
+    nodes {
+      data {
+        Name """ Name is the unique identifier """
+        Text """ Text is required and often used for accessibility """
+        """ Omit the Image section if the Image column is empty or omitted """
+        Image {
+          localFiles {
+            childImageSharp {
+              """ Image processing is controlled in the sharp function: """
+              gatsbyImageData(height: 200, placeholder: BLURRED)
+            }
+          }
+        }
+        """ Omit the Download section if the Downloads column is empty or omitted """
+        Download {
+          localFiles {
+            name
+            prettySize
+            publicURL
+          }
+        }
+      }
+      """ Omit the SVG section if the SVG column is empty or omitted    """
+      """ The SVG column is currently only supported in the Icons table """
+      SVG {
+        localFiles {
+          childSvg {
+            svgString
+          }
+        }
+      }
+    }
+  }
+}
+```

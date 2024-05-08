@@ -1,0 +1,179 @@
+---
+displayName: Airtable CMS Icon
+description: Component for accessing and theming SVG icons stored in Airtable
+labels: ['airtable', 'typescript', 'ui']
+---
+
+import CMSIcon from './BIT_PLAYGROUND_ONLY/DEMO_AirtableCMSIcon'
+
+# Example usage
+
+This is using a pre-saved query result; the same as when Gatsby runs the query and
+transforms the result into a static `.json` file.
+
+**Available icons in the pre-saved result are "Syringe" and "Learn more"**
+
+```js live
+// prettier-ignore
+() => (
+  <CMSIcon
+    name="Syringe"
+    color="#282e40"
+    hoverColor="#45a26a"
+    style={{ height: 100, padding: 30 }}
+  />
+)
+```
+
+# Setup
+
+The `talus-gatsby-transformer-svg` and `gatsby-source-filesystem` plugins must be installed and enabled in `gatsby-config.js`.
+
+## Icons airtable
+
+This component requires an airtable configured with two columns, `Name`, `Text`, and `SVG`.
+
+The `gatsby-source-airtable` plugin must be configured with the Icons table:
+
+```js
+// gatsby-config.js
+module.exports = {
+  plugins: [
+    {
+      resolve: `gatsby-source-airtable`,
+      options: {
+        tables: [
+          {
+            baseId: `appXXXXXXXXXXXXXX`,
+            tableName: `Icons`,
+            view: `CMS`,
+            mapping: { SVG: `fileNode` },
+          },
+        ],
+      },
+    },
+  ],
+}
+```
+
+The `mapping: {SVG: 'fileNode'}` call tells `gatsby-plugin-airtable` to download the
+attachment as a file; from there `talus-gatsby-transformer-svg` will automatically
+recognize the node and make the SVG file contents available to the `<AirtableCMSIcon/>`
+component.
+
+## Content query
+
+This component requires a context provider to access the result from the `useCMSIconsQuery()` hook. This hook should live in the `src/cmsHooks/` directory.
+
+> src/cmsHooks/useHomePageData.ts
+>
+> ```ts
+> import { useStaticQuery, graphql } from 'gatsby'
+> import { AirtableCMSData } from '@talus-analytics/library.airtable-cms'
+>
+> const useCMSIconsQuery = () => {
+>   const { iconsQuery }: { iconsQuery: AirtableCMSData } =
+>     useStaticQuery(graphql`
+>       query iconsQuery {
+>         iconsQuery: allAirtable(filter: { table: { eq: "Icons" } }) {
+>           nodes {
+>             data {
+>               Name
+>               Text
+>               SVG {
+>                 localFiles {
+>                   childSvg {
+>                     svgString
+>                   }
+>                 }
+>               }
+>             }
+>           }
+>         }
+>       }
+>     `)
+>
+>   return iconsQuery
+> }
+>
+> export default useCMSIconsQuery
+> ```
+
+## Context provider
+
+The result from this query must be passed to the `<CMSIconProvider />` context provider in the Layout component:
+
+```js
+const Layout = ({ children }: { children: React.ReactNode }) => {
+  const icons = useCMSIconsQuery()
+  return <CMSIconProvider data={icons}>{children}</CMSIconProvider>
+}
+```
+
+# Exported utilities and hooks
+
+## General purpose hook: `useCMSIcon()`
+
+```js
+interface Icon {
+  svg: string
+  text: string
+}
+
+function useCMSIcon(name: string, color: string | undefined): Icon
+function useCMSIcon( name: string, color: string | undefined, noEmitError: true): Icon | undefined
+function useCMSIcon( name: string, color: string | undefined, noEmitError: boolean): Icon | undefined
+```
+
+This hook returns a specific icon by name, as an SVG string, in the color specified. By default, the hook will always either return an icon or throw an error, but if `noEmitError` is `true`, the hook may also return `undefined` if the icon isn't present in the airtable query.
+
+This hook is useful when it is necessary to use the SVG string in some way where `<CMSIcon/>` will not work, for example if further manipulation is necessary or if it needs to be inserted in a different container element. The `<CMSIcon/>` component should be preferred.
+
+If the `string` argument is undefined, then recoloring the icon will be skipped entirely and the raw SVG string will be returned.
+
+## Batch-processing optimized hook: `useAllCMSIcons()`
+
+```js
+type useAllCMSIcons = () => {
+  name: string
+  svg: HTMLElement
+  text: string
+}[]
+```
+
+This hook retures all the icons from Airtable, pre-processed into HTML elements, with their default colors from Airtable. This is a special-use hook which is intended for use in a component which will mount once and then use lots of icons, in lots of colors, and needs to do that very quickly, such as animated displays or situations where user interaction might update colors of many icons at the same time. This function is vast majority of the time.
+
+In general use this hook should be avoided, as it has a much slower startup time the first time it is called on component mount. However, after the startup, subsequent calls using `replaceFill()` on these SVGs will be around 10x faster than the general-use `useCMSIcon()` hook.
+
+When the SVG string is needed, get it with the `svg.toString()` method.
+
+## Utility function: `replaceFill()`
+
+```js
+function replaceFill(svg: string, color: string): string
+function replaceFill(svg: HTMLElement, color: string): HTMLElement
+```
+
+This function handles parsing SVG graphics and re-coloring them. It will change any `fill` and `stroke` attribute in the SVG to the specified color, supporting any color format supported by the SVG specification. Recoloring itself is recursive, so this function will traverse the node structure and recolor elements even if they are inside groups or other containing elements.
+
+There is a short-circuit optimization for use with `useAllCMSIcons()` where this function will not re-parse the SVG if it is already passed in as an `HTMLElement`, and in that case it will return an `HTMLElement`.
+
+## Raw Data Hook: `useCMSIconsQuery()`
+
+```js
+type useCMSIconsQuery = () => {
+  data: {
+    Name: string,
+    Text: string,
+    SVG: {
+      localFiles: {
+        childSvg: {
+          svgString: string,
+        },
+      }[],
+    },
+  },
+}[]
+```
+
+This gives access to the raw icons query response, only for use in use-cases where the other methods will not work—this export is provided mostly for future-proofing.

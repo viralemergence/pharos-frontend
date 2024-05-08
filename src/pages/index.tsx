@@ -1,6 +1,6 @@
 import React from 'react'
 
-import CMS from '@talus-analytics/library.airtable-cms'
+import CMS from 'components/library/airtable-cms'
 import Providers from 'components/layout/Providers'
 
 import LandingPage from 'components/LandingPage/LandingPage'

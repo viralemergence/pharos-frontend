@@ -41,6 +41,12 @@ else
   echo ""
 fi
 
+# Leaving the option to set the mapping api separately
+# because it might be useful for troubleshooting
+if [ "$mapping_api" == "" ]; then 
+  mapping_api=$api
+fi
+
 echo "API_URL: ${YELLOW}$api${NORMAL}"
 echo "MAPPING_API_URL: ${YELLOW}$mapping_api${NORMAL}"
 echo ""

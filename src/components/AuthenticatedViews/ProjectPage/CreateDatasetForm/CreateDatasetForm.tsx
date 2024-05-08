@@ -13,7 +13,7 @@ import useProjectID from 'hooks/project/useProjectID'
 import { useNavigate } from 'react-router-dom'
 import generateID from 'utilities/generateID'
 import { datasetInitialValue } from 'reducers/stateReducer/initialValues'
-import Typeahead from '../../../../../library/ui/typeahead'
+import Typeahead from 'components/library/ui/typeahead'
 import ColorMessage, {
   ColorMessageStatus,
 } from 'components/ui/Modal/ColorMessage'

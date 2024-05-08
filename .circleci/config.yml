@@ -1,8 +1,7 @@
 version: 2.1
 
 credentials: &credentials
-  - Verena AWS Credentials
-  - Bit Credentials
+  - AWS Credentials
 
 workflows:
   version: 2
@@ -10,9 +9,6 @@ workflows:
     jobs:
       # dev site
       - deploy:
-          # Examples:
-          # bucket: 's3://dev-projectname'
-          # distribution: 'E31RXXXXXXXXXX'
           bucket: 's3://dev-pharos-frontend-2'
           distribution: 'E29CT6PE5VEJB6'
           api: 'https://d39bgqa0hu0mjm.cloudfront.net/prod'
@@ -24,6 +20,7 @@ workflows:
             branches:
               only:
                 - dev
+
       # review site
       - deploy:
           bucket: 's3://review-pharos-frontend-2'
@@ -37,6 +34,7 @@ workflows:
             branches:
               only:
                 - review
+
       # staging site
       - deploy:
           bucket: 's3://staging-pharos-frontend-2'
@@ -50,6 +48,7 @@ workflows:
             branches:
               only:
                 - staging
+
       # prod site
       - deploy:
           bucket: 's3://prod-pharos-frontend-2'
@@ -65,7 +64,7 @@ workflows:
                 - prod
 
 orbs:
-  aws-cli: circleci/aws-cli@2.0.3
+  aws-cli: circleci/aws-cli@4
 
 jobs:
   deploy:
@@ -73,8 +72,6 @@ jobs:
 
     docker:
       - image: cimg/node:lts
-
-    # resource_class: xlarge
 
     parameters:
       bucket:
@@ -94,22 +91,20 @@ jobs:
       - checkout
       - aws-cli/install
 
-      - run:
-          name: Adding bit.dev to NPM Registry
-          command: |
-            echo "always-auth=true" >> ~/.npmrc;
-            echo "@talus-analytics:registry=https://node.bit.dev" >> ~/.npmrc;
-            echo "@teambit:registry=https://node.bit.dev" >> ~/.npmrc;
-            echo "//node.bit.dev/:_authToken={$BIT_TOKEN}" >> ~/.npmrc;
-
       - restore_cache:
           keys:
             - yarn-deps-{{ checksum "yarn.lock" }}
             - yarn-deps-
 
       - run:
+          name: Add github.com to known hosts
+          command: |
+            mkdir ~/.ssh/
+            ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+      - run:
           name: Yarn Install
-          command: yarn install --network-timeout 1000000
+          command: yarn install --non-interactive
 
       - run:
           name: Typescript Checks
