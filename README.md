@@ -82,4 +82,4 @@ Remember to update site passwords before running deployment command.
 This diagram is significantly simplified due to the diagram not supporting all CloudFormation
 features used in the template.
 
-![Overview diagram](https://github.com/viralemergence/pharos-frontend/blob/prod/diagram/pharos-database-highlevel.png)
+![Overview diagram](https://github.com/viralemergence/pharos-frontend/blob/prod/diagrams/pharos-database-highlevel.png)
