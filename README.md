@@ -38,38 +38,35 @@ yarn
 
 2. Start dev server, passing arguments for the resources you want to connect to:
 
-| Argument         | Description                                                          | Source                                                                                            |
-| ---------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `--api`          | Cloudfront distribution url for the main API                         | "Outputs" section of cloudformation stack                                                         |
-| `--mapping_api`  | Cloudfront distribution url for the mapping API                      | "Outputs" section of cloudformation stack                                                         |
-| `--client_id`    | AWS Cognito client ID                                                | "Outputs" section of cloudformation stack                                                         |
-| `--user_pool_id` | AWS Cognito user pool ID                                             | "Outputs" section of cloudformation stack                                                         |
-| `--profile`      | AWS SSO Profile with developer-level credentials for Pharos Prod AWS | Configure AWS SSO using the [Pharos AWS Access Portal](https://viralemergence.awsapps.com/start/) |
+<!-- | Argument         | Description                                                          | Source                                                                                            | -->
+<!-- | ---------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | -->
+<!-- | `--api`          | Cloudfront distribution url for the main API                         | "Outputs" section of cloudformation stack                                                         | -->
+<!-- | `--mapping_api`  | Cloudfront distribution url for the mapping API                      | "Outputs" section of cloudformation stack                                                         | -->
+<!-- | `--client_id`    | AWS Cognito client ID                                                | "Outputs" section of cloudformation stack                                                         | -->
+<!-- | `--user_pool_id` | AWS Cognito user pool ID                                             | "Outputs" section of cloudformation stack                                                         | -->
+<!-- | `--profile`      | AWS SSO Profile with developer-level credentials for Pharos Prod AWS | Configure AWS SSO using the [Pharos AWS Access Portal](https://viralemergence.awsapps.com/start/) | -->
 
-| Argument         | Source                                                                                            |
-| ---------------- | ------------------------------------------------------------------------------------------------- |
-| `--api`          | "Outputs" section of cloudformation stack                                                         |
-| `--mapping_api`  | "Outputs" section of cloudformation stack                                                         |
-| `--client_id`    | "Outputs" section of cloudformation stack                                                         |
-| `--user_pool_id` | "Outputs" section of cloudformation stack                                                         |
-| `--profile`      | Configure AWS SSO using the [Pharos AWS Access Portal](https://viralemergence.awsapps.com/start/) |
+| Argument         | Source                                                                                                                                     |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `--api`          | "Api" in outputs of cloudformation stack                                                                                                   |
+| `--client_id`    | "ClientId" in outputs of cloudformation stack                                                                                              |
+| `--user_pool_id` | "UserPoolId" in outputs of cloudformation stack                                                                                            |
+| `--mapping_api`  | Optional, only for troubleshooting. Defaults to match --api.                                                                               |
+| `--profile`      | Optional, if `[default]` profile is set. Configure AWS SSO using the [Pharos AWS Access Portal](https://viralemergence.awsapps.com/start/) |
 
 Example `yarn start` command:
 
-```
-yarn start \
-  --api [CF Distribution URL] \
-  --mapping_api [CF Distribution URL] \
-  --profile [AWS SSO Profile] \
-  --client_id [AWS Cognito Client ID] \
-  --user_pool_id [AWS Cognito User Pool ID]
-```
+<!-- ``` -->
+<!-- yarn start \ -->
+<!--   --api [CF Distribution URL] \ -->
+<!--   --profile [AWS SSO Profile] \ -->
+<!--   --client_id [AWS Cognito Client ID] \ -->
+<!--   --user_pool_id [AWS Cognito User Pool ID] -->
+<!-- ``` -->
 
 ```
 yarn start \
   --api https://XXXXXXXXXXXXXX.cloudfront.net/prod \
-  --mapping_api https://XXXXXXXXXXXXXX.cloudfront.net/prod \
-  --profile verena-prod-dev \
   --client_id XXXXXXXXXXXXXXXXXXXXXXXXXX \
   --user_pool_id us-east-2_XXXXXXXXX
 ```
