@@ -1,6 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-# checking to see if this triggers a rebuild
 # Edit DomainName and CertificateArn here to move
 # the project from subdomains on talusanalytics.com
 # to a project-specific domain name.
